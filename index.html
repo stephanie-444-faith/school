@@ -29,12 +29,13 @@
 
       <div class="table-picker">
         <p class="picker-label">Which numbers do you want to practice?</p>
-        <p class="picker-hint">Tap a number to turn it on or off. If <strong>7</strong> is on, you'll get questions like 7 × 4 and 9 × 7.</p>
+        <p class="picker-hint">Tap one or more numbers. Tap again to take it away. If you pick <strong>7</strong>, you'll get questions like 7 × 4 and 9 × 7.</p>
         <div id="table-chips" class="chips"></div>
         <div class="picker-actions">
           <button type="button" class="link-btn" id="select-all">Select all</button>
           <button type="button" class="link-btn" id="select-none">Clear</button>
         </div>
+        <p id="picked-summary" class="picked-summary" aria-live="polite"></p>
       </div>
 
       <button id="start-btn" class="btn btn-primary btn-large">Let's Play! 🐾</button>

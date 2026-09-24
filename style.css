@@ -175,6 +175,8 @@ body {
   transform: translateY(-2px);
 }
 .picker-actions { margin-top: 6px; }
+.picked-summary { margin: 4px 0 0; font-weight: 600; color: var(--good); }
+.picked-summary.empty { color: var(--orange-dark); }
 .best-line { margin: 4px 0 0; color: var(--ink-soft); }
 
 /* ---------- Game screen ---------- */

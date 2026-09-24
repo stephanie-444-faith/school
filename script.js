@@ -21,6 +21,7 @@ const screens = { start: $("start-screen"), game: $("game-screen"), over: $("ove
 const el = {
   chips: $("table-chips"),
   startBtn: $("start-btn"),
+  picked: $("picked-summary"),
   bestStart: $("best-start"),
   score: $("score"),
   streak: $("streak"),
@@ -56,7 +57,7 @@ const store = {
 
 // ---------- State ----------
 const state = {
-  tables: new Set(loadJSON("pawsome-tables", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])),
+  tables: new Set(loadJSON("pawsome-numbers", [])), // nothing picked until the player taps a number
   best: Number(store.get("pawsome-best")) || 0,
   sound: store.get("pawsome-sound") !== "off",
   score: 0,
@@ -77,7 +78,7 @@ const state = {
 function loadJSON(key, fallback) {
   try {
     const value = JSON.parse(store.get(key));
-    return Array.isArray(value) && value.length ? value : fallback;
+    return Array.isArray(value) ? value : fallback;
   } catch {
     return fallback;
   }
@@ -113,7 +114,18 @@ function renderChips() {
 function updateChips() {
   [...el.chips.children].forEach((chip, i) => chip.setAttribute("aria-pressed", state.tables.has(i + 1)));
   el.startBtn.disabled = state.tables.size === 0;
-  store.set("pawsome-tables", JSON.stringify([...state.tables]));
+  el.picked.textContent = pickedSummary();
+  el.picked.classList.toggle("empty", state.tables.size === 0);
+  store.set("pawsome-numbers", JSON.stringify([...state.tables]));
+}
+
+function pickedSummary() {
+  const nums = [...state.tables].sort((a, b) => a - b);
+  if (nums.length === 0) return "Tap a number above to start.";
+  if (nums.length === 12) return "You picked all the numbers, 1 to 12.";
+  const names = nums.map((n) => `${n}s`);
+  const list = names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+  return `You picked the ${list}. Every question will have ${nums.length === 1 ? `a ${nums[0]}` : "one of these numbers"} in it.`;
 }
 
 $("select-all").addEventListener("click", () => {
