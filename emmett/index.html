@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Emmett is a 12-year-old mother's helper. $10 an hour. Text his mom, Stephanie, to book.">
+<title>Emmett the Mother's Helper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f8ff;
+    --surface: #ffffff;
+    --ink: #1b2a44;
+    --ink-soft: #52627f;
+    --line: #dbe4f5;
+    --blue: #2f6fdb;
+    --blue-soft: #e4edff;
+    --sun: #ffc83d;
+    --sun-ink: #3d2c00;
+    --grass: #2f9a55;
+    --grass-soft: #e2f5e8;
+    --shadow: 0 1px 2px rgba(27, 42, 68, .06), 0 8px 24px rgba(27, 42, 68, .08);
+    --display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0f1830; --surface: #172341; --ink: #e8eefa; --ink-soft: #a7b4cf; --line: #2a3a5f;
+      --blue: #86adff; --blue-soft: #1e2f57; --sun: #ffd35c; --sun-ink: #2b1f00;
+      --grass: #6fd394; --grass-soft: #173a2a; --shadow: 0 8px 24px rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f1830; --surface: #172341; --ink: #e8eefa; --ink-soft: #a7b4cf; --line: #2a3a5f;
+    --blue: #86adff; --blue-soft: #1e2f57; --sun: #ffd35c; --sun-ink: #2b1f00;
+    --grass: #6fd394; --grass-soft: #173a2a; --shadow: 0 8px 24px rgba(0, 0, 0, .35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1.0625rem/1.6 var(--body);
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.1; text-wrap: balance; margin: 0; }
+  h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 800; }
+  h3 { font-size: 1.2rem; font-weight: 600; }
+  p { margin: 0; }
+  .eyebrow {
+    font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--blue);
+  }
+  section { padding-block: 56px; }
+  .section-head { display: grid; gap: 8px; margin-bottom: 28px; max-width: 60ch; }
+  .section-head p { color: var(--ink-soft); }
+
+  /* Hero */
+  .hero { padding-block: 48px 40px; }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: center;
+  }
+  .hero h1 { font-size: clamp(2.6rem, 8vw, 4.8rem); font-weight: 800; letter-spacing: -.02em; }
+  .hero h1 .name { color: var(--blue); }
+  .hero-copy { display: grid; gap: 20px; }
+  .hero-copy .lead { font-size: 1.2rem; color: var(--ink-soft); max-width: 46ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .facts li {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 14px; font-weight: 700; font-size: .95rem;
+  }
+  .facts svg { width: 18px; height: 18px; color: var(--grass); flex-shrink: 0; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; justify-self: start;
+    background: var(--blue); color: var(--bg); text-decoration: none;
+    font: 700 1.05rem var(--body); padding: 14px 24px; border-radius: 14px;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+
+  /* Price sticker */
+  .sticker-wrap { display: grid; place-items: center; }
+  .sticker {
+    width: min(300px, 80vw); aspect-ratio: 1; max-width: 100%;
+    background: var(--sun); color: var(--sun-ink);
+    border-radius: 50%;
+    display: grid; place-content: center; text-align: center; gap: 2px;
+    transform: rotate(-8deg);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .sticker::before {
+    content: ""; position: absolute; inset: 12px; border-radius: 50%;
+    border: 3px dashed color-mix(in srgb, var(--sun-ink) 35%, transparent);
+  }
+  .sticker .amount { font: 800 clamp(4rem, 14vw, 5.6rem)/1 var(--display); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .sticker .amount sup { font-size: .45em; vertical-align: .9em; margin-right: 2px; }
+  .sticker .per { font: 600 1.4rem var(--display); }
+  .sticker .small { font-size: .9rem; font-weight: 700; margin-top: 4px; }
+
+  /* What I do */
+  .activities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .activity {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px; display: grid; gap: 10px; align-content: start;
+  }
+  .activity .icon {
+    width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center;
+    background: var(--blue-soft); color: var(--blue);
+  }
+  .activity:nth-child(3n+2) .icon { background: var(--grass-soft); color: var(--grass); }
+  .activity:nth-child(3n) .icon { background: color-mix(in srgb, var(--sun) 25%, var(--surface)); color: var(--sun-ink); }
+  :root[data-theme="dark"] .activity:nth-child(3n) .icon { color: var(--sun); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .activity:nth-child(3n) .icon { color: var(--sun); } }
+  .activity svg { width: 26px; height: 26px; }
+  .activity p { color: var(--ink-soft); }
+
+  /* How it works */
+  .how { background: var(--surface); border-block: 1px solid var(--line); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding: 0; margin: 0; list-style: none; counter-reset: step; }
+  .steps li { display: grid; gap: 8px; align-content: start; counter-increment: step; }
+  .steps li::before {
+    content: counter(step);
+    width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--blue); color: var(--bg);
+    font: 800 1.3rem var(--display);
+  }
+  .steps p { color: var(--ink-soft); }
+
+  /* Calculator + contact */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+    padding: 28px; display: grid; gap: 18px; align-content: start; box-shadow: var(--shadow);
+  }
+  .calc-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .stepper { display: inline-flex; align-items: center; border: 2px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .stepper button {
+    width: 48px; height: 48px; border: 0; background: var(--blue-soft); color: var(--blue);
+    font: 800 1.5rem var(--display); cursor: pointer;
+  }
+  .stepper button:disabled { opacity: .4; cursor: default; }
+  .stepper output { min-width: 110px; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .total {
+    display: flex; align-items: baseline; gap: 10px; padding-top: 14px; border-top: 1px dashed var(--line);
+  }
+  .total .value { font: 800 3rem/1 var(--display); color: var(--grass); font-variant-numeric: tabular-nums; }
+  .total .label { color: var(--ink-soft); }
+  .note { font-size: .95rem; color: var(--ink-soft); }
+  .contact { background: var(--blue); color: var(--bg); border-color: transparent; }
+  .contact .eyebrow { color: var(--sun); }
+  .contact p { color: color-mix(in srgb, var(--bg) 85%, var(--blue)); }
+  .phone-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .phone {
+    font: 800 clamp(1.8rem, 6vw, 2.4rem)/1 var(--display); color: var(--sun);
+    text-decoration: none; font-variant-numeric: tabular-nums; user-select: all;
+  }
+  .copy {
+    font: 700 .95rem var(--body); padding: 8px 14px; border-radius: 10px; cursor: pointer;
+    background: transparent; color: var(--bg); border: 2px solid color-mix(in srgb, var(--bg) 60%, var(--blue));
+  }
+  .contact ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+  footer { padding-block: 32px 48px; color: var(--ink-soft); font-size: .95rem; text-align: center; }
+
+  @media (max-width: 800px) {
+    .hero-grid, .two-col { grid-template-columns: 1fr; }
+    .sticker-wrap { order: -1; }
+    .sticker { width: 220px; }
+    .activities { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: 1fr; gap: 20px; }
+  }
+  @media (max-width: 520px) {
+    .activities { grid-template-columns: 1fr; }
+    section { padding-block: 40px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sticker { animation: wobble 5s ease-in-out infinite; }
+    @keyframes wobble { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(-4deg) scale(1.02); } }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Mother's helper</p>
+      <h1>Hi, I'm <span class="name">Emmett</span>. I'll keep your kids busy.</h1>
+      <p class="lead">I'm 12, and I'm a mother's helper. You stay home and get things done. I play with your kids and keep them happy.</p>
+      <ul class="facts">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>A parent stays home</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>$10 an hour</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Text my mom to book</li>
+      </ul>
+      <a class="btn" href="#book">How to book Emmett</a>
+    </div>
+    <div class="sticker-wrap">
+      <div class="sticker" role="img" aria-label="10 dollars per hour">
+        <span class="amount"><sup>$</sup>10</span>
+        <span class="per">per hour</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="what">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">What I do</p>
+        <h2>Fun for your kids, a break for you</h2>
+        <p>Tell me what your kids like, and I'll plan around it.</p>
+      </div>
+      <div class="activities">
+        <article class="activity">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><circle cx="7" cy="7" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="18.5" cy="18.5" r="1" fill="currentColor"/></svg></div>
+          <h3>Games and toys</h3>
+          <p>Board games, cards, Legos, blocks and make-believe.</p>
+        </article>
+        <article class="activity">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9.5h17M3.5 14.5h17M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
+          <h3>Outside play</h3>
+          <p>Tag, catch, bubbles, chalk and running around in the backyard.</p>
+        </article>
+        <article class="activity">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.5-5-2-8-1.5v14c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-14c-3-.5-6 0-8 1.5z"/><path d="M12 6v14"/></svg></div>
+          <h3>Story time</h3>
+          <p>Reading books out loud, or listening while your kids read to me.</p>
+        </article>
+        <article class="activity">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4z"/><path d="M14 7l3 3"/></svg></div>
+          <h3>Arts and crafts</h3>
+          <p>Drawing, coloring, play-dough and paper crafts.</p>
+        </article>
+        <article class="activity">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M4 12h10M4 17h6"/><path d="M15 16l2 2 4-4"/></svg></div>
+          <h3>Homework help</h3>
+          <p>Spelling words, math facts and reading practice for younger kids.</p>
+        </article>
+        <article class="activity">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.5 9a2 2 0 0 1-2 1.7h-9a2 2 0 0 1-2-1.7L4 10z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg></div>
+          <h3>Tidy up</h3>
+          <p>Before I leave, we put the toys away together.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2>You're home the whole time</h2>
+        <p>A mother's helper isn't a babysitter. A parent is always in the house, so you can work, cook, rest or take a call.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Text my mom</h3><p>Text Stephanie at 847-912-2450 with the day and time you need help. She'll check my schedule.</p></li>
+        <li><h3>I come over and play</h3><p>You show me around and tell me the rules. Then I keep the kids busy while you do your thing.</p></li>
+        <li><h3>Pay $10 an hour</h3><p>Pay at the end of the visit.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="book">
+    <div class="wrap two-col">
+      <div class="panel">
+        <div class="section-head" style="margin:0">
+          <p class="eyebrow">Price check</p>
+          <h2>How much will it cost?</h2>
+        </div>
+        <div class="calc-row">
+          <span id="hours-label">How long do you need me?</span>
+          <div class="stepper" role="group" aria-labelledby="hours-label">
+            <button type="button" id="less" aria-label="Less time">−</button>
+            <output id="hours" aria-live="polite">2 hours</output>
+            <button type="button" id="more" aria-label="More time">+</button>
+          </div>
+        </div>
+        <div class="total">
+          <span class="value" id="total">$20</span>
+          <span class="label">total</span>
+        </div>
+        <p class="note">Tap + or − to change the time.</p>
+      </div>
+
+      <div class="panel contact">
+        <p class="eyebrow">Book Emmett</p>
+        <h2>Text my mom, Stephanie</h2>
+        <p>My mom sets up all my jobs.</p>
+        <div class="phone-row">
+          <a class="phone" id="phone" href="sms:+18479122450">847-912-2450</a>
+          <button type="button" class="copy" id="copy">Copy number</button>
+        </div>
+        <p>In your text:</p>
+        <ul>
+          <li>Say what day and time you need help</li>
+          <li>Say how many kids you have and how old they are</li>
+          <li>Tell us anything I should know, like allergies or bedtime</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Thanks for looking! — Emmett</div>
+</footer>
+
+<script>
+  const copyBtn = document.getElementById("copy");
+  copyBtn.addEventListener("click", () => {
+    const done = () => { copyBtn.textContent = "Copied"; setTimeout(() => (copyBtn.textContent = "Copy number"), 2000); };
+    const select = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById("phone")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); };
+    try { navigator.clipboard.writeText("847-912-2450").then(done, select); } catch { select(); }
+  });
+
+  const RATE = 10;
+  let hours = 2;
+  const out = document.getElementById("hours");
+  const total = document.getElementById("total");
+  const less = document.getElementById("less");
+  const more = document.getElementById("more");
+  function render() {
+    const whole = Number.isInteger(hours);
+    out.textContent = (whole ? hours : hours.toFixed(1)) + (hours === 1 ? " hour" : " hours");
+    total.textContent = "$" + (hours * RATE).toFixed(whole ? 0 : 2).replace(/\.00$/, "");
+    less.disabled = hours <= 1;
+    more.disabled = hours >= 6;
+  }
+  less.addEventListener("click", () => { hours = Math.max(1, hours - 0.5); render(); });
+  more.addEventListener("click", () => { hours = Math.min(6, hours + 0.5); render(); });
+  render();
+</script>
+</body>
+</html>
