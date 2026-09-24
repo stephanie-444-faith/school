@@ -75,6 +75,10 @@
     padding: 6px 14px; font-weight: 700; font-size: .95rem;
   }
   .facts svg { width: 18px; height: 18px; color: var(--grass); flex-shrink: 0; }
+  .area {
+    justify-self: start; font-weight: 700; color: var(--ink);
+    background: var(--blue-soft); border-radius: 10px; padding: 6px 12px;
+  }
   .btn {
     display: inline-flex; align-items: center; gap: 8px; justify-self: start;
     background: var(--blue); color: var(--bg); text-decoration: none;
@@ -199,6 +203,7 @@
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>$10 an hour</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Text my mom to book</li>
       </ul>
+      <p class="area">Valid for families in Wyngate only.</p>
       <a class="btn" href="#book">How to book Emmett</a>
     </div>
     <div class="sticker-wrap">
@@ -293,7 +298,7 @@
       <div class="panel contact">
         <p class="eyebrow">Book Emmett</p>
         <h2>Text my mom, Stephanie</h2>
-        <p>My mom sets up all my jobs.</p>
+        <p>My mom sets up all my jobs. Valid for families in Wyngate only.</p>
         <div class="phone-row">
           <a class="phone" id="phone" href="sms:+18479122450">847-912-2450</a>
           <button type="button" class="copy" id="copy">Copy number</button>
