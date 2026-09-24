@@ -44,11 +44,21 @@ const el = {
   soundBtn: $("sound-toggle"),
 };
 
+// ---------- Storage (can be blocked in private windows, so never let it crash the game) ----------
+const store = {
+  get(key) {
+    try { return localStorage.getItem(key); } catch { return null; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, value); } catch { /* ignore */ }
+  },
+};
+
 // ---------- State ----------
 const state = {
   tables: new Set(loadJSON("pawsome-tables", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])),
-  best: Number(localStorage.getItem("pawsome-best")) || 0,
-  sound: localStorage.getItem("pawsome-sound") !== "off",
+  best: Number(store.get("pawsome-best")) || 0,
+  sound: store.get("pawsome-sound") !== "off",
   score: 0,
   streak: 0,
   gameBestStreak: 0,
@@ -66,7 +76,7 @@ const state = {
 
 function loadJSON(key, fallback) {
   try {
-    const value = JSON.parse(localStorage.getItem(key));
+    const value = JSON.parse(store.get(key));
     return Array.isArray(value) && value.length ? value : fallback;
   } catch {
     return fallback;
@@ -103,7 +113,7 @@ function renderChips() {
 function updateChips() {
   [...el.chips.children].forEach((chip, i) => chip.setAttribute("aria-pressed", state.tables.has(i + 1)));
   el.startBtn.disabled = state.tables.size === 0;
-  localStorage.setItem("pawsome-tables", JSON.stringify([...state.tables]));
+  store.set("pawsome-tables", JSON.stringify([...state.tables]));
 }
 
 $("select-all").addEventListener("click", () => {
@@ -201,7 +211,7 @@ function handleCorrect() {
   state.gameBestStreak = Math.max(state.gameBestStreak, state.streak);
   if (state.streak > state.best) {
     state.best = state.streak;
-    localStorage.setItem("pawsome-best", state.best);
+    store.set("pawsome-best", state.best);
   }
 
   el.qMark.textContent = state.a * state.b;
@@ -425,7 +435,7 @@ document.addEventListener("keydown", (e) => {
 
 el.soundBtn.addEventListener("click", () => {
   state.sound = !state.sound;
-  localStorage.setItem("pawsome-sound", state.sound ? "on" : "off");
+  store.set("pawsome-sound", state.sound ? "on" : "off");
   renderSoundButton();
 });
 
