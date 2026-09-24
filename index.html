@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawsome Times Tables</title>
+  <link rel="icon" href="images/paw.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="paw-trail" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="app-header">
+      <img src="images/paw.svg" alt="" class="logo-paw">
+      <h1>Pawsome <span>Times Tables</span></h1>
+      <button id="sound-toggle" class="icon-btn" aria-label="Turn sound off" title="Sound on/off">🔊</button>
+    </header>
+
+    <!-- START SCREEN -->
+    <section id="start-screen" class="screen card">
+      <img src="images/dog-happy.svg" alt="A happy cartoon puppy" class="dog dog-big bounce">
+      <h2>Help Biscuit fetch the answers!</h2>
+      <p class="lead">Answer each multiplication question before the <strong>10-second</strong> timer runs out.
+        Get answers right in a row to build your <strong>streak</strong>. You have 3 bones — lose them all and the game ends.</p>
+
+      <div class="table-picker">
+        <p class="picker-label">Which tables do you want to practice?</p>
+        <div id="table-chips" class="chips"></div>
+        <div class="picker-actions">
+          <button type="button" class="link-btn" id="select-all">Select all</button>
+          <button type="button" class="link-btn" id="select-none">Clear</button>
+        </div>
+      </div>
+
+      <button id="start-btn" class="btn btn-primary btn-large">Let's Play! 🐾</button>
+      <p class="best-line">Best streak ever: <strong id="best-start">0</strong></p>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="game-screen" class="screen" hidden>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="score">0</span>
+        </div>
+        <div class="stat stat-streak">
+          <span class="stat-label">Streak</span>
+          <span class="stat-value"><span id="streak">0</span> 🔥</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Best</span>
+          <span class="stat-value" id="best">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Bones</span>
+          <span class="stat-value lives" id="lives"></span>
+        </div>
+      </div>
+
+      <div class="card play-card">
+        <div class="dog-area">
+          <img id="dog-img" src="images/dog-thinking.svg" alt="Biscuit the puppy" class="dog">
+          <div id="speech" class="speech" aria-live="polite">Ruff! You can do it!</div>
+        </div>
+
+        <div class="question-area">
+          <div class="timer" aria-label="Time left">
+            <svg viewBox="0 0 120 120" class="timer-ring">
+              <circle cx="60" cy="60" r="52" class="ring-bg"/>
+              <circle cx="60" cy="60" r="52" class="ring-fg" id="ring"/>
+            </svg>
+            <span id="time-left" class="timer-num">10</span>
+          </div>
+
+          <div class="question" id="question">
+            <span id="num-a">7</span>
+            <span class="op">×</span>
+            <span id="num-b">8</span>
+            <span class="op">=</span>
+            <span class="q-mark">?</span>
+          </div>
+
+          <form id="answer-form" class="answer-form" autocomplete="off">
+            <input id="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3"
+                   placeholder="?" aria-label="Your answer">
+            <button type="submit" class="btn btn-primary">Fetch! 🦴</button>
+          </form>
+
+          <div class="keypad" id="keypad">
+            <button type="button" data-key="1">1</button>
+            <button type="button" data-key="2">2</button>
+            <button type="button" data-key="3">3</button>
+            <button type="button" data-key="4">4</button>
+            <button type="button" data-key="5">5</button>
+            <button type="button" data-key="6">6</button>
+            <button type="button" data-key="7">7</button>
+            <button type="button" data-key="8">8</button>
+            <button type="button" data-key="9">9</button>
+            <button type="button" data-key="back" class="key-alt" aria-label="Delete">⌫</button>
+            <button type="button" data-key="0">0</button>
+            <button type="button" data-key="enter" class="key-go" aria-label="Submit">✓</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME OVER SCREEN -->
+    <section id="over-screen" class="screen card" hidden>
+      <img src="images/dog-sad.svg" alt="" class="dog dog-big" id="over-dog">
+      <h2 id="over-title">Good try, pup!</h2>
+      <div class="final-stats">
+        <div><span class="final-num" id="final-score">0</span><span>points</span></div>
+        <div><span class="final-num" id="final-correct">0</span><span>correct</span></div>
+        <div><span class="final-num" id="final-streak">0</span><span>best streak</span></div>
+      </div>
+      <div id="practice" class="practice">
+        <p class="picker-label">Let's practice these:</p>
+        <ul id="practice-list"></ul>
+      </div>
+      <button id="again-btn" class="btn btn-primary btn-large">Play Again 🐶</button>
+      <button id="menu-btn" class="link-btn">Change tables</button>
+    </section>
+  </main>
+
+  <!-- TREAT (streak reward) POPUP -->
+  <div id="treat" class="treat" hidden>
+    <div class="treat-card card">
+      <p class="treat-kicker">Treat time!</p>
+      <h2><span id="treat-streak">5</span> in a row! 🎉</h2>
+      <img id="treat-img" src="images/dog-happy.svg" alt="A puppy photo as a reward">
+      <button id="treat-btn" class="btn btn-primary">Keep going! 🐾</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
