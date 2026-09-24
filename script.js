@@ -100,7 +100,7 @@ function renderChips() {
     chip.className = "chip";
     chip.textContent = n;
     chip.setAttribute("aria-pressed", state.tables.has(n));
-    chip.setAttribute("aria-label", `${n} times table`);
+    chip.setAttribute("aria-label", `Practice the ${n}s`);
     chip.addEventListener("click", () => {
       state.tables.has(n) ? state.tables.delete(n) : state.tables.add(n);
       updateChips();

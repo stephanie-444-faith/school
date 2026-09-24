@@ -150,6 +150,7 @@ body {
   margin: 8px 0;
 }
 .picker-label { margin: 0 0 10px; font-weight: 600; color: var(--brown); }
+.picker-hint { margin: -4px 0 12px; font-size: 0.95rem; color: var(--ink-soft); }
 .chips {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
