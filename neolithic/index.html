@@ -1,0 +1,566 @@
+<title>From Camp to City</title>
+<meta name="description" content="Study game for the Early Humans to Neolithic Revolution test: vocabulary, GRAPES, economics, timeline and focus questions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one centered column; a journey track (camp → city) on top, the active game screen below. */
+  :root {
+    --bg: #eef2ea;
+    --surface: #ffffff;
+    --surface-2: #e3eadf;
+    --ink: #1d2a22;
+    --ink-soft: #55665a;
+    --line: #cfd9cb;
+    --river: #1d6a86;
+    --river-soft: #dcecf2;
+    --wheat: #c98f0f;
+    --wheat-soft: #fbefd0;
+    --good: #2c8250;
+    --good-soft: #dff2e6;
+    --bad: #b8412c;
+    --bad-soft: #f8e1dc;
+    --on-accent: #ffffff;
+    --shadow: 0 1px 2px rgba(29, 42, 34, .06), 0 8px 22px rgba(29, 42, 34, .08);
+    --display: "Rowdies", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #111a15; --surface: #18241d; --surface-2: #213028; --ink: #e7efe8; --ink-soft: #a5b7aa;
+      --line: #2e4035; --river: #6cc0de; --river-soft: #173745; --wheat: #f0bd48; --wheat-soft: #3a2d0e;
+      --good: #6fd39a; --good-soft: #173826; --bad: #f08a76; --bad-soft: #43201a; --on-accent: #0d1611;
+      --shadow: 0 8px 22px rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #111a15; --surface: #18241d; --surface-2: #213028; --ink: #e7efe8; --ink-soft: #a5b7aa;
+    --line: #2e4035; --river: #6cc0de; --river-soft: #173745; --wheat: #f0bd48; --wheat-soft: #3a2d0e;
+    --good: #6fd39a; --good-soft: #173826; --bad: #f08a76; --bad-soft: #43201a; --on-accent: #0d1611;
+    --shadow: 0 8px 22px rgba(0, 0, 0, .35);
+  }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5; }
+  .wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 18px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); }
+  h2 { font-size: 1.45rem; }
+  h3 { font-size: 1.1rem; }
+  p { margin: 0; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible { outline: 3px solid var(--river); outline-offset: 2px; }
+
+  header { display: flex; flex-direction: column; gap: 4px; }
+  .eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--river); }
+  .sub { color: var(--ink-soft); }
+
+  /* Journey track */
+  .journey { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .journey-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .journey-top strong { font-family: var(--display); font-size: 1.1rem; }
+  .journey-top span { color: var(--ink-soft); font-size: .9rem; font-variant-numeric: tabular-nums; }
+  .track { position: relative; height: 10px; background: var(--surface-2); border-radius: 99px; }
+  .track-fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--river), var(--wheat)); border-radius: 99px; width: 0; transition: width .5s ease; }
+  .stops { display: grid; grid-template-columns: repeat(5, 1fr); font-size: .75rem; color: var(--ink-soft); }
+  .stops span { text-align: center; }
+  .stops span:first-child { text-align: left; }
+  .stops span:last-child { text-align: right; }
+  .stops span.reached { color: var(--ink); font-weight: 700; }
+
+  .card { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* Menu */
+  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .mode { text-align: left; background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; transition: border-color .15s, transform .15s; }
+  .mode:hover { border-color: var(--river); transform: translateY(-2px); }
+  .mode .tag { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--wheat); }
+  .mode p { color: var(--ink-soft); font-size: .92rem; }
+  .mode.feature { grid-column: 1 / -1; background: var(--river); border-color: var(--river); color: var(--on-accent); }
+  .mode.feature p, .mode.feature .tag { color: var(--on-accent); opacity: .9; }
+
+  /* Question screen */
+  .qhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: .9rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 99px; background: var(--river-soft); color: var(--river); font-weight: 700; font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; }
+  .progress { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+  .progress div { height: 100%; background: var(--river); width: 0; transition: width .3s; }
+  .prompt { font-size: 1.25rem; font-weight: 700; }
+  .prompt .term { font-family: var(--display); font-weight: 400; color: var(--river); }
+  .answers { display: grid; gap: 10px; }
+  .ans { text-align: left; padding: 13px 15px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); cursor: pointer; display: flex; gap: 12px; align-items: flex-start; }
+  .ans:hover:not(:disabled) { border-color: var(--river); background: var(--river-soft); }
+  .ans .k { flex: none; width: 26px; height: 26px; border-radius: 8px; background: var(--surface-2); display: grid; place-items: center; font-weight: 700; font-size: .85rem; }
+  .ans:disabled { cursor: default; }
+  .ans.right { border-color: var(--good); background: var(--good-soft); }
+  .ans.wrong { border-color: var(--bad); background: var(--bad-soft); }
+  .ans.dim { opacity: .55; }
+
+  .grapes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grape { padding: 12px 8px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .grape b { font-family: var(--display); font-size: 1.6rem; font-weight: 400; color: var(--river); line-height: 1; }
+  .grape span { font-size: .85rem; }
+  .grape:hover:not(:disabled) { border-color: var(--river); background: var(--river-soft); }
+  .grape.right { border-color: var(--good); background: var(--good-soft); }
+  .grape.wrong { border-color: var(--bad); background: var(--bad-soft); }
+  .grape:disabled { cursor: default; }
+  .fact { font-size: 1.2rem; font-weight: 700; padding: 16px; border-radius: 12px; background: var(--wheat-soft); }
+
+  .feedback { border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .feedback.good { background: var(--good-soft); }
+  .feedback.bad { background: var(--bad-soft); }
+  .feedback strong { font-family: var(--display); font-weight: 400; font-size: 1.1rem; }
+  .feedback.good strong { color: var(--good); }
+  .feedback.bad strong { color: var(--bad); }
+
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { padding: 12px 20px; border-radius: 12px; border: 0; background: var(--river); color: var(--on-accent); font-weight: 700; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+  .btn.wheat { background: var(--wheat); color: var(--on-accent); }
+  .btn.good { background: var(--good); color: var(--on-accent); }
+  .btn.bad { background: var(--bad); color: var(--on-accent); }
+
+  /* Timeline */
+  .placed { display: flex; flex-direction: column; gap: 6px; padding: 0; margin: 0; list-style: none; }
+  .placed li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border-radius: 10px; background: var(--good-soft); font-size: .95rem; }
+  .placed li b { flex: none; font-variant-numeric: tabular-nums; color: var(--good); min-width: 1.4em; }
+  .pool { display: grid; gap: 8px; }
+  .pool button { text-align: left; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); cursor: pointer; }
+  .pool button:hover { border-color: var(--river); background: var(--river-soft); }
+  .pool button.hint { border-color: var(--wheat); background: var(--wheat-soft); }
+  .shake { animation: shake .35s; border-color: var(--bad) !important; background: var(--bad-soft) !important; }
+  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+  /* Flashcards */
+  .flash { min-height: 140px; display: flex; flex-direction: column; gap: 12px; }
+  .flash ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+
+  /* Results */
+  .big { font-family: var(--display); font-size: 3rem; line-height: 1; color: var(--river); font-variant-numeric: tabular-nums; }
+  .missed { display: flex; flex-direction: column; gap: 10px; }
+  .miss { border-left: 4px solid var(--bad); padding: 6px 12px; background: var(--surface-2); border-radius: 0 10px 10px 0; font-size: .95rem; }
+  .miss b { display: block; }
+
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: .9rem; }
+  .legend div { background: var(--surface-2); border-radius: 10px; padding: 8px 12px; }
+  .legend b { font-family: var(--display); font-weight: 400; color: var(--river); }
+  details summary { cursor: pointer; font-weight: 700; color: var(--river); }
+  details[open] summary { margin-bottom: 10px; }
+
+  footer { text-align: center; font-size: .85rem; color: var(--ink-soft); }
+  footer button { background: none; border: 0; text-decoration: underline; cursor: pointer; color: var(--ink-soft); }
+
+  @media (max-width: 460px) {
+    .card { padding: 16px; }
+    .stops { font-size: .68rem; }
+    .grapes { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Summative Assessment · Study Game</span>
+    <h1>From Camp to City</h1>
+    <p class="sub">Early Humans to the Neolithic Revolution. Every right answer moves your people one step closer to building a city.</p>
+  </header>
+
+  <section class="journey" aria-label="Your journey">
+    <div class="journey-top"><strong id="stage-name">Nomad Camp</strong><span id="points">0 correct answers</span></div>
+    <div class="track"><div class="track-fill" id="track-fill"></div></div>
+    <div class="stops" id="stops"></div>
+  </section>
+
+  <main id="screen"></main>
+
+  <footer><button id="reset" type="button">Start the journey over</button></footer>
+</div>
+
+<script>
+/* ---------- Study content (from the study guide) ---------- */
+const VOCAB = [
+  { t: "canal", d: "A human-made waterway that carries water to crops or is used for travel.", why: "Canals let farmers irrigate fields far from the river, which helped them grow a surplus." },
+  { t: "capital resource", d: "Tools, machines, and buildings people make and use to produce goods (like hoes, plows, and canals).", why: "Better capital resources helped farmers produce more food with less work." },
+  { t: "consumer good", d: "A product people use to meet their needs and wants, like food, clothing, or pottery.", why: "Once there was a surplus, specialists could make more consumer goods, which raised the standard of living." },
+  { t: "domesticate", d: "To tame plants or animals so people can raise them for food or work.", why: "Domesticating plants and animals is what made farming, and settled life, possible." },
+  { t: "economic want", d: "Something people desire that makes life better or easier, beyond what they need to survive.", why: "People kept developing new tools and technologies to meet their economic wants." },
+  { t: "Fertile Crescent", d: "A curved region of rich farmland in the Middle East, along the Tigris and Euphrates rivers, where some of the first farming began.", why: "Its rivers and fertile soil made it one of the first places people settled and farmed." },
+  { t: "floodplain", d: "Flat land next to a river that floods and gets covered with rich, fertile soil (silt).", why: "Floodplains had water and fertile soil, so early farmers settled there." },
+  { t: "Homo sapiens", d: "The scientific name for modern humans, who first developed in Africa.", why: "Homo sapiens migrated out of Africa and spread across the world." },
+  { t: "human resource", d: "People and the work or labor they do.", why: "Workers were needed to farm, dig canals, and make goods." },
+  { t: "hunter-gatherer", d: "A person who gets food by hunting animals and gathering wild plants.", why: "This was how all early humans lived before farming." },
+  { t: "Ice Age", d: "A long, cold period when huge ice sheets covered much of Earth and sea levels were lower.", why: "Low seas uncovered land bridges people used to migrate. When it ended and warmed, people settled near rivers." },
+  { t: "irrigation", d: "Bringing water to crops using canals, ditches, or other systems.", why: "Irrigation let farmers control water and grow more food." },
+  { t: "migrate / migration", d: "To move from one place to settle in another.", why: "Early humans migrated out of Africa to Asia, Europe, Australia, and the Americas." },
+  { t: "natural resource", d: "Something from nature that people use, like water, fertile soil, plants, animals, and stone.", why: "Both hunter-gatherers and farmers depended on natural resources to survive." },
+  { t: "Neolithic Revolution", d: "The shift from hunting and gathering to farming and living in permanent settlements, starting about 10,000 B.C.E.", why: "It was a major turning point that led to surplus, specialization, trade, and cities." },
+  { t: "nomad / nomadic", d: "People who move from place to place instead of living in one permanent home.", why: "Nomads carried few possessions because they moved so often." },
+  { t: "opportunity cost", d: "The next best thing you give up when you make a choice.", why: "Settling down to farm cost people the freedom and mobility of nomadic life." },
+  { t: "scarcity", d: "Not having enough resources to meet everyone's needs and wants.", why: "Scarcity forces people to make choices, and every choice has an opportunity cost." },
+  { t: "social class", d: "A group of people who share a similar level of wealth, power, or status.", why: "Differences in wealth and power in bigger societies led to social classes." },
+  { t: "specialization", d: "When people focus on one kind of job or skill instead of doing everything themselves.", why: "A food surplus made specialization possible, and specialization encouraged trade." },
+  { t: "standard of living", d: "How well people's needs and wants are being met.", why: "Better tools, homes, pottery, and food supplies improved the standard of living over time." },
+  { t: "subsistence farming", d: "Growing just enough food to feed your own family, with little or nothing left over.", why: "The first farmers were subsistence farmers before better tools helped them make a surplus." },
+  { t: "surplus", d: "More than what is needed; an extra amount.", why: "A food surplus meant not everyone had to farm, so villages could grow and people could specialize." },
+  { t: "urbanization", d: "The process of villages growing into cities as more people live there.", why: "It is the last big step in the path from nomad camp to city." }
+];
+
+const QUIZ = [
+  { q: "Where did early humans first develop?", a: "Africa", w: ["Europe", "The Americas", "Australia"], why: "Early humans first developed in Africa, then migrated out over thousands of years." },
+  { q: "In what order did early humans spread out of Africa?", a: "Asia, Europe, Australia, and eventually the Americas", w: ["The Americas first, then Asia and Europe", "Australia first, then Africa", "Europe only, then they stopped"], why: "Migration was slow. The Americas were reached last." },
+  { q: "How did the Ice Age help early humans migrate?", a: "Lower sea levels uncovered land bridges people could walk across", w: ["It melted all the mountains", "It made the oceans warmer to swim in", "It stopped people from moving at all"], why: "Frozen water meant lower seas, which exposed land bridges between continents." },
+  { q: "What happened as the climate warmed after the Ice Age?", a: "Some groups settled in fertile areas near rivers and floodplains", w: ["Everyone moved back to Africa", "People stopped farming", "Rivers dried up everywhere"], why: "Food and water were easier to find near rivers, so some settlements became permanent villages." },
+  { q: "Why did nomadic hunter-gatherers have relatively few possessions?", a: "They moved often and had to carry everything with them", w: ["They were not allowed to own things", "They traded everything away", "They had lots of storage buildings"], why: "Possessions had to be useful and portable, like spears, baskets, and clothing." },
+  { q: "How did early humans adapt as they moved into new environments?", a: "They developed different tools, clothing, shelters, and hunting methods", w: ["They stayed exactly the same everywhere", "They only ate fish", "They built cities right away"], why: "What they made depended on the resources and climate of each region." },
+  { q: "About when did the Neolithic Revolution begin?", a: "Around 10,000 B.C.E.", w: ["Around 1,000 C.E.", "Around 100,000 B.C.E.", "Around 1500 C.E."], why: "It began around 10,000 B.C.E. but happened at different times in different places." },
+  { q: "Which statement about the Neolithic Revolution is TRUE?", a: "It happened slowly and unevenly, at different times around the world", w: ["It happened everywhere on the same day", "It only happened in Europe", "It turned farmers back into nomads"], why: "The change from hunting to farming was gradual and uneven." },
+  { q: "The first farmers were subsistence farmers. What does that mean?", a: "They grew just enough food for their families, with little or no surplus", w: ["They grew huge surpluses to sell", "They only raised animals", "They bought all of their food"], why: "Early farmers were not very skilled yet, so there was little left over." },
+  { q: "Which of these is a CAPITAL resource?", a: "A plow", w: ["Fertile soil", "A river", "A worker's labor"], why: "Capital resources are tools people make. Soil and rivers are natural resources; labor is a human resource." },
+  { q: "Which of these is a NATURAL resource?", a: "Fertile soil", w: ["A sickle", "An irrigation canal", "A farmer's work"], why: "Natural resources come from the environment: water, soil, plants, animals, stone." },
+  { q: "Which of these is a HUMAN resource?", a: "The work of people digging a canal", w: ["The canal itself", "The river water", "A clay pot"], why: "Human resources are workers and their labor." },
+  { q: "What was one opportunity cost of becoming a settled farmer?", a: "Giving up the freedom and mobility of nomadic life", w: ["Getting a more predictable food supply", "Getting a permanent home", "Learning new skills"], why: "The other choices are what farmers GAINED. The opportunity cost is what they gave up." },
+  { q: "Why didn't early farming make life easier right away?", a: "Farmers worked long hours, ate less varied diets, and often had poorer health", w: ["Farming required no work at all", "Farmers had too much free time", "There were no plants to grow"], why: "Over time, farming improvements helped some communities produce more food." },
+  { q: "What made a food surplus possible?", a: "Improved tools, better farming techniques, and irrigation", w: ["Moving more often", "Having fewer tools", "Hunting more animals"], why: "Hoes, sickles, plows, and canals helped farmers grow more than they needed." },
+  { q: "How did a food surplus change settlements?", a: "Not everyone had to farm, so people specialized and villages grew", w: ["Everyone had to farm even more", "Villages got smaller", "People went back to hunting"], why: "Surplus → specialization → trade → larger, more complex settlements." },
+  { q: "What did specialization encourage?", a: "Trade, as people exchanged goods and services", w: ["Everyone doing every job", "Less pottery and cloth", "People moving away from rivers"], why: "A potter trades pots to a farmer for food." },
+  { q: "Which is NOT a benefit rivers gave early farmers?", a: "Protection from ever having to work", w: ["Fresh water for crops", "Fertile soil and silt from floods", "Transportation routes for trade"], why: "Rivers also gave fish and wildlife for food." },
+  { q: "Why did leaders appear as societies grew?", a: "To organize work and big projects, resolve disputes, and manage trade", w: ["Because there was no work to do", "To make everyone nomads again", "To stop all trade"], why: "Big projects like canal systems needed someone to organize them." },
+  { q: "What contributed to the development of social classes?", a: "Differences in wealth and power", w: ["Everyone having exactly the same things", "Living as nomads", "Having no surplus"], why: "Hunter-gatherer societies had few wealth differences; settled societies had more." },
+  { q: "What is urbanization?", a: "Villages growing into cities", w: ["People moving back to caves", "Farming by hand", "Taming wild animals"], why: "Urbanization is the final step in the journey from camp to city." },
+  { q: "Which change IMPROVED people's standard of living over time?", a: "Better tools, clothing, homes, and pottery", w: ["Carrying fewer possessions", "Eating a less varied diet", "Having no surplus"], why: "Standard of living is how well people's needs and wants are met." },
+  { q: "Which is an example of scarcity?", a: "A dry year when there isn't enough water for everyone's crops", w: ["A village with extra grain stored", "A potter making lots of pots", "A river flooding and leaving silt"], why: "Scarcity means not enough resources to meet everyone's wants and needs." },
+  { q: "Both hunter-gatherers and farmers used resources to meet their...", a: "Needs and wants", w: ["Taxes", "Laws only", "Holidays"], why: "Natural, human, and capital resources all help meet needs and wants." }
+];
+
+const GRAPES_CATS = {
+  G: { name: "Geography", say: "Land, water, climate, location, and how people interact with them" },
+  R: { name: "Religion", say: "Beliefs, gods or spirits, rituals, and burials" },
+  A: { name: "Achievements", say: "Inventions, technology, art, and building projects" },
+  P: { name: "Politics", say: "Leaders, government, rules, laws, and decisions" },
+  E: { name: "Economics", say: "Jobs, resources, food supply, surplus, and trade" },
+  S: { name: "Social", say: "Families, groups, social classes, and daily life" }
+};
+const GRAPES_FACTS = [
+  { f: "Villages were built near rivers and floodplains with fertile soil.", c: "G", why: "Rivers, soil, and location are geography." },
+  { f: "Early humans migrated out of Africa into Asia, Europe, Australia, and the Americas.", c: "G", why: "Where people moved on the map is geography." },
+  { f: "The Ice Age lowered sea levels and uncovered land bridges.", c: "G", why: "Climate and land features are geography." },
+  { f: "The Fertile Crescent had rich farmland between two rivers.", c: "G", why: "A region and its land is geography." },
+  { f: "Early people buried their dead with tools, beads, or food.", c: "R", why: "Burial customs show beliefs about death and an afterlife." },
+  { f: "Some villages built shrines to honor spirits or gods.", c: "R", why: "Places of worship are religion." },
+  { f: "People believed spirits lived in animals, rivers, and nature.", c: "R", why: "Beliefs about spirits are religion." },
+  { f: "Farmers invented the plow and the sickle.", c: "A", why: "New tools and inventions are achievements." },
+  { f: "People built irrigation canals to carry river water to crops.", c: "A", why: "Big building projects and technology are achievements." },
+  { f: "Early humans painted animals on cave walls.", c: "A", why: "Art is an achievement." },
+  { f: "Potters learned to make clay pots to store grain.", c: "A", why: "A new technology is an achievement." },
+  { f: "Leaders organized workers to maintain canal systems.", c: "P", why: "Leaders making decisions is politics." },
+  { f: "Leaders settled disputes between villagers.", c: "P", why: "Resolving disputes is a job of government." },
+  { f: "Villages made rules about sharing river water.", c: "P", why: "Rules and laws are politics." },
+  { f: "Farmers grew a surplus of food.", c: "E", why: "Food supply and surplus are economics." },
+  { f: "A potter traded pots to a farmer in exchange for grain.", c: "E", why: "Trade is economics." },
+  { f: "Some people specialized as toolmakers instead of farming.", c: "E", why: "Jobs and specialization are economics." },
+  { f: "Settling down cost people the freedom of nomadic life (opportunity cost).", c: "E", why: "Opportunity cost is an economic idea." },
+  { f: "Subsistence farmers grew only enough food for their own families.", c: "E", why: "How people make a living is economics." },
+  { f: "Hunter-gatherers lived and traveled in small family groups.", c: "S", why: "How people are organized into groups is social." },
+  { f: "Differences in wealth and power created social classes.", c: "S", why: "Social classes are social." },
+  { f: "Hunter-gatherer societies had few differences in wealth between people.", c: "S", why: "How equal people are to each other is social." },
+  { f: "Families began living together year-round in permanent houses.", c: "S", why: "Daily life and family life are social." }
+];
+const GRAPES_DEF_QS = Object.entries(GRAPES_CATS).map(([k, v]) => ({ f: "Which GRAPES category is about: " + v.say.toLowerCase() + "?", c: k, why: k + " stands for " + v.name + "." }));
+
+const TIMELINE = [
+  "Early humans (Homo sapiens) first develop in Africa.",
+  "Nomadic hunter-gatherers move from place to place to hunt animals and gather plants.",
+  "Groups migrate out of Africa into Asia, Europe, Australia, and eventually the Americas.",
+  "The Ice Age ends and the climate warms.",
+  "Some groups settle in fertile areas near rivers and floodplains.",
+  "People experiment with planting seeds and domesticating animals.",
+  "The Neolithic Revolution: people shift to farming and permanent settlements (about 10,000 B.C.E.).",
+  "The first farmers are subsistence farmers with little or no surplus.",
+  "Better capital resources appear: hoes, sickles, plows, and irrigation canals.",
+  "Farmers produce a food surplus, and populations grow.",
+  "Specialization: some people make pottery, tools, or cloth instead of farming.",
+  "Trade grows as people exchange goods and services.",
+  "Leaders appear to organize work, and social classes form.",
+  "Some villages grow into cities (urbanization)."
+];
+
+const FOCUS = [
+  { q: "Where did early humans first develop, and where did they migrate?", a: ["Early humans first developed in Africa.", "Over thousands of years they slowly migrated into Asia, Europe, Australia, and eventually the Americas."] },
+  { q: "How did the Ice Age affect early human migration?", a: ["Ice sheets held so much water that sea levels dropped, uncovering land bridges people could walk across to new continents.", "The cold forced people to adapt with warm clothing, shelters, and new tools.", "When the Ice Age ended and the climate warmed, some groups settled near rivers where food and water were easier to find."] },
+  { q: "How was the lifestyle of a nomadic hunter-gatherer different from a settled farmer?", a: ["Nomads moved often, hunted and gathered, and carried only a few useful, portable possessions. There were few differences in wealth.", "Farmers lived in permanent villages, grew crops, and raised animals. They had a more predictable food supply and more possessions.", "Early farmers often worked longer hours and had less varied diets at first."] },
+  { q: "What was the Neolithic Revolution, and why was it an important turning point?", a: ["It was the shift from hunting and gathering to farming and permanent settlements, beginning around 10,000 B.C.E. It happened slowly and at different times in different places.", "It was important because farming led to surplus food, specialization, trade, leaders, social classes, and eventually cities."] },
+  { q: "How did early farmers begin to grow a surplus? What resources were important?", a: ["Natural resources: fresh river water and fertile soil from floodplains.", "Capital resources: better tools like hoes, sickles, and plows, plus irrigation canals.", "Human resources: the workers who farmed and built canals.", "Better techniques and irrigation let farmers grow more than they needed."] },
+  { q: "How did a food surplus help settlements grow into larger, more complex communities?", a: ["With extra food, not everyone had to farm, so people could specialize in jobs like pottery, toolmaking, or weaving.", "Specialists traded goods and services with farmers.", "Populations grew, leaders appeared to organize work and settle disputes, and social classes formed.", "Some villages grew into cities (urbanization)."] },
+  { q: "What is specialization, and why is it important?", a: ["Specialization means focusing on one job or skill instead of doing everything yourself.", "It lets people get very good at their work, encourages trade, and produces more goods and new technologies, which improves the standard of living."] },
+  { q: "How can economic wants, consumer goods, standard of living, natural resources, capital resources, human resources, and opportunity cost explain why some early humans settled in permanent communities?", a: ["Economic wants: people wanted a more predictable food supply and a better life.", "Natural resources near rivers (water, fertile soil) made farming possible.", "Capital resources (tools, canals) and human resources (workers) helped them grow a surplus.", "The surplus let people make more consumer goods like pottery, cloth, and homes, which raised the standard of living.", "Opportunity cost: they gave up the freedom and mobility of nomadic life in exchange for permanent homes and steadier food."] }
+];
+
+/* ---------- Journey ---------- */
+const STAGES = [
+  { at: 0, name: "Nomad Camp" },
+  { at: 15, name: "Farming Village" },
+  { at: 40, name: "Surplus Town" },
+  { at: 70, name: "Trading Town" },
+  { at: 110, name: "City!" }
+];
+const STORE_KEY = "camp-to-city-v1";
+let points = 0;
+try { points = parseInt(localStorage.getItem(STORE_KEY) || "0", 10) || 0; } catch (e) {}
+if (window.claude?.hot?.data?.points) points = window.claude.hot.data.points;
+window.claude?.hot?.snapshot?.(() => ({ points }));
+
+function save() { try { localStorage.setItem(STORE_KEY, String(points)); } catch (e) {} }
+function renderJourney() {
+  const max = STAGES[STAGES.length - 1].at;
+  let idx = 0;
+  STAGES.forEach((s, i) => { if (points >= s.at) idx = i; });
+  document.getElementById("stage-name").textContent = STAGES[idx].name;
+  const next = STAGES[idx + 1];
+  document.getElementById("points").textContent = points + " correct" + (next ? " · " + (next.at - points) + " more to " + next.name.replace("!", "") : " · You built a city!");
+  document.getElementById("track-fill").style.width = Math.min(100, points / max * 100) + "%";
+  document.getElementById("stops").innerHTML = STAGES.map((s, i) => `<span class="${i <= idx ? "reached" : ""}">${s.name.replace(" ", "<br>")}</span>`).join("");
+}
+function addPoint() { points++; save(); renderJourney(); }
+
+/* ---------- Helpers ---------- */
+const $screen = document.getElementById("screen");
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let keyHandler = null;
+document.addEventListener("keydown", e => { if (keyHandler) keyHandler(e); });
+
+/* ---------- Question builders ---------- */
+function vocabQuestion(v) {
+  const others = shuffle(VOCAB.filter(x => x !== v)).slice(0, 3);
+  if (Math.random() < 0.5) {
+    return { kind: "mc", tag: "Vocabulary", prompt: `Which word matches this definition?<br><span style="font-weight:400">${esc(v.d)}</span>`, a: v.t, w: others.map(o => o.t), why: `<b>${esc(v.t)}:</b> ${esc(v.d)} <br><i>Why it matters:</i> ${esc(v.why)}` };
+  }
+  return { kind: "mc", tag: "Vocabulary", prompt: `What does <span class="term">${esc(v.t)}</span> mean?`, a: v.d, w: others.map(o => o.d), why: `<i>Why it matters:</i> ${esc(v.why)}` };
+}
+function quizQuestion(q) { return { kind: "mc", tag: "Big Ideas", prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) }; }
+function grapesQuestion(g) { return { kind: "grapes", tag: "GRAPES", prompt: g.f, a: g.c, why: g.why }; }
+
+const MODES = {
+  vocab: { title: "Vocabulary", build: () => shuffle(VOCAB).slice(0, 12).map(vocabQuestion) },
+  quiz: { title: "Big Ideas & Economics", build: () => shuffle(QUIZ).slice(0, 12).map(quizQuestion) },
+  grapes: { title: "GRAPES Sort", build: () => [...shuffle(GRAPES_DEF_QS).slice(0, 3), ...shuffle(GRAPES_FACTS).slice(0, 10)].map(grapesQuestion) },
+  test: { title: "Practice Test", build: () => shuffle([
+    ...shuffle(VOCAB).slice(0, 8).map(vocabQuestion),
+    ...shuffle(QUIZ).slice(0, 8).map(quizQuestion),
+    ...shuffle(GRAPES_FACTS).slice(0, 4).map(grapesQuestion)
+  ]) }
+};
+
+/* ---------- Menu ---------- */
+function showMenu() {
+  keyHandler = null;
+  $screen.innerHTML = `
+    <div class="card">
+      <h2>Pick a challenge</h2>
+      <div class="modes">
+        <button class="mode feature" data-mode="test"><span class="tag">Test tomorrow</span><h3>Practice Test</h3><p>20 mixed questions from the whole study guide, like the real thing.</p></button>
+        <button class="mode" data-mode="vocab"><span class="tag">24 words</span><h3>Vocabulary</h3><p>Match words and definitions, and learn why each one matters.</p></button>
+        <button class="mode" data-mode="quiz"><span class="tag">Economics</span><h3>Big Ideas</h3><p>Key changes, resources, surplus, and opportunity cost.</p></button>
+        <button class="mode" data-mode="grapes"><span class="tag">G·R·A·P·E·S</span><h3>GRAPES Sort</h3><p>Decide which category each fact belongs in.</p></button>
+        <button class="mode" data-mode="timeline"><span class="tag">14 events</span><h3>Timeline</h3><p>Put the journey from Africa to cities in the right order.</p></button>
+        <button class="mode" data-mode="focus"><span class="tag">8 questions</span><h3>Focus Questions</h3><p>Say your answer out loud, then check it against the model answer.</p></button>
+      </div>
+      <details>
+        <summary>Quick review: what GRAPES stands for</summary>
+        <div class="legend">${Object.entries(GRAPES_CATS).map(([k, v]) => `<div><b>${k}</b> ${v.name}: ${v.say.toLowerCase()}</div>`).join("")}</div>
+      </details>
+    </div>`;
+  $screen.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => {
+    const m = b.dataset.mode;
+    if (m === "timeline") startTimeline();
+    else if (m === "focus") startFocus();
+    else startRound(m);
+  }));
+}
+
+/* ---------- Multiple-choice / GRAPES round ---------- */
+function startRound(mode) {
+  const qs = MODES[mode].build();
+  const state = { mode, qs, i: 0, right: 0, missed: [] };
+  showQuestion(state);
+}
+
+function showQuestion(st) {
+  const q = st.qs[st.i];
+  const head = `
+    <div class="qhead"><span class="pill">${q.tag}</span><span>Question ${st.i + 1} of ${st.qs.length} · ${st.right} right</span></div>
+    <div class="progress"><div style="width:${st.i / st.qs.length * 100}%"></div></div>`;
+  let body;
+  if (q.kind === "mc") {
+    const opts = shuffle([q.a, ...q.w]);
+    q._opts = opts;
+    body = `<p class="prompt">${q.prompt}</p>
+      <div class="answers">${opts.map((o, n) => `<button class="ans" data-n="${n}"><span class="k">${n + 1}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
+  } else {
+    body = `<p class="prompt">Which GRAPES category does this belong in?</p>
+      <div class="fact">${esc(q.prompt)}</div>
+      <div class="grapes">${Object.entries(GRAPES_CATS).map(([k, v]) => `<button class="grape" data-k="${k}"><b>${k}</b><span>${v.name}</span></button>`).join("")}</div>`;
+  }
+  $screen.innerHTML = `<div class="card">${head}${body}<div id="fb"></div></div>`;
+
+  const answer = (picked, btn) => {
+    const ok = picked === q.a;
+    if (ok) { st.right++; addPoint(); }
+    else st.missed.push(q);
+    $screen.querySelectorAll(".ans, .grape").forEach(b => {
+      b.disabled = true;
+      const val = q.kind === "mc" ? q._opts[+b.dataset.n] : b.dataset.k;
+      if (val === q.a) b.classList.add("right");
+      else if (b === btn) b.classList.add("wrong");
+      else if (q.kind === "mc") b.classList.add("dim");
+    });
+    const correctLabel = q.kind === "mc" ? "" : `The answer is <b>${q.a} = ${GRAPES_CATS[q.a].name}</b>. `;
+    const last = st.i === st.qs.length - 1;
+    document.getElementById("fb").innerHTML = `
+      <div class="feedback ${ok ? "good" : "bad"}">
+        <strong>${ok ? pickCheer() : "Not quite."}</strong>
+        <p>${ok ? "" : correctLabel}${q.why}</p>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="next">${last ? "See results" : "Next question"}</button></div>`;
+    const next = document.getElementById("next");
+    next.focus();
+    next.addEventListener("click", () => { st.i++; st.i < st.qs.length ? showQuestion(st) : showResults(st); });
+    keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); next.click(); } };
+  };
+
+  $screen.querySelectorAll(".ans").forEach(b => b.addEventListener("click", () => answer(q._opts[+b.dataset.n], b)));
+  $screen.querySelectorAll(".grape").forEach(b => b.addEventListener("click", () => answer(b.dataset.k, b)));
+  keyHandler = e => {
+    if (q.kind === "mc" && /^[1-4]$/.test(e.key)) { const b = $screen.querySelector(`.ans[data-n="${+e.key - 1}"]`); if (b && !b.disabled) b.click(); }
+    if (q.kind === "grapes") { const b = $screen.querySelector(`.grape[data-k="${e.key.toUpperCase()}"]`); if (b && !b.disabled) b.click(); }
+  };
+}
+
+const CHEERS = ["Correct!", "Nice work!", "You got it!", "Exactly right!", "Great job!", "Nailed it!"];
+const pickCheer = () => CHEERS[Math.floor(Math.random() * CHEERS.length)];
+
+function showResults(st) {
+  keyHandler = null;
+  const pct = Math.round(st.right / st.qs.length * 100);
+  const msg = pct >= 90 ? "Ready for the test! Your village is thriving." : pct >= 75 ? "Strong work. Review the ones below and try again." : pct >= 50 ? "Getting there. Study the ones you missed, then play again." : "Keep practicing. Read the missed answers below carefully.";
+  const missed = st.missed.map(q => {
+    if (q.kind === "grapes") return `<div class="miss"><b>${esc(q.prompt)}</b>Answer: ${q.a} = ${GRAPES_CATS[q.a].name}</div>`;
+    return `<div class="miss"><b>${q.prompt.replace(/<br>/g, " ")}</b>Answer: ${esc(q.a)}</div>`;
+  }).join("");
+  $screen.innerHTML = `
+    <div class="card">
+      <span class="pill">${MODES[st.mode].title}</span>
+      <div class="big">${st.right} / ${st.qs.length}</div>
+      <p>${msg}</p>
+      ${st.missed.length ? `<h3>Review what you missed</h3><div class="missed">${missed}</div>` : `<p><b>Perfect round. No mistakes!</b></p>`}
+      <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="menu">Choose another game</button></div>
+    </div>`;
+  document.getElementById("again").addEventListener("click", () => startRound(st.mode));
+  document.getElementById("menu").addEventListener("click", showMenu);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- Timeline ---------- */
+function startTimeline() {
+  keyHandler = null;
+  const st = { next: 0, mistakes: 0, missesHere: 0, pool: shuffle(TIMELINE.map((t, i) => ({ t, i }))) };
+  const render = () => {
+    if (st.next === TIMELINE.length) return timelineDone(st);
+    $screen.innerHTML = `
+      <div class="card">
+        <div class="qhead"><span class="pill">Timeline</span><span>${st.next} of ${TIMELINE.length} placed · ${st.mistakes} mistakes</span></div>
+        <div class="progress"><div style="width:${st.next / TIMELINE.length * 100}%"></div></div>
+        <p class="prompt">${st.next === 0 ? "What happened first?" : "What happened next?"}</p>
+        ${st.next ? `<ol class="placed">${TIMELINE.slice(0, st.next).map((t, i) => `<li><b>${i + 1}.</b><span>${esc(t)}</span></li>`).join("")}</ol>` : ""}
+        <div class="pool">${st.pool.map(p => `<button data-i="${p.i}" class="${st.missesHere >= 2 && p.i === st.next ? "hint" : ""}">${esc(p.t)}</button>`).join("")}</div>
+        ${st.missesHere >= 2 ? `<p class="sub">Hint: the highlighted card comes next.</p>` : ""}
+      </div>`;
+    $screen.querySelectorAll(".pool button").forEach(b => b.addEventListener("click", () => {
+      const i = +b.dataset.i;
+      if (i === st.next) {
+        if (st.missesHere === 0) addPoint();
+        st.pool = st.pool.filter(p => p.i !== i);
+        st.next++; st.missesHere = 0;
+        render();
+      } else {
+        st.mistakes++; st.missesHere++;
+        b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+        if (st.missesHere === 2) render();
+        else document.querySelector(".qhead span:last-child").textContent = `${st.next} of ${TIMELINE.length} placed · ${st.mistakes} mistakes`;
+      }
+    }));
+  };
+  render();
+}
+function timelineDone(st) {
+  $screen.innerHTML = `
+    <div class="card">
+      <span class="pill">Timeline complete</span>
+      <div class="big">${st.mistakes} ${st.mistakes === 1 ? "mistake" : "mistakes"}</div>
+      <p>${st.mistakes === 0 ? "Perfect order! You know how the story goes." : st.mistakes <= 4 ? "Nice job. Read the full order once more, then try for zero mistakes." : "Read through the order below, then try again."}</p>
+      <ol class="placed">${TIMELINE.map((t, i) => `<li><b>${i + 1}.</b><span>${esc(t)}</span></li>`).join("")}</ol>
+      <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="menu">Choose another game</button></div>
+    </div>`;
+  document.getElementById("again").addEventListener("click", startTimeline);
+  document.getElementById("menu").addEventListener("click", showMenu);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- Focus question flashcards ---------- */
+function startFocus() {
+  const st = { i: 0, got: 0, practice: [] };
+  const render = () => {
+    if (st.i === FOCUS.length) return focusDone(st);
+    const f = FOCUS[st.i];
+    $screen.innerHTML = `
+      <div class="card">
+        <div class="qhead"><span class="pill">Focus Question ${st.i + 1}</span><span>${st.i + 1} of ${FOCUS.length}</span></div>
+        <div class="progress"><div style="width:${st.i / FOCUS.length * 100}%"></div></div>
+        <div class="flash">
+          <p class="prompt">${esc(f.q)}</p>
+          <p class="sub" id="say">Say your answer out loud (or tell a parent), then check it.</p>
+          <div id="ans" hidden><h3>A strong answer includes:</h3><ul>${f.a.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+        </div>
+        <div class="row" id="ctl"><button class="btn wheat" id="show">Show answer</button></div>
+      </div>`;
+    const show = document.getElementById("show");
+    show.focus();
+    show.addEventListener("click", () => {
+      document.getElementById("ans").hidden = false;
+      document.getElementById("say").hidden = true;
+      document.getElementById("ctl").innerHTML = `<button class="btn good" id="got">I got it</button><button class="btn bad" id="more">I need more practice</button>`;
+      document.getElementById("got").addEventListener("click", () => { st.got++; addPoint(); st.i++; render(); });
+      document.getElementById("more").addEventListener("click", () => { st.practice.push(f); st.i++; render(); });
+    });
+    keyHandler = null;
+  };
+  render();
+}
+function focusDone(st) {
+  $screen.innerHTML = `
+    <div class="card">
+      <span class="pill">Focus Questions</span>
+      <div class="big">${st.got} / ${FOCUS.length}</div>
+      <p>${st.practice.length ? "Study these again. Try writing each answer in your own words:" : "You can answer every focus question. Great preparation!"}</p>
+      ${st.practice.length ? `<div class="missed">${st.practice.map(f => `<div class="miss"><b>${esc(f.q)}</b>${f.a.map(esc).join(" ")}</div>`).join("")}</div>` : ""}
+      <div class="row"><button class="btn" id="again">Go through them again</button><button class="btn ghost" id="menu">Choose another game</button></div>
+    </div>`;
+  document.getElementById("again").addEventListener("click", startFocus);
+  document.getElementById("menu").addEventListener("click", showMenu);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- Reset (two-tap confirm, since confirm() is unavailable) ---------- */
+const resetBtn = document.getElementById("reset");
+let resetArmed = false;
+resetBtn.addEventListener("click", () => {
+  if (!resetArmed) { resetArmed = true; resetBtn.textContent = "Tap again to reset your progress"; setTimeout(() => { resetArmed = false; resetBtn.textContent = "Start the journey over"; }, 3000); return; }
+  points = 0; save(); renderJourney(); resetArmed = false; resetBtn.textContent = "Start the journey over"; showMenu();
+});
+
+renderJourney();
+showMenu();
+</script>
