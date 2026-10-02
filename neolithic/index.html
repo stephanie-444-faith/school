@@ -579,12 +579,54 @@ const MATH_GENS = [
     const w = [`${a + b}/${d + d}`, fracStr(a + b + 1, d), `${a * b}/${d}`].filter(v => v !== ans);
     return { p: `${a}/${d} + ${b}/${d} = ? (simplify)`, a: ans, w: [...new Set(w)].slice(0, 3), why: `Same denominator: add the tops. ${a + b}/${d} simplifies to ${ans}.` };
   },
-  () => { const g = rnd(2, 6), a = rnd(1, 5), b = rnd(1, 5) + (a === 1 ? 1 : 0); const k = gcd(a, b); const ans = `${a / k}:${b / k}`; return { p: `Simplify the ratio ${a * g}:${b * g}`, a: ans, w: [`${b / k}:${a / k}`, `${a * g}:${b}`, `${a / k + 1}:${b / k}`].filter(v => v !== ans), why: `Divide both numbers by ${g * k}: ${ans}.` }; }
+  () => { const g = rnd(2, 6), a = rnd(1, 5); let b = rnd(1, 5); if (b === a) b = a === 5 ? 4 : a + 1; const k = gcd(a, b); const ans = `${a / k}:${b / k}`; return { p: `Simplify the ratio ${a * g}:${b * g}`, a: ans, w: [`${b / k}:${a / k}`, `${a * g}:${b}`, `${a / k + 1}:${b / k}`, `${a / k}:${b / k + 1}`, `${a * g}:${b * g + 1}`].filter((v, i, arr) => v !== ans && arr.indexOf(v) === i), why: `Divide both numbers by ${g * k}: ${ans}.` }; }
+];
+/* Hard math: multi-digit multiplication and division, long multiplication and division, decimals, and fractions. */
+const fix2 = v => parseFloat(v.toFixed(2));
+const lcm = (a, b) => a / gcd(a, b) * b;
+const MATH_HARD_GENS = [
+  () => { const a = rnd(12, 99), b = rnd(3, 9); return { tag: "Multiplication", p: `${a} × ${b} = ?`, a: a * b, x: [a * b + 10, a * b - b, (a + 1) * b], why: `${a} × ${b}: ${Math.floor(a / 10) * 10} × ${b} = ${Math.floor(a / 10) * 10 * b}, plus ${a % 10} × ${b} = ${a % 10 * b}. Total ${a * b}.` }; },
+  () => { const a = rnd(13, 49), b = rnd(12, 29); return { tag: "Multiplication", p: `${a} × ${b} = ?`, a: a * b, x: [a * b + 10, a * (b % 10) + a * Math.floor(b / 10), a * b - a], why: `${a} × ${b % 10} = ${a * (b % 10)} and ${a} × ${Math.floor(b / 10) * 10} = ${a * Math.floor(b / 10) * 10}. Add them: ${a * b}.` }; },
+  () => { const b = rnd(3, 12), q = rnd(12, 99); return { tag: "Division", p: `${b * q} ÷ ${b} = ?`, a: q, x: [q + 1, q - 1, q + 10], why: `${b} × ${q} = ${b * q}, so ${b * q} ÷ ${b} = ${q}.` }; },
+  () => {
+    const a = rnd(101, 999), b = rnd(11, 99), ones = b % 10, tens = Math.floor(b / 10);
+    return { tag: "Long multiplication", p: `${a} × ${b} = ?`, a: a * b, x: [a * ones + a * tens, a * b + 100, a * b - 10 * a], why: `${a} × ${ones} = ${a * ones}. ${a} × ${tens * 10} = ${a * tens * 10} (don't forget the zero!). Add: ${a * b}.` };
+  },
+  () => { const d = rnd(11, 25), q = rnd(12, 99); return { tag: "Long division", p: `${d * q} ÷ ${d} = ?`, a: q, x: [q + 1, q - 1, q + 10, q - 10], why: `Check by multiplying: ${d} × ${q} = ${d * q}.` }; },
+  () => {
+    const d = rnd(3, 9), q = rnd(100, 999), r = rnd(1, d - 1), n = d * q + r, ans = `${q} R${r}`;
+    return { tag: "Long division", p: `${n} ÷ ${d} = ? (with remainder)`, a: ans, w: [`${q} R${r === 1 ? 2 : r - 1}`, `${q + 1} R${r}`, `${q - 10} R${r}`].filter(v => v !== ans), why: `${d} × ${q} = ${d * q}, and ${n} − ${d * q} = ${r} left over. So the answer is ${q} R${r}.` };
+  },
+  () => { const a = rnd(100, 9999) / 100, b = rnd(1, 999) / 10, s = fix2(a + b); return { tag: "Adding decimals", p: `${a} + ${b} = ?`, a: s, x: [fix2(a + b / 10), fix2(s + .1), fix2(s - 1), fix2(s + .01)], why: `Line up the decimal points: ${a.toFixed(2)} + ${b.toFixed(2)} = ${s}.` }; },
+  () => { const a = rnd(11, 99) / 10, b = rnd(2, 9), s = fix2(a * b); return { tag: "Multiplying decimals", p: `${a} × ${b} = ?`, a: s, x: [fix2(s * 10), fix2(s / 10), fix2(s + 1)], why: `${a * 10} × ${b} = ${fix2(a * 10 * b)}. ${a} has 1 decimal place, so the answer has 1: ${s}.` }; },
+  () => { const a = rnd(11, 49) / 10, b = rnd(11, 49) / 10, s = fix2(a * b); return { tag: "Multiplying decimals", p: `${a} × ${b} = ?`, a: s, x: [fix2(s * 10), fix2(s / 10), fix2(s + .1)], why: `${Math.round(a * 10)} × ${Math.round(b * 10)} = ${Math.round(a * 10) * Math.round(b * 10)}. There are 2 decimal places in all, so the answer is ${s}.` }; },
+  () => {
+    const ds = [2, 3, 4, 5, 6, 8, 10, 12], d1 = ds[rnd(0, 7)], d2 = ds.filter(x => x !== d1)[rnd(0, 6)], n1 = rnd(1, d1 - 1), n2 = rnd(1, d2 - 1), L = lcm(d1, d2);
+    const top = n1 * L / d1 + n2 * L / d2, ans = fracStr(top, L);
+    return { tag: "Adding fractions", p: `${n1}/${d1} + ${n2}/${d2} = ? (simplify)`, a: ans, w: [`${n1 + n2}/${d1 + d2}`, fracStr(top + 1, L), `${n1 + n2}/${L}`].filter(v => v !== ans), why: `Common denominator ${L}: ${n1 * L / d1}/${L} + ${n2 * L / d2}/${L} = ${top}/${L}, which simplifies to ${ans}.` };
+  },
+  () => {
+    const n1 = rnd(1, 7), d1 = rnd(n1 + 1, 9), n2 = rnd(1, 7), d2 = rnd(n2 + 1, 9), ans = fracStr(n1 * n2, d1 * d2);
+    return { tag: "Multiplying fractions", p: `${n1}/${d1} × ${n2}/${d2} = ? (simplify)`, a: ans, w: [fracStr(n1 * d2, d1 * n2), `${n1 + n2}/${d1 + d2}`, fracStr(n1 * n2, d1 + d2)].filter(v => v !== ans), why: `Multiply the tops (${n1 * n2}) and the bottoms (${d1 * d2}): ${n1 * n2}/${d1 * d2} = ${ans}.` };
+  },
+  () => {
+    const d = [3, 4, 5, 6, 8][rnd(0, 4)], n = rnd(1, d - 1), w = rnd(2, 12), ans = fracStr(n * w, d);
+    return { tag: "Multiplying fractions", p: `${n}/${d} × ${w} = ? (simplify)`, a: ans, w: [fracStr(n, d * w), `${n * w}/${d * w}`, fracStr(n * w + 1, d)].filter(v => v !== ans), why: `Multiply the top by ${w}: ${n * w}/${d} = ${ans}.` };
+  }
 ];
 function mathQuestion(gen) {
   const m = gen();
-  const w = m.w || numChoices(m.a, m.x || []);
-  return { kind: "mc", tag: "Math", prompt: esc(m.p), a: String(m.a), w: [...new Set(w.map(String))].filter(v => v !== String(m.a)).slice(0, 3), why: esc(m.why) };
+  const a = String(m.a);
+  const w = [...new Set((m.w || numChoices(m.a, m.x || [])).map(String))].filter(v => v !== a);
+  // Top up to 3 wrong choices if some were duplicates (fractions can collide after simplifying).
+  if (a.includes("/") || /^\d+$/.test(a)) {
+    const [n, d] = a.includes("/") ? a.split("/").map(Number) : [Number(a), 1];
+    for (const c of [`${n + 1}/${d}`, `${n}/${d + 1}`, `${n + 2}/${d}`, `${n * 2}/${d}`, `${n}/${d * 2}`]) {
+      if (w.length >= 3) break;
+      if (c !== a && !w.includes(c)) w.push(c);
+    }
+  }
+  return { kind: "mc", tag: m.tag ? "Math · " + m.tag : "Math", prompt: esc(m.p), a, w: w.slice(0, 3), why: esc(m.why) };
 }
 const bankQuestion = tag => q => ({ kind: "mc", tag, prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) });
 const SUBJECTS = {
@@ -667,14 +709,19 @@ function sourceFor(set) {
   const q = QUIZ.map(x => () => quizQuestion(x));
   const g = [...GRAPES_FACTS, ...GRAPES_DEF_QS].map(x => () => grapesQuestion(x));
   const math = [...MATH_GENS, ...MATH_GENS].map(gen => () => mathQuestion(gen));
+  const mathhard = [...MATH_HARD_GENS, ...MATH_HARD_GENS].map(gen => () => mathQuestion(gen));
   const sci = SCIENCE.map(x => () => bankQuestion("Science")(x));
   const health = HEALTH.map(x => () => bankQuestion("Health")(x));
   const ela = ELA.map(x => () => bankQuestion("Reading & Writing")(x));
   const art = ART.map(x => () => bankQuestion("Art")(x));
-  return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, science: sci, health, ela, art,
-    mix: [...v, ...q, ...g, ...math, ...sci, ...health, ...ela, ...art] }[set];
+  return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, mathhard, science: sci, health, ela, art,
+    mix: [...v, ...q, ...g, ...math, ...mathhard, ...sci, ...health, ...ela, ...art] }[set];
 }
-const currentSet = () => choice.subject === "ss" ? choice.set : choice.subject;
+const currentSet = () => choice.subject === "ss" ? choice.set : choice.subject === "math" && choice.mlevel === "hard" ? "mathhard" : choice.subject;
+const MATH_LEVELS = {
+  easy: { name: "Easy", desc: "Times tables, negatives, equations, percents, area" },
+  hard: { name: "Hard", desc: "Long multiplication and division, decimals, fractions" }
+};
 function makeDeck(set) {
   const src = sourceFor(set);
   const deck = { queue: shuffle(src) };
@@ -685,7 +732,8 @@ function makeDeck(set) {
 }
 
 /* ---------- Home ---------- */
-let choice = { subject: store.get("subject", "ss"), set: store.get("set", "all"), goal: store.get("goal", "r10k") };
+let choice = { subject: store.get("subject", "ss"), set: store.get("set", "all"), mlevel: store.get("mlevel", "easy"), goal: store.get("goal", "r10k") };
+if (!["easy", "hard"].includes(choice.mlevel)) choice.mlevel = "easy";
 if (!SUBJECTS[choice.subject]) choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
@@ -725,6 +773,7 @@ function showHome() {
     <div class="panel">
       <span class="label">Tap a subject to start studying</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
+      <span class="label">Math level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
     <div class="panel create-card">
@@ -746,6 +795,10 @@ function showHome() {
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     choice.subject = b.dataset.subject; store.set("subject", choice.subject);
     if (choice.subject === "ss") { choice.set = "all"; store.set("set", "all"); }
+    startStudy();
+  }));
+  $app.querySelectorAll("[data-mlevel]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = "math"; choice.mlevel = b.dataset.mlevel; store.set("subject", "math"); store.set("mlevel", choice.mlevel);
     startStudy();
   }));
   $app.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => {
@@ -2234,6 +2287,7 @@ function startStack() {
 /* ---------- Study mode: a plain 10-question practice round ---------- */
 const STUDY_LEN = 10;
 function studyTitle() {
+  if (choice.subject === "math") return `Math · ${MATH_LEVELS[choice.mlevel].name}`;
   return choice.subject === "ss" ? `Social Studies · ${SETS[choice.set].name}` : SUBJECTS[choice.subject].name;
 }
 function startStudy() {
