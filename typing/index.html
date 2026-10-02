@@ -134,11 +134,11 @@
     background: linear-gradient(var(--grass), var(--grass-dark));
     border-top: 6px solid #8fd57d;
   }
-  .biscuit {
+  .franklin {
     position: absolute; bottom: 26px; width: 96px; height: 96px; margin-left: -48px;
     left: 50%; transition: left 0.35s cubic-bezier(.3,1.4,.6,1); z-index: 3; pointer-events: none;
   }
-  .biscuit.jump { animation: jump 0.4s ease-out; }
+  .franklin.jump { animation: jump 0.4s ease-out; }
   @keyframes jump { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-26px); } }
 
   .drop {
@@ -215,6 +215,63 @@
   .k-thumb { --c: var(--f-thumb); }
   .finger-note { text-align: center; color: var(--ink-soft); font-size: 0.9rem; margin: 8px 0 0; }
 
+  /* ---------- Players ---------- */
+  .who { margin: 0 auto 18px; }
+  .who-label { margin: 0 0 8px; font-weight: 700; font-size: 1.15rem; }
+  .players { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .player {
+    display: flex; align-items: center; gap: 10px; min-width: 190px;
+    font-family: inherit; color: var(--ink); text-align: left;
+    background: #fff6e8; border: 3px solid #f0dcc0; border-radius: 22px; padding: 10px 16px; cursor: pointer;
+  }
+  .player[aria-pressed="true"] { border-color: var(--orange); background: #ffe8d3; box-shadow: 0 5px 0 var(--orange-dark); }
+  .player-name { display: block; font-weight: 700; font-size: 1.2rem; }
+  .player-grade { display: block; font-size: 0.9rem; color: var(--ink-soft); }
+  .avatar {
+    flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+    color: #fff; font-weight: 700; font-size: 1.4rem; background: var(--av, var(--orange));
+  }
+  .av-dakota { --av: #d9579b; }
+  .av-emmett { --av: #3f7fd1; }
+  .player-chip {
+    display: flex; align-items: center; gap: 8px; background: var(--card); border-radius: 999px;
+    padding: 4px 14px 4px 4px; font-weight: 600; box-shadow: 0 4px 0 rgba(139, 90, 43, 0.15);
+  }
+  .player-chip .avatar { width: 36px; height: 36px; font-size: 1.1rem; }
+  .next-level { margin: 0 auto 16px; font-size: 1.15rem; font-weight: 600; }
+
+  /* ---------- Progress ---------- */
+  .progress-head { text-align: center; margin-bottom: 14px; }
+  .progress-head h2 { margin: 0 0 4px; font-size: clamp(1.5rem, 4vw, 2rem); }
+  .progress-head p { margin: 0 auto; max-width: 600px; color: var(--ink-soft); line-height: 1.45; }
+  .kids { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .kid { padding: 18px; }
+  .kid-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .kid-top h3 { margin: 0; font-size: 1.5rem; }
+  .kid-top div span { color: var(--ink-soft); }
+  .kid-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+  .kid-stats div { background: #fff6e8; border-radius: 14px; padding: 8px 10px; }
+  .kid-stats b { display: block; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+  .kid-stats span { font-size: 0.88rem; color: var(--ink-soft); }
+  .growth { margin: 0 0 10px; padding: 8px 12px; border-radius: 12px; background: #dff5ef; color: #1d6b5b; font-weight: 600; }
+  .kid h4 { margin: 14px 0 6px; font-size: 1rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; }
+  .spark { width: 100%; height: 90px; display: block; overflow: visible; }
+  .spark .grid { stroke: #efe3d2; stroke-width: 1; }
+  .spark .line { fill: none; stroke: var(--good); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .spark .dot { fill: var(--good); stroke: var(--card); stroke-width: 2; }
+  .spark .hit { fill: transparent; cursor: default; }
+  .spark .hit:hover + .dot { r: 6; }
+  .spark text { font-size: 11px; fill: var(--ink-soft); font-family: inherit; }
+  .empty { color: var(--ink-soft); margin: 4px 0; }
+  .lvl-rows { width: 100%; border-collapse: collapse; }
+  .lvl-rows td, .recent td, .recent th { padding: 5px 4px; border-bottom: 1px solid #f3e6d4; text-align: left; font-variant-numeric: tabular-nums; }
+  .lvl-rows td:last-child, .recent td:not(:first-child), .recent th:not(:first-child) { text-align: right; }
+  .recent { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .recent th { font-weight: 600; color: var(--ink-soft); font-size: 0.82rem; }
+  .kid .practice-keys { justify-content: flex-start; }
+  .kid .practice-keys .key { flex: 0 0 44px; height: 42px; }
+  .progress-actions { text-align: center; margin-top: 16px; }
+
   /* ---------- Brain breaks ---------- */
   .break-picker { margin: 20px auto 0; }
   .break-picker p { margin: 0 0 8px; font-weight: 600; }
@@ -250,7 +307,7 @@
   #break-btn { height: auto; width: 56px; border-radius: 18px; }
 
   /* ---------- Game over ---------- */
-  .final-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 620px; margin: 16px auto 20px; }
+  .final-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 720px; margin: 16px auto 20px; }
   .final-stats div { background: #fff6e8; border-radius: 18px; padding: 12px 6px; }
   .final-num { display: block; font-size: 2rem; font-weight: 700; color: var(--orange); }
   .final-stats span:last-child { font-size: 0.95rem; color: var(--ink-soft); }
@@ -268,10 +325,13 @@
     .stats { grid-template-columns: repeat(2, 1fr); }
     #pause-btn, #break-btn { width: 100%; height: 44px; }
     .final-stats { grid-template-columns: repeat(2, 1fr); }
+    .kids { grid-template-columns: 1fr; }
+    .player-chip span:last-child { display: none; }
+    .player-chip { padding-right: 4px; }
     .key { height: 40px; font-size: 1rem; border-radius: 8px; }
     .krow { gap: 4px; }
     .keyboard { gap: 4px; }
-    .biscuit { width: 76px; height: 76px; margin-left: -38px; }
+    .franklin { width: 76px; height: 76px; margin-left: -38px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .bounce, .cloud, .key.hint, .break-dog { animation: none; }
@@ -283,15 +343,21 @@
   <header class="app-header">
     <img data-img="paw" alt="" class="logo-paw">
     <h1>Bone Rain <span>Typing</span></h1>
+    <div id="player-chip" class="player-chip" hidden><span class="avatar" id="chip-avatar"></span><span id="chip-name"></span></div>
     <button id="sound-toggle" class="icon-btn" aria-label="Turn sound off" title="Sound on/off">🔊</button>
   </header>
 
   <!-- START SCREEN -->
   <section id="start-screen" class="screen card">
-    <img data-img="happy" alt="Biscuit the happy cartoon puppy" class="dog-big bounce">
+    <img data-img="happy" alt="Franklin, a happy white mini aussiedoodle" class="dog-big bounce">
     <h2>It's raining bones!</h2>
-    <p class="lead">Type the word on each bone to help Biscuit catch it before it lands in the grass.
+    <p class="lead">Type the word on each bone to help Franklin catch it before it lands in the grass.
       Catch lots in a row to build a <strong>combo</strong>. You have 3 hearts — don't let the bones hit the ground!</p>
+
+    <div class="who">
+      <p class="who-label">Who's playing?</p>
+      <div class="players" id="players" role="group" aria-label="Who's playing"></div>
+    </div>
 
     <div class="modes" role="group" aria-label="Pick how hard">
       <button type="button" class="mode" data-mode="letters" aria-pressed="false">
@@ -303,21 +369,22 @@
       <button type="button" class="mode" data-mode="short" aria-pressed="true">
         <span class="mode-emoji">🐶</span>
         <span class="mode-name">Good Dog</span>
-        <span class="mode-ex">Short words like <em>sun</em></span>
+        <span class="mode-ex" data-ex="short">Short words like <em>sun</em></span>
         <span class="mode-best" data-best="short"></span>
       </button>
       <button type="button" class="mode" data-mode="long" aria-pressed="false">
         <span class="mode-emoji">🐕</span>
         <span class="mode-name">Top Dog</span>
-        <span class="mode-ex">Big words like <em>rainbow</em></span>
+        <span class="mode-ex" data-ex="long">Big words like <em>rainbow</em></span>
         <span class="mode-best" data-best="long"></span>
       </button>
     </div>
 
-    <button id="start-btn" class="btn btn-primary btn-large">Let's Play! 🦴</button>
+    <button id="start-btn" class="btn btn-primary btn-large">Let's Play! 🦴</button><br>
+    <button type="button" class="link-btn progress-link">📈 See how Dakota and Emmett are doing</button>
 
     <div class="break-picker">
-      <p>🧠 Brain breaks: get up and move with Biscuit</p>
+      <p>🧠 Brain breaks: get up and move with Franklin</p>
       <div class="seg" role="group" aria-label="How often to take a brain break">
         <button type="button" data-break="120">Every 2 min</button>
         <button type="button" data-break="180">Every 3 min</button>
@@ -348,13 +415,13 @@
       <div class="cloud" style="width:130px;height:36px;top:110px;animation-duration:62s;animation-delay:-40s"></div>
       <div class="cloud" style="width:70px;height:22px;top:180px;animation-duration:38s;animation-delay:-25s"></div>
       <div class="grass"></div>
-      <img id="biscuit" class="biscuit" data-img="thinking" alt="Biscuit the puppy">
+      <img id="franklin" class="franklin" data-img="thinking" alt="Franklin the puppy">
       <input id="trap" class="typing-trap" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type here">
 
       <div id="pause-overlay" class="overlay" hidden>
         <div>
           <h2>Paws-ed 🐾</h2>
-          <p>Biscuit is taking a little nap.</p>
+          <p>Franklin is taking a little nap.</p>
           <button id="resume-btn" class="btn btn-primary">Keep playing</button><br>
           <button id="quit-btn" class="link-btn">End game</button>
         </div>
@@ -379,7 +446,7 @@
       <h2 id="break-title">Shake like a wet dog!</h2>
       <p class="lead" id="break-text">Stand up and shake your whole body.</p>
       <div class="break-row">
-        <img data-img="happy" alt="Biscuit doing the brain break too" class="break-dog">
+        <img data-img="happy" alt="Franklin doing the brain break too" class="break-dog">
         <div class="break-clock" id="break-clock"><span id="break-time">20</span></div>
       </div>
       <button id="break-done" class="btn btn-good" hidden>I did it! 🐾</button><br>
@@ -396,14 +463,30 @@
       <div><span class="final-num" id="final-score">0</span><span>points</span></div>
       <div><span class="final-num" id="final-caught">0</span><span>bones caught</span></div>
       <div><span class="final-num" id="final-acc">0%</span><span>accuracy</span></div>
+      <div><span class="final-num" id="final-wpm">–</span><span>words per minute</span></div>
       <div><span class="final-num" id="final-combo">0</span><span>best combo</span></div>
     </div>
+    <p id="next-level" class="next-level"></p>
     <div id="practice" class="practice" hidden>
       <p>Keys to practice:</p>
       <div id="practice-keys" class="practice-keys"></div>
     </div>
     <button id="again-btn" class="btn btn-primary btn-large">Play Again 🐶</button><br>
-    <button id="menu-btn" class="link-btn">Pick a different game</button>
+    <button id="menu-btn" class="link-btn">Change player or game</button>
+    <button type="button" class="link-btn progress-link">📈 See progress</button>
+  </section>
+
+  <!-- PROGRESS SCREEN -->
+  <section id="progress-screen" class="screen" hidden>
+    <div class="progress-head">
+      <h2>📈 How everyone's doing</h2>
+      <p>Each kid gets words for their own grade and starts at the level they've earned, so they're
+        both learning at their own pace. The best race is against your own last score!</p>
+    </div>
+    <div class="kids" id="kids"></div>
+    <div class="progress-actions">
+      <button id="progress-back" class="btn btn-primary">← Back to the game</button>
+    </div>
   </section>
 </main>
 
@@ -415,9 +498,9 @@ const CATCHES_PER_LEVEL = 8;
 
 // Pictures are built into this file so the game still works when it's opened on its own.
 const SVG = {
-  happy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"> <path d="M58 156 Q100 170 142 156 L144 172 Q100 188 56 172 Z" fill="#E4574C"/> <circle cx="100" cy="184" r="10" fill="#F5C542" stroke="#D9A21B" stroke-width="2"/> <ellipse cx="100" cy="104" rx="62" ry="58" fill="#E8A85C"/> <ellipse cx="128" cy="90" rx="19" ry="17" fill="#C27B34"/> <ellipse cx="100" cy="84" rx="9" ry="30" fill="#FFF6E8"/> <ellipse cx="100" cy="134" rx="38" ry="27" fill="#FFF6E8"/> <ellipse cx="42" cy="100" rx="21" ry="46" transform="rotate(22 42 100)" fill="#8B5A2B"/> <ellipse cx="158" cy="100" rx="21" ry="46" transform="rotate(-22 158 100)" fill="#8B5A2B"/> <circle cx="66" cy="122" r="8" fill="#FF9AA8" opacity=".55"/> <circle cx="134" cy="122" r="8" fill="#FF9AA8" opacity=".55"/> <path d="M70 94 Q80 82 90 94" stroke="#2B1D14" stroke-width="5" fill="none" stroke-linecap="round"/> <path d="M110 94 Q120 82 130 94" stroke="#2B1D14" stroke-width="5" fill="none" stroke-linecap="round"/> <ellipse cx="100" cy="120" rx="13" ry="9" fill="#2B1D14"/> <ellipse cx="96" cy="117" rx="4" ry="2.5" fill="#fff" opacity=".7"/> <path d="M100 129 V134" stroke="#2B1D14" stroke-width="3" stroke-linecap="round"/> <path d="M80 134 Q100 166 120 134 Z" fill="#5A2A1E"/> <path d="M90 146 Q100 168 110 146 Q100 140 90 146 Z" fill="#FF7A8A"/> </svg>`,
-  thinking: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"> <path d="M58 156 Q100 170 142 156 L144 172 Q100 188 56 172 Z" fill="#E4574C"/> <circle cx="100" cy="184" r="10" fill="#F5C542" stroke="#D9A21B" stroke-width="2"/> <ellipse cx="100" cy="104" rx="62" ry="58" fill="#E8A85C"/> <ellipse cx="128" cy="90" rx="19" ry="17" fill="#C27B34"/> <ellipse cx="100" cy="84" rx="9" ry="30" fill="#FFF6E8"/> <ellipse cx="100" cy="134" rx="38" ry="27" fill="#FFF6E8"/> <ellipse cx="42" cy="100" rx="21" ry="46" transform="rotate(22 42 100)" fill="#8B5A2B"/> <ellipse cx="158" cy="100" rx="21" ry="46" transform="rotate(-22 158 100)" fill="#8B5A2B"/> <circle cx="66" cy="122" r="8" fill="#FF9AA8" opacity=".45"/> <circle cx="134" cy="122" r="8" fill="#FF9AA8" opacity=".45"/> <circle cx="80" cy="94" r="9" fill="#2B1D14"/> <circle cx="120" cy="94" r="9" fill="#2B1D14"/> <circle cx="84" cy="90" r="3.2" fill="#fff"/> <circle cx="124" cy="90" r="3.2" fill="#fff"/> <ellipse cx="100" cy="120" rx="13" ry="9" fill="#2B1D14"/> <ellipse cx="96" cy="117" rx="4" ry="2.5" fill="#fff" opacity=".7"/> <path d="M100 129 V137 M86 137 Q93 145 100 137 Q107 145 114 137" stroke="#2B1D14" stroke-width="3" fill="none" stroke-linecap="round"/> </svg>`,
-  sad: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"> <path d="M58 156 Q100 170 142 156 L144 172 Q100 188 56 172 Z" fill="#E4574C"/> <circle cx="100" cy="184" r="10" fill="#F5C542" stroke="#D9A21B" stroke-width="2"/> <ellipse cx="100" cy="104" rx="62" ry="58" fill="#E8A85C"/> <ellipse cx="128" cy="90" rx="19" ry="17" fill="#C27B34"/> <ellipse cx="100" cy="84" rx="9" ry="30" fill="#FFF6E8"/> <ellipse cx="100" cy="134" rx="38" ry="27" fill="#FFF6E8"/> <ellipse cx="46" cy="108" rx="21" ry="46" transform="rotate(10 46 108)" fill="#8B5A2B"/> <ellipse cx="154" cy="108" rx="21" ry="46" transform="rotate(-10 154 108)" fill="#8B5A2B"/> <path d="M70 88 L88 80" stroke="#6B3F1D" stroke-width="4" stroke-linecap="round"/> <path d="M130 88 L112 80" stroke="#6B3F1D" stroke-width="4" stroke-linecap="round"/> <circle cx="80" cy="98" r="10" fill="#2B1D14"/> <circle cx="120" cy="98" r="10" fill="#2B1D14"/> <circle cx="83" cy="95" r="3.6" fill="#fff"/> <circle cx="123" cy="95" r="3.6" fill="#fff"/> <path d="M74 110 Q70 122 74 126 Q79 122 74 110 Z" fill="#7CC7F2"/> <ellipse cx="100" cy="122" rx="13" ry="9" fill="#2B1D14"/> <ellipse cx="96" cy="119" rx="4" ry="2.5" fill="#fff" opacity=".7"/> <path d="M100 131 V138 M86 148 Q100 136 114 148" stroke="#2B1D14" stroke-width="3" fill="none" stroke-linecap="round"/> </svg>`,
+  happy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60 152 Q100 168 140 152 L142 168 Q100 184 58 168 Z" fill="#2f3650"/><ellipse cx="100" cy="183" rx="7.5" ry="11" fill="#c9ccd2" stroke="#8d929c" stroke-width="2"/><ellipse cx="100" cy="183" rx="3.5" ry="6" fill="#b8423a"/><circle cx="44" cy="90" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="38" cy="110" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="40" cy="130" r="16" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="48" cy="148" r="13" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="52" cy="100" r="14" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="44" cy="90" r="17" fill="#d9d5cf"/><circle cx="38" cy="110" r="17" fill="#d9d5cf"/><circle cx="40" cy="130" r="16" fill="#d9d5cf"/><circle cx="48" cy="148" r="13" fill="#d9d5cf"/><circle cx="52" cy="100" r="14" fill="#d9d5cf"/><path d="M35 104 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M37 126 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M42 144 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="156" cy="90" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="162" cy="110" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="160" cy="130" r="16" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="152" cy="148" r="13" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="148" cy="100" r="14" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="156" cy="90" r="17" fill="#d9d5cf"/><circle cx="162" cy="110" r="17" fill="#d9d5cf"/><circle cx="160" cy="130" r="16" fill="#d9d5cf"/><circle cx="152" cy="148" r="13" fill="#d9d5cf"/><circle cx="148" cy="100" r="14" fill="#d9d5cf"/><path d="M155 104 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M153 126 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M148 144 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="100" cy="106" r="54" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="68" cy="62" r="15" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="86" cy="52" r="16" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="104" cy="48" r="17" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="122" cy="54" r="15" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="136" cy="66" r="13" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="56" cy="78" r="12" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="144" cy="82" r="11" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="94" cy="62" r="14" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="114" cy="62" r="14" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="100" cy="106" r="54" fill="#ffffff"/><circle cx="68" cy="62" r="15" fill="#ffffff"/><circle cx="86" cy="52" r="16" fill="#ffffff"/><circle cx="104" cy="48" r="17" fill="#ffffff"/><circle cx="122" cy="54" r="15" fill="#ffffff"/><circle cx="136" cy="66" r="13" fill="#ffffff"/><circle cx="56" cy="78" r="12" fill="#ffffff"/><circle cx="144" cy="82" r="11" fill="#ffffff"/><circle cx="94" cy="62" r="14" fill="#ffffff"/><circle cx="114" cy="62" r="14" fill="#ffffff"/><circle cx="110" cy="52" r="13" fill="#e3dfd9"/><circle cx="124" cy="58" r="10" fill="#e3dfd9"/><circle cx="70" cy="66" r="10" fill="#e3dfd9"/><circle cx="132" cy="74" r="9" fill="#e3dfd9"/><circle cx="72" cy="76" r="11" fill="#ffffff"/><circle cx="88" cy="72" r="12" fill="#ffffff"/><circle cx="104" cy="70" r="12" fill="#ffffff"/><circle cx="120" cy="73" r="12" fill="#ffffff"/><circle cx="134" cy="80" r="10" fill="#ffffff"/><path d="M79 52 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M101 46 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M119 56 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M91 64 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M59 64 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M133 70 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M57 100 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M133 100 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M71 78 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M91 74 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M111 75 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M127 82 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="130" rx="30" ry="22" fill="#f7f2eb"/><circle cx="64" cy="124" r="8" fill="#ff9aa8" opacity=".5"/><circle cx="136" cy="124" r="8" fill="#ff9aa8" opacity=".5"/><path d="M70 96 Q80 84 90 96" stroke="#2b1d14" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M110 96 Q120 84 130 96" stroke="#2b1d14" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="120" rx="13" ry="9.5" fill="#151515"/><ellipse cx="96" cy="117" rx="4" ry="2.4" fill="#fff" opacity=".7"/><path d="M100 128 V133" stroke="#2b1d14" stroke-width="3" stroke-linecap="round"/><path d="M82 133 Q100 162 118 133 Z" fill="#5a2a1e"/><path d="M91 144 Q100 162 109 144 Q100 139 91 144 Z" fill="#ff7a8a"/></svg>`,
+  thinking: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60 152 Q100 168 140 152 L142 168 Q100 184 58 168 Z" fill="#2f3650"/><ellipse cx="100" cy="183" rx="7.5" ry="11" fill="#c9ccd2" stroke="#8d929c" stroke-width="2"/><ellipse cx="100" cy="183" rx="3.5" ry="6" fill="#b8423a"/><circle cx="44" cy="90" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="38" cy="110" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="40" cy="130" r="16" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="48" cy="148" r="13" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="52" cy="100" r="14" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="44" cy="90" r="17" fill="#d9d5cf"/><circle cx="38" cy="110" r="17" fill="#d9d5cf"/><circle cx="40" cy="130" r="16" fill="#d9d5cf"/><circle cx="48" cy="148" r="13" fill="#d9d5cf"/><circle cx="52" cy="100" r="14" fill="#d9d5cf"/><path d="M35 104 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M37 126 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M42 144 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="156" cy="90" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="162" cy="110" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="160" cy="130" r="16" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="152" cy="148" r="13" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="148" cy="100" r="14" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="156" cy="90" r="17" fill="#d9d5cf"/><circle cx="162" cy="110" r="17" fill="#d9d5cf"/><circle cx="160" cy="130" r="16" fill="#d9d5cf"/><circle cx="152" cy="148" r="13" fill="#d9d5cf"/><circle cx="148" cy="100" r="14" fill="#d9d5cf"/><path d="M155 104 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M153 126 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M148 144 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="100" cy="106" r="54" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="68" cy="62" r="15" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="86" cy="52" r="16" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="104" cy="48" r="17" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="122" cy="54" r="15" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="136" cy="66" r="13" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="56" cy="78" r="12" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="144" cy="82" r="11" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="94" cy="62" r="14" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="114" cy="62" r="14" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="100" cy="106" r="54" fill="#ffffff"/><circle cx="68" cy="62" r="15" fill="#ffffff"/><circle cx="86" cy="52" r="16" fill="#ffffff"/><circle cx="104" cy="48" r="17" fill="#ffffff"/><circle cx="122" cy="54" r="15" fill="#ffffff"/><circle cx="136" cy="66" r="13" fill="#ffffff"/><circle cx="56" cy="78" r="12" fill="#ffffff"/><circle cx="144" cy="82" r="11" fill="#ffffff"/><circle cx="94" cy="62" r="14" fill="#ffffff"/><circle cx="114" cy="62" r="14" fill="#ffffff"/><circle cx="110" cy="52" r="13" fill="#e3dfd9"/><circle cx="124" cy="58" r="10" fill="#e3dfd9"/><circle cx="70" cy="66" r="10" fill="#e3dfd9"/><circle cx="132" cy="74" r="9" fill="#e3dfd9"/><circle cx="72" cy="76" r="11" fill="#ffffff"/><circle cx="88" cy="72" r="12" fill="#ffffff"/><circle cx="104" cy="70" r="12" fill="#ffffff"/><circle cx="120" cy="73" r="12" fill="#ffffff"/><circle cx="134" cy="80" r="10" fill="#ffffff"/><path d="M79 52 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M101 46 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M119 56 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M91 64 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M59 64 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M133 70 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M57 100 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M133 100 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M71 78 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M91 74 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M111 75 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M127 82 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="130" rx="30" ry="22" fill="#f7f2eb"/><circle cx="64" cy="124" r="8" fill="#ff9aa8" opacity=".5"/><circle cx="136" cy="124" r="8" fill="#ff9aa8" opacity=".5"/><circle cx="80" cy="96" r="8.5" fill="#3a2516"/><circle cx="120" cy="96" r="8.5" fill="#3a2516"/><circle cx="83" cy="93" r="3" fill="#fff"/><circle cx="123" cy="93" r="3" fill="#fff"/><ellipse cx="100" cy="120" rx="13" ry="9.5" fill="#151515"/><ellipse cx="96" cy="117" rx="4" ry="2.4" fill="#fff" opacity=".7"/><path d="M100 128 V136 M87 136 Q93 143 100 136 Q107 143 113 136" stroke="#2b1d14" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+  sad: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path d="M60 152 Q100 168 140 152 L142 168 Q100 184 58 168 Z" fill="#2f3650"/><ellipse cx="100" cy="183" rx="7.5" ry="11" fill="#c9ccd2" stroke="#8d929c" stroke-width="2"/><ellipse cx="100" cy="183" rx="3.5" ry="6" fill="#b8423a"/><circle cx="44" cy="98" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="38" cy="118" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="40" cy="138" r="16" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="48" cy="156" r="13" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="52" cy="108" r="14" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="44" cy="98" r="17" fill="#d9d5cf"/><circle cx="38" cy="118" r="17" fill="#d9d5cf"/><circle cx="40" cy="138" r="16" fill="#d9d5cf"/><circle cx="48" cy="156" r="13" fill="#d9d5cf"/><circle cx="52" cy="108" r="14" fill="#d9d5cf"/><path d="M35 112 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M37 134 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M42 152 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="156" cy="98" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="162" cy="118" r="17" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="160" cy="138" r="16" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="152" cy="156" r="13" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="148" cy="108" r="14" fill="#d9d5cf" stroke="#c9c1b5" stroke-width="6"/><circle cx="156" cy="98" r="17" fill="#d9d5cf"/><circle cx="162" cy="118" r="17" fill="#d9d5cf"/><circle cx="160" cy="138" r="16" fill="#d9d5cf"/><circle cx="152" cy="156" r="13" fill="#d9d5cf"/><circle cx="148" cy="108" r="14" fill="#d9d5cf"/><path d="M155 112 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M153 134 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M148 152 q5 -7 10 0" stroke="#b9b3ab" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="100" cy="106" r="54" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="68" cy="62" r="15" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="86" cy="52" r="16" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="104" cy="48" r="17" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="122" cy="54" r="15" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="136" cy="66" r="13" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="56" cy="78" r="12" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="144" cy="82" r="11" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="94" cy="62" r="14" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="114" cy="62" r="14" fill="#ffffff" stroke="#c9c1b5" stroke-width="6"/><circle cx="100" cy="106" r="54" fill="#ffffff"/><circle cx="68" cy="62" r="15" fill="#ffffff"/><circle cx="86" cy="52" r="16" fill="#ffffff"/><circle cx="104" cy="48" r="17" fill="#ffffff"/><circle cx="122" cy="54" r="15" fill="#ffffff"/><circle cx="136" cy="66" r="13" fill="#ffffff"/><circle cx="56" cy="78" r="12" fill="#ffffff"/><circle cx="144" cy="82" r="11" fill="#ffffff"/><circle cx="94" cy="62" r="14" fill="#ffffff"/><circle cx="114" cy="62" r="14" fill="#ffffff"/><circle cx="110" cy="52" r="13" fill="#e3dfd9"/><circle cx="124" cy="58" r="10" fill="#e3dfd9"/><circle cx="70" cy="66" r="10" fill="#e3dfd9"/><circle cx="132" cy="74" r="9" fill="#e3dfd9"/><circle cx="72" cy="76" r="11" fill="#ffffff"/><circle cx="88" cy="72" r="12" fill="#ffffff"/><circle cx="104" cy="70" r="12" fill="#ffffff"/><circle cx="120" cy="73" r="12" fill="#ffffff"/><circle cx="134" cy="80" r="10" fill="#ffffff"/><path d="M79 52 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M101 46 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M119 56 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M91 64 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M59 64 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M133 70 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M57 100 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M133 100 q5 -7 10 0" stroke="#e6e0d7" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M71 78 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M91 74 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M111 75 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M127 82 q5 -7 10 0" stroke="#d8d2c9" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="130" rx="30" ry="22" fill="#f7f2eb"/><circle cx="64" cy="124" r="8" fill="#ff9aa8" opacity=".5"/><circle cx="136" cy="124" r="8" fill="#ff9aa8" opacity=".5"/><path d="M70 86 L88 80" stroke="#a79d90" stroke-width="4" stroke-linecap="round"/><path d="M130 86 L112 80" stroke="#a79d90" stroke-width="4" stroke-linecap="round"/><circle cx="80" cy="98" r="9.5" fill="#3a2516"/><circle cx="120" cy="98" r="9.5" fill="#3a2516"/><circle cx="83" cy="95" r="3" fill="#fff"/><circle cx="123" cy="95" r="3" fill="#fff"/><path d="M74 110 Q70 122 74 126 Q79 122 74 110 Z" fill="#7cc7f2"/><ellipse cx="100" cy="120" rx="13" ry="9.5" fill="#151515"/><ellipse cx="96" cy="117" rx="4" ry="2.4" fill="#fff" opacity=".7"/><path d="M100 129 V136 M87 146 Q100 135 113 146" stroke="#2b1d14" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
   bone: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"> <g fill="#FFF6E8" stroke="#C98A4B" stroke-width="3"> <circle cx="16" cy="16" r="12"/><circle cx="16" cy="34" r="12"/> <circle cx="84" cy="16" r="12"/><circle cx="84" cy="34" r="12"/> </g> <rect x="14" y="15" width="72" height="20" rx="4" fill="#FFF6E8"/> <path d="M22 15 H78 M22 35 H78" stroke="#C98A4B" stroke-width="3"/> </svg>`,
   paw: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"> <g fill="#E0A064"> <ellipse cx="50" cy="66" rx="22" ry="18"/> <ellipse cx="22" cy="40" rx="9" ry="12" transform="rotate(-20 22 40)"/> <ellipse cx="39" cy="24" rx="9" ry="12" transform="rotate(-6 39 24)"/> <ellipse cx="61" cy="24" rx="9" ry="12" transform="rotate(6 61 24)"/> <ellipse cx="78" cy="40" rx="9" ry="12" transform="rotate(20 78 40)"/> </g> </svg>`,
 };
@@ -441,7 +524,7 @@ const SHORT_WORDS = [
 ];
 
 const LONG_WORDS = [
-  "puppy", "doggy", "biscuit", "rainbow", "unicorn", "pancake", "kitten", "bubble", "dragon", "castle",
+  "puppy", "doggy", "franklin", "rainbow", "unicorn", "pancake", "kitten", "bubble", "dragon", "castle",
   "garden", "flower", "butterfly", "jumping", "giggle", "sparkle", "glitter", "treasure", "pirate", "rocket",
   "planet", "dinosaur", "penguin", "dolphin", "monkey", "giraffe", "zebra", "turtle", "pumpkin", "cookie",
   "cupcake", "popcorn", "pizza", "banana", "apple", "cherry", "lemonade", "sunshine", "friend", "family",
@@ -450,11 +533,44 @@ const LONG_WORDS = [
   "fetch", "leash", "collar", "whiskers", "squirrel", "backyard", "playful", "happy", "silly", "awesome",
 ];
 
+// 6th grade words: longer and trickier.
+const SHORT_WORDS_6 = [
+  // home-row friendly first
+  "flask", "salad", "glass", "shall", "flash", "dash", "fake", "jade", "half", "shake", "lake", "desk", "fall", "sash",
+  "brave", "plant", "storm", "quick", "climb", "bright", "ocean", "cloud", "river", "forest", "magic", "score",
+  "goal", "team", "track", "robot", "laser", "pixel", "coins", "quest", "sword", "shield", "comet", "orbit",
+  "wizard", "jungle", "tiger", "shark", "whale", "eagle", "bridge", "tower", "maze", "zone", "sprint", "pitch",
+  "catch", "throw", "brain", "think", "prize", "solve", "build", "craft", "block", "level", "power", "boost",
+  "flame", "frost", "energy", "doodle", "franklin", "fluffy", "puzzle", "garage", "kayak", "canyon", "glacier",
+];
+const LONG_WORDS_6 = [
+  "adventure", "telescope", "experiment", "volcano", "hurricane", "skateboard", "basketball", "championship",
+  "invisible", "mysterious", "incredible", "electricity", "microscope", "astronaut", "satellite", "galaxy",
+  "universe", "excavator", "calculator", "keyboard", "computer", "programmer", "engineering", "photograph",
+  "temperature", "environment", "community", "celebrate", "challenge", "knowledge", "character", "adjective",
+  "paragraph", "sentence", "fraction", "decimal", "equation", "geography", "continent", "peninsula",
+  "atmosphere", "ecosystem", "migration", "pyramid", "ancient", "civilization", "explorer", "discovery",
+  "invention", "strategy", "tournament", "victory", "legendary", "aussiedoodle", "lightning", "submarine",
+];
+
+const WORDS = {
+  4: { short: SHORT_WORDS, long: LONG_WORDS, exShort: "sun", exLong: "rainbow" },
+  6: { short: SHORT_WORDS_6, long: LONG_WORDS_6, exShort: "storm", exLong: "adventure" },
+};
+
 const MODES = {
   letters: { fall: 9, minFall: 4.2, pool: (lvl) => (lvl <= 1 ? HOME_ROW : lvl <= 2 ? HOME_PLUS : lvl <= 4 ? [...HOME_PLUS, ...TOP_ROW] : ALL_LETTERS) },
-  short: { fall: 13, minFall: 5.5, pool: (lvl) => (lvl <= 1 ? SHORT_WORDS.slice(0, 14) : SHORT_WORDS) },
-  long: { fall: 16, minFall: 7, pool: () => LONG_WORDS },
+  short: { fall: 13, minFall: 5.5, pool: (lvl, w) => (lvl <= 1 ? w.short.slice(0, 14) : w.short) },
+  long: { fall: 16, minFall: 7, pool: (lvl, w) => w.long },
 };
+const MODE_NAMES = { letters: "Puppy Paws", short: "Good Dog", long: "Top Dog" };
+
+// ---------- Players ----------
+const PLAYERS = {
+  dakota: { name: "Dakota", grade: 4, gradeLabel: "4th grade", speed: 1 },
+  emmett: { name: "Emmett", grade: 6, gradeLabel: "6th grade", speed: 0.88 }, // bones fall a little faster
+};
+const MAX_LEVEL = 12;
 
 const UNLOCK_MSG = {
   letters: { 2: "G and H join the fun!", 3: "Top row unlocked!", 5: "Every letter unlocked!" },
@@ -491,9 +607,9 @@ const FINGERS = {
 
 // ---------- Elements ----------
 const $ = (id) => document.getElementById(id);
-const screens = { start: $("start-screen"), game: $("game-screen"), over: $("over-screen") };
+const screens = { start: $("start-screen"), game: $("game-screen"), over: $("over-screen"), progress: $("progress-screen") };
 const field = $("field");
-const biscuit = $("biscuit");
+const franklin = $("franklin");
 const trap = $("trap");
 
 // ---------- Storage (can be blocked in private windows) ----------
@@ -502,8 +618,33 @@ const store = {
   set(key, value) { try { localStorage.setItem(key, value); } catch { /* ignore */ } },
 };
 
+// ---------- Saved progress (kept in this browser) ----------
+function blankProfile() {
+  return { levels: { letters: 1, short: 1, long: 1 }, best: { letters: 0, short: 0, long: 0 }, bestWpm: 0, games: [], keys: {} };
+}
+function loadProfiles() {
+  let saved = {};
+  try { saved = JSON.parse(store.get("bonerain-profiles")) || {}; } catch { saved = {}; }
+  const profiles = {};
+  for (const id of Object.keys(PLAYERS)) {
+    const p = Object.assign(blankProfile(), saved[id] || {});
+    p.levels = Object.assign(blankProfile().levels, p.levels);
+    p.best = Object.assign(blankProfile().best, p.best);
+    profiles[id] = p;
+  }
+  // Scores from before there were players belong to Dakota, who played first.
+  if (!saved.dakota) {
+    for (const mode of Object.keys(MODES)) profiles.dakota.best[mode] = Number(store.get(`bonerain-best-${mode}`)) || 0;
+  }
+  return profiles;
+}
+const profiles = loadProfiles();
+function saveProfiles() { store.set("bonerain-profiles", JSON.stringify(profiles)); }
+
 // ---------- State ----------
 const state = {
+  player: PLAYERS[store.get("bonerain-player")] ? store.get("bonerain-player") : null,
+  startLevel: 1,
   mode: store.get("bonerain-mode") || "short",
   breakEvery: Number(store.get("bonerain-break") ?? 180),
   onBreak: false,
@@ -574,16 +715,32 @@ function show(name) {
   Object.entries(screens).forEach(([key, node]) => { node.hidden = key !== name; });
 }
 
-function bestFor(mode) { return Number(store.get(`bonerain-best-${mode}`)) || 0; }
+function avatarHtml(id) { return `<span class="avatar av-${id}">${PLAYERS[id].name[0]}</span>`; }
 
 function renderModes() {
+  const prof = state.player && profiles[state.player];
+  const words = WORDS[state.player ? PLAYERS[state.player].grade : 4];
+  $("players").innerHTML = Object.entries(PLAYERS).map(([id, pl]) => `
+    <button type="button" class="player" data-player="${id}" aria-pressed="${id === state.player}">
+      ${avatarHtml(id)}<span><span class="player-name">${pl.name}</span><span class="player-grade">${pl.gradeLabel}</span></span>
+    </button>`).join("");
   document.querySelectorAll(".mode").forEach((btn) => {
     btn.setAttribute("aria-pressed", String(btn.dataset.mode === state.mode));
   });
+  document.querySelector('[data-ex="short"]').innerHTML = `Short words like <em>${words.exShort}</em>`;
+  document.querySelector('[data-ex="long"]').innerHTML = `Big words like <em>${words.exLong}</em>`;
   document.querySelectorAll("[data-best]").forEach((node) => {
-    const best = bestFor(node.dataset.best);
-    node.textContent = best ? `Best: ${best}` : "";
+    const mode = node.dataset.best;
+    node.textContent = prof ? `Level ${prof.levels[mode]}${prof.best[mode] ? ` · Best ${prof.best[mode]}` : ""}` : "";
   });
+  $("start-btn").disabled = !state.player;
+  $("start-btn").textContent = state.player ? `Let's Play, ${PLAYERS[state.player].name}! 🦴` : "Pick who's playing first";
+  $("player-chip").hidden = !state.player;
+  if (state.player) {
+    $("chip-avatar").className = `avatar av-${state.player}`;
+    $("chip-avatar").textContent = PLAYERS[state.player].name[0];
+    $("chip-name").textContent = PLAYERS[state.player].name;
+  }
 }
 
 // ---------- Keyboard ----------
@@ -640,12 +797,12 @@ function renderHud() {
 // ---------- Drops ----------
 function fallSeconds() {
   const m = MODES[state.mode];
-  return Math.max(m.minFall, m.fall - (state.level - 1) * 0.9);
+  return Math.max(m.minFall, m.fall - (state.level - 1) * 0.9) * PLAYERS[state.player].speed;
 }
 function maxDrops() { return Math.min(2 + Math.floor((state.level - 1) / 2), 5); }
 
 function pickWord() {
-  const pool = MODES[state.mode].pool(state.level);
+  const pool = MODES[state.mode].pool(state.level, WORDS[PLAYERS[state.player].grade]);
   const taken = new Set(state.drops.filter((d) => !d.gone).map((d) => d.word[0]));
   // Prefer words whose first letter isn't already falling, and that we haven't just seen.
   let choices = pool.filter((w) => !taken.has(w[0]) && !state.recent.includes(w));
@@ -690,16 +847,16 @@ function renderWord(drop) {
 
 function groundY() { return field.clientHeight - 56 - 50; }
 
-function moveBiscuitTo(drop) {
+function moveFranklinTo(drop) {
   const x = drop ? drop.x + drop.el.offsetWidth / 2 : field.clientWidth / 2;
   const clamped = Math.max(50, Math.min(field.clientWidth - 50, x));
-  biscuit.style.left = `${clamped}px`;
+  franklin.style.left = `${clamped}px`;
 }
 
 function setDog(img, ms = 700) {
-  biscuit.src = img;
+  franklin.src = img;
   clearTimeout(setDog.t);
-  if (ms) setDog.t = setTimeout(() => { biscuit.src = IMG.thinking; }, ms);
+  if (ms) setDog.t = setTimeout(() => { franklin.src = IMG.thinking; }, ms);
 }
 
 function popText(text, x, y) {
@@ -729,13 +886,13 @@ function catchDrop(drop) {
   const points = drop.word.length * 10 + Math.min(state.combo, 20) * 2;
   state.score += points;
 
-  moveBiscuitTo(drop);
+  moveFranklinTo(drop);
   drop.el.classList.add("caught");
   drop.el.style.transform = `translate(${drop.x}px, ${groundY()}px) scale(.5)`;
   setTimeout(() => drop.el.remove(), 400);
-  biscuit.classList.remove("jump");
-  void biscuit.offsetWidth;
-  biscuit.classList.add("jump");
+  franklin.classList.remove("jump");
+  void franklin.offsetWidth;
+  franklin.classList.add("jump");
   setDog(IMG.happy);
   popText(`+${points}`, drop.x + drop.el.offsetWidth / 2, drop.y);
   if (state.combo > 0 && state.combo % 10 === 0) {
@@ -788,7 +945,7 @@ function handleChar(raw) {
     const match = state.drops.filter((d) => !d.gone && d.word[0] === ch).sort((a, b) => b.y - a.y)[0];
     if (!match) return wrongKey(ch, null);
     state.target = match;
-    moveBiscuitTo(match);
+    moveFranklinTo(match);
   }
 
   const drop = state.target;
@@ -883,17 +1040,20 @@ function clearField() {
 }
 
 function startGame() {
+  if (!state.player) return;
   cancelAnimationFrame(state.rafId);
   clearField();
   Object.assign(state, {
     running: false, paused: false, target: null, score: 0, level: 1, caught: 0, combo: 0, bestCombo: 0,
     hearts: START_HEARTS, goodKeys: 0, badKeys: 0, missedKeys: new Map(), spawnTimer: 0, recent: [],
     onBreak: false, ending: false, playTime: 0, nextBreak: state.breakEvery,
+    level: profiles[state.player].levels[state.mode],
   });
+  state.startLevel = state.level;
   show("game");
   renderHud();
-  biscuit.src = IMG.thinking;
-  moveBiscuitTo(null);
+  franklin.src = IMG.thinking;
+  moveFranklinTo(null);
   updateHint();
   trap.focus();
   countdown(3, () => {
@@ -1002,9 +1162,38 @@ function endGame() {
 
   const total = state.goodKeys + state.badKeys;
   const acc = total ? Math.round((state.goodKeys / total) * 100) : 0;
-  const best = bestFor(state.mode);
-  const isBest = state.score > best;
-  if (isBest) store.set(`bonerain-best-${state.mode}`, state.score);
+  // words per minute: 5 letters counts as one word, timed only while bones were falling
+  const wpm = state.playTime >= 15 ? Math.round(state.goodKeys / 5 / (state.playTime / 60)) : null;
+  const prof = profiles[state.player];
+  const name = PLAYERS[state.player].name;
+  const isBest = state.score > prof.best[state.mode];
+  if (isBest) prof.best[state.mode] = state.score;
+  if (wpm !== null) prof.bestWpm = Math.max(prof.bestWpm, wpm);
+
+  // Pick the starting level for next time so each kid keeps learning at their own level.
+  const start = state.startLevel;
+  let next = start;
+  if (state.level > start && acc >= 80) next = Math.min(MAX_LEVEL, Math.max(start + 1, state.level - 1));
+  else if (state.level === start && state.caught < 5 && start > 1) next = start - 1;
+  prof.levels[state.mode] = next;
+  $("next-level").textContent = next > start ? `⬆️ Next time ${name} starts at Level ${next}!`
+    : next < start ? `Next time ${name} warms up at Level ${next}. You've got this!`
+    : state.level > start ? `Next time: Level ${next} again. Try for 80% accuracy to move up!`
+    : `Next time ${name} starts at Level ${next}.`;
+
+  // Tricky keys fade over time so the list shows what's hard right now.
+  for (const k of Object.keys(prof.keys)) {
+    prof.keys[k] *= 0.85;
+    if (prof.keys[k] < 0.5) delete prof.keys[k];
+  }
+  state.missedKeys.forEach((n, k) => { prof.keys[k] = (prof.keys[k] || 0) + n; });
+
+  if (state.playTime >= 5) {
+    prof.games.push({ t: Date.now(), mode: state.mode, score: state.score, caught: state.caught, acc, wpm, level: state.level, secs: Math.round(state.playTime) });
+    if (prof.games.length > 200) prof.games.shift();
+  }
+  saveProfiles();
+  $("final-wpm").textContent = wpm ?? "–";
 
   $("final-score").textContent = state.score;
   $("final-caught").textContent = state.caught;
@@ -1012,7 +1201,7 @@ function endGame() {
   $("final-combo").textContent = state.bestCombo;
   $("new-best").hidden = !isBest || state.score === 0;
   const good = state.caught >= 10 || isBest;
-  $("over-title").textContent = good ? "Pawsome typing!" : state.caught > 0 ? "Good try, pup!" : "Let's try again!";
+  $("over-title").textContent = good ? `Pawsome typing, ${name}!` : state.caught > 0 ? `Good try, ${name}!` : "Let's try again!";
   $("over-dog").src = good ? IMG.happy : IMG.thinking;
 
   const tricky = [...state.missedKeys.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -1025,6 +1214,77 @@ function endGame() {
   show("over");
   if (isBest && state.score > 0) confetti(60);
   else playSound("over");
+}
+
+// ---------- Progress ----------
+const avg = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
+
+function sparkline(games) {
+  const pts = games.filter((g) => g.wpm !== null).slice(-15);
+  if (pts.length < 2) return '<p class="empty">Play a couple more games to see a speed chart.</p>';
+  const W = 300, H = 90, padL = 26, padR = 8, padT = 8, padB = 16;
+  const max = Math.max(10, Math.ceil(Math.max(...pts.map((g) => g.wpm)) / 10) * 10);
+  const x = (i) => padL + (i * (W - padL - padR)) / (pts.length - 1);
+  const y = (v) => padT + (1 - v / max) * (H - padT - padB);
+  const line = pts.map((g, i) => `${x(i).toFixed(1)},${y(g.wpm).toFixed(1)}`).join(" ");
+  const dots = pts.map((g, i) => {
+    const label = `${new Date(g.t).toLocaleDateString()}: ${g.wpm} words per minute (${MODE_NAMES[g.mode]})`;
+    return `<g><title>${label}</title><circle class="hit" cx="${x(i)}" cy="${y(g.wpm)}" r="12"/><circle class="dot" cx="${x(i)}" cy="${y(g.wpm)}" r="4"/></g>`;
+  }).join("");
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="Typing speed over the last ${pts.length} games">
+    <line class="grid" x1="${padL}" x2="${W - padR}" y1="${y(0)}" y2="${y(0)}"/>
+    <line class="grid" x1="${padL}" x2="${W - padR}" y1="${y(max)}" y2="${y(max)}"/>
+    <text x="${padL - 6}" y="${y(0) + 4}" text-anchor="end">0</text>
+    <text x="${padL - 6}" y="${y(max) + 4}" text-anchor="end">${max}</text>
+    <text x="${padL}" y="${H}" >older</text><text x="${W - padR}" y="${H}" text-anchor="end">newest</text>
+    <polyline class="line" points="${line}"/>${dots}</svg>`;
+}
+
+function kidCard(id) {
+  const pl = PLAYERS[id];
+  const prof = profiles[id];
+  const games = prof.games;
+  const speeds = games.filter((g) => g.wpm !== null).map((g) => g.wpm);
+  const speedNow = speeds.length ? Math.round(avg(speeds.slice(-3))) : "–";
+  const accNow = games.length ? `${Math.round(avg(games.slice(-5).map((g) => g.acc)))}%` : "–";
+  const minutes = Math.round(games.reduce((a, g) => a + (g.secs || 0), 0) / 60);
+  let growth = "";
+  if (speeds.length >= 4) {
+    const diff = Math.round(avg(speeds.slice(-3)) - avg(speeds.slice(0, 3)));
+    growth = diff > 0 ? `<p class="growth">🌱 ${diff} words per minute faster than ${pl.name}'s first games!</p>`
+      : `<p class="growth">🌱 Keep practicing: speed grows a little every week.</p>`;
+  }
+  const tricky = Object.entries(prof.keys).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const fingerOf = (ch) => Object.keys(FINGERS).find((f) => FINGERS[f].includes(ch)) || "";
+  return `<article class="kid card">
+    <div class="kid-top">${avatarHtml(id)}<div><h3>${pl.name}</h3><span>${pl.gradeLabel}</span></div></div>
+    <div class="kid-stats">
+      <div><b>${speedNow}</b><span>words per minute (recent)</span></div>
+      <div><b>${accNow}</b><span>accuracy (recent)</span></div>
+      <div><b>${games.length}</b><span>games played</span></div>
+      <div><b>${minutes}</b><span>minutes practiced</span></div>
+    </div>
+    ${growth}
+    <h4>Typing speed</h4>
+    ${sparkline(games)}
+    <h4>Levels</h4>
+    <table class="lvl-rows"><tbody>
+      ${Object.keys(MODES).map((m) => `<tr><td>${MODE_NAMES[m]}</td><td>Level ${prof.levels[m]}</td><td>Best ${prof.best[m]}</td></tr>`).join("")}
+    </tbody></table>
+    <h4>Keys to practice</h4>
+    ${tricky.length ? `<div class="practice-keys">${tricky.map(([ch]) => `<div class="key ${fingerOf(ch)}">${ch}</div>`).join("")}</div>` : '<p class="empty">None yet. Nice!</p>'}
+    <h4>Recent games</h4>
+    ${games.length ? `<table class="recent"><thead><tr><th>Game</th><th>Score</th><th>Speed</th><th>Accuracy</th></tr></thead><tbody>
+      ${games.slice(-5).reverse().map((g) => `<tr><td>${MODE_NAMES[g.mode]} · L${g.level}</td><td>${g.score}</td><td>${g.wpm ?? "–"}</td><td>${g.acc}%</td></tr>`).join("")}
+    </tbody></table>` : '<p class="empty">No games yet.</p>'}
+    <button type="button" class="link-btn" data-reset="${id}">Start ${pl.name}'s progress over</button>
+  </article>`;
+}
+
+function showProgress() {
+  $("kids").innerHTML = Object.keys(PLAYERS).map(kidCard).join("");
+  show("progress");
+  window.scrollTo(0, 0);
 }
 
 function confetti(count) {
@@ -1051,6 +1311,24 @@ document.querySelectorAll(".mode").forEach((btn) => {
   });
 });
 $("start-btn").addEventListener("click", startGame);
+$("players").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-player]");
+  if (!btn) return;
+  state.player = btn.dataset.player;
+  store.set("bonerain-player", state.player);
+  renderModes();
+});
+document.querySelectorAll(".progress-link").forEach((btn) => btn.addEventListener("click", showProgress));
+$("progress-back").addEventListener("click", () => { renderModes(); show("start"); });
+$("kids").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-reset]");
+  if (!btn) return;
+  const id = btn.dataset.reset;
+  if (!confirm(`Start ${PLAYERS[id].name}'s progress over? This clears their levels, scores and history.`)) return;
+  profiles[id] = blankProfile();
+  saveProfiles();
+  showProgress();
+});
 $("again-btn").addEventListener("click", startGame);
 $("menu-btn").addEventListener("click", () => { renderModes(); show("start"); });
 $("pause-btn").addEventListener("click", () => (state.paused ? resume() : pause()));
