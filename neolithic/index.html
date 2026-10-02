@@ -290,6 +290,11 @@
   .mcell.boom { background: var(--bad); color: #fff; }
   .mcell.flag { color: var(--gold); }
 
+  .exit-all { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 12px; z-index: 50; border: 0; border-radius: 99px; padding: 8px 16px; font-weight: 700; font-size: .9rem; background: var(--bad); color: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.45); cursor: pointer; }
+  .exit-all:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  body.has-exit .wrap { padding-block-start: 60px; }
+  body.has-exit .shop { padding-top: calc(env(safe-area-inset-top, 0px) + 58px); }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
@@ -306,6 +311,7 @@
   }
 </style>
 
+<button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
 <div class="wrap" id="app"></div>
 <footer><button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
 
@@ -3020,6 +3026,24 @@ function focusDone(st) {
   document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+/* ---------- Exit: one button on every screen that stops everything and goes home ---------- */
+const exitBtn = document.getElementById("exit-all");
+function exitAll() {
+  document.querySelectorAll(".shop, .toast").forEach(el => el.remove());
+  if (G && !G.over) { G.over = true; clearInterval(G.timer); }
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  stopSlope(); stopArchers(); stopMini();
+  showHome();
+  window.scrollTo({ top: 0 });
+}
+exitBtn.addEventListener("click", exitAll);
+// Show the button everywhere except the main page (the main page is the one with the games menu).
+new MutationObserver(() => {
+  const home = !!document.getElementById("gamesmenu");
+  exitBtn.hidden = home;
+  document.body.classList.toggle("has-exit", !home);
+}).observe($app, { childList: true });
 
 showHome();
 </script>
