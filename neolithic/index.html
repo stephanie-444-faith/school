@@ -253,6 +253,27 @@
   .tile.dim { opacity: .35; }
   .tile:disabled { cursor: default; }
 
+  .draw-wrap { gap: 12px; }
+  .dr-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+  .dr-tool { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 10px; min-width: 64px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); font-size: .78rem; }
+  .dr-tool svg { width: 22px; height: 22px; }
+  .dr-tool[aria-pressed="true"] { border-color: var(--gold); background: #4a3a1a; }
+  .dr-colors { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .dr-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,.25); padding: 0; }
+  .dr-swatch[aria-pressed="true"] { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .dr-custom { display: flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--ink-soft); cursor: pointer; }
+  .dr-custom input { width: 36px; height: 32px; border: 0; padding: 0; background: none; cursor: pointer; }
+  .dr-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: .9rem; }
+  .dr-size { display: flex; align-items: center; gap: 8px; }
+  .dr-size input { width: 160px; }
+  .dr-fill { display: flex; align-items: center; gap: 6px; }
+  .dr-fill input { width: 18px; height: 18px; }
+  .dr-canvas { width: 100%; display: block; border-radius: 12px; background: #fff; touch-action: none; cursor: crosshair; }
+  .dr-actions .btn { padding: 10px 14px; }
+  .dr-actions .btn:disabled { opacity: .45; }
+  .dr-help { font-size: .88rem; }
+  .create-card { background: linear-gradient(160deg, #3a1f4a, var(--panel) 70%); }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
@@ -706,6 +727,11 @@ function showHome() {
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
+    <div class="panel create-card">
+      <span class="label">Create</span>
+      <button class="btn go" id="draw">Drawing Studio</button>
+      <p class="soft">Draw with any color, add shapes, and move everything around.</p>
+    </div>
     ${ss ? `<div class="panel">
       <span class="label">Social Studies extras</span>
       <div class="extras">
@@ -730,6 +756,7 @@ function showHome() {
   document.getElementById("dig").addEventListener("click", startDig);
   document.getElementById("slope").addEventListener("click", startSlope);
   document.getElementById("archers").addEventListener("click", startArchers);
+  document.getElementById("draw").addEventListener("click", startDraw);
   document.getElementById("m-snake").addEventListener("click", startSnake);
   document.getElementById("m-stack").addEventListener("click", startStack);
   document.getElementById("start").addEventListener("click", startGame);
@@ -2271,6 +2298,247 @@ function studyResults(st) {
   document.getElementById("st-again").addEventListener("click", startStudy);
   document.getElementById("st-home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- Drawing Studio ---------- */
+// Everything drawn is an object (a pen stroke or a shape), so any of it can be picked up, moved, resized, and recolored.
+const DW = 1000, DH = 700;
+const DRAW_COLORS = ["#111111", "#ffffff", "#7a7a7a", "#e53935", "#ff7043", "#ffb300", "#fdd835", "#7cb342", "#2e7d32", "#26c6da", "#1e88e5", "#3949ab", "#8e24aa", "#ec407a", "#8d6e63", "#f8bbd0"];
+const DRAW_TOOLS = [
+  ["move", "Move"], ["pen", "Pen"], ["eraser", "Eraser"],
+  ["line", "Line"], ["rect", "Square"], ["ellipse", "Circle"], ["tri", "Triangle"], ["star", "Star"], ["heart", "Heart"], ["arrow", "Arrow"]
+];
+let DR = null;
+function startDraw() {
+  stopSlope(); stopArchers(); stopMini(); closeShop();
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  DR = { objs: store.get("drawing", []), tool: "pen", color: "#1e88e5", size: 8, fill: false, sel: -1, undo: [], act: null };
+  if (!Array.isArray(DR.objs)) DR.objs = [];
+  $app.innerHTML = `
+    <div class="panel draw-wrap">
+      <div class="topline"><span class="label">Drawing Studio</span><button class="iconbtn" id="dr-home">Back to menu</button></div>
+      <div class="dr-tools" role="toolbar" aria-label="Tools">${DRAW_TOOLS.map(([k, n]) => `<button class="dr-tool" data-tool="${k}" aria-pressed="${k === DR.tool}">${toolIcon(k)}<span>${n}</span></button>`).join("")}</div>
+      <div class="dr-colors">${DRAW_COLORS.map(c => `<button class="dr-swatch" data-color="${c}" style="background:${c}" aria-label="Color ${c}"></button>`).join("")}
+        <label class="dr-custom" title="Pick any color"><input type="color" id="dr-pick" value="${DR.color}"><span>Any color</span></label></div>
+      <div class="dr-row">
+        <label class="dr-size">Size <input type="range" id="dr-size" min="2" max="48" value="${DR.size}"></label>
+        <label class="dr-fill"><input type="checkbox" id="dr-fill"> Filled shapes</label>
+      </div>
+      <canvas id="dr-cv" class="dr-canvas"></canvas>
+      <div class="dr-row dr-actions">
+        <button class="btn" id="dr-undo">Undo</button>
+        <button class="btn" id="dr-dup" disabled>Copy</button>
+        <button class="btn" id="dr-front" disabled>Bring to front</button>
+        <button class="btn" id="dr-del" disabled>Delete</button>
+        <button class="btn" id="dr-clear">Clear all</button>
+      </div>
+      <p class="soft dr-help" id="dr-help"></p>
+    </div>`;
+  document.getElementById("dr-home").addEventListener("click", showHome);
+  const cv = document.getElementById("dr-cv");
+  const fit = () => {
+    if (!cv.isConnected) return;
+    const w = cv.clientWidth, dpr = window.devicePixelRatio || 1;
+    cv.width = w * dpr; cv.height = w * DH / DW * dpr; cv.style.height = (w * DH / DW) + "px";
+    DR.k = DW / Math.max(1, w);
+    DR.ctx = cv.getContext("2d"); DR.ctx.setTransform(dpr * w / DW, 0, 0, dpr * w / DW, 0, 0);
+    drawAll();
+  };
+  if (window._drFit) window.removeEventListener("resize", window._drFit);
+  window._drFit = fit;
+  window.addEventListener("resize", fit);
+  $app.querySelectorAll("[data-tool]").forEach(b => b.addEventListener("click", () => { DR.tool = b.dataset.tool; if (DR.tool !== "move") DR.sel = -1; syncDrawUi(); drawAll(); }));
+  $app.querySelectorAll("[data-color]").forEach(b => b.addEventListener("click", () => setColor(b.dataset.color)));
+  document.getElementById("dr-pick").addEventListener("input", e => setColor(e.target.value));
+  document.getElementById("dr-size").addEventListener("input", e => { DR.size = +e.target.value; const o = DR.objs[DR.sel]; if (o) { pushUndo(); o.size = DR.size; saveDraw(); drawAll(); } });
+  document.getElementById("dr-fill").addEventListener("change", e => { DR.fill = e.target.checked; const o = DR.objs[DR.sel]; if (o && o.type !== "path" && o.type !== "line") { pushUndo(); o.fill = DR.fill; saveDraw(); drawAll(); } });
+  document.getElementById("dr-undo").addEventListener("click", undoDraw);
+  document.getElementById("dr-del").addEventListener("click", deleteSel);
+  document.getElementById("dr-dup").addEventListener("click", () => { const o = DR.objs[DR.sel]; if (!o) return; pushUndo(); const c = JSON.parse(JSON.stringify(o)); moveObj(c, 30, 30); DR.objs.push(c); DR.sel = DR.objs.length - 1; saveDraw(); syncDrawUi(); drawAll(); });
+  document.getElementById("dr-front").addEventListener("click", () => { const o = DR.objs[DR.sel]; if (!o) return; pushUndo(); DR.objs.splice(DR.sel, 1); DR.objs.push(o); DR.sel = DR.objs.length - 1; saveDraw(); drawAll(); });
+  const clear = document.getElementById("dr-clear");
+  clear.addEventListener("click", () => {
+    if (!clear.dataset.armed) { clear.dataset.armed = "1"; clear.textContent = "Tap again to clear"; setTimeout(() => { if (clear.isConnected) { delete clear.dataset.armed; clear.textContent = "Clear all"; } }, 2500); return; }
+    pushUndo(); DR.objs = []; DR.sel = -1; saveDraw(); syncDrawUi(); drawAll();
+    delete clear.dataset.armed; clear.textContent = "Clear all";
+  });
+  keyHandler = e => {
+    if ((e.key === "Delete" || e.key === "Backspace") && DR.sel >= 0) { e.preventDefault(); deleteSel(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); undoDraw(); }
+  };
+  const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * DW / r.width, (e.clientY - r.top) * DH / r.height]; };
+  cv.addEventListener("pointerdown", e => { e.preventDefault(); cv.setPointerCapture(e.pointerId); drawDown(pos(e)); });
+  cv.addEventListener("pointermove", e => { if (DR.act) drawMove(pos(e)); });
+  ["pointerup", "pointercancel"].forEach(t => cv.addEventListener(t, () => drawUp()));
+  syncDrawUi();
+  fit();
+}
+function toolIcon(k) {
+  const s = `fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`;
+  const p = {
+    move: `<path d="M12 2v20M2 12h20M12 2l-3 3M12 2l3 3M12 22l-3-3M12 22l3-3M2 12l3-3M2 12l3 3M22 12l-3-3M22 12l-3 3"/>`,
+    pen: `<path d="M4 20l4-1 11-11-3-3L5 16z"/>`,
+    eraser: `<path d="M7 20h10M5 15l8-9 6 6-6 7H8z"/>`,
+    line: `<path d="M5 19L19 5"/>`, rect: `<rect x="4" y="5" width="16" height="14" rx="1"/>`, ellipse: `<circle cx="12" cy="12" r="8"/>`,
+    tri: `<path d="M12 4l9 16H3z"/>`, star: `<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>`,
+    heart: `<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>`,
+    arrow: `<path d="M4 12h15M14 6l6 6-6 6"/>`
+  }[k];
+  return `<svg viewBox="0 0 24 24" ${s} aria-hidden="true">${p}</svg>`;
+}
+function setColor(c) {
+  DR.color = c;
+  const pick = document.getElementById("dr-pick"); if (pick && /^#[0-9a-f]{6}$/i.test(c)) pick.value = c;
+  const o = DR.objs[DR.sel];
+  if (o) { pushUndo(); o.color = c; saveDraw(); }
+  syncDrawUi(); drawAll();
+}
+function syncDrawUi() {
+  $app.querySelectorAll("[data-tool]").forEach(b => b.setAttribute("aria-pressed", b.dataset.tool === DR.tool));
+  $app.querySelectorAll("[data-color]").forEach(b => b.setAttribute("aria-pressed", b.dataset.color === DR.color));
+  const has = DR.sel >= 0;
+  ["dr-del", "dr-dup", "dr-front"].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !has; });
+  const help = document.getElementById("dr-help");
+  if (help) help.textContent = {
+    move: has ? "Drag it to move it. Drag the yellow corner to resize it. Tap a color to recolor it." : "Tap anything you drew to pick it up and move it.",
+    pen: "Draw with your finger or mouse.",
+    eraser: "Touch anything to erase it."
+  }[DR.tool] || "Drag on the canvas to make the shape. Then use Move to slide it around.";
+}
+function pushUndo() { DR.undo.push(JSON.stringify(DR.objs)); if (DR.undo.length > 60) DR.undo.shift(); }
+function undoDraw() { if (!DR.undo.length) return; DR.objs = JSON.parse(DR.undo.pop()); DR.sel = -1; saveDraw(); syncDrawUi(); drawAll(); }
+function deleteSel() { if (DR.sel < 0) return; pushUndo(); DR.objs.splice(DR.sel, 1); DR.sel = -1; saveDraw(); syncDrawUi(); drawAll(); }
+function saveDraw() { store.set("drawing", DR.objs); }
+
+function bbox(o) {
+  if (o.type === "path") {
+    const xs = o.pts.map(p => p[0]), ys = o.pts.map(p => p[1]);
+    return { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+  }
+  return { x: Math.min(o.x, o.x + o.w), y: Math.min(o.y, o.y + o.h), w: Math.abs(o.w), h: Math.abs(o.h) };
+}
+function moveObj(o, dx, dy) {
+  if (o.type === "path") o.pts = o.pts.map(([x, y]) => [x + dx, y + dy]);
+  else { o.x += dx; o.y += dy; }
+}
+function hitObj(o, x, y) {
+  const pad = o.size / 2 + 8 * (DR.k || 1);
+  if (o.type === "path" || o.type === "line" || o.type === "arrow") {
+    const pts = o.type === "path" ? o.pts : [[o.x, o.y], [o.x + o.w, o.y + o.h]];
+    if (pts.length === 1) return Math.hypot(x - pts[0][0], y - pts[0][1]) < pad;
+    for (let i = 1; i < pts.length; i++) if (segDist(x, y, { x: pts[i - 1][0], y: pts[i - 1][1] }, { x: pts[i][0], y: pts[i][1] }) < pad) return true;
+    return false;
+  }
+  const b = bbox(o);
+  return x > b.x - pad && x < b.x + b.w + pad && y > b.y - pad && y < b.y + b.h + pad;
+}
+function onHandle(x, y) {
+  const o = DR.objs[DR.sel];
+  if (!o) return false;
+  const b = bbox(o);
+  const r = 18 * (DR.k || 1);
+  return Math.abs(x - (b.x + b.w)) < r && Math.abs(y - (b.y + b.h)) < r;
+}
+function drawDown([x, y]) {
+  const t = DR.tool;
+  if (t === "move") {
+    if (onHandle(x, y)) { pushUndo(); const o = DR.objs[DR.sel]; DR.act = { kind: "resize", start: [x, y], orig: JSON.parse(JSON.stringify(o)), box: bbox(o) }; return; }
+    let hit = -1;
+    for (let i = DR.objs.length - 1; i >= 0; i--) if (hitObj(DR.objs[i], x, y)) { hit = i; break; }
+    DR.sel = hit;
+    if (hit >= 0) { pushUndo(); DR.act = { kind: "drag", last: [x, y] }; const o = DR.objs[hit]; DR.color = o.color; }
+    syncDrawUi(); drawAll();
+    return;
+  }
+  if (t === "eraser") { DR.act = { kind: "erase", pushed: false }; eraseAt(x, y); return; }
+  pushUndo();
+  const o = t === "pen" ? { type: "path", pts: [[x, y]], color: DR.color, size: DR.size } : { type: t, x, y, w: 0, h: 0, color: DR.color, size: DR.size, fill: DR.fill };
+  DR.objs.push(o);
+  DR.act = { kind: "make", o };
+  drawAll();
+}
+function eraseAt(x, y) {
+  for (let i = DR.objs.length - 1; i >= 0; i--) if (hitObj(DR.objs[i], x, y)) {
+    if (!DR.act.pushed) { pushUndo(); DR.act.pushed = true; }
+    DR.objs.splice(i, 1);
+  }
+  drawAll();
+}
+function drawMove([x, y]) {
+  const a = DR.act;
+  if (a.kind === "make") {
+    if (a.o.type === "path") a.o.pts.push([x, y]);
+    else { a.o.w = x - a.o.x; a.o.h = y - a.o.y; }
+  } else if (a.kind === "drag") {
+    moveObj(DR.objs[DR.sel], x - a.last[0], y - a.last[1]); a.last = [x, y];
+  } else if (a.kind === "resize") {
+    const o = DR.objs[DR.sel], b = a.box;
+    const nw = Math.max(10, b.w + (x - a.start[0])), nh = Math.max(10, b.h + (y - a.start[1]));
+    if (o.type === "path") {
+      const sx = b.w ? nw / b.w : 1, sy = b.h ? nh / b.h : 1;
+      o.pts = a.orig.pts.map(([px, py]) => [b.x + (px - b.x) * sx, b.y + (py - b.y) * sy]);
+    } else if (o.type === "line" || o.type === "arrow") {
+      o.w = a.orig.w + (x - a.start[0]) * Math.sign(a.orig.w || 1); o.h = a.orig.h + (y - a.start[1]) * Math.sign(a.orig.h || 1);
+    } else { o.x = b.x; o.y = b.y; o.w = nw; o.h = nh; }
+  } else if (a.kind === "erase") eraseAt(x, y);
+  drawAll();
+}
+function drawUp() {
+  const a = DR.act;
+  if (!a) return;
+  DR.act = null;
+  if (a.kind === "make") {
+    const o = a.o;
+    if (o.type !== "path" && Math.abs(o.w) < 4 && Math.abs(o.h) < 4) { o.w = 80; o.h = o.type === "line" || o.type === "arrow" ? 0 : 80; }
+    if (o.type !== "path" && o.type !== "line" && o.type !== "arrow") { const b = bbox(o); Object.assign(o, b); }
+  }
+  saveDraw(); syncDrawUi(); drawAll();
+}
+function shapePath(c, o) {
+  const { x, y, w, h } = o.type === "line" || o.type === "arrow" ? o : bbox(o);
+  c.beginPath();
+  if (o.type === "rect") c.rect(x, y, w, h);
+  else if (o.type === "ellipse") c.ellipse(x + w / 2, y + h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
+  else if (o.type === "tri") { c.moveTo(x + w / 2, y); c.lineTo(x + w, y + h); c.lineTo(x, y + h); c.closePath(); }
+  else if (o.type === "star") {
+    for (let i = 0; i < 10; i++) { const r = i % 2 ? .4 : 1, a = -Math.PI / 2 + i * Math.PI / 5; c.lineTo(x + w / 2 + Math.cos(a) * w / 2 * r, y + h / 2 + Math.sin(a) * h / 2 * r); }
+    c.closePath();
+  } else if (o.type === "heart") {
+    c.moveTo(x + w / 2, y + h);
+    c.bezierCurveTo(x - w * .1, y + h * .55, x + w * .05, y - h * .1, x + w / 2, y + h * .28);
+    c.bezierCurveTo(x + w * .95, y - h * .1, x + w * 1.1, y + h * .55, x + w / 2, y + h);
+    c.closePath();
+  } else if (o.type === "line" || o.type === "arrow") {
+    c.moveTo(x, y); c.lineTo(x + w, y + h);
+    if (o.type === "arrow") {
+      const ang = Math.atan2(h, w), L = Math.max(14, o.size * 2.5);
+      c.moveTo(x + w, y + h); c.lineTo(x + w - Math.cos(ang - .5) * L, y + h - Math.sin(ang - .5) * L);
+      c.moveTo(x + w, y + h); c.lineTo(x + w - Math.cos(ang + .5) * L, y + h - Math.sin(ang + .5) * L);
+    }
+  }
+}
+function drawAll() {
+  const c = DR?.ctx;
+  if (!c) return;
+  c.fillStyle = "#ffffff"; c.fillRect(0, 0, DW, DH);
+  c.lineCap = "round"; c.lineJoin = "round";
+  DR.objs.forEach(o => {
+    c.strokeStyle = o.color; c.fillStyle = o.color; c.lineWidth = o.size;
+    if (o.type === "path") {
+      if (o.pts.length === 1) { c.beginPath(); c.arc(o.pts[0][0], o.pts[0][1], o.size / 2, 0, 7); c.fill(); return; }
+      c.beginPath(); c.moveTo(...o.pts[0]); o.pts.slice(1).forEach(p => c.lineTo(...p)); c.stroke();
+      return;
+    }
+    shapePath(c, o);
+    if (o.fill && o.type !== "line" && o.type !== "arrow") c.fill(); else c.stroke();
+  });
+  const o = DR.objs[DR.sel];
+  if (o && DR.tool === "move") {
+    const b = bbox(o), p = o.size / 2 + 6;
+    c.strokeStyle = "#5b4bd6"; c.lineWidth = 2; c.setLineDash([8, 6]); c.strokeRect(b.x - p, b.y - p, b.w + p * 2, b.h + p * 2); c.setLineDash([]);
+    c.fillStyle = "#ffc93c"; c.strokeStyle = "#3a2600"; c.lineWidth = 2;
+    c.beginPath(); c.arc(b.x + b.w, b.y + b.h, 11 * Math.max(1, (DR.k || 1) * .8), 0, 7); c.fill(); c.stroke();
+  }
 }
 
 /* ---------- Timeline ---------- */
