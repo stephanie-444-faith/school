@@ -1,5 +1,5 @@
-<title>From Camp to City</title>
-<meta name="description" content="Gimkit-style study game for the Early Humans to Neolithic Revolution test: earn money for right answers and spend it on upgrades.">
+<title>Study Arcade</title>
+<meta name="description" content="Gimkit-style study games: Dig It Up, Slope Run, and Cash Race, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -205,12 +205,29 @@
   .qover .splash { padding: 18px 10px; }
   .qover .delta { font-size: clamp(1.8rem, 7vw, 2.6rem); }
 
+  .inv { grid-template-columns: repeat(6, 1fr); }
+  .slope-over[hidden] { display: none; }
+  .site { position: relative; max-height: 64vh; overflow: auto; overscroll-behavior: contain; }
+  .grid { grid-template-columns: repeat(25, 40px) !important; width: max-content; }
+  .cell { width: 40px; height: 40px; aspect-ratio: auto; }
+  .layer-label { position: relative; }
+  .layer-label .ll { position: sticky; left: 4px; display: inline-block; }
+  .l5 { background: #565b66; } .l6 { background: #45397a; } .l7 { background: #6b2618; box-shadow: inset 0 -3px 0 rgba(255,120,40,.35); }
+  .hint { font-size: .85rem; text-align: center; }
+  .slope-card { background: linear-gradient(160deg, #0b3a24, var(--panel) 70%); }
+  .slope-stage { position: relative; border-radius: 14px; overflow: hidden; background: #000; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .slope-stage canvas { display: block; width: 100%; }
+  .slope-over { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; background: rgba(0,0,0,.6); padding: 16px; }
+  .steer .btn { flex: 1; touch-action: none; user-select: none; -webkit-user-select: none; font-size: 1.1rem; padding: 16px; }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
     .tile { min-height: 64px; }
     .items { grid-template-columns: 1fr; }
     .invslot small { display: none; }
+    .inv { grid-template-columns: repeat(3, 1fr); }
+    .chips { grid-template-columns: repeat(2, 1fr); }
     .invslot { grid-template-columns: 24px 1fr; }
     .panel, .qcard { padding: 16px; }
   }
@@ -362,6 +379,169 @@ const POWERUPS = {
   mega: { name: "Mega Bonus", desc: "Your next right answer earns ×5.", mult: 25 },
   saver: { name: "Streak Saver", desc: "Your next wrong answer won't break your streak or cost money.", mult: 10 }
 };
+/* ---------- Other subjects (general middle-school review) ---------- */
+const SCIENCE = [
+  { q: "What is the basic unit of all living things?", a: "The cell", w: ["The atom", "The organ", "The tissue"], why: "Every living thing is made of one or more cells." },
+  { q: "Which part of the cell is called its powerhouse?", a: "Mitochondria", w: ["Nucleus", "Cell wall", "Vacuole"], why: "Mitochondria release energy from food for the cell." },
+  { q: "Which part of a cell holds its DNA and controls its activities?", a: "Nucleus", w: ["Cell membrane", "Cytoplasm", "Chloroplast"], why: "The nucleus is the cell's control center." },
+  { q: "What process do plants use to make their own food from sunlight?", a: "Photosynthesis", w: ["Respiration", "Digestion", "Evaporation"], why: "Plants use sunlight, water, and carbon dioxide to make sugar." },
+  { q: "Which gas do plants take in to make food?", a: "Carbon dioxide", w: ["Oxygen", "Nitrogen", "Helium"], why: "Plants take in carbon dioxide and give off oxygen." },
+  { q: "What are the three common states of matter?", a: "Solid, liquid, and gas", w: ["Hot, cold, and warm", "Rock, water, and air", "Atoms, cells, and organs"], why: "Matter is usually a solid, a liquid, or a gas." },
+  { q: "What is it called when liquid water changes into water vapor?", a: "Evaporation", w: ["Condensation", "Freezing", "Melting"], why: "Heat makes liquid water evaporate into a gas." },
+  { q: "What is it called when water vapor cools and turns into liquid drops?", a: "Condensation", w: ["Evaporation", "Precipitation", "Erosion"], why: "Condensation is how clouds and dew form." },
+  { q: "Which force pulls objects toward Earth?", a: "Gravity", w: ["Friction", "Magnetism", "Inertia"], why: "Gravity is the pull between objects that have mass." },
+  { q: "Which force slows things down when two surfaces rub together?", a: "Friction", w: ["Gravity", "Buoyancy", "Thrust"], why: "Friction works against motion between surfaces." },
+  { q: "What is Earth's thin outer layer called?", a: "Crust", w: ["Mantle", "Outer core", "Inner core"], why: "We live on the crust. The mantle and core are below it." },
+  { q: "What are the huge moving pieces of Earth's crust called?", a: "Tectonic plates", w: ["Fault lines", "Continents only", "Craters"], why: "Plate movement causes earthquakes, volcanoes, and mountains." },
+  { q: "What type of rock forms when melted rock (magma or lava) cools?", a: "Igneous", w: ["Sedimentary", "Metamorphic", "Fossil"], why: "Igneous means formed from fire." },
+  { q: "What type of rock forms from layers of sand, mud, and pebbles pressed together?", a: "Sedimentary", w: ["Igneous", "Metamorphic", "Volcanic"], why: "Sedimentary rock often holds fossils." },
+  { q: "What type of rock is changed by heat and pressure?", a: "Metamorphic", w: ["Igneous", "Sedimentary", "Magma"], why: "Metamorphic means changed form." },
+  { q: "Why do we have day and night?", a: "Earth spins (rotates) on its axis", w: ["Earth moves around the Sun", "The Moon blocks the Sun", "The Sun moves around Earth"], why: "One full spin takes about 24 hours." },
+  { q: "What causes Earth's seasons?", a: "The tilt of Earth's axis", w: ["Earth getting closer to the Sun", "The phases of the Moon", "Clouds blocking sunlight"], why: "The tilt changes how directly sunlight hits each half of Earth." },
+  { q: "What is an organism that makes its own food called?", a: "A producer", w: ["A consumer", "A decomposer", "A predator"], why: "Plants are producers. Animals that eat them are consumers." },
+  { q: "Which organisms break down dead plants and animals?", a: "Decomposers", w: ["Producers", "Herbivores", "Predators"], why: "Fungi and bacteria are decomposers. They return nutrients to the soil." },
+  { q: "What is the energy of motion called?", a: "Kinetic energy", w: ["Potential energy", "Chemical energy", "Nuclear energy"], why: "Anything that is moving has kinetic energy." },
+  { q: "A rock sitting at the top of a hill has what kind of energy?", a: "Potential energy", w: ["Kinetic energy", "Sound energy", "Light energy"], why: "Potential energy is stored energy based on position." },
+  { q: "What is the smallest unit of an element?", a: "An atom", w: ["A cell", "A molecule of salt", "A grain of sand"], why: "Atoms combine to make molecules." },
+  { q: "H₂O is the chemical formula for what?", a: "Water", w: ["Salt", "Oxygen gas", "Carbon dioxide"], why: "Two hydrogen atoms and one oxygen atom make water." },
+  { q: "In an experiment, what is the variable you change on purpose?", a: "The independent variable", w: ["The dependent variable", "The controlled variable", "The conclusion"], why: "The dependent variable is what you measure." },
+  { q: "What is a hypothesis?", a: "A testable prediction", w: ["A proven fact", "A list of materials", "A graph of results"], why: "Scientists test a hypothesis with an experiment." },
+  { q: "Which planet is known as the Red Planet?", a: "Mars", w: ["Venus", "Jupiter", "Saturn"], why: "Iron oxide (rust) in its soil makes Mars look red." },
+  { q: "What is the layer of gases around Earth called?", a: "The atmosphere", w: ["The hydrosphere", "The lithosphere", "The mantle"], why: "The atmosphere holds the air we breathe and protects us from the Sun." },
+  { q: "Which tool measures air pressure?", a: "Barometer", w: ["Thermometer", "Anemometer", "Rain gauge"], why: "An anemometer measures wind speed; a thermometer measures temperature." },
+  { q: "Which part of a plant takes in water from the soil?", a: "Roots", w: ["Leaves", "Flowers", "Seeds"], why: "Roots also hold the plant in place." },
+  { q: "What is the closest star to Earth?", a: "The Sun", w: ["The North Star", "The Moon", "Mars"], why: "The Sun is a star. The Moon is not a star." }
+];
+const HEALTH = [
+  { q: "Which nutrient is the body's main source of energy?", a: "Carbohydrates", w: ["Vitamins", "Minerals", "Water"], why: "Breads, rice, fruits, and pasta are carbohydrates." },
+  { q: "Which nutrient builds and repairs muscles?", a: "Protein", w: ["Sugar", "Fiber", "Water"], why: "Meat, beans, eggs, and nuts have protein." },
+  { q: "About how much sleep do kids ages 6–12 need each night?", a: "9 to 12 hours", w: ["4 to 5 hours", "6 to 7 hours", "14 to 16 hours"], why: "Sleep helps your brain, mood, and growth." },
+  { q: "How much physical activity should kids get?", a: "At least 60 minutes every day", w: ["10 minutes a week", "5 minutes a day", "2 hours a month"], why: "Daily activity keeps your heart, bones, and muscles strong." },
+  { q: "Which organ pumps blood through your body?", a: "The heart", w: ["The lungs", "The stomach", "The liver"], why: "The heart is part of the circulatory system." },
+  { q: "Which body system includes the lungs?", a: "Respiratory system", w: ["Digestive system", "Skeletal system", "Nervous system"], why: "The respiratory system brings in oxygen and removes carbon dioxide." },
+  { q: "Which body system includes the brain, spinal cord, and nerves?", a: "Nervous system", w: ["Muscular system", "Circulatory system", "Digestive system"], why: "The nervous system sends messages around your body." },
+  { q: "What is the best way to stop germs from spreading?", a: "Wash hands with soap and water for at least 20 seconds", w: ["Rinse hands with water for 2 seconds", "Wipe hands on your shirt", "Blow on your hands"], why: "Soap and scrubbing remove germs." },
+  { q: "On MyPlate, how much of your plate should be fruits and vegetables?", a: "About half", w: ["None", "A tiny corner", "All of it"], why: "Fruits and vegetables give vitamins, minerals, and fiber." },
+  { q: "What is the best drink for staying hydrated?", a: "Water", w: ["Soda", "Energy drinks", "Sweet tea"], why: "Water has no added sugar and keeps your body working well." },
+  { q: "What should you do if you see someone being bullied?", a: "Tell a trusted adult and be kind to the person being bullied", w: ["Join in", "Ignore it forever", "Record it and post it online"], why: "Getting help from an adult is the safe, right choice." },
+  { q: "Which is a healthy way to handle stress?", a: "Exercise, deep breathing, or talking to someone", w: ["Skipping meals", "Staying up all night", "Keeping it all inside"], why: "Healthy coping helps your body and mind." },
+  { q: "What SPF sunscreen do doctors recommend?", a: "SPF 30 or higher", w: ["SPF 2", "SPF 5", "None on cloudy days"], why: "UV rays can burn skin even when it is cloudy." },
+  { q: "Nicotine is the addictive drug found in what?", a: "Tobacco products and vapes", w: ["Fruit juice", "Milk", "Vitamins"], why: "Nicotine is very addictive and harms the developing brain." },
+  { q: "How do vaccines help your body?", a: "They help your body build protection against diseases", w: ["They give you energy", "They make bones longer", "They replace sleep"], why: "Vaccines train the immune system." },
+  { q: "How often should you replace your toothbrush?", a: "Every 3 to 4 months", w: ["Every 5 years", "Never", "Every day"], why: "Worn bristles don't clean teeth well." },
+  { q: "If your clothes catch on fire, what should you do?", a: "Stop, drop, and roll", w: ["Run as fast as you can", "Wave your arms", "Hide under a bed"], why: "Running feeds the fire more air." },
+  { q: "What number do you call for an emergency in the United States?", a: "911", w: ["411", "311", "711"], why: "Stay calm and tell them where you are." },
+  { q: "What is the largest organ of the human body?", a: "The skin", w: ["The heart", "The brain", "The liver"], why: "Skin protects your body from germs and injury." },
+  { q: "Which mineral helps build strong bones and teeth?", a: "Calcium", w: ["Sugar", "Caffeine", "Sodium"], why: "Milk, yogurt, cheese, and leafy greens have calcium." },
+  { q: "What do the bones of the skull protect?", a: "The brain", w: ["The heart", "The stomach", "The lungs"], why: "The rib cage protects the heart and lungs." }
+];
+const ELA = [
+  { q: "What is a noun?", a: "A person, place, thing, or idea", w: ["An action word", "A word that describes a noun", "A word that joins sentences"], why: "Dog, school, and freedom are all nouns." },
+  { q: "What is a verb?", a: "An action or state-of-being word", w: ["A naming word", "A describing word", "A punctuation mark"], why: "Run, think, and is are verbs." },
+  { q: "What does an adjective do?", a: "Describes a noun", w: ["Shows action", "Replaces a verb", "Ends a sentence"], why: "In 'the red ball,' red is an adjective." },
+  { q: "What does an adverb do?", a: "Describes a verb, adjective, or another adverb", w: ["Names a person", "Replaces a noun", "Joins two sentences"], why: "Many adverbs end in -ly, like quickly." },
+  { q: "\"The wind whispered through the trees.\" What is this?", a: "Personification", w: ["Simile", "Hyperbole", "Onomatopoeia"], why: "Wind can't really whisper. It is given a human action." },
+  { q: "\"He was as brave as a lion.\" What is this?", a: "Simile", w: ["Metaphor", "Alliteration", "Personification"], why: "A simile compares using like or as." },
+  { q: "\"Her voice is music to my ears.\" What is this?", a: "Metaphor", w: ["Simile", "Onomatopoeia", "Idiom only"], why: "A metaphor compares without using like or as." },
+  { q: "\"I've told you a million times!\" What is this?", a: "Hyperbole", w: ["Simile", "Personification", "Alliteration"], why: "Hyperbole is a huge exaggeration." },
+  { q: "\"Buzz, sizzle, pop!\" What are these words an example of?", a: "Onomatopoeia", w: ["Metaphor", "Hyperbole", "Simile"], why: "Onomatopoeia words sound like what they mean." },
+  { q: "\"Sally sells seashells by the seashore.\" What is this?", a: "Alliteration", w: ["Rhyme scheme", "Metaphor", "Personification"], why: "Alliteration repeats the same beginning sound." },
+  { q: "What is the main character of a story called?", a: "The protagonist", w: ["The antagonist", "The narrator always", "The author"], why: "The antagonist works against the protagonist." },
+  { q: "What is the setting of a story?", a: "When and where it takes place", w: ["The main problem", "The lesson", "The ending"], why: "Setting is the time and place." },
+  { q: "What is the climax of a story?", a: "The turning point, with the most tension", w: ["The first sentence", "The list of characters", "The title"], why: "After the climax comes the falling action and resolution." },
+  { q: "What is a story's theme?", a: "The message or lesson about life", w: ["The setting", "The title", "The number of chapters"], why: "Theme is the big idea the author wants you to understand." },
+  { q: "A story told using \"I\" and \"me\" by a character is in which point of view?", a: "First person", w: ["Second person", "Third person", "No point of view"], why: "Third person uses he, she, and they." },
+  { q: "Which sentence is correct?", a: "They're bringing their dog over there.", w: ["Their bringing they're dog over there.", "There bringing their dog over they're.", "They're bringing there dog over their."], why: "They're = they are. Their = belongs to them. There = a place." },
+  { q: "Which sentence is correct?", a: "It's raining, and the dog wagged its tail.", w: ["Its raining, and the dog wagged it's tail.", "It's raining, and the dog wagged it's tail.", "Its raining, and the dog wagged its tail."], why: "It's = it is. Its = belongs to it." },
+  { q: "Which of these is a complete sentence?", a: "The dog barked loudly.", w: ["Because the dog barked.", "Barking loudly at night.", "The big brown dog."], why: "A complete sentence has a subject and a verb and a complete thought." },
+  { q: "What does a topic sentence do?", a: "States the main idea of a paragraph", w: ["Ends the story", "Lists the sources", "Asks the reader a riddle"], why: "Supporting details then explain the main idea." },
+  { q: "Which word is a synonym for \"happy\"?", a: "Joyful", w: ["Gloomy", "Angry", "Tired"], why: "Synonyms have the same or similar meaning." },
+  { q: "Which word is an antonym for \"ancient\"?", a: "Modern", w: ["Old", "Historic", "Prehistoric"], why: "Antonyms have opposite meanings." },
+  { q: "What does the prefix \"un-\" mean, as in \"unhappy\"?", a: "Not", w: ["Again", "Before", "Too much"], why: "Re- means again. Pre- means before." },
+  { q: "What kind of writing tries to convince the reader?", a: "Persuasive", w: ["Narrative", "Descriptive", "Poetry only"], why: "Persuasive writing gives reasons and evidence for an opinion." },
+  { q: "In an essay, what is evidence?", a: "Facts, details, or quotes that support your claim", w: ["Your title", "Your favorite word", "Page numbers"], why: "Strong writing backs up claims with evidence." },
+  { q: "Which words should be capitalized in: \"we visited paris in june.\"?", a: "We, Paris, and June", w: ["Only we", "Visited and in", "Nothing"], why: "Capitalize the first word, names of places, and months." },
+  { q: "What is the plural of \"child\"?", a: "Children", w: ["Childs", "Childes", "Childrens"], why: "Child is an irregular noun." }
+];
+const ART = [
+  { q: "Which of these is one of the elements of art?", a: "Texture", w: ["Balance", "Emphasis", "Unity"], why: "The elements are line, shape, form, space, color, value, and texture. Balance, emphasis, and unity are principles." },
+  { q: "What are the three primary colors (for paint)?", a: "Red, yellow, and blue", w: ["Orange, green, and purple", "Black, white, and gray", "Pink, brown, and teal"], why: "Primary colors can't be made by mixing other colors." },
+  { q: "What are the secondary colors?", a: "Orange, green, and violet", w: ["Red, yellow, and blue", "Black and white", "Brown and tan"], why: "Each is made by mixing two primary colors." },
+  { q: "What do you get when you mix blue and yellow?", a: "Green", w: ["Orange", "Purple", "Brown"], why: "Blue + yellow = green." },
+  { q: "What do you get when you mix red and yellow?", a: "Orange", w: ["Green", "Purple", "Pink"], why: "Red + yellow = orange." },
+  { q: "What do you get when you mix red and blue?", a: "Purple (violet)", w: ["Green", "Orange", "Yellow"], why: "Red + blue = violet." },
+  { q: "What are colors across from each other on the color wheel called?", a: "Complementary colors", w: ["Analogous colors", "Neutral colors", "Primary colors"], why: "Red and green are complementary. They make each other stand out." },
+  { q: "What are colors next to each other on the color wheel called?", a: "Analogous colors", w: ["Complementary colors", "Opposite colors", "Neutral colors"], why: "Blue, blue-green, and green are analogous." },
+  { q: "Which are warm colors?", a: "Red, orange, and yellow", w: ["Blue, green, and violet", "Black and white", "Gray and brown"], why: "Warm colors remind us of fire and the sun." },
+  { q: "Which are cool colors?", a: "Blue, green, and violet", w: ["Red, orange, and yellow", "Pink and red", "Gold and orange"], why: "Cool colors remind us of water and plants." },
+  { q: "What is value in art?", a: "How light or dark a color is", w: ["How much the art costs", "How big the art is", "The kind of paper used"], why: "Value helps show shadows and depth." },
+  { q: "Adding white to a color makes a...", a: "Tint", w: ["Shade", "Tone", "Hue"], why: "Adding black makes a shade." },
+  { q: "Adding black to a color makes a...", a: "Shade", w: ["Tint", "Primary color", "Texture"], why: "Adding white makes a tint." },
+  { q: "What is the difference between shape and form?", a: "Shape is flat (2-D); form is 3-D", w: ["They mean the same thing", "Form is flat; shape is 3-D", "Shape is only circles"], why: "A circle is a shape. A sphere is a form." },
+  { q: "What is negative space?", a: "The empty space around and between objects", w: ["A dark painting", "A mistake", "A sad picture"], why: "Positive space is the object itself." },
+  { q: "Which principle of design makes one part stand out the most?", a: "Emphasis", w: ["Pattern", "Unity", "Texture"], why: "Emphasis draws your eye to the focal point." },
+  { q: "When both sides of an artwork look the same, it has...", a: "Symmetrical balance", w: ["Asymmetrical balance", "No balance", "Negative value"], why: "Asymmetrical balance uses different things that still feel even." },
+  { q: "Which technique makes faraway objects look smaller to show depth?", a: "Perspective", w: ["Collage", "Mosaic", "Weaving"], why: "Perspective makes flat art look 3-D." },
+  { q: "In one-point perspective, where do the lines meet?", a: "At the vanishing point", w: ["At the corner of the paper", "At the signature", "They never meet"], why: "The vanishing point sits on the horizon line." },
+  { q: "Who painted \"The Starry Night\"?", a: "Vincent van Gogh", w: ["Pablo Picasso", "Leonardo da Vinci", "Frida Kahlo"], why: "Van Gogh painted it in 1889." },
+  { q: "Who painted the \"Mona Lisa\"?", a: "Leonardo da Vinci", w: ["Vincent van Gogh", "Michelangelo", "Claude Monet"], why: "Leonardo was also an inventor and scientist." },
+  { q: "An artwork of a person is called a...", a: "Portrait", w: ["Landscape", "Still life", "Seascape"], why: "A landscape shows scenery; a still life shows objects." },
+  { q: "What is a still life?", a: "Art showing an arrangement of non-living objects", w: ["A picture of mountains", "A statue of a person", "A cartoon"], why: "Bowls of fruit and vases are common still-life subjects." }
+];
+
+/* Math questions are generated fresh every time, so there are endless ones. */
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function numChoices(ans, extra = []) {
+  const set = new Set([String(ans)]);
+  extra.forEach(x => { if (set.size < 4 && x !== ans && Number.isFinite(x)) set.add(String(x)); });
+  let tries = 0;
+  while (set.size < 4 && tries++ < 50) {
+    const d = rnd(1, Math.max(3, Math.round(Math.abs(ans) * .2) || 3)) * (Math.random() < .5 ? -1 : 1);
+    const v = ans + d;
+    if (ans >= 0 && v < 0) continue;
+    set.add(String(v));
+  }
+  return [...set].slice(1);
+}
+function fracStr(n, d) { const g = gcd(n, d); n /= g; d /= g; return d === 1 ? String(n) : `${n}/${d}`; }
+const MATH_GENS = [
+  () => { const a = rnd(3, 12), b = rnd(3, 12); return { p: `${a} × ${b} = ?`, a: a * b, x: [a * (b + 1), a * (b - 1)], why: `${a} groups of ${b} is ${a * b}.` }; },
+  () => { const b = rnd(3, 12), ans = rnd(3, 12); return { p: `${b * ans} ÷ ${b} = ?`, a: ans, x: [ans + 1, ans - 1], why: `${b} × ${ans} = ${b * ans}, so ${b * ans} ÷ ${b} = ${ans}.` }; },
+  () => { const a = rnd(-15, 15), b = rnd(-15, 15); return { p: `(${a}) + (${b}) = ?`, a: a + b, x: [a - b, -(a + b)], why: `Adding a negative is like subtracting. The answer is ${a + b}.` }; },
+  () => { const a = rnd(-12, 12), b = rnd(2, 15); return { p: `${a} − ${b} = ?`, a: a - b, x: [a + b, b - a], why: `Start at ${a} and move ${b} to the left on the number line: ${a - b}.` }; },
+  () => { const a = rnd(2, 9), b = rnd(2, 9), c = rnd(2, 9); return { p: `${a} + ${b} × ${c} = ?`, a: a + b * c, x: [(a + b) * c, a * b + c], why: `Multiply first (${b} × ${c} = ${b * c}), then add ${a}.` }; },
+  () => { const x = rnd(2, 20), a = rnd(2, 20); return { p: `Solve: x + ${a} = ${x + a}`, a: x, x: [x + a + a, x + 1], why: `Subtract ${a} from both sides: x = ${x}.` }; },
+  () => { const x = rnd(2, 12), a = rnd(2, 9); return { p: `Solve: ${a}x = ${a * x}`, a: x, x: [a * x - a, x + a], why: `Divide both sides by ${a}: x = ${x}.` }; },
+  () => { const pc = [10, 20, 25, 50, 75][rnd(0, 4)], n = rnd(2, 20) * 4 * 5; return { p: `What is ${pc}% of ${n}?`, a: n * pc / 100, x: [n * pc / 10, n - n * pc / 100], why: `${pc}% means ${pc} out of 100: ${n} × ${pc / 100} = ${n * pc / 100}.` }; },
+  () => { const l = rnd(3, 15), w = rnd(2, 12); return { p: `A rectangle is ${l} cm long and ${w} cm wide. What is its area in square cm?`, a: l * w, x: [2 * (l + w), l + w], why: `Area = length × width = ${l} × ${w} = ${l * w}. (Perimeter would be ${2 * (l + w)}.)` }; },
+  () => { const b = rnd(2, 12) * 2, h = rnd(2, 12); return { p: `A triangle has a base of ${b} and a height of ${h}. What is its area?`, a: b * h / 2, x: [b * h, b + h], why: `Area = ½ × base × height = ½ × ${b} × ${h} = ${b * h / 2}.` }; },
+  () => { const n = rnd(2, 12); return { p: `What is ${n}² (${n} squared)?`, a: n * n, x: [n * 2, n * n + n], why: `${n}² means ${n} × ${n} = ${n * n}.` }; },
+  () => { const a = rnd(2, 9) * rnd(1, 4), b = rnd(2, 9) * rnd(1, 4), g = gcd(a, b); return { p: `What is the greatest common factor (GCF) of ${a} and ${b}?`, a: g, x: [g * 2, a * b / g, 1].filter(v => v !== g), why: `${g} is the biggest number that divides both ${a} and ${b}.` }; },
+  () => { const a = rnd(1, 99) / 10, b = rnd(1, 99) / 10, s = Math.round((a + b) * 10) / 10; return { p: `${a} + ${b} = ?`, a: s, x: [Math.round((s + 1) * 10) / 10, Math.round((s - .1) * 10) / 10, Math.round((s + .1) * 10) / 10], why: `Line up the decimal points and add: ${s}.` }; },
+  () => {
+    const d = [4, 6, 8, 10, 12][rnd(0, 4)], a = rnd(1, d - 2), b = rnd(1, d - a - 1);
+    const ans = fracStr(a + b, d);
+    const w = [`${a + b}/${d + d}`, fracStr(a + b + 1, d), `${a * b}/${d}`].filter(v => v !== ans);
+    return { p: `${a}/${d} + ${b}/${d} = ? (simplify)`, a: ans, w: [...new Set(w)].slice(0, 3), why: `Same denominator: add the tops. ${a + b}/${d} simplifies to ${ans}.` };
+  },
+  () => { const g = rnd(2, 6), a = rnd(1, 5), b = rnd(1, 5) + (a === 1 ? 1 : 0); const k = gcd(a, b); const ans = `${a / k}:${b / k}`; return { p: `Simplify the ratio ${a * g}:${b * g}`, a: ans, w: [`${b / k}:${a / k}`, `${a * g}:${b}`, `${a / k + 1}:${b / k}`].filter(v => v !== ans), why: `Divide both numbers by ${g * k}: ${ans}.` }; }
+];
+function mathQuestion(gen) {
+  const m = gen();
+  const w = m.w || numChoices(m.a, m.x || []);
+  return { kind: "mc", tag: "Math", prompt: esc(m.p), a: String(m.a), w: [...new Set(w.map(String))].filter(v => v !== String(m.a)).slice(0, 3), why: esc(m.why) };
+}
+const bankQuestion = tag => q => ({ kind: "mc", tag, prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) });
+const SUBJECTS = {
+  ss: { name: "Social Studies", desc: "Early Humans test" },
+  math: { name: "Math", desc: "Endless new problems" },
+  science: { name: "Science", desc: "Cells, Earth, energy, space" },
+  health: { name: "Health", desc: "Body, food, and safety" },
+  ela: { name: "Reading & Writing", desc: "Grammar and story words" },
+  art: { name: "Art", desc: "Color, design, and artists" },
+  mix: { name: "Mix it up", desc: "A bit of everything" }
+};
 const SETS = {
   all: { name: "Everything", desc: "Vocab, big ideas, and GRAPES mixed" },
   vocab: { name: "Vocabulary", desc: "All 24 words" },
@@ -432,8 +612,15 @@ function sourceFor(set) {
   const v = VOCAB.map(x => () => vocabQuestion(x));
   const q = QUIZ.map(x => () => quizQuestion(x));
   const g = [...GRAPES_FACTS, ...GRAPES_DEF_QS].map(x => () => grapesQuestion(x));
-  return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g }[set];
+  const math = [...MATH_GENS, ...MATH_GENS].map(gen => () => mathQuestion(gen));
+  const sci = SCIENCE.map(x => () => bankQuestion("Science")(x));
+  const health = HEALTH.map(x => () => bankQuestion("Health")(x));
+  const ela = ELA.map(x => () => bankQuestion("Reading & Writing")(x));
+  const art = ART.map(x => () => bankQuestion("Art")(x));
+  return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, science: sci, health, ela, art,
+    mix: [...v, ...q, ...g, ...math, ...sci, ...health, ...ela, ...art] }[set];
 }
+const currentSet = () => choice.subject === "ss" ? choice.set : choice.subject;
 function makeDeck(set) {
   const src = sourceFor(set);
   const deck = { queue: shuffle(src) };
@@ -444,30 +631,41 @@ function makeDeck(set) {
 }
 
 /* ---------- Home ---------- */
-let choice = { set: store.get("set", "all"), goal: store.get("goal", "r10k") };
+let choice = { subject: store.get("subject", "ss"), set: store.get("set", "all"), goal: store.get("goal", "r10k") };
+if (!SUBJECTS[choice.subject]) choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
 
 function showHome() {
   keyHandler = null;
+  stopSlope();
   const best = store.get("best", {});
   const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
+  const ss = choice.subject === "ss";
   $app.innerHTML = `
     <div class="hero">
-      <span class="label">Early Humans to the Neolithic Revolution</span>
-      <h1>From Camp <span>to City</span></h1>
-      <p class="soft">Answer questions to power up, then play. Pick your questions first.</p>
+      <span class="label">Practice, then play</span>
+      <h1>Study <span>Arcade</span></h1>
+      <p class="soft">Pick what you want to practice, then pick a game. Questions pop up while you play.</p>
     </div>
     <div class="panel">
-      <span class="label">Questions</span>
-      <div class="chips">${chipRow(SETS, "set")}</div>
+      <span class="label">1 · What do you want to practice?</span>
+      <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
+      ${ss ? `<span class="label">Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>` : ""}
     </div>
     <div class="panel feature-dig">
-      <span class="label">Main game</span>
+      <span class="label">2 · Main game</span>
       <h2>Dig It Up</h2>
-      <p>Dig through the dig site to find <b>wheat, copper, iron, and diamonds</b>. Use them to craft better pickaxes. Questions pop up while you dig: get them right and they come less often (up to every 2 minutes); miss them and they come faster (as often as every 10 seconds). Craft the <b>Diamond Pickaxe</b> to win!</p>
+      <p>Dig a huge world for <b>wheat, copper, iron, diamonds, rubies, and titanium</b>. Craft better and better pickaxes. Questions pop up while you dig: get them right and they come less often (up to every 2 minutes); miss them and they come faster (as often as every 10 seconds). Craft the <b>Titanium Pickaxe</b> to win, then keep exploring!</p>
       <button class="btn go" id="dig">Start digging</button>
       ${best.dig ? `<p class="best soft">Your fastest win: <span class="money">${formatTime(best.dig)}</span></p>` : ""}
+    </div>
+    <div class="panel slope-card">
+      <span class="label">Brain break</span>
+      <h2>Slope Run</h2>
+      <p>Steer a ball down a neon slope. Dodge red blocks and don't fall off. It keeps getting faster!</p>
+      <button class="btn go" id="slope">Play Slope Run</button>
+      ${best.slope ? `<p class="best soft">Your best distance: <span class="money">${fmt(best.slope)} m</span></p>` : ""}
     </div>
     <div class="panel">
       <span class="label">Bonus game · Cash Race</span>
@@ -476,8 +674,8 @@ function showHome() {
       <button class="btn gold" id="start">Start Cash Race</button>
       ${best[choice.goal] ? `<p class="best soft">Your best in this mode: <span class="money">${GOALS[choice.goal].type === "race" ? formatTime(best[choice.goal]) : "$" + fmt(best[choice.goal])}</span></p>` : ""}
     </div>
-    <div class="panel">
-      <span class="label">Study extras</span>
+    ${ss ? `<div class="panel">
+      <span class="label">Social Studies extras</span>
       <div class="extras">
         <button class="btn" id="tl">Timeline<span>Put 14 events in order, from Africa to cities</span></button>
         <button class="btn" id="fq">Focus Questions<span>The 8 questions from the study guide, with model answers</span></button>
@@ -486,13 +684,17 @@ function showHome() {
         <summary>What GRAPES stands for</summary>
         <div class="legend">${Object.entries(GRAPES_CATS).map(([k, v]) => `<div><b>${k}</b> ${v.name}: ${v.say.toLowerCase()}</div>`).join("")}</div>
       </details>
-    </div>`;
+    </div>` : ""}`;
+  $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => { choice.subject = b.dataset.subject; store.set("subject", choice.subject); showHome(); }));
   $app.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => { choice.set = b.dataset.set; store.set("set", choice.set); showHome(); }));
   $app.querySelectorAll("[data-goal]").forEach(b => b.addEventListener("click", () => { choice.goal = b.dataset.goal; store.set("goal", choice.goal); showHome(); }));
   document.getElementById("dig").addEventListener("click", startDig);
+  document.getElementById("slope").addEventListener("click", startSlope);
   document.getElementById("start").addEventListener("click", startGame);
-  document.getElementById("tl").addEventListener("click", startTimeline);
-  document.getElementById("fq").addEventListener("click", startFocus);
+  if (ss) {
+    document.getElementById("tl").addEventListener("click", startTimeline);
+    document.getElementById("fq").addEventListener("click", startFocus);
+  }
 }
 const formatTime = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 
@@ -503,7 +705,7 @@ function startGame() {
   clearInterval(G?.timer);
   const goal = GOALS[choice.goal];
   G = {
-    goal, goalKey: choice.goal, set: choice.set, deck: makeDeck(choice.set),
+    goal, goalKey: choice.goal, set: choice.set, deck: makeDeck(currentSet()),
     money: 0, streak: 0, bestStreak: 0, right: 0, total: 0,
     lv: { mpq: 0, sb: 0, mul: 0, ins: 0 }, bonus: 1, saver: false,
     missed: new Map(), secs: goal.type === "time" ? goal.secs : 0, over: false
@@ -730,14 +932,23 @@ function endGame() {
 }
 
 /* ---------- Dig It Up ---------- */
-// Deeper layers are older, the way archaeologists read soil. Layer 0 is the newest.
+// Deeper layers are older, the way archaeologists read soil. Below the history layers is deep rock with rare gems.
 const LAYERS = [
-  { name: "City Ruins", era: "newest layer", hard: 1 },
-  { name: "Growing Town", era: "surplus and trade", hard: 2 },
-  { name: "Farming Village", era: "Neolithic Revolution, about 10,000 B.C.E.", hard: 2 },
-  { name: "Nomad Camp", era: "hunter-gatherers", hard: 3 },
-  { name: "Ice Age", era: "oldest layer", hard: 4 }
+  { name: "City Ruins", era: "newest layer", hard: 1, rows: 6 },
+  { name: "Growing Town", era: "surplus and trade", hard: 2, rows: 6 },
+  { name: "Farming Village", era: "Neolithic Revolution, about 10,000 B.C.E.", hard: 2, rows: 6 },
+  { name: "Nomad Camp", era: "hunter-gatherers", hard: 3, rows: 6 },
+  { name: "Ice Age", era: "oldest human layer", hard: 4, rows: 6 },
+  { name: "Deep Bedrock", era: "millions of years old, long before people", hard: 6, rows: 8 },
+  { name: "Crystal Caves", era: "rubies sparkle down here", hard: 8, rows: 8 },
+  { name: "Molten Core", era: "the deepest, hottest rock", hard: 10, rows: 8 }
 ];
+const ROW_LAYER = [-1];
+LAYERS.forEach((L, i) => { for (let k = 0; k < L.rows; k++) ROW_LAYER.push(i); });
+const ROWS = ROW_LAYER.length, COLS = 25;
+const layerOf = r => ROW_LAYER[r];
+const layerRows = L => ROW_LAYER.map((x, r) => x === L ? r : -1).filter(r => r >= 0);
+
 const ARTIFACTS = [
   { layer: 0, name: "Mud brick from a city wall", fact: "As villages grew larger they became cities. That process is called urbanization.", g: "A" },
   { layer: 0, name: "Leader's stamp seal", fact: "As societies grew, leaders organized work, managed trade, and settled disputes.", g: "P" },
@@ -750,54 +961,65 @@ const ARTIFACTS = [
   { layer: 4, name: "Bone sewing needle", fact: "In the Ice Age cold, people adapted by sewing warm clothing and building shelters.", g: "A" },
   { layer: 4, name: "Stone hand axe from Africa", fact: "Homo sapiens first developed in Africa, then migrated to Asia, Europe, Australia, and the Americas.", g: "G" }
 ];
-// Resources: how many are hidden, which layers they favor, how hard they are, and the tool tier needed.
+// How many of each resource are hidden, which layers they favor, how hard they are, and the tool tier needed.
 const RES = {
-  wheat:   { name: "Wheat",   count: 16, layers: [5, 4, 2, 0, 0], hard: 1, tier: 0, color: "#f2cf55" },
-  copper:  { name: "Copper",  count: 13, layers: [0, 3, 4, 3, 0], hard: 3, tier: 0, color: "#e07b39" },
-  iron:    { name: "Iron",    count: 14, layers: [0, 0, 2, 4, 4], hard: 5, tier: 1, color: "#c9d1d8" },
-  diamond: { name: "Diamonds", count: 6, layers: [0, 0, 0, 1, 4], hard: 8, tier: 2, color: "#6fe3f0" }
+  wheat:    { name: "Wheat",    count: 40, layers: [5, 4, 3, 1, 0, 0, 0, 0], hard: 1,  tier: 0, color: "#f2cf55" },
+  copper:   { name: "Copper",   count: 36, layers: [0, 3, 4, 3, 1, 0, 0, 0], hard: 3,  tier: 0, color: "#e07b39" },
+  iron:     { name: "Iron",     count: 36, layers: [0, 0, 2, 4, 4, 2, 0, 0], hard: 5,  tier: 1, color: "#c9d1d8" },
+  diamond:  { name: "Diamond",  count: 20, layers: [0, 0, 0, 1, 3, 3, 1, 0], hard: 8,  tier: 2, color: "#6fe3f0" },
+  ruby:     { name: "Ruby",     count: 16, layers: [0, 0, 0, 0, 0, 2, 4, 2], hard: 11, tier: 3, color: "#ff3b6b" },
+  titanium: { name: "Titanium", count: 14, layers: [0, 0, 0, 0, 0, 0, 2, 4], hard: 14, tier: 4, color: "#9ec3ff" }
 };
-// Tools. Wheat feeds the specialist toolmaker: a surplus makes specialization possible!
+// Tools. Wheat feeds the specialist toolmaker: a food surplus is what made specialization possible!
 const TOOLS = [
   { name: "Stone Pickaxe", power: 1, cost: {}, can: "Mines dirt, wheat, and copper." },
-  { name: "Copper Pickaxe", power: 2, cost: { copper: 4, wheat: 2 }, can: "Digs twice as fast and can mine iron." },
-  { name: "Iron Pickaxe", power: 3, cost: { iron: 5, copper: 2, wheat: 3 }, can: "Digs three times as fast and can mine diamonds." },
-  { name: "Diamond Pickaxe", power: 6, cost: { diamond: 3, iron: 3, wheat: 4 }, can: "The best tool there is. Crafting it wins the game!" }
+  { name: "Copper Pickaxe", power: 2, cost: { copper: 4, wheat: 2 }, can: "Digs 2× as fast and can mine iron." },
+  { name: "Iron Pickaxe", power: 3, cost: { iron: 5, copper: 2, wheat: 3 }, can: "Digs 3× as fast and can mine diamonds." },
+  { name: "Diamond Pickaxe", power: 5, cost: { diamond: 3, iron: 3, wheat: 4 }, can: "Digs 5× as fast and can mine rubies." },
+  { name: "Ruby Pickaxe", power: 8, cost: { ruby: 4, diamond: 2, iron: 3, wheat: 5 }, can: "Digs 8× as fast and can mine titanium." },
+  { name: "Titanium Pickaxe", power: 12, cost: { titanium: 5, ruby: 2, diamond: 2, wheat: 6 }, can: "The strongest tool in the game. Crafting it wins!" }
+];
+const TRADES = [
+  { give: "wheat", n: 4, get: "copper", why: "Trade your surplus wheat. Trade grew when people had extra goods to exchange." },
+  { give: "copper", n: 3, get: "iron", why: "Specialists traded the goods they made for things they needed." }
 ];
 const Q_MIN = 10, Q_MAX = 120, Q_START = 30;
-const COLS = 9, LROWS = 4, ROWS = 1 + LAYERS.length * LROWS;
 const GIM = `<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="18" r="11" fill="#ffc93c" stroke="#3a2600" stroke-width="2"/><circle cx="12.5" cy="17" r="2" fill="#1a1240"/><circle cx="19.5" cy="17" r="2" fill="#1a1240"/><path d="M12 22q4 3 8 0" stroke="#1a1240" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M6 11q10-10 20 0z" fill="#d7334a" stroke="#3a2600" stroke-width="1.5"/></svg>`;
 const GEM = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l7 7-7 13-7-13z" fill="#ffc93c" stroke="#7a5200" stroke-width="1.5"/></svg>`;
 function resIcon(k) {
   const c = RES[k].color;
   if (k === "wheat") return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 23V7" stroke="#b8932a" stroke-width="2"/>${[[12,4],[9,8],[15,8],[9,13],[15,13]].map(([x,y]) => `<ellipse cx="${x}" cy="${y}" rx="2.3" ry="3.4" fill="${c}" stroke="#8a6a12" stroke-width=".8"/>`).join("")}</svg>`;
   if (k === "diamond") return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 6-7 12-7-12z" fill="${c}" stroke="#167a86" stroke-width="1.5"/><path d="M5 9h14" stroke="#167a86"/></svg>`;
+  if (k === "ruby") return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l4 6-9 11-9-11z" fill="${c}" stroke="#7a0a24" stroke-width="1.5"/><path d="M3 10h18M9 4l-2 6 5 11 5-11-2-6" stroke="#7a0a24" stroke-width=".8" fill="none"/></svg>`;
+  if (k === "titanium") return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8.5 5v10L12 22l-8.5-5V7z" fill="${c}" stroke="#2c4a7a" stroke-width="1.5"/><path d="M12 7l4 2.5v5L12 17l-4-2.5v-5z" fill="#e6f0ff" stroke="#2c4a7a" stroke-width="1"/></svg>`;
   return `<svg viewBox="0 0 24 24" aria-hidden="true">${[[7,8,3.4],[16,6,2.6],[14,15,3.6],[6,17,2.4],[19,13,2]].map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" stroke="rgba(0,0,0,.45)" stroke-width="1"/>`).join("")}</svg>`;
 }
 let D = null;
-
-const layerOf = r => r === 0 ? -1 : Math.floor((r - 1) / LROWS);
 const tool = () => TOOLS[D.tier];
+const fullHp = (r, t) => t.res ? RES[t.res].hard : t.boulder ? LAYERS[layerOf(r)].hard * 2 + 2 : r > 0 ? LAYERS[layerOf(r)].hard : 0;
 
 function startDig() {
   closeShop();
+  stopSlope();
   clearInterval(D?.timer);
   const grid = [];
   for (let r = 0; r < ROWS; r++) {
     grid.push([]);
     for (let c = 0; c < COLS; c++) {
-      const L = layerOf(r);
-      const boulder = r > 0 && Math.random() < .08;
-      grid[r].push({ dug: r === 0, boulder, res: null, art: -1, hp: r === 0 ? 0 : boulder ? 6 : LAYERS[L].hard });
+      const t = { dug: r === 0, boulder: r > 0 && Math.random() < .07, res: null, art: -1 };
+      t.hp = fullHp(r, t);
+      grid[r].push(t);
     }
   }
-  const freeCell = layer => {
+  const startC = Math.floor(COLS / 2);
+  const freeCell = L => {
+    const rows = layerRows(L);
     let r, c, n = 0;
-    do { r = 1 + layer * LROWS + Math.floor(Math.random() * LROWS); c = Math.floor(Math.random() * COLS); n++; }
-    while ((grid[r][c].res || grid[r][c].art >= 0 || (r === 1 && c === 4)) && n < 500);
+    do { r = rows[rnd(0, rows.length - 1)]; c = rnd(0, COLS - 1); n++; }
+    while ((grid[r][c].res || grid[r][c].art >= 0 || (r === 1 && c === startC)) && n < 500);
     return grid[r][c];
   };
-  ARTIFACTS.forEach((a, i) => { const t = freeCell(a.layer); t.art = i; });
+  ARTIFACTS.forEach((a, i) => { freeCell(a.layer).art = i; });
   Object.entries(RES).forEach(([k, R]) => {
     const total = R.layers.reduce((a, b) => a + b, 0);
     for (let i = 0; i < R.count; i++) {
@@ -807,9 +1029,9 @@ function startDig() {
       t.res = k; t.boulder = false; t.hp = R.hard;
     }
   });
-  D = { grid, pos: [0, 4], tier: 0, inv: { wheat: 0, copper: 0, iron: 0, diamond: 0 }, found: [],
-        interval: Q_START, nextQ: Q_START, asking: false, answered: false,
-        streak: 0, bestStreak: 0, right: 0, total: 0, missed: new Map(), deck: makeDeck(choice.set), secs: 0, over: false };
+  D = { grid, pos: [0, startC], tier: 0, inv: Object.fromEntries(Object.keys(RES).map(k => [k, 0])), found: [], won: false,
+        interval: Q_START, nextQ: Q_START, asking: false, answered: false, deepest: 0,
+        streak: 0, bestStreak: 0, right: 0, total: 0, missed: new Map(), deck: makeDeck(currentSet()), secs: 0, over: false };
   D.timer = setInterval(digTick, 1000);
   renderDig();
 }
@@ -836,58 +1058,101 @@ function updateClock() {
   if (q) q.textContent = formatTime(Math.max(0, D.nextQ));
   if (bar) bar.style.width = Math.max(0, D.nextQ / D.interval * 100) + "%";
 }
+const invHtml = () => `<div class="inv">${Object.keys(RES).map(k => `<span class="invslot" title="${RES[k].name}">${resIcon(k)}<b>${D.inv[k]}</b><small>${RES[k].name}</small></span>`).join("")}</div>`;
 
-function digHud() {
+function hudInner() {
   const layer = layerOf(D.pos[0]);
   return `
-    <div class="hud dighud">
-      <div class="inv">${Object.keys(RES).map(k => `<span class="invslot" title="${RES[k].name}">${resIcon(k)}<b>${D.inv[k]}</b><small>${RES[k].name}</small></span>`).join("")}</div>
+      ${invHtml()}
       <div class="qclock">
         <div class="topline"><span><b>Next question in <span id="d-next">${formatTime(D.nextQ)}</span></b></span><span class="soft">${paceText()} Every ${D.interval}s · <span id="d-time">${formatTime(D.secs)}</span></span></div>
         <div class="goalbar"><div id="d-bar" style="width:${D.nextQ / D.interval * 100}%"></div></div>
       </div>
       <div class="row dbtns">
         <button class="btn go" id="d-craft">Craft tools</button>
-        <span class="toolnow">Tool: <b>${tool().name}</b></span>
+        <span class="toolnow">Tool: <b>${tool().name}</b>${D.won ? " · <b>You won!</b>" : ""}</span>
       </div>
-      <div class="where">${layer < 0 ? "On the surface. Tap the dirt under your Gim to start digging." : `Layer ${layer + 1}: <b>${LAYERS[layer].name}</b> <span class="soft">(${LAYERS[layer].era})</span>`}</div>
-    </div>`;
+      <div class="where">${layer < 0 ? "On the surface. Tap the dirt next to your Gim to dig. Scroll the dig site sideways and down to explore." : `Layer ${layer + 1} of ${LAYERS.length}: <b>${LAYERS[layer].name}</b> <span class="soft">(${LAYERS[layer].era})</span> · depth ${D.pos[0]} m`}</div>`;
+}
+function updateHud() {
+  const h = document.getElementById("hud");
+  if (!h) return;
+  h.innerHTML = hudInner();
+  document.getElementById("d-craft").addEventListener("click", openCraft);
+}
+function museumHtml() {
+  return `<div class="topline"><span class="label">Hidden artifacts · ${D.found.length}/${ARTIFACTS.length}</span><button class="iconbtn" id="d-end">Finish game</button></div>
+    <ul class="museum">${ARTIFACTS.map((a, i) => `<li>${D.found.includes(i) ? GEM + esc(a.name) : `<span class="soft">Layer ${a.layer + 1}: ???</span>`}</li>`).join("")}</ul>`;
+}
+function updateMuseum() {
+  const m = document.getElementById("museum");
+  if (!m) return;
+  m.innerHTML = museumHtml();
+  document.getElementById("d-end").addEventListener("click", endDig);
+}
+function cellClass(r, c) {
+  const t = D.grid[r][c], me = D.pos[0] === r && D.pos[1] === c;
+  const cls = r === 0 ? "sky" : t.dug ? "dug" : `dirt l${layerOf(r)}${t.boulder ? " boulder" : ""}`;
+  return `cell ${cls}${!t.dug && t.hp < fullHp(r, t) ? " cracked" : ""}${me ? " me" : ""}`;
+}
+function cellInner(r, c) {
+  const t = D.grid[r][c];
+  if (D.pos[0] === r && D.pos[1] === c) return GIM;
+  return !t.dug && t.res ? resIcon(t.res) : "";
+}
+function paintCell(r, c) {
+  const el = D.els?.[r]?.[c];
+  if (!el) return;
+  el.className = cellClass(r, c);
+  el.innerHTML = cellInner(r, c);
+  const t = D.grid[r][c];
+  el.setAttribute("aria-label", D.pos[0] === r && D.pos[1] === c ? "Your Gim" : t.dug ? "Tunnel" : t.res ? RES[t.res].name : t.boulder ? "Boulder" : "Dirt");
 }
 
 function renderDig() {
   if (D.over) return;
   keyHandler = e => {
     if (document.querySelector(".shop")) return;
-    const dirs = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
-    if (dirs[e.key]) { e.preventDefault(); tapTile(D.pos[0] + dirs[e.key][0], D.pos[1] + dirs[e.key][1]); }
+    const dirs = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1], w: [-1, 0], s: [1, 0], a: [0, -1], d: [0, 1] };
+    const d = dirs[e.key] || dirs[e.key.toLowerCase?.()];
+    if (d) { e.preventDefault(); tapTile(D.pos[0] + d[0], D.pos[1] + d[1]); }
     if (e.key === "c" || e.key === "C") openCraft();
   };
   const old = document.getElementById("site");
-  const scroll = old ? old.scrollTop : 0;
+  const scroll = old ? [old.scrollLeft, old.scrollTop] : null;
   let cells = "";
   for (let r = 0; r < ROWS; r++) {
     const L = layerOf(r);
-    if (r > 0 && (r - 1) % LROWS === 0) cells += `<div class="layer-label">Layer ${L + 1} · ${LAYERS[L].name} <span>${LAYERS[L].era}</span></div>`;
-    for (let c = 0; c < COLS; c++) {
-      const t = D.grid[r][c], me = D.pos[0] === r && D.pos[1] === c;
-      const cls = r === 0 ? "sky" : t.dug ? "dug" : `dirt l${L}${t.boulder ? " boulder" : ""}`;
-      const full = t.res ? RES[t.res].hard : t.boulder ? 6 : r > 0 ? LAYERS[L].hard : 0;
-      const crack = !t.dug && t.hp < full ? ` cracked` : "";
-      const label = me ? "Your Gim" : t.dug ? "Dug tunnel" : t.res ? RES[t.res].name : t.boulder ? "Boulder" : "Dirt";
-      cells += `<button class="cell ${cls}${crack}${me ? " me" : ""}" data-r="${r}" data-c="${c}" aria-label="${label}">${me ? GIM : !t.dug && t.res ? resIcon(t.res) : ""}</button>`;
-    }
+    if (r > 0 && layerOf(r - 1) !== L) cells += `<div class="layer-label"><span class="ll">Layer ${L + 1} · ${LAYERS[L].name} <span>${LAYERS[L].era}</span></span></div>`;
+    for (let c = 0; c < COLS; c++) cells += `<button class="${cellClass(r, c)}" data-r="${r}" data-c="${c}">${cellInner(r, c)}</button>`;
   }
-  const coll = ARTIFACTS.map((a, i) => `<li class="${D.found.includes(i) ? "got" : ""}">${D.found.includes(i) ? GEM + esc(a.name) : `<span class="soft">Layer ${a.layer + 1}: ???</span>`}</li>`).join("");
-  $app.innerHTML = `${digHud()}
-    <div class="site" id="site"><div class="grid">${cells}</div></div>
-    <div class="panel"><div class="topline"><span class="label">Hidden artifacts · ${D.found.length}/${ARTIFACTS.length}</span><button class="iconbtn" id="d-end">Finish game</button></div><ul class="museum">${coll}</ul></div>`;
+  $app.innerHTML = `<div class="hud dighud" id="hud"></div>
+    <div class="site" id="site"><div class="grid" id="dgrid">${cells}</div></div>
+    <p class="soft hint">Tip: use the arrow keys or WASD, or tap a tile next to your Gim. Tap any tunnel you've dug to walk back to it.</p>
+    <div class="panel" id="museum"></div>`;
+  D.els = [];
+  $app.querySelectorAll("#dgrid .cell").forEach(b => { const r = +b.dataset.r, c = +b.dataset.c; (D.els[r] ||= [])[c] = b; });
+  document.getElementById("dgrid").addEventListener("click", e => { const b = e.target.closest(".cell"); if (b) tapTile(+b.dataset.r, +b.dataset.c); });
+  updateHud();
+  updateMuseum();
   const site = document.getElementById("site");
-  site.scrollTop = scroll;
-  site.querySelectorAll(".cell").forEach(b => b.addEventListener("click", () => tapTile(+b.dataset.r, +b.dataset.c)));
-  document.getElementById("d-craft").addEventListener("click", openCraft);
-  document.getElementById("d-end").addEventListener("click", endDig);
-  const me = site.querySelector(".me");
-  if (me) { const top = me.offsetTop - site.offsetTop; if (top < site.scrollTop || top > site.scrollTop + site.clientHeight - me.offsetHeight) site.scrollTop = top - site.clientHeight / 2; }
+  if (scroll) { site.scrollLeft = scroll[0]; site.scrollTop = scroll[1]; }
+  ensureVisible(!scroll);
+}
+function ensureVisible(force) {
+  const site = document.getElementById("site"), me = D.els?.[D.pos[0]]?.[D.pos[1]];
+  if (!site || !me) return;
+  const x = me.offsetLeft, y = me.offsetTop, m = 70;
+  if (force || x < site.scrollLeft + m || x > site.scrollLeft + site.clientWidth - m) site.scrollLeft = x - site.clientWidth / 2;
+  if (force || y < site.scrollTop + m || y > site.scrollTop + site.clientHeight - m) site.scrollTop = y - site.clientHeight / 2;
+}
+function moveTo(r, c) {
+  const [or, oc] = D.pos;
+  D.pos = [r, c];
+  D.deepest = Math.max(D.deepest, r);
+  paintCell(or, oc); paintCell(r, c);
+  updateHud();
+  ensureVisible();
 }
 
 function reachable(tr, tc) {
@@ -906,17 +1171,16 @@ function reachable(tr, tc) {
 function tapTile(r, c) {
   if (D.over || D.asking || r < 0 || r >= ROWS || c < 0 || c >= COLS) return;
   const t = D.grid[r][c];
-  if (t.dug) { if (reachable(r, c)) { D.pos = [r, c]; renderDig(); } return; }
+  if (t.dug) { if (reachable(r, c)) moveTo(r, c); return; }
   if (Math.abs(r - D.pos[0]) + Math.abs(c - D.pos[1]) !== 1) return toast("Dig a tile right next to your Gim.");
   if (t.res && RES[t.res].tier > D.tier) return toast(`${RES[t.res].name} is too hard. Craft a ${TOOLS[RES[t.res].tier].name} first!`);
   t.hp -= tool().power;
   tone([300, 240], .05, "square", .04);
-  if (t.hp > 0) return renderDig();
+  if (t.hp > 0) return paintCell(r, c);
   t.dug = true;
-  D.pos = [r, c];
   if (t.res) { D.inv[t.res]++; sfx.right(); toast(`+1 ${RES[t.res].name}`); }
-  renderDig();
-  if (t.art >= 0) { D.found.push(t.art); showFind(t.art); }
+  moveTo(r, c);
+  if (t.art >= 0) { D.found.push(t.art); updateMuseum(); showFind(t.art); }
 }
 
 function showFind(i) {
@@ -932,7 +1196,7 @@ function showFind(i) {
   document.body.appendChild(el);
   const ok = el.querySelector("#f-ok");
   ok.focus();
-  ok.addEventListener("click", () => { el.remove(); renderDig(); });
+  ok.addEventListener("click", () => el.remove());
 }
 
 /* Crafting */
@@ -947,6 +1211,7 @@ function openCraft() {
   document.body.appendChild(el);
   renderCraft();
 }
+function closeCraft() { closeShop(); updateHud(); }
 function renderCraft() {
   const el = document.querySelector(".shop");
   if (!el) return;
@@ -957,31 +1222,52 @@ function renderCraft() {
     return `<div class="item${owned ? " owned" : ""}"><h3>${t.name}</h3><p>${t.can}</p><div class="recipe">${recipe}</div>
       <button class="btn" data-craft="${i}" ${owned || !next || !canCraft(i) ? "disabled" : ""}>${owned ? "Crafted" : !next ? `Craft the ${TOOLS[i - 1].name} first` : canCraft(i) ? "Craft it!" : "Need more resources"}</button></div>`;
   }).join("");
-  const canTrade = D.inv.wheat >= 4;
+  const trades = TRADES.map((t, i) => `<div class="item"><h3>Market: ${t.n} ${RES[t.give].name} → 1 ${RES[t.get].name}</h3><p>${t.why}</p>
+      <button class="btn" data-trade="${i}" ${D.inv[t.give] >= t.n ? "" : "disabled"}>${D.inv[t.give] >= t.n ? "Trade" : `Need ${t.n} ${RES[t.give].name}`}</button></div>`).join("");
   el.innerHTML = `<div class="shop-inner">
     <div class="shop-top"><h2>Crafting</h2><button class="btn go" id="close">Back to digging</button></div>
-    <div class="inv">${Object.keys(RES).map(k => `<span class="invslot">${resIcon(k)}<b>${D.inv[k]}</b><small>${RES[k].name}</small></span>`).join("")}</div>
-    <p class="soft" style="font-size:.9rem">Each tool needs wheat to feed the toolmaker. Farmers' food surplus is what let people specialize in jobs like toolmaking!</p>
+    ${invHtml()}
+    <p class="soft" style="font-size:.9rem">Every tool needs wheat to feed the toolmaker. A food surplus is what let people specialize in jobs like toolmaking!</p>
     <div class="items">${items}</div>
-    <div class="item"><h3>Village market</h3><p>Trade your surplus: 4 wheat for 1 copper. Trade grew when people had extra goods to exchange.</p>
-      <button class="btn" id="trade" ${canTrade ? "" : "disabled"}>${canTrade ? "Trade 4 wheat" : "Need 4 wheat"}</button></div></div>`;
-  el.querySelector("#close").addEventListener("click", () => { closeShop(); renderDig(); });
-  el.addEventListener("click", e => { if (e.target === el) { closeShop(); renderDig(); } });
+    <h3>Village market</h3>
+    <div class="items">${trades}</div></div>`;
+  el.querySelector("#close").addEventListener("click", closeCraft);
+  el.addEventListener("click", e => { if (e.target === el) closeCraft(); });
   el.querySelectorAll("[data-craft]").forEach(b => b.addEventListener("click", () => {
     const i = +b.dataset.craft;
     if (D.tier !== i - 1 || !canCraft(i)) return;
     Object.entries(TOOLS[i].cost).forEach(([k, n]) => { D.inv[k] -= n; });
     D.tier = i;
     sfx.buy();
-    if (i === TOOLS.length - 1) { closeShop(); return endDig(); }
+    if (i === TOOLS.length - 1) return showWin();
     toast(`You crafted a ${TOOLS[i].name}!`);
     renderCraft();
   }));
-  el.querySelector("#trade").addEventListener("click", () => {
-    if (D.inv.wheat < 4) return;
-    D.inv.wheat -= 4; D.inv.copper++; sfx.buy(); toast("Traded 4 wheat for 1 copper"); renderCraft();
-  });
+  el.querySelectorAll("[data-trade]").forEach(b => b.addEventListener("click", () => {
+    const t = TRADES[+b.dataset.trade];
+    if (D.inv[t.give] < t.n) return;
+    D.inv[t.give] -= t.n; D.inv[t.get]++; sfx.buy();
+    toast(`Traded ${t.n} ${RES[t.give].name} for 1 ${RES[t.get].name}`);
+    renderCraft();
+  }));
   el.querySelector("#close").focus();
+}
+function showWin() {
+  D.won = true;
+  if (D.winTime == null) {
+    D.winTime = D.secs;
+    const best = store.get("best", {});
+    if (best.dig == null || D.secs < best.dig) { best.dig = D.secs; store.set("best", best); D.newBest = true; }
+  }
+  const el = document.querySelector(".shop");
+  el.innerHTML = `<div class="shop-inner find" style="text-align:center;align-items:center">
+    <span class="label">You win!</span>
+    <h2>You crafted the Titanium Pickaxe!</h2>
+    <p>Time: <b>${formatTime(D.secs)}</b>${D.newBest ? " · New fastest win!" : ""}</p>
+    <p class="soft">Keep exploring to find every artifact, or see your results.</p>
+    <div class="row" style="justify-content:center"><button class="btn go" id="w-keep">Keep exploring</button><button class="btn gold" id="w-end">See results</button></div></div>`;
+  el.querySelector("#w-keep").addEventListener("click", closeCraft);
+  el.querySelector("#w-end").addEventListener("click", endDig);
 }
 
 /* Pop-up questions: right answers stretch the time to the next one (up to 2 min), wrong answers shrink it (down to 10 s). */
@@ -995,6 +1281,18 @@ function openQuestion() {
   document.body.appendChild(el);
   const maker = D.deck.next(), q = maker();
   q.maker = maker;
+  el.innerHTML = `<div class="shop-inner">
+    <div class="shop-top"><h2>Question time!</h2><span class="soft">Streak <b class="gold-t">${D.streak}</b></span></div>
+    ${questionHtml(q)}</div>`;
+  tone([523, 659, 784], .08);
+  const tl = [...el.querySelectorAll(".tile")];
+  tl.forEach(b => b.addEventListener("click", () => answerDig(q, b.dataset.v)));
+  keyHandler = e => {
+    if (q.kind === "mc" && /^[1-4]$/.test(e.key) && tl[+e.key - 1]) tl[+e.key - 1].click();
+    if (q.kind === "grapes") { const t = tl.find(t => t.dataset.v === e.key.toUpperCase()); if (t) t.click(); }
+  };
+}
+function questionHtml(q) {
   let tiles;
   if (q.kind === "mc") {
     q.opts = shuffle([q.a, ...q.w]);
@@ -1003,22 +1301,14 @@ function openQuestion() {
     tiles = `<div class="tiles six">${Object.entries(GRAPES_CATS).map(([k, v], n) => `<button class="tile c${n + 1}" data-v="${k}"><b>${k}</b><span>${v.name}</span></button>`).join("")}</div>`;
   }
   const prompt = q.kind === "grapes" ? `Which GRAPES category?<br><span class="def">${q.prompt}</span>` : q.prompt;
-  el.innerHTML = `<div class="shop-inner">
-    <div class="shop-top"><h2>Question time!</h2><span class="soft">Streak <b class="gold-t">${D.streak}</b></span></div>
-    <div class="qcard"><span class="tag">${q.tag}</span><p class="q">${prompt}</p></div>${tiles}</div>`;
-  tone([523, 659, 784], .08);
-  const tl = [...el.querySelectorAll(".tile")];
-  tl.forEach(b => b.addEventListener("click", () => answerDig(q, b.dataset.v)));
-  keyHandler = e => {
-    if (q.kind === "mc" && /^[1-4]$/.test(e.key)) tl[+e.key - 1].click();
-    if (q.kind === "grapes") { const t = tl.find(t => t.dataset.v === e.key.toUpperCase()); if (t) t.click(); }
-  };
+  return `<div class="qcard"><span class="tag">${q.tag}</span><p class="q">${prompt}</p></div>${tiles}`;
 }
 function questionReward() {
-  // Reward something useful for the next tool he can't afford yet.
+  // Reward something useful for the next tool. Rare gems still have to be dug up.
   const want = TOOLS[Math.min(D.tier + 1, TOOLS.length - 1)].cost;
-  const short = Object.keys(want).filter(k => D.inv[k] < want[k] && k !== "diamond");
-  const k = short.length ? pick(short) : "wheat";
+  const common = D.tier >= 3 ? ["wheat", "copper", "iron", "diamond"] : ["wheat", "copper", "iron"];
+  const short = Object.keys(want).filter(k => D.inv[k] < want[k] && common.includes(k));
+  const k = short.length ? pick(short) : pick(common.slice(0, 3));
   const n = k === "wheat" ? 2 : 1;
   D.inv[k] += n;
   return `+${n} ${RES[k].name}`;
@@ -1071,19 +1361,15 @@ function endDig() {
   clearInterval(D.timer);
   closeShop();
   keyHandler = null;
-  const won = D.tier === TOOLS.length - 1;
-  const best = store.get("best", {});
-  const newBest = won && (best.dig == null || D.secs < best.dig);
-  if (newBest) { best.dig = D.secs; store.set("best", best); }
   const acc = D.total ? Math.round(D.right / D.total * 100) : 0;
   const missed = [...D.missed.values()].map(q => `<div class="miss"><b>${q.kind === "grapes" ? q.prompt : q.prompt.replace(/<br>/g, " ")}</b>Answer: ${q.kind === "grapes" ? `${q.a} = ${GRAPES_CATS[q.a].name}` : esc(q.a)}</div>`).join("");
   const found = D.found.map(i => `<div class="miss good-l"><b>${esc(ARTIFACTS[i].name)}</b>${esc(ARTIFACTS[i].fact)}</div>`).join("");
   $app.innerHTML = `
     <div class="panel" style="text-align:center;align-items:center">
-      <span class="label">${won ? "You win!" : "Dig finished"}</span>
-      <h2>${won ? "You crafted the Diamond Pickaxe!" : `Best tool: ${tool().name}`}</h2>
-      <p class="soft">Time <b>${formatTime(D.secs)}</b> · ${D.found.length}/${ARTIFACTS.length} artifacts found</p>
-      ${newBest ? `<p style="color:var(--gold);font-weight:700">New fastest win!</p>` : ""}
+      <span class="label">${D.won ? "You win!" : "Dig finished"}</span>
+      <h2>${D.won ? `You crafted the Titanium Pickaxe in ${formatTime(D.winTime)}!` : `Best tool: ${tool().name}`}</h2>
+      <p class="soft">Deepest dig: <b>${D.deepest} m</b> · ${D.found.length}/${ARTIFACTS.length} artifacts · total time ${formatTime(D.secs)}</p>
+      ${D.newBest ? `<p style="color:var(--gold);font-weight:700">New fastest win!</p>` : ""}
     </div>
     <div class="statgrid">
       <div class="stat"><span>Accuracy</span><b>${acc}%</b></div>
@@ -1091,13 +1377,188 @@ function endDig() {
       <div class="stat"><span>Best streak</span><b>${D.bestStreak}</b></div>
     </div>
     <div class="panel">
-      ${missed ? `<h3>Study these before the test</h3><div class="missed">${missed}</div>` : D.total ? `<h3>No missed questions. Nice!</h3>` : ""}
+      ${missed ? `<h3>Study these again</h3><div class="missed">${missed}</div>` : D.total ? `<h3>No missed questions. Nice!</h3>` : ""}
       ${found ? `<h3>What your artifacts taught you</h3><div class="missed">${found}</div>` : ""}
       <div class="row"><button class="btn go" id="again">Dig again</button><button class="btn" id="home">Back to menu</button></div>
     </div>`;
   document.getElementById("again").addEventListener("click", startDig);
   document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- Slope Run (brain-break game) ---------- */
+let S = null;
+const HW = 2.2; // half the track width
+function stopSlope() {
+  if (!S) return;
+  cancelAnimationFrame(S.raf);
+  window.removeEventListener("keydown", S.kd);
+  window.removeEventListener("keyup", S.ku);
+  window.removeEventListener("resize", S.rs);
+  S = null;
+}
+function slopeSeg(i) {
+  if (i < 0) return { gaps: [], blocks: [] };
+  while (S.segs.length <= i) {
+    const n = S.segs.length, d = Math.min(1, n / 700), seg = { gaps: [], blocks: [] };
+    const spacing = d > .6 ? 2 : 3;
+    if (n > 25 && n - S.lastObs >= spacing && Math.random() < .2 + .3 * d) {
+      S.lastObs = n;
+      if (Math.random() < .6) {
+        const w = .8 + Math.random() * (.6 + .6 * d), x0 = -HW + Math.random() * (2 * HW - w);
+        seg.blocks.push([x0, x0 + w]);
+        if (d > .4 && Math.random() < .35) { const x1 = x0 > 0 ? -HW + Math.random() * .6 : HW - .6 - Math.random() * .6; seg.blocks.push([x1, x1 + .6]); }
+      } else {
+        const w = 1 + Math.random() * (.8 + .6 * d);
+        const kind = Math.random();
+        seg.gaps.push(kind < .4 ? [-HW - 1, -HW + w] : kind < .8 ? [HW - w, HW + 1] : [-w / 2, w / 2]);
+      }
+    }
+    S.segs.push(seg);
+  }
+  return S.segs[i];
+}
+function startSlope() {
+  stopSlope();
+  closeShop();
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  keyHandler = null;
+  $app.innerHTML = `
+    <div class="panel slope-wrap">
+      <div class="topline"><span class="label">Slope Run</span><button class="iconbtn" id="s-home">Back to menu</button></div>
+      <div class="slope-stage" id="stage"><canvas id="slope"></canvas>
+        <div class="slope-over" id="s-over"><h2>Slope Run</h2><p>Steer with the arrow keys or A and D.<br>On a phone, hold the left or right side of the screen.</p><button class="btn go" id="s-go">Start</button></div>
+      </div>
+      <div class="row steer"><button class="btn" id="s-l" aria-label="Steer left">◀ Left</button><button class="btn" id="s-r" aria-label="Steer right">Right ▶</button></div>
+    </div>`;
+  document.getElementById("s-home").addEventListener("click", showHome);
+  S = { segs: [], lastObs: 0, dir: 0, keys: { l: false, r: false }, raf: 0, running: false };
+  const cv = document.getElementById("slope"), stage = document.getElementById("stage");
+  const resize = () => {
+    const w = stage.clientWidth, h = Math.min(560, Math.max(340, Math.round(window.innerHeight * .6)));
+    const dpr = window.devicePixelRatio || 1;
+    cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + "px";
+    S.W = w; S.H = h; S.ctx = cv.getContext("2d"); S.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!S.running) drawSlope();
+  };
+  S.rs = resize;
+  S.kd = e => {
+    if (["ArrowLeft", "a", "A"].includes(e.key)) { S.keys.l = true; e.preventDefault(); }
+    if (["ArrowRight", "d", "D"].includes(e.key)) { S.keys.r = true; e.preventDefault(); }
+    if ((e.key === " " || e.key === "Enter") && !S.running) { e.preventDefault(); slopeGo(); }
+  };
+  S.ku = e => {
+    if (["ArrowLeft", "a", "A"].includes(e.key)) S.keys.l = false;
+    if (["ArrowRight", "d", "D"].includes(e.key)) S.keys.r = false;
+  };
+  window.addEventListener("keydown", S.kd);
+  window.addEventListener("keyup", S.ku);
+  window.addEventListener("resize", S.rs);
+  const hold = (el, side) => {
+    el.addEventListener("pointerdown", e => { e.preventDefault(); S.keys[side] = true; });
+    ["pointerup", "pointerleave", "pointercancel"].forEach(t => el.addEventListener(t, () => { if (S) S.keys[side] = false; }));
+  };
+  hold(document.getElementById("s-l"), "l");
+  hold(document.getElementById("s-r"), "r");
+  cv.addEventListener("pointerdown", e => { const left = e.offsetX < S.W / 2; S.keys[left ? "l" : "r"] = true; S.keys[left ? "r" : "l"] = false; });
+  ["pointerup", "pointerleave", "pointercancel"].forEach(t => cv.addEventListener(t, () => { if (S) { S.keys.l = false; S.keys.r = false; } }));
+  document.getElementById("s-go").addEventListener("click", slopeGo);
+  Object.assign(S, { x: 0, vx: 0, dist: 0, speed: 9, fall: 0, dead: false });
+  resize();
+}
+function slopeGo() {
+  if (!S) return;
+  Object.assign(S, { segs: [], lastObs: 0, x: 0, vx: 0, dist: 0, speed: 9, fall: 0, dead: false, deadT: 0, running: true, last: performance.now() });
+  document.getElementById("s-over").hidden = true;
+  tone([392, 523, 659], .08);
+  const loop = t => {
+    if (!S) return;
+    const dt = Math.min(.05, (t - S.last) / 1000); S.last = t;
+    slopeStep(dt);
+    drawSlope();
+    if (S && S.running) S.raf = requestAnimationFrame(loop);
+  };
+  S.raf = requestAnimationFrame(loop);
+}
+function slopeStep(dt) {
+  if (S.dead) {
+    S.deadT += dt;
+    if (S.dead === "fall") { S.fall += dt * 9 * (1 + S.deadT * 2); S.dist += S.speed * dt * .4; }
+    if (S.deadT > .9) slopeOver();
+    return;
+  }
+  const dir = (S.keys.r ? 1 : 0) - (S.keys.l ? 1 : 0);
+  S.vx += dir * 26 * dt;
+  S.vx *= Math.exp(-(dir ? 2.5 : 7) * dt);
+  S.vx = Math.max(-6, Math.min(6, S.vx));
+  S.x += S.vx * dt;
+  S.speed = Math.min(26, 9 + S.dist * .012);
+  S.dist += S.speed * dt;
+  const seg = slopeSeg(Math.floor(S.dist));
+  if (Math.abs(S.x) > HW + .15 || seg.gaps.some(([a, b]) => S.x > a && S.x < b)) { S.dead = "fall"; sfx.wrong(); }
+  else if (seg.blocks.some(([a, b]) => S.x + .3 > a && S.x - .3 < b)) { S.dead = "crash"; sfx.wrong(); }
+}
+function drawSlope() {
+  const { ctx, W, H } = S;
+  if (!ctx) return;
+  const camH = 1.5, F = H * .62, hor = H * .26, camZ = S.dist - 3, camX = S.x * .55;
+  const X = (x, z) => W / 2 + (x - camX) * F / (z - camZ);
+  const Y = (y, z) => hor + (camH - y) * F / (z - camZ);
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, "#05030f"); sky.addColorStop(.26, "#1a0f3d"); sky.addColorStop(.27, "#04020a"); sky.addColorStop(1, "#000");
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(57,255,136,.15)"; ctx.fillRect(0, hor - 2, W, 3);
+  const far = Math.floor(S.dist) + 70, near = Math.floor(camZ + .5);
+  const drawSeg = i => {
+    const seg = slopeSeg(i);
+    const z0 = Math.max(i, camZ + .35), z1 = i + 1;
+    if (z1 <= z0) return;
+    const fog = Math.max(0, 1 - (z0 - camZ) / 72);
+    let pieces = [[-HW, HW]];
+    seg.gaps.forEach(([a, b]) => { pieces = pieces.flatMap(([p, q]) => [[p, Math.min(q, a)], [Math.max(p, b), q]]).filter(([p, q]) => q - p > .01); });
+    pieces.forEach(([a, b]) => {
+      ctx.beginPath();
+      ctx.moveTo(X(a, z0), Y(0, z0)); ctx.lineTo(X(b, z0), Y(0, z0)); ctx.lineTo(X(b, z1), Y(0, z1)); ctx.lineTo(X(a, z1), Y(0, z1)); ctx.closePath();
+      ctx.fillStyle = i % 2 ? `rgba(14,48,30,${fog})` : `rgba(9,34,22,${fog})`;
+      ctx.fill();
+      ctx.strokeStyle = `rgba(57,255,136,${.85 * fog})`; ctx.lineWidth = 1.2; ctx.stroke();
+    });
+    seg.blocks.forEach(([a, b]) => {
+      const h = .75;
+      ctx.beginPath();
+      ctx.moveTo(X(a, z0), Y(h, z0)); ctx.lineTo(X(b, z0), Y(h, z0)); ctx.lineTo(X(b, z1), Y(h, z1)); ctx.lineTo(X(a, z1), Y(h, z1)); ctx.closePath();
+      ctx.fillStyle = `rgba(255,120,140,${fog})`; ctx.fill();
+      ctx.fillStyle = `rgba(255,40,80,${fog})`;
+      ctx.fillRect(X(a, z0), Y(h, z0), X(b, z0) - X(a, z0), Y(0, z0) - Y(h, z0));
+      ctx.strokeStyle = `rgba(255,200,210,${fog})`; ctx.strokeRect(X(a, z0), Y(h, z0), X(b, z0) - X(a, z0), Y(0, z0) - Y(h, z0));
+    });
+  };
+  const ballSeg = Math.floor(S.dist);
+  for (let i = far; i > ballSeg; i--) drawSeg(i);
+  // ball
+  const r = .35, bz = S.dist, bx = X(S.x, bz), by = Y(r - S.fall, bz), br = r * F / (bz - camZ);
+  const g = ctx.createRadialGradient(bx - br * .35, by - br * .35, br * .1, bx, by, br);
+  g.addColorStop(0, "#d9fff0"); g.addColorStop(.5, "#39ff88"); g.addColorStop(1, "#0b6b3a");
+  const drawBall = () => { ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fillStyle = S.dead === "crash" ? "#ff3355" : g; ctx.fill(); };
+  if (S.fall > 0) drawBall();
+  for (let i = ballSeg; i >= near; i--) drawSeg(i);
+  if (!S.fall) drawBall();
+  ctx.fillStyle = "#e9fff3"; ctx.font = "700 20px Rowdies, system-ui, sans-serif";
+  ctx.fillText(`${Math.floor(S.dist)} m`, 14, 30);
+  ctx.font = "13px system-ui, sans-serif"; ctx.fillStyle = "rgba(233,255,243,.7)";
+  ctx.fillText(`Best ${fmt(store.get("best", {}).slope || 0)} m · speed ${Math.round(S.speed * 3.6)} km/h`, 14, 50);
+}
+function slopeOver() {
+  S.running = false;
+  const d = Math.floor(S.dist), best = store.get("best", {});
+  const nb = !best.slope || d > best.slope;
+  if (nb) { best.slope = d; store.set("best", best); }
+  const o = document.getElementById("s-over");
+  o.innerHTML = `<h2>${S.dead === "crash" ? "Crash!" : "You fell!"}</h2><p class="big money">${d} m</p><p>${nb ? "New best distance!" : `Best: ${fmt(best.slope)} m`}</p><div class="row" style="justify-content:center"><button class="btn go" id="s-go">Play again</button><button class="btn" id="s-menu">Menu</button></div>`;
+  o.hidden = false;
+  document.getElementById("s-go").addEventListener("click", slopeGo);
+  document.getElementById("s-menu").addEventListener("click", showHome);
+  document.getElementById("s-go").focus();
 }
 
 /* ---------- Timeline ---------- */
