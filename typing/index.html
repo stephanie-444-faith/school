@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bone Rain Typing</title>
+<link rel="icon" href="../images/paw.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff4e0;
+    --bg-2: #ffe3bd;
+    --card: #fffdf8;
+    --ink: #4a2c1a;
+    --ink-soft: #85614a;
+    --orange: #e07a3f;
+    --orange-dark: #c25f28;
+    --gold: #f5c542;
+    --good: #2fa88f;
+    --bad: #e4574c;
+    --sky-top: #9fd8ff;
+    --sky-bottom: #e6f6ff;
+    --grass: #7cc66b;
+    --grass-dark: #5aa64b;
+    --shadow: 0 10px 0 rgba(139, 90, 43, 0.12), 0 18px 40px rgba(139, 90, 43, 0.18);
+    --radius: 28px;
+
+    /* finger colors for the keyboard */
+    --f-pinky: #f9c6d3;
+    --f-ring: #ffd9a8;
+    --f-middle: #fff0a3;
+    --f-index-l: #c6eeb8;
+    --f-index-r: #b8e3f5;
+    --f-thumb: #e2d6f7;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    font-family: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+    color: var(--ink);
+    background: radial-gradient(circle at 20% 0%, #fff9ee 0%, var(--bg) 45%, var(--bg-2) 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+  [hidden] { display: none !important; }
+
+  .app { max-width: 920px; margin: 0 auto; padding: 16px 16px 32px; }
+
+  /* ---------- Header ---------- */
+  .app-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .logo-paw { width: 44px; height: 44px; transform: rotate(-15deg); }
+  .app-header h1 { margin: 0; font-size: clamp(1.5rem, 4.5vw, 2.2rem); line-height: 1; flex: 1; }
+  .app-header h1 span { color: var(--orange); }
+  .icon-btn {
+    width: 48px; height: 48px; border-radius: 50%; border: none;
+    background: var(--card); box-shadow: 0 4px 0 rgba(139, 90, 43, 0.15);
+    font-size: 1.4rem; cursor: pointer;
+  }
+  .icon-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(139, 90, 43, 0.15); }
+
+  .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    font-family: inherit; font-weight: 600; font-size: 1.15rem;
+    border: none; border-radius: 999px; padding: 14px 26px; cursor: pointer;
+    transition: transform 0.08s, box-shadow 0.08s, background 0.2s;
+  }
+  .btn-primary { color: #fff; background: var(--orange); box-shadow: 0 6px 0 var(--orange-dark); }
+  .btn-primary:hover { background: #ea8748; }
+  .btn-primary:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--orange-dark); }
+  .btn-large { font-size: 1.4rem; padding: 18px 40px; }
+  .link-btn {
+    background: none; border: none; font-family: inherit; font-size: 1rem;
+    color: var(--orange-dark); text-decoration: underline; cursor: pointer; padding: 8px 10px;
+  }
+
+  /* ---------- Start + game over screens ---------- */
+  .screen.card { padding: 28px 24px 32px; text-align: center; }
+  .dog-big { width: 150px; height: 150px; }
+  .bounce { animation: bounce 1.6s ease-in-out infinite; }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .screen h2 { margin: 8px 0 8px; font-size: clamp(1.4rem, 4vw, 1.9rem); }
+  .lead { max-width: 560px; margin: 0 auto 20px; font-size: 1.1rem; line-height: 1.5; color: var(--ink-soft); }
+
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 auto 22px; max-width: 680px; }
+  .mode {
+    font-family: inherit; color: var(--ink); text-align: center;
+    background: #fff6e8; border: 3px solid #f0dcc0; border-radius: 22px;
+    padding: 16px 10px 14px; cursor: pointer; transition: transform 0.1s, border-color 0.15s, background 0.15s;
+  }
+  .mode:hover { transform: translateY(-2px); }
+  .mode[aria-pressed="true"] { border-color: var(--orange); background: #ffe8d3; box-shadow: 0 5px 0 var(--orange-dark); }
+  .mode-emoji { font-size: 2rem; display: block; }
+  .mode-name { display: block; font-weight: 700; font-size: 1.15rem; margin: 4px 0 2px; }
+  .mode-ex { display: block; font-size: 0.95rem; color: var(--ink-soft); }
+  .mode-best { display: block; font-size: 0.85rem; color: var(--orange-dark); margin-top: 6px; }
+
+  .tip {
+    max-width: 560px; margin: 20px auto 0; padding: 12px 16px; border-radius: 16px;
+    background: #eef8ff; color: #2c5d7c; font-size: 1rem; line-height: 1.45;
+  }
+  .kbd {
+    display: inline-block; min-width: 1.6em; padding: 0 6px; border-radius: 6px;
+    background: #fff; border: 2px solid #b9d9ee; font-weight: 600; text-align: center;
+  }
+  .back-link { display: inline-block; margin-top: 14px; color: var(--orange-dark); }
+
+  /* ---------- Stats ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 10px; margin-bottom: 12px; align-items: stretch; }
+  .stat { background: var(--card); border-radius: 18px; padding: 8px 10px; text-align: center; box-shadow: 0 5px 0 rgba(139, 90, 43, 0.12); }
+  .stat-label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+  .stat-value { display: block; font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stat-combo.hot .stat-value { color: var(--orange); }
+  #pause-btn { height: auto; width: 56px; border-radius: 18px; }
+
+  /* ---------- Play field ---------- */
+  .field {
+    position: relative; height: clamp(320px, 52vh, 460px); overflow: hidden;
+    border-radius: var(--radius); box-shadow: var(--shadow); cursor: text;
+    background: linear-gradient(var(--sky-top), var(--sky-bottom) 80%);
+  }
+  .cloud { position: absolute; background: #fff; border-radius: 999px; opacity: 0.85; animation: drift linear infinite; }
+  .cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+  .cloud::before { width: 55%; height: 160%; left: 15%; top: -70%; }
+  .cloud::after { width: 40%; height: 130%; left: 48%; top: -45%; }
+  @keyframes drift { from { transform: translateX(-160px); } to { transform: translateX(1100px); } }
+
+  .grass {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 56px;
+    background: linear-gradient(var(--grass), var(--grass-dark));
+    border-top: 6px solid #8fd57d;
+  }
+  .biscuit {
+    position: absolute; bottom: 26px; width: 96px; height: 96px; margin-left: -48px;
+    left: 50%; transition: left 0.35s cubic-bezier(.3,1.4,.6,1); z-index: 3; pointer-events: none;
+  }
+  .biscuit.jump { animation: jump 0.4s ease-out; }
+  @keyframes jump { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-26px); } }
+
+  .drop {
+    position: absolute; top: 0; left: 0; z-index: 2; will-change: transform;
+    display: flex; flex-direction: column; align-items: center; pointer-events: none;
+  }
+  .drop img { width: 64px; height: 32px; margin-bottom: -6px; filter: drop-shadow(0 3px 0 rgba(0,0,0,.08)); }
+  .word {
+    background: #fff; border: 3px solid #c98a4b; border-radius: 16px;
+    padding: 4px 12px 6px; font-size: clamp(1.4rem, 3.6vw, 1.9rem); font-weight: 600;
+    letter-spacing: 0.06em; white-space: nowrap; box-shadow: 0 4px 0 rgba(139, 90, 43, 0.25);
+  }
+  .word .done { color: var(--good); }
+  .word .next { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 4px; }
+  .drop.target .word { border-color: var(--orange); background: #fff1e3; transform: scale(1.08); }
+  .drop.target { z-index: 4; }
+  .drop.shake .word { animation: shake 0.3s; }
+  @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .drop.caught { transition: transform 0.35s ease-in, opacity 0.35s; opacity: 0; }
+  .drop.missed .word { border-color: var(--bad); color: var(--bad); }
+  .drop.missed { transition: opacity 0.6s; opacity: 0; }
+
+  .pop {
+    position: absolute; z-index: 5; font-weight: 700; font-size: 1.4rem; color: var(--orange-dark);
+    pointer-events: none; animation: pop 0.9s ease-out forwards; text-shadow: 0 2px 0 #fff;
+  }
+  @keyframes pop { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -60px); opacity: 0; } }
+
+  .banner {
+    position: absolute; left: 50%; top: 34%; transform: translate(-50%, -50%); z-index: 6;
+    background: var(--card); border-radius: 22px; padding: 14px 26px; text-align: center;
+    box-shadow: var(--shadow); animation: banner 2.2s ease forwards; pointer-events: none;
+  }
+  .banner strong { display: block; font-size: 1.8rem; color: var(--orange); }
+  @keyframes banner {
+    0% { transform: translate(-50%, -50%) scale(.5); opacity: 0; }
+    12% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+    20%, 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  }
+
+  .overlay {
+    position: absolute; inset: 0; z-index: 8; display: grid; place-items: center;
+    background: rgba(255, 244, 224, 0.85); text-align: center; padding: 16px;
+  }
+  .overlay h2 { margin: 0 0 6px; font-size: 2rem; }
+  .overlay p { margin: 0 0 16px; color: var(--ink-soft); }
+
+  .typing-trap { position: absolute; opacity: 0; width: 1px; height: 1px; left: 50%; top: 40%; border: 0; padding: 0; font-size: 16px; }
+
+  /* ---------- On-screen keyboard ---------- */
+  .keyboard { margin-top: 14px; display: grid; gap: 6px; user-select: none; }
+  .krow { display: flex; justify-content: center; gap: 6px; }
+  .krow:nth-child(2) { padding-left: 2.5%; }
+  .krow:nth-child(3) { padding-right: 4%; }
+  .key {
+    position: relative; flex: 0 1 56px; height: 50px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 1.25rem; font-weight: 600; text-transform: uppercase;
+    background: var(--c, #fff); box-shadow: 0 4px 0 rgba(74, 44, 26, 0.18);
+    transition: transform 0.06s, box-shadow 0.06s, outline-color 0.15s;
+    outline: 4px solid transparent; outline-offset: 2px;
+  }
+  .key.bump::after { content: ""; position: absolute; bottom: 8px; width: 14px; height: 3px; border-radius: 2px; background: rgba(74, 44, 26, 0.5); }
+  .key.hint { outline-color: var(--orange); animation: glow 1s ease-in-out infinite; }
+  @keyframes glow { 50% { outline-color: var(--gold); } }
+  .key.press { transform: translateY(3px); box-shadow: 0 1px 0 rgba(74, 44, 26, 0.18); }
+  .key.wrong { background: #ffc9c3; }
+  .key.space { flex-basis: 300px; text-transform: none; font-size: 0.95rem; color: var(--ink-soft); }
+  .k-pinky { --c: var(--f-pinky); }
+  .k-ring { --c: var(--f-ring); }
+  .k-middle { --c: var(--f-middle); }
+  .k-index-l { --c: var(--f-index-l); }
+  .k-index-r { --c: var(--f-index-r); }
+  .k-thumb { --c: var(--f-thumb); }
+  .finger-note { text-align: center; color: var(--ink-soft); font-size: 0.9rem; margin: 8px 0 0; }
+
+  /* ---------- Game over ---------- */
+  .final-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 620px; margin: 16px auto 20px; }
+  .final-stats div { background: #fff6e8; border-radius: 18px; padding: 12px 6px; }
+  .final-num { display: block; font-size: 2rem; font-weight: 700; color: var(--orange); }
+  .final-stats span:last-child { font-size: 0.95rem; color: var(--ink-soft); }
+  .new-best { display: inline-block; background: var(--gold); border-radius: 999px; padding: 4px 14px; font-weight: 700; margin-bottom: 10px; }
+  .practice { margin: 0 auto 20px; }
+  .practice p { margin: 0 0 8px; font-weight: 600; }
+  .practice-keys { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .practice-keys .key { flex: 0 0 52px; }
+
+  .confetti { position: fixed; top: -20px; width: 12px; height: 16px; z-index: 50; pointer-events: none; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+  @media (max-width: 640px) {
+    .modes { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    #pause-btn { grid-column: 1 / -1; width: 100%; height: 44px; }
+    .final-stats { grid-template-columns: repeat(2, 1fr); }
+    .key { height: 40px; font-size: 1rem; border-radius: 8px; }
+    .krow { gap: 4px; }
+    .keyboard { gap: 4px; }
+    .biscuit { width: 76px; height: 76px; margin-left: -38px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bounce, .cloud, .key.hint { animation: none; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="app-header">
+    <img src="../images/paw.svg" alt="" class="logo-paw">
+    <h1>Bone Rain <span>Typing</span></h1>
+    <button id="sound-toggle" class="icon-btn" aria-label="Turn sound off" title="Sound on/off">🔊</button>
+  </header>
+
+  <!-- START SCREEN -->
+  <section id="start-screen" class="screen card">
+    <img src="../images/dog-happy.svg" alt="Biscuit the happy cartoon puppy" class="dog-big bounce">
+    <h2>It's raining bones!</h2>
+    <p class="lead">Type the word on each bone to help Biscuit catch it before it lands in the grass.
+      Catch lots in a row to build a <strong>combo</strong>. You have 3 hearts — don't let the bones hit the ground!</p>
+
+    <div class="modes" role="group" aria-label="Pick how hard">
+      <button type="button" class="mode" data-mode="letters" aria-pressed="false">
+        <span class="mode-emoji">🐾</span>
+        <span class="mode-name">Puppy Paws</span>
+        <span class="mode-ex">One letter at a time</span>
+        <span class="mode-best" data-best="letters"></span>
+      </button>
+      <button type="button" class="mode" data-mode="short" aria-pressed="true">
+        <span class="mode-emoji">🐶</span>
+        <span class="mode-name">Good Dog</span>
+        <span class="mode-ex">Short words like <em>sun</em></span>
+        <span class="mode-best" data-best="short"></span>
+      </button>
+      <button type="button" class="mode" data-mode="long" aria-pressed="false">
+        <span class="mode-emoji">🐕</span>
+        <span class="mode-name">Top Dog</span>
+        <span class="mode-ex">Big words like <em>rainbow</em></span>
+        <span class="mode-best" data-best="long"></span>
+      </button>
+    </div>
+
+    <button id="start-btn" class="btn btn-primary btn-large">Let's Play! 🦴</button>
+
+    <p class="tip">💡 <strong>Pro tip:</strong> rest your fingers on <span class="kbd">A</span> <span class="kbd">S</span> <span class="kbd">D</span> <span class="kbd">F</span>
+      and <span class="kbd">J</span> <span class="kbd">K</span> <span class="kbd">L</span> <span class="kbd">;</span>
+      — feel the little bumps on F and J? The glowing key shows what to press next.</p>
+    <a href="../index.html" class="back-link">Play Pawsome Times Tables instead →</a>
+  </section>
+
+  <!-- GAME SCREEN -->
+  <section id="game-screen" class="screen" hidden>
+    <div class="stats">
+      <div class="stat"><span class="stat-label">Score</span><span class="stat-value" id="score">0</span></div>
+      <div class="stat"><span class="stat-label">Level</span><span class="stat-value" id="level">1</span></div>
+      <div class="stat stat-combo" id="combo-box"><span class="stat-label">Combo</span><span class="stat-value"><span id="combo">0</span> 🔥</span></div>
+      <div class="stat"><span class="stat-label">Hearts</span><span class="stat-value" id="hearts"></span></div>
+      <button id="pause-btn" class="icon-btn" aria-label="Pause" title="Pause (Esc)">⏸️</button>
+    </div>
+
+    <div class="field" id="field">
+      <div class="cloud" style="width:90px;height:28px;top:40px;animation-duration:46s;animation-delay:-10s"></div>
+      <div class="cloud" style="width:130px;height:36px;top:110px;animation-duration:62s;animation-delay:-40s"></div>
+      <div class="cloud" style="width:70px;height:22px;top:180px;animation-duration:38s;animation-delay:-25s"></div>
+      <div class="grass"></div>
+      <img id="biscuit" class="biscuit" src="../images/dog-thinking.svg" alt="Biscuit the puppy">
+      <input id="trap" class="typing-trap" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type here">
+
+      <div id="pause-overlay" class="overlay" hidden>
+        <div>
+          <h2>Paws-ed 🐾</h2>
+          <p>Biscuit is taking a little nap.</p>
+          <button id="resume-btn" class="btn btn-primary">Keep playing</button><br>
+          <button id="quit-btn" class="link-btn">End game</button>
+        </div>
+      </div>
+      <div id="ready-overlay" class="overlay" hidden>
+        <div>
+          <h2 id="ready-count">3</h2>
+          <p>Fingers on the home row!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="keyboard" id="keyboard" aria-hidden="true"></div>
+    <p class="finger-note">Each color is a different finger. Pinkies on the pink keys!</p>
+  </section>
+
+  <!-- GAME OVER SCREEN -->
+  <section id="over-screen" class="screen card" hidden>
+    <img src="../images/dog-happy.svg" alt="" class="dog-big" id="over-dog">
+    <h2 id="over-title">Great typing!</h2>
+    <div id="new-best" class="new-best" hidden>🏆 New best score!</div>
+    <div class="final-stats">
+      <div><span class="final-num" id="final-score">0</span><span>points</span></div>
+      <div><span class="final-num" id="final-caught">0</span><span>bones caught</span></div>
+      <div><span class="final-num" id="final-acc">0%</span><span>accuracy</span></div>
+      <div><span class="final-num" id="final-combo">0</span><span>best combo</span></div>
+    </div>
+    <div id="practice" class="practice" hidden>
+      <p>Keys to practice:</p>
+      <div id="practice-keys" class="practice-keys"></div>
+    </div>
+    <button id="again-btn" class="btn btn-primary btn-large">Play Again 🐶</button><br>
+    <button id="menu-btn" class="link-btn">Pick a different game</button>
+  </section>
+</main>
+
+<script>
+// Bone Rain Typing — catch falling bones by typing the words on them.
+
+const START_HEARTS = 3;
+const CATCHES_PER_LEVEL = 8;
+
+const IMG = {
+  happy: "../images/dog-happy.svg",
+  thinking: "../images/dog-thinking.svg",
+  sad: "../images/dog-sad.svg",
+  bone: "../images/bone.svg",
+};
+
+// Letters unlock row by row as the levels go up.
+const HOME_ROW = "asdfjkl".split("");
+const HOME_PLUS = "asdfghjkl".split("");
+const TOP_ROW = "qwertyuiop".split("");
+const ALL_LETTERS = "abcdefghijklmnopqrstuvwxyz".split("");
+
+const SHORT_WORDS = [
+  // home-row friendly first
+  "dad", "sad", "add", "lad", "ask", "all", "fall", "hall", "flask", "salad", "glad", "had", "gas", "lash",
+  // everyday short words
+  "dog", "cat", "pup", "sun", "run", "fun", "hat", "bat", "bed", "red", "big", "pig", "wag", "bark", "bone",
+  "toy", "ball", "play", "jump", "sit", "paw", "tail", "nose", "milk", "cake", "fish", "frog", "duck", "bee",
+  "cow", "owl", "fox", "hop", "zip", "map", "cup", "box", "car", "bus", "sky", "star", "moon", "tree", "leaf",
+  "rain", "snow", "pink", "blue", "gold", "kind", "nice", "best", "yes", "wow", "yum", "sock", "shoe", "book",
+  "pen", "art", "song", "sing", "swim", "kite", "park", "home", "food", "corn", "pie", "egg", "jam", "hug",
+];
+
+const LONG_WORDS = [
+  "puppy", "doggy", "biscuit", "rainbow", "unicorn", "pancake", "kitten", "bubble", "dragon", "castle",
+  "garden", "flower", "butterfly", "jumping", "giggle", "sparkle", "glitter", "treasure", "pirate", "rocket",
+  "planet", "dinosaur", "penguin", "dolphin", "monkey", "giraffe", "zebra", "turtle", "pumpkin", "cookie",
+  "cupcake", "popcorn", "pizza", "banana", "apple", "cherry", "lemonade", "sunshine", "friend", "family",
+  "school", "teacher", "pencil", "crayon", "library", "reading", "music", "dancing", "soccer", "bicycle",
+  "scooter", "puzzle", "snowman", "mittens", "blanket", "pillow", "bedtime", "morning", "picnic", "balloon",
+  "fetch", "leash", "collar", "whiskers", "squirrel", "backyard", "playful", "happy", "silly", "awesome",
+];
+
+const MODES = {
+  letters: { fall: 9, minFall: 4.2, pool: (lvl) => (lvl <= 1 ? HOME_ROW : lvl <= 2 ? HOME_PLUS : lvl <= 4 ? [...HOME_PLUS, ...TOP_ROW] : ALL_LETTERS) },
+  short: { fall: 13, minFall: 5.5, pool: (lvl) => (lvl <= 1 ? SHORT_WORDS.slice(0, 14) : SHORT_WORDS) },
+  long: { fall: 16, minFall: 7, pool: () => LONG_WORDS },
+};
+
+const UNLOCK_MSG = {
+  letters: { 2: "G and H join the fun!", 3: "Top row unlocked!", 5: "Every letter unlocked!" },
+  short: { 2: "Lots more words!" },
+  long: {},
+};
+
+const PRAISE = ["Woof!", "Pawsome!", "Good dog!", "Bark-tastic!", "Fetch-tacular!", "Tail wags!", "Yum!"];
+
+// Which finger types each key (standard touch typing).
+const FINGERS = {
+  "k-pinky": "qaz;p",
+  "k-ring": "wsxol",
+  "k-middle": "edcik",
+  "k-index-l": "rfvtgb",
+  "k-index-r": "yhnujm",
+};
+
+// ---------- Elements ----------
+const $ = (id) => document.getElementById(id);
+const screens = { start: $("start-screen"), game: $("game-screen"), over: $("over-screen") };
+const field = $("field");
+const biscuit = $("biscuit");
+const trap = $("trap");
+
+// ---------- Storage (can be blocked in private windows) ----------
+const store = {
+  get(key) { try { return localStorage.getItem(key); } catch { return null; } },
+  set(key, value) { try { localStorage.setItem(key, value); } catch { /* ignore */ } },
+};
+
+// ---------- State ----------
+const state = {
+  mode: store.get("bonerain-mode") || "short",
+  sound: store.get("bonerain-sound") !== "off",
+  running: false,
+  paused: false,
+  drops: [],
+  target: null,
+  score: 0,
+  level: 1,
+  caught: 0,
+  combo: 0,
+  bestCombo: 0,
+  hearts: START_HEARTS,
+  goodKeys: 0,
+  badKeys: 0,
+  missedKeys: new Map(),
+  spawnTimer: 0,
+  lastTime: 0,
+  rafId: 0,
+  recent: [],
+};
+if (!MODES[state.mode]) state.mode = "short";
+
+// ---------- Sound ----------
+let audioCtx = null;
+function tone(freq, start, dur, type = "sine", vol = 0.12) {
+  const t = audioCtx.currentTime + start;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t);
+  gain.gain.setValueAtTime(vol, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(t);
+  osc.stop(t + dur);
+}
+function playSound(kind) {
+  if (!state.sound) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (kind === "key") tone(880, 0, 0.05, "triangle", 0.05);
+    else if (kind === "wrong") tone(160, 0, 0.15, "square", 0.04);
+    else if (kind === "catch") { tone(660, 0, 0.12); tone(990, 0.08, 0.18); }
+    else if (kind === "miss") { tone(300, 0, 0.2, "sawtooth", 0.06); tone(200, 0.15, 0.3, "sawtooth", 0.06); }
+    else if (kind === "level") [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.1, 0.2));
+    else if (kind === "count") tone(600, 0, 0.12);
+    else if (kind === "over") [392, 330, 262].forEach((f, i) => tone(f, i * 0.18, 0.3));
+  } catch { /* no audio available */ }
+}
+function setSound(on) {
+  state.sound = on;
+  store.set("bonerain-sound", on ? "on" : "off");
+  $("sound-toggle").textContent = on ? "🔊" : "🔇";
+  $("sound-toggle").setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on");
+}
+
+// ---------- Screens ----------
+function show(name) {
+  Object.entries(screens).forEach(([key, node]) => { node.hidden = key !== name; });
+}
+
+function bestFor(mode) { return Number(store.get(`bonerain-best-${mode}`)) || 0; }
+
+function renderModes() {
+  document.querySelectorAll(".mode").forEach((btn) => {
+    btn.setAttribute("aria-pressed", String(btn.dataset.mode === state.mode));
+  });
+  document.querySelectorAll("[data-best]").forEach((node) => {
+    const best = bestFor(node.dataset.best);
+    node.textContent = best ? `Best: ${best}` : "";
+  });
+}
+
+// ---------- Keyboard ----------
+const keyEls = new Map();
+function buildKeyboard() {
+  const rows = ["qwertyuiop", "asdfghjkl;", "zxcvbnm"];
+  const kb = $("keyboard");
+  rows.forEach((row) => {
+    const rowEl = document.createElement("div");
+    rowEl.className = "krow";
+    row.split("").forEach((ch) => {
+      const k = document.createElement("div");
+      const finger = Object.keys(FINGERS).find((f) => FINGERS[f].includes(ch));
+      k.className = `key ${finger}${ch === "f" || ch === "j" ? " bump" : ""}`;
+      k.textContent = ch;
+      rowEl.appendChild(k);
+      keyEls.set(ch, k);
+    });
+    kb.appendChild(rowEl);
+  });
+  const spaceRow = document.createElement("div");
+  spaceRow.className = "krow";
+  spaceRow.innerHTML = '<div class="key space k-thumb">thumbs</div>';
+  kb.appendChild(spaceRow);
+}
+
+function flashKey(ch, cls) {
+  const k = keyEls.get(ch);
+  if (!k) return;
+  k.classList.add(cls);
+  setTimeout(() => k.classList.remove(cls), cls === "wrong" ? 250 : 110);
+}
+
+function updateHint() {
+  keyEls.forEach((k) => k.classList.remove("hint"));
+  let next = null;
+  if (state.target) next = state.target.word[state.target.typed];
+  else {
+    const lowest = state.drops.filter((d) => !d.gone).sort((a, b) => b.y - a.y)[0];
+    if (lowest) next = lowest.word[0];
+  }
+  if (next && keyEls.has(next)) keyEls.get(next).classList.add("hint");
+}
+
+// ---------- HUD ----------
+function renderHud() {
+  $("score").textContent = state.score;
+  $("level").textContent = state.level;
+  $("combo").textContent = state.combo;
+  $("combo-box").classList.toggle("hot", state.combo >= 5);
+  $("hearts").textContent = "❤️".repeat(state.hearts) + "🤍".repeat(Math.max(0, START_HEARTS - state.hearts));
+}
+
+// ---------- Drops ----------
+function fallSeconds() {
+  const m = MODES[state.mode];
+  return Math.max(m.minFall, m.fall - (state.level - 1) * 0.9);
+}
+function maxDrops() { return Math.min(2 + Math.floor((state.level - 1) / 2), 5); }
+
+function pickWord() {
+  const pool = MODES[state.mode].pool(state.level);
+  const taken = new Set(state.drops.filter((d) => !d.gone).map((d) => d.word[0]));
+  // Prefer words whose first letter isn't already falling, and that we haven't just seen.
+  let choices = pool.filter((w) => !taken.has(w[0]) && !state.recent.includes(w));
+  if (!choices.length) choices = pool.filter((w) => !taken.has(w[0]));
+  if (!choices.length) return null;
+  const word = choices[Math.floor(Math.random() * choices.length)];
+  state.recent.push(word);
+  if (state.recent.length > Math.min(8, Math.floor(pool.length / 2))) state.recent.shift();
+  return word;
+}
+
+function spawnDrop() {
+  const word = pickWord();
+  if (!word) return;
+  const el = document.createElement("div");
+  el.className = "drop";
+  el.innerHTML = `<img src="${IMG.bone}" alt=""><div class="word"></div>`;
+  field.appendChild(el);
+  const drop = { word, typed: 0, y: -80, x: 0, el, wordEl: el.querySelector(".word"), gone: false };
+  renderWord(drop);
+  // pick a spot that doesn't sit right on top of another bone
+  const w = field.clientWidth;
+  const elW = el.offsetWidth;
+  let best = 0, bestGap = -1;
+  for (let i = 0; i < 6; i++) {
+    const x = 10 + Math.random() * Math.max(0, w - elW - 20);
+    const gap = Math.min(Infinity, ...state.drops.filter((d) => !d.gone && d.y < 140).map((d) => Math.abs(d.x - x)));
+    if (gap > bestGap) { bestGap = gap; best = x; }
+  }
+  drop.x = best;
+  el.style.transform = `translate(${drop.x}px, ${drop.y}px)`;
+  state.drops.push(drop);
+}
+
+function renderWord(drop) {
+  drop.wordEl.innerHTML = drop.word.split("").map((ch, i) => {
+    const cls = i < drop.typed ? "done" : i === drop.typed && drop === state.target ? "next" : "";
+    return `<span class="${cls}">${ch}</span>`;
+  }).join("");
+  drop.el.classList.toggle("target", drop === state.target);
+}
+
+function groundY() { return field.clientHeight - 56 - 50; }
+
+function moveBiscuitTo(drop) {
+  const x = drop ? drop.x + drop.el.offsetWidth / 2 : field.clientWidth / 2;
+  const clamped = Math.max(50, Math.min(field.clientWidth - 50, x));
+  biscuit.style.left = `${clamped}px`;
+}
+
+function setDog(img, ms = 700) {
+  biscuit.src = img;
+  clearTimeout(setDog.t);
+  if (ms) setDog.t = setTimeout(() => { biscuit.src = IMG.thinking; }, ms);
+}
+
+function popText(text, x, y) {
+  const p = document.createElement("div");
+  p.className = "pop";
+  p.textContent = text;
+  p.style.left = `${x}px`;
+  p.style.top = `${y}px`;
+  field.appendChild(p);
+  setTimeout(() => p.remove(), 900);
+}
+
+function banner(big, small) {
+  const b = document.createElement("div");
+  b.className = "banner";
+  b.innerHTML = `<strong>${big}</strong>${small ? `<span>${small}</span>` : ""}`;
+  field.appendChild(b);
+  setTimeout(() => b.remove(), 2200);
+}
+
+function catchDrop(drop) {
+  drop.gone = true;
+  state.target = null;
+  state.caught++;
+  state.combo++;
+  state.bestCombo = Math.max(state.bestCombo, state.combo);
+  const points = drop.word.length * 10 + Math.min(state.combo, 20) * 2;
+  state.score += points;
+
+  moveBiscuitTo(drop);
+  drop.el.classList.add("caught");
+  drop.el.style.transform = `translate(${drop.x}px, ${groundY()}px) scale(.5)`;
+  setTimeout(() => drop.el.remove(), 400);
+  biscuit.classList.remove("jump");
+  void biscuit.offsetWidth;
+  biscuit.classList.add("jump");
+  setDog(IMG.happy);
+  popText(`+${points}`, drop.x + drop.el.offsetWidth / 2, drop.y);
+  if (state.combo > 0 && state.combo % 10 === 0) {
+    popText(`${state.combo} combo! ${PRAISE[Math.floor(Math.random() * PRAISE.length)]}`, field.clientWidth / 2, 60);
+    confetti(25);
+  }
+  playSound("catch");
+
+  if (state.caught % CATCHES_PER_LEVEL === 0) levelUp();
+  renderHud();
+  updateHint();
+}
+
+function missDrop(drop) {
+  drop.gone = true;
+  if (state.target === drop) state.target = null;
+  drop.el.classList.add("missed");
+  setTimeout(() => drop.el.remove(), 600);
+  state.hearts--;
+  state.combo = 0;
+  setDog(IMG.sad, 900);
+  playSound("miss");
+  renderHud();
+  updateHint();
+  if (state.hearts <= 0) setTimeout(endGame, 700);
+}
+
+function levelUp() {
+  state.level++;
+  const extra = UNLOCK_MSG[state.mode][state.level];
+  banner(`Level ${state.level}!`, extra || "The bones are getting faster!");
+  playSound("level");
+  if (state.level % 3 === 0 && state.hearts < START_HEARTS) {
+    state.hearts++;
+    setTimeout(() => popText("+1 ❤️", field.clientWidth / 2, field.clientHeight / 2 + 30), 600);
+  }
+}
+
+// ---------- Typing ----------
+function handleChar(raw) {
+  if (!state.running || state.paused) return;
+  const ch = raw.toLowerCase();
+  if (!/^[a-z;]$/.test(ch)) return;
+
+  if (!state.target) {
+    const match = state.drops.filter((d) => !d.gone && d.word[0] === ch).sort((a, b) => b.y - a.y)[0];
+    if (!match) return wrongKey(ch, null);
+    state.target = match;
+    moveBiscuitTo(match);
+  }
+
+  const drop = state.target;
+  const expected = drop.word[drop.typed];
+  if (ch !== expected) return wrongKey(ch, drop, expected);
+
+  drop.typed++;
+  state.goodKeys++;
+  flashKey(ch, "press");
+  playSound("key");
+  if (drop.typed >= drop.word.length) {
+    catchDrop(drop);
+  } else {
+    // re-render every bone so the old target loses its highlight
+    state.drops.forEach((d) => { if (!d.gone) renderWord(d); });
+    updateHint();
+  }
+}
+
+function wrongKey(ch, drop, expected) {
+  state.badKeys++;
+  state.combo = 0;
+  if (expected) state.missedKeys.set(expected, (state.missedKeys.get(expected) || 0) + 1);
+  flashKey(ch, "wrong");
+  playSound("wrong");
+  if (drop) {
+    drop.el.classList.remove("shake");
+    void drop.el.offsetWidth;
+    drop.el.classList.add("shake");
+  }
+  renderHud();
+}
+
+// Everything is typed into a hidden input so phone and tablet keyboards work too.
+trap.addEventListener("input", () => {
+  const text = trap.value;
+  trap.value = "";
+  for (const ch of text) handleChar(ch);
+});
+field.addEventListener("pointerdown", (e) => {
+  if (state.running && !state.paused && e.target.closest(".overlay") === null) {
+    e.preventDefault();
+    trap.focus();
+  }
+});
+document.addEventListener("keydown", (e) => {
+  if (!state.running) return;
+  if (e.key === "Escape") { e.preventDefault(); state.paused ? resume() : pause(); return; }
+  if (state.paused) return;
+  // If focus wandered off, catch the key here and put focus back.
+  if (document.activeElement !== trap && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    e.preventDefault();
+    trap.focus();
+    handleChar(e.key);
+  }
+});
+
+// ---------- Game loop ----------
+function loop(now) {
+  if (!state.running) return;
+  const dt = Math.min(0.05, (now - state.lastTime) / 1000 || 0);
+  state.lastTime = now;
+  if (!state.paused) {
+    const speed = groundY() / fallSeconds(); // px per second
+    state.spawnTimer -= dt;
+    const live = state.drops.filter((d) => !d.gone);
+    if ((state.spawnTimer <= 0 && live.length < maxDrops()) || live.length === 0) {
+      spawnDrop();
+      state.spawnTimer = fallSeconds() * (state.mode === "letters" ? 0.35 : 0.45);
+      updateHint();
+    }
+    for (const d of live) {
+      d.y += speed * dt;
+      d.el.style.transform = `translate(${d.x}px, ${d.y}px)`;
+      if (d.y >= groundY()) missDrop(d);
+    }
+    state.drops = state.drops.filter((d) => !d.gone || d.el.isConnected);
+  }
+  state.rafId = requestAnimationFrame(loop);
+}
+
+function clearField() {
+  state.drops.forEach((d) => d.el.remove());
+  state.drops = [];
+  field.querySelectorAll(".pop, .banner").forEach((n) => n.remove());
+}
+
+function startGame() {
+  cancelAnimationFrame(state.rafId);
+  clearField();
+  Object.assign(state, {
+    running: false, paused: false, target: null, score: 0, level: 1, caught: 0, combo: 0, bestCombo: 0,
+    hearts: START_HEARTS, goodKeys: 0, badKeys: 0, missedKeys: new Map(), spawnTimer: 0, recent: [],
+  });
+  show("game");
+  renderHud();
+  biscuit.src = IMG.thinking;
+  moveBiscuitTo(null);
+  updateHint();
+  trap.focus();
+  countdown(3);
+}
+
+function countdown(n) {
+  const overlay = $("ready-overlay");
+  overlay.hidden = false;
+  $("ready-count").textContent = n;
+  playSound("count");
+  setTimeout(() => {
+    if (screens.game.hidden) return;
+    if (n > 1) return countdown(n - 1);
+    overlay.hidden = true;
+    state.running = true;
+    state.lastTime = performance.now();
+    trap.focus();
+    state.rafId = requestAnimationFrame(loop);
+  }, 700);
+}
+
+function pause() {
+  if (!state.running || state.paused) return;
+  state.paused = true;
+  $("pause-overlay").hidden = false;
+}
+function resume() {
+  if (!state.paused) return;
+  state.paused = false;
+  $("pause-overlay").hidden = true;
+  state.lastTime = performance.now();
+  trap.focus();
+}
+
+function endGame() {
+  if (!state.running) return;
+  state.running = false;
+  state.paused = false;
+  $("pause-overlay").hidden = true;
+  cancelAnimationFrame(state.rafId);
+  clearField();
+  trap.blur();
+
+  const total = state.goodKeys + state.badKeys;
+  const acc = total ? Math.round((state.goodKeys / total) * 100) : 0;
+  const best = bestFor(state.mode);
+  const isBest = state.score > best;
+  if (isBest) store.set(`bonerain-best-${state.mode}`, state.score);
+
+  $("final-score").textContent = state.score;
+  $("final-caught").textContent = state.caught;
+  $("final-acc").textContent = `${acc}%`;
+  $("final-combo").textContent = state.bestCombo;
+  $("new-best").hidden = !isBest || state.score === 0;
+  const good = state.caught >= 10 || isBest;
+  $("over-title").textContent = good ? "Pawsome typing!" : state.caught > 0 ? "Good try, pup!" : "Let's try again!";
+  $("over-dog").src = good ? IMG.happy : IMG.thinking;
+
+  const tricky = [...state.missedKeys.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+  $("practice").hidden = tricky.length === 0;
+  $("practice-keys").innerHTML = tricky.map(([ch]) => {
+    const finger = Object.keys(FINGERS).find((f) => FINGERS[f].includes(ch)) || "";
+    return `<div class="key ${finger}">${ch}</div>`;
+  }).join("");
+
+  show("over");
+  if (isBest && state.score > 0) confetti(60);
+  else playSound("over");
+}
+
+function confetti(count) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const colors = ["#e07a3f", "#f5c542", "#2fa88f", "#f9a8c0", "#7fc8f8"];
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.background = colors[i % colors.length];
+    c.style.animationDuration = `${1.5 + Math.random() * 1.5}s`;
+    c.style.animationDelay = `${Math.random() * 0.4}s`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3500);
+  }
+}
+
+// ---------- Wiring ----------
+document.querySelectorAll(".mode").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    state.mode = btn.dataset.mode;
+    store.set("bonerain-mode", state.mode);
+    renderModes();
+  });
+});
+$("start-btn").addEventListener("click", startGame);
+$("again-btn").addEventListener("click", startGame);
+$("menu-btn").addEventListener("click", () => { renderModes(); show("start"); });
+$("pause-btn").addEventListener("click", () => (state.paused ? resume() : pause()));
+$("resume-btn").addEventListener("click", resume);
+$("quit-btn").addEventListener("click", endGame);
+$("sound-toggle").addEventListener("click", () => setSound(!state.sound));
+document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
+window.addEventListener("blur", pause);
+
+buildKeyboard();
+setSound(state.sound);
+renderModes();
+</script>
+</body>
+</html>
