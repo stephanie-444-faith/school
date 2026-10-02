@@ -1,5 +1,5 @@
 <title>Study Arcade</title>
-<meta name="description" content="Study games: Dig It Up, Cash Race, Slope Run, and Ragdoll Archers, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
+<meta name="description" content="Study games: Dig It Up, Cash Race, Slope Run, Ragdoll Archers, and two mystery games, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -237,6 +237,16 @@
   .gm-cash select { font: inherit; font-size: .85rem; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .archer-stage { touch-action: none; }
+
+  .mini-stage { display: flex; justify-content: center; touch-action: none; }
+  .mini-stage canvas { width: auto; }
+  .dpad { display: grid; grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(2, 56px); gap: 8px; justify-content: center; margin-top: 4px; }
+  .dpad .btn { padding: 0; font-size: 1.3rem; touch-action: none; }
+  .dpad [data-d="0,-1"] { grid-column: 2; grid-row: 1; }
+  .dpad [data-d="-1,0"] { grid-column: 1; grid-row: 2; }
+  .dpad [data-d="0,1"] { grid-column: 2; grid-row: 2; }
+  .dpad [data-d="1,0"] { grid-column: 3; grid-row: 2; }
+  .gm-mystery b { color: var(--gold); }
 
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
@@ -658,6 +668,7 @@ function showHome() {
   keyHandler = null;
   stopSlope();
   stopArchers();
+  stopMini();
   const best = store.get("best", {});
   const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
   const ss = choice.subject === "ss";
@@ -680,7 +691,8 @@ function showHome() {
             <select id="goal-pick">${Object.entries(GOALS).map(([k, v]) => `<option value="${k}" ${choice.goal === k ? "selected" : ""}>${v.name}</option>`).join("")}</select>
           </div>
           <button class="gm-item" id="slope"><b>Slope Run</b><span>Steer a ball down a neon slope. No questions.</span>${bestLine(best.slope ? "Best " + fmt(best.slope) + " m" : "")}</button>
-          <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Pull back, aim, and knock over the enemy archer. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
+          <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Enemies get tougher every round. Trade kills for better bows and gear. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
+          ${["snake", "stack"].map((k, i) => { const seen = store.get("seen", {})[k]; return `<button class="gm-item gm-mystery" id="m-${k}"><b>${seen ? MYSTERY[k].name : "Mystery Game #" + (i + 1)}</b><span>${seen ? MYSTERY[k].desc + " No questions." : "Tap to find out what it is!"}</span>${bestLine(best[k] ? "Best " + best[k] : "")}</button>`; }).join("")}
         </div>
       </details>
     </div>
@@ -706,6 +718,8 @@ function showHome() {
   document.getElementById("dig").addEventListener("click", startDig);
   document.getElementById("slope").addEventListener("click", startSlope);
   document.getElementById("archers").addEventListener("click", startArchers);
+  document.getElementById("m-snake").addEventListener("click", startSnake);
+  document.getElementById("m-stack").addEventListener("click", startStack);
   document.getElementById("start").addEventListener("click", startGame);
   keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
   if (ss) {
@@ -1023,6 +1037,7 @@ function startDig() {
   closeShop();
   stopSlope();
   stopArchers();
+  stopMini();
   clearInterval(D?.timer);
   const grid = [];
   for (let r = 0; r < ROWS; r++) {
@@ -1446,6 +1461,7 @@ function slopeSeg(i) {
 function startSlope() {
   stopSlope();
   stopArchers();
+  stopMini();
   closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
   keyHandler = null;
@@ -1592,16 +1608,32 @@ function slopeOver() {
 let A = null;
 const BONES = [[0, 1, 20], [1, 2, 50], [2, 3, 35], [3, 4, 35], [2, 5, 35], [5, 6, 35], [1, 7, 22], [7, 8, 22], [1, 9, 22], [9, 10, 22]];
 // 0 head, 1 neck, 2 pelvis, 3/4 left knee/foot, 5/6 right knee/foot, 7/8 back elbow/hand, 9/10 bow elbow/hand
-const PARTS = { head: [0], body: [1, 2] };
+const ENEMY_RANKS = ["Rookie", "Scout", "Hunter", "Ranger", "Veteran", "Sharpshooter", "Elite", "Champion", "Warlord", "Legend"];
+const ENEMY_COLORS = ["#ff5a6e", "#ff7a3d", "#ffb02e", "#c94cff", "#8a5cff", "#ff2e9a", "#e0e0e0", "#ffd700", "#2a2a2a", "#00e5ff"];
+// Armory: spend kills on gear. "weapon" items replace each other; the rest stack.
+const ARMORY = [
+  { id: "longbow", name: "Longbow", cost: 2, kind: "weapon", tier: 1, desc: "Shoots 25% harder and does 30% more damage." },
+  { id: "crossbow", name: "Crossbow", cost: 5, kind: "weapon", tier: 2, desc: "Fast, flat shots. 60% more damage." },
+  { id: "warbow", name: "Golden War Bow", cost: 9, kind: "weapon", tier: 3, desc: "The best bow. Double damage and huge range." },
+  { id: "triple", name: "Triple Shot", cost: 4, kind: "perk", desc: "Every shot fires 3 arrows in a spread." },
+  { id: "shoes", name: "Running Shoes", cost: 2, kind: "perk", desc: "Move left and right any time, even to dodge arrows. Use A/D, the arrow keys, or the Move buttons." },
+  { id: "jump", name: "Jump Boots", cost: 3, kind: "perk", desc: "Jump to dodge! Press W, the up arrow, or the Jump button.", needs: "shoes" },
+  { id: "armor", name: "Iron Armor", cost: 3, kind: "perk", desc: "Take 35% less damage." },
+  { id: "potion", name: "Health Potion", cost: 1, kind: "use", desc: "Heal 50 health right now." }
+];
+const WEAPONS = { bow: { name: "Wooden Bow", power: 1, dmg: 1 }, longbow: { name: "Longbow", power: 1.25, dmg: 1.3 }, crossbow: { name: "Crossbow", power: 1.5, dmg: 1.6 }, warbow: { name: "Golden War Bow", power: 1.7, dmg: 2 } };
+
 function stopArchers() {
   if (!A) return;
   cancelAnimationFrame(A.raf);
   window.removeEventListener("resize", A.rs);
+  window.removeEventListener("keydown", A.kd);
+  window.removeEventListener("keyup", A.ku);
   A = null;
 }
 function makeArcher(x, floor, face, color, hp) {
   const pose = archerPose(x, floor, face, -0.3);
-  return { x, floor, face, color, hp, maxHp: hp, alive: true, aim: -0.3, pts: pose.map(([px, py]) => ({ x: px, y: py, px, py })) };
+  return { x, floor, face, color, hp, maxHp: hp, alive: true, aim: -0.3, lift: 0, vy: 0, pts: pose.map(([px, py]) => ({ x: px, y: py, px, py })) };
 }
 function archerPose(x, f, face, aim) {
   const neck = [x, f - 120], dx = Math.cos(aim) * face, dy = Math.sin(aim);
@@ -1617,19 +1649,35 @@ function floorAt(x, prevY) {
   if (p && x > p.x0 && x < p.x1 && prevY <= p.top + 6) return p.top;
   return A.ground;
 }
+const weapon = () => WEAPONS[A.gear.weapon];
+const has = id => A.gear[id];
+function enemyStats(level) {
+  // level 1, 2, 3 ... every enemy is tougher, more accurate, and hits harder than the last.
+  return {
+    rank: ENEMY_RANKS[Math.min(level - 1, ENEMY_RANKS.length - 1)] + (level > ENEMY_RANKS.length ? ` ${level - ENEMY_RANKS.length + 1}` : ""),
+    color: ENEMY_COLORS[(level - 1) % ENEMY_COLORS.length],
+    hp: 60 + (level - 1) * 18,
+    err: Math.max(.012, .2 * Math.pow(.84, level - 1)),
+    dmg: 1 + (level - 1) * .12,
+    arrows: level >= 8 ? 3 : level >= 4 ? 2 : 1,
+    moves: level >= 3,
+    leads: level >= 6
+  };
+}
 function startArchers() {
-  stopSlope(); stopArchers(); closeShop();
+  stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
   keyHandler = null;
   $app.innerHTML = `
     <div class="panel slope-wrap">
       <div class="topline"><span class="label">Ragdoll Archers</span><span class="soft" id="a-score"></span><button class="iconbtn" id="a-home">Back to menu</button></div>
       <div class="slope-stage archer-stage" id="a-stage"><canvas id="a-cv"></canvas>
-        <div class="slope-over" id="a-over"><h2>Ragdoll Archers</h2><p>Press and drag <b>backward</b> to pull your bow, then let go to shoot.<br>Headshots do double damage. Beat as many archers as you can!</p><button class="btn go" id="a-go">Start</button></div>
+        <div class="slope-over" id="a-over"><h2>Ragdoll Archers</h2><p>Press and drag <b>backward</b> to pull your bow, then let go to shoot.<br>Every enemy is stronger than the last. Spend your kills in the Armory on better bows and gear!</p><button class="btn go" id="a-go">Start</button></div>
       </div>
+      <div class="row steer" id="a-move" hidden><button class="btn" id="a-l">◀ Move</button><button class="btn" id="a-j" hidden>Jump</button><button class="btn" id="a-r">Move ▶</button></div>
     </div>`;
   document.getElementById("a-home").addEventListener("click", showHome);
-  A = { raf: 0, state: "menu", arrows: [], pops: [], drag: null, score: 0 };
+  A = { raf: 0, state: "menu", arrows: [], pops: [], drag: null, score: 0, kills: 0, gear: { weapon: "bow" }, keys: { l: false, r: false } };
   const cv = document.getElementById("a-cv"), stage = document.getElementById("a-stage");
   A.rs = () => {
     const w = stage.clientWidth;
@@ -1640,22 +1688,48 @@ function startArchers() {
     A.ground = A.WH - 40;
     if (A.state === "menu") { newRound(true); drawArchers(); }
   };
+  A.kd = e => {
+    if (!A || !A.player) return;
+    if (["a", "A", "ArrowLeft"].includes(e.key)) { A.keys.l = true; e.preventDefault(); }
+    if (["d", "D", "ArrowRight"].includes(e.key)) { A.keys.r = true; e.preventDefault(); }
+    if (["w", "W", "ArrowUp", " "].includes(e.key)) { e.preventDefault(); jump(); }
+  };
+  A.ku = e => {
+    if (!A) return;
+    if (["a", "A", "ArrowLeft"].includes(e.key)) A.keys.l = false;
+    if (["d", "D", "ArrowRight"].includes(e.key)) A.keys.r = false;
+  };
   window.addEventListener("resize", A.rs);
+  window.addEventListener("keydown", A.kd);
+  window.addEventListener("keyup", A.ku);
+  const hold = (el, side) => {
+    el.addEventListener("pointerdown", e => { e.preventDefault(); A.keys[side] = true; });
+    ["pointerup", "pointerleave", "pointercancel"].forEach(t => el.addEventListener(t, () => { if (A) A.keys[side] = false; }));
+  };
+  hold(document.getElementById("a-l"), "l");
+  hold(document.getElementById("a-r"), "r");
+  document.getElementById("a-j").addEventListener("pointerdown", e => { e.preventDefault(); jump(); });
   A.rs();
   const toWorld = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / A.s, y: (e.clientY - r.top) / A.s }; };
   cv.addEventListener("pointerdown", e => { if (A.state !== "aim") return; cv.setPointerCapture(e.pointerId); A.drag = { start: toWorld(e), now: toWorld(e) }; });
   cv.addEventListener("pointermove", e => { if (A.drag) A.drag.now = toWorld(e); });
-  const release = () => {
+  cv.addEventListener("pointerup", () => {
     if (!A || !A.drag) return;
     const { pull, ang } = dragShot();
     A.drag = null;
-    if (pull < 12) return;
-    fireArrow(A.player, ang, 380 + pull * 6.2);
+    if (pull < 12 || A.state !== "aim") return;
+    const v = shotSpeed(pull);
+    if (has("triple")) [-.07, 0, .07].forEach(o => fireArrow(A.player, ang + o, v));
+    else fireArrow(A.player, ang, v);
     A.state = "player-fly";
-  };
-  cv.addEventListener("pointerup", release);
+  });
   cv.addEventListener("pointercancel", () => { if (A) A.drag = null; });
-  document.getElementById("a-go").addEventListener("click", () => { A.score = 0; newRound(true); begin(); });
+  document.getElementById("a-go").addEventListener("click", () => { A.score = 0; A.kills = 0; A.gear = { weapon: "bow" }; newRound(true); begin(); });
+}
+const shotSpeed = pull => (380 + pull * 6.2) * weapon().power;
+function jump() {
+  if (!A || !has("jump") || !A.player.alive || A.player.lift > 1) return;
+  A.player.vy = 520;
 }
 function dragShot() {
   const dx = A.drag.start.x - A.drag.now.x, dy = A.drag.start.y - A.drag.now.y;
@@ -1666,17 +1740,25 @@ function dragShot() {
 }
 function newRound(fresh) {
   const W = A.WW;
-  const hpBonus = A.score * 10;
-  if (fresh || !A.player) A.player = makeArcher(W * .1, A.ground, 1, "#5aa9ff", 100);
-  else { A.player = makeArcher(W * .1, A.ground, 1, "#5aa9ff", Math.min(100, A.player.hp + 35)); }
+  const hp = fresh || !A.player ? 100 : A.player.hp + 20;
+  A.player = makeArcher(W * .1, A.ground, 1, "#5aa9ff", 100);
+  A.player.hp = Math.min(100, Math.max(1, hp));
+  A.level = A.score + 1;
+  A.es = enemyStats(A.level);
   const ex = W * (.62 + Math.random() * .3);
-  const ph = Math.random() < .6 ? 40 + Math.random() * Math.min(200, 60 + A.score * 25) : 0;
+  const ph = A.level >= 2 && Math.random() < .65 ? 40 + Math.random() * Math.min(220, 40 + A.level * 25) : 0;
   A.pillar = ph ? { x0: ex - 40, x1: ex + 40, top: A.ground - ph } : null;
-  A.enemy = makeArcher(ex, A.ground - ph, -1, "#ff5a6e", 60 + hpBonus);
+  A.enemy = makeArcher(ex, A.ground - ph, -1, A.es.color, A.es.hp);
+  A.enemy.homeX = ex;
   A.arrows = []; A.pops = [];
+  document.getElementById("a-move").hidden = !has("shoes");
+  document.getElementById("a-j").hidden = !has("jump");
   updateArcherScore();
 }
-function updateArcherScore() { const el = document.getElementById("a-score"); if (el) el.textContent = `Archers beaten: ${A.score}`; }
+function updateArcherScore() {
+  const el = document.getElementById("a-score");
+  if (el) el.textContent = `Enemy: Lv ${A.level} ${A.es.rank} · Kills to spend: ${A.kills} · ${weapon().name}`;
+}
 function begin() {
   document.getElementById("a-over").hidden = true;
   A.state = "aim"; A.last = performance.now(); A.acc = 0;
@@ -1693,32 +1775,45 @@ function begin() {
 function fireArrow(who, ang, speed) {
   const hand = who.pts[10];
   A.arrows.push({ x: hand.x, y: hand.y, vx: Math.cos(ang) * speed * who.face, vy: Math.sin(ang) * speed, owner: who, stuck: null, done: false });
-  if (who === A.player) A.player.aim = ang;
+  who.aim = ang;
   tone([700, 420], .05, "triangle", .06);
 }
 function enemyShoot() {
-  // Aim at the player's chest with a ballistic solution plus some error that shrinks as you beat more archers.
-  const e = A.enemy, t = A.player.pts[1], h = e.pts[10], g = 900;
-  const dx = h.x - t.x, dy = t.y - h.y, v = 760 + Math.random() * 80;
+  // Aim at the player's chest with a ballistic solution. Higher levels miss less, lead a moving target, and fire more arrows.
+  const e = A.enemy, es = A.es, h = e.pts[10], g = 900;
+  let tx = A.player.pts[1].x;
+  if (es.leads && has("shoes")) tx += (Math.random() * 2 - 1) * 40;
+  const dx = h.x - tx, dy = A.player.pts[1].y - h.y, v = 760 + Math.random() * 80 + A.level * 10;
   const disc = v ** 4 - g * (g * dx * dx - 2 * dy * v * v);
   let ang = disc >= 0 ? Math.atan((v * v - Math.sqrt(disc)) / (g * dx)) : -Math.PI / 4;
-  ang = -ang;
-  const err = Math.max(.03, .2 - A.score * .02);
-  ang += (Math.random() * 2 - 1) * err;
-  e.aim = ang;
-  fireArrow(e, ang, v * (1 + (Math.random() * 2 - 1) * err * .3));
+  ang = -ang + (Math.random() * 2 - 1) * es.err;
+  const spread = [0, .05, -.05].slice(0, es.arrows);
+  spread.forEach(o => fireArrow(e, ang + o, v * (1 + (Math.random() * 2 - 1) * es.err * .3)));
 }
 function archerStep(dt) {
   const g = 900;
-  [A.player, A.enemy].forEach(a => {
-    if (A.drag && a === A.player) a.aim = dragShot().ang;
+  // player movement
+  const P = A.player;
+  if (has("shoes") && P.alive && A.state !== "menu" && A.state !== "over") {
+    const dir = (A.keys.r ? 1 : 0) - (A.keys.l ? 1 : 0);
+    P.x = Math.max(40, Math.min(A.WW * .45, P.x + dir * 190 * dt));
+  }
+  if (P.lift > 0 || P.vy > 0) { P.vy -= 1500 * dt; P.lift = Math.max(0, P.lift + P.vy * dt); if (P.lift === 0) P.vy = 0; }
+  // enemies at level 3+ walk around their spot before shooting
+  const E = A.enemy;
+  if (A.es.moves && E.alive && !A.pillar) {
+    E.walkT = (E.walkT || 0) + dt;
+    E.x = Math.max(A.WW * .55, Math.min(A.WW - 40, E.homeX + Math.sin(E.walkT * (.8 + A.level * .05)) * 60));
+  }
+  [P, E].forEach(a => {
+    if (A.drag && a === P) a.aim = dragShot().ang;
     a.pts.forEach(p => {
       const vx = (p.x - p.px) * .99, vy = (p.y - p.py) * .99;
       p.px = p.x; p.py = p.y;
       p.x += vx; p.y += vy + g * dt * dt;
     });
     if (a.alive) {
-      const pose = archerPose(a.x, a.floor, a.face, a.aim);
+      const pose = archerPose(a.x, a.floor - a.lift, a.face, a.aim);
       const k = [.2, .2, .25, .3, .5, .3, .5, .35, .35, .35, .35];
       a.pts.forEach((p, i) => { p.x += (pose[i][0] - p.x) * k[i]; p.y += (pose[i][1] - p.y) * k[i]; });
     }
@@ -1739,24 +1834,24 @@ function archerStep(dt) {
     for (let s = 0; s < 4; s++) {
       const h = dt / 4;
       ar.vy += g * h; ar.x += ar.vx * h; ar.y += ar.vy * h;
-      const target = ar.owner === A.player ? A.enemy : A.player;
+      const target = ar.owner === P ? E : P;
       const hit = hitTest(target, ar.x, ar.y);
       if (hit) { arrowHit(ar, target, hit); return; }
       const p = A.pillar;
-      if (p && ar.x > p.x0 && ar.x < p.x1 && ar.y > p.top) { ar.done = true; ar.landed = true; return; }
-      if (ar.y >= A.ground) { ar.y = A.ground; ar.done = true; ar.landed = true; return; }
+      if (p && ar.x > p.x0 && ar.x < p.x1 && ar.y > p.top) { ar.done = true; return; }
+      if (ar.y >= A.ground) { ar.y = A.ground; ar.done = true; return; }
       if (ar.x < -300 || ar.x > A.WW + 300) { ar.done = true; return; }
     }
   });
   A.pops = A.pops.filter(p => (p.t += dt) < 1.2);
   // Turn flow
   const flying = A.arrows.some(a => !a.done && !a.stuck);
-  if (A.state === "player-fly" && !flying) { A.state = "wait"; A.wait = .7; A.next = A.enemy.alive ? "enemy" : "win"; }
-  else if (A.state === "enemy-fly" && !flying) { A.state = "wait"; A.wait = .6; A.next = A.player.alive ? "aim" : "lose"; }
+  if (A.state === "player-fly" && !flying) { A.state = "wait"; A.wait = .7; A.next = E.alive ? "enemy" : "win"; }
+  else if (A.state === "enemy-fly" && !flying) { A.state = "wait"; A.wait = .6; A.next = P.alive ? "aim" : "lose"; }
   else if (A.state === "wait" && (A.wait -= dt) <= 0) {
     if (A.next === "enemy") { enemyShoot(); A.state = "enemy-fly"; }
     else if (A.next === "aim") A.state = "aim";
-    else if (A.next === "win") { A.score++; sfx.buy(); newRound(false); A.state = "aim"; }
+    else if (A.next === "win") { A.score++; A.kills++; sfx.buy(); A.state = "shop"; openArmory(); }
     else archersOver();
   }
 }
@@ -1768,35 +1863,79 @@ function segDist(px, py, a, b) {
 function hitTest(a, x, y) {
   const P = a.pts;
   if (Math.hypot(x - P[0].x, y - P[0].y) < 14) return { part: "head", i: 0 };
-  if (segDist(x, y, P[1], P[2]) < 8) return { part: "body", i: segDist(x, y, P[1], P[1]) < segDist(x, y, P[2], P[2]) ? 1 : 2 };
+  if (segDist(x, y, P[1], P[2]) < 8) return { part: "body", i: Math.hypot(x - P[1].x, y - P[1].y) < Math.hypot(x - P[2].x, y - P[2].y) ? 1 : 2 };
   for (const [i, j] of [[2, 3], [3, 4], [2, 5], [5, 6], [1, 7], [7, 8], [1, 9], [9, 10]]) if (segDist(x, y, P[i], P[j]) < 6) return { part: "limb", i: j };
   return null;
 }
 function arrowHit(ar, a, hit) {
   const p = a.pts[hit.i];
   ar.stuck = { a, i: hit.i, ox: ar.x - p.x, oy: ar.y - p.y };
-  const dmg = hit.part === "head" ? 50 : hit.part === "body" ? 30 : 15;
+  let dmg = hit.part === "head" ? 50 : hit.part === "body" ? 30 : 15;
+  dmg = a === A.enemy ? dmg * weapon().dmg : dmg * A.es.dmg * (has("armor") ? .65 : 1);
+  dmg = Math.round(dmg);
   const sp = Math.hypot(ar.vx, ar.vy) || 1;
   p.px -= ar.vx / sp * 14; p.py -= ar.vy / sp * 10;
   if (a.alive) {
     a.hp = Math.max(0, a.hp - dmg);
     A.pops.push({ x: p.x, y: p.y - 20, t: 0, txt: hit.part === "head" ? `HEADSHOT -${dmg}` : `-${dmg}` });
-    if (a.hp <= 0) { a.alive = false; a.pts.forEach(q => { q.px -= ar.vx / sp * 6; }); }
+    if (a.hp <= 0) { a.alive = false; a.lift = 0; a.pts.forEach(q => { q.px -= ar.vx / sp * 6; }); }
     (a === A.enemy ? sfx.right : sfx.wrong)();
   }
 }
+
+/* Armory between rounds: trade kills for gear. */
+function openArmory() {
+  closeShop();
+  const el = document.createElement("div");
+  el.className = "shop";
+  el.setAttribute("role", "dialog");
+  el.setAttribute("aria-label", "Armory");
+  document.body.appendChild(el);
+  renderArmory();
+}
+function renderArmory() {
+  const el = document.querySelector(".shop");
+  if (!el || !A) return;
+  const next = enemyStats(A.score + 1);
+  const items = ARMORY.map(it => {
+    const owned = it.kind === "weapon" ? WEAPONS[A.gear.weapon] && ARMORY.find(x => x.id === A.gear.weapon)?.tier >= it.tier : it.kind === "perk" && has(it.id);
+    const locked = it.needs && !has(it.needs);
+    const full = it.id === "potion" && A.player.hp >= 100;
+    const can = !owned && !locked && !full && A.kills >= it.cost;
+    const label = owned ? "Owned" : locked ? "Buy Running Shoes first" : full ? "Health is full" : `Buy · ${it.cost} kill${it.cost > 1 ? "s" : ""}`;
+    return `<div class="item${owned ? " owned" : ""}"><h3>${it.name}</h3><p>${it.desc}</p><button class="btn" data-buy="${it.id}" ${can ? "" : "disabled"}>${label}</button></div>`;
+  }).join("");
+  el.innerHTML = `<div class="shop-inner">
+    <div class="shop-top"><h2>Armory</h2><span class="coins-big"><b>${A.kills}</b> kills to spend</span></div>
+    <p>Enemy defeated! Your health: <b>${A.player.hp}</b>/100 · Weapon: <b>${weapon().name}</b></p>
+    <p class="soft">Next up: <b style="color:${next.color}">Lv ${A.score + 1} ${next.rank}</b> with ${next.hp} health${next.arrows > 1 ? `, shoots ${next.arrows} arrows at once` : ""}${next.moves ? ", moves around" : ""}.</p>
+    <div class="items">${items}</div>
+    <button class="btn go" id="a-next">Fight the next enemy</button></div>`;
+  el.querySelectorAll("[data-buy]").forEach(b => b.addEventListener("click", () => {
+    const it = ARMORY.find(x => x.id === b.dataset.buy);
+    if (A.kills < it.cost) return;
+    A.kills -= it.cost; sfx.buy();
+    if (it.kind === "weapon") A.gear.weapon = it.id;
+    else if (it.kind === "perk") A.gear[it.id] = true;
+    else A.player.hp = Math.min(100, A.player.hp + 50);
+    renderArmory();
+  }));
+  el.querySelector("#a-next").addEventListener("click", () => { closeShop(); newRound(false); A.state = "aim"; });
+  el.querySelector("#a-next").focus();
+}
+
 function drawArchers() {
   const c = A.ctx, W = A.WW, H = A.WH;
   if (!c) return;
   const sky = c.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, "#1d2b5c"); sky.addColorStop(1, "#6a87b8");
+  const night = Math.min(1, (A.level - 1) / 9);
+  sky.addColorStop(0, `rgb(${29 - night * 20},${43 - night * 30},${92 - night * 50})`); sky.addColorStop(1, `rgb(${106 - night * 60},${135 - night * 80},${184 - night * 90})`);
   c.fillStyle = sky; c.fillRect(0, 0, W, H);
   c.fillStyle = "#2f5a2f"; c.fillRect(0, A.ground, W, H - A.ground);
   c.fillStyle = "#3f7a3a"; c.fillRect(0, A.ground, W, 6);
   if (A.pillar) { const p = A.pillar; c.fillStyle = "#6b5a4a"; c.fillRect(p.x0, p.top, p.x1 - p.x0, A.ground - p.top); c.fillStyle = "#8a7560"; c.fillRect(p.x0, p.top, p.x1 - p.x0, 6); }
-  // aim preview
   if (A.drag && A.state === "aim") {
-    const { pull, ang } = dragShot(), v = 380 + pull * 6.2, h = A.player.pts[10];
+    const { pull, ang } = dragShot(), v = shotSpeed(pull), h = A.player.pts[10];
     let x = h.x, y = h.y, vx = Math.cos(ang) * v, vy = Math.sin(ang) * v;
     c.fillStyle = "rgba(255,255,255,.7)";
     for (let i = 0; i < 14; i++) { for (let k = 0; k < 4; k++) { vy += 900 / 240; x += vx / 240; y += vy / 240; } c.beginPath(); c.arc(x, y, 3, 0, 7); c.fill(); }
@@ -1808,13 +1947,16 @@ function drawArchers() {
     c.save(); c.translate(ar.x, ar.y); c.rotate(ang);
     c.strokeStyle = "#f3e2c0"; c.lineWidth = 3; c.beginPath(); c.moveTo(-34, 0); c.lineTo(0, 0); c.stroke();
     c.fillStyle = "#ddd"; c.beginPath(); c.moveTo(4, 0); c.lineTo(-6, -4); c.lineTo(-6, 4); c.fill();
-    c.fillStyle = ar.owner === A.player ? "#5aa9ff" : "#ff5a6e"; c.fillRect(-36, -3, 7, 6);
+    c.fillStyle = ar.owner === A.player ? "#5aa9ff" : ar.owner.color; c.fillRect(-36, -3, 7, 6);
     c.restore();
   });
   c.textAlign = "center"; c.font = "700 18px Rowdies, system-ui, sans-serif";
   A.pops.forEach(p => { c.fillStyle = `rgba(255,230,120,${1 - p.t / 1.2})`; c.fillText(p.txt, p.x, p.y - p.t * 40); });
+  c.fillStyle = "rgba(255,255,255,.9)"; c.font = "700 15px system-ui, sans-serif";
+  c.fillText(`Lv ${A.level} ${A.es.rank}`, A.enemy.x, A.enemy.floor - 192);
   c.textAlign = "left";
   if (A.state === "aim" && !A.drag) { c.fillStyle = "rgba(255,255,255,.85)"; c.font = "16px system-ui, sans-serif"; c.fillText("Your turn: drag backward to aim, let go to shoot", 16, 28); }
+  if (A.state === "enemy-fly" && has("shoes")) { c.fillStyle = "rgba(255,230,120,.95)"; c.font = "700 16px system-ui, sans-serif"; c.fillText("Dodge!", 16, 28); }
 }
 function drawRagdoll(c, a) {
   const P = a.pts;
@@ -1823,16 +1965,16 @@ function drawRagdoll(c, a) {
   c.lineWidth = 5;
   [[2, 3, 4], [2, 5, 6], [1, 7, 8], [1, 9, 10]].forEach(([i, j, k]) => { c.beginPath(); c.moveTo(P[i].x, P[i].y); c.lineTo(P[j].x, P[j].y); c.lineTo(P[k].x, P[k].y); c.stroke(); });
   c.fillStyle = a.color; c.beginPath(); c.arc(P[0].x, P[0].y, 12, 0, 7); c.fill();
-  // bow
+  if (a === A.player && has("armor")) { c.strokeStyle = "#cfd6de"; c.lineWidth = 3; c.beginPath(); c.arc(P[0].x, P[0].y - 2, 13, Math.PI * 1.05, Math.PI * 1.95); c.stroke(); }
   if (a.alive) {
     const h = P[10], ang = Math.atan2(h.y - P[9].y, h.x - P[9].x);
-    c.strokeStyle = "#c08a4a"; c.lineWidth = 3; c.beginPath(); c.arc(h.x, h.y, 22, ang - 1.2, ang + 1.2); c.stroke();
+    const bowCol = a === A.player ? { bow: "#c08a4a", longbow: "#8a5a2a", crossbow: "#555", warbow: "#ffd700" }[A.gear.weapon] : "#c08a4a";
+    c.strokeStyle = bowCol; c.lineWidth = 3; c.beginPath(); c.arc(h.x, h.y, 22, ang - 1.2, ang + 1.2); c.stroke();
     c.strokeStyle = "rgba(255,255,255,.7)"; c.lineWidth = 1; c.beginPath();
     c.moveTo(h.x + Math.cos(ang - 1.2) * 22, h.y + Math.sin(ang - 1.2) * 22); c.lineTo(P[8].x, P[8].y);
     c.lineTo(h.x + Math.cos(ang + 1.2) * 22, h.y + Math.sin(ang + 1.2) * 22); c.stroke();
   }
-  // health bar
-  const bx = a.x - 30, by = a.floor - 180;
+  const bx = a.x - 30, by = a.floor - a.lift - 180;
   c.fillStyle = "rgba(0,0,0,.45)"; c.fillRect(bx, by, 60, 8);
   c.fillStyle = a.hp / a.maxHp > .35 ? "#42e392" : "#ff6070"; c.fillRect(bx, by, 60 * a.hp / a.maxHp, 8);
 }
@@ -1841,10 +1983,213 @@ function archersOver() {
   const best = store.get("best", {}), nb = !best.archers || A.score > best.archers;
   if (nb) { best.archers = A.score; store.set("best", best); }
   const o = document.getElementById("a-over");
-  o.innerHTML = `<h2>You got knocked out!</h2><p class="big money">${A.score}</p><p>${A.score === 1 ? "archer beaten" : "archers beaten"} · ${nb ? "New best!" : `Best: ${best.archers}`}</p><div class="row" style="justify-content:center"><button class="btn go" id="a-go">Play again</button><button class="btn" id="a-menu">Menu</button></div>`;
+  o.innerHTML = `<h2>You got knocked out by a Lv ${A.level} ${A.es.rank}!</h2><p class="big money">${A.score}</p><p>${A.score === 1 ? "archer beaten" : "archers beaten"} · ${nb ? "New best!" : `Best: ${best.archers}`}</p><div class="row" style="justify-content:center"><button class="btn go" id="a-go">Play again</button><button class="btn" id="a-menu">Menu</button></div>`;
   o.hidden = false;
-  document.getElementById("a-go").addEventListener("click", () => { A.score = 0; newRound(true); begin(); });
+  document.getElementById("a-go").addEventListener("click", () => { A.score = 0; A.kills = 0; A.gear = { weapon: "bow" }; newRound(true); begin(); });
   document.getElementById("a-menu").addEventListener("click", showHome);
+}
+
+/* ---------- Mystery games ---------- */
+let M = null;
+function stopMini() {
+  if (!M) return;
+  cancelAnimationFrame(M.raf);
+  window.removeEventListener("keydown", M.kd);
+  window.removeEventListener("resize", M.rs);
+  M = null;
+}
+const MYSTERY = {
+  snake: { name: "Neon Snake", desc: "Eat the glowing food, grow longer, and don't bite your own tail." },
+  stack: { name: "Sky Stack", desc: "Drop sliding blocks to build the tallest tower you can." }
+};
+function miniShell(id, title, help) {
+  stopSlope(); stopArchers(); stopMini(); closeShop();
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  keyHandler = null;
+  const seen = store.get("seen", {}); seen[id] = true; store.set("seen", seen);
+  $app.innerHTML = `
+    <div class="panel slope-wrap">
+      <div class="topline"><span class="label">${title}</span><span class="soft" id="m-score"></span><button class="iconbtn" id="m-home">Back to menu</button></div>
+      <div class="slope-stage mini-stage" id="m-stage"><canvas id="m-cv"></canvas>
+        <div class="slope-over" id="m-over"><h2>${title}</h2><p>${help}</p><button class="btn go" id="m-go">Start</button></div>
+      </div>
+      <div id="m-pad"></div>
+    </div>`;
+  document.getElementById("m-home").addEventListener("click", showHome);
+  M = { raf: 0, running: false };
+  const cv = document.getElementById("m-cv"), stage = document.getElementById("m-stage");
+  return { cv, stage };
+}
+function miniOver(id, title, score, unit) {
+  M.running = false;
+  const best = store.get("best", {}), nb = !best[id] || score > best[id];
+  if (nb) { best[id] = score; store.set("best", best); }
+  const o = document.getElementById("m-over");
+  o.innerHTML = `<h2>${title}</h2><p class="big money">${score}</p><p>${unit} · ${nb ? "New best!" : `Best: ${best[id]}`}</p><div class="row" style="justify-content:center"><button class="btn go" id="m-go">Play again</button><button class="btn" id="m-menu">Menu</button></div>`;
+  o.hidden = false;
+  document.getElementById("m-menu").addEventListener("click", showHome);
+  return document.getElementById("m-go");
+}
+
+/* Neon Snake */
+function startSnake() {
+  const { cv, stage } = miniShell("snake", "Neon Snake", "Use the arrow keys or WASD, swipe on the board, or tap the arrow buttons.<br>It speeds up as you grow!");
+  const N = 20;
+  document.getElementById("m-pad").innerHTML = `<div class="dpad"><button class="btn" data-d="0,-1" aria-label="Up">▲</button><button class="btn" data-d="-1,0" aria-label="Left">◀</button><button class="btn" data-d="1,0" aria-label="Right">▶</button><button class="btn" data-d="0,1" aria-label="Down">▼</button></div>`;
+  M.rs = () => {
+    const w = Math.min(stage.clientWidth, 520), dpr = window.devicePixelRatio || 1;
+    cv.width = w * dpr; cv.height = w * dpr; cv.style.width = w + "px"; cv.style.height = w + "px";
+    M.cell = w / N; M.ctx = cv.getContext("2d"); M.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  };
+  const turn = (dx, dy) => { const [cx, cy] = M.dirQ.at(-1) || M.dir; if (cx === -dx && cy === -dy) return; if (M.dirQ.length < 3) M.dirQ.push([dx, dy]); };
+  M.kd = e => {
+    const k = { ArrowUp: [0, -1], w: [0, -1], ArrowDown: [0, 1], s: [0, 1], ArrowLeft: [-1, 0], a: [-1, 0], ArrowRight: [1, 0], d: [1, 0] }[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+    if (k) { e.preventDefault(); if (M.running) turn(...k); }
+    if ((e.key === " " || e.key === "Enter") && !M.running) { e.preventDefault(); go(); }
+  };
+  window.addEventListener("keydown", M.kd);
+  window.addEventListener("resize", M.rs);
+  document.querySelectorAll("[data-d]").forEach(b => b.addEventListener("pointerdown", e => { e.preventDefault(); if (M.running) turn(...b.dataset.d.split(",").map(Number)); }));
+  let sw = null;
+  cv.addEventListener("pointerdown", e => { sw = [e.clientX, e.clientY]; });
+  cv.addEventListener("pointerup", e => {
+    if (!sw || !M.running) return;
+    const dx = e.clientX - sw[0], dy = e.clientY - sw[1]; sw = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+    Math.abs(dx) > Math.abs(dy) ? turn(Math.sign(dx), 0) : turn(0, Math.sign(dy));
+  });
+  const food = () => { let f; do { f = [rnd(0, N - 1), rnd(0, N - 1)]; } while (M.snake.some(([x, y]) => x === f[0] && y === f[1])); return f; };
+  const reset = () => { M.snake = [[9, 10], [8, 10], [7, 10]]; M.dir = [1, 0]; M.dirQ = []; M.food = food(); M.score = 0; M.t = 0; M.dead = false; };
+  function draw() {
+    const c = M.ctx, s = M.cell, W = s * N;
+    if (!c || !M.snake) return;
+    c.fillStyle = "#07051a"; c.fillRect(0, 0, W, W);
+    c.strokeStyle = "rgba(120,100,255,.08)";
+    for (let i = 0; i <= N; i++) { c.beginPath(); c.moveTo(i * s, 0); c.lineTo(i * s, W); c.moveTo(0, i * s); c.lineTo(W, i * s); c.stroke(); }
+    c.shadowBlur = 14; c.shadowColor = "#ff3b6b"; c.fillStyle = "#ff3b6b";
+    c.beginPath(); c.arc((M.food[0] + .5) * s, (M.food[1] + .5) * s, s * .38, 0, 7); c.fill();
+    c.shadowColor = "#42e392";
+    M.snake.forEach(([x, y], i) => { c.fillStyle = i === 0 ? "#b8ffd8" : `hsl(${150 - i * 2},80%,${60 - Math.min(i, 20)}%)`; c.fillRect(x * s + 1.5, y * s + 1.5, s - 3, s - 3); });
+    c.shadowBlur = 0;
+    document.getElementById("m-score").textContent = `Length ${M.snake.length} · Score ${M.score}`;
+  }
+  function go() {
+    reset(); M.running = true; document.getElementById("m-over").hidden = true; M.last = performance.now();
+    const loop = t => {
+      if (!M || !M.running) return;
+      M.t += t - M.last; M.last = t;
+      const step = Math.max(55, 140 - M.score * 4);
+      while (M.t >= step && M.running) { M.t -= step; tick(); }
+      draw();
+      if (M && M.running) M.raf = requestAnimationFrame(loop);
+    };
+    M.raf = requestAnimationFrame(loop);
+  }
+  function tick() {
+    if (M.dirQ.length) M.dir = M.dirQ.shift();
+    const [hx, hy] = M.snake[0], nx = hx + M.dir[0], ny = hy + M.dir[1];
+    const eat = nx === M.food[0] && ny === M.food[1];
+    const body = eat ? M.snake : M.snake.slice(0, -1);
+    if (nx < 0 || ny < 0 || nx >= N || ny >= N || body.some(([x, y]) => x === nx && y === ny)) {
+      sfx.wrong(); draw();
+      miniOver("snake", "Game over!", M.score, "food eaten").addEventListener("click", go);
+      return;
+    }
+    M.snake.unshift([nx, ny]);
+    if (eat) { M.score++; M.food = food(); tone([880, 1175], .05, "square", .05); }
+    else M.snake.pop();
+  }
+  reset();
+  M.rs();
+  document.getElementById("m-go").addEventListener("click", go);
+}
+
+/* Sky Stack */
+function startStack() {
+  const { cv, stage } = miniShell("stack", "Sky Stack", "A block slides back and forth. Tap, click, or press Space to drop it.<br>Whatever hangs over the edge gets chopped off. Line it up perfectly to keep it wide!");
+  M.rs = () => {
+    const w = Math.min(stage.clientWidth, 520), h = Math.round(Math.min(620, Math.max(380, window.innerHeight * .65))), dpr = window.devicePixelRatio || 1;
+    cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
+    M.W = w; M.H = h; M.ctx = cv.getContext("2d"); M.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  };
+  const BH = 26;
+  const reset = () => {
+    const w = (M.W || 400) * .5;
+    M.blocks = [{ x: ((M.W || 400) - w) / 2, w, hue: 260 }];
+    M.cur = null; M.falling = []; M.score = 0; M.camY = 0; M.perfect = 0;
+    spawn();
+  };
+  const spawn = () => {
+    const top = M.blocks.at(-1), fromLeft = M.score % 2 === 0;
+    M.cur = { x: fromLeft ? 0 : M.W - top.w, w: top.w, dir: fromLeft ? 1 : -1, speed: Math.min(520, 170 + M.score * 12), hue: (top.hue + 12) % 360 };
+  };
+  const drop = () => {
+    if (!M.running || !M.cur) return;
+    const top = M.blocks.at(-1), cur = M.cur;
+    const l = Math.max(top.x, cur.x), r = Math.min(top.x + top.w, cur.x + cur.w);
+    if (r - l <= 2) { M.falling.push({ ...cur, y: M.blocks.length, vy: 0 }); M.cur = null; sfx.wrong(); return setTimeout(() => { if (M) miniOver("stack", "The tower is done!", M.score, "blocks stacked").addEventListener("click", go); }, 700); }
+    if (Math.abs(cur.x - top.x) < 5) { cur.x = top.x; M.perfect++; tone([660 + M.perfect * 60, 990 + M.perfect * 60], .06, "triangle", .07); if (M.perfect >= 3) cur.w = Math.min(M.W * .6, cur.w + 6); M.blocks.push({ x: cur.x, w: cur.w, hue: cur.hue }); }
+    else {
+      M.perfect = 0;
+      if (cur.x < l) M.falling.push({ x: cur.x, w: l - cur.x, hue: cur.hue, y: M.blocks.length, vy: 0 });
+      if (cur.x + cur.w > r) M.falling.push({ x: r, w: cur.x + cur.w - r, hue: cur.hue, y: M.blocks.length, vy: 0 });
+      M.blocks.push({ x: l, w: r - l, hue: cur.hue });
+      tone([440, 520], .05, "triangle", .06);
+    }
+    M.score++;
+    spawn();
+  };
+  M.kd = e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); M.running ? drop() : go(); } };
+  window.addEventListener("keydown", M.kd);
+  window.addEventListener("resize", M.rs);
+  cv.addEventListener("pointerdown", e => { e.preventDefault(); drop(); });
+  function draw() {
+    const c = M.ctx;
+    if (!c || !M.blocks) return;
+    const g = c.createLinearGradient(0, 0, 0, M.H);
+    const sky = Math.min(1, M.score / 40);
+    g.addColorStop(0, `hsl(${230 + sky * 40},60%,${30 - sky * 22}%)`); g.addColorStop(1, `hsl(${200 + sky * 60},60%,${55 - sky * 35}%)`);
+    c.fillStyle = g; c.fillRect(0, 0, M.W, M.H);
+    const baseY = M.H - 60, yOf = i => baseY - i * BH + M.camY;
+    c.fillStyle = "#2f5a2f"; c.fillRect(0, baseY + BH + M.camY, M.W, M.H);
+    const box = (b, y) => {
+      c.fillStyle = `hsl(${b.hue},70%,55%)`; c.fillRect(b.x, y, b.w, BH - 2);
+      c.fillStyle = `hsl(${b.hue},70%,68%)`; c.fillRect(b.x, y, b.w, 5);
+    };
+    M.blocks.forEach((b, i) => { const y = yOf(i); if (y > -BH && y < M.H) box(b, y); });
+    M.falling.forEach(b => box(b, yOf(b.y) + b.dy || yOf(b.y)));
+    if (M.cur) box(M.cur, yOf(M.blocks.length));
+    c.fillStyle = "#fff"; c.font = "700 34px Rowdies, system-ui, sans-serif"; c.textAlign = "center";
+    c.fillText(M.score, M.W / 2, 50); c.textAlign = "left";
+    if (M.perfect >= 2) { c.fillStyle = "#ffd700"; c.font = "700 16px system-ui, sans-serif"; c.textAlign = "center"; c.fillText(`PERFECT ×${M.perfect}`, M.W / 2, 74); c.textAlign = "left"; }
+    document.getElementById("m-score").textContent = `Height ${M.score}`;
+  }
+  function go() {
+    reset(); M.running = true; document.getElementById("m-over").hidden = true; M.last = performance.now();
+    cancelAnimationFrame(M.raf);
+    const loop = t => {
+      if (!M) return;
+      const dt = Math.min(.05, (t - M.last) / 1000); M.last = t;
+      if (M.cur && M.running) {
+        M.cur.x += M.cur.dir * M.cur.speed * dt;
+        if (M.cur.x > M.W - M.cur.w) M.cur.dir = -1;
+        if (M.cur.x < 0) M.cur.dir = 1;
+      }
+      M.falling.forEach(b => { b.vy = (b.vy || 0) + 1400 * dt; b.dy = (b.dy || 0) + b.vy * dt; });
+      M.falling = M.falling.filter(b => b.dy < M.H);
+      const want = Math.max(0, (M.blocks.length - 8) * BH);
+      M.camY += (want - M.camY) * Math.min(1, dt * 6);
+      draw();
+      M.raf = requestAnimationFrame(loop);
+    };
+    M.raf = requestAnimationFrame(loop);
+  }
+  M.W = Math.min(stage.clientWidth, 520);
+  reset();
+  M.rs();
+  document.getElementById("m-go").addEventListener("click", go);
 }
 
 /* ---------- Timeline ---------- */
