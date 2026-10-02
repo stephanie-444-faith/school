@@ -1,183 +1,169 @@
 <title>From Camp to City</title>
-<meta name="description" content="Study game for the Early Humans to Neolithic Revolution test: vocabulary, GRAPES, economics, timeline and focus questions.">
+<meta name="description" content="Gimkit-style study game for the Early Humans to Neolithic Revolution test: earn money for right answers and spend it on upgrades.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  /* Layout: one centered column; a journey track (camp → city) on top, the active game screen below. */
+  /* Layout: game-show screen. Money HUD pinned on top, question in the middle, big colored answer tiles below.
+     Deliberately single-theme (dark, like a classroom game on a projector). */
   :root {
-    --bg: #eef2ea;
-    --surface: #ffffff;
-    --surface-2: #e3eadf;
-    --ink: #1d2a22;
-    --ink-soft: #55665a;
-    --line: #cfd9cb;
-    --river: #1d6a86;
-    --river-soft: #dcecf2;
-    --wheat: #c98f0f;
-    --wheat-soft: #fbefd0;
-    --good: #2c8250;
-    --good-soft: #dff2e6;
-    --bad: #b8412c;
-    --bad-soft: #f8e1dc;
-    --on-accent: #ffffff;
-    --shadow: 0 1px 2px rgba(29, 42, 34, .06), 0 8px 22px rgba(29, 42, 34, .08);
+    color-scheme: dark;
+    --bg: #1a1240;
+    --panel: #281d5a;
+    --panel-2: #36297a;
+    --line: #4a3c94;
+    --ink: #f7f4ff;
+    --ink-soft: #bdb3e6;
+    --money: #42e392;
+    --gold: #ffc93c;
+    --bad: #ff6070;
+    --t1: #d7334a; --t2: #2f6fe4; --t3: #14966a; --t4: #c9670f; --t5: #8a46d8; --t6: #0a8f9a;
     --display: "Rowdies", "Trebuchet MS", system-ui, sans-serif;
     --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      color-scheme: dark;
-      --bg: #111a15; --surface: #18241d; --surface-2: #213028; --ink: #e7efe8; --ink-soft: #a5b7aa;
-      --line: #2e4035; --river: #6cc0de; --river-soft: #173745; --wheat: #f0bd48; --wheat-soft: #3a2d0e;
-      --good: #6fd39a; --good-soft: #173826; --bad: #f08a76; --bad-soft: #43201a; --on-accent: #0d1611;
-      --shadow: 0 8px 22px rgba(0, 0, 0, .35);
-    }
-  }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --bg: #111a15; --surface: #18241d; --surface-2: #213028; --ink: #e7efe8; --ink-soft: #a5b7aa;
-    --line: #2e4035; --river: #6cc0de; --river-soft: #173745; --wheat: #f0bd48; --wheat-soft: #3a2d0e;
-    --good: #6fd39a; --good-soft: #173826; --bad: #f08a76; --bad-soft: #43201a; --on-accent: #0d1611;
-    --shadow: 0 8px 22px rgba(0, 0, 0, .35);
-  }
-
   * { box-sizing: border-box; }
-  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5; }
-  .wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 18px; }
-  h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; }
-  h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); }
-  h2 { font-size: 1.45rem; }
-  h3 { font-size: 1.1rem; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.45; }
+  .wrap { max-width: 820px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 16px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
   p { margin: 0; }
-  button { font: inherit; color: inherit; }
-  button:focus-visible { outline: 3px solid var(--river); outline-offset: 2px; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  button:disabled { cursor: not-allowed; }
+  .soft { color: var(--ink-soft); }
+  .money { color: var(--money); font-family: var(--display); font-variant-numeric: tabular-nums; }
 
-  header { display: flex; flex-direction: column; gap: 4px; }
-  .eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--river); }
-  .sub { color: var(--ink-soft); }
+  .panel { background: var(--panel); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .btn { border: 0; border-radius: 14px; padding: 14px 22px; font-weight: 700; background: var(--panel-2); box-shadow: 0 4px 0 rgba(0,0,0,.35); transition: transform .08s; }
+  .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.35); }
+  .btn.go { background: var(--money); color: #06301b; font-family: var(--display); font-size: 1.3rem; }
+  .btn.gold { background: var(--gold); color: #3a2600; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
-  /* Journey track */
-  .journey { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; }
-  .journey-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-  .journey-top strong { font-family: var(--display); font-size: 1.1rem; }
-  .journey-top span { color: var(--ink-soft); font-size: .9rem; font-variant-numeric: tabular-nums; }
-  .track { position: relative; height: 10px; background: var(--surface-2); border-radius: 99px; }
-  .track-fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--river), var(--wheat)); border-radius: 99px; width: 0; transition: width .5s ease; }
-  .stops { display: grid; grid-template-columns: repeat(5, 1fr); font-size: .75rem; color: var(--ink-soft); }
-  .stops span { text-align: center; }
-  .stops span:first-child { text-align: left; }
-  .stops span:last-child { text-align: right; }
-  .stops span.reached { color: var(--ink); font-weight: 700; }
-
-  .card { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 22px; display: flex; flex-direction: column; gap: 16px; }
-
-  /* Menu */
-  .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
-  .mode { text-align: left; background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; transition: border-color .15s, transform .15s; }
-  .mode:hover { border-color: var(--river); transform: translateY(-2px); }
-  .mode .tag { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--wheat); }
-  .mode p { color: var(--ink-soft); font-size: .92rem; }
-  .mode.feature { grid-column: 1 / -1; background: var(--river); border-color: var(--river); color: var(--on-accent); }
-  .mode.feature p, .mode.feature .tag { color: var(--on-accent); opacity: .9; }
-
-  /* Question screen */
-  .qhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: .9rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-  .pill { display: inline-block; padding: 3px 10px; border-radius: 99px; background: var(--river-soft); color: var(--river); font-weight: 700; font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; }
-  .progress { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
-  .progress div { height: 100%; background: var(--river); width: 0; transition: width .3s; }
-  .prompt { font-size: 1.25rem; font-weight: 700; }
-  .prompt .term { font-family: var(--display); font-weight: 400; color: var(--river); }
-  .answers { display: grid; gap: 10px; }
-  .ans { text-align: left; padding: 13px 15px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); cursor: pointer; display: flex; gap: 12px; align-items: flex-start; }
-  .ans:hover:not(:disabled) { border-color: var(--river); background: var(--river-soft); }
-  .ans .k { flex: none; width: 26px; height: 26px; border-radius: 8px; background: var(--surface-2); display: grid; place-items: center; font-weight: 700; font-size: .85rem; }
-  .ans:disabled { cursor: default; }
-  .ans.right { border-color: var(--good); background: var(--good-soft); }
-  .ans.wrong { border-color: var(--bad); background: var(--bad-soft); }
-  .ans.dim { opacity: .55; }
-
-  .grapes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .grape { padding: 12px 8px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-  .grape b { font-family: var(--display); font-size: 1.6rem; font-weight: 400; color: var(--river); line-height: 1; }
-  .grape span { font-size: .85rem; }
-  .grape:hover:not(:disabled) { border-color: var(--river); background: var(--river-soft); }
-  .grape.right { border-color: var(--good); background: var(--good-soft); }
-  .grape.wrong { border-color: var(--bad); background: var(--bad-soft); }
-  .grape:disabled { cursor: default; }
-  .fact { font-size: 1.2rem; font-weight: 700; padding: 16px; border-radius: 12px; background: var(--wheat-soft); }
-
-  .feedback { border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
-  .feedback.good { background: var(--good-soft); }
-  .feedback.bad { background: var(--bad-soft); }
-  .feedback strong { font-family: var(--display); font-weight: 400; font-size: 1.1rem; }
-  .feedback.good strong { color: var(--good); }
-  .feedback.bad strong { color: var(--bad); }
-
-  .row { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn { padding: 12px 20px; border-radius: 12px; border: 0; background: var(--river); color: var(--on-accent); font-weight: 700; cursor: pointer; }
-  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
-  .btn.wheat { background: var(--wheat); color: var(--on-accent); }
-  .btn.good { background: var(--good); color: var(--on-accent); }
-  .btn.bad { background: var(--bad); color: var(--on-accent); }
-
-  /* Timeline */
-  .placed { display: flex; flex-direction: column; gap: 6px; padding: 0; margin: 0; list-style: none; }
-  .placed li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border-radius: 10px; background: var(--good-soft); font-size: .95rem; }
-  .placed li b { flex: none; font-variant-numeric: tabular-nums; color: var(--good); min-width: 1.4em; }
-  .pool { display: grid; gap: 8px; }
-  .pool button { text-align: left; padding: 12px 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); cursor: pointer; }
-  .pool button:hover { border-color: var(--river); background: var(--river-soft); }
-  .pool button.hint { border-color: var(--wheat); background: var(--wheat-soft); }
-  .shake { animation: shake .35s; border-color: var(--bad) !important; background: var(--bad-soft) !important; }
-  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
-
-  /* Flashcards */
-  .flash { min-height: 140px; display: flex; flex-direction: column; gap: 12px; }
-  .flash ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
-
-  /* Results */
-  .big { font-family: var(--display); font-size: 3rem; line-height: 1; color: var(--river); font-variant-numeric: tabular-nums; }
-  .missed { display: flex; flex-direction: column; gap: 10px; }
-  .miss { border-left: 4px solid var(--bad); padding: 6px 12px; background: var(--surface-2); border-radius: 0 10px 10px 0; font-size: .95rem; }
-  .miss b { display: block; }
-
-  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: .9rem; }
-  .legend div { background: var(--surface-2); border-radius: 10px; padding: 8px 12px; }
-  .legend b { font-family: var(--display); font-weight: 400; color: var(--river); }
-  details summary { cursor: pointer; font-weight: 700; color: var(--river); }
+  /* Home */
+  .hero { text-align: center; display: flex; flex-direction: column; gap: 6px; padding-block: 10px; }
+  .hero h1 { font-size: clamp(2.2rem, 8vw, 3.4rem); letter-spacing: .01em; }
+  .hero h1 span { color: var(--gold); }
+  .label { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .chip { text-align: left; border: 3px solid var(--line); background: var(--panel-2); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+  .chip b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; }
+  .chip span { font-size: .85rem; color: var(--ink-soft); }
+  .chip[aria-pressed="true"] { border-color: var(--gold); background: #4a3a1a; }
+  .best { text-align: center; font-size: .95rem; }
+  .extras { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .extras .btn { text-align: left; display: flex; flex-direction: column; gap: 2px; }
+  .extras .btn span { font-weight: 400; font-size: .85rem; color: var(--ink-soft); }
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; font-size: .9rem; }
+  .legend div { background: var(--panel-2); border-radius: 10px; padding: 8px 12px; }
+  .legend b { font-family: var(--display); font-weight: 400; color: var(--gold); }
+  details summary { cursor: pointer; font-weight: 700; color: var(--gold); }
   details[open] summary { margin-bottom: 10px; }
 
-  footer { text-align: center; font-size: .85rem; color: var(--ink-soft); }
-  footer button { background: none; border: 0; text-decoration: underline; cursor: pointer; color: var(--ink-soft); }
+  /* HUD */
+  .hud { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel); border-radius: 18px; padding: 12px 16px; display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: center; box-shadow: 0 6px 20px rgba(0,0,0,.3); }
+  .hud .money { font-size: clamp(1.9rem, 7vw, 2.6rem); line-height: 1; }
+  .hud .stats { display: flex; gap: 14px; flex-wrap: wrap; font-size: .9rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .hud .stats b { color: var(--ink); }
+  .hud .streak b { color: var(--gold); }
+  .hud .shopbtn { grid-row: span 2; align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: var(--display); font-size: 1.15rem; background: var(--gold); color: #3a2600; padding: 10px 18px; }
+  .hud .shopbtn small { font-family: var(--body); font-size: .72rem; font-weight: 700; }
+  .goalbar { grid-column: 1 / -1; height: 10px; background: var(--panel-2); border-radius: 99px; overflow: hidden; }
+  .goalbar div { height: 100%; width: 0; background: linear-gradient(90deg, var(--money), var(--gold)); transition: width .4s; }
+  .active-pu { grid-column: 1 / -1; font-size: .82rem; color: var(--gold); font-weight: 700; }
+  .active-pu:empty { display: none; }
 
-  @media (max-width: 460px) {
-    .card { padding: 16px; }
-    .stops { font-size: .68rem; }
-    .grapes { grid-template-columns: repeat(2, 1fr); }
+  /* Question */
+  .qcard { background: var(--ink); color: #1a1240; border-radius: 18px; padding: 22px; min-height: 120px; display: flex; flex-direction: column; justify-content: center; gap: 10px; text-align: center; }
+  .qcard .tag { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #6a5bb0; }
+  .qcard .q { font-size: clamp(1.15rem, 3.6vw, 1.45rem); font-weight: 700; }
+  .qcard .def { font-weight: 400; }
+  .qcard .term { font-family: var(--display); font-weight: 400; color: var(--t2); }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tiles.six { grid-template-columns: repeat(3, 1fr); }
+  .tile { border: 0; border-radius: 16px; padding: 18px 14px; min-height: 96px; color: #fff; font-weight: 700; font-size: 1.02rem; text-align: left; display: flex; gap: 10px; align-items: center; box-shadow: 0 5px 0 rgba(0,0,0,.35); transition: transform .08s, filter .15s; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .tile:hover { filter: brightness(1.12); }
+  .tile:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.35); }
+  .tile .k { flex: none; width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,.22); display: grid; place-items: center; font-size: .85rem; }
+  .tiles.six .tile { flex-direction: column; justify-content: center; text-align: center; gap: 4px; min-height: 90px; }
+  .tiles.six .tile b { font-family: var(--display); font-weight: 400; font-size: 2rem; line-height: 1; }
+  .tiles.six .tile span { font-size: .85rem; }
+  .c1 { background: var(--t1); } .c2 { background: var(--t2); } .c3 { background: var(--t3); }
+  .c4 { background: var(--t4); } .c5 { background: var(--t5); } .c6 { background: var(--t6); }
+
+  /* Result splash */
+  .splash { border-radius: 18px; padding: 26px 20px; text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center; animation: pop .25s ease-out; }
+  .splash.good { background: #0f5d3a; }
+  .splash.bad { background: #6e1f2a; }
+  .splash h2 { font-size: 1.8rem; }
+  .splash .delta { font-family: var(--display); font-size: clamp(2.4rem, 10vw, 3.6rem); line-height: 1; font-variant-numeric: tabular-nums; }
+  .splash.good .delta { color: var(--money); }
+  .splash.bad .delta { color: var(--bad); }
+  .splash .ans { background: rgba(0,0,0,.25); border-radius: 12px; padding: 10px 14px; max-width: 60ch; }
+  .splash .why { max-width: 60ch; color: #e6e0ff; }
+  .splash .note { font-size: .9rem; color: var(--gold); font-weight: 700; }
+  @keyframes pop { from { transform: scale(.94); opacity: .4; } to { transform: scale(1); opacity: 1; } }
+
+  /* Shop */
+  .shop { position: fixed; inset: 0; z-index: 20; background: rgba(10, 6, 30, .82); display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 16px); }
+  .shop-inner { width: 100%; max-width: 760px; background: var(--panel); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .shop-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .shop-top .money { font-size: 1.8rem; }
+  .tabs { display: flex; gap: 8px; }
+  .tabs button { border: 0; border-radius: 99px; padding: 8px 16px; font-weight: 700; background: var(--panel-2); color: var(--ink-soft); }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: #1a1240; }
+  .items { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .item { background: var(--panel-2); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .item h3 { font-size: 1.1rem; }
+  .item p { font-size: .88rem; color: var(--ink-soft); }
+  .lvl { display: flex; gap: 4px; }
+  .lvl i { flex: 1; height: 6px; border-radius: 99px; background: var(--line); }
+  .lvl i.on { background: var(--gold); }
+  .item .now { font-size: .9rem; font-variant-numeric: tabular-nums; }
+  .item .now b { color: var(--money); }
+  .item .btn { margin-top: auto; background: var(--money); color: #06301b; }
+  .item .btn:disabled { background: var(--line); color: var(--ink-soft); box-shadow: none; }
+  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--gold); color: #3a2600; font-weight: 700; padding: 10px 18px; border-radius: 99px; z-index: 30; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+
+  /* End screen */
+  .big { font-family: var(--display); font-size: clamp(2.6rem, 11vw, 4rem); line-height: 1; }
+  .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .stat { background: var(--panel-2); border-radius: 12px; padding: 10px 14px; }
+  .stat b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: .8rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; }
+  .missed { display: flex; flex-direction: column; gap: 10px; }
+  .miss { border-left: 4px solid var(--bad); padding: 8px 12px; background: var(--panel-2); border-radius: 0 10px 10px 0; font-size: .95rem; }
+  .miss b { display: block; }
+
+  /* Timeline + focus extras */
+  .placed { display: flex; flex-direction: column; gap: 6px; padding: 0; margin: 0; list-style: none; }
+  .placed li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border-radius: 10px; background: #0f5d3a; font-size: .95rem; }
+  .placed li b { flex: none; min-width: 1.4em; color: var(--money); font-variant-numeric: tabular-nums; }
+  .pool { display: grid; gap: 8px; }
+  .pool button { text-align: left; padding: 12px 14px; border-radius: 12px; border: 3px solid var(--line); background: var(--panel-2); }
+  .pool button:hover { border-color: var(--ink-soft); }
+  .pool button.hint { border-color: var(--gold); }
+  .shake { animation: shake .35s; border-color: var(--bad) !important; }
+  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+  .flash ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: .9rem; color: var(--ink-soft); }
+
+  .iconbtn { background: none; border: 0; color: var(--ink-soft); text-decoration: underline; font-size: .85rem; }
+  footer { text-align: center; }
+
+  @media (max-width: 520px) {
+    .tiles { grid-template-columns: 1fr; }
+    .tiles.six { grid-template-columns: repeat(2, 1fr); }
+    .tile { min-height: 64px; }
+    .items { grid-template-columns: 1fr; }
+    .panel, .qcard { padding: 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 </style>
 
-<div class="wrap">
-  <header>
-    <span class="eyebrow">Summative Assessment · Study Game</span>
-    <h1>From Camp to City</h1>
-    <p class="sub">Early Humans to the Neolithic Revolution. Every right answer moves your people one step closer to building a city.</p>
-  </header>
-
-  <section class="journey" aria-label="Your journey">
-    <div class="journey-top"><strong id="stage-name">Nomad Camp</strong><span id="points">0 correct answers</span></div>
-    <div class="track"><div class="track-fill" id="track-fill"></div></div>
-    <div class="stops" id="stops"></div>
-  </section>
-
-  <main id="screen"></main>
-
-  <footer><button id="reset" type="button">Start the journey over</button></footer>
-</div>
+<div class="wrap" id="app"></div>
+<footer><button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
 
 <script>
 /* ---------- Study content (from the study guide) ---------- */
@@ -298,168 +284,374 @@ const FOCUS = [
   { q: "How can economic wants, consumer goods, standard of living, natural resources, capital resources, human resources, and opportunity cost explain why some early humans settled in permanent communities?", a: ["Economic wants: people wanted a more predictable food supply and a better life.", "Natural resources near rivers (water, fertile soil) made farming possible.", "Capital resources (tools, canals) and human resources (workers) helped them grow a surplus.", "The surplus let people make more consumer goods like pottery, cloth, and homes, which raised the standard of living.", "Opportunity cost: they gave up the freedom and mobility of nomadic life in exchange for permanent homes and steadier food."] }
 ];
 
-/* ---------- Journey ---------- */
-const STAGES = [
-  { at: 0, name: "Nomad Camp" },
-  { at: 15, name: "Farming Village" },
-  { at: 40, name: "Surplus Town" },
-  { at: 70, name: "Trading Town" },
-  { at: 110, name: "City!" }
-];
-const STORE_KEY = "camp-to-city-v1";
-let points = 0;
-try { points = parseInt(localStorage.getItem(STORE_KEY) || "0", 10) || 0; } catch (e) {}
-if (window.claude?.hot?.data?.points) points = window.claude.hot.data.points;
-window.claude?.hot?.snapshot?.(() => ({ points }));
 
-function save() { try { localStorage.setItem(STORE_KEY, String(points)); } catch (e) {} }
-function renderJourney() {
-  const max = STAGES[STAGES.length - 1].at;
-  let idx = 0;
-  STAGES.forEach((s, i) => { if (points >= s.at) idx = i; });
-  document.getElementById("stage-name").textContent = STAGES[idx].name;
-  const next = STAGES[idx + 1];
-  document.getElementById("points").textContent = points + " correct" + (next ? " · " + (next.at - points) + " more to " + next.name.replace("!", "") : " · You built a city!");
-  document.getElementById("track-fill").style.width = Math.min(100, points / max * 100) + "%";
-  document.getElementById("stops").innerHTML = STAGES.map((s, i) => `<span class="${i <= idx ? "reached" : ""}">${s.name.replace(" ", "<br>")}</span>`).join("");
-}
-function addPoint() { points++; save(); renderJourney(); }
+/* ---------- Economy (modeled on Gimkit's classic shop) ---------- */
+const UPGRADES = {
+  mpq: { name: "Money per Question", desc: "How much you earn for each right answer.",
+    vals: [1, 5, 50, 100, 500, 2000, 5000, 50000, 250000, 1000000],
+    costs: [10, 100, 1000, 10000, 75000, 300000, 1000000, 10000000, 100000000], show: v => "$" + fmt(v) },
+  sb: { name: "Streak Bonus", desc: "Extra money for every answer in your current streak.",
+    vals: [1, 3, 10, 50, 250, 1200, 6500, 35000, 175000, 1000000],
+    costs: [20, 200, 2000, 20000, 200000, 2000000, 20000000, 200000000, 2000000000], show: v => "$" + fmt(v) },
+  mul: { name: "Multiplier", desc: "Multiplies everything you earn.",
+    vals: [1, 1.5, 2, 3, 5, 8, 12, 18, 30, 100],
+    costs: [50, 300, 2000, 12000, 85000, 700000, 6500000, 65000000, 1000000000], show: v => "×" + v },
+  ins: { name: "Insurance", desc: "Protects you from losing money on wrong answers.",
+    vals: [0, 10, 25, 40, 50, 70, 80, 90, 95, 100],
+    costs: [10, 250, 1000, 25000, 100000, 1000000, 5000000, 25000000, 500000000], show: v => v + "%" }
+};
+const POWERUPS = {
+  mini: { name: "Mini Bonus", desc: "Your next right answer earns double.", mult: 8 },
+  mega: { name: "Mega Bonus", desc: "Your next right answer earns ×5.", mult: 25 },
+  saver: { name: "Streak Saver", desc: "Your next wrong answer won't break your streak or cost money.", mult: 10 }
+};
+const SETS = {
+  all: { name: "Everything", desc: "Vocab, big ideas, and GRAPES mixed" },
+  vocab: { name: "Vocabulary", desc: "All 24 words" },
+  quiz: { name: "Big Ideas", desc: "Key changes & economics" },
+  grapes: { name: "GRAPES", desc: "Sort facts into categories" }
+};
+const GOALS = {
+  r10k: { name: "Race to $10,000", desc: "Quick game, about 10 minutes", type: "race", target: 10000 },
+  r100k: { name: "Race to $100,000", desc: "Longer game", type: "race", target: 100000 },
+  t5: { name: "5-minute rush", desc: "Earn as much as you can", type: "time", secs: 300 },
+  t10: { name: "10-minute rush", desc: "Earn as much as you can", type: "time", secs: 600 }
+};
+const RANKS = [
+  { at: 0, name: "Nomad Camp" }, { at: 1000, name: "Farming Village" }, { at: 10000, name: "Surplus Town" },
+  { at: 100000, name: "Trading Town" }, { at: 1000000, name: "City!" }
+];
 
 /* ---------- Helpers ---------- */
-const $screen = document.getElementById("screen");
+const $app = document.getElementById("app");
 const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function fmt(n) {
+  n = Math.floor(n);
+  if (n >= 1e9) return +(n / 1e9).toFixed(2) + "B";
+  if (n >= 1e6) return +(n / 1e6).toFixed(2) + "M";
+  return n.toLocaleString("en-US");
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("ctc-" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("ctc-" + k, JSON.stringify(v)); } catch (e) {} }
+};
 let keyHandler = null;
 document.addEventListener("keydown", e => { if (keyHandler) keyHandler(e); });
 
-/* ---------- Question builders ---------- */
+/* ---------- Sound (starts after the first tap) ---------- */
+let muted = store.get("muted", false);
+let actx = null;
+function tone(freqs, dur = .12, type = "triangle", vol = .12) {
+  if (muted) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    freqs.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * dur;
+      o.type = type; o.frequency.value = f;
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + dur * 1.6);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + dur * 1.7);
+    });
+  } catch (e) {}
+}
+const sfx = { right: () => tone([660, 880]), wrong: () => tone([220, 160], .16, "sawtooth", .07), buy: () => tone([988, 1319, 1568], .07, "square", .06) };
+const muteBtn = document.getElementById("mute");
+const renderMute = () => { muteBtn.textContent = "Sound: " + (muted ? "off" : "on"); };
+muteBtn.addEventListener("click", () => { muted = !muted; store.set("muted", muted); renderMute(); });
+renderMute();
+
+/* ---------- Question deck ---------- */
 function vocabQuestion(v) {
   const others = shuffle(VOCAB.filter(x => x !== v)).slice(0, 3);
   if (Math.random() < 0.5) {
-    return { kind: "mc", tag: "Vocabulary", prompt: `Which word matches this definition?<br><span style="font-weight:400">${esc(v.d)}</span>`, a: v.t, w: others.map(o => o.t), why: `<b>${esc(v.t)}:</b> ${esc(v.d)} <br><i>Why it matters:</i> ${esc(v.why)}` };
+    return { kind: "mc", tag: "Vocabulary", prompt: `Which word matches this definition?<br><span class="def">${esc(v.d)}</span>`, a: v.t, w: others.map(o => o.t), why: `${esc(v.t)}: ${esc(v.d)} Why it matters: ${esc(v.why)}` };
   }
-  return { kind: "mc", tag: "Vocabulary", prompt: `What does <span class="term">${esc(v.t)}</span> mean?`, a: v.d, w: others.map(o => o.d), why: `<i>Why it matters:</i> ${esc(v.why)}` };
+  return { kind: "mc", tag: "Vocabulary", prompt: `What does <span class="term">${esc(v.t)}</span> mean?`, a: v.d, w: others.map(o => o.d), why: `Why it matters: ${esc(v.why)}` };
 }
-function quizQuestion(q) { return { kind: "mc", tag: "Big Ideas", prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) }; }
-function grapesQuestion(g) { return { kind: "grapes", tag: "GRAPES", prompt: g.f, a: g.c, why: g.why }; }
+const quizQuestion = q => ({ kind: "mc", tag: "Big Ideas", prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) });
+const grapesQuestion = g => ({ kind: "grapes", tag: "GRAPES", prompt: esc(g.f), a: g.c, why: esc(g.why) });
 
-const MODES = {
-  vocab: { title: "Vocabulary", build: () => shuffle(VOCAB).slice(0, 12).map(vocabQuestion) },
-  quiz: { title: "Big Ideas & Economics", build: () => shuffle(QUIZ).slice(0, 12).map(quizQuestion) },
-  grapes: { title: "GRAPES Sort", build: () => [...shuffle(GRAPES_DEF_QS).slice(0, 3), ...shuffle(GRAPES_FACTS).slice(0, 10)].map(grapesQuestion) },
-  test: { title: "Practice Test", build: () => shuffle([
-    ...shuffle(VOCAB).slice(0, 8).map(vocabQuestion),
-    ...shuffle(QUIZ).slice(0, 8).map(quizQuestion),
-    ...shuffle(GRAPES_FACTS).slice(0, 4).map(grapesQuestion)
-  ]) }
-};
+function sourceFor(set) {
+  const v = VOCAB.map(x => () => vocabQuestion(x));
+  const q = QUIZ.map(x => () => quizQuestion(x));
+  const g = [...GRAPES_FACTS, ...GRAPES_DEF_QS].map(x => () => grapesQuestion(x));
+  return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g }[set];
+}
+function makeDeck(set) {
+  const src = sourceFor(set);
+  const deck = { queue: shuffle(src) };
+  deck.next = () => { if (!deck.queue.length) deck.queue = shuffle(src); return deck.queue.shift(); };
+  // A missed question comes back a few questions later so it sticks.
+  deck.retry = maker => deck.queue.splice(Math.min(deck.queue.length, 3 + Math.floor(Math.random() * 3)), 0, maker);
+  return deck;
+}
 
-/* ---------- Menu ---------- */
-function showMenu() {
+/* ---------- Home ---------- */
+let choice = { set: store.get("set", "all"), goal: store.get("goal", "r10k") };
+if (!SETS[choice.set]) choice.set = "all";
+if (!GOALS[choice.goal]) choice.goal = "r10k";
+
+function showHome() {
   keyHandler = null;
-  $screen.innerHTML = `
-    <div class="card">
-      <h2>Pick a challenge</h2>
-      <div class="modes">
-        <button class="mode feature" data-mode="test"><span class="tag">Test tomorrow</span><h3>Practice Test</h3><p>20 mixed questions from the whole study guide, like the real thing.</p></button>
-        <button class="mode" data-mode="vocab"><span class="tag">24 words</span><h3>Vocabulary</h3><p>Match words and definitions, and learn why each one matters.</p></button>
-        <button class="mode" data-mode="quiz"><span class="tag">Economics</span><h3>Big Ideas</h3><p>Key changes, resources, surplus, and opportunity cost.</p></button>
-        <button class="mode" data-mode="grapes"><span class="tag">G·R·A·P·E·S</span><h3>GRAPES Sort</h3><p>Decide which category each fact belongs in.</p></button>
-        <button class="mode" data-mode="timeline"><span class="tag">14 events</span><h3>Timeline</h3><p>Put the journey from Africa to cities in the right order.</p></button>
-        <button class="mode" data-mode="focus"><span class="tag">8 questions</span><h3>Focus Questions</h3><p>Say your answer out loud, then check it against the model answer.</p></button>
+  const best = store.get("best", {});
+  const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
+  $app.innerHTML = `
+    <div class="hero">
+      <span class="label">Early Humans to the Neolithic Revolution</span>
+      <h1>From Camp <span>to City</span></h1>
+      <p class="soft">Answer questions to earn money. Spend it in the shop on upgrades and power-ups. Wrong answers cost you!</p>
+    </div>
+    <div class="panel">
+      <span class="label">Questions</span>
+      <div class="chips">${chipRow(SETS, "set")}</div>
+      <span class="label">Game mode</span>
+      <div class="chips">${chipRow(GOALS, "goal")}</div>
+      <button class="btn go" id="start">Start game</button>
+      ${best[choice.goal] ? `<p class="best soft">Your best in this mode: <span class="money">${GOALS[choice.goal].type === "race" ? formatTime(best[choice.goal]) : "$" + fmt(best[choice.goal])}</span></p>` : ""}
+    </div>
+    <div class="panel">
+      <span class="label">Study extras</span>
+      <div class="extras">
+        <button class="btn" id="tl">Timeline<span>Put 14 events in order, from Africa to cities</span></button>
+        <button class="btn" id="fq">Focus Questions<span>The 8 questions from the study guide, with model answers</span></button>
       </div>
       <details>
-        <summary>Quick review: what GRAPES stands for</summary>
+        <summary>What GRAPES stands for</summary>
         <div class="legend">${Object.entries(GRAPES_CATS).map(([k, v]) => `<div><b>${k}</b> ${v.name}: ${v.say.toLowerCase()}</div>`).join("")}</div>
       </details>
     </div>`;
-  $screen.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => {
-    const m = b.dataset.mode;
-    if (m === "timeline") startTimeline();
-    else if (m === "focus") startFocus();
-    else startRound(m);
-  }));
+  $app.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => { choice.set = b.dataset.set; store.set("set", choice.set); showHome(); }));
+  $app.querySelectorAll("[data-goal]").forEach(b => b.addEventListener("click", () => { choice.goal = b.dataset.goal; store.set("goal", choice.goal); showHome(); }));
+  document.getElementById("start").addEventListener("click", startGame);
+  document.getElementById("tl").addEventListener("click", startTimeline);
+  document.getElementById("fq").addEventListener("click", startFocus);
 }
+const formatTime = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 
-/* ---------- Multiple-choice / GRAPES round ---------- */
-function startRound(mode) {
-  const qs = MODES[mode].build();
-  const state = { mode, qs, i: 0, right: 0, missed: [] };
-  showQuestion(state);
-}
+/* ---------- Game ---------- */
+let G = null;
 
-function showQuestion(st) {
-  const q = st.qs[st.i];
-  const head = `
-    <div class="qhead"><span class="pill">${q.tag}</span><span>Question ${st.i + 1} of ${st.qs.length} · ${st.right} right</span></div>
-    <div class="progress"><div style="width:${st.i / st.qs.length * 100}%"></div></div>`;
-  let body;
-  if (q.kind === "mc") {
-    const opts = shuffle([q.a, ...q.w]);
-    q._opts = opts;
-    body = `<p class="prompt">${q.prompt}</p>
-      <div class="answers">${opts.map((o, n) => `<button class="ans" data-n="${n}"><span class="k">${n + 1}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
-  } else {
-    body = `<p class="prompt">Which GRAPES category does this belong in?</p>
-      <div class="fact">${esc(q.prompt)}</div>
-      <div class="grapes">${Object.entries(GRAPES_CATS).map(([k, v]) => `<button class="grape" data-k="${k}"><b>${k}</b><span>${v.name}</span></button>`).join("")}</div>`;
-  }
-  $screen.innerHTML = `<div class="card">${head}${body}<div id="fb"></div></div>`;
-
-  const answer = (picked, btn) => {
-    const ok = picked === q.a;
-    if (ok) { st.right++; addPoint(); }
-    else st.missed.push(q);
-    $screen.querySelectorAll(".ans, .grape").forEach(b => {
-      b.disabled = true;
-      const val = q.kind === "mc" ? q._opts[+b.dataset.n] : b.dataset.k;
-      if (val === q.a) b.classList.add("right");
-      else if (b === btn) b.classList.add("wrong");
-      else if (q.kind === "mc") b.classList.add("dim");
-    });
-    const correctLabel = q.kind === "mc" ? "" : `The answer is <b>${q.a} = ${GRAPES_CATS[q.a].name}</b>. `;
-    const last = st.i === st.qs.length - 1;
-    document.getElementById("fb").innerHTML = `
-      <div class="feedback ${ok ? "good" : "bad"}">
-        <strong>${ok ? pickCheer() : "Not quite."}</strong>
-        <p>${ok ? "" : correctLabel}${q.why}</p>
-      </div>
-      <div class="row" style="margin-top:12px"><button class="btn" id="next">${last ? "See results" : "Next question"}</button></div>`;
-    const next = document.getElementById("next");
-    next.focus();
-    next.addEventListener("click", () => { st.i++; st.i < st.qs.length ? showQuestion(st) : showResults(st); });
-    keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); next.click(); } };
+function startGame() {
+  clearInterval(G?.timer);
+  const goal = GOALS[choice.goal];
+  G = {
+    goal, goalKey: choice.goal, set: choice.set, deck: makeDeck(choice.set),
+    money: 0, streak: 0, bestStreak: 0, right: 0, total: 0,
+    lv: { mpq: 0, sb: 0, mul: 0, ins: 0 }, bonus: 1, saver: false,
+    missed: new Map(), secs: goal.type === "time" ? goal.secs : 0, over: false
   };
-
-  $screen.querySelectorAll(".ans").forEach(b => b.addEventListener("click", () => answer(q._opts[+b.dataset.n], b)));
-  $screen.querySelectorAll(".grape").forEach(b => b.addEventListener("click", () => answer(b.dataset.k, b)));
-  keyHandler = e => {
-    if (q.kind === "mc" && /^[1-4]$/.test(e.key)) { const b = $screen.querySelector(`.ans[data-n="${+e.key - 1}"]`); if (b && !b.disabled) b.click(); }
-    if (q.kind === "grapes") { const b = $screen.querySelector(`.grape[data-k="${e.key.toUpperCase()}"]`); if (b && !b.disabled) b.click(); }
-  };
+  G.timer = setInterval(() => {
+    if (G.over) return;
+    G.secs += goal.type === "time" ? -1 : 1;
+    if (goal.type === "time" && G.secs <= 0) { G.secs = 0; return endGame(); }
+    renderHud();
+  }, 1000);
+  nextQuestion();
 }
 
-const CHEERS = ["Correct!", "Nice work!", "You got it!", "Exactly right!", "Great job!", "Nailed it!"];
-const pickCheer = () => CHEERS[Math.floor(Math.random() * CHEERS.length)];
+const val = k => UPGRADES[k].vals[G.lv[k]];
+const earnFor = streak => Math.round((val("mpq") + val("sb") * streak) * val("mul"));
+const lossFor = () => Math.round(val("mpq") * val("mul") * (1 - val("ins") / 100));
+const puCost = k => Math.max(25, Math.round(POWERUPS[k].mult * val("mpq") * val("mul")));
 
-function showResults(st) {
-  keyHandler = null;
-  const pct = Math.round(st.right / st.qs.length * 100);
-  const msg = pct >= 90 ? "Ready for the test! Your village is thriving." : pct >= 75 ? "Strong work. Review the ones below and try again." : pct >= 50 ? "Getting there. Study the ones you missed, then play again." : "Keep practicing. Read the missed answers below carefully.";
-  const missed = st.missed.map(q => {
-    if (q.kind === "grapes") return `<div class="miss"><b>${esc(q.prompt)}</b>Answer: ${q.a} = ${GRAPES_CATS[q.a].name}</div>`;
-    return `<div class="miss"><b>${q.prompt.replace(/<br>/g, " ")}</b>Answer: ${esc(q.a)}</div>`;
-  }).join("");
-  $screen.innerHTML = `
-    <div class="card">
-      <span class="pill">${MODES[st.mode].title}</span>
-      <div class="big">${st.right} / ${st.qs.length}</div>
-      <p>${msg}</p>
-      ${st.missed.length ? `<h3>Review what you missed</h3><div class="missed">${missed}</div>` : `<p><b>Perfect round. No mistakes!</b></p>`}
-      <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="menu">Choose another game</button></div>
+function hudHtml() {
+  const pu = [G.bonus > 1 ? `×${G.bonus} bonus ready` : "", G.saver ? "Streak Saver on" : ""].filter(Boolean).join(" · ");
+  const pct = G.goal.type === "race" ? Math.min(100, G.money / G.goal.target * 100) : (1 - G.secs / G.goal.secs) * 100;
+  const goalTxt = G.goal.type === "race" ? `Goal <b>$${fmt(G.goal.target)}</b> · <b>${formatTime(G.secs)}</b>` : `Time left <b>${formatTime(G.secs)}</b>`;
+  return `
+    <div class="hud" id="hud">
+      <div class="money" id="hud-money">$${fmt(G.money)}</div>
+      <button class="btn shopbtn" id="shop">Shop<small>(S key)</small></button>
+      <div class="stats"><span class="streak">Streak <b>${G.streak}</b></span><span>${goalTxt}</span><span><b>${G.right}</b>/${G.total} right</span></div>
+      <div class="goalbar"><div style="width:${pct}%"></div></div>
+      <div class="active-pu">${pu}</div>
     </div>`;
-  document.getElementById("again").addEventListener("click", () => startRound(st.mode));
-  document.getElementById("menu").addEventListener("click", showMenu);
+}
+function renderHud() {
+  const h = document.getElementById("hud");
+  if (!h) return;
+  h.outerHTML = hudHtml();
+  document.getElementById("shop").addEventListener("click", openShop);
+}
+
+function nextQuestion() {
+  if (G.over) return;
+  const maker = G.deck.next();
+  const q = maker();
+  q.maker = maker;
+  let tiles;
+  if (q.kind === "mc") {
+    q.opts = shuffle([q.a, ...q.w]);
+    tiles = `<div class="tiles">${q.opts.map((o, n) => `<button class="tile c${n + 1}" data-v="${esc(o)}"><span class="k">${n + 1}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
+  } else {
+    tiles = `<div class="tiles six">${Object.entries(GRAPES_CATS).map(([k, v], n) => `<button class="tile c${n + 1}" data-v="${k}"><b>${k}</b><span>${v.name}</span></button>`).join("")}</div>`;
+  }
+  const prompt = q.kind === "grapes" ? `Which GRAPES category?<br><span class="def">${q.prompt}</span>` : q.prompt;
+  $app.innerHTML = `${hudHtml()}<div class="qcard"><span class="tag">${q.tag}</span><p class="q">${prompt}</p></div>${tiles}`;
+  document.getElementById("shop").addEventListener("click", openShop);
+  const tilesEls = [...$app.querySelectorAll(".tile")];
+  tilesEls.forEach(b => b.addEventListener("click", () => answer(q, b.dataset.v)));
+  keyHandler = e => {
+    if (document.querySelector(".shop")) return;
+    if (e.key === "s" || e.key === "S") return openShop();
+    if (q.kind === "mc" && /^[1-4]$/.test(e.key)) tilesEls[+e.key - 1].click();
+    if (q.kind === "grapes") { const t = tilesEls.find(t => t.dataset.v === e.key.toUpperCase()); if (t) t.click(); }
+  };
+}
+
+function answer(q, picked) {
+  if (G.over) return;
+  const ok = picked === q.a;
+  G.total++;
+  let delta = 0, note = "";
+  if (ok) {
+    delta = earnFor(G.streak) * G.bonus;
+    if (G.bonus > 1) note = `×${G.bonus} bonus used!`;
+    G.bonus = 1;
+    G.money += delta; G.right++; G.streak++;
+    G.bestStreak = Math.max(G.bestStreak, G.streak);
+    sfx.right();
+  } else {
+    if (G.saver) { G.saver = false; note = "Streak Saver protected you!"; }
+    else { delta = Math.min(G.money, lossFor()); G.money -= delta; G.streak = 0; if (val("ins") > 0) note = `Insurance saved you some money.`; }
+    G.missed.set(q.prompt + q.a, q);
+    G.deck.retry(q.maker);
+    sfx.wrong();
+  }
+  const answerText = q.kind === "grapes" ? `${q.a} = ${GRAPES_CATS[q.a].name}` : esc(q.a);
+  $app.innerHTML = `${hudHtml()}
+    <div class="splash ${ok ? "good" : "bad"}">
+      <h2>${ok ? pick(["Correct!", "Nice!", "You got it!", "Boom!", "Nailed it!"]) : "Incorrect"}</h2>
+      <div class="delta">${ok ? "+" : "−"}$${fmt(delta)}</div>
+      ${note ? `<p class="note">${note}</p>` : ""}
+      ${ok ? "" : `<p class="ans">Correct answer: <b>${answerText}</b></p>`}
+      <p class="why">${q.why}</p>
+      <div class="row" style="justify-content:center"><button class="btn go" id="cont">Continue</button><button class="btn gold" id="shop2">Shop</button></div>
+    </div>`;
+  document.getElementById("shop").addEventListener("click", openShop);
+  document.getElementById("shop2").addEventListener("click", openShop);
+  const cont = document.getElementById("cont");
+  cont.focus();
+  cont.addEventListener("click", nextQuestion);
+  keyHandler = e => {
+    if (document.querySelector(".shop")) return;
+    if (e.key === "s" || e.key === "S") return openShop();
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); cont.click(); }
+  };
+  if (G.goal.type === "race" && G.money >= G.goal.target) setTimeout(endGame, 900);
+}
+const pick = a => a[Math.floor(Math.random() * a.length)];
+
+/* ---------- Shop ---------- */
+let shopTab = "up";
+function openShop() {
+  if (!G || G.over) return;
+  closeShop();
+  const el = document.createElement("div");
+  el.className = "shop";
+  el.setAttribute("role", "dialog");
+  el.setAttribute("aria-label", "Shop");
+  document.body.appendChild(el);
+  renderShop();
+}
+function closeShop() { document.querySelector(".shop")?.remove(); }
+function renderShop() {
+  const el = document.querySelector(".shop");
+  if (!el) return;
+  const ups = Object.entries(UPGRADES).map(([k, u]) => {
+    const lv = G.lv[k], maxed = lv >= u.vals.length - 1, cost = u.costs[lv];
+    return `<div class="item">
+      <h3>${u.name}</h3><p>${u.desc}</p>
+      <div class="lvl">${u.vals.map((_, i) => `<i class="${i <= lv ? "on" : ""}"></i>`).join("")}</div>
+      <div class="now">Now <b>${u.show(u.vals[lv])}</b>${maxed ? " · MAX" : ` → next <b>${u.show(u.vals[lv + 1])}</b>`}</div>
+      <button class="btn" data-up="${k}" ${maxed || G.money < cost ? "disabled" : ""}>${maxed ? "Maxed out" : "Buy $" + fmt(cost)}</button>
+    </div>`;
+  }).join("");
+  const pus = Object.entries(POWERUPS).map(([k, p]) => {
+    const cost = puCost(k);
+    const active = (k === "saver" && G.saver) || (k !== "saver" && G.bonus > 1);
+    return `<div class="item">
+      <h3>${p.name}</h3><p>${p.desc}</p>
+      <button class="btn" data-pu="${k}" ${active || G.money < cost ? "disabled" : ""}>${active ? (k === "saver" ? "Already on" : "A bonus is ready") : "Buy $" + fmt(cost)}</button>
+    </div>`;
+  }).join("");
+  el.innerHTML = `
+    <div class="shop-inner">
+      <div class="shop-top"><h2>Shop</h2><span class="money">$${fmt(G.money)}</span><button class="btn go" id="close">Back to game</button></div>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="${shopTab === "up"}" data-tab="up">Upgrades</button>
+        <button role="tab" aria-selected="${shopTab === "pu"}" data-tab="pu">Power-ups</button>
+      </div>
+      <div class="items">${shopTab === "up" ? ups : pus}</div>
+      <p class="soft" style="font-size:.88rem">Tip: buy Money per Question early. It grows everything else.</p>
+    </div>`;
+  el.querySelector("#close").addEventListener("click", closeShop);
+  el.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => { shopTab = b.dataset.tab; renderShop(); }));
+  el.querySelectorAll("[data-up]").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.up, cost = UPGRADES[k].costs[G.lv[k]];
+    if (G.money < cost) return;
+    G.money -= cost; G.lv[k]++; sfx.buy();
+    toast(`${UPGRADES[k].name} upgraded to ${UPGRADES[k].show(val(k))}`);
+    renderShop(); renderHud();
+  }));
+  el.querySelectorAll("[data-pu]").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.pu, cost = puCost(k);
+    if (G.money < cost) return;
+    G.money -= cost; sfx.buy();
+    if (k === "saver") G.saver = true; else G.bonus = k === "mega" ? 5 : 2;
+    toast(`${POWERUPS[k].name} activated`);
+    renderShop(); renderHud();
+  }));
+  el.addEventListener("click", e => { if (e.target === el) closeShop(); });
+  el.querySelector("#close").focus();
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeShop(); });
+let toastTimer;
+function toast(msg) {
+  document.querySelector(".toast")?.remove();
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg; t.setAttribute("role", "status");
+  document.body.appendChild(t);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.remove(), 1800);
+}
+
+/* ---------- End of game ---------- */
+function endGame() {
+  if (G.over) return;
+  G.over = true;
+  clearInterval(G.timer);
+  closeShop();
+  keyHandler = null;
+  const race = G.goal.type === "race";
+  const best = store.get("best", {});
+  const prev = best[G.goalKey];
+  const score = race ? G.secs : G.money;
+  const newBest = prev == null || (race ? score < prev : score > prev);
+  if (newBest) { best[G.goalKey] = score; store.set("best", best); }
+  let rank = RANKS[0].name;
+  RANKS.forEach(r => { if (G.money >= r.at) rank = r.name; });
+  const acc = G.total ? Math.round(G.right / G.total * 100) : 0;
+  const missed = [...G.missed.values()].map(q => `<div class="miss"><b>${q.kind === "grapes" ? q.prompt : q.prompt.replace(/<br>/g, " ")}</b>Answer: ${q.kind === "grapes" ? `${q.a} = ${GRAPES_CATS[q.a].name}` : esc(q.a)}</div>`).join("");
+  sfx.buy();
+  $app.innerHTML = `
+    <div class="panel" style="text-align:center;align-items:center">
+      <span class="label">${race ? "Goal reached!" : "Time's up!"}</span>
+      <div class="big money">$${fmt(G.money)}</div>
+      <h2>Your people built a ${rank.replace("!", "")}</h2>
+      ${race ? `<p class="soft">Finished in <b>${formatTime(G.secs)}</b></p>` : ""}
+      ${newBest ? `<p class="note" style="color:var(--gold);font-weight:700">New personal best!</p>` : ""}
+    </div>
+    <div class="statgrid">
+      <div class="stat"><span>Accuracy</span><b>${acc}%</b></div>
+      <div class="stat"><span>Right answers</span><b>${G.right}/${G.total}</b></div>
+      <div class="stat"><span>Best streak</span><b>${G.bestStreak}</b></div>
+    </div>
+    <div class="panel">
+      ${missed ? `<h3>Study these before the test</h3><div class="missed">${missed}</div>` : `<h3>No mistakes. You're ready!</h3>`}
+      <div class="row"><button class="btn go" id="again">Play again</button><button class="btn" id="home">Change game</button></div>
+    </div>`;
+  document.getElementById("again").addEventListener("click", startGame);
+  document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -469,98 +661,87 @@ function startTimeline() {
   const st = { next: 0, mistakes: 0, missesHere: 0, pool: shuffle(TIMELINE.map((t, i) => ({ t, i }))) };
   const render = () => {
     if (st.next === TIMELINE.length) return timelineDone(st);
-    $screen.innerHTML = `
-      <div class="card">
-        <div class="qhead"><span class="pill">Timeline</span><span>${st.next} of ${TIMELINE.length} placed · ${st.mistakes} mistakes</span></div>
-        <div class="progress"><div style="width:${st.next / TIMELINE.length * 100}%"></div></div>
-        <p class="prompt">${st.next === 0 ? "What happened first?" : "What happened next?"}</p>
+    $app.innerHTML = `
+      <div class="panel">
+        <div class="topline"><span class="label">Timeline</span><span id="tl-count">${st.next} of ${TIMELINE.length} placed · ${st.mistakes} mistakes</span></div>
+        <h2>${st.next === 0 ? "What happened first?" : "What happened next?"}</h2>
         ${st.next ? `<ol class="placed">${TIMELINE.slice(0, st.next).map((t, i) => `<li><b>${i + 1}.</b><span>${esc(t)}</span></li>`).join("")}</ol>` : ""}
         <div class="pool">${st.pool.map(p => `<button data-i="${p.i}" class="${st.missesHere >= 2 && p.i === st.next ? "hint" : ""}">${esc(p.t)}</button>`).join("")}</div>
-        ${st.missesHere >= 2 ? `<p class="sub">Hint: the highlighted card comes next.</p>` : ""}
+        ${st.missesHere >= 2 ? `<p class="soft">Hint: the gold card comes next.</p>` : ""}
+        <button class="btn" id="home">Back to menu</button>
       </div>`;
-    $screen.querySelectorAll(".pool button").forEach(b => b.addEventListener("click", () => {
+    document.getElementById("home").addEventListener("click", showHome);
+    $app.querySelectorAll(".pool button").forEach(b => b.addEventListener("click", () => {
       const i = +b.dataset.i;
       if (i === st.next) {
-        if (st.missesHere === 0) addPoint();
+        sfx.right();
         st.pool = st.pool.filter(p => p.i !== i);
         st.next++; st.missesHere = 0;
         render();
       } else {
+        sfx.wrong();
         st.mistakes++; st.missesHere++;
         b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
         if (st.missesHere === 2) render();
-        else document.querySelector(".qhead span:last-child").textContent = `${st.next} of ${TIMELINE.length} placed · ${st.mistakes} mistakes`;
+        else document.getElementById("tl-count").textContent = `${st.next} of ${TIMELINE.length} placed · ${st.mistakes} mistakes`;
       }
     }));
   };
   render();
 }
 function timelineDone(st) {
-  $screen.innerHTML = `
-    <div class="card">
-      <span class="pill">Timeline complete</span>
+  $app.innerHTML = `
+    <div class="panel">
+      <span class="label">Timeline complete</span>
       <div class="big">${st.mistakes} ${st.mistakes === 1 ? "mistake" : "mistakes"}</div>
-      <p>${st.mistakes === 0 ? "Perfect order! You know how the story goes." : st.mistakes <= 4 ? "Nice job. Read the full order once more, then try for zero mistakes." : "Read through the order below, then try again."}</p>
+      <p>${st.mistakes === 0 ? "Perfect order! You know how the story goes." : "Read the full order once more, then try for zero mistakes."}</p>
       <ol class="placed">${TIMELINE.map((t, i) => `<li><b>${i + 1}.</b><span>${esc(t)}</span></li>`).join("")}</ol>
-      <div class="row"><button class="btn" id="again">Play again</button><button class="btn ghost" id="menu">Choose another game</button></div>
+      <div class="row"><button class="btn go" id="again">Try again</button><button class="btn" id="home">Back to menu</button></div>
     </div>`;
   document.getElementById("again").addEventListener("click", startTimeline);
-  document.getElementById("menu").addEventListener("click", showMenu);
+  document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 /* ---------- Focus question flashcards ---------- */
 function startFocus() {
+  keyHandler = null;
   const st = { i: 0, got: 0, practice: [] };
   const render = () => {
     if (st.i === FOCUS.length) return focusDone(st);
     const f = FOCUS[st.i];
-    $screen.innerHTML = `
-      <div class="card">
-        <div class="qhead"><span class="pill">Focus Question ${st.i + 1}</span><span>${st.i + 1} of ${FOCUS.length}</span></div>
-        <div class="progress"><div style="width:${st.i / FOCUS.length * 100}%"></div></div>
-        <div class="flash">
-          <p class="prompt">${esc(f.q)}</p>
-          <p class="sub" id="say">Say your answer out loud (or tell a parent), then check it.</p>
-          <div id="ans" hidden><h3>A strong answer includes:</h3><ul>${f.a.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
-        </div>
-        <div class="row" id="ctl"><button class="btn wheat" id="show">Show answer</button></div>
+    $app.innerHTML = `
+      <div class="panel flash">
+        <div class="topline"><span class="label">Focus Question ${st.i + 1} of ${FOCUS.length}</span></div>
+        <h2>${esc(f.q)}</h2>
+        <p class="soft" id="say">Say your answer out loud (or tell a parent), then check it.</p>
+        <div id="ans" hidden><h3>A strong answer includes:</h3><ul>${f.a.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div class="row" id="ctl"><button class="btn gold" id="show">Show answer</button><button class="btn" id="home">Back to menu</button></div>
       </div>`;
-    const show = document.getElementById("show");
-    show.focus();
-    show.addEventListener("click", () => {
+    document.getElementById("home").addEventListener("click", showHome);
+    document.getElementById("show").addEventListener("click", () => {
       document.getElementById("ans").hidden = false;
       document.getElementById("say").hidden = true;
-      document.getElementById("ctl").innerHTML = `<button class="btn good" id="got">I got it</button><button class="btn bad" id="more">I need more practice</button>`;
-      document.getElementById("got").addEventListener("click", () => { st.got++; addPoint(); st.i++; render(); });
+      document.getElementById("ctl").innerHTML = `<button class="btn go" id="got">I got it</button><button class="btn" id="more">I need more practice</button>`;
+      document.getElementById("got").addEventListener("click", () => { st.got++; st.i++; render(); });
       document.getElementById("more").addEventListener("click", () => { st.practice.push(f); st.i++; render(); });
     });
-    keyHandler = null;
   };
   render();
 }
 function focusDone(st) {
-  $screen.innerHTML = `
-    <div class="card">
-      <span class="pill">Focus Questions</span>
+  $app.innerHTML = `
+    <div class="panel">
+      <span class="label">Focus Questions</span>
       <div class="big">${st.got} / ${FOCUS.length}</div>
       <p>${st.practice.length ? "Study these again. Try writing each answer in your own words:" : "You can answer every focus question. Great preparation!"}</p>
       ${st.practice.length ? `<div class="missed">${st.practice.map(f => `<div class="miss"><b>${esc(f.q)}</b>${f.a.map(esc).join(" ")}</div>`).join("")}</div>` : ""}
-      <div class="row"><button class="btn" id="again">Go through them again</button><button class="btn ghost" id="menu">Choose another game</button></div>
+      <div class="row"><button class="btn go" id="again">Go through them again</button><button class="btn" id="home">Back to menu</button></div>
     </div>`;
   document.getElementById("again").addEventListener("click", startFocus);
-  document.getElementById("menu").addEventListener("click", showMenu);
+  document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* ---------- Reset (two-tap confirm, since confirm() is unavailable) ---------- */
-const resetBtn = document.getElementById("reset");
-let resetArmed = false;
-resetBtn.addEventListener("click", () => {
-  if (!resetArmed) { resetArmed = true; resetBtn.textContent = "Tap again to reset your progress"; setTimeout(() => { resetArmed = false; resetBtn.textContent = "Start the journey over"; }, 3000); return; }
-  points = 0; save(); renderJourney(); resetArmed = false; resetBtn.textContent = "Start the journey over"; showMenu();
-});
-
-renderJourney();
-showMenu();
+showHome();
 </script>
