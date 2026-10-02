@@ -248,6 +248,11 @@
   .dpad [data-d="1,0"] { grid-column: 3; grid-row: 2; }
   .gm-mystery b { color: var(--gold); }
 
+  .tile.right { outline: 4px solid var(--money); outline-offset: 2px; }
+  .tile.wrong { outline: 4px solid var(--bad); outline-offset: 2px; }
+  .tile.dim { opacity: .35; }
+  .tile:disabled { cursor: default; }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
@@ -678,7 +683,7 @@ function showHome() {
       <div class="hero">
         <span class="label">Practice, then play</span>
         <h1>Study <span>Arcade</span></h1>
-        <p class="soft">Pick what you want to practice.</p>
+        <p class="soft">Tap a subject to start studying.</p>
       </div>
       <details class="gamesmenu" id="gamesmenu">
         <summary aria-label="Games menu">⋯</summary>
@@ -697,9 +702,9 @@ function showHome() {
       </details>
     </div>
     <div class="panel">
-      <span class="label">What do you want to practice?</span>
+      <span class="label">Tap a subject to start studying</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
-      ${ss ? `<span class="label">Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>` : ""}
+      <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
     ${ss ? `<div class="panel">
       <span class="label">Social Studies extras</span>
@@ -712,8 +717,15 @@ function showHome() {
         <div class="legend">${Object.entries(GRAPES_CATS).map(([k, v]) => `<div><b>${k}</b> ${v.name}: ${v.say.toLowerCase()}</div>`).join("")}</div>
       </details>
     </div>` : ""}`;
-  $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => { choice.subject = b.dataset.subject; store.set("subject", choice.subject); showHome(); }));
-  $app.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => { choice.set = b.dataset.set; store.set("set", choice.set); showHome(); }));
+  $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = b.dataset.subject; store.set("subject", choice.subject);
+    if (choice.subject === "ss") { choice.set = "all"; store.set("set", "all"); }
+    startStudy();
+  }));
+  $app.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = "ss"; choice.set = b.dataset.set; store.set("subject", "ss"); store.set("set", choice.set);
+    startStudy();
+  }));
   document.getElementById("goal-pick").addEventListener("change", e => { choice.goal = e.target.value; store.set("goal", choice.goal); });
   document.getElementById("dig").addEventListener("click", startDig);
   document.getElementById("slope").addEventListener("click", startSlope);
@@ -2190,6 +2202,75 @@ function startStack() {
   reset();
   M.rs();
   document.getElementById("m-go").addEventListener("click", go);
+}
+
+/* ---------- Study mode: a plain 10-question practice round ---------- */
+const STUDY_LEN = 10;
+function studyTitle() {
+  return choice.subject === "ss" ? `Social Studies · ${SETS[choice.set].name}` : SUBJECTS[choice.subject].name;
+}
+function startStudy() {
+  stopSlope(); stopArchers(); stopMini(); closeShop();
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  const st = { deck: makeDeck(currentSet()), i: 0, right: 0, missed: [] };
+  showStudyQuestion(st);
+}
+function showStudyQuestion(st) {
+  const maker = st.deck.next(), q = maker();
+  q.maker = maker;
+  $app.innerHTML = `
+    <div class="panel">
+      <div class="topline"><span class="label">${studyTitle()}</span><button class="iconbtn" id="st-home">Back to subjects</button></div>
+      <div class="topline"><span>Question ${st.i + 1} of ${STUDY_LEN}</span><span>${st.right} right</span></div>
+      <div class="progress"><div style="width:${st.i / STUDY_LEN * 100}%"></div></div>
+      ${questionHtml(q)}
+      <div id="st-fb"></div>
+    </div>`;
+  document.getElementById("st-home").addEventListener("click", showHome);
+  const tiles = [...$app.querySelectorAll(".tile")];
+  const answer = (picked, btn) => {
+    const ok = picked === q.a;
+    if (ok) { st.right++; sfx.right(); } else { st.missed.push(q); sfx.wrong(); }
+    tiles.forEach(t => { t.disabled = true; t.classList.add(t.dataset.v === q.a ? "right" : t === btn ? "wrong" : "dim"); });
+    const answerText = q.kind === "grapes" ? `${q.a} = ${GRAPES_CATS[q.a].name}` : esc(q.a);
+    const last = st.i === STUDY_LEN - 1;
+    document.getElementById("st-fb").innerHTML = `
+      <div class="feedback ${ok ? "good" : "bad"}">
+        <strong>${ok ? pick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>
+        ${ok ? "" : `<p>The answer is <b>${answerText}</b>.</p>`}
+        <p>${q.why}</p>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn go" id="st-next">${last ? "See results" : "Next question"}</button></div>`;
+    const next = document.getElementById("st-next");
+    next.focus();
+    next.addEventListener("click", () => { st.i++; st.i < STUDY_LEN ? showStudyQuestion(st) : studyResults(st); });
+    keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); next.click(); } };
+  };
+  tiles.forEach(t => t.addEventListener("click", () => answer(t.dataset.v, t)));
+  keyHandler = e => {
+    if (q.kind === "mc" && /^[1-4]$/.test(e.key) && tiles[+e.key - 1] && !tiles[0].disabled) tiles[+e.key - 1].click();
+    if (q.kind === "grapes") { const t = tiles.find(t => t.dataset.v === e.key.toUpperCase()); if (t && !t.disabled) t.click(); }
+  };
+  window.scrollTo({ top: 0 });
+}
+function studyResults(st) {
+  keyHandler = null;
+  const pct = Math.round(st.right / STUDY_LEN * 100);
+  const msg = pct >= 90 ? "Excellent! You really know this." : pct >= 70 ? "Good work. Look over the ones you missed." : "Keep going. Read the missed answers below, then try another round.";
+  const missed = st.missed.map(q => `<div class="miss"><b>${q.kind === "grapes" ? q.prompt : q.prompt.replace(/<br>/g, " ")}</b>Answer: ${q.kind === "grapes" ? `${q.a} = ${GRAPES_CATS[q.a].name}` : esc(q.a)}</div>`).join("");
+  $app.innerHTML = `
+    <div class="panel" style="text-align:center;align-items:center">
+      <span class="label">${studyTitle()}</span>
+      <div class="big money">${st.right} / ${STUDY_LEN}</div>
+      <p>${msg}</p>
+    </div>
+    <div class="panel">
+      ${missed ? `<h3>Study these again</h3><div class="missed">${missed}</div>` : `<h3>Perfect round!</h3>`}
+      <div class="row"><button class="btn go" id="st-again">Study 10 more</button><button class="btn" id="st-home">Pick another subject</button></div>
+    </div>`;
+  document.getElementById("st-again").addEventListener("click", startStudy);
+  document.getElementById("st-home").addEventListener("click", showHome);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 /* ---------- Timeline ---------- */
