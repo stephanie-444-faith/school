@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bone Rain Typing</title>
-<link rel="icon" href="../images/paw.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -111,7 +110,7 @@
   .back-link { display: inline-block; margin-top: 14px; color: var(--orange-dark); }
 
   /* ---------- Stats ---------- */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 10px; margin-bottom: 12px; align-items: stretch; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr) auto auto; gap: 10px; margin-bottom: 12px; align-items: stretch; }
   .stat { background: var(--card); border-radius: 18px; padding: 8px 10px; text-align: center; box-shadow: 0 5px 0 rgba(139, 90, 43, 0.12); }
   .stat-label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
   .stat-value { display: block; font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -216,6 +215,40 @@
   .k-thumb { --c: var(--f-thumb); }
   .finger-note { text-align: center; color: var(--ink-soft); font-size: 0.9rem; margin: 8px 0 0; }
 
+  /* ---------- Brain breaks ---------- */
+  .break-picker { margin: 20px auto 0; }
+  .break-picker p { margin: 0 0 8px; font-weight: 600; }
+  .seg { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .seg button {
+    font-family: inherit; font-size: 1rem; font-weight: 600; color: var(--ink);
+    background: #fff6e8; border: 3px solid #f0dcc0; border-radius: 999px; padding: 6px 16px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { border-color: var(--good); background: #dff5ef; }
+
+  .break {
+    position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px;
+    background: rgba(74, 44, 26, 0.45);
+  }
+  .break-card { width: min(480px, 100%); padding: 22px 22px 26px; text-align: center; border: 6px solid #bfe7dc; }
+  .break-kicker { margin: 0; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--good); }
+  .break-emoji { font-size: 3.4rem; line-height: 1.1; margin: 6px 0 0; }
+  .break-card h2 { margin: 4px 0 6px; font-size: 1.9rem; }
+  .break-card .lead { margin-bottom: 14px; color: var(--ink); }
+  .break-row { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 16px; }
+  .break-dog { width: 96px; height: 96px; animation: wiggle 0.8s ease-in-out infinite; }
+  @keyframes wiggle { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg) translateY(-6px); } }
+  .break-clock {
+    width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 2.2rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--good);
+    background: conic-gradient(var(--good) calc(var(--p, 1) * 360deg), #e5f4ef 0);
+    position: relative;
+  }
+  .break-clock::before { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--card); }
+  .break-clock span { position: relative; }
+  .btn-good { color: #fff; background: var(--good); box-shadow: 0 6px 0 #1f8571; }
+  .btn-good:active { transform: translateY(4px); box-shadow: 0 2px 0 #1f8571; }
+  #break-btn { height: auto; width: 56px; border-radius: 18px; }
+
   /* ---------- Game over ---------- */
   .final-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 620px; margin: 16px auto 20px; }
   .final-stats div { background: #fff6e8; border-radius: 18px; padding: 12px 6px; }
@@ -233,7 +266,7 @@
   @media (max-width: 640px) {
     .modes { grid-template-columns: 1fr; }
     .stats { grid-template-columns: repeat(2, 1fr); }
-    #pause-btn { grid-column: 1 / -1; width: 100%; height: 44px; }
+    #pause-btn, #break-btn { width: 100%; height: 44px; }
     .final-stats { grid-template-columns: repeat(2, 1fr); }
     .key { height: 40px; font-size: 1rem; border-radius: 8px; }
     .krow { gap: 4px; }
@@ -241,21 +274,21 @@
     .biscuit { width: 76px; height: 76px; margin-left: -38px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .bounce, .cloud, .key.hint { animation: none; }
+    .bounce, .cloud, .key.hint, .break-dog { animation: none; }
   }
 </style>
 </head>
 <body>
 <main class="app">
   <header class="app-header">
-    <img src="../images/paw.svg" alt="" class="logo-paw">
+    <img data-img="paw" alt="" class="logo-paw">
     <h1>Bone Rain <span>Typing</span></h1>
     <button id="sound-toggle" class="icon-btn" aria-label="Turn sound off" title="Sound on/off">🔊</button>
   </header>
 
   <!-- START SCREEN -->
   <section id="start-screen" class="screen card">
-    <img src="../images/dog-happy.svg" alt="Biscuit the happy cartoon puppy" class="dog-big bounce">
+    <img data-img="happy" alt="Biscuit the happy cartoon puppy" class="dog-big bounce">
     <h2>It's raining bones!</h2>
     <p class="lead">Type the word on each bone to help Biscuit catch it before it lands in the grass.
       Catch lots in a row to build a <strong>combo</strong>. You have 3 hearts — don't let the bones hit the ground!</p>
@@ -283,6 +316,16 @@
 
     <button id="start-btn" class="btn btn-primary btn-large">Let's Play! 🦴</button>
 
+    <div class="break-picker">
+      <p>🧠 Brain breaks: get up and move with Biscuit</p>
+      <div class="seg" role="group" aria-label="How often to take a brain break">
+        <button type="button" data-break="120">Every 2 min</button>
+        <button type="button" data-break="180">Every 3 min</button>
+        <button type="button" data-break="300">Every 5 min</button>
+        <button type="button" data-break="0">Off</button>
+      </div>
+    </div>
+
     <p class="tip">💡 <strong>Pro tip:</strong> rest your fingers on <span class="kbd">A</span> <span class="kbd">S</span> <span class="kbd">D</span> <span class="kbd">F</span>
       and <span class="kbd">J</span> <span class="kbd">K</span> <span class="kbd">L</span> <span class="kbd">;</span>
       — feel the little bumps on F and J? The glowing key shows what to press next.</p>
@@ -296,6 +339,7 @@
       <div class="stat"><span class="stat-label">Level</span><span class="stat-value" id="level">1</span></div>
       <div class="stat stat-combo" id="combo-box"><span class="stat-label">Combo</span><span class="stat-value"><span id="combo">0</span> 🔥</span></div>
       <div class="stat"><span class="stat-label">Hearts</span><span class="stat-value" id="hearts"></span></div>
+      <button id="break-btn" class="icon-btn" aria-label="Take a brain break" title="Brain break">🧠</button>
       <button id="pause-btn" class="icon-btn" aria-label="Pause" title="Pause (Esc)">⏸️</button>
     </div>
 
@@ -304,7 +348,7 @@
       <div class="cloud" style="width:130px;height:36px;top:110px;animation-duration:62s;animation-delay:-40s"></div>
       <div class="cloud" style="width:70px;height:22px;top:180px;animation-duration:38s;animation-delay:-25s"></div>
       <div class="grass"></div>
-      <img id="biscuit" class="biscuit" src="../images/dog-thinking.svg" alt="Biscuit the puppy">
+      <img id="biscuit" class="biscuit" data-img="thinking" alt="Biscuit the puppy">
       <input id="trap" class="typing-trap" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type here">
 
       <div id="pause-overlay" class="overlay" hidden>
@@ -327,9 +371,25 @@
     <p class="finger-note">Each color is a different finger. Pinkies on the pink keys!</p>
   </section>
 
+  <!-- BRAIN BREAK -->
+  <div id="break" class="break" hidden>
+    <div class="break-card card" role="dialog" aria-modal="true" aria-labelledby="break-title">
+      <p class="break-kicker">🧠 Brain break!</p>
+      <p class="break-emoji" id="break-emoji">💦</p>
+      <h2 id="break-title">Shake like a wet dog!</h2>
+      <p class="lead" id="break-text">Stand up and shake your whole body.</p>
+      <div class="break-row">
+        <img data-img="happy" alt="Biscuit doing the brain break too" class="break-dog">
+        <div class="break-clock" id="break-clock"><span id="break-time">20</span></div>
+      </div>
+      <button id="break-done" class="btn btn-good" hidden>I did it! 🐾</button><br>
+      <button id="break-skip" class="link-btn">Skip and keep typing</button>
+    </div>
+  </div>
+
   <!-- GAME OVER SCREEN -->
   <section id="over-screen" class="screen card" hidden>
-    <img src="../images/dog-happy.svg" alt="" class="dog-big" id="over-dog">
+    <img data-img="happy" alt="" class="dog-big" id="over-dog">
     <h2 id="over-title">Great typing!</h2>
     <div id="new-best" class="new-best" hidden>🏆 New best score!</div>
     <div class="final-stats">
@@ -353,12 +413,15 @@
 const START_HEARTS = 3;
 const CATCHES_PER_LEVEL = 8;
 
-const IMG = {
-  happy: "../images/dog-happy.svg",
-  thinking: "../images/dog-thinking.svg",
-  sad: "../images/dog-sad.svg",
-  bone: "../images/bone.svg",
+// Pictures are built into this file so the game still works when it's opened on its own.
+const SVG = {
+  happy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"> <path d="M58 156 Q100 170 142 156 L144 172 Q100 188 56 172 Z" fill="#E4574C"/> <circle cx="100" cy="184" r="10" fill="#F5C542" stroke="#D9A21B" stroke-width="2"/> <ellipse cx="100" cy="104" rx="62" ry="58" fill="#E8A85C"/> <ellipse cx="128" cy="90" rx="19" ry="17" fill="#C27B34"/> <ellipse cx="100" cy="84" rx="9" ry="30" fill="#FFF6E8"/> <ellipse cx="100" cy="134" rx="38" ry="27" fill="#FFF6E8"/> <ellipse cx="42" cy="100" rx="21" ry="46" transform="rotate(22 42 100)" fill="#8B5A2B"/> <ellipse cx="158" cy="100" rx="21" ry="46" transform="rotate(-22 158 100)" fill="#8B5A2B"/> <circle cx="66" cy="122" r="8" fill="#FF9AA8" opacity=".55"/> <circle cx="134" cy="122" r="8" fill="#FF9AA8" opacity=".55"/> <path d="M70 94 Q80 82 90 94" stroke="#2B1D14" stroke-width="5" fill="none" stroke-linecap="round"/> <path d="M110 94 Q120 82 130 94" stroke="#2B1D14" stroke-width="5" fill="none" stroke-linecap="round"/> <ellipse cx="100" cy="120" rx="13" ry="9" fill="#2B1D14"/> <ellipse cx="96" cy="117" rx="4" ry="2.5" fill="#fff" opacity=".7"/> <path d="M100 129 V134" stroke="#2B1D14" stroke-width="3" stroke-linecap="round"/> <path d="M80 134 Q100 166 120 134 Z" fill="#5A2A1E"/> <path d="M90 146 Q100 168 110 146 Q100 140 90 146 Z" fill="#FF7A8A"/> </svg>`,
+  thinking: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"> <path d="M58 156 Q100 170 142 156 L144 172 Q100 188 56 172 Z" fill="#E4574C"/> <circle cx="100" cy="184" r="10" fill="#F5C542" stroke="#D9A21B" stroke-width="2"/> <ellipse cx="100" cy="104" rx="62" ry="58" fill="#E8A85C"/> <ellipse cx="128" cy="90" rx="19" ry="17" fill="#C27B34"/> <ellipse cx="100" cy="84" rx="9" ry="30" fill="#FFF6E8"/> <ellipse cx="100" cy="134" rx="38" ry="27" fill="#FFF6E8"/> <ellipse cx="42" cy="100" rx="21" ry="46" transform="rotate(22 42 100)" fill="#8B5A2B"/> <ellipse cx="158" cy="100" rx="21" ry="46" transform="rotate(-22 158 100)" fill="#8B5A2B"/> <circle cx="66" cy="122" r="8" fill="#FF9AA8" opacity=".45"/> <circle cx="134" cy="122" r="8" fill="#FF9AA8" opacity=".45"/> <circle cx="80" cy="94" r="9" fill="#2B1D14"/> <circle cx="120" cy="94" r="9" fill="#2B1D14"/> <circle cx="84" cy="90" r="3.2" fill="#fff"/> <circle cx="124" cy="90" r="3.2" fill="#fff"/> <ellipse cx="100" cy="120" rx="13" ry="9" fill="#2B1D14"/> <ellipse cx="96" cy="117" rx="4" ry="2.5" fill="#fff" opacity=".7"/> <path d="M100 129 V137 M86 137 Q93 145 100 137 Q107 145 114 137" stroke="#2B1D14" stroke-width="3" fill="none" stroke-linecap="round"/> </svg>`,
+  sad: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"> <path d="M58 156 Q100 170 142 156 L144 172 Q100 188 56 172 Z" fill="#E4574C"/> <circle cx="100" cy="184" r="10" fill="#F5C542" stroke="#D9A21B" stroke-width="2"/> <ellipse cx="100" cy="104" rx="62" ry="58" fill="#E8A85C"/> <ellipse cx="128" cy="90" rx="19" ry="17" fill="#C27B34"/> <ellipse cx="100" cy="84" rx="9" ry="30" fill="#FFF6E8"/> <ellipse cx="100" cy="134" rx="38" ry="27" fill="#FFF6E8"/> <ellipse cx="46" cy="108" rx="21" ry="46" transform="rotate(10 46 108)" fill="#8B5A2B"/> <ellipse cx="154" cy="108" rx="21" ry="46" transform="rotate(-10 154 108)" fill="#8B5A2B"/> <path d="M70 88 L88 80" stroke="#6B3F1D" stroke-width="4" stroke-linecap="round"/> <path d="M130 88 L112 80" stroke="#6B3F1D" stroke-width="4" stroke-linecap="round"/> <circle cx="80" cy="98" r="10" fill="#2B1D14"/> <circle cx="120" cy="98" r="10" fill="#2B1D14"/> <circle cx="83" cy="95" r="3.6" fill="#fff"/> <circle cx="123" cy="95" r="3.6" fill="#fff"/> <path d="M74 110 Q70 122 74 126 Q79 122 74 110 Z" fill="#7CC7F2"/> <ellipse cx="100" cy="122" rx="13" ry="9" fill="#2B1D14"/> <ellipse cx="96" cy="119" rx="4" ry="2.5" fill="#fff" opacity=".7"/> <path d="M100 131 V138 M86 148 Q100 136 114 148" stroke="#2B1D14" stroke-width="3" fill="none" stroke-linecap="round"/> </svg>`,
+  bone: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"> <g fill="#FFF6E8" stroke="#C98A4B" stroke-width="3"> <circle cx="16" cy="16" r="12"/><circle cx="16" cy="34" r="12"/> <circle cx="84" cy="16" r="12"/><circle cx="84" cy="34" r="12"/> </g> <rect x="14" y="15" width="72" height="20" rx="4" fill="#FFF6E8"/> <path d="M22 15 H78 M22 35 H78" stroke="#C98A4B" stroke-width="3"/> </svg>`,
+  paw: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"> <g fill="#E0A064"> <ellipse cx="50" cy="66" rx="22" ry="18"/> <ellipse cx="22" cy="40" rx="9" ry="12" transform="rotate(-20 22 40)"/> <ellipse cx="39" cy="24" rx="9" ry="12" transform="rotate(-6 39 24)"/> <ellipse cx="61" cy="24" rx="9" ry="12" transform="rotate(6 61 24)"/> <ellipse cx="78" cy="40" rx="9" ry="12" transform="rotate(20 78 40)"/> </g> </svg>`,
 };
+const IMG = Object.fromEntries(Object.entries(SVG).map(([k, v]) => [k, `data:image/svg+xml;charset=utf-8,${encodeURIComponent(v)}`]));
 
 // Letters unlock row by row as the levels go up.
 const HOME_ROW = "asdfjkl".split("");
@@ -399,6 +462,22 @@ const UNLOCK_MSG = {
   long: {},
 };
 
+const BREAK_SECONDS = 20;
+const BREAKS = [
+  { emoji: "💦", title: "Shake like a wet dog!", text: "Stand up and shake your whole body, from your head all the way to your tail!" },
+  { emoji: "🧘", title: "Downward dog", text: "Hands and feet on the floor, bottom up high like a stretching puppy. Hold it!" },
+  { emoji: "🌀", title: "Chase your tail", text: "Spin around slowly 3 times one way, then 3 times the other way." },
+  { emoji: "🐰", title: "Puppy hops", text: "Do 10 jumping jacks. Count them out loud!" },
+  { emoji: "🥱", title: "Sleepy puppy stretch", text: "Reach your arms way up high, do a giant yawn, then touch your toes." },
+  { emoji: "🖐️", title: "Paw squeezes", text: "Squeeze your hands into tight fists, then spread your fingers wide. Do it 10 times!" },
+  { emoji: "🌸", title: "Smell the flower", text: "Breathe in slowly through your nose… then blow out a birthday candle. Do it 5 times." },
+  { emoji: "🐺", title: "Howl at the moon", text: "Stand up tall and give your best wolf howl. Awoooooo!" },
+  { emoji: "🦴", title: "Bury the bone", text: "Dig a pretend hole with fast puppy paws, drop in your bone, then pat it flat." },
+  { emoji: "🎵", title: "Tail-wag dance", text: "Wiggle your hips like a wagging tail and dance until the timer runs out!" },
+  { emoji: "👀", title: "Look far away", text: "Rest your eyes: look across the room or out a window and find 3 blue things." },
+  { emoji: "🤸", title: "Shoulder rolls", text: "Roll your shoulders back 5 times, then forward 5 times. Then shake out your hands." },
+];
+
 const PRAISE = ["Woof!", "Pawsome!", "Good dog!", "Bark-tastic!", "Fetch-tacular!", "Tail wags!", "Yum!"];
 
 // Which finger types each key (standard touch typing).
@@ -426,6 +505,13 @@ const store = {
 // ---------- State ----------
 const state = {
   mode: store.get("bonerain-mode") || "short",
+  breakEvery: Number(store.get("bonerain-break") ?? 180),
+  onBreak: false,
+  ending: false,
+  playTime: 0,
+  nextBreak: 0,
+  breakTimer: 0,
+  lastBreak: -1,
   sound: store.get("bonerain-sound") !== "off",
   running: false,
   paused: false,
@@ -446,6 +532,7 @@ const state = {
   recent: [],
 };
 if (!MODES[state.mode]) state.mode = "short";
+if (![0, 120, 180, 300].includes(state.breakEvery)) state.breakEvery = 180;
 
 // ---------- Sound ----------
 let audioCtx = null;
@@ -667,13 +754,17 @@ function missDrop(drop) {
   if (state.target === drop) state.target = null;
   drop.el.classList.add("missed");
   setTimeout(() => drop.el.remove(), 600);
-  state.hearts--;
+  state.hearts = Math.max(0, state.hearts - 1);
   state.combo = 0;
   setDog(IMG.sad, 900);
   playSound("miss");
   renderHud();
   updateHint();
-  if (state.hearts <= 0) setTimeout(endGame, 700);
+  if (state.hearts === 0) {
+    // Freeze the field so no more bones can land while the game wraps up.
+    state.ending = true;
+    setTimeout(endGame, 700);
+  }
 }
 
 function levelUp() {
@@ -689,7 +780,7 @@ function levelUp() {
 
 // ---------- Typing ----------
 function handleChar(raw) {
-  if (!state.running || state.paused) return;
+  if (!state.running || state.paused || state.ending) return;
   const ch = raw.toLowerCase();
   if (!/^[a-z;]$/.test(ch)) return;
 
@@ -760,7 +851,13 @@ function loop(now) {
   if (!state.running) return;
   const dt = Math.min(0.05, (now - state.lastTime) / 1000 || 0);
   state.lastTime = now;
-  if (!state.paused) {
+  if (!state.paused && !state.ending) {
+    state.playTime += dt;
+    if (state.breakEvery && state.playTime >= state.nextBreak) {
+      startBreak();
+      state.rafId = requestAnimationFrame(loop);
+      return;
+    }
     const speed = groundY() / fallSeconds(); // px per second
     state.spawnTimer -= dt;
     const live = state.drops.filter((d) => !d.gone);
@@ -791,6 +888,7 @@ function startGame() {
   Object.assign(state, {
     running: false, paused: false, target: null, score: 0, level: 1, caught: 0, combo: 0, bestCombo: 0,
     hearts: START_HEARTS, goodKeys: 0, badKeys: 0, missedKeys: new Map(), spawnTimer: 0, recent: [],
+    onBreak: false, ending: false, playTime: 0, nextBreak: state.breakEvery,
   });
   show("game");
   renderHud();
@@ -798,23 +896,82 @@ function startGame() {
   moveBiscuitTo(null);
   updateHint();
   trap.focus();
-  countdown(3);
+  countdown(3, () => {
+    state.running = true;
+    state.lastTime = performance.now();
+    state.rafId = requestAnimationFrame(loop);
+  });
 }
 
-function countdown(n) {
+function countdown(n, done) {
   const overlay = $("ready-overlay");
   overlay.hidden = false;
   $("ready-count").textContent = n;
   playSound("count");
   setTimeout(() => {
     if (screens.game.hidden) return;
-    if (n > 1) return countdown(n - 1);
+    if (n > 1) return countdown(n - 1, done);
     overlay.hidden = true;
-    state.running = true;
-    state.lastTime = performance.now();
     trap.focus();
-    state.rafId = requestAnimationFrame(loop);
+    done();
   }, 700);
+}
+
+// ---------- Brain breaks ----------
+function startBreak() {
+  if (!state.running || state.paused || state.ending) return;
+  state.onBreak = true;
+  state.paused = true;
+  $("pause-overlay").hidden = true;
+  trap.blur();
+
+  // pick a different activity from last time
+  let i = Math.floor(Math.random() * BREAKS.length);
+  if (i === state.lastBreak) i = (i + 1) % BREAKS.length;
+  state.lastBreak = i;
+  const activity = BREAKS[i];
+  $("break-emoji").textContent = activity.emoji;
+  $("break-title").textContent = activity.title;
+  $("break-text").textContent = activity.text;
+  $("break-done").hidden = true;
+  $("break").hidden = false;
+  playSound("level");
+
+  let left = BREAK_SECONDS;
+  const tick = () => {
+    $("break-time").textContent = left;
+    $("break-clock").style.setProperty("--p", left / BREAK_SECONDS);
+  };
+  tick();
+  clearInterval(state.breakTimer);
+  state.breakTimer = setInterval(() => {
+    left--;
+    tick();
+    if (left <= 0) {
+      clearInterval(state.breakTimer);
+      $("break-done").hidden = false;
+      $("break-done").focus();
+      playSound("catch");
+    }
+  }, 1000);
+}
+
+function finishBreak() {
+  if (!state.onBreak) return;
+  clearInterval(state.breakTimer);
+  $("break").hidden = true;
+  state.nextBreak = state.playTime + state.breakEvery;
+  countdown(3, () => {
+    state.onBreak = false;
+    state.paused = false;
+    state.lastTime = performance.now();
+  });
+}
+
+function renderBreakPicker() {
+  document.querySelectorAll("[data-break]").forEach((btn) => {
+    btn.setAttribute("aria-pressed", String(Number(btn.dataset.break) === state.breakEvery));
+  });
 }
 
 function pause() {
@@ -823,7 +980,7 @@ function pause() {
   $("pause-overlay").hidden = false;
 }
 function resume() {
-  if (!state.paused) return;
+  if (!state.paused || state.onBreak) return;
   state.paused = false;
   $("pause-overlay").hidden = true;
   state.lastTime = performance.now();
@@ -834,6 +991,10 @@ function endGame() {
   if (!state.running) return;
   state.running = false;
   state.paused = false;
+  state.onBreak = false;
+  state.ending = false;
+  clearInterval(state.breakTimer);
+  $("break").hidden = true;
   $("pause-overlay").hidden = true;
   cancelAnimationFrame(state.rafId);
   clearField();
@@ -893,15 +1054,35 @@ $("start-btn").addEventListener("click", startGame);
 $("again-btn").addEventListener("click", startGame);
 $("menu-btn").addEventListener("click", () => { renderModes(); show("start"); });
 $("pause-btn").addEventListener("click", () => (state.paused ? resume() : pause()));
+$("break-btn").addEventListener("click", startBreak);
+$("break-done").addEventListener("click", finishBreak);
+$("break-skip").addEventListener("click", finishBreak);
+document.querySelectorAll("[data-break]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    state.breakEvery = Number(btn.dataset.break);
+    store.set("bonerain-break", state.breakEvery);
+    renderBreakPicker();
+  });
+});
 $("resume-btn").addEventListener("click", resume);
 $("quit-btn").addEventListener("click", endGame);
 $("sound-toggle").addEventListener("click", () => setSound(!state.sound));
 document.addEventListener("visibilitychange", () => { if (document.hidden) pause(); });
 window.addEventListener("blur", pause);
 
+document.querySelectorAll("[data-img]").forEach((img) => { img.src = IMG[img.dataset.img]; });
+const favicon = document.createElement("link");
+favicon.rel = "icon";
+favicon.href = IMG.paw;
+document.head.appendChild(favicon);
+
 buildKeyboard();
 setSound(state.sound);
 renderModes();
+renderBreakPicker();
+// For testing: ?break=10 makes brain breaks come every 10 seconds.
+const testBreak = Number(new URLSearchParams(location.search).get("break"));
+if (testBreak > 0) state.breakEvery = testBreak;
 </script>
 </body>
 </html>
