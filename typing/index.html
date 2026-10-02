@@ -1324,7 +1324,13 @@ $("kids").addEventListener("click", (e) => {
   const btn = e.target.closest("[data-reset]");
   if (!btn) return;
   const id = btn.dataset.reset;
-  if (!confirm(`Start ${PLAYERS[id].name}'s progress over? This clears their levels, scores and history.`)) return;
+  // Ask twice instead of using a pop-up, which some browsers block.
+  if (!btn.dataset.armed) {
+    btn.dataset.armed = "1";
+    btn.textContent = `Tap again to erase all of ${PLAYERS[id].name}'s levels, scores and history`;
+    setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = `Start ${PLAYERS[id].name}'s progress over`; } }, 4000);
+    return;
+  }
   profiles[id] = blankProfile();
   saveProfiles();
   showProgress();
