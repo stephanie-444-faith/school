@@ -765,6 +765,7 @@ function showHome() {
             <select id="goal-pick">${Object.entries(GOALS).map(([k, v]) => `<option value="${k}" ${choice.goal === k ? "selected" : ""}>${v.name}</option>`).join("")}</select>
           </div>
           <button class="gm-item" id="slope"><b>Slope Run</b><span>Steer a ball down a neon slope. No questions.</span>${bestLine(best.slope ? "Best " + fmt(best.slope) + " m" : "")}</button>
+          <button class="gm-item" id="draw"><b>Drawing Studio</b><span>Draw with any color, add shapes, and move everything around.</span></button>
           <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Enemies get tougher every round. Trade kills for better bows and gear. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
           ${["snake", "stack"].map((k, i) => { const seen = store.get("seen", {})[k]; return `<button class="gm-item gm-mystery" id="m-${k}"><b>${seen ? MYSTERY[k].name : "Mystery Game #" + (i + 1)}</b><span>${seen ? MYSTERY[k].desc + " No questions." : "Tap to find out what it is!"}</span>${bestLine(best[k] ? "Best " + best[k] : "")}</button>`; }).join("")}
         </div>
@@ -775,11 +776,6 @@ function showHome() {
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
       <span class="label">Math level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
-    </div>
-    <div class="panel create-card">
-      <span class="label">Create</span>
-      <button class="btn go" id="draw">Drawing Studio</button>
-      <p class="soft">Draw with any color, add shapes, and move everything around.</p>
     </div>
     ${ss ? `<div class="panel">
       <span class="label">Social Studies extras</span>
