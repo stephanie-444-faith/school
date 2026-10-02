@@ -1,5 +1,5 @@
 <title>Study Arcade</title>
-<meta name="description" content="Gimkit-style study games: Dig It Up, Slope Run, and Cash Race, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
+<meta name="description" content="Study games: Dig It Up, Cash Race, Slope Run, and Ragdoll Archers, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -219,6 +219,24 @@
   .slope-stage canvas { display: block; width: 100%; }
   .slope-over { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; background: rgba(0,0,0,.6); padding: 16px; }
   .steer .btn { flex: 1; touch-action: none; user-select: none; -webkit-user-select: none; font-size: 1.1rem; padding: 16px; }
+
+  .topbar { position: relative; }
+  .gamesmenu { position: absolute; top: 0; right: 0; z-index: 10; }
+  .gamesmenu summary { list-style: none; cursor: pointer; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--ink-soft); opacity: .45; font-size: 1.3rem; line-height: 1; }
+  .gamesmenu summary::-webkit-details-marker { display: none; }
+  .gamesmenu summary:hover, .gamesmenu[open] summary { opacity: 1; background: var(--panel); }
+  .gamesmenu summary:focus-visible { outline: 3px solid var(--gold); opacity: 1; }
+  .gm-panel { position: absolute; right: 0; top: 42px; width: min(340px, calc(100vw - 32px)); background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+  .gm-item { text-align: left; background: var(--panel-2); border: 0; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .gm-item:hover { filter: brightness(1.15); }
+  .gm-item b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; }
+  .gm-item span { font-size: .82rem; color: var(--ink-soft); }
+  .gm-best { font-size: .75rem; color: var(--gold); font-weight: 700; }
+  .gm-cash { gap: 6px; }
+  .gm-cash button { background: none; border: 0; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 2px; }
+  .gm-cash select { font: inherit; font-size: .85rem; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .archer-stage { touch-action: none; }
 
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
@@ -639,40 +657,37 @@ if (!GOALS[choice.goal]) choice.goal = "r10k";
 function showHome() {
   keyHandler = null;
   stopSlope();
+  stopArchers();
   const best = store.get("best", {});
   const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
   const ss = choice.subject === "ss";
+  const bestLine = txt => txt ? `<small class="gm-best">${txt}</small>` : "";
   $app.innerHTML = `
-    <div class="hero">
-      <span class="label">Practice, then play</span>
-      <h1>Study <span>Arcade</span></h1>
-      <p class="soft">Pick what you want to practice, then pick a game. Questions pop up while you play.</p>
+    <div class="topbar">
+      <div class="hero">
+        <span class="label">Practice, then play</span>
+        <h1>Study <span>Arcade</span></h1>
+        <p class="soft">Pick what you want to practice.</p>
+      </div>
+      <details class="gamesmenu" id="gamesmenu">
+        <summary aria-label="Games menu">⋯</summary>
+        <div class="gm-panel">
+          <span class="label">Games</span>
+          <button class="gm-item" id="dig"><b>Dig It Up</b><span>Mine gems, craft pickaxes, answer pop-up questions</span>${bestLine(best.dig ? "Fastest win " + formatTime(best.dig) : "")}</button>
+          <div class="gm-item gm-cash">
+            <button id="start"><b>Cash Race</b><span>Earn money for right answers, buy upgrades</span></button>
+            <label for="goal-pick" class="sr">Cash Race mode</label>
+            <select id="goal-pick">${Object.entries(GOALS).map(([k, v]) => `<option value="${k}" ${choice.goal === k ? "selected" : ""}>${v.name}</option>`).join("")}</select>
+          </div>
+          <button class="gm-item" id="slope"><b>Slope Run</b><span>Steer a ball down a neon slope. No questions.</span>${bestLine(best.slope ? "Best " + fmt(best.slope) + " m" : "")}</button>
+          <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Pull back, aim, and knock over the enemy archer. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
+        </div>
+      </details>
     </div>
     <div class="panel">
-      <span class="label">1 · What do you want to practice?</span>
+      <span class="label">What do you want to practice?</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
       ${ss ? `<span class="label">Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>` : ""}
-    </div>
-    <div class="panel feature-dig">
-      <span class="label">2 · Main game</span>
-      <h2>Dig It Up</h2>
-      <p>Dig a huge world for <b>wheat, copper, iron, diamonds, rubies, and titanium</b>. Craft better and better pickaxes. Questions pop up while you dig: get them right and they come less often (up to every 2 minutes); miss them and they come faster (as often as every 10 seconds). Craft the <b>Titanium Pickaxe</b> to win, then keep exploring!</p>
-      <button class="btn go" id="dig">Start digging</button>
-      ${best.dig ? `<p class="best soft">Your fastest win: <span class="money">${formatTime(best.dig)}</span></p>` : ""}
-    </div>
-    <div class="panel slope-card">
-      <span class="label">Brain break</span>
-      <h2>Slope Run</h2>
-      <p>Steer a ball down a neon slope. Dodge red blocks and don't fall off. It keeps getting faster!</p>
-      <button class="btn go" id="slope">Play Slope Run</button>
-      ${best.slope ? `<p class="best soft">Your best distance: <span class="money">${fmt(best.slope)} m</span></p>` : ""}
-    </div>
-    <div class="panel">
-      <span class="label">Bonus game · Cash Race</span>
-      <p class="soft">Earn money for every right answer, lose some for wrong ones, and buy upgrades in the shop.</p>
-      <div class="chips">${chipRow(GOALS, "goal")}</div>
-      <button class="btn gold" id="start">Start Cash Race</button>
-      ${best[choice.goal] ? `<p class="best soft">Your best in this mode: <span class="money">${GOALS[choice.goal].type === "race" ? formatTime(best[choice.goal]) : "$" + fmt(best[choice.goal])}</span></p>` : ""}
     </div>
     ${ss ? `<div class="panel">
       <span class="label">Social Studies extras</span>
@@ -687,15 +702,21 @@ function showHome() {
     </div>` : ""}`;
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => { choice.subject = b.dataset.subject; store.set("subject", choice.subject); showHome(); }));
   $app.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => { choice.set = b.dataset.set; store.set("set", choice.set); showHome(); }));
-  $app.querySelectorAll("[data-goal]").forEach(b => b.addEventListener("click", () => { choice.goal = b.dataset.goal; store.set("goal", choice.goal); showHome(); }));
+  document.getElementById("goal-pick").addEventListener("change", e => { choice.goal = e.target.value; store.set("goal", choice.goal); });
   document.getElementById("dig").addEventListener("click", startDig);
   document.getElementById("slope").addEventListener("click", startSlope);
+  document.getElementById("archers").addEventListener("click", startArchers);
   document.getElementById("start").addEventListener("click", startGame);
+  keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
     document.getElementById("fq").addEventListener("click", startFocus);
   }
 }
+document.addEventListener("click", e => {
+  const m = document.getElementById("gamesmenu");
+  if (m?.open && !m.contains(e.target)) m.open = false;
+});
 const formatTime = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 
 /* ---------- Game ---------- */
@@ -1001,6 +1022,7 @@ const fullHp = (r, t) => t.res ? RES[t.res].hard : t.boulder ? LAYERS[layerOf(r)
 function startDig() {
   closeShop();
   stopSlope();
+  stopArchers();
   clearInterval(D?.timer);
   const grid = [];
   for (let r = 0; r < ROWS; r++) {
@@ -1423,6 +1445,7 @@ function slopeSeg(i) {
 }
 function startSlope() {
   stopSlope();
+  stopArchers();
   closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
   keyHandler = null;
@@ -1562,6 +1585,266 @@ function slopeOver() {
   document.getElementById("s-go").addEventListener("click", slopeGo);
   document.getElementById("s-menu").addEventListener("click", showHome);
   document.getElementById("s-go").focus();
+}
+
+/* ---------- Ragdoll Archers (brain-break game) ---------- */
+// Stick figures are Verlet ragdolls: points joined by sticks. While alive, "muscles" pull them toward a standing pose.
+let A = null;
+const BONES = [[0, 1, 20], [1, 2, 50], [2, 3, 35], [3, 4, 35], [2, 5, 35], [5, 6, 35], [1, 7, 22], [7, 8, 22], [1, 9, 22], [9, 10, 22]];
+// 0 head, 1 neck, 2 pelvis, 3/4 left knee/foot, 5/6 right knee/foot, 7/8 back elbow/hand, 9/10 bow elbow/hand
+const PARTS = { head: [0], body: [1, 2] };
+function stopArchers() {
+  if (!A) return;
+  cancelAnimationFrame(A.raf);
+  window.removeEventListener("resize", A.rs);
+  A = null;
+}
+function makeArcher(x, floor, face, color, hp) {
+  const pose = archerPose(x, floor, face, -0.3);
+  return { x, floor, face, color, hp, maxHp: hp, alive: true, aim: -0.3, pts: pose.map(([px, py]) => ({ x: px, y: py, px, py })) };
+}
+function archerPose(x, f, face, aim) {
+  const neck = [x, f - 120], dx = Math.cos(aim) * face, dy = Math.sin(aim);
+  return [
+    [x, f - 140], neck, [x, f - 70],
+    [x - 8, f - 35], [x - 14, f], [x + 8, f - 35], [x + 14, f],
+    [neck[0] + dx * 8 - face * 6, neck[1] + 18], [neck[0] + dx * 14, neck[1] + dy * 14],
+    [neck[0] + dx * 22, neck[1] + dy * 22 + 4], [neck[0] + dx * 42, neck[1] + dy * 42]
+  ];
+}
+function floorAt(x, prevY) {
+  const p = A.pillar;
+  if (p && x > p.x0 && x < p.x1 && prevY <= p.top + 6) return p.top;
+  return A.ground;
+}
+function startArchers() {
+  stopSlope(); stopArchers(); closeShop();
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  keyHandler = null;
+  $app.innerHTML = `
+    <div class="panel slope-wrap">
+      <div class="topline"><span class="label">Ragdoll Archers</span><span class="soft" id="a-score"></span><button class="iconbtn" id="a-home">Back to menu</button></div>
+      <div class="slope-stage archer-stage" id="a-stage"><canvas id="a-cv"></canvas>
+        <div class="slope-over" id="a-over"><h2>Ragdoll Archers</h2><p>Press and drag <b>backward</b> to pull your bow, then let go to shoot.<br>Headshots do double damage. Beat as many archers as you can!</p><button class="btn go" id="a-go">Start</button></div>
+      </div>
+    </div>`;
+  document.getElementById("a-home").addEventListener("click", showHome);
+  A = { raf: 0, state: "menu", arrows: [], pops: [], drag: null, score: 0 };
+  const cv = document.getElementById("a-cv"), stage = document.getElementById("a-stage");
+  A.rs = () => {
+    const w = stage.clientWidth;
+    A.WW = w < 600 ? 900 : 1200; A.WH = A.WW * .5;
+    const h = Math.round(w * .5), dpr = window.devicePixelRatio || 1;
+    cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + "px";
+    A.s = w / A.WW; A.ctx = cv.getContext("2d"); A.ctx.setTransform(dpr * A.s, 0, 0, dpr * A.s, 0, 0);
+    A.ground = A.WH - 40;
+    if (A.state === "menu") { newRound(true); drawArchers(); }
+  };
+  window.addEventListener("resize", A.rs);
+  A.rs();
+  const toWorld = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / A.s, y: (e.clientY - r.top) / A.s }; };
+  cv.addEventListener("pointerdown", e => { if (A.state !== "aim") return; cv.setPointerCapture(e.pointerId); A.drag = { start: toWorld(e), now: toWorld(e) }; });
+  cv.addEventListener("pointermove", e => { if (A.drag) A.drag.now = toWorld(e); });
+  const release = () => {
+    if (!A || !A.drag) return;
+    const { pull, ang } = dragShot();
+    A.drag = null;
+    if (pull < 12) return;
+    fireArrow(A.player, ang, 380 + pull * 6.2);
+    A.state = "player-fly";
+  };
+  cv.addEventListener("pointerup", release);
+  cv.addEventListener("pointercancel", () => { if (A) A.drag = null; });
+  document.getElementById("a-go").addEventListener("click", () => { A.score = 0; newRound(true); begin(); });
+}
+function dragShot() {
+  const dx = A.drag.start.x - A.drag.now.x, dy = A.drag.start.y - A.drag.now.y;
+  const pull = Math.min(110, Math.hypot(dx, dy));
+  let ang = Math.atan2(dy, dx);
+  if (Math.cos(ang) < .05) ang = dy < 0 ? -Math.PI / 2 + .05 : Math.PI / 2 - .05;
+  return { pull, ang };
+}
+function newRound(fresh) {
+  const W = A.WW;
+  const hpBonus = A.score * 10;
+  if (fresh || !A.player) A.player = makeArcher(W * .1, A.ground, 1, "#5aa9ff", 100);
+  else { A.player = makeArcher(W * .1, A.ground, 1, "#5aa9ff", Math.min(100, A.player.hp + 35)); }
+  const ex = W * (.62 + Math.random() * .3);
+  const ph = Math.random() < .6 ? 40 + Math.random() * Math.min(200, 60 + A.score * 25) : 0;
+  A.pillar = ph ? { x0: ex - 40, x1: ex + 40, top: A.ground - ph } : null;
+  A.enemy = makeArcher(ex, A.ground - ph, -1, "#ff5a6e", 60 + hpBonus);
+  A.arrows = []; A.pops = [];
+  updateArcherScore();
+}
+function updateArcherScore() { const el = document.getElementById("a-score"); if (el) el.textContent = `Archers beaten: ${A.score}`; }
+function begin() {
+  document.getElementById("a-over").hidden = true;
+  A.state = "aim"; A.last = performance.now(); A.acc = 0;
+  cancelAnimationFrame(A.raf);
+  const loop = t => {
+    if (!A) return;
+    A.acc += Math.min(.1, (t - A.last) / 1000); A.last = t;
+    while (A.acc >= 1 / 60) { archerStep(1 / 60); A.acc -= 1 / 60; }
+    drawArchers();
+    if (A) A.raf = requestAnimationFrame(loop);
+  };
+  A.raf = requestAnimationFrame(loop);
+}
+function fireArrow(who, ang, speed) {
+  const hand = who.pts[10];
+  A.arrows.push({ x: hand.x, y: hand.y, vx: Math.cos(ang) * speed * who.face, vy: Math.sin(ang) * speed, owner: who, stuck: null, done: false });
+  if (who === A.player) A.player.aim = ang;
+  tone([700, 420], .05, "triangle", .06);
+}
+function enemyShoot() {
+  // Aim at the player's chest with a ballistic solution plus some error that shrinks as you beat more archers.
+  const e = A.enemy, t = A.player.pts[1], h = e.pts[10], g = 900;
+  const dx = h.x - t.x, dy = t.y - h.y, v = 760 + Math.random() * 80;
+  const disc = v ** 4 - g * (g * dx * dx - 2 * dy * v * v);
+  let ang = disc >= 0 ? Math.atan((v * v - Math.sqrt(disc)) / (g * dx)) : -Math.PI / 4;
+  ang = -ang;
+  const err = Math.max(.03, .2 - A.score * .02);
+  ang += (Math.random() * 2 - 1) * err;
+  e.aim = ang;
+  fireArrow(e, ang, v * (1 + (Math.random() * 2 - 1) * err * .3));
+}
+function archerStep(dt) {
+  const g = 900;
+  [A.player, A.enemy].forEach(a => {
+    if (A.drag && a === A.player) a.aim = dragShot().ang;
+    a.pts.forEach(p => {
+      const vx = (p.x - p.px) * .99, vy = (p.y - p.py) * .99;
+      p.px = p.x; p.py = p.y;
+      p.x += vx; p.y += vy + g * dt * dt;
+    });
+    if (a.alive) {
+      const pose = archerPose(a.x, a.floor, a.face, a.aim);
+      const k = [.2, .2, .25, .3, .5, .3, .5, .35, .35, .35, .35];
+      a.pts.forEach((p, i) => { p.x += (pose[i][0] - p.x) * k[i]; p.y += (pose[i][1] - p.y) * k[i]; });
+    }
+    for (let it = 0; it < 6; it++) {
+      BONES.forEach(([i, j, len]) => {
+        const p = a.pts[i], q = a.pts[j], dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1, diff = (d - len) / d / 2;
+        p.x += dx * diff; p.y += dy * diff; q.x -= dx * diff; q.y -= dy * diff;
+      });
+      a.pts.forEach(p => {
+        const f = floorAt(p.x, p.py);
+        if (p.y > f) { p.y = f; p.px = p.x - (p.x - p.px) * .6; }
+      });
+    }
+  });
+  A.arrows.forEach(ar => {
+    if (ar.done) return;
+    if (ar.stuck) { const p = ar.stuck.a.pts[ar.stuck.i]; ar.x = p.x + ar.stuck.ox; ar.y = p.y + ar.stuck.oy; return; }
+    for (let s = 0; s < 4; s++) {
+      const h = dt / 4;
+      ar.vy += g * h; ar.x += ar.vx * h; ar.y += ar.vy * h;
+      const target = ar.owner === A.player ? A.enemy : A.player;
+      const hit = hitTest(target, ar.x, ar.y);
+      if (hit) { arrowHit(ar, target, hit); return; }
+      const p = A.pillar;
+      if (p && ar.x > p.x0 && ar.x < p.x1 && ar.y > p.top) { ar.done = true; ar.landed = true; return; }
+      if (ar.y >= A.ground) { ar.y = A.ground; ar.done = true; ar.landed = true; return; }
+      if (ar.x < -300 || ar.x > A.WW + 300) { ar.done = true; return; }
+    }
+  });
+  A.pops = A.pops.filter(p => (p.t += dt) < 1.2);
+  // Turn flow
+  const flying = A.arrows.some(a => !a.done && !a.stuck);
+  if (A.state === "player-fly" && !flying) { A.state = "wait"; A.wait = .7; A.next = A.enemy.alive ? "enemy" : "win"; }
+  else if (A.state === "enemy-fly" && !flying) { A.state = "wait"; A.wait = .6; A.next = A.player.alive ? "aim" : "lose"; }
+  else if (A.state === "wait" && (A.wait -= dt) <= 0) {
+    if (A.next === "enemy") { enemyShoot(); A.state = "enemy-fly"; }
+    else if (A.next === "aim") A.state = "aim";
+    else if (A.next === "win") { A.score++; sfx.buy(); newRound(false); A.state = "aim"; }
+    else archersOver();
+  }
+}
+function segDist(px, py, a, b) {
+  const dx = b.x - a.x, dy = b.y - a.y, l = dx * dx + dy * dy || 1;
+  const t = Math.max(0, Math.min(1, ((px - a.x) * dx + (py - a.y) * dy) / l));
+  return Math.hypot(px - (a.x + t * dx), py - (a.y + t * dy));
+}
+function hitTest(a, x, y) {
+  const P = a.pts;
+  if (Math.hypot(x - P[0].x, y - P[0].y) < 14) return { part: "head", i: 0 };
+  if (segDist(x, y, P[1], P[2]) < 8) return { part: "body", i: segDist(x, y, P[1], P[1]) < segDist(x, y, P[2], P[2]) ? 1 : 2 };
+  for (const [i, j] of [[2, 3], [3, 4], [2, 5], [5, 6], [1, 7], [7, 8], [1, 9], [9, 10]]) if (segDist(x, y, P[i], P[j]) < 6) return { part: "limb", i: j };
+  return null;
+}
+function arrowHit(ar, a, hit) {
+  const p = a.pts[hit.i];
+  ar.stuck = { a, i: hit.i, ox: ar.x - p.x, oy: ar.y - p.y };
+  const dmg = hit.part === "head" ? 50 : hit.part === "body" ? 30 : 15;
+  const sp = Math.hypot(ar.vx, ar.vy) || 1;
+  p.px -= ar.vx / sp * 14; p.py -= ar.vy / sp * 10;
+  if (a.alive) {
+    a.hp = Math.max(0, a.hp - dmg);
+    A.pops.push({ x: p.x, y: p.y - 20, t: 0, txt: hit.part === "head" ? `HEADSHOT -${dmg}` : `-${dmg}` });
+    if (a.hp <= 0) { a.alive = false; a.pts.forEach(q => { q.px -= ar.vx / sp * 6; }); }
+    (a === A.enemy ? sfx.right : sfx.wrong)();
+  }
+}
+function drawArchers() {
+  const c = A.ctx, W = A.WW, H = A.WH;
+  if (!c) return;
+  const sky = c.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, "#1d2b5c"); sky.addColorStop(1, "#6a87b8");
+  c.fillStyle = sky; c.fillRect(0, 0, W, H);
+  c.fillStyle = "#2f5a2f"; c.fillRect(0, A.ground, W, H - A.ground);
+  c.fillStyle = "#3f7a3a"; c.fillRect(0, A.ground, W, 6);
+  if (A.pillar) { const p = A.pillar; c.fillStyle = "#6b5a4a"; c.fillRect(p.x0, p.top, p.x1 - p.x0, A.ground - p.top); c.fillStyle = "#8a7560"; c.fillRect(p.x0, p.top, p.x1 - p.x0, 6); }
+  // aim preview
+  if (A.drag && A.state === "aim") {
+    const { pull, ang } = dragShot(), v = 380 + pull * 6.2, h = A.player.pts[10];
+    let x = h.x, y = h.y, vx = Math.cos(ang) * v, vy = Math.sin(ang) * v;
+    c.fillStyle = "rgba(255,255,255,.7)";
+    for (let i = 0; i < 14; i++) { for (let k = 0; k < 4; k++) { vy += 900 / 240; x += vx / 240; y += vy / 240; } c.beginPath(); c.arc(x, y, 3, 0, 7); c.fill(); }
+    c.strokeStyle = "rgba(255,255,255,.35)"; c.setLineDash([6, 6]); c.beginPath(); c.moveTo(A.drag.start.x, A.drag.start.y); c.lineTo(A.drag.now.x, A.drag.now.y); c.stroke(); c.setLineDash([]);
+  }
+  [A.player, A.enemy].forEach(a => drawRagdoll(c, a));
+  A.arrows.forEach(ar => {
+    const ang = ar.stuck ? (ar.ang ??= Math.atan2(ar.vy, ar.vx)) : Math.atan2(ar.vy, ar.vx);
+    c.save(); c.translate(ar.x, ar.y); c.rotate(ang);
+    c.strokeStyle = "#f3e2c0"; c.lineWidth = 3; c.beginPath(); c.moveTo(-34, 0); c.lineTo(0, 0); c.stroke();
+    c.fillStyle = "#ddd"; c.beginPath(); c.moveTo(4, 0); c.lineTo(-6, -4); c.lineTo(-6, 4); c.fill();
+    c.fillStyle = ar.owner === A.player ? "#5aa9ff" : "#ff5a6e"; c.fillRect(-36, -3, 7, 6);
+    c.restore();
+  });
+  c.textAlign = "center"; c.font = "700 18px Rowdies, system-ui, sans-serif";
+  A.pops.forEach(p => { c.fillStyle = `rgba(255,230,120,${1 - p.t / 1.2})`; c.fillText(p.txt, p.x, p.y - p.t * 40); });
+  c.textAlign = "left";
+  if (A.state === "aim" && !A.drag) { c.fillStyle = "rgba(255,255,255,.85)"; c.font = "16px system-ui, sans-serif"; c.fillText("Your turn: drag backward to aim, let go to shoot", 16, 28); }
+}
+function drawRagdoll(c, a) {
+  const P = a.pts;
+  c.strokeStyle = a.color; c.lineCap = "round";
+  c.lineWidth = 7; c.beginPath(); c.moveTo(P[1].x, P[1].y); c.lineTo(P[2].x, P[2].y); c.stroke();
+  c.lineWidth = 5;
+  [[2, 3, 4], [2, 5, 6], [1, 7, 8], [1, 9, 10]].forEach(([i, j, k]) => { c.beginPath(); c.moveTo(P[i].x, P[i].y); c.lineTo(P[j].x, P[j].y); c.lineTo(P[k].x, P[k].y); c.stroke(); });
+  c.fillStyle = a.color; c.beginPath(); c.arc(P[0].x, P[0].y, 12, 0, 7); c.fill();
+  // bow
+  if (a.alive) {
+    const h = P[10], ang = Math.atan2(h.y - P[9].y, h.x - P[9].x);
+    c.strokeStyle = "#c08a4a"; c.lineWidth = 3; c.beginPath(); c.arc(h.x, h.y, 22, ang - 1.2, ang + 1.2); c.stroke();
+    c.strokeStyle = "rgba(255,255,255,.7)"; c.lineWidth = 1; c.beginPath();
+    c.moveTo(h.x + Math.cos(ang - 1.2) * 22, h.y + Math.sin(ang - 1.2) * 22); c.lineTo(P[8].x, P[8].y);
+    c.lineTo(h.x + Math.cos(ang + 1.2) * 22, h.y + Math.sin(ang + 1.2) * 22); c.stroke();
+  }
+  // health bar
+  const bx = a.x - 30, by = a.floor - 180;
+  c.fillStyle = "rgba(0,0,0,.45)"; c.fillRect(bx, by, 60, 8);
+  c.fillStyle = a.hp / a.maxHp > .35 ? "#42e392" : "#ff6070"; c.fillRect(bx, by, 60 * a.hp / a.maxHp, 8);
+}
+function archersOver() {
+  A.state = "over";
+  const best = store.get("best", {}), nb = !best.archers || A.score > best.archers;
+  if (nb) { best.archers = A.score; store.set("best", best); }
+  const o = document.getElementById("a-over");
+  o.innerHTML = `<h2>You got knocked out!</h2><p class="big money">${A.score}</p><p>${A.score === 1 ? "archer beaten" : "archers beaten"} · ${nb ? "New best!" : `Best: ${best.archers}`}</p><div class="row" style="justify-content:center"><button class="btn go" id="a-go">Play again</button><button class="btn" id="a-menu">Menu</button></div>`;
+  o.hidden = false;
+  document.getElementById("a-go").addEventListener("click", () => { A.score = 0; newRound(true); begin(); });
+  document.getElementById("a-menu").addEventListener("click", showHome);
 }
 
 /* ---------- Timeline ---------- */
