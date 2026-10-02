@@ -1070,6 +1070,7 @@ function hudInner() {
       </div>
       <div class="row dbtns">
         <button class="btn go" id="d-craft">Craft tools</button>
+        <button class="btn gold" id="d-ask">Answer a question now</button>
         <span class="toolnow">Tool: <b>${tool().name}</b>${D.won ? " · <b>You won!</b>" : ""}</span>
       </div>
       <div class="where">${layer < 0 ? "On the surface. Tap the dirt next to your Gim to dig. Scroll the dig site sideways and down to explore." : `Layer ${layer + 1} of ${LAYERS.length}: <b>${LAYERS[layer].name}</b> <span class="soft">(${LAYERS[layer].era})</span> · depth ${D.pos[0]} m`}</div>`;
@@ -1079,6 +1080,7 @@ function updateHud() {
   if (!h) return;
   h.innerHTML = hudInner();
   document.getElementById("d-craft").addEventListener("click", openCraft);
+  document.getElementById("d-ask").addEventListener("click", () => { if (!D.asking && !D.over) openQuestion(); });
 }
 function museumHtml() {
   return `<div class="topline"><span class="label">Hidden artifacts · ${D.found.length}/${ARTIFACTS.length}</span><button class="iconbtn" id="d-end">Finish game</button></div>
@@ -1117,6 +1119,7 @@ function renderDig() {
     const d = dirs[e.key] || dirs[e.key.toLowerCase?.()];
     if (d) { e.preventDefault(); tapTile(D.pos[0] + d[0], D.pos[1] + d[1]); }
     if (e.key === "c" || e.key === "C") openCraft();
+    if (e.key === "q" || e.key === "Q") openQuestion();
   };
   const old = document.getElementById("site");
   const scroll = old ? [old.scrollLeft, old.scrollTop] : null;
