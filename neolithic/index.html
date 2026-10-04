@@ -1,5 +1,5 @@
 <title>Study Arcade</title>
-<meta name="description" content="Study games: Dig It Up, Cash Race, Slope Run, Ragdoll Archers, and two mystery games, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
+<meta name="description" content="Study games: Dig It Up, Cash Race, Slope City, Ragdoll Archers, and two mystery games, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
@@ -332,6 +332,14 @@
   .lv-easy { background: var(--money); color: #06301b; }
   .lv-hard { background: var(--bad); color: #fff; }
   .bmem.bmem-hard { grid-template-columns: repeat(6, 1fr); gap: 6px; }
+
+  .sc-bank { display: inline-flex; align-items: center; gap: 4px; color: #7df9ff; }
+  .sc-shield { color: var(--gold); font-weight: 700; font-size: .9rem; }
+  .sc-items { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px; }
+  .sc-item { align-items: center; text-align: center; padding: 10px 6px; min-width: 0; }
+  .sc-item .btn { width: 100%; padding: 10px 4px; white-space: nowrap; }
+  .sc-ball { width: 48px; height: 48px; border-radius: 50%; display: block; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+  .steer #s-j { flex: 1.2; }
 
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
@@ -825,7 +833,7 @@ function showHome() {
             <label for="goal-pick" class="sr">Cash Race mode</label>
             <select id="goal-pick">${Object.entries(GOALS).map(([k, v]) => `<option value="${k}" ${choice.goal === k ? "selected" : ""}>${v.name}</option>`).join("")}</select>
           </div>
-          <button class="gm-item" id="slope"><b>Slope Run</b><span>Steer a ball down a neon slope. No questions.</span>${bestLine(best.slope ? "Best " + fmt(best.slope) + " m" : "")}</button>
+          <button class="gm-item" id="slope"><b>Slope City</b><span>Roll, jump, and smash through a neon city. Collect crystals for new balls. No questions.</span>${bestLine(best.slope ? "Best " + fmt(best.slope) + " m" : "")}</button>
           <button class="gm-item" id="draw"><b>Drawing Studio</b><span>Draw with any color, add shapes, and move everything around.</span></button>
           <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Enemies get tougher every round. Trade kills for better bows and gear. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
           ${["snake", "stack"].map((k, i) => { const seen = store.get("seen", {})[k]; return `<button class="gm-item gm-mystery" id="m-${k}"><b>${seen ? MYSTERY[k].name : "Mystery Game #" + (i + 1)}</b><span>${seen ? MYSTERY[k].desc + " No questions." : "Tap to find out what it is!"}</span>${bestLine(best[k] ? "Best " + best[k] : "")}</button>`; }).join("")}
@@ -1579,9 +1587,26 @@ function endDig() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* ---------- Slope Run (brain-break game) ---------- */
+/* ---------- Slope City (brain-break game) ---------- */
+// A ball rolls down a neon city street. Steer around walls, jump over barriers and gaps,
+// smash through glass gates, and grab crystals to unlock new balls and shields.
 let S = null;
-const HW = 2.2; // half the track width
+const HW = 2.2; // half the road width
+const SC_BALLS = [
+  { id: "neon", name: "Neon", cost: 0, c: ["#d9fff0", "#39ff88", "#0b6b3a"] },
+  { id: "ice", name: "Ice", cost: 15, c: ["#ffffff", "#7fdcff", "#1b5f8a"] },
+  { id: "lava", name: "Lava", cost: 30, c: ["#fff1a8", "#ff6a1a", "#7a1400"] },
+  { id: "gold", name: "Gold", cost: 50, c: ["#fffbe0", "#ffc93c", "#7a5200"] },
+  { id: "galaxy", name: "Galaxy", cost: 75, c: ["#f3d9ff", "#8a46d8", "#1a0b40"] },
+  { id: "candy", name: "Candy", cost: 100, c: ["#ffffff", "#ff7ac8", "#a3125e"] },
+  { id: "toxic", name: "Toxic", cost: 130, c: ["#f4ffd0", "#b6ff00", "#2f5200"] },
+  { id: "rainbow", name: "Rainbow", cost: 175, c: null },
+  { id: "diamond", name: "Diamond", cost: 250, c: ["#ffffff", "#c9f6ff", "#5aa9c9"] }
+];
+const SHIELD_COST = 20;
+const scBank = () => store.get("sc_crys", 0);
+const scOwned = () => store.get("sc_balls", ["neon"]);
+const scBall = () => SC_BALLS.find(b => b.id === store.get("sc_ball", "neon")) || SC_BALLS[0];
 function stopSlope() {
   if (!S) return;
   cancelAnimationFrame(S.raf);
@@ -1590,57 +1615,68 @@ function stopSlope() {
   window.removeEventListener("resize", S.rs);
   S = null;
 }
+// A little seeded random so each building keeps the same windows every frame.
+const srand = seed => () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 function slopeSeg(i) {
-  if (i < 0) return { gaps: [], blocks: [] };
+  if (i < 0) return { gaps: [], blocks: [], bars: [], glass: false, crystals: [] };
   while (S.segs.length <= i) {
-    const n = S.segs.length, d = Math.min(1, n / 700 + (S.hard ? .35 : 0)), seg = { gaps: [], blocks: [] };
-    const spacing = d > .6 ? 2 : 3;
-    if (n > 25 && n - S.lastObs >= spacing && Math.random() < (S.hard ? .25 : .14) + .3 * d) {
+    const n = S.segs.length, d = Math.min(1, n / 700 + (S.hard ? .35 : 0));
+    const seg = { gaps: [], blocks: [], bars: [], glass: false, crystals: [] };
+    // City buildings on both sides of the road, every few segments
+    if (n % 3 === 0) {
+      const r = srand(n * 7919 + 13);
+      seg.bld = [-1, 1].map(side => ({ side, w: 1.4 + r() * 2.2, h: 2.5 + r() * 9, hue: 190 + r() * 120, seed: Math.floor(r() * 1e6) + 1, depth: 2 + Math.floor(r() * 2) }));
+    }
+    const spacing = d > .6 ? 3 : 4;
+    if (n > 25 && n - S.lastObs >= spacing && Math.random() < (S.hard ? .3 : .18) + .32 * d) {
       S.lastObs = n;
-      if (Math.random() < .6) {
+      const roll = Math.random();
+      if (roll < .4) { // walls: steer around
         const w = .8 + Math.random() * (.6 + .6 * d), x0 = -HW + Math.random() * (2 * HW - w);
         seg.blocks.push([x0, x0 + w]);
         if (d > .4 && Math.random() < .35) { const x1 = x0 > 0 ? -HW + Math.random() * .6 : HW - .6 - Math.random() * .6; seg.blocks.push([x1, x1 + .6]); }
-      } else {
-        const w = 1 + Math.random() * (.8 + .6 * d);
+      } else if (roll < .6) { // low barrier across the road: jump!
+        seg.bars.push([-HW, HW]);
+      } else if (roll < .82) { // gaps: go around or jump
         const kind = Math.random();
-        seg.gaps.push(kind < .4 ? [-HW - 1, -HW + w] : kind < .8 ? [HW - w, HW + 1] : [-w / 2, w / 2]);
-      }
+        if (kind < .3 + .3 * d) seg.gaps.push([-HW - 1, HW + 1]);
+        else { const w = 1 + Math.random() * (.8 + .6 * d); seg.gaps.push(kind < .65 ? [-HW - 1, -HW + w] : [HW - w, HW + 1]); }
+      } else seg.glass = true; // glass gate: smash right through it
+    } else if (n > 15 && Math.random() < .22) {
+      const x = -HW + .5 + Math.random() * (2 * HW - 1);
+      seg.crystals.push({ x, got: false });
     }
     S.segs.push(seg);
   }
   return S.segs[i];
 }
 function startSlope() {
-  stopSlope();
-  stopArchers();
-  stopMini();
-  closeShop();
+  stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
   keyHandler = null;
   $app.innerHTML = `
     <div class="panel slope-wrap">
-      <div class="topline"><span class="label">Slope Run</span><button class="iconbtn" id="s-home">Back to menu</button></div>
+      <div class="topline"><span class="label">Slope City</span><span class="soft" id="s-bank"></span><button class="iconbtn" id="s-home">Back to menu</button></div>
       <div class="slope-stage" id="stage"><canvas id="slope"></canvas>
-        <div class="slope-over" id="s-over"><h2>Slope Run</h2><p>Steer with the arrow keys or A and D.<br>On a phone, hold the left or right side of the screen.</p><button class="btn go" id="s-go">Start</button></div>
+        <div class="slope-over" id="s-over">${slopeIntro()}</div>
       </div>
-      <div class="row steer"><button class="btn" id="s-l" aria-label="Steer left">◀ Left</button><button class="btn" id="s-r" aria-label="Steer right">Right ▶</button></div>
+      <div class="row steer"><button class="btn" id="s-l" aria-label="Steer left">◀ Left</button><button class="btn gold" id="s-j">Jump</button><button class="btn" id="s-r" aria-label="Steer right">Right ▶</button></div>
     </div>`;
   document.getElementById("s-home").addEventListener("click", showHome);
-  S = { segs: [], lastObs: 0, dir: 0, keys: { l: false, r: false }, raf: 0, running: false };
+  S = { segs: [], lastObs: 0, keys: { l: false, r: false }, raf: 0, running: false, x: 0, vx: 0, y: 0, vy: 0, dist: 0, speed: 9, fall: 0, dead: false, crys: 0, t: 0, pops: [], inv: 0 };
   const cv = document.getElementById("slope"), stage = document.getElementById("stage");
-  const resize = () => {
+  S.rs = () => {
     const w = stage.clientWidth, h = Math.min(560, Math.max(340, Math.round(window.innerHeight * .6)));
     const dpr = window.devicePixelRatio || 1;
     cv.width = w * dpr; cv.height = h * dpr; cv.style.height = h + "px";
     S.W = w; S.H = h; S.ctx = cv.getContext("2d"); S.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S.sky = null;
     if (!S.running) drawSlope();
   };
-  S.rs = resize;
   S.kd = e => {
     if (["ArrowLeft", "a", "A"].includes(e.key)) { S.keys.l = true; e.preventDefault(); }
     if (["ArrowRight", "d", "D"].includes(e.key)) { S.keys.r = true; e.preventDefault(); }
-    if ((e.key === " " || e.key === "Enter") && !S.running) { e.preventDefault(); slopeGo(); }
+    if ([" ", "ArrowUp", "w", "W"].includes(e.key)) { e.preventDefault(); if (S.running) slopeJump(); else if (e.key === " " && !document.querySelector(".shop")) slopeGo(); }
   };
   S.ku = e => {
     if (["ArrowLeft", "a", "A"].includes(e.key)) S.keys.l = false;
@@ -1655,105 +1691,269 @@ function startSlope() {
   };
   hold(document.getElementById("s-l"), "l");
   hold(document.getElementById("s-r"), "r");
-  cv.addEventListener("pointerdown", e => { const left = e.offsetX < S.W / 2; S.keys[left ? "l" : "r"] = true; S.keys[left ? "r" : "l"] = false; });
+  document.getElementById("s-j").addEventListener("pointerdown", e => { e.preventDefault(); slopeJump(); });
+  // On the road itself: left and right sides steer, a quick tap in the middle jumps
+  cv.addEventListener("pointerdown", e => {
+    const f = e.offsetX / S.W;
+    if (f > .35 && f < .65) return slopeJump();
+    const left = f < .5; S.keys[left ? "l" : "r"] = true; S.keys[left ? "r" : "l"] = false;
+  });
   ["pointerup", "pointerleave", "pointercancel"].forEach(t => cv.addEventListener(t, () => { if (S) { S.keys.l = false; S.keys.r = false; } }));
-  document.getElementById("s-go").addEventListener("click", slopeGo);
-  Object.assign(S, { x: 0, vx: 0, dist: 0, speed: 9, fall: 0, dead: false });
-  resize();
+  wireSlopeOverlay();
+  S.rs();
+}
+function slopeIntro() {
+  return `<h2>Slope City</h2><p>Race a ball through a neon city! Steer with ← → (or A and D) and <b>jump</b> with Space or ↑.<br>On a phone: hold Left or Right, and tap Jump. Grab crystals to unlock new balls.</p>
+    ${slopeShopRow()}<button class="btn go" id="s-go">Start</button>`;
+}
+function slopeShopRow() {
+  return `<div class="row" style="justify-content:center"><span class="sc-bank">${crystalIcon()} <b>${scBank()}</b> crystals</span><button class="btn" id="s-shop">Ball shop</button>${store.get("sc_shield", false) ? `<span class="sc-shield">Shield ready</span>` : ""}</div>`;
+}
+const crystalIcon = () => `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2l7 7-7 13-7-13z" fill="#7df9ff" stroke="#167a86" stroke-width="1.5"/></svg>`;
+function wireSlopeOverlay() {
+  const go = document.getElementById("s-go");
+  if (go && !go.dataset.wired) { go.dataset.wired = "1"; go.addEventListener("click", slopeGo); }
+  document.getElementById("s-shop")?.addEventListener("click", openSlopeShop);
+  const b = document.getElementById("s-bank"); if (b) b.innerHTML = `${crystalIcon()} ${scBank()}`;
+}
+function openSlopeShop() {
+  closeShop();
+  const el = document.createElement("div");
+  el.className = "shop"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", "Ball shop");
+  document.body.appendChild(el);
+  renderSlopeShop();
+}
+function ballSwatch(b) {
+  const c = b.c || ["#fff", "#ff3b6b", "#3d8bff"];
+  return `<span class="sc-ball" style="background:${b.c ? `radial-gradient(circle at 35% 35%, ${c[0]}, ${c[1]} 50%, ${c[2]})` : "conic-gradient(#ff3b6b, #ffc93c, #39ff88, #3d8bff, #c94cff, #ff3b6b)"}"></span>`;
+}
+function renderSlopeShop() {
+  const el = document.querySelector(".shop");
+  if (!el) return;
+  const owned = scOwned(), sel = scBall().id, bank = scBank(), shield = store.get("sc_shield", false);
+  el.innerHTML = `<div class="shop-inner">
+    <div class="shop-top"><h2>Ball shop</h2><span class="coins-big">${crystalIcon()} <b>${bank}</b> crystals</span><button class="btn go" id="sc-close">Done</button></div>
+    <div class="items sc-items">${SC_BALLS.map(b => {
+      const has = owned.includes(b.id);
+      const label = b.id === sel ? "Using" : has ? "Use" : `◆ ${b.cost}`;
+      return `<div class="item sc-item${b.id === sel ? " owned" : ""}">${ballSwatch(b)}<h3>${b.name}</h3><button class="btn" data-ball="${b.id}" ${b.id === sel || (!has && bank < b.cost) ? "disabled" : ""}>${label}</button></div>`;
+    }).join("")}</div>
+    <div class="item"><h3>Shield</h3><p>Survive one crash or fall in your next run.</p><button class="btn" id="sc-shield" ${shield || bank < SHIELD_COST ? "disabled" : ""}>${shield ? "Shield ready" : `Buy · ${SHIELD_COST}`}</button></div>
+  </div>`;
+  el.querySelector("#sc-close").addEventListener("click", closeSlopeShop);
+  el.addEventListener("click", e => { if (e.target === el) closeSlopeShop(); });
+  el.querySelectorAll("[data-ball]").forEach(btn => btn.addEventListener("click", () => {
+    const b = SC_BALLS.find(x => x.id === btn.dataset.ball), own = scOwned();
+    if (!own.includes(b.id)) { if (scBank() < b.cost) return; store.set("sc_crys", scBank() - b.cost); own.push(b.id); store.set("sc_balls", own); sfx.buy(); }
+    store.set("sc_ball", b.id);
+    renderSlopeShop();
+  }));
+  el.querySelector("#sc-shield").addEventListener("click", () => {
+    if (scBank() < SHIELD_COST) return;
+    store.set("sc_crys", scBank() - SHIELD_COST); store.set("sc_shield", true); sfx.buy(); renderSlopeShop();
+  });
+  el.querySelector("#sc-close").focus();
+}
+function closeSlopeShop() {
+  closeShop();
+  const row = document.querySelector("#s-over .row");
+  if (row) { row.outerHTML = slopeShopRow(); document.getElementById("s-shop").addEventListener("click", openSlopeShop); }
+  wireSlopeOverlay();
+  if (S && !S.running) drawSlope();
+}
+function slopeJump() {
+  if (!S || !S.running || S.dead || S.y > 0.01) return;
+  S.vy = 7.2;
+  tone([520, 780], .05, "triangle", .05);
 }
 function slopeGo() {
   if (!S) return;
-  Object.assign(S, { hard: hard(), segs: [], lastObs: 0, x: 0, vx: 0, dist: 0, speed: 9, fall: 0, dead: false, deadT: 0, running: true, last: performance.now() });
+  const shield = store.get("sc_shield", false);
+  if (shield) store.set("sc_shield", false);
+  Object.assign(S, { hard: hard(), segs: [], lastObs: 0, x: 0, vx: 0, y: 0, vy: 0, dist: 0, speed: 9, fall: 0, dead: false, deadT: 0, crys: 0, t: 0, pops: [], inv: 0, shield, running: true, last: performance.now() });
   document.getElementById("s-over").hidden = true;
   tone([392, 523, 659], .08);
+  cancelAnimationFrame(S.raf);
   const loop = t => {
     if (!S) return;
     const dt = Math.min(.05, (t - S.last) / 1000); S.last = t;
     slopeStep(dt);
+    if (!S) return;
     drawSlope();
-    if (S && S.running) S.raf = requestAnimationFrame(loop);
+    if (S.running) S.raf = requestAnimationFrame(loop);
   };
   S.raf = requestAnimationFrame(loop);
 }
+function slopeHit(kind) {
+  if (S.inv > 0) return;
+  if (S.shield) { S.shield = false; S.inv = 1.2; if (kind === "fall") { S.vy = 8; } S.pops.push({ txt: "Shield saved you!", t: 0 }); sfx.buy(); return; }
+  S.dead = kind; sfx.wrong();
+}
 function slopeStep(dt) {
+  S.t += dt;
+  S.pops = S.pops.filter(p => (p.t += dt) < 1.3);
   if (S.dead) {
     S.deadT += dt;
     if (S.dead === "fall") { S.fall += dt * 9 * (1 + S.deadT * 2); S.dist += S.speed * dt * .4; }
     if (S.deadT > .9) slopeOver();
     return;
   }
+  S.inv = Math.max(0, S.inv - dt);
   const dir = (S.keys.r ? 1 : 0) - (S.keys.l ? 1 : 0);
   S.vx += dir * 26 * dt;
   S.vx *= Math.exp(-(dir ? 2.5 : 7) * dt);
   S.vx = Math.max(-6, Math.min(6, S.vx));
   S.x += S.vx * dt;
+  S.vy -= 20 * dt; S.y = Math.max(0, S.y + S.vy * dt); if (S.y === 0 && S.vy < 0) S.vy = 0;
   S.speed = S.hard ? Math.min(32, 13 + S.dist * .016) : Math.min(20, 7 + S.dist * .009);
   S.dist += S.speed * dt;
   const seg = slopeSeg(Math.floor(S.dist));
-  if (Math.abs(S.x) > HW + .15 || seg.gaps.some(([a, b]) => S.x > a && S.x < b)) { S.dead = "fall"; sfx.wrong(); }
-  else if (seg.blocks.some(([a, b]) => S.x + .3 > a && S.x - .3 < b)) { S.dead = "crash"; sfx.wrong(); }
+  const onGround = S.y <= .01;
+  // crystals
+  seg.crystals.forEach(c => { if (!c.got && Math.abs(S.x - c.x) < .55 && S.y < 1.3) { c.got = true; S.crys++; S.pops.push({ txt: "+1", t: 0, crystal: true }); tone([1175, 1568], .04, "square", .04); } });
+  if (seg.glass && !seg.smashed) { seg.smashed = true; S.crys++; S.pops.push({ txt: "SMASH! +1", t: 0 }); tone([1500, 900, 600], .03, "square", .05); }
+  if (S.inv > 0) return;
+  if (onGround && (Math.abs(S.x) > HW + .15 || seg.gaps.some(([a, b]) => S.x > a && S.x < b))) slopeHit("fall");
+  else if (seg.blocks.some(([a, b]) => S.x + .3 > a && S.x - .3 < b)) slopeHit("crash");
+  else if (S.y < .45 && seg.bars.length) slopeHit("crash");
+}
+function drawSkyline(c, W, H, hor) {
+  // a far city skyline, drawn once and reused
+  if (!S.sky || S.sky.w !== W) {
+    const r = srand(4242), b = [];
+    for (let x = -40; x < W + 60; x += 14 + r() * 26) b.push({ x, w: 16 + r() * 30, h: 20 + r() * hor * .55, lit: r() });
+    S.sky = { w: W, b };
+  }
+  const g = c.createLinearGradient(0, 0, 0, hor);
+  g.addColorStop(0, "#07021a"); g.addColorStop(1, "#3a1460");
+  c.fillStyle = g; c.fillRect(0, 0, W, hor + 2);
+  c.fillStyle = "rgba(255,255,255,.8)";
+  for (let i = 0; i < 30; i++) c.fillRect((i * 97) % W, (i * 53) % (hor * .6), 1.5, 1.5);
+  const shift = -S.x * 6;
+  S.sky.b.forEach(b => {
+    c.fillStyle = "#170a33"; c.fillRect(b.x + shift, hor - b.h, b.w, b.h);
+    if (b.lit > .5) { c.fillStyle = "rgba(255,200,90,.5)"; for (let y = hor - b.h + 6; y < hor - 4; y += 9) c.fillRect(b.x + shift + 4, y, 3, 3); }
+  });
+  c.fillStyle = "rgba(255,80,200,.35)"; c.fillRect(0, hor - 2, W, 3);
 }
 function drawSlope() {
   const { ctx, W, H } = S;
   if (!ctx) return;
-  const camH = 1.5, F = H * .62, hor = H * .26, camZ = S.dist - 3, camX = S.x * .55;
-  const X = (x, z) => W / 2 + (x - camX) * F / (z - camZ);
-  const Y = (y, z) => hor + (camH - y) * F / (z - camZ);
-  const sky = ctx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, "#05030f"); sky.addColorStop(.26, "#1a0f3d"); sky.addColorStop(.27, "#04020a"); sky.addColorStop(1, "#000");
-  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = "rgba(57,255,136,.15)"; ctx.fillRect(0, hor - 2, W, 3);
+  const camH = 1.5, F = H * .62, hor = H * .3, camZ = S.dist - 3, camX = S.x * .55;
+  const dzOf = z => Math.max(.05, z - camZ);
+  const X = (x, z) => W / 2 + (x - camX) * F / dzOf(z);
+  const Y = (y, z) => hor + (camH - y) * F / dzOf(z);
+  drawSkyline(ctx, W, H, hor);
+  ctx.fillStyle = "#04020c"; ctx.fillRect(0, hor, W, H - hor);
+  const quad = (x0, x1, y0, y1, z0, z1) => { ctx.beginPath(); ctx.moveTo(X(x0, z0), Y(y0, z0)); ctx.lineTo(X(x1, z0), Y(y0, z0)); ctx.lineTo(X(x1, z1), Y(y1, z1)); ctx.lineTo(X(x0, z1), Y(y1, z1)); ctx.closePath(); };
   const far = Math.floor(S.dist) + 70, near = Math.floor(camZ + .5);
+  const drawBuilding = (b, i, fog) => {
+    const z0 = Math.max(i, camZ + .4), z1 = i + b.depth;
+    if (z1 <= z0) return;
+    const xi = b.side * (HW + .7), xo = b.side * (HW + .7 + b.w);
+    // side wall facing the road
+    ctx.beginPath(); ctx.moveTo(X(xi, z0), Y(0, z0)); ctx.lineTo(X(xi, z1), Y(0, z1)); ctx.lineTo(X(xi, z1), Y(b.h, z1)); ctx.lineTo(X(xi, z0), Y(b.h, z0)); ctx.closePath();
+    ctx.fillStyle = `hsla(${b.hue},45%,${14 * fog + 4}%,1)`; ctx.fill();
+    // front face
+    const fx0 = Math.min(X(xi, z0), X(xo, z0)), fx1 = Math.max(X(xi, z0), X(xo, z0)), fy0 = Y(b.h, z0), fy1 = Y(0, z0);
+    ctx.fillStyle = `hsla(${b.hue},50%,${20 * fog + 5}%,1)`; ctx.fillRect(fx0, fy0, fx1 - fx0, fy1 - fy0);
+    ctx.strokeStyle = `hsla(${b.hue},100%,65%,${.8 * fog})`; ctx.lineWidth = 1.2; ctx.strokeRect(fx0, fy0, fx1 - fx0, fy1 - fy0);
+    if (fog > .35) {
+      const r = srand(b.seed), cols = Math.max(2, Math.round(b.w * 2)), rows = Math.max(3, Math.round(b.h * 1.5));
+      const cw = (fx1 - fx0) / cols, rh = (fy1 - fy0) / rows;
+      for (let yy = 0; yy < rows; yy++) for (let xx = 0; xx < cols; xx++) if (r() > .45) {
+        ctx.fillStyle = r() > .5 ? `rgba(255,214,120,${fog})` : `rgba(120,230,255,${fog * .9})`;
+        ctx.fillRect(fx0 + xx * cw + cw * .25, fy0 + yy * rh + rh * .3, cw * .5, rh * .4);
+      }
+    }
+  };
   const drawSeg = i => {
     const seg = slopeSeg(i);
     const z0 = Math.max(i, camZ + .35), z1 = i + 1;
     if (z1 <= z0) return;
     const fog = Math.max(0, 1 - (z0 - camZ) / 72);
+    if (seg.bld) seg.bld.forEach(b => drawBuilding(b, i, fog));
     let pieces = [[-HW, HW]];
     seg.gaps.forEach(([a, b]) => { pieces = pieces.flatMap(([p, q]) => [[p, Math.min(q, a)], [Math.max(p, b), q]]).filter(([p, q]) => q - p > .01); });
     pieces.forEach(([a, b]) => {
-      ctx.beginPath();
-      ctx.moveTo(X(a, z0), Y(0, z0)); ctx.lineTo(X(b, z0), Y(0, z0)); ctx.lineTo(X(b, z1), Y(0, z1)); ctx.lineTo(X(a, z1), Y(0, z1)); ctx.closePath();
-      ctx.fillStyle = i % 2 ? `rgba(14,48,30,${fog})` : `rgba(9,34,22,${fog})`;
-      ctx.fill();
-      ctx.strokeStyle = `rgba(57,255,136,${.85 * fog})`; ctx.lineWidth = 1.2; ctx.stroke();
+      quad(a, b, 0, 0, z0, z1);
+      ctx.fillStyle = i % 2 ? `rgba(30,26,58,${fog})` : `rgba(22,19,44,${fog})`; ctx.fill();
+      ctx.strokeStyle = `rgba(0,240,255,${.55 * fog})`; ctx.lineWidth = 1; ctx.stroke();
+    });
+    if (i % 2 === 0 && !seg.gaps.length) { ctx.fillStyle = `rgba(255,214,90,${.8 * fog})`; quad(-.05, .05, 0, 0, z0, Math.min(z1, z0 + .6)); ctx.fill(); }
+    seg.bars.forEach(([a, b]) => {
+      const h = .45;
+      quad(a, b, h, h, z0, z1); ctx.fillStyle = `rgba(255,200,40,${fog})`; ctx.fill();
+      ctx.fillStyle = `rgba(255,150,0,${fog})`; ctx.fillRect(X(a, z0), Y(h, z0), X(b, z0) - X(a, z0), Y(0, z0) - Y(h, z0));
+      ctx.fillStyle = `rgba(20,10,0,${fog})`;
+      const sw = (X(b, z0) - X(a, z0)) / 10;
+      for (let k = 0; k < 10; k += 2) ctx.fillRect(X(a, z0) + k * sw, Y(h, z0), sw, Y(0, z0) - Y(h, z0));
     });
     seg.blocks.forEach(([a, b]) => {
-      const h = .75;
-      ctx.beginPath();
-      ctx.moveTo(X(a, z0), Y(h, z0)); ctx.lineTo(X(b, z0), Y(h, z0)); ctx.lineTo(X(b, z1), Y(h, z1)); ctx.lineTo(X(a, z1), Y(h, z1)); ctx.closePath();
-      ctx.fillStyle = `rgba(255,120,140,${fog})`; ctx.fill();
-      ctx.fillStyle = `rgba(255,40,80,${fog})`;
+      const h = 1.6;
+      quad(a, b, h, h, z0, z1); ctx.fillStyle = `rgba(255,120,160,${fog})`; ctx.fill();
+      ctx.fillStyle = `rgba(255,40,100,${fog})`;
       ctx.fillRect(X(a, z0), Y(h, z0), X(b, z0) - X(a, z0), Y(0, z0) - Y(h, z0));
-      ctx.strokeStyle = `rgba(255,200,210,${fog})`; ctx.strokeRect(X(a, z0), Y(h, z0), X(b, z0) - X(a, z0), Y(0, z0) - Y(h, z0));
+      ctx.strokeStyle = `rgba(255,210,230,${fog})`; ctx.strokeRect(X(a, z0), Y(h, z0), X(b, z0) - X(a, z0), Y(0, z0) - Y(h, z0));
+    });
+    if (seg.glass && !seg.smashed) {
+      const h = 1.5;
+      ctx.fillStyle = `rgba(140,230,255,${.25 * fog})`; ctx.fillRect(X(-HW, z0), Y(h, z0), X(HW, z0) - X(-HW, z0), Y(0, z0) - Y(h, z0));
+      ctx.strokeStyle = `rgba(180,245,255,${.9 * fog})`; ctx.lineWidth = 2; ctx.strokeRect(X(-HW, z0), Y(h, z0), X(HW, z0) - X(-HW, z0), Y(0, z0) - Y(h, z0));
+      ctx.beginPath(); ctx.moveTo(X(-HW * .6, z0), Y(h, z0)); ctx.lineTo(X(-HW * .2, z0), Y(0, z0)); ctx.moveTo(X(HW * .3, z0), Y(h, z0)); ctx.lineTo(X(HW * .1, z0), Y(h * .4, z0)); ctx.stroke();
+    }
+    seg.crystals.forEach(cr => {
+      if (cr.got) return;
+      const cz = i + .5; if (cz <= camZ + .4) return;
+      const bob = .55 + Math.sin(S.t * 4 + i) * .1, cx = X(cr.x, cz), cy = Y(bob, cz), s = .22 * F / dzOf(cz);
+      ctx.fillStyle = `rgba(125,249,255,${fog})`; ctx.beginPath(); ctx.moveTo(cx, cy - s); ctx.lineTo(cx + s * .7, cy); ctx.lineTo(cx, cy + s); ctx.lineTo(cx - s * .7, cy); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = `rgba(255,255,255,${fog})`; ctx.lineWidth = 1; ctx.stroke();
     });
   };
   const ballSeg = Math.floor(S.dist);
   for (let i = far; i > ballSeg; i--) drawSeg(i);
-  // ball
-  const r = .35, bz = S.dist, bx = X(S.x, bz), by = Y(r - S.fall, bz), br = r * F / (bz - camZ);
-  const g = ctx.createRadialGradient(bx - br * .35, by - br * .35, br * .1, bx, by, br);
-  g.addColorStop(0, "#d9fff0"); g.addColorStop(.5, "#39ff88"); g.addColorStop(1, "#0b6b3a");
-  const drawBall = () => { ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fillStyle = S.dead === "crash" ? "#ff3355" : g; ctx.fill(); };
+  // the ball
+  const r = .35, bz = S.dist, bx = X(S.x, bz), by = Y(r + S.y - S.fall, bz), br = r * F / dzOf(bz);
+  const skin = scBall();
+  const drawBall = () => {
+    if (S.inv > 0 && Math.floor(S.inv * 12) % 2) return;
+    // shadow on the road while jumping
+    if (S.y > .02 && !S.fall) { ctx.fillStyle = "rgba(0,0,0,.45)"; ctx.beginPath(); ctx.ellipse(bx, Y(0, bz), br * .9, br * .3, 0, 0, 7); ctx.fill(); }
+    let g;
+    if (skin.c) { g = ctx.createRadialGradient(bx - br * .35, by - br * .35, br * .1, bx, by, br); g.addColorStop(0, skin.c[0]); g.addColorStop(.5, skin.c[1]); g.addColorStop(1, skin.c[2]); }
+    else { const h = (S.t * 120) % 360; g = ctx.createRadialGradient(bx - br * .35, by - br * .35, br * .1, bx, by, br); g.addColorStop(0, "#fff"); g.addColorStop(.5, `hsl(${h},90%,60%)`); g.addColorStop(1, `hsl(${(h + 120) % 360},80%,35%)`); }
+    ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fillStyle = S.dead === "crash" ? "#ff3355" : g; ctx.fill();
+    // rolling stripe
+    const a = S.dist * 2.2;
+    ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = Math.max(1.5, br * .12);
+    ctx.beginPath(); ctx.ellipse(bx, by, br * .92, Math.abs(Math.cos(a)) * br * .92, 0, 0, Math.PI * 2); ctx.stroke();
+    if (S.shield || S.inv > 0) { ctx.strokeStyle = "rgba(125,249,255,.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(bx, by, br * 1.25, 0, 7); ctx.stroke(); }
+  };
   if (S.fall > 0) drawBall();
   for (let i = ballSeg; i >= near; i--) drawSeg(i);
   if (!S.fall) drawBall();
-  ctx.fillStyle = "#e9fff3"; ctx.font = "700 20px Rowdies, system-ui, sans-serif";
+  // HUD
+  ctx.fillStyle = "#e9fff3"; ctx.font = "700 20px Rowdies, system-ui, sans-serif"; ctx.textAlign = "left";
   ctx.fillText(`${Math.floor(S.dist)} m`, 14, 30);
-  ctx.font = "13px system-ui, sans-serif"; ctx.fillStyle = "rgba(233,255,243,.7)";
-  ctx.fillText(`${hard() ? "Hard" : "Easy"} · Best ${fmt(store.get("best", {})[bestKey("slope")] || 0)} m · speed ${Math.round(S.speed * 3.6)} km/h`, 14, 50);
+  ctx.font = "13px system-ui, sans-serif"; ctx.fillStyle = "rgba(233,255,243,.8)";
+  ctx.fillText(`${hard() ? "Hard" : "Easy"} · Best ${fmt(store.get("best", {})[bestKey("slope")] || 0)} m · ${Math.round(S.speed * 3.6)} km/h`, 14, 50);
+  ctx.textAlign = "right"; ctx.font = "700 18px system-ui, sans-serif"; ctx.fillStyle = "#7df9ff";
+  ctx.fillText(`◆ ${S.crys}`, W - 14, 30); ctx.textAlign = "center";
+  S.pops.forEach(p => { ctx.fillStyle = `rgba(${p.crystal ? "125,249,255" : "255,230,120"},${1 - p.t / 1.3})`; ctx.font = "700 18px Rowdies, system-ui, sans-serif"; ctx.fillText(p.txt, W / 2, H * .22 - p.t * 30); });
+  ctx.textAlign = "left";
 }
 function slopeOver() {
   S.running = false;
   const d = Math.floor(S.dist), best = store.get("best", {}), k = bestKey("slope");
   const nb = !best[k] || d > best[k];
   if (nb) { best[k] = d; store.set("best", best); }
+  store.set("sc_crys", scBank() + S.crys);
   const o = document.getElementById("s-over");
-  o.innerHTML = `<h2>${S.dead === "crash" ? "Crash!" : "You fell!"}</h2><p class="big money">${d} m</p><p>${nb ? "New best distance!" : `Best: ${fmt(best[k])} m`}</p><div class="row" style="justify-content:center"><button class="btn go" id="s-go">Play again</button><button class="btn" id="s-menu">Menu</button></div>`;
+  o.innerHTML = `<h2>${S.dead === "crash" ? "Crash!" : "You fell!"}</h2><p class="big money">${d} m</p><p>${nb ? "New best distance!" : `Best: ${fmt(best[k])} m`} · ${crystalIcon()} +${S.crys} crystals</p>
+    ${slopeShopRow()}<div class="row" style="justify-content:center"><button class="btn go" id="s-go">Play again</button><button class="btn" id="s-menu">Menu</button></div>`;
   o.hidden = false;
-  document.getElementById("s-go").addEventListener("click", slopeGo);
   document.getElementById("s-menu").addEventListener("click", showHome);
-  document.getElementById("s-go").focus();
+  wireSlopeOverlay();
 }
 
 /* ---------- Ragdoll Archers (brain-break game) ---------- */
