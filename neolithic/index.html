@@ -295,6 +295,30 @@
   body.has-exit .wrap { padding-block-start: 60px; }
   body.has-exit .shop { padding-top: calc(env(safe-area-inset-top, 0px) + 58px); }
 
+  .bwhack { grid-template-columns: repeat(3, 1fr); gap: 14px; background: #3f7a3a; border-radius: 14px; }
+  .hole { aspect-ratio: 1; border: 0; border-radius: 50%; background: radial-gradient(ellipse at 50% 70%, #24140a 55%, #4a2f1a 56%); position: relative; overflow: hidden; padding: 0; touch-action: none; }
+  .hole .mole { position: absolute; left: 18%; right: 18%; bottom: -70%; height: 70%; border-radius: 50% 50% 30% 30%; background: #8a5a3a; transition: bottom .08s; }
+  .hole .mole::before, .hole .mole::after { content: ""; position: absolute; top: 28%; width: 12%; height: 14%; border-radius: 50%; background: #1a1240; }
+  .hole .mole::before { left: 28%; } .hole .mole::after { right: 28%; }
+  .hole.up .mole { bottom: 8%; }
+  .hole.gold .mole { background: #ffc93c; }
+  .hole.bomb .mole { background: #222; border-radius: 50%; box-shadow: 0 0 0 3px #ff5a6e; }
+  .hole.bomb .mole::before, .hole.bomb .mole::after { background: #ff5a6e; }
+  .hole.bonk { background: radial-gradient(ellipse at 50% 70%, #fff 20%, #24140a 55%, #4a2f1a 56%); }
+  .bc4 { grid-template-columns: repeat(7, 1fr); gap: 4px; background: #2f5fd0; border-radius: 14px; padding: 10px; }
+  .c4col { border: 0; background: none; padding: 0; display: grid; gap: 4px; border-radius: 8px; }
+  .c4col:hover { background: rgba(255,255,255,.12); }
+  .c4cell { aspect-ratio: 1; border-radius: 50%; background: #10204a; box-shadow: inset 0 3px 4px rgba(0,0,0,.4); }
+  .c4cell.red { background: #ff4d5e; } .c4cell.yellow { background: #ffd23c; }
+  .c4cell.win { outline: 3px solid #fff; outline-offset: -3px; }
+  .bsimon { grid-template-columns: 1fr 1fr; gap: 14px; width: min(100%, 360px); }
+  .pad { aspect-ratio: 1; border: 0; opacity: .5; transition: opacity .08s, transform .08s; touch-action: none; }
+  .pad.lit { opacity: 1; transform: scale(1.04); box-shadow: 0 0 30px currentColor; }
+  .p0 { background: #2ecc71; color: #2ecc71; border-radius: 100% 12px 12px 12px; }
+  .p1 { background: #ff4d5e; color: #ff4d5e; border-radius: 12px 100% 12px 12px; }
+  .p2 { background: #ffd23c; color: #ffd23c; border-radius: 12px 12px 12px 100%; }
+  .p3 { background: #3d8bff; color: #3d8bff; border-radius: 12px 12px 100% 12px; }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
@@ -760,6 +784,7 @@ if (!SUBJECTS[choice.subject]) choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
 
+const moreBest = (id, v) => v == null ? "" : ["connect4", "pong"].includes(id) ? `Wins: ${v}` : id === "memory" ? `Best ${v} moves` : id === "mines" ? `Best ${v}s` : `Best ${v}`;
 function showHome() {
   keyHandler = null;
   stopSlope();
@@ -790,7 +815,7 @@ function showHome() {
           <button class="gm-item" id="draw"><b>Drawing Studio</b><span>Draw with any color, add shapes, and move everything around.</span></button>
           <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Enemies get tougher every round. Trade kills for better bows and gear. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
           ${["snake", "stack"].map((k, i) => { const seen = store.get("seen", {})[k]; return `<button class="gm-item gm-mystery" id="m-${k}"><b>${seen ? MYSTERY[k].name : "Mystery Game #" + (i + 1)}</b><span>${seen ? MYSTERY[k].desc + " No questions." : "Tap to find out what it is!"}</span>${bestLine(best[k] ? "Best " + best[k] : "")}</button>`; }).join("")}
-          ${MORE_GAMES.map(g => `<button class="gm-item" data-more="${g.id}"><b>${g.name}</b><span>${g.desc}</span>${bestLine(best[g.id] != null ? "Best " + best[g.id] + (g.id === "memory" ? " moves" : g.id === "mines" ? "s" : "") : "")}</button>`).join("")}
+          ${MORE_GAMES.map(g => `<button class="gm-item" data-more="${g.id}"><b>${g.name}</b><span>${g.desc}</span>${bestLine(moreBest(g.id, best[g.id]))}</button>`).join("")}
         </div>
       </details>
     </div>
@@ -2228,7 +2253,7 @@ function startStack() {
     M.W = w; M.H = h; M.ctx = cv.getContext("2d"); M.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     draw();
   };
-  const BH = 26;
+  const BH = 26, me = M;
   const reset = () => {
     const w = (M.W || 400) * .5;
     M.blocks = [{ x: ((M.W || 400) - w) / 2, w, hue: 260 }];
@@ -2243,7 +2268,7 @@ function startStack() {
     if (!M.running || !M.cur) return;
     const top = M.blocks.at(-1), cur = M.cur;
     const l = Math.max(top.x, cur.x), r = Math.min(top.x + top.w, cur.x + cur.w);
-    if (r - l <= 2) { M.falling.push({ ...cur, y: M.blocks.length, vy: 0 }); M.cur = null; sfx.wrong(); return setTimeout(() => { if (M) miniOver("stack", "The tower is done!", M.score, "blocks stacked").addEventListener("click", go); }, 700); }
+    if (r - l <= 2) { M.falling.push({ ...cur, y: M.blocks.length, vy: 0 }); M.cur = null; sfx.wrong(); return setTimeout(() => { if (M === me) miniOver("stack", "The tower is done!", M.score, "blocks stacked").addEventListener("click", go); }, 700); }
     if (Math.abs(cur.x - top.x) < 5) { cur.x = top.x; M.perfect++; tone([660 + M.perfect * 60, 990 + M.perfect * 60], .06, "triangle", .07); if (M.perfect >= 3) cur.w = Math.min(M.W * .6, cur.w + 6); M.blocks.push({ x: cur.x, w: cur.w, hue: cur.hue }); }
     else {
       M.perfect = 0;
@@ -2382,7 +2407,12 @@ const MORE_GAMES = [
   { id: "memory", name: "Memory Match", desc: "Flip cards two at a time and find all 8 pairs.", start: () => startMemory() },
   { id: "mines", name: "Minesweeper", desc: "Clear the field without setting off a mine.", start: () => startMines() },
   { id: "bricks", name: "Brick Breaker", desc: "Bounce the ball off your paddle and smash every brick.", start: () => startBricks() },
-  { id: "hopper", name: "Sky Hopper", desc: "Tap to flap and fly through the gaps.", start: () => startHopper() }
+  { id: "hopper", name: "Sky Hopper", desc: "Tap to flap and fly through the gaps.", start: () => startHopper() },
+  { id: "galaxy", name: "Galaxy Defender", desc: "Blast waves of aliens with your space ship.", start: () => startGalaxy() },
+  { id: "whack", name: "Whack-a-Mole", desc: "Bop the moles in 30 seconds, but skip the bombs!", start: () => startWhack() },
+  { id: "connect4", name: "Connect Four", desc: "Beat the computer by getting four in a row.", start: () => startConnect4() },
+  { id: "simon", name: "Simon Says", desc: "Repeat the light-and-sound pattern as it grows.", start: () => startSimon() },
+  { id: "pong", name: "Pong", desc: "The classic paddle game. First to 7 wins!", start: () => startPong() }
 ];
 function gameShell(title, help, dom) {
   stopSlope(); stopArchers(); stopMini(); closeShop();
@@ -2488,6 +2518,7 @@ const MEM_ICONS = [
 function startMemory() {
   const { board } = gameShell("Memory Match", "Tap two cards to flip them. If they match, they stay up.<br>Find all 8 pairs in as few moves as you can!", true);
   board.classList.add("bmem");
+  const me = M;
   let lock = false;
   const render = () => {
     board.innerHTML = M.cards.map((c, i) => `<button class="mem-card${c.up || c.done ? " up" : ""}${c.done ? " done" : ""}" data-i="${i}" aria-label="${c.up || c.done ? "Card " + (c.k + 1) : "Face-down card"}">${c.up || c.done ? `<svg viewBox="0 0 24 24" fill="${MEM_ICONS[c.k][0]}" aria-hidden="true">${MEM_ICONS[c.k][1]}</svg>` : ""}</button>`).join("");
@@ -2502,10 +2533,10 @@ function startMemory() {
     if (up.length === 2) {
       M.moves++;
       if (up[0].k === up[1].k) { up.forEach(x => { x.done = true; x.up = false; }); sfx.right(); }
-      else { lock = true; setTimeout(() => { if (!M) return; up.forEach(x => { x.up = false; }); lock = false; render(); }, 750); }
+      else { lock = true; setTimeout(() => { if (M !== me) return; up.forEach(x => { x.up = false; }); lock = false; render(); }, 750); }
     }
     render();
-    if (M.cards.every(x => x.done)) { const r = record("memory", M.moves, true); setTimeout(() => overScreen("You found them all!", M.moves, `moves · ${r.nb ? "New best (fewest moves)!" : `Best: ${r.best} moves`}`, go), 500); }
+    if (M.cards.every(x => x.done)) { const r = record("memory", M.moves, true); setTimeout(() => M === me && overScreen("You found them all!", M.moves, `moves · ${r.nb ? "New best (fewest moves)!" : `Best: ${r.best} moves`}`, go), 500); }
   };
   function go() { M.cards = shuffle([...Array(8).keys(), ...Array(8).keys()]).map(k => ({ k, up: false, done: false })); M.moves = 0; lock = false; M.running = true; document.getElementById("m-over").hidden = true; render(); }
   M.cards = [...Array(16)].map(() => ({ k: 0 })); M.moves = 0; render();
@@ -2640,7 +2671,7 @@ function startBricks() {
 /* Sky Hopper */
 function startHopper() {
   const { cv, stage } = gameShell("Sky Hopper", "Tap, click, or press Space to flap.<br>Fly through the gaps between the towers!");
-  const W = 400, H = 600, GAP = 165, PW = 64;
+  const W = 400, H = 600, GAP = 165, PW = 64, me = M;
   M.rs = () => {
     const w = Math.min(stage.clientWidth, 400), h = w * H / W, dpr = window.devicePixelRatio || 1;
     cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
@@ -2682,7 +2713,7 @@ function startHopper() {
     const hit = M.y > H - 56 || M.y < -30 || M.pipes.some(p => 90 + 14 > p.x && 90 - 14 < p.x + PW && (M.y - 14 < p.gy || M.y + 14 > p.gy + GAP));
     if (hit) {
       M.dead = true; sfx.wrong();
-      setTimeout(() => { if (!M) return; const r = record("hopper", M.score); overScreen("Ouch!", M.score, r.nb ? "New best score!" : `Best: ${r.best}`, go); }, 700);
+      setTimeout(() => { if (M !== me) return; const r = record("hopper", M.score); overScreen("Ouch!", M.score, r.nb ? "New best score!" : `Best: ${r.best}`, go); }, 700);
     }
   }
   function go() {
@@ -2694,6 +2725,272 @@ function startHopper() {
     flap();
   }
   M.y = H / 2; M.vy = 0; M.pipes = []; M.score = 0; M.t = 0;
+  M.rs();
+  document.getElementById("m-go").addEventListener("click", go);
+}
+
+/* ---------- Five more fun games ---------- */
+function canvasFit(cv, stage, W, H, maxW) {
+  const w = Math.min(stage.clientWidth, maxW), h = w * H / W, dpr = window.devicePixelRatio || 1;
+  cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
+  const ctx = cv.getContext("2d"); ctx.setTransform(dpr * w / W, 0, 0, dpr * w / W, 0, 0);
+  return ctx;
+}
+function runLoop(step, draw) {
+  M.last = performance.now(); cancelAnimationFrame(M.raf);
+  const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (t - M.last) / 1000); M.last = t; step(dt); if (!M) return; draw(); if (M.running) M.raf = requestAnimationFrame(loop); };
+  M.raf = requestAnimationFrame(loop);
+}
+
+/* Galaxy Defender */
+function startGalaxy() {
+  const { cv, stage } = gameShell("Galaxy Defender", "Move your ship with your finger, the mouse, or the arrow keys. It fires by itself!<br>Blast the alien waves and dodge their shots. You have 3 lives.");
+  const W = 480, H = 640;
+  M.rs = () => { M.ctx = canvasFit(cv, stage, W, H, 480); draw(); };
+  window.addEventListener("resize", M.rs);
+  const keys = { l: false, r: false };
+  M.kd = e => { if (["ArrowLeft", "a", "A"].includes(e.key)) { keys.l = e.type === "keydown"; e.preventDefault(); } if (["ArrowRight", "d", "D"].includes(e.key)) { keys.r = e.type === "keydown"; e.preventDefault(); } };
+  M.ku = e => M.kd(e);
+  window.addEventListener("keydown", M.kd); window.addEventListener("keyup", M.ku);
+  const aim = e => { const r = cv.getBoundingClientRect(); M.sx = Math.max(20, Math.min(W - 20, (e.clientX - r.left) * W / r.width)); };
+  cv.addEventListener("pointermove", aim); cv.addEventListener("pointerdown", aim);
+  const stars = [...Array(60)].map(() => [Math.random() * W, Math.random() * H, .5 + Math.random() * 1.5]);
+  const wave = n => {
+    M.aliens = [];
+    const rows = Math.min(5, 2 + Math.floor(n / 2)), cols = 7;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) M.aliens.push({ x: 60 + c * 55, y: 70 + r * 44, hp: r === 0 && n > 2 ? 2 : 1, hue: (r * 50 + n * 30) % 360 });
+    M.dir = 1; M.aSpeed = 40 + n * 12; M.fireRate = Math.max(.35, 1.4 - n * .12);
+  };
+  function draw() {
+    const c = M.ctx; if (!c || !M.aliens) return;
+    c.fillStyle = "#050314"; c.fillRect(0, 0, W, H);
+    stars.forEach(s => { c.fillStyle = `rgba(255,255,255,${s[2] / 2})`; c.fillRect(s[0], s[1], s[2], s[2]); });
+    M.aliens.forEach(a => {
+      c.fillStyle = `hsl(${a.hue},80%,${a.hp > 1 ? 45 : 62}%)`;
+      c.beginPath(); c.ellipse(a.x, a.y, 18, 11, 0, 0, 7); c.fill();
+      c.fillRect(a.x - 16, a.y + 4, 6, 9); c.fillRect(a.x + 10, a.y + 4, 6, 9);
+      c.fillStyle = "#050314"; c.fillRect(a.x - 8, a.y - 4, 5, 5); c.fillRect(a.x + 3, a.y - 4, 5, 5);
+    });
+    c.fillStyle = "#7df9ff"; M.shots.forEach(s => c.fillRect(s.x - 2, s.y - 10, 4, 12));
+    c.fillStyle = "#ff5a6e"; M.bombs.forEach(b => { c.beginPath(); c.arc(b.x, b.y, 5, 0, 7); c.fill(); });
+    if (!(M.hurt > 0 && Math.floor(M.hurt * 10) % 2)) {
+      c.fillStyle = "#e7f2ff"; c.beginPath(); c.moveTo(M.sx, H - 70); c.lineTo(M.sx + 22, H - 34); c.lineTo(M.sx - 22, H - 34); c.closePath(); c.fill();
+      c.fillStyle = "#ffc93c"; c.fillRect(M.sx - 4, H - 34, 8, 6);
+    }
+    M.booms.forEach(b => { c.strokeStyle = `rgba(255,200,80,${1 - b.t / .4})`; c.lineWidth = 3; c.beginPath(); c.arc(b.x, b.y, 8 + b.t * 60, 0, 7); c.stroke(); });
+    c.fillStyle = "#fff"; c.font = "16px system-ui, sans-serif"; c.fillText(`Score ${M.score}   Lives ${M.lives}   Wave ${M.wave}`, 12, 26);
+  }
+  function step(dt) {
+    stars.forEach(s => { s[1] += s[2] * 30 * dt; if (s[1] > H) s[1] = 0; });
+    const dir = (keys.r ? 1 : 0) - (keys.l ? 1 : 0);
+    if (dir) M.sx = Math.max(20, Math.min(W - 20, M.sx + dir * 360 * dt));
+    M.hurt = Math.max(0, M.hurt - dt);
+    if ((M.cool -= dt) <= 0) { M.shots.push({ x: M.sx, y: H - 72 }); M.cool = .28; }
+    M.shots.forEach(s => { s.y -= 600 * dt; });
+    let edge = false;
+    M.aliens.forEach(a => { a.x += M.dir * M.aSpeed * dt; if (a.x > W - 22 || a.x < 22) edge = true; });
+    if (edge) { M.dir *= -1; M.aliens.forEach(a => { a.y += 18; }); }
+    if ((M.fireT -= dt) <= 0 && M.aliens.length) { const a = M.aliens[rnd(0, M.aliens.length - 1)]; M.bombs.push({ x: a.x, y: a.y + 12 }); M.fireT = M.fireRate * (.5 + Math.random()); }
+    M.bombs.forEach(b => { b.y += (220 + M.wave * 15) * dt; });
+    M.shots = M.shots.filter(s => {
+      if (s.y < -20) return false;
+      const a = M.aliens.find(a => Math.abs(a.x - s.x) < 20 && Math.abs(a.y - s.y) < 14);
+      if (!a) return true;
+      a.hp--; if (a.hp <= 0) { M.score += 10 * M.wave; M.booms.push({ x: a.x, y: a.y, t: 0 }); tone([300, 150], .04, "square", .04); }
+      return false;
+    });
+    M.aliens = M.aliens.filter(a => a.hp > 0);
+    M.booms = M.booms.filter(b => (b.t += dt) < .4);
+    const hitShip = b => Math.abs(b.x - M.sx) < 20 && b.y > H - 70 && b.y < H - 30;
+    if (M.hurt <= 0 && (M.bombs.some(hitShip) || M.aliens.some(a => a.y > H - 90))) {
+      M.lives--; M.hurt = 1.5; sfx.wrong(); M.bombs = [];
+      if (M.aliens.some(a => a.y > H - 90)) M.aliens.forEach(a => { a.y -= 120; });
+      if (M.lives <= 0) { const r = record("galaxy", M.score); return overScreen("Game over!", M.score, r.nb ? "New best score!" : `Best: ${r.best}`, go); }
+    }
+    M.bombs = M.bombs.filter(b => b.y < H + 10 && !(M.hurt === 1.5 && hitShip(b)));
+    if (!M.aliens.length) { M.wave++; sfx.buy(); wave(M.wave); }
+  }
+  function go() {
+    Object.assign(M, { sx: W / 2, score: 0, lives: 3, wave: 1, shots: [], bombs: [], booms: [], cool: 0, fireT: 1, hurt: 0, running: true });
+    wave(1); document.getElementById("m-over").hidden = true; runLoop(step, draw);
+  }
+  Object.assign(M, { sx: W / 2, score: 0, lives: 3, wave: 1, shots: [], bombs: [], booms: [], hurt: 0 }); wave(1);
+  M.rs();
+  document.getElementById("m-go").addEventListener("click", go);
+}
+
+/* Whack-a-Mole */
+function startWhack() {
+  const { board } = gameShell("Whack-a-Mole", "Tap the moles as fast as you can before they hide! You have 30 seconds.<br>Don't tap the bombs. They cost you 3 points.", true);
+  board.classList.add("bwhack");
+  board.innerHTML = [...Array(9)].map((_, i) => `<button class="hole" data-i="${i}" aria-label="Hole ${i + 1}"><span class="mole"></span></button>`).join("");
+  const holes = [...board.querySelectorAll(".hole")];
+  const setHud = () => { document.getElementById("m-score").textContent = `Score ${M.score} · Time ${Math.ceil(M.left)}s`; };
+  holes.forEach((h, i) => h.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    if (!M.running || !M.up[i]) return;
+    const kind = M.up[i].kind; M.up[i] = null; h.className = "hole bonk";
+    if (kind === "bomb") { M.score = Math.max(0, M.score - 3); sfx.wrong(); } else { M.score += kind === "gold" ? 3 : 1; tone([kind === "gold" ? 1046 : 784], .05, "square", .05); }
+    setTimeout(() => { if (h.className === "hole bonk") h.className = "hole"; }, 180);
+    setHud();
+  }));
+  function step(dt) {
+    M.left -= dt; M.spawn -= dt;
+    M.up.forEach((u, i) => { if (u && (u.t -= dt) <= 0) { M.up[i] = null; holes[i].className = "hole"; } });
+    if (M.spawn <= 0) {
+      const free = M.up.map((u, i) => u ? -1 : i).filter(i => i >= 0);
+      if (free.length) {
+        const i = free[rnd(0, free.length - 1)], roll = Math.random();
+        const kind = roll < .12 ? "bomb" : roll < .22 ? "gold" : "mole";
+        const stay = Math.max(.45, 1.1 - (30 - M.left) * .02);
+        M.up[i] = { kind, t: stay }; holes[i].className = `hole up ${kind}`;
+      }
+      M.spawn = Math.max(.3, .75 - (30 - M.left) * .015);
+    }
+    setHud();
+    if (M.left <= 0) { M.left = 0; holes.forEach(h => { h.className = "hole"; }); const r = record("whack", M.score); overScreen("Time's up!", M.score, r.nb ? "New best score!" : `Best: ${r.best}`, go); }
+  }
+  function go() { Object.assign(M, { score: 0, left: 30, spawn: .4, up: Array(9).fill(null), running: true }); holes.forEach(h => { h.className = "hole"; }); document.getElementById("m-over").hidden = true; runLoop(step, () => {}); }
+  M.score = 0; M.left = 30;
+  setHud();
+  document.getElementById("m-go").addEventListener("click", go);
+}
+
+/* Connect Four vs the computer */
+function startConnect4() {
+  const { board } = gameShell("Connect Four", "You are red. Tap a column to drop a piece.<br>Get four in a row (across, up and down, or slanted) before the computer does!", true);
+  board.classList.add("bc4");
+  const me = M;
+  const C = 7, R = 6;
+  const winner = (g, p) => {
+    for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
+      let k = 0; while (k < 4) { const rr = r + dr * k, cc = c + dc * k; if (rr < 0 || rr >= R || cc < 0 || cc >= C || g[rr][cc] !== p) break; k++; }
+      if (k === 4) return [...Array(4)].map((_, j) => [r + dr * j, c + dc * j]);
+    }
+    return null;
+  };
+  const drop = (g, c, p) => { for (let r = R - 1; r >= 0; r--) if (!g[r][c]) { g[r][c] = p; return r; } return -1; };
+  const valid = g => [...Array(C).keys()].filter(c => !g[0][c]);
+  const cpuMove = () => {
+    const g = M.g, cols = valid(g);
+    const tryCol = (c, p) => { const cp = g.map(r => r.slice()); drop(cp, c, p); return cp; };
+    for (const c of cols) if (winner(tryCol(c, 2), 2)) return c;
+    for (const c of cols) if (winner(tryCol(c, 1), 1)) return c;
+    const safe = cols.filter(c => { const cp = tryCol(c, 2); return !valid(cp).some(c2 => { const cp2 = cp.map(r => r.slice()); drop(cp2, c2, 1); return winner(cp2, 1); }); });
+    const pool = safe.length ? safe : cols;
+    const score = c => 4 - Math.abs(3 - c) + Math.random() * 2.5;
+    return pool.sort((a, b) => score(b) - score(a))[0];
+  };
+  const render = () => {
+    const win = M.win || [];
+    board.innerHTML = [...Array(C).keys()].map(c => `<button class="c4col" data-c="${c}" aria-label="Drop in column ${c + 1}">${[...Array(R).keys()].map(r => `<span class="c4cell ${M.g[r][c] === 1 ? "red" : M.g[r][c] === 2 ? "yellow" : ""}${win.some(([wr, wc]) => wr === r && wc === c) ? " win" : ""}"></span>`).join("")}</button>`).join("");
+    const st = store.get("best", {});
+    document.getElementById("m-score").textContent = `${M.win || !valid(M.g).length ? "Game over" : M.turn === 1 ? "Your turn" : "Computer is thinking…"} · Wins ${st.connect4 || 0}`;
+    board.querySelectorAll(".c4col").forEach(b => b.addEventListener("click", () => play(+b.dataset.c)));
+  };
+  const finish = (title, line) => setTimeout(() => { if (M === me) overScreen(title, "", line, go); }, 900);
+  const play = c => {
+    if (!M.running || M.turn !== 1 || M.g[0][c]) return;
+    drop(M.g, c, 1); tone([523], .05, "triangle", .05);
+    if ((M.win = winner(M.g, 1))) { M.running = false; render(); sfx.buy(); const best = store.get("best", {}); best.connect4 = (best.connect4 || 0) + 1; store.set("best", best); return finish("You win!", `Total wins: ${best.connect4}`); }
+    if (!valid(M.g).length) { M.running = false; render(); return finish("It's a tie!", "Nobody got four in a row."); }
+    M.turn = 2; render();
+    setTimeout(() => {
+      if (M !== me || !M.running) return;
+      drop(M.g, cpuMove(), 2); tone([392], .05, "triangle", .05);
+      if ((M.win = winner(M.g, 2))) { M.running = false; render(); sfx.wrong(); return finish("The computer wins!", "Try blocking its lines next time."); }
+      if (!valid(M.g).length) { M.running = false; render(); return finish("It's a tie!", "Nobody got four in a row."); }
+      M.turn = 1; render();
+    }, 550);
+  };
+  function go() { M.g = [...Array(R)].map(() => Array(C).fill(0)); M.turn = 1; M.win = null; M.running = true; document.getElementById("m-over").hidden = true; render(); }
+  M.g = [...Array(R)].map(() => Array(C).fill(0)); M.turn = 1; render();
+  document.getElementById("m-go").addEventListener("click", go);
+}
+
+/* Simon Says */
+function startSimon() {
+  const { board } = gameShell("Simon Says", "Watch the colors light up, then tap them back in the same order.<br>Every round adds one more. How long a pattern can you remember?", true);
+  board.classList.add("bsimon");
+  const me = M;
+  const NOTES = [330, 392, 494, 587];
+  board.innerHTML = [0, 1, 2, 3].map(i => `<button class="pad p${i}" data-i="${i}" aria-label="${["Green", "Red", "Yellow", "Blue"][i]}"></button>`).join("");
+  const pads = [...board.querySelectorAll(".pad")];
+  const flash = (i, ms = 380) => { pads[i].classList.add("lit"); tone([NOTES[i]], ms / 1000 * .6, "sine", .1); setTimeout(() => pads[i].classList.remove("lit"), ms); };
+  const hud = txt => { document.getElementById("m-score").textContent = txt; };
+  const showSeq = () => {
+    M.input = false; M.pos = 0;
+    hud(`Round ${M.seq.length} · Watch…`);
+    const speed = Math.max(220, 520 - M.seq.length * 20);
+    M.seq.forEach((p, k) => setTimeout(() => { if (M === me && M.running) flash(p, speed * .8); }, 600 + k * speed));
+    setTimeout(() => { if (M === me && M.running) { M.input = true; hud(`Round ${M.seq.length} · Your turn!`); } }, 600 + M.seq.length * speed);
+  };
+  pads.forEach((pd, i) => pd.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    if (!M.running || !M.input) return;
+    flash(i, 220);
+    if (i !== M.seq[M.pos]) {
+      M.input = false; sfx.wrong();
+      const score = M.seq.length - 1, r = record("simon", score);
+      return setTimeout(() => M === me && overScreen("Oops!", score, `rounds completed · ${r.nb ? "New best!" : `Best: ${r.best}`}`, go), 500);
+    }
+    M.pos++;
+    if (M.pos === M.seq.length) { M.input = false; M.seq.push(rnd(0, 3)); setTimeout(() => { if (M === me) showSeq(); }, 500); }
+  }));
+  function go() { M.seq = [rnd(0, 3)]; M.running = true; document.getElementById("m-over").hidden = true; showSeq(); }
+  hud("Press Start");
+  document.getElementById("m-go").addEventListener("click", go);
+}
+
+/* Pong */
+function startPong() {
+  const { cv, stage } = gameShell("Pong", "Move your paddle (on the left) with your finger, the mouse, or the up and down arrow keys.<br>First to 7 points wins!");
+  const W = 640, H = 400, PH = 70, WIN = 7;
+  M.rs = () => { M.ctx = canvasFit(cv, stage, W, H, 640); draw(); };
+  window.addEventListener("resize", M.rs);
+  const keys = { u: false, d: false };
+  M.kd = e => { if (["ArrowUp", "w", "W"].includes(e.key)) { keys.u = e.type === "keydown"; e.preventDefault(); } if (["ArrowDown", "s", "S"].includes(e.key)) { keys.d = e.type === "keydown"; e.preventDefault(); } };
+  M.ku = e => M.kd(e);
+  window.addEventListener("keydown", M.kd); window.addEventListener("keyup", M.ku);
+  const aim = e => { const r = cv.getBoundingClientRect(); M.py = Math.max(PH / 2, Math.min(H - PH / 2, (e.clientY - r.top) * H / r.height)); };
+  cv.addEventListener("pointermove", aim); cv.addEventListener("pointerdown", aim);
+  const serve = dir => { M.bx = W / 2; M.by = H / 2; const a = (Math.random() - .5) * .8; M.sp = 330; M.bvx = Math.cos(a) * M.sp * dir; M.bvy = Math.sin(a) * M.sp; M.wait = .8; };
+  function draw() {
+    const c = M.ctx; if (!c) return;
+    c.fillStyle = "#06121f"; c.fillRect(0, 0, W, H);
+    c.fillStyle = "rgba(255,255,255,.2)"; for (let y = 10; y < H; y += 30) c.fillRect(W / 2 - 2, y, 4, 16);
+    c.fillStyle = "#fff"; c.font = "700 44px Rowdies, system-ui, sans-serif"; c.textAlign = "center";
+    c.fillText(M.ps, W / 2 - 70, 60); c.fillText(M.cs, W / 2 + 70, 60); c.textAlign = "left";
+    c.fillStyle = "#5aa9ff"; c.fillRect(20, M.py - PH / 2, 12, PH);
+    c.fillStyle = "#ff5a6e"; c.fillRect(W - 32, M.cy - PH / 2, 12, PH);
+    c.fillStyle = "#ffc93c"; c.fillRect(M.bx - 7, M.by - 7, 14, 14);
+  }
+  function step(dt) {
+    const dir = (keys.d ? 1 : 0) - (keys.u ? 1 : 0);
+    if (dir) M.py = Math.max(PH / 2, Math.min(H - PH / 2, M.py + dir * 420 * dt));
+    // the computer follows the ball, but not perfectly
+    const target = M.bvx > 0 ? M.by : H / 2, cpuSpeed = 260 + (M.ps + M.cs) * 8;
+    M.cy += Math.max(-cpuSpeed * dt, Math.min(cpuSpeed * dt, target - M.cy));
+    if (M.wait > 0) { M.wait -= dt; return; }
+    M.bx += M.bvx * dt; M.by += M.bvy * dt;
+    if (M.by < 7 || M.by > H - 7) { M.bvy = -M.bvy; M.by = Math.max(7, Math.min(H - 7, M.by)); }
+    const bounce = (py, side) => {
+      const off = (M.by - py) / (PH / 2), a = off * .9; M.sp = Math.min(720, M.sp * 1.06);
+      M.bvx = Math.cos(a) * M.sp * side; M.bvy = Math.sin(a) * M.sp; tone([side > 0 ? 660 : 520], .03, "square", .04);
+    };
+    if (M.bvx < 0 && M.bx < 39 && M.bx > 18 && Math.abs(M.by - M.py) < PH / 2 + 7) { M.bx = 39; bounce(M.py, 1); }
+    if (M.bvx > 0 && M.bx > W - 39 && M.bx < W - 18 && Math.abs(M.by - M.cy) < PH / 2 + 7) { M.bx = W - 39; bounce(M.cy, -1); }
+    if (M.bx < -20) { M.cs++; sfx.wrong(); serve(-1); }
+    if (M.bx > W + 20) { M.ps++; sfx.right(); serve(1); }
+    if (M.ps >= WIN || M.cs >= WIN) {
+      const won = M.ps >= WIN;
+      if (won) { const best = store.get("best", {}); best.pong = (best.pong || 0) + 1; store.set("best", best); }
+      draw();
+      overScreen(won ? "You win!" : "The computer wins!", `${M.ps} – ${M.cs}`, won ? `Total wins: ${store.get("best", {}).pong}` : "Try again!", go);
+    }
+  }
+  function go() { Object.assign(M, { ps: 0, cs: 0, py: H / 2, cy: H / 2, running: true }); serve(1); document.getElementById("m-over").hidden = true; runLoop(step, draw); }
+  Object.assign(M, { ps: 0, cs: 0, py: H / 2, cy: H / 2, bx: W / 2, by: H / 2 });
   M.rs();
   document.getElementById("m-go").addEventListener("click", go);
 }
