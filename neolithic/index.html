@@ -320,6 +320,19 @@
   .p2 { background: #ffd23c; color: #ffd23c; border-radius: 12px 12px 12px 100%; }
   .p3 { background: #3d8bff; color: #3d8bff; border-radius: 12px 12px 100% 12px; }
 
+  .diff-orig { display: none !important; }
+  .diffrow { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+  .diff-q { width: 100%; text-align: center; font-weight: 700; color: var(--ink); }
+  .btn.diff-hard { background: var(--bad); color: #fff; }
+  .diffrow .btn { font-family: var(--display); font-weight: 400; font-size: 1.2rem; min-width: 110px; }
+  .levelpick { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 520px; }
+  .levelbtn { border: 0; border-radius: 16px; padding: 20px 14px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; box-shadow: 0 5px 0 rgba(0,0,0,.35); }
+  .levelbtn b { font-family: var(--display); font-weight: 400; font-size: 1.6rem; }
+  .levelbtn span { font-size: .9rem; }
+  .lv-easy { background: var(--money); color: #06301b; }
+  .lv-hard { background: var(--bad); color: #fff; }
+  .bmem.bmem-hard { grid-template-columns: repeat(6, 1fr); gap: 6px; }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
@@ -851,14 +864,14 @@ function showHome() {
     startStudy();
   }));
   document.getElementById("goal-pick").addEventListener("change", e => { choice.goal = e.target.value; store.set("goal", choice.goal); });
-  document.getElementById("dig").addEventListener("click", startDig);
+  document.getElementById("dig").addEventListener("click", pickDig);
   document.getElementById("slope").addEventListener("click", startSlope);
   document.getElementById("archers").addEventListener("click", startArchers);
   document.getElementById("draw").addEventListener("click", startDraw);
   document.getElementById("m-snake").addEventListener("click", startSnake);
   document.getElementById("m-stack").addEventListener("click", startStack);
   $app.querySelectorAll("[data-more]").forEach(b => b.addEventListener("click", () => MORE_GAMES.find(g => g.id === b.dataset.more).start()));
-  document.getElementById("start").addEventListener("click", startGame);
+  document.getElementById("start").addEventListener("click", pickCash);
   keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
@@ -893,8 +906,8 @@ function startGame() {
 }
 
 const val = k => UPGRADES[k].vals[G.lv[k]];
-const earnFor = streak => Math.round((val("mpq") + val("sb") * streak) * val("mul"));
-const lossFor = () => Math.round(val("mpq") * val("mul") * (1 - val("ins") / 100));
+const earnFor = streak => Math.round((val("mpq") + val("sb") * streak) * val("mul") * (hard() ? .7 : 1));
+const lossFor = () => Math.round(val("mpq") * val("mul") * (1 - val("ins") / 100) * (hard() ? 2 : 1));
 const puCost = k => Math.max(25, Math.round(POWERUPS[k].mult * val("mpq") * val("mul")));
 
 function hudHtml() {
@@ -1099,7 +1112,7 @@ function endGame() {
       ${missed ? `<h3>Study these before the test</h3><div class="missed">${missed}</div>` : `<h3>No mistakes. You're ready!</h3>`}
       <div class="row"><button class="btn go" id="again">Play again</button><button class="btn" id="home">Change game</button></div>
     </div>`;
-  document.getElementById("again").addEventListener("click", startGame);
+  document.getElementById("again").addEventListener("click", pickCash);
   document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -1169,9 +1182,11 @@ function resIcon(k) {
 }
 let D = null;
 const tool = () => TOOLS[D.tier];
-const fullHp = (r, t) => t.res ? RES[t.res].hard : t.boulder ? LAYERS[layerOf(r)].hard * 2 + 2 : r > 0 ? LAYERS[layerOf(r)].hard : 0;
+let DIG_HM = 1; // Hard mode makes every tile tougher
+const fullHp = (r, t) => Math.ceil((t.res ? RES[t.res].hard : t.boulder ? LAYERS[layerOf(r)].hard * 2 + 2 : r > 0 ? LAYERS[layerOf(r)].hard : 0) * DIG_HM);
 
 function startDig() {
+  DIG_HM = hard() ? 1.6 : 1;
   closeShop();
   stopSlope();
   stopArchers();
@@ -1197,11 +1212,11 @@ function startDig() {
   ARTIFACTS.forEach((a, i) => { freeCell(a.layer).art = i; });
   Object.entries(RES).forEach(([k, R]) => {
     const total = R.layers.reduce((a, b) => a + b, 0);
-    for (let i = 0; i < R.count; i++) {
+    for (let i = 0; i < Math.round(R.count * (hard() ? .7 : 1)); i++) {
       let roll = Math.random() * total, L = 0;
       while (roll >= R.layers[L]) { roll -= R.layers[L]; L++; }
       const t = freeCell(L);
-      t.res = k; t.boulder = false; t.hp = R.hard;
+      t.res = k; t.boulder = false; t.hp = fullHp(0, t);
     }
   });
   D = { grid, pos: [0, startC], tier: 0, inv: Object.fromEntries(Object.keys(RES).map(k => [k, 0])), found: [], won: false,
@@ -1559,7 +1574,7 @@ function endDig() {
       ${found ? `<h3>What your artifacts taught you</h3><div class="missed">${found}</div>` : ""}
       <div class="row"><button class="btn go" id="again">Dig again</button><button class="btn" id="home">Back to menu</button></div>
     </div>`;
-  document.getElementById("again").addEventListener("click", startDig);
+  document.getElementById("again").addEventListener("click", pickDig);
   document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -1578,9 +1593,9 @@ function stopSlope() {
 function slopeSeg(i) {
   if (i < 0) return { gaps: [], blocks: [] };
   while (S.segs.length <= i) {
-    const n = S.segs.length, d = Math.min(1, n / 700), seg = { gaps: [], blocks: [] };
+    const n = S.segs.length, d = Math.min(1, n / 700 + (S.hard ? .35 : 0)), seg = { gaps: [], blocks: [] };
     const spacing = d > .6 ? 2 : 3;
-    if (n > 25 && n - S.lastObs >= spacing && Math.random() < .2 + .3 * d) {
+    if (n > 25 && n - S.lastObs >= spacing && Math.random() < (S.hard ? .25 : .14) + .3 * d) {
       S.lastObs = n;
       if (Math.random() < .6) {
         const w = .8 + Math.random() * (.6 + .6 * d), x0 = -HW + Math.random() * (2 * HW - w);
@@ -1648,7 +1663,7 @@ function startSlope() {
 }
 function slopeGo() {
   if (!S) return;
-  Object.assign(S, { segs: [], lastObs: 0, x: 0, vx: 0, dist: 0, speed: 9, fall: 0, dead: false, deadT: 0, running: true, last: performance.now() });
+  Object.assign(S, { hard: hard(), segs: [], lastObs: 0, x: 0, vx: 0, dist: 0, speed: 9, fall: 0, dead: false, deadT: 0, running: true, last: performance.now() });
   document.getElementById("s-over").hidden = true;
   tone([392, 523, 659], .08);
   const loop = t => {
@@ -1672,7 +1687,7 @@ function slopeStep(dt) {
   S.vx *= Math.exp(-(dir ? 2.5 : 7) * dt);
   S.vx = Math.max(-6, Math.min(6, S.vx));
   S.x += S.vx * dt;
-  S.speed = Math.min(26, 9 + S.dist * .012);
+  S.speed = S.hard ? Math.min(32, 13 + S.dist * .016) : Math.min(20, 7 + S.dist * .009);
   S.dist += S.speed * dt;
   const seg = slopeSeg(Math.floor(S.dist));
   if (Math.abs(S.x) > HW + .15 || seg.gaps.some(([a, b]) => S.x > a && S.x < b)) { S.dead = "fall"; sfx.wrong(); }
@@ -1726,15 +1741,15 @@ function drawSlope() {
   ctx.fillStyle = "#e9fff3"; ctx.font = "700 20px Rowdies, system-ui, sans-serif";
   ctx.fillText(`${Math.floor(S.dist)} m`, 14, 30);
   ctx.font = "13px system-ui, sans-serif"; ctx.fillStyle = "rgba(233,255,243,.7)";
-  ctx.fillText(`Best ${fmt(store.get("best", {}).slope || 0)} m · speed ${Math.round(S.speed * 3.6)} km/h`, 14, 50);
+  ctx.fillText(`${hard() ? "Hard" : "Easy"} · Best ${fmt(store.get("best", {})[bestKey("slope")] || 0)} m · speed ${Math.round(S.speed * 3.6)} km/h`, 14, 50);
 }
 function slopeOver() {
   S.running = false;
-  const d = Math.floor(S.dist), best = store.get("best", {});
-  const nb = !best.slope || d > best.slope;
-  if (nb) { best.slope = d; store.set("best", best); }
+  const d = Math.floor(S.dist), best = store.get("best", {}), k = bestKey("slope");
+  const nb = !best[k] || d > best[k];
+  if (nb) { best[k] = d; store.set("best", best); }
   const o = document.getElementById("s-over");
-  o.innerHTML = `<h2>${S.dead === "crash" ? "Crash!" : "You fell!"}</h2><p class="big money">${d} m</p><p>${nb ? "New best distance!" : `Best: ${fmt(best.slope)} m`}</p><div class="row" style="justify-content:center"><button class="btn go" id="s-go">Play again</button><button class="btn" id="s-menu">Menu</button></div>`;
+  o.innerHTML = `<h2>${S.dead === "crash" ? "Crash!" : "You fell!"}</h2><p class="big money">${d} m</p><p>${nb ? "New best distance!" : `Best: ${fmt(best[k])} m`}</p><div class="row" style="justify-content:center"><button class="btn go" id="s-go">Play again</button><button class="btn" id="s-menu">Menu</button></div>`;
   o.hidden = false;
   document.getElementById("s-go").addEventListener("click", slopeGo);
   document.getElementById("s-menu").addEventListener("click", showHome);
@@ -1882,7 +1897,8 @@ function newRound(fresh) {
   A.player = makeArcher(W * .1, A.ground, 1, "#5aa9ff", 100);
   A.player.hp = Math.min(100, Math.max(1, hp));
   A.level = A.score + 1;
-  A.es = enemyStats(A.level);
+  A.es = enemyStats(A.level + (hard() ? 2 : 0));
+  if (!hard()) { A.es.err *= 1.5; A.es.dmg *= .75; }
   const ex = W * (.62 + Math.random() * .3);
   const ph = A.level >= 2 && Math.random() < .65 ? 40 + Math.random() * Math.min(220, 40 + A.level * 25) : 0;
   A.pillar = ph ? { x0: ex - 40, x1: ex + 40, top: A.ground - ph } : null;
@@ -2034,7 +2050,7 @@ function openArmory() {
 function renderArmory() {
   const el = document.querySelector(".shop");
   if (!el || !A) return;
-  const next = enemyStats(A.score + 1);
+  const next = enemyStats(A.score + 1 + (hard() ? 2 : 0));
   const items = ARMORY.map(it => {
     const owned = it.kind === "weapon" ? WEAPONS[A.gear.weapon] && ARMORY.find(x => x.id === A.gear.weapon)?.tier >= it.tier : it.kind === "perk" && has(it.id);
     const locked = it.needs && !has(it.needs);
@@ -2118,10 +2134,10 @@ function drawRagdoll(c, a) {
 }
 function archersOver() {
   A.state = "over";
-  const best = store.get("best", {}), nb = !best.archers || A.score > best.archers;
-  if (nb) { best.archers = A.score; store.set("best", best); }
+  const best = store.get("best", {}), k = bestKey("archers"), nb = !best[k] || A.score > best[k];
+  if (nb) { best[k] = A.score; store.set("best", best); }
   const o = document.getElementById("a-over");
-  o.innerHTML = `<h2>You got knocked out by a Lv ${A.level} ${A.es.rank}!</h2><p class="big money">${A.score}</p><p>${A.score === 1 ? "archer beaten" : "archers beaten"} · ${nb ? "New best!" : `Best: ${best.archers}`}</p><div class="row" style="justify-content:center"><button class="btn go" id="a-go">Play again</button><button class="btn" id="a-menu">Menu</button></div>`;
+  o.innerHTML = `<h2>You got knocked out by a Lv ${A.level} ${A.es.rank}!</h2><p class="big money">${A.score}</p><p>${A.score === 1 ? "archer beaten" : "archers beaten"} · ${nb ? "New best!" : `Best: ${best[k]}`}</p><div class="row" style="justify-content:center"><button class="btn go" id="a-go">Play again</button><button class="btn" id="a-menu">Menu</button></div>`;
   o.hidden = false;
   document.getElementById("a-go").addEventListener("click", () => { A.score = 0; A.kills = 0; A.gear = { weapon: "bow" }; newRound(true); begin(); });
   document.getElementById("a-menu").addEventListener("click", showHome);
@@ -2162,6 +2178,7 @@ function miniShell(id, title, help) {
 }
 function miniOver(id, title, score, unit) {
   M.running = false;
+  id = bestKey(id);
   const best = store.get("best", {}), nb = !best[id] || score > best[id];
   if (nb) { best[id] = score; store.set("best", best); }
   const o = document.getElementById("m-over");
@@ -2173,7 +2190,7 @@ function miniOver(id, title, score, unit) {
 
 /* Neon Snake */
 function startSnake() {
-  const { cv, stage } = miniShell("snake", "Neon Snake", "Use the arrow keys or WASD, swipe on the board, or tap the arrow buttons.<br>It speeds up as you grow!");
+  const { cv, stage } = miniShell("snake", "Neon Snake", "Use the arrow keys or WASD, swipe on the board, or tap the arrow buttons.<br>It speeds up as you grow! On Easy you can go through the walls.");
   const N = 20;
   document.getElementById("m-pad").innerHTML = `<div class="dpad"><button class="btn" data-d="0,-1" aria-label="Up">▲</button><button class="btn" data-d="-1,0" aria-label="Left">◀</button><button class="btn" data-d="1,0" aria-label="Right">▶</button><button class="btn" data-d="0,1" aria-label="Down">▼</button></div>`;
   M.rs = () => {
@@ -2219,7 +2236,7 @@ function startSnake() {
     const loop = t => {
       if (!M || !M.running) return;
       M.t += t - M.last; M.last = t;
-      const step = Math.max(55, 140 - M.score * 4);
+      const step = hard() ? Math.max(45, 105 - M.score * 5) : Math.max(85, 160 - M.score * 3);
       while (M.t >= step && M.running) { M.t -= step; tick(); }
       draw();
       if (M && M.running) M.raf = requestAnimationFrame(loop);
@@ -2228,7 +2245,8 @@ function startSnake() {
   }
   function tick() {
     if (M.dirQ.length) M.dir = M.dirQ.shift();
-    const [hx, hy] = M.snake[0], nx = hx + M.dir[0], ny = hy + M.dir[1];
+    let [hx, hy] = M.snake[0], nx = hx + M.dir[0], ny = hy + M.dir[1];
+    if (!hard()) { nx = (nx + N) % N; ny = (ny + N) % N; }
     const eat = nx === M.food[0] && ny === M.food[1];
     const body = eat ? M.snake : M.snake.slice(0, -1);
     if (nx < 0 || ny < 0 || nx >= N || ny >= N || body.some(([x, y]) => x === nx && y === ny)) {
@@ -2263,14 +2281,14 @@ function startStack() {
   };
   const spawn = () => {
     const top = M.blocks.at(-1), fromLeft = M.score % 2 === 0;
-    M.cur = { x: fromLeft ? 0 : M.W - top.w, w: top.w, dir: fromLeft ? 1 : -1, speed: Math.min(520, 170 + M.score * 12), hue: (top.hue + 12) % 360 };
+    M.cur = { x: fromLeft ? 0 : M.W - top.w, w: top.w, dir: fromLeft ? 1 : -1, speed: hard() ? Math.min(600, 240 + M.score * 15) : Math.min(420, 130 + M.score * 8), hue: (top.hue + 12) % 360 };
   };
   const drop = () => {
     if (!M.running || !M.cur) return;
     const top = M.blocks.at(-1), cur = M.cur;
     const l = Math.max(top.x, cur.x), r = Math.min(top.x + top.w, cur.x + cur.w);
     if (r - l <= 2) { M.falling.push({ ...cur, y: M.blocks.length, vy: 0 }); M.cur = null; sfx.wrong(); return setTimeout(() => { if (M === me) miniOver("stack", "The tower is done!", M.score, "blocks stacked").addEventListener("click", go); }, 700); }
-    if (Math.abs(cur.x - top.x) < 5) { cur.x = top.x; M.perfect++; tone([660 + M.perfect * 60, 990 + M.perfect * 60], .06, "triangle", .07); if (M.perfect >= 3) cur.w = Math.min(M.W * .6, cur.w + 6); M.blocks.push({ x: cur.x, w: cur.w, hue: cur.hue }); }
+    if (Math.abs(cur.x - top.x) < (hard() ? 4 : 9)) { cur.x = top.x; M.perfect++; tone([660 + M.perfect * 60, 990 + M.perfect * 60], .06, "triangle", .07); if (M.perfect >= 3) cur.w = Math.min(M.W * .6, cur.w + 6); M.blocks.push({ x: cur.x, w: cur.w, hue: cur.hue }); }
     else {
       M.perfect = 0;
       if (cur.x < l) M.falling.push({ x: cur.x, w: l - cur.x, hue: cur.hue, y: M.blocks.length, vy: 0 });
@@ -2444,6 +2462,7 @@ function overScreen(title, big, line, again) {
 }
 // Records where a bigger score is better, or (low = true) where smaller is better.
 function record(id, score, low) {
+  id = bestKey(id);
   const best = store.get("best", {});
   const nb = best[id] == null || (low ? score < best[id] : score > best[id]);
   if (nb) { best[id] = score; store.set("best", best); }
@@ -2465,7 +2484,7 @@ function start2048() {
   const { board } = gameShell("2048", "Use the arrow keys or WASD, or swipe on the board.<br>When two tiles with the same number touch, they join into one!", true);
   board.classList.add("b2048");
   const empty = () => M.grid.map((v, i) => v ? -1 : i).filter(i => i >= 0);
-  const add = () => { const e = empty(); if (e.length) M.grid[e[rnd(0, e.length - 1)]] = Math.random() < .9 ? 2 : 4; };
+  const add = () => { const e = empty(); if (e.length) M.grid[e[rnd(0, e.length - 1)]] = Math.random() < (hard() ? .65 : .9) ? 2 : 4; };
   const LINES = {
     left: [0, 1, 2, 3].map(r => [0, 1, 2, 3].map(c => r * 4 + c)),
     right: [0, 1, 2, 3].map(r => [3, 2, 1, 0].map(c => r * 4 + c)),
@@ -2491,7 +2510,9 @@ function start2048() {
     });
     if (!moved) return;
     tone([520, 660], .04, "triangle", .04);
-    add(); render();
+    add();
+    if (hard() && ++M.mv % 4 === 0) add(); // Hard: an extra tile drops in every 4th move
+    render();
     if (!canMove()) { const r = record("g2048", M.score); overScreen("No more moves!", M.score, r.nb ? "New best score!" : `Best: ${r.best}`, go); }
   };
   M.kd = e => {
@@ -2500,7 +2521,7 @@ function start2048() {
   };
   window.addEventListener("keydown", M.kd);
   swipe(board, move);
-  function go() { M.grid = Array(16).fill(0); M.score = 0; M.won = false; add(); add(); M.running = true; document.getElementById("m-over").hidden = true; render(); }
+  function go() { M.grid = Array(16).fill(0); M.score = 0; M.mv = 0; M.won = false; add(); add(); M.running = true; document.getElementById("m-over").hidden = true; render(); }
   M.grid = Array(16).fill(0); M.score = 0; render();
   document.getElementById("m-go").addEventListener("click", go);
 }
@@ -2514,16 +2535,20 @@ const MEM_ICONS = [
   ["#c94cff", `<rect x="4" y="4" width="16" height="16" rx="2"/>`],
   ["#ff7a3d", `<path d="M12 2l9 10-9 10-9-10z"/>`],
   ["#e6e0ff", `<path d="M15 3a9 9 0 1 0 6 15A7 7 0 0 1 15 3z"/>`],
-  ["#00e5ff", `<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>`]
+  ["#00e5ff", `<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>`],
+  ["#8bc34a", `<path d="M12 3c3 4 6 6 6 10a6 6 0 0 1-12 0c0-4 3-6 6-10z"/>`],
+  ["#ff9ad5", `<path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z"/>`],
+  ["#b0bec5", `<path d="M7 18a5 5 0 0 1 .6-10A6 6 0 0 1 19 9a4.5 4.5 0 0 1 0 9z"/>`],
+  ["#ffd54f", `<path d="M12 2l2.4 5.6L20 6l-1.6 5.6L22 16l-6-.4L12 22l-4-6.4L2 16l3.6-4.4L4 6l5.6 1.6z"/>`]
 ];
 function startMemory() {
-  const { board } = gameShell("Memory Match", "Tap two cards to flip them. If they match, they stay up.<br>Find all 8 pairs in as few moves as you can!", true);
+  const { board } = gameShell("Memory Match", "Tap two cards to flip them. If they match, they stay up.<br>Easy has 8 pairs. Hard has 12 pairs and less time to look!", true);
   board.classList.add("bmem");
   const me = M;
   let lock = false;
   const render = () => {
     board.innerHTML = M.cards.map((c, i) => `<button class="mem-card${c.up || c.done ? " up" : ""}${c.done ? " done" : ""}" data-i="${i}" aria-label="${c.up || c.done ? "Card " + (c.k + 1) : "Face-down card"}">${c.up || c.done ? `<svg viewBox="0 0 24 24" fill="${MEM_ICONS[c.k][0]}" aria-hidden="true">${MEM_ICONS[c.k][1]}</svg>` : ""}</button>`).join("");
-    document.getElementById("m-score").textContent = `Moves ${M.moves} · Pairs ${M.cards.filter(c => c.done).length / 2}/8`;
+    document.getElementById("m-score").textContent = `Moves ${M.moves} · Pairs ${M.cards.filter(c => c.done).length / 2}/${M.pairs || 8}`;
     board.querySelectorAll(".mem-card").forEach(b => b.addEventListener("click", () => flip(+b.dataset.i)));
   };
   const flip = i => {
@@ -2534,12 +2559,12 @@ function startMemory() {
     if (up.length === 2) {
       M.moves++;
       if (up[0].k === up[1].k) { up.forEach(x => { x.done = true; x.up = false; }); sfx.right(); }
-      else { lock = true; setTimeout(() => { if (M !== me) return; up.forEach(x => { x.up = false; }); lock = false; render(); }, 750); }
+      else { lock = true; setTimeout(() => { if (M !== me) return; up.forEach(x => { x.up = false; }); lock = false; render(); }, hard() ? 450 : 900); }
     }
     render();
     if (M.cards.every(x => x.done)) { const r = record("memory", M.moves, true); setTimeout(() => M === me && overScreen("You found them all!", M.moves, `moves · ${r.nb ? "New best (fewest moves)!" : `Best: ${r.best} moves`}`, go), 500); }
   };
-  function go() { M.cards = shuffle([...Array(8).keys(), ...Array(8).keys()]).map(k => ({ k, up: false, done: false })); M.moves = 0; lock = false; M.running = true; document.getElementById("m-over").hidden = true; render(); }
+  function go() { const P = hard() ? 12 : 8; board.classList.toggle("bmem-hard", hard()); M.pairs = P; M.cards = shuffle([...Array(P).keys(), ...Array(P).keys()]).map(k => ({ k, up: false, done: false })); M.moves = 0; lock = false; M.running = true; document.getElementById("m-over").hidden = true; render(); }
   M.cards = [...Array(16)].map(() => ({ k: 0 })); M.moves = 0; render();
   document.getElementById("m-go").addEventListener("click", go);
 }
@@ -2548,7 +2573,8 @@ function startMemory() {
 function startMines() {
   const { board } = gameShell("Minesweeper", "Tap a square to dig it. Numbers tell you how many mines touch that square.<br>Flag mines with a long press, a right-click, or Flag mode. Clear every safe square to win!", true);
   board.classList.add("bmines");
-  const N = 9, MINES = 10;
+  const N = 9;
+  let MINES = 10;
   document.getElementById("m-pad").innerHTML = `<div class="row" style="justify-content:center"><button class="btn" id="flagmode" aria-pressed="false">Flag mode: off</button></div>`;
   const fm = document.getElementById("flagmode");
   fm.addEventListener("click", () => { M.flagMode = !M.flagMode; fm.textContent = `Flag mode: ${M.flagMode ? "on" : "off"}`; fm.setAttribute("aria-pressed", M.flagMode); });
@@ -2588,14 +2614,14 @@ function startMines() {
     render();
     if (M.cells.every(x => x.mine || x.open)) { sfx.buy(); const r = record("mines", M.secs, true); overScreen("You cleared the field!", M.secs + "s", r.nb ? "New fastest time!" : `Best: ${r.best}s`, go); }
   };
-  function go() { clearInterval(M.timer); M.cells = [...Array(N * N)].map(() => ({ mine: false, n: 0, open: false, flag: false })); M.started = false; M.secs = 0; M.running = true; document.getElementById("m-over").hidden = true; render(); }
+  function go() { MINES = hard() ? 18 : 10; clearInterval(M.timer); M.cells = [...Array(N * N)].map(() => ({ mine: false, n: 0, open: false, flag: false })); M.started = false; M.secs = 0; M.running = true; document.getElementById("m-over").hidden = true; render(); }
   M.cells = [...Array(N * N)].map(() => ({ mine: false, n: 0, open: false, flag: false })); M.secs = 0; render();
   document.getElementById("m-go").addEventListener("click", go);
 }
 
 /* Brick Breaker */
 function startBricks() {
-  const { cv, stage } = gameShell("Brick Breaker", "Move the paddle with your mouse, your finger, or the arrow keys.<br>Don't let the ball fall! You have 3 lives.");
+  const { cv, stage } = gameShell("Brick Breaker", "Move the paddle with your mouse, your finger, or the arrow keys.<br>Don't let the ball fall! Easy gives you a wide paddle and 5 lives. Hard is faster with a small paddle.");
   const W = 480, H = 640, COLS = 8, ROWS = 6, BW = W / COLS, BH = 22;
   M.rs = () => {
     const w = Math.min(stage.clientWidth, 480), h = w * H / W, dpr = window.devicePixelRatio || 1;
@@ -2613,33 +2639,33 @@ function startBricks() {
   window.addEventListener("keydown", M.kd);
   M.ku = e => M.kd(e);
   window.addEventListener("keyup", M.ku);
-  cv.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); M.px = Math.max(40, Math.min(W - 40, (e.clientX - r.left) * W / r.width)); });
+  cv.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); M.px = Math.max(M.phw, Math.min(W - M.phw, (e.clientX - r.left) * W / r.width)); });
   cv.addEventListener("pointerdown", e => { const r = cv.getBoundingClientRect(); M.px = (e.clientX - r.left) * W / r.width; if (M.stuck) launch(); });
   const level = n => {
     M.bricks = [];
     for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (n === 1 || Math.random() < .85) M.bricks.push({ x: c * BW + 2, y: 70 + r * (BH + 4), hp: r < Math.min(3, n - 1) ? 2 : 1, hue: r * 40 + n * 25 });
-    M.speed = 300 + n * 40; M.stuck = true;
+    M.speed = hard() ? 380 + n * 50 : 250 + n * 30; M.stuck = true;
   };
   const launch = () => { M.stuck = false; const a = -Math.PI / 2 + (Math.random() - .5) * .8; M.bvx = Math.cos(a) * M.speed; M.bvy = Math.sin(a) * M.speed; };
   function draw() {
     const c = M.ctx; if (!c || !M.bricks) return;
     c.fillStyle = "#0b0820"; c.fillRect(0, 0, W, H);
     M.bricks.forEach(b => { c.fillStyle = `hsl(${b.hue % 360},75%,${b.hp > 1 ? 40 : 58}%)`; c.fillRect(b.x, b.y, BW - 4, BH); });
-    c.fillStyle = "#e7f2ff"; c.fillRect(M.px - 40, H - 40, 80, 12);
+    c.fillStyle = "#e7f2ff"; c.fillRect(M.px - M.phw, H - 40, M.phw * 2, 12);
     c.fillStyle = "#ffc93c"; c.beginPath(); c.arc(M.bx, M.by, 7, 0, 7); c.fill();
     c.fillStyle = "#fff"; c.font = "16px system-ui, sans-serif"; c.fillText(`Score ${M.score}   Lives ${M.lives}   Level ${M.lvl}`, 12, 26);
     if (M.stuck && M.running) { c.textAlign = "center"; c.fillText("Tap or press Space to launch", W / 2, H / 2); c.textAlign = "left"; }
   }
   function step(dt) {
     const dir = (keys.r ? 1 : 0) - (keys.l ? 1 : 0);
-    if (dir) M.px = Math.max(40, Math.min(W - 40, M.px + dir * 420 * dt));
+    if (dir) M.px = Math.max(M.phw, Math.min(W - M.phw, M.px + dir * 420 * dt));
     if (M.stuck) { M.bx = M.px; M.by = H - 48; return; }
     M.bx += M.bvx * dt; M.by += M.bvy * dt;
     if (M.bx < 7) { M.bx = 7; M.bvx = Math.abs(M.bvx); }
     if (M.bx > W - 7) { M.bx = W - 7; M.bvx = -Math.abs(M.bvx); }
     if (M.by < 7) { M.by = 7; M.bvy = Math.abs(M.bvy); }
-    if (M.bvy > 0 && M.by > H - 47 && M.by < H - 28 && Math.abs(M.bx - M.px) < 47) {
-      const off = (M.bx - M.px) / 47, a = -Math.PI / 2 + off * 1.05, sp = Math.hypot(M.bvx, M.bvy);
+    if (M.bvy > 0 && M.by > H - 47 && M.by < H - 28 && Math.abs(M.bx - M.px) < M.phw + 7) {
+      const off = (M.bx - M.px) / (M.phw + 7), a = -Math.PI / 2 + off * 1.05, sp = Math.hypot(M.bvx, M.bvy);
       M.bvx = Math.cos(a) * sp; M.bvy = Math.sin(a) * sp; tone([440], .03, "square", .04);
     }
     for (const b of M.bricks) {
@@ -2659,12 +2685,12 @@ function startBricks() {
     }
   }
   function go() {
-    M.score = 0; M.lives = 3; M.lvl = 1; M.px = W / 2; level(1); M.running = true; document.getElementById("m-over").hidden = true;
+    M.phw = hard() ? 32 : 55; M.score = 0; M.lives = hard() ? 3 : 5; M.lvl = 1; M.px = W / 2; level(1); M.running = true; document.getElementById("m-over").hidden = true;
     M.last = performance.now(); cancelAnimationFrame(M.raf);
     const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (t - M.last) / 1000); M.last = t; step(dt); draw(); if (M && M.running) M.raf = requestAnimationFrame(loop); };
     M.raf = requestAnimationFrame(loop);
   }
-  M.px = W / 2; M.bx = W / 2; M.by = H - 48; M.score = 0; M.lives = 3; M.lvl = 1; level(1);
+  M.phw = 55; M.px = W / 2; M.bx = W / 2; M.by = H - 48; M.score = 0; M.lives = 3; M.lvl = 1; level(1);
   M.rs();
   document.getElementById("m-go").addEventListener("click", go);
 }
@@ -2672,7 +2698,8 @@ function startBricks() {
 /* Sky Hopper */
 function startHopper() {
   const { cv, stage } = gameShell("Sky Hopper", "Tap, click, or press Space to flap.<br>Fly through the gaps between the towers!");
-  const W = 400, H = 600, GAP = 165, PW = 64, me = M;
+  const W = 400, H = 600, PW = 64, me = M;
+  let GAP = 190;
   M.rs = () => {
     const w = Math.min(stage.clientWidth, 400), h = w * H / W, dpr = window.devicePixelRatio || 1;
     cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
@@ -2706,7 +2733,7 @@ function startHopper() {
     M.t += dt;
     if (M.dead) { M.vy += 1500 * dt; M.y = Math.min(H - 56, M.y + M.vy * dt); return; }
     M.vy += 1400 * dt; M.y += M.vy * dt;
-    const sp = 170 + Math.min(80, M.score * 3);
+    const sp = (hard() ? 205 : 150) + Math.min(80, M.score * 3);
     M.pipes.forEach(p => { p.x -= sp * dt; if (!p.passed && p.x + PW < 90) { p.passed = true; M.score++; tone([880, 1175], .04, "square", .05); } });
     M.pipes = M.pipes.filter(p => p.x > -PW - 10);
     const last = M.pipes.at(-1);
@@ -2718,6 +2745,7 @@ function startHopper() {
     }
   }
   function go() {
+    GAP = hard() ? 140 : 190;
     M.y = H / 2; M.vy = 0; M.pipes = []; M.score = 0; M.t = 0; M.dead = false; M.running = true;
     document.getElementById("m-over").hidden = true;
     M.last = performance.now(); cancelAnimationFrame(M.raf);
@@ -2745,7 +2773,7 @@ function runLoop(step, draw) {
 
 /* Galaxy Defender */
 function startGalaxy() {
-  const { cv, stage } = gameShell("Galaxy Defender", "Move your ship with your finger, the mouse, or the arrow keys. It fires by itself!<br>Blast the alien waves and dodge their shots. You have 3 lives.");
+  const { cv, stage } = gameShell("Galaxy Defender", "Move your ship with your finger, the mouse, or the arrow keys. It fires by itself!<br>Blast the alien waves and dodge their shots. Easy gives you 5 lives; Hard is faster with 3.");
   const W = 480, H = 640;
   M.rs = () => { M.ctx = canvasFit(cv, stage, W, H, 480); draw(); };
   window.addEventListener("resize", M.rs);
@@ -2760,7 +2788,7 @@ function startGalaxy() {
     M.aliens = [];
     const rows = Math.min(5, 2 + Math.floor(n / 2)), cols = 7;
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) M.aliens.push({ x: 60 + c * 55, y: 70 + r * 44, hp: r === 0 && n > 2 ? 2 : 1, hue: (r * 50 + n * 30) % 360 });
-    M.dir = 1; M.aSpeed = 40 + n * 12; M.fireRate = Math.max(.35, 1.4 - n * .12);
+    M.dir = 1; M.aSpeed = hard() ? 60 + n * 16 : 30 + n * 9; M.fireRate = hard() ? Math.max(.25, 1.1 - n * .12) : Math.max(.6, 1.8 - n * .1);
   };
   function draw() {
     const c = M.ctx; if (!c || !M.aliens) return;
@@ -2812,7 +2840,7 @@ function startGalaxy() {
     if (!M.aliens.length) { M.wave++; sfx.buy(); wave(M.wave); }
   }
   function go() {
-    Object.assign(M, { sx: W / 2, score: 0, lives: 3, wave: 1, shots: [], bombs: [], booms: [], cool: 0, fireT: 1, hurt: 0, running: true });
+    Object.assign(M, { sx: W / 2, score: 0, lives: hard() ? 3 : 5, wave: 1, shots: [], bombs: [], booms: [], cool: 0, fireT: 1, hurt: 0, running: true });
     wave(1); document.getElementById("m-over").hidden = true; runLoop(step, draw);
   }
   Object.assign(M, { sx: W / 2, score: 0, lives: 3, wave: 1, shots: [], bombs: [], booms: [], hurt: 0 }); wave(1);
@@ -2842,11 +2870,11 @@ function startWhack() {
       const free = M.up.map((u, i) => u ? -1 : i).filter(i => i >= 0);
       if (free.length) {
         const i = free[rnd(0, free.length - 1)], roll = Math.random();
-        const kind = roll < .12 ? "bomb" : roll < .22 ? "gold" : "mole";
-        const stay = Math.max(.45, 1.1 - (30 - M.left) * .02);
+        const kind = roll < (hard() ? .2 : .07) ? "bomb" : roll < (hard() ? .28 : .2) ? "gold" : "mole";
+        const stay = hard() ? Math.max(.35, .85 - (30 - M.left) * .02) : Math.max(.75, 1.45 - (30 - M.left) * .02);
         M.up[i] = { kind, t: stay }; holes[i].className = `hole up ${kind}`;
       }
-      M.spawn = Math.max(.3, .75 - (30 - M.left) * .015);
+      M.spawn = hard() ? Math.max(.22, .6 - (30 - M.left) * .015) : Math.max(.45, .9 - (30 - M.left) * .012);
     }
     setHud();
     if (M.left <= 0) { M.left = 0; holes.forEach(h => { h.className = "hole"; }); const r = record("whack", M.score); overScreen("Time's up!", M.score, r.nb ? "New best score!" : `Best: ${r.best}`, go); }
@@ -2878,6 +2906,7 @@ function startConnect4() {
     const g = M.g, cols = valid(g);
     const tryCol = (c, p) => { const cp = g.map(r => r.slice()); drop(cp, c, p); return cp; };
     for (const c of cols) if (winner(tryCol(c, 2), 2)) return c;
+    if (!hard() && Math.random() < .55) return cols[rnd(0, cols.length - 1)];
     for (const c of cols) if (winner(tryCol(c, 1), 1)) return c;
     const safe = cols.filter(c => { const cp = tryCol(c, 2); return !valid(cp).some(c2 => { const cp2 = cp.map(r => r.slice()); drop(cp2, c2, 1); return winner(cp2, 1); }); });
     const pool = safe.length ? safe : cols;
@@ -2938,7 +2967,7 @@ function startSimon() {
   const showSeq = () => {
     M.input = false; M.pos = 0;
     hud(`Round ${M.seq.length} · Watch…`);
-    const speed = Math.max(220, 520 - M.seq.length * 20);
+    const speed = hard() ? Math.max(170, 400 - M.seq.length * 25) : Math.max(320, 650 - M.seq.length * 15);
     M.seq.forEach((p, k) => setTimeout(() => { if (M === me && M.running) flash(p, speed * .8); }, 600 + k * speed));
     setTimeout(() => { if (M === me && M.running) { M.input = true; hud(`Round ${M.seq.length} · Your turn!`); } }, 600 + M.seq.length * speed);
   };
@@ -2971,7 +3000,7 @@ function startPong() {
   window.addEventListener("keydown", M.kd); window.addEventListener("keyup", M.ku);
   const aim = e => { const r = cv.getBoundingClientRect(); M.py = Math.max(PH / 2, Math.min(H - PH / 2, (e.clientY - r.top) * H / r.height)); };
   cv.addEventListener("pointermove", aim); cv.addEventListener("pointerdown", aim);
-  const serve = dir => { M.bx = W / 2; M.by = H / 2; const a = (Math.random() - .5) * .8; M.sp = 330; M.bvx = Math.cos(a) * M.sp * dir; M.bvy = Math.sin(a) * M.sp; M.wait = .8; };
+  const serve = dir => { M.bx = W / 2; M.by = H / 2; const a = (Math.random() - .5) * .8; M.sp = hard() ? 380 : 280; M.bvx = Math.cos(a) * M.sp * dir; M.bvy = Math.sin(a) * M.sp; M.wait = .8; };
   function draw() {
     const c = M.ctx; if (!c) return;
     c.fillStyle = "#06121f"; c.fillRect(0, 0, W, H);
@@ -2986,13 +3015,13 @@ function startPong() {
     const dir = (keys.d ? 1 : 0) - (keys.u ? 1 : 0);
     if (dir) M.py = Math.max(PH / 2, Math.min(H - PH / 2, M.py + dir * 420 * dt));
     // the computer follows the ball, but not perfectly
-    const target = M.bvx > 0 ? M.by : H / 2, cpuSpeed = 260 + (M.ps + M.cs) * 8;
+    const target = M.bvx > 0 ? M.by : H / 2, cpuSpeed = hard() ? 340 + (M.ps + M.cs) * 10 : 175 + (M.ps + M.cs) * 6;
     M.cy += Math.max(-cpuSpeed * dt, Math.min(cpuSpeed * dt, target - M.cy));
     if (M.wait > 0) { M.wait -= dt; return; }
     M.bx += M.bvx * dt; M.by += M.bvy * dt;
     if (M.by < 7 || M.by > H - 7) { M.bvy = -M.bvy; M.by = Math.max(7, Math.min(H - 7, M.by)); }
     const bounce = (py, side) => {
-      const off = (M.by - py) / (PH / 2), a = off * .9; M.sp = Math.min(720, M.sp * 1.06);
+      const off = (M.by - py) / (PH / 2), a = off * .9; M.sp = Math.min(hard() ? 820 : 600, M.sp * 1.06);
       M.bvx = Math.cos(a) * M.sp * side; M.bvy = Math.sin(a) * M.sp; tone([side > 0 ? 660 : 520], .03, "square", .04);
     };
     if (M.bvx < 0 && M.bx < 39 && M.bx > 18 && Math.abs(M.by - M.py) < PH / 2 + 7) { M.bx = 39; bounce(M.py, 1); }
@@ -3340,6 +3369,55 @@ function focusDone(st) {
   document.getElementById("home").addEventListener("click", showHome);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+/* ---------- Easy / Hard: every game asks for a level at the start of each round ---------- */
+let GDIFF = store.get("diff", "easy");
+if (GDIFF !== "easy" && GDIFF !== "hard") GDIFF = "easy";
+const hard = () => GDIFF === "hard";
+const bestKey = id => hard() ? id + "_hard" : id;
+function setDiff(d) {
+  GDIFF = d; store.set("diff", d);
+  const lab = document.querySelector("#app .slope-wrap .topline .label");
+  if (lab) { lab.dataset.base ??= lab.textContent; lab.textContent = `${lab.dataset.base} · ${d === "hard" ? "Hard" : "Easy"}`; }
+}
+// Each game's start and "Play again" buttons (#m-go, #s-go, #a-go) are swapped for an Easy and a Hard button.
+function wrapDiffButtons() {
+  document.querySelectorAll("#m-go, #s-go, #a-go").forEach(orig => {
+    if (orig.dataset.diffwrapped) return;
+    orig.dataset.diffwrapped = "1";
+    orig.classList.add("diff-orig");
+    const t = orig.textContent.trim();
+    const plain = /^(Start|Play again|Try again)$/i.test(t);
+    const box = document.createElement("div");
+    box.className = "diffrow";
+    box.innerHTML = `<span class="diff-q">${plain ? "Pick a level:" : esc(t) + ":"}</span><button class="btn go" data-diff="easy">Easy</button><button class="btn diff-hard" data-diff="hard">Hard</button>`;
+    orig.after(box);
+    box.querySelectorAll("[data-diff]").forEach(b => b.addEventListener("click", () => { setDiff(b.dataset.diff); orig.click(); }));
+    box.querySelector(`[data-diff="${GDIFF}"]`).focus({ preventScroll: true });
+  });
+}
+new MutationObserver(wrapDiffButtons).observe(document.body, { childList: true, subtree: true });
+// Dig It Up and Cash Race start straight from the menu, so they get their own level screen first.
+function pickLevel(title, easyTxt, hardTxt, start) {
+  document.querySelectorAll(".shop").forEach(el => el.remove());
+  stopSlope(); stopArchers(); stopMini();
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  if (G && !G.over) { G.over = true; clearInterval(G.timer); }
+  keyHandler = null;
+  $app.innerHTML = `
+    <div class="panel" style="text-align:center;align-items:center">
+      <span class="label">${title}</span>
+      <h2>Pick a level</h2>
+      <div class="levelpick">
+        <button class="levelbtn lv-easy" data-level="easy"><b>Easy</b><span>${easyTxt}</span></button>
+        <button class="levelbtn lv-hard" data-level="hard"><b>Hard</b><span>${hardTxt}</span></button>
+      </div>
+    </div>`;
+  $app.querySelectorAll("[data-level]").forEach(b => b.addEventListener("click", () => { setDiff(b.dataset.level); start(); }));
+  $app.querySelector(`[data-level="${GDIFF}"]`).focus();
+}
+const pickDig = () => pickLevel("Dig It Up", "Softer dirt and more resources to find.", "Tougher rock and fewer resources.", startDig);
+const pickCash = () => pickLevel("Cash Race", "Normal earnings. Wrong answers cost a little.", "You earn less, and wrong answers cost double.", startGame);
 
 /* ---------- Exit: one button on every screen that stops everything and goes home ---------- */
 const exitBtn = document.getElementById("exit-all");
