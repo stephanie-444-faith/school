@@ -305,6 +305,7 @@
   .hole.bomb .mole { background: #222; border-radius: 50%; box-shadow: 0 0 0 3px #ff5a6e; }
   .hole.bomb .mole::before, .hole.bomb .mole::after { background: #ff5a6e; }
   .hole.bonk { background: radial-gradient(ellipse at 50% 70%, #fff 20%, #24140a 55%, #4a2f1a 56%); }
+  .slope-over { overflow-y: auto; }
   .bc4 { grid-template-columns: repeat(7, 1fr); gap: 4px; background: #2f5fd0; border-radius: 14px; padding: 10px; }
   .c4col { border: 0; background: none; padding: 0; display: grid; gap: 4px; border-radius: 8px; }
   .c4col:hover { background: rgba(255,255,255,.12); }
@@ -2410,7 +2411,7 @@ const MORE_GAMES = [
   { id: "hopper", name: "Sky Hopper", desc: "Tap to flap and fly through the gaps.", start: () => startHopper() },
   { id: "galaxy", name: "Galaxy Defender", desc: "Blast waves of aliens with your space ship.", start: () => startGalaxy() },
   { id: "whack", name: "Whack-a-Mole", desc: "Bop the moles in 30 seconds, but skip the bombs!", start: () => startWhack() },
-  { id: "connect4", name: "Connect Four", desc: "Beat the computer by getting four in a row.", start: () => startConnect4() },
+  { id: "connect4", name: "Connect Four", desc: "Get four in a row. Play the computer or a friend.", start: () => startConnect4() },
   { id: "simon", name: "Simon Says", desc: "Repeat the light-and-sound pattern as it grows.", start: () => startSimon() },
   { id: "pong", name: "Pong", desc: "The classic paddle game. First to 7 wins!", start: () => startPong() }
 ];
@@ -2858,7 +2859,9 @@ function startWhack() {
 
 /* Connect Four vs the computer */
 function startConnect4() {
-  const { board } = gameShell("Connect Four", "You are red. Tap a column to drop a piece.<br>Get four in a row (across, up and down, or slanted) before the computer does!", true);
+  const { board } = gameShell("Connect Four", "Drop pieces and get four in a row to win!<br>Play the computer, or a friend on this device.", true);
+  document.getElementById("m-go").outerHTML = `<div class="row" style="justify-content:center"><button class="btn go" id="m-go">vs Computer</button><button class="btn gold" id="m-go2">2 players</button></div>`;
+  M.mode = "cpu";
   board.classList.add("bc4");
   const me = M;
   const C = 7, R = 6;
@@ -2885,11 +2888,12 @@ function startConnect4() {
     const win = M.win || [];
     board.innerHTML = [...Array(C).keys()].map(c => `<button class="c4col" data-c="${c}" aria-label="Drop in column ${c + 1}">${[...Array(R).keys()].map(r => `<span class="c4cell ${M.g[r][c] === 1 ? "red" : M.g[r][c] === 2 ? "yellow" : ""}${win.some(([wr, wc]) => wr === r && wc === c) ? " win" : ""}"></span>`).join("")}</button>`).join("");
     const st = store.get("best", {});
-    document.getElementById("m-score").textContent = `${M.win || !valid(M.g).length ? "Game over" : M.turn === 1 ? "Your turn" : "Computer is thinking…"} · Wins ${st.connect4 || 0}`;
+    document.getElementById("m-score").textContent = `${M.win || !valid(M.g).length ? "Game over" : M.mode === "2p" ? (M.turn === 1 ? "Red's turn" : "Yellow's turn") : M.turn === 1 ? "Your turn" : "Computer is thinking…"}${M.mode === "2p" ? " · 2 players" : ` · Wins ${st.connect4 || 0}`}`;
     board.querySelectorAll(".c4col").forEach(b => b.addEventListener("click", () => play(+b.dataset.c)));
   };
   const finish = (title, line) => setTimeout(() => { if (M === me) overScreen(title, "", line, go); }, 900);
   const play = c => {
+    if (M.mode === "2p") return play2(c);
     if (!M.running || M.turn !== 1 || M.g[0][c]) return;
     drop(M.g, c, 1); tone([523], .05, "triangle", .05);
     if ((M.win = winner(M.g, 1))) { M.running = false; render(); sfx.buy(); const best = store.get("best", {}); best.connect4 = (best.connect4 || 0) + 1; store.set("best", best); return finish("You win!", `Total wins: ${best.connect4}`); }
@@ -2903,9 +2907,22 @@ function startConnect4() {
       M.turn = 1; render();
     }, 550);
   };
-  function go() { M.g = [...Array(R)].map(() => Array(C).fill(0)); M.turn = 1; M.win = null; M.running = true; document.getElementById("m-over").hidden = true; render(); }
+  // Two players on one device: red and yellow take turns, no computer.
+  const play2 = c => {
+    if (!M.running || M.g[0][c]) return;
+    const p = M.turn;
+    drop(M.g, c, p); tone([p === 1 ? 523 : 392], .05, "triangle", .05);
+    if ((M.win = winner(M.g, p))) { M.running = false; render(); sfx.buy(); return finish(p === 1 ? "Red wins!" : "Yellow wins!", "Great game! Play again to see who wins next."); }
+    if (!valid(M.g).length) { M.running = false; render(); return finish("It's a tie!", "Nobody got four in a row."); }
+    M.turn = p === 1 ? 2 : 1; render();
+  };
+  function go(mode) {
+    if (mode === "cpu" || mode === "2p") M.mode = mode;
+    M.g = [...Array(R)].map(() => Array(C).fill(0)); M.turn = 1; M.win = null; M.running = true; document.getElementById("m-over").hidden = true; render();
+  }
   M.g = [...Array(R)].map(() => Array(C).fill(0)); M.turn = 1; render();
-  document.getElementById("m-go").addEventListener("click", go);
+  document.getElementById("m-go").addEventListener("click", () => go("cpu"));
+  document.getElementById("m-go2").addEventListener("click", () => go("2p"));
 }
 
 /* Simon Says */
