@@ -3309,7 +3309,7 @@ const TY_CHARS = [
   { id: "roo", emoji: "🦘", name: "Kangaroo", cost: 50, power: "Triple Jump: skip 3 words for free each game." },
   { id: "turtle", emoji: "🐢", name: "Turtle", cost: 60, power: "Platforms last 35% longer." },
   { id: "unicorn", emoji: "🦄", name: "Unicorn", cost: 80, power: "Earns double carrots." },
-  { id: "dragon", emoji: "🐉", name: "Dragon", cost: 150, power: "3 lives and platforms last 25% longer." }
+  { id: "dragon", emoji: "🐉", name: "Dragon", cost: 150, power: "3 lives, platforms last 25% longer, and triple carrots!" }
 ];
 const TY_WORDS = {
   easy: "cat dog sun hat run hop jump frog cake milk star tree bird fish rain snow moon ship book desk lamp bunny green apple happy smile water light clock house plant grape lemon kite ball game play fast duck bear pond leaf wind cloud chair bread juice train truck river beach horse mouse tiger zebra".split(" "),
@@ -3474,7 +3474,7 @@ function bunnyGame() {
     const from = M.plats[M.cur], to = M.plats[M.cur + 1];
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
     M.cur++; M.words++;
-    const gain = (M.extreme ? 3 : hard() ? 2 : 1) * (ch.id === "unicorn" ? 2 : 1) + (has("tophat") ? 1 : 0);
+    const gain = (M.extreme ? 3 : hard() ? 2 : 1) * (ch.id === "unicorn" ? 2 : ch.id === "dragon" ? 3 : 1) + (has("tophat") ? 1 : 0);
     if (M.extreme) {
       M.wpm += TY_STEP_WPM; M.topWpm = Math.max(M.topWpm, M.wpm);
       if (!M.beatWR && M.wpm > TY_WR) { M.beatWR = true; M.flash = 2.5; M.pops.push({ x: to.x, y: to.y - 120, t: 0, txt: "WORLD RECORD SPEED!" }); sfx.buy(); }
