@@ -355,6 +355,13 @@
   .ty-acct b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
   .ty-acct small { color: var(--ink-soft); font-size: .8rem; }
   .ty-ava { font-size: 2.4rem; line-height: 1; }
+  .ty-wear { position: relative; display: inline-block; line-height: 1; }
+  .ty-acc { position: absolute; font-size: .55em; line-height: 1; }
+  .acc-top { left: 50%; top: -.45em; transform: translateX(-50%); }
+  .acc-face { left: 50%; top: .22em; transform: translateX(-50%); font-size: .5em; }
+  .acc-side { right: -.35em; bottom: 0; }
+  .acc-back { left: -.4em; top: .1em; }
+  .ty-next { font-size: .95rem; min-height: 1.2em; }
   .ty-hero { display: flex; gap: 16px; align-items: center; }
   .ty-big { font-size: 4rem; line-height: 1; }
   .ty-chars { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
@@ -3297,7 +3304,22 @@ const TY_WORDS = {
   funny: "noodle pickle wiggle giggle burrito banana booger sneeze tickle waffle hiccup bubble goofy silly kazoo zigzag bonkers squish fluffy wobble llama yodel pudding burp snort taco bloop boing doodle gobble jiggle kerplunk muffin oodles pajamas pancake quack rubber slurp sploosh toot wacky yikes zoinks".split(" ")
 };
 const tyKey = id => "ty_acct_" + id;
-const tyLoad = id => Object.assign({ carrots: 0, owned: ["bunny", "frog", "penguin"], char: "bunny", best: {}, words: 0 }, store.get(tyKey(id), {}));
+const tyLoad = id => Object.assign({ carrots: 0, owned: ["bunny", "frog", "penguin"], char: "bunny", best: {}, words: 0, accOwned: [], acc: null }, store.get(tyKey(id), {}));
+// Accessories: your character wears one at a time, and each one has a power.
+// "spot" says where it sits on the character: on top, on the face, at the side, or on the back.
+const TY_ACC = [
+  { id: "headphones", emoji: "🎧", name: "Headphones", cost: 20, spot: "top", power: "Every correct letter plays a rising musical note." },
+  { id: "shades", emoji: "🕶️", name: "Cool Shades", cost: 25, spot: "face", power: "See the next word coming before you get there." },
+  { id: "tophat", emoji: "🎩", name: "Top Hat", cost: 35, spot: "top", power: "+1 extra carrot for every word." },
+  { id: "clock", emoji: "⏰", name: "Alarm Clock", cost: 45, spot: "side", power: "Every platform lasts 1 second longer." },
+  { id: "magnet", emoji: "🧲", name: "Carrot Magnet", cost: 55, spot: "side", power: "Streak bonus every 5 words instead of 10." },
+  { id: "bubble", emoji: "🫧", name: "Bubble Shield", cost: 70, spot: "side", power: "One extra life: a bubble catches you once." },
+  { id: "wings", emoji: "🪽", name: "Fairy Wings", cost: 90, spot: "back", power: "Hover 1.5 seconds when a platform crumbles (3 times a game)." },
+  { id: "crown", emoji: "👑", name: "Golden Crown", cost: 150, spot: "top", power: "Streak bonuses are worth double (+10 carrots)." }
+];
+const tyAcc = a => TY_ACC.find(x => x.id === a.acc) || null;
+// Character emoji with its accessory placed on it (for the lobby and account cards)
+const tyWear = (a, cls) => { const x = tyAcc(a); return `<span class="ty-wear ${cls}">${tyChar(a).emoji}${x ? `<span class="ty-acc acc-${x.spot}">${x.emoji}</span>` : ""}</span>`; };
 const tySave = (id, a) => store.set(tyKey(id), a);
 const tyChar = a => TY_CHARS.find(c => c.id === a.char) || TY_CHARS[0];
 let TY = null; // current account id
@@ -3317,7 +3339,7 @@ function startBunny() {
       <h2>Who's typing?</h2>
       <div class="ty-accounts">${TY_ACCOUNTS.map(ac => { const a = tyLoad(ac.id); return `
         <button class="ty-acct${ac.guest ? " guest" : ""}" data-acct="${ac.id}">
-          <span class="ty-ava">${tyChar(a).emoji}</span><b>${ac.name}</b>
+          ${tyWear(a, "ty-ava")}<b>${ac.name}</b>
           <small>${ac.guest ? "Guest · " : ""}🥕 ${a.carrots}${a.best.easy || a.best.hard ? ` · Best ${Math.max(a.best.easy || 0, a.best.hard || 0)}` : ""}</small>
         </button>`; }).join("")}</div>
       <p class="soft">Funny Typer gets silly words. Everyone else gets regular words.</p>
@@ -3333,10 +3355,10 @@ function bunnyLobby() {
   $app.innerHTML = `
     <div class="panel ty-wrap">
       <div class="topline"><span class="label">Bunny Hop Typing · ${esc(ac.name)}</span><button class="iconbtn" id="ty-switch">Switch account</button></div>
-      <div class="ty-hero"><span class="ty-big">${tyChar(a).emoji}</span>
+      <div class="ty-hero">${tyWear(a, "ty-big")}
         <div><h2>${esc(ac.name)}</h2><p>🥕 <b>${a.carrots}</b> carrots · ${a.words} words typed</p>
         <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0} · Extreme ${a.best.extreme || 0}${a.topWpm ? ` (top ${a.topWpm} WPM${a.beatWR ? " 🏆" : ""})` : ""}</p></div></div>
-      <button class="btn go" id="ty-play">Play as ${tyChar(a).name}</button>
+      <button class="btn go" id="ty-play">Play as ${tyChar(a).name}${tyAcc(a) ? ` with ${tyAcc(a).name}` : ""}</button>
       <h3>Characters</h3>
       <p class="soft">Earn carrots by typing words. Free characters are ready to use. Some characters have special powers!</p>
       <div class="ty-chars">${TY_CHARS.map(c => {
@@ -3344,7 +3366,20 @@ function bunnyLobby() {
         return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>
           <button class="btn" data-char="${c.id}" ${on || (!own && a.carrots < c.cost) ? "disabled" : ""}>${on ? "Playing" : own ? "Use" : `🥕 ${c.cost}`}</button></div>`;
       }).join("")}</div>
+      <h3>Accessories</h3>
+      <p class="soft">Your character can wear one accessory at a time. Each one gives you something cool!</p>
+      <div class="ty-chars">${TY_ACC.map(x => {
+        const own = a.accOwned.includes(x.id), on = a.acc === x.id;
+        return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>
+          <button class="btn" data-acc="${x.id}" ${!own && a.carrots < x.cost ? "disabled" : ""}>${on ? "Take off" : own ? "Wear" : `🥕 ${x.cost}`}</button></div>`;
+      }).join("")}</div>
     </div>`;
+  $app.querySelectorAll("[data-acc]").forEach(b => b.addEventListener("click", () => {
+    const a2 = tyLoad(TY), x = TY_ACC.find(y => y.id === b.dataset.acc);
+    if (!a2.accOwned.includes(x.id)) { if (a2.carrots < x.cost) return; a2.carrots -= x.cost; a2.accOwned.push(x.id); sfx.buy(); toast(`You got the ${x.name}!`); a2.acc = x.id; }
+    else a2.acc = a2.acc === x.id ? null : x.id;
+    tySave(TY, a2); bunnyLobby();
+  }));
   document.getElementById("ty-switch").addEventListener("click", startBunny);
   document.getElementById("ty-play").addEventListener("click", bunnyGame);
   $app.querySelectorAll("[data-char]").forEach(b => b.addEventListener("click", () => {
@@ -3355,7 +3390,7 @@ function bunnyLobby() {
 }
 
 function bunnyGame() {
-  const a = tyLoad(TY), ch = tyChar(a), ac = TY_ACCOUNTS.find(x => x.id === TY);
+  const a = tyLoad(TY), ch = tyChar(a), ac = TY_ACCOUNTS.find(x => x.id === TY), acc = tyAcc(a), has = id => acc && acc.id === id;
   const { cv, stage } = gameShell(`Bunny Hop · ${ch.name}`, `Type the word on the next platform to hop onto it.<br>Hurry! The platform you're standing on crumbles away.${ch.id === "roo" ? "<br>Kangaroo: tap Triple Jump (or press Enter) to skip a word, 3 times a game." : ""}`);
   document.getElementById("m-go").dataset.extreme = "1";
   document.querySelector("#m-over p").insertAdjacentHTML("beforeend", `<br><b>Extreme</b> starts at Hard and gets faster every word, all the way past the typing world record (about ${TY_WR} words per minute)!`);
@@ -3364,7 +3399,7 @@ function bunnyGame() {
   document.getElementById("m-home").addEventListener("click", bunnyLobby);
   document.getElementById("m-pad").innerHTML = `
     <div class="ty-type">
-      <div class="ty-word" id="ty-word" aria-live="polite"></div>
+      <div class="ty-word" id="ty-word" aria-live="polite"></div><div class="ty-next soft" id="ty-next"></div>
       <input id="ty-in" class="ty-in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type here" aria-label="Type the word">
       <div class="row ty-bar"><span id="ty-lives"></span><span id="ty-carrots"></span>${ch.id === "roo" ? `<button class="btn gold" id="ty-skip">Triple Jump (3)</button>` : ""}</div>
     </div>`;
@@ -3381,10 +3416,10 @@ function bunnyGame() {
   };
   const pickWord = () => { const L = listFor(); let w; do { w = L[rnd(0, L.length - 1)]; } while (L.length > 3 && M.plats?.slice(-3).some(p => p.word === w)); return w; };
   const platTime = word => {
-    if (M.extreme) return ((word.length + 1) / 5) / M.wpm * 60 + .25;
+    if (M.extreme) return ((word.length + 1) / 5) / M.wpm * 60 + .25 + (has("clock") ? .5 : 0);
     const base = hard() ? 1.6 + word.length * .32 : 3 + word.length * .5;
     const ramp = Math.max(.55, 1 - M.words * .015);
-    return base * ramp * (ch.id === "turtle" ? 1.35 : ch.id === "dragon" ? 1.25 : 1);
+    return base * ramp * (ch.id === "turtle" ? 1.35 : ch.id === "dragon" ? 1.25 : 1) + (has("clock") ? 1 : 0);
   };
   const newPlat = () => {
     const last = M.plats.at(-1);
@@ -3396,19 +3431,22 @@ function bunnyGame() {
     document.getElementById("ty-carrots").textContent = `🥕 ${M.carrots} · Words ${M.words}${M.extreme ? ` · ${M.wpm} WPM` : ""}`;
     const skip = document.getElementById("ty-skip"); if (skip) { skip.textContent = `Triple Jump (${M.skips})`; skip.disabled = M.skips <= 0; }
     const tgt = M.plats[M.cur + 1]?.word || "", typed = inp.value;
+    const nx = document.getElementById("ty-next");
+    if (nx) nx.textContent = has("shades") && M.plats[M.cur + 2] ? `🕶️ coming up: ${M.plats[M.cur + 2].word}` : "";
     document.getElementById("ty-word").innerHTML = `${[...tgt].map((l, i) => `<span class="${i < typed.length ? "ok" : ""}">${l}</span>`).join("")}`;
   };
   const hop = () => {
     const from = M.plats[M.cur], to = M.plats[M.cur + 1];
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
     M.cur++; M.words++;
-    const gain = (M.extreme ? 3 : hard() ? 2 : 1) * (ch.id === "unicorn" ? 2 : 1);
+    const gain = (M.extreme ? 3 : hard() ? 2 : 1) * (ch.id === "unicorn" ? 2 : 1) + (has("tophat") ? 1 : 0);
     if (M.extreme) {
       M.wpm += TY_STEP_WPM; M.topWpm = Math.max(M.topWpm, M.wpm);
       if (!M.beatWR && M.wpm > TY_WR) { M.beatWR = true; M.flash = 2.5; M.pops.push({ x: to.x, y: to.y - 120, t: 0, txt: "WORLD RECORD SPEED!" }); sfx.buy(); }
     }
     M.carrots += gain;
-    M.streak++; if (M.streak % 10 === 0) { M.carrots += 5; M.pops.push({ x: to.x, y: to.y - 90, t: 0, txt: "Streak bonus +5 🥕" }); }
+    M.streak++;
+    if (M.streak % (has("magnet") ? 5 : 10) === 0) { const bonus = has("crown") ? 10 : 5; M.carrots += bonus; M.pops.push({ x: to.x, y: to.y - 90, t: 0, txt: `Streak bonus +${bonus} 🥕` }); }
     M.pops.push({ x: to.x, y: to.y - 60, t: 0, txt: `+${gain} 🥕` });
     newPlat();
     M.left = M.tmax = platTime(M.plats[M.cur + 1].word);
@@ -3432,7 +3470,7 @@ function bunnyGame() {
       inp.value = v.slice(0, k); M.miss++;
       inp.classList.remove("bad"); void inp.offsetWidth; inp.classList.add("bad");
       tone([180], .05, "sawtooth", .04);
-    } else inp.value = v;
+    } else { inp.value = v; if (has("headphones") && v.length) tone([392 * Math.pow(2, v.length / 12)], .06, "sine", .06); }
     M.typed += 1;
     if (inp.value === tgt) hop();
     hud();
@@ -3452,7 +3490,7 @@ function bunnyGame() {
     const o = document.createElement("div");
     o.className = "shop"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "Game over");
     document.body.appendChild(o);
-    o.innerHTML = `<div class="shop-inner find" style="text-align:center;align-items:center"><span class="ty-big">${ch.emoji}</span><h2>Splash! You fell.</h2><p class="big money">${M.words} words</p>
+    o.innerHTML = `<div class="shop-inner find" style="text-align:center;align-items:center">${tyWear(a, "ty-big")}<h2>Splash! You fell.</h2><p class="big money">${M.words} words</p>
       ${M.extreme ? `<p><b>Top speed: ${M.topWpm} WPM.</b> ${M.beatWR ? "🏆 You went faster than the typing world record (about 212 WPM)!" : `World record: about ${TY_WR} WPM. ${TY_WR - M.topWpm} to go!`}</p>` : ""}
       <p>🥕 +${M.carrots} carrots (total ${a2.carrots}) · your average: ${Math.round(M.words / mins)} words per minute · ${acc}% accuracy</p>
       <p>${nb ? "New best!" : `Best on ${key === "extreme" ? "Extreme" : key === "hard" ? "Hard" : "Easy"}: ${a2.best[key]}`}</p>
@@ -3493,6 +3531,10 @@ function bunnyGame() {
     else if (M.jump && M.jump.t < 1) { const t = M.jump.t; cx = M.jump.fx + (M.jump.tx - M.jump.fx) * t; cy = M.jump.fy + (M.jump.ty - M.jump.fy) * t - Math.sin(t * Math.PI) * 90 - 22; }
     else { const p = M.plats[M.cur]; cx = p.x; cy = p.y - 22; }
     c.font = "44px system-ui, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(ch.emoji, cx, cy);
+    if (acc) {
+      const off = { top: [0, -30, 30], face: [0, -4, 24], side: [24, 6, 22], back: [-24, -6, 28] }[acc.spot];
+      c.font = `${off[2]}px system-ui, sans-serif`; c.fillText(acc.emoji, cx + off[0], cy + off[1]);
+    }
     c.textBaseline = "alphabetic";
     M.pops.forEach(p => { c.fillStyle = `rgba(26,18,64,${1 - p.t / 1.2})`; c.font = "700 18px system-ui, sans-serif"; c.fillText(p.txt, p.x, p.y - p.t * 40); });
     c.restore(); c.textAlign = "left";
@@ -3516,12 +3558,15 @@ function bunnyGame() {
     M.cam += (target - M.cam) * Math.min(1, dt * 4);
     if (!M.running) return;
     M.left -= dt;
-    if (M.left <= 0) fall();
+    if (M.left <= 0) {
+      if (has("wings") && M.hovers > 0) { M.hovers--; M.left = 1.5; M.tmax = Math.max(M.tmax, 1.5); M.pops.push({ x: M.plats[M.cur].x, y: M.plats[M.cur].y - 100, t: 0, txt: `🪽 Hover! (${M.hovers} left)` }); tone([880, 1320], .06, "sine", .06); }
+      else fall();
+    }
   }
   const me = {};
   function go() {
     Object.assign(M, { me, plats: [], cur: 0, words: 0, carrots: 0, streak: 0, typed: 0, miss: 0, pops: [], cam: 0, jump: null, falling: null,
-      lives: ch.id === "dragon" ? 3 : ch.id === "cat" ? 2 : 1, skips: ch.id === "roo" ? 3 : 0, running: true, started: performance.now(),
+      lives: (ch.id === "dragon" ? 3 : ch.id === "cat" ? 2 : 1) + (has("bubble") ? 1 : 0), hovers: has("wings") ? 3 : 0, skips: ch.id === "roo" ? 3 : 0, running: true, started: performance.now(),
       extreme: TY_EXTREME, wpm: TY_START_WPM, topWpm: TY_START_WPM, beatWR: false, flash: 0 });
     closeShop();
     newPlat(); newPlat(); newPlat(); newPlat();
