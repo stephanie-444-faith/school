@@ -324,6 +324,7 @@
   .diffrow { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
   .diff-q { width: 100%; text-align: center; font-weight: 700; color: var(--ink); }
   .btn.diff-hard { background: var(--bad); color: #fff; }
+  .btn.diff-extreme { background: linear-gradient(135deg, #ff2e9a, #8a46d8); color: #fff; }
   .diffrow .btn { font-family: var(--display); font-weight: 400; font-size: 1.2rem; min-width: 110px; }
   .levelpick { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 520px; }
   .levelbtn { border: 0; border-radius: 16px; padding: 20px 14px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; box-shadow: 0 5px 0 rgba(0,0,0,.35); }
@@ -3300,6 +3301,11 @@ const tyLoad = id => Object.assign({ carrots: 0, owned: ["bunny", "frog", "pengu
 const tySave = (id, a) => store.set(tyKey(id), a);
 const tyChar = a => TY_CHARS.find(c => c.id === a.char) || TY_CHARS[0];
 let TY = null; // current account id
+// Extreme: starts at Hard and the speed you must type (words per minute) climbs with every word,
+// up past the typing world record, until you fall.
+let TY_EXTREME = false;
+const TY_WR = 212; // Barbara Blackburn's Guinness record, about 212 words per minute
+const TY_START_WPM = 35, TY_STEP_WPM = 4;
 
 function startBunny() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
@@ -3329,7 +3335,7 @@ function bunnyLobby() {
       <div class="topline"><span class="label">Bunny Hop Typing · ${esc(ac.name)}</span><button class="iconbtn" id="ty-switch">Switch account</button></div>
       <div class="ty-hero"><span class="ty-big">${tyChar(a).emoji}</span>
         <div><h2>${esc(ac.name)}</h2><p>🥕 <b>${a.carrots}</b> carrots · ${a.words} words typed</p>
-        <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0}</p></div></div>
+        <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0} · Extreme ${a.best.extreme || 0}${a.topWpm ? ` (top ${a.topWpm} WPM${a.beatWR ? " 🏆" : ""})` : ""}</p></div></div>
       <button class="btn go" id="ty-play">Play as ${tyChar(a).name}</button>
       <h3>Characters</h3>
       <p class="soft">Earn carrots by typing words. Free characters are ready to use. Some characters have special powers!</p>
@@ -3351,6 +3357,8 @@ function bunnyLobby() {
 function bunnyGame() {
   const a = tyLoad(TY), ch = tyChar(a), ac = TY_ACCOUNTS.find(x => x.id === TY);
   const { cv, stage } = gameShell(`Bunny Hop · ${ch.name}`, `Type the word on the next platform to hop onto it.<br>Hurry! The platform you're standing on crumbles away.${ch.id === "roo" ? "<br>Kangaroo: tap Triple Jump (or press Enter) to skip a word, 3 times a game." : ""}`);
+  document.getElementById("m-go").dataset.extreme = "1";
+  document.querySelector("#m-over p").insertAdjacentHTML("beforeend", `<br><b>Extreme</b> starts at Hard and gets faster every word, all the way past the typing world record (about ${TY_WR} words per minute)!`);
   document.getElementById("m-home").textContent = "Back to lobby";
   document.getElementById("m-home").replaceWith(document.getElementById("m-home").cloneNode(true));
   document.getElementById("m-home").addEventListener("click", bunnyLobby);
@@ -3366,13 +3374,14 @@ function bunnyGame() {
   cv.addEventListener("pointerdown", () => inp.focus());
   const listFor = () => {
     const funny = TY === "funnytyper";
-    let list = funny ? TY_WORDS.funny : hard() ? TY_WORDS.hard : TY_WORDS.easy;
+    let list = funny ? TY_WORDS.funny : hard() || M.extreme ? TY_WORDS.hard : TY_WORDS.easy;
     if (ch.id === "owl") list = funny ? list.filter(w => w.length <= 5) : hard() ? TY_WORDS.easy.filter(w => w.length >= 5) : TY_WORDS.easy.filter(w => w.length <= 4);
     if (funny && hard()) list = list.filter(w => w.length >= 5);
     return list;
   };
   const pickWord = () => { const L = listFor(); let w; do { w = L[rnd(0, L.length - 1)]; } while (L.length > 3 && M.plats?.slice(-3).some(p => p.word === w)); return w; };
   const platTime = word => {
+    if (M.extreme) return ((word.length + 1) / 5) / M.wpm * 60 + .25;
     const base = hard() ? 1.6 + word.length * .32 : 3 + word.length * .5;
     const ramp = Math.max(.55, 1 - M.words * .015);
     return base * ramp * (ch.id === "turtle" ? 1.35 : ch.id === "dragon" ? 1.25 : 1);
@@ -3384,7 +3393,7 @@ function bunnyGame() {
   };
   const hud = () => {
     document.getElementById("ty-lives").textContent = `Lives: ${"❤️".repeat(Math.max(0, M.lives))}`;
-    document.getElementById("ty-carrots").textContent = `🥕 ${M.carrots} · Words ${M.words}`;
+    document.getElementById("ty-carrots").textContent = `🥕 ${M.carrots} · Words ${M.words}${M.extreme ? ` · ${M.wpm} WPM` : ""}`;
     const skip = document.getElementById("ty-skip"); if (skip) { skip.textContent = `Triple Jump (${M.skips})`; skip.disabled = M.skips <= 0; }
     const tgt = M.plats[M.cur + 1]?.word || "", typed = inp.value;
     document.getElementById("ty-word").innerHTML = `${[...tgt].map((l, i) => `<span class="${i < typed.length ? "ok" : ""}">${l}</span>`).join("")}`;
@@ -3393,7 +3402,11 @@ function bunnyGame() {
     const from = M.plats[M.cur], to = M.plats[M.cur + 1];
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
     M.cur++; M.words++;
-    const gain = (hard() ? 2 : 1) * (ch.id === "unicorn" ? 2 : 1);
+    const gain = (M.extreme ? 3 : hard() ? 2 : 1) * (ch.id === "unicorn" ? 2 : 1);
+    if (M.extreme) {
+      M.wpm += TY_STEP_WPM; M.topWpm = Math.max(M.topWpm, M.wpm);
+      if (!M.beatWR && M.wpm > TY_WR) { M.beatWR = true; M.flash = 2.5; M.pops.push({ x: to.x, y: to.y - 120, t: 0, txt: "WORLD RECORD SPEED!" }); sfx.buy(); }
+    }
     M.carrots += gain;
     M.streak++; if (M.streak % 10 === 0) { M.carrots += 5; M.pops.push({ x: to.x, y: to.y - 90, t: 0, txt: "Streak bonus +5 🥕" }); }
     M.pops.push({ x: to.x, y: to.y - 60, t: 0, txt: `+${gain} 🥕` });
@@ -3428,7 +3441,8 @@ function bunnyGame() {
   document.getElementById("ty-skip")?.addEventListener("click", skip);
   inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); skip(); } });
   function over() {
-    const a2 = tyLoad(TY), key = hard() ? "hard" : "easy";
+    const a2 = tyLoad(TY), key = M.extreme ? "extreme" : hard() ? "hard" : "easy";
+    if (M.extreme) { a2.topWpm = Math.max(a2.topWpm || 0, M.topWpm); if (M.beatWR) a2.beatWR = true; }
     const nb = M.words > (a2.best[key] || 0);
     if (nb) a2.best[key] = M.words;
     a2.carrots += M.carrots; a2.words += M.words; tySave(TY, a2);
@@ -3439,11 +3453,12 @@ function bunnyGame() {
     o.className = "shop"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "Game over");
     document.body.appendChild(o);
     o.innerHTML = `<div class="shop-inner find" style="text-align:center;align-items:center"><span class="ty-big">${ch.emoji}</span><h2>Splash! You fell.</h2><p class="big money">${M.words} words</p>
-      <p>🥕 +${M.carrots} carrots (total ${a2.carrots}) · ${Math.round(M.words / mins)} words per minute · ${acc}% accuracy</p>
-      <p>${nb ? "New best!" : `Best on ${key === "hard" ? "Hard" : "Easy"}: ${a2.best[key]}`}</p>
-      <div class="row" style="justify-content:center"><button class="btn go" id="m-go">Play again</button><button class="btn" id="ty-lob">Characters & shop</button></div></div>`;
-    document.getElementById("m-go").addEventListener("click", go);
-    document.getElementById("ty-lob").addEventListener("click", () => { closeShop(); bunnyLobby(); });
+      ${M.extreme ? `<p><b>Top speed: ${M.topWpm} WPM.</b> ${M.beatWR ? "🏆 You went faster than the typing world record (about 212 WPM)!" : `World record: about ${TY_WR} WPM. ${TY_WR - M.topWpm} to go!`}</p>` : ""}
+      <p>🥕 +${M.carrots} carrots (total ${a2.carrots}) · your average: ${Math.round(M.words / mins)} words per minute · ${acc}% accuracy</p>
+      <p>${nb ? "New best!" : `Best on ${key === "extreme" ? "Extreme" : key === "hard" ? "Hard" : "Easy"}: ${a2.best[key]}`}</p>
+      <div class="row" style="justify-content:center"><button class="btn go" id="m-go" data-extreme="1">Play again</button><button class="btn" id="ty-lob">Characters & shop</button></div></div>`;
+    o.querySelector("#m-go").addEventListener("click", go);
+    o.querySelector("#ty-lob").addEventListener("click", () => { closeShop(); bunnyLobby(); });
   }
   function draw() {
     const c = M.ctx; if (!c || !M.plats) return;
@@ -3481,10 +3496,20 @@ function bunnyGame() {
     c.textBaseline = "alphabetic";
     M.pops.forEach(p => { c.fillStyle = `rgba(26,18,64,${1 - p.t / 1.2})`; c.font = "700 18px system-ui, sans-serif"; c.fillText(p.txt, p.x, p.y - p.t * 40); });
     c.restore(); c.textAlign = "left";
-    c.fillStyle = "#1a1240"; c.font = "700 18px system-ui, sans-serif"; c.fillText(`${esc(ac.name)} · ${hard() ? "Hard" : "Easy"}`, 14, 28);
+    c.fillStyle = "#1a1240"; c.font = "700 18px system-ui, sans-serif"; c.fillText(`${ac.name} · ${M.extreme ? "Extreme" : hard() ? "Hard" : "Easy"}`, 14, 28);
+    if (M.extreme) {
+      // speed meter racing toward the world record
+      const bw = Math.min(260, W - 40), frac = Math.min(1, (M.wpm || TY_START_WPM) / TY_WR);
+      c.fillStyle = "rgba(26,18,64,.75)"; c.fillRect(14, 38, bw, 14);
+      c.fillStyle = M.beatWR ? "#ffd700" : `hsl(${120 - frac * 120},80%,50%)`; c.fillRect(14, 38, bw * frac, 14);
+      c.fillStyle = "#1a1240"; c.font = "700 14px system-ui, sans-serif";
+      c.fillText(M.beatWR ? `${M.wpm} WPM · past the world record!` : `${M.wpm} WPM → world record ${TY_WR}`, 14, 70);
+      if (M.flash > 0) { c.fillStyle = `rgba(255,215,0,${Math.min(.35, M.flash / 4)})`; c.fillRect(0, 0, W, H); c.fillStyle = "#1a1240"; c.font = "700 30px Rowdies, system-ui, sans-serif"; c.textAlign = "center"; c.fillText("🏆 WORLD RECORD SPEED!", W / 2, H / 2 - 60); c.textAlign = "left"; }
+    }
   }
   function step(dt) {
-    if (M.jump) M.jump.t = Math.min(1, M.jump.t + dt / .35);
+    if (M.jump) M.jump.t = Math.min(1, M.jump.t + dt / (M.extreme ? Math.max(.12, .35 - M.wpm / 900) : .35));
+    if (M.flash > 0) M.flash -= dt;
     if (M.falling) M.falling.t += dt;
     M.pops = M.pops.filter(p => (p.t += dt) < 1.2);
     const target = M.plats[M.cur].x - (W < 600 ? 130 : 220);
@@ -3496,7 +3521,8 @@ function bunnyGame() {
   const me = {};
   function go() {
     Object.assign(M, { me, plats: [], cur: 0, words: 0, carrots: 0, streak: 0, typed: 0, miss: 0, pops: [], cam: 0, jump: null, falling: null,
-      lives: ch.id === "dragon" ? 3 : ch.id === "cat" ? 2 : 1, skips: ch.id === "roo" ? 3 : 0, running: true, started: performance.now() });
+      lives: ch.id === "dragon" ? 3 : ch.id === "cat" ? 2 : 1, skips: ch.id === "roo" ? 3 : 0, running: true, started: performance.now(),
+      extreme: TY_EXTREME, wpm: TY_START_WPM, topWpm: TY_START_WPM, beatWR: false, flash: 0 });
     closeShop();
     newPlat(); newPlat(); newPlat(); newPlat();
     M.left = M.tmax = platTime(M.plats[1].word) + 1.5;
@@ -3863,10 +3889,17 @@ function wrapDiffButtons() {
     const plain = /^(Start|Play again|Try again)$/i.test(t);
     const box = document.createElement("div");
     box.className = "diffrow";
-    box.innerHTML = `<span class="diff-q">${plain ? "Pick a level:" : esc(t) + ":"}</span><button class="btn go" data-diff="easy">Easy</button><button class="btn diff-hard" data-diff="hard">Hard</button>`;
+    box.innerHTML = `<span class="diff-q">${plain ? "Pick a level:" : esc(t) + ":"}</span><button class="btn go" data-diff="easy">Easy</button><button class="btn diff-hard" data-diff="hard">Hard</button>${orig.dataset.extreme ? `<button class="btn diff-extreme" data-diff="extreme">Extreme</button>` : ""}`;
     orig.after(box);
-    box.querySelectorAll("[data-diff]").forEach(b => b.addEventListener("click", () => { setDiff(b.dataset.diff); orig.click(); }));
-    box.querySelector(`[data-diff="${GDIFF}"]`).focus({ preventScroll: true });
+    box.querySelectorAll("[data-diff]").forEach(b => b.addEventListener("click", () => {
+      const ex = b.dataset.diff === "extreme";
+      TY_EXTREME = ex;
+      setDiff(ex ? "hard" : b.dataset.diff);
+      const lab = document.querySelector("#app .slope-wrap .topline .label");
+      if (ex && lab) lab.textContent = `${lab.dataset.base} · Extreme`;
+      orig.click();
+    }));
+    box.querySelector(`[data-diff="${orig.dataset.extreme && TY_EXTREME ? "extreme" : GDIFF}"]`).focus({ preventScroll: true });
   });
 }
 new MutationObserver(wrapDiffButtons).observe(document.body, { childList: true, subtree: true });
