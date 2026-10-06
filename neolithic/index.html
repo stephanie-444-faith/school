@@ -376,6 +376,14 @@
   .ty-in.bad { animation: shake .3s; border-color: var(--bad); }
   .ty-bar { justify-content: center; gap: 16px; font-weight: 700; }
 
+  .pause-all { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 104px; z-index: 50; border: 0; border-radius: 99px; padding: 8px 16px; font-weight: 700; font-size: .9rem; background: var(--gold); color: #3a2600; box-shadow: 0 4px 14px rgba(0,0,0,.45); cursor: pointer; }
+  .pause-all { display: inline-flex; align-items: center; gap: 6px; }
+  .pause-all[hidden] { display: none; }
+  .pause-all:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .pause-veil { position: fixed; inset: 0; z-index: 45; background: rgba(10, 6, 30, .78); display: grid; place-items: center; padding: 16px; }
+  .pause-card { background: var(--panel); border-radius: 20px; padding: 24px; text-align: center; display: flex; flex-direction: column; gap: 12px; max-width: 420px; width: 100%; }
+  .pause-card h2 { font-size: 2rem; }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
@@ -394,6 +402,7 @@
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
+<button class="pause-all" id="pause-all" type="button" hidden aria-pressed="false">Pause</button>
 <div class="wrap" id="app"></div>
 <footer><button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
 
@@ -943,7 +952,7 @@ function startGame() {
     missed: new Map(), secs: goal.type === "time" ? goal.secs : 0, over: false
   };
   G.timer = setInterval(() => {
-    if (G.over) return;
+    if (G.over || PAUSED) return;
     G.secs += goal.type === "time" ? -1 : 1;
     if (goal.type === "time" && G.secs <= 0) { G.secs = 0; return endGame(); }
     renderHud();
@@ -1273,7 +1282,7 @@ function startDig() {
 }
 
 function digTick() {
-  if (D.over) return;
+  if (D.over || PAUSED) return;
   D.secs++;
   // The question clock only runs while he's digging, not while a pop-up is open.
   if (!D.asking && !document.querySelector(".shop")) {
@@ -1814,7 +1823,7 @@ function slopeGo() {
   cancelAnimationFrame(S.raf);
   const loop = t => {
     if (!S) return;
-    const dt = Math.min(.05, (t - S.last) / 1000); S.last = t;
+    const dt = Math.min(.05, (PAUSED ? 0 : (t - S.last) / 1000)); S.last = t;
     slopeStep(dt);
     if (!S) return;
     drawSlope();
@@ -2157,7 +2166,7 @@ function begin() {
   cancelAnimationFrame(A.raf);
   const loop = t => {
     if (!A) return;
-    A.acc += Math.min(.1, (t - A.last) / 1000); A.last = t;
+    A.acc += Math.min(.1, (PAUSED ? 0 : (t - A.last) / 1000)); A.last = t;
     while (A.acc >= 1 / 60) { archerStep(1 / 60); A.acc -= 1 / 60; }
     drawArchers();
     if (A) A.raf = requestAnimationFrame(loop);
@@ -2473,7 +2482,7 @@ function startSnake() {
     reset(); M.running = true; document.getElementById("m-over").hidden = true; M.last = performance.now();
     const loop = t => {
       if (!M || !M.running) return;
-      M.t += t - M.last; M.last = t;
+      M.t += PAUSED ? 0 : t - M.last; M.last = t;
       const step = hard() ? Math.max(45, 105 - M.score * 5) : Math.max(85, 160 - M.score * 3);
       while (M.t >= step && M.running) { M.t -= step; tick(); }
       draw();
@@ -2567,7 +2576,7 @@ function startStack() {
     cancelAnimationFrame(M.raf);
     const loop = t => {
       if (!M) return;
-      const dt = Math.min(.05, (t - M.last) / 1000); M.last = t;
+      const dt = Math.min(.05, (PAUSED ? 0 : (t - M.last) / 1000)); M.last = t;
       if (M.cur && M.running) {
         M.cur.x += M.cur.dir * M.cur.speed * dt;
         if (M.cur.x > M.W - M.cur.w) M.cur.dir = -1;
@@ -2844,7 +2853,7 @@ function startMines() {
   const dig = i => {
     const c = M.cells[i];
     if (!M.running || c.open || c.flag) return;
-    if (!M.started) { M.started = true; plant(i); M.timer = setInterval(() => { if (M) { M.secs++; document.getElementById("m-score").textContent = `Mines ${MINES - M.cells.filter(c => c.flag).length} · Time ${M.secs}s`; } }, 1000); }
+    if (!M.started) { M.started = true; plant(i); M.timer = setInterval(() => { if (M && !PAUSED) { M.secs++; document.getElementById("m-score").textContent = `Mines ${MINES - M.cells.filter(c => c.flag).length} · Time ${M.secs}s`; } }, 1000); }
     if (c.mine) { M.cells.forEach(x => { if (x.mine) x.open = true; }); sfx.wrong(); render(); return overScreen("Boom!", M.secs + "s", "You hit a mine. Try again!", go); }
     const stack = [i];
     while (stack.length) { const j = stack.pop(), x = M.cells[j]; if (x.open || x.flag) continue; x.open = true; if (!x.n) stack.push(...nbrs(j)); }
@@ -2925,7 +2934,7 @@ function startBricks() {
   function go() {
     M.phw = hard() ? 32 : 55; M.score = 0; M.lives = hard() ? 3 : 5; M.lvl = 1; M.px = W / 2; level(1); M.running = true; document.getElementById("m-over").hidden = true;
     M.last = performance.now(); cancelAnimationFrame(M.raf);
-    const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (t - M.last) / 1000); M.last = t; step(dt); draw(); if (M && M.running) M.raf = requestAnimationFrame(loop); };
+    const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (PAUSED ? 0 : (t - M.last) / 1000)); M.last = t; step(dt); draw(); if (M && M.running) M.raf = requestAnimationFrame(loop); };
     M.raf = requestAnimationFrame(loop);
   }
   M.phw = 55; M.px = W / 2; M.bx = W / 2; M.by = H - 48; M.score = 0; M.lives = 3; M.lvl = 1; level(1);
@@ -2987,7 +2996,7 @@ function startHopper() {
     M.y = H / 2; M.vy = 0; M.pipes = []; M.score = 0; M.t = 0; M.dead = false; M.running = true;
     document.getElementById("m-over").hidden = true;
     M.last = performance.now(); cancelAnimationFrame(M.raf);
-    const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (t - M.last) / 1000); M.last = t; step(dt); draw(); if (M && M.running) M.raf = requestAnimationFrame(loop); };
+    const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (PAUSED ? 0 : (t - M.last) / 1000)); M.last = t; step(dt); draw(); if (M && M.running) M.raf = requestAnimationFrame(loop); };
     M.raf = requestAnimationFrame(loop);
     flap();
   }
@@ -3005,7 +3014,7 @@ function canvasFit(cv, stage, W, H, maxW) {
 }
 function runLoop(step, draw) {
   M.last = performance.now(); cancelAnimationFrame(M.raf);
-  const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (t - M.last) / 1000); M.last = t; step(dt); if (!M) return; draw(); if (M.running) M.raf = requestAnimationFrame(loop); };
+  const loop = t => { if (!M || !M.running) return; const dt = Math.min(.03, (PAUSED ? 0 : (t - M.last) / 1000)); M.last = t; step(dt); if (!M) return; draw(); if (M.running) M.raf = requestAnimationFrame(loop); };
   M.raf = requestAnimationFrame(loop);
 }
 
@@ -3576,7 +3585,7 @@ function bunnyGame() {
     inp.focus();
     // runLoop stops when M.running is false, so keep our own loop for the fall animation
     M.last = performance.now(); cancelAnimationFrame(M.raf);
-    const loop = t => { if (!M || M.me !== me) return; const dt = Math.min(.05, (t - M.last) / 1000); M.last = t; step(dt); draw(); M.raf = requestAnimationFrame(loop); };
+    const loop = t => { if (!M || M.me !== me) return; const dt = Math.min(.05, (PAUSED ? 0 : (t - M.last) / 1000)); M.last = t; step(dt); draw(); M.raf = requestAnimationFrame(loop); };
     M.raf = requestAnimationFrame(loop);
   }
   Object.assign(M, { me, plats: [], cur: 0, cam: 0, pops: [], words: 0 });
@@ -3970,9 +3979,58 @@ function pickLevel(title, easyTxt, hardTxt, start) {
 const pickDig = () => pickLevel("Dig It Up", "Softer dirt and more resources to find.", "Tougher rock and fewer resources.", startDig);
 const pickCash = () => pickLevel("Cash Race", "Normal earnings. Wrong answers cost a little.", "You earn less, and wrong answers cost double.", startGame);
 
+/* ---------- Pause: one button that freezes whatever game is running ---------- */
+let PAUSED = false;
+const pauseBtn = document.getElementById("pause-all");
+// A game counts as "running" when one of the game loops or timers is active.
+const gameRunning = () => !!((S && S.running) || (A && A.state && !["menu", "over"].includes(A.state)) || (M && M.running) || (D && !D.over) || (G && !G.over));
+function setPause(on) {
+  if (on && !gameRunning()) return;
+  PAUSED = on;
+  document.getElementById("pause-veil")?.remove();
+  if (on) {
+    document.activeElement?.blur?.();
+    const v = document.createElement("div");
+    v.id = "pause-veil"; v.className = "pause-veil"; v.setAttribute("role", "dialog"); v.setAttribute("aria-label", "Paused");
+    v.innerHTML = `<div class="pause-card"><h2>Paused</h2><p class="soft">Take a break! Your game is frozen.</p>
+      <div class="row" style="justify-content:center"><button class="btn go" id="pause-go">Keep playing</button><button class="btn" id="pause-exit">Exit game</button></div>
+      <p class="soft" style="font-size:.85rem">Tip: press P to pause and unpause.</p></div>`;
+    document.body.appendChild(v);
+    v.querySelector("#pause-go").addEventListener("click", () => setPause(false));
+    v.querySelector("#pause-exit").addEventListener("click", () => { setPause(false); exitAll(); });
+    v.querySelector("#pause-go").focus();
+    tone([440, 330], .06, "triangle", .05);
+  } else {
+    tone([330, 440], .06, "triangle", .05);
+    document.querySelector("#ty-in")?.focus();
+  }
+  updatePauseBtn();
+}
+function updatePauseBtn() {
+  const show = gameRunning() && !document.getElementById("gamesmenu");
+  pauseBtn.hidden = !show && !PAUSED;
+  pauseBtn.innerHTML = PAUSED
+    ? `<svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M2 1l9 5-9 5z" fill="currentColor"/></svg> Play`
+    : `<svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><rect x="1.5" y="1" width="3" height="10" rx="1" fill="currentColor"/><rect x="7.5" y="1" width="3" height="10" rx="1" fill="currentColor"/></svg> Pause`;
+  pauseBtn.setAttribute("aria-pressed", PAUSED);
+}
+pauseBtn.addEventListener("click", () => setPause(!PAUSED));
+// While paused, swallow game keys (so nothing moves or gets typed); P, Escape, Enter and Space unpause.
+window.addEventListener("keydown", e => {
+  if (PAUSED) {
+    if (["p", "P", "Escape"].includes(e.key) || ((e.key === "Enter" || e.key === " ") && document.activeElement?.id !== "pause-exit")) { e.preventDefault(); setPause(false); }
+    else if (e.key !== "Tab") e.preventDefault();
+    e.stopImmediatePropagation();
+    return;
+  }
+  if ((e.key === "p" || e.key === "P") && gameRunning() && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) { e.preventDefault(); e.stopImmediatePropagation(); setPause(true); }
+}, true);
+setInterval(updatePauseBtn, 400);
+
 /* ---------- Exit: one button on every screen that stops everything and goes home ---------- */
 const exitBtn = document.getElementById("exit-all");
 function exitAll() {
+  PAUSED = false; document.getElementById("pause-veil")?.remove();
   document.querySelectorAll(".shop, .toast").forEach(el => el.remove());
   if (G && !G.over) { G.over = true; clearInterval(G.timer); }
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
