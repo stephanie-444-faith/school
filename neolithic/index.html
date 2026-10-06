@@ -354,6 +354,10 @@
   .ty-acct.guest { border-style: dashed; }
   .ty-acct b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
   .ty-acct small { color: var(--ink-soft); font-size: .8rem; }
+  .ty-champ { font-size: .78rem; font-weight: 700; color: #3a2600; background: var(--gold); border-radius: 99px; padding: 2px 8px; }
+  .ty-champbox { background: linear-gradient(135deg, #4a3a1a, var(--panel-2)); border: 2px solid var(--gold); border-radius: 14px; padding: 12px 14px; display: block; line-height: 1.5; }
+  .ty-champbox span { display: block; margin-top: 6px; color: var(--gold); font-weight: 700; }
+  .ty-char .btn s { opacity: .6; margin-right: 2px; }
   .ty-ava { font-size: 2.4rem; line-height: 1; }
   .ty-wear { position: relative; display: inline-block; line-height: 1; }
   .ty-acc { position: absolute; font-size: .55em; line-height: 1; }
@@ -3328,6 +3332,18 @@ const TY_ACC = [
 ];
 const tyAcc = a => TY_ACC.find(x => x.id === a.acc) || null;
 // Character emoji with its accessory placed on it (for the lobby and account cards)
+// Carrot Champion: the account with the most carrots gets half-price shopping
+// and a free extra life that recharges every 10 minutes. (A tie at the top shares the title.)
+const TY_LIFE_MS = 10 * 60 * 1000;
+function tyChampions() {
+  const totals = TY_ACCOUNTS.map(ac => [ac.id, tyLoad(ac.id).carrots]);
+  const top = Math.max(...totals.map(t => t[1]));
+  return top > 0 ? totals.filter(t => t[1] === top).map(t => t[0]) : [];
+}
+const isChamp = id => tyChampions().includes(id);
+const tyPrice = (cost, id) => isChamp(id) ? Math.ceil(cost / 2) : cost;
+const lifeWait = a => Math.max(0, (a.lifeAt || 0) + TY_LIFE_MS - Date.now());
+const priceTag = (cost, id) => isChamp(id) && cost ? `<s>${cost}</s> 🥕 ${tyPrice(cost, id)}` : `🥕 ${cost}`;
 const tyWear = (a, cls) => { const x = tyAcc(a); return `<span class="ty-wear ${cls}">${tyChar(a).emoji}${x ? `<span class="ty-acc acc-${x.spot}">${x.emoji}</span>` : ""}</span>`; };
 const tySave = (id, a) => store.set(tyKey(id), a);
 const tyChar = a => TY_CHARS.find(c => c.id === a.char) || TY_CHARS[0];
@@ -3349,7 +3365,7 @@ function startBunny() {
       <div class="ty-accounts">${TY_ACCOUNTS.map(ac => { const a = tyLoad(ac.id); return `
         <button class="ty-acct${ac.guest ? " guest" : ""}" data-acct="${ac.id}">
           ${tyWear(a, "ty-ava")}<b>${ac.name}</b>
-          <small>${ac.guest ? "Guest · " : ""}🥕 ${a.carrots}${a.best.easy || a.best.hard ? ` · Best ${Math.max(a.best.easy || 0, a.best.hard || 0)}` : ""}</small>
+          ${isChamp(ac.id) ? `<span class="ty-champ">⭐ Carrot Champion</span>` : ""}<small>${ac.guest ? "Guest · " : ""}🥕 ${a.carrots}${a.best.easy || a.best.hard ? ` · Best ${Math.max(a.best.easy || 0, a.best.hard || 0)}` : ""}</small>
         </button>`; }).join("")}</div>
       <p class="soft">Funny Typer gets silly words. Everyone else gets regular words.</p>
     </div>`;
@@ -3367,33 +3383,43 @@ function bunnyLobby() {
       <div class="ty-hero">${tyWear(a, "ty-big")}
         <div><h2>${esc(ac.name)}</h2><p>🥕 <b>${a.carrots}</b> carrots · ${a.words} words typed</p>
         <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0} · Extreme ${a.best.extreme || 0}${a.topWpm ? ` (top ${a.topWpm} WPM${a.beatWR ? " 🏆" : ""})` : ""}</p></div></div>
+      ${isChamp(TY) ? `<div class="ty-champbox"><b>⭐ Carrot Champion!</b> You have the most carrots, so you get <b>50% off</b> everything and a <b>free extra life</b> every 10 minutes.
+        <span id="ty-life">${lifeWait(a) ? `Next free life in ${formatTime(Math.ceil(lifeWait(a) / 1000))}.` : "Your free life is ready! It's added when you start a game."}</span></div>`
+        : `<p class="soft">⭐ The account with the most carrots becomes Carrot Champion: 50% off everything and a free extra life every 10 minutes.</p>`}
       <button class="btn go" id="ty-play">Play as ${tyChar(a).name}${tyAcc(a) ? ` with ${tyAcc(a).name}` : ""}</button>
       <h3>Characters</h3>
       <p class="soft">Earn carrots by typing words. Free characters are ready to use. Some characters have special powers!</p>
       <div class="ty-chars">${TY_CHARS.map(c => {
         const own = a.owned.includes(c.id), on = a.char === c.id;
         return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>
-          <button class="btn" data-char="${c.id}" ${on || (!own && a.carrots < c.cost) ? "disabled" : ""}>${on ? "Playing" : own ? "Use" : `🥕 ${c.cost}`}</button></div>`;
+          <button class="btn" data-char="${c.id}" ${on || (!own && a.carrots < tyPrice(c.cost, TY)) ? "disabled" : ""}>${on ? "Playing" : own ? "Use" : priceTag(c.cost, TY)}</button></div>`;
       }).join("")}</div>
       <h3>Accessories</h3>
       <p class="soft">Your character can wear one accessory at a time. Each one gives you something cool!</p>
       <div class="ty-chars">${TY_ACC.map(x => {
         const own = a.accOwned.includes(x.id), on = a.acc === x.id;
         return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>
-          <button class="btn" data-acc="${x.id}" ${!own && a.carrots < x.cost ? "disabled" : ""}>${on ? "Take off" : own ? "Wear" : `🥕 ${x.cost}`}</button></div>`;
+          <button class="btn" data-acc="${x.id}" ${!own && a.carrots < tyPrice(x.cost, TY) ? "disabled" : ""}>${on ? "Take off" : own ? "Wear" : priceTag(x.cost, TY)}</button></div>`;
       }).join("")}</div>
     </div>`;
   $app.querySelectorAll("[data-acc]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), x = TY_ACC.find(y => y.id === b.dataset.acc);
-    if (!a2.accOwned.includes(x.id)) { if (a2.carrots < x.cost) return; a2.carrots -= x.cost; a2.accOwned.push(x.id); sfx.buy(); toast(`You got the ${x.name}!`); a2.acc = x.id; }
+    if (!a2.accOwned.includes(x.id)) { const price = tyPrice(x.cost, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.accOwned.push(x.id); sfx.buy(); toast(`You got the ${x.name}!`); a2.acc = x.id; }
     else a2.acc = a2.acc === x.id ? null : x.id;
     tySave(TY, a2); bunnyLobby();
   }));
   document.getElementById("ty-switch").addEventListener("click", startBunny);
+  clearInterval(window._tyLifeTick);
+  window._tyLifeTick = setInterval(() => {
+    const el = document.getElementById("ty-life");
+    if (!el) return clearInterval(window._tyLifeTick);
+    const w = lifeWait(tyLoad(TY));
+    el.textContent = w ? `Next free life in ${formatTime(Math.ceil(w / 1000))}.` : "Your free life is ready! It's added when you start a game.";
+  }, 1000);
   document.getElementById("ty-play").addEventListener("click", bunnyGame);
   $app.querySelectorAll("[data-char]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), c = TY_CHARS.find(x => x.id === b.dataset.char);
-    if (!a2.owned.includes(c.id)) { if (a2.carrots < c.cost) return; a2.carrots -= c.cost; a2.owned.push(c.id); sfx.buy(); toast(`You got ${c.name}!`); }
+    if (!a2.owned.includes(c.id)) { const price = tyPrice(c.cost, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.owned.push(c.id); sfx.buy(); toast(`You got ${c.name}!`); }
     a2.char = c.id; tySave(TY, a2); bunnyLobby();
   }));
 }
@@ -3580,6 +3606,10 @@ function bunnyGame() {
     closeShop();
     newPlat(); newPlat(); newPlat(); newPlat();
     M.left = M.tmax = platTime(M.plats[1].word) + 1.5;
+    if (isChamp(TY)) {
+      const a3 = tyLoad(TY);
+      if (!lifeWait(a3)) { M.lives++; a3.lifeAt = Date.now(); tySave(TY, a3); M.pops.push({ x: M.plats[0].x, y: M.plats[0].y - 80, t: 0, txt: "⭐ Champion life +1" }); }
+    }
     inp.value = ""; hud();
     document.getElementById("m-over").hidden = true;
     inp.focus();
