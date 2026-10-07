@@ -344,6 +344,7 @@
 
   .bunny-btn { position: absolute; top: 0; left: 0; z-index: 11; width: 44px; height: 44px; border-radius: 12px; border: 0; background: var(--panel); font-size: 1.6rem; line-height: 1; cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
   .bunny-btn:hover { transform: scale(1.08); }
+  .dog-btn { left: 52px; }
   .bunny-btn:focus-visible { outline: 3px solid var(--gold); }
   .ty-wrap { gap: 14px; }
   .ty-accounts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
@@ -1045,6 +1046,7 @@ function showHome() {
         <p class="soft">Tap a subject to start studying.</p>
       </div>
       <button class="bunny-btn" id="bunny" type="button" aria-label="Bunny Hop Typing" title="Bunny Hop Typing">🐰</button>
+      <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: keep the story going!">🐶</button>
       <details class="gamesmenu" id="gamesmenu">
         <summary aria-label="Games menu">⋯</summary>
         <div class="gm-panel">
@@ -1069,12 +1071,6 @@ function showHome() {
       <span class="label">Math level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">Health topic</span><div class="chips">${chipRow(HEALTH_PARTS, "hpart")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
-    </div>
-    <div class="panel write-card">
-      <span class="label">Writing</span>
-      <h2>Story Starters</h2>
-      <p>We give you the beginning of a story, from one sentence to a whole paragraph. You keep writing and decide what happens next!</p>
-      <button class="btn go" id="write">Start writing</button>
     </div>
     ${ss ? `<div class="panel">
       <span class="label">Social Studies extras</span>
