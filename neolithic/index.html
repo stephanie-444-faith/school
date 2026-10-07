@@ -366,6 +366,9 @@
   .acc-side { right: -.35em; bottom: 0; }
   .acc-back { left: -.4em; top: .1em; }
   .ty-next { font-size: .95rem; min-height: 1.2em; }
+  .ring-list { text-align: left; font-size: .82rem; width: 100%; }
+  .ring-list summary { cursor: pointer; color: var(--gold); font-weight: 700; text-align: center; }
+  .ring-list ul { margin: 6px 0 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 3px; color: var(--ink-soft); }
   .ty-goals { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; }
   .ty-goal { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
   .ty-goal.done { background: #173826; }
@@ -3359,9 +3362,26 @@ const TY_ACC = [
   { id: "rocket", emoji: "🚀", name: "Rocket Boots", cost: 80, spot: "back", power: "Every 10th word blasts you over 2 extra platforms for free." },
   { id: "hourglass", emoji: "⏳", name: "Hourglass", cost: 100, spot: "side", power: "Platforms crumble 20% slower." },
   { id: "cape", emoji: "🦸", name: "Hero Cape", cost: 130, spot: "back", power: "+1 life and +1 carrot for every word." },
-  { id: "ring", emoji: "💍", name: "Diamond Ring", cost: 250, spot: "side", power: "Goals pay double carrots." }
+  { id: "ring", emoji: "💍", name: "Diamond Ring", cost: 500, spot: "side", power: "Has ALL the other accessories' powers built in, and every one is stronger! Goals pay triple carrots." }
 ];
 const tyAcc = a => TY_ACC.find(x => x.id === a.acc) || null;
+// What the Diamond Ring does: every other accessory, powered up.
+const RING_POWERS = [
+  "🎧 Every correct letter plays a musical chord",
+  "🕶️🔮 See the next 3 words coming",
+  "🎩🦸 +4 extra carrots for every word",
+  "⏰ Every platform lasts 2 seconds longer",
+  "🧲 Streak bonus every 3 words",
+  "👑 Streak bonuses are worth +15 carrots",
+  "🫧🦸 3 extra lives",
+  "🪽 Hover 2.5 seconds when a platform crumbles (5 times a game)",
+  "🎀 Start every game with 10 free carrots",
+  "🧣 Your first 10 platforms last 3 seconds longer",
+  "🍀 Every word has a 1 in 5 chance to give 10 bonus carrots",
+  "🚀 Every 8th word blasts you over 3 extra platforms",
+  "⏳ Platforms crumble 35% slower",
+  "💍 Goals pay triple carrots"
+];
 // Character emoji with its accessory placed on it (for the lobby and account cards)
 // Carrot Champion: the account with the most carrots gets half-price shopping
 // and a free extra life that recharges every 10 minutes. (A tie at the top shares the title.)
@@ -3423,7 +3443,7 @@ const goalLv = (a, tr) => (a.goalLv || {})[tr.id] || 0;
 function tyLevelUp(id, tr) {
   const a = tyLoad(id), lv = goalLv(a, tr), t = tr.target(lv);
   if (t == null) return null;
-  const reward = tr.reward(t) * (a.acc === "ring" ? 2 : 1);
+  const reward = tr.reward(t) * (a.acc === "ring" ? 3 : 1);
   a.goalLv = { ...(a.goalLv || {}), [tr.id]: lv + 1 };
   a.goalsDone = (a.goalsDone || 0) + 1;
   a.carrots += reward;
@@ -3481,7 +3501,7 @@ function bunnyLobby() {
       <p class="soft">Your character can wear one accessory at a time. Each one gives you something cool!</p>
       <div class="ty-chars">${TY_ACC.slice().sort((p, q) => p.cost - q.cost).map(x => {
         const own = a.accOwned.includes(x.id), on = a.acc === x.id;
-        return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>
+        return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>${x.id === "ring" ? `<details class="ring-list"><summary>See all its powers</summary><ul>${RING_POWERS.map(r => `<li>${r}</li>`).join("")}</ul></details>` : ""}
           <button class="btn" data-acc="${x.id}" ${!own && a.carrots < tyPrice(x.cost, TY) ? "disabled" : ""}>${on ? "Take off" : own ? "Wear" : priceTag(x.cost, TY)}</button></div>`;
       }).join("")}</div>
     </div>`;
@@ -3508,7 +3528,9 @@ function bunnyLobby() {
 }
 
 function bunnyGame() {
-  const a = tyLoad(TY), ch = tyChar(a), ac = TY_ACCOUNTS.find(x => x.id === TY), acc = tyAcc(a), has = id => acc && acc.id === id;
+  const a = tyLoad(TY), ch = tyChar(a), ac = TY_ACCOUNTS.find(x => x.id === TY), acc = tyAcc(a), RING = !!acc && acc.id === "ring";
+  const has = id => RING || (!!acc && acc.id === id);
+  const R = (normal, ring) => RING ? ring : normal;
   const { cv, stage } = gameShell(`Bunny Hop · ${ch.name}`, `Type the word on the next platform to hop onto it.<br>Hurry! The platform you're standing on crumbles away.${ch.id === "roo" ? "<br>Kangaroo: tap Triple Jump (or press Enter) to skip a word, 3 times a game." : ch.id === "octopus" ? "<br>Octopus: tap Ink Jump (or press Enter) to skip a word, 5 times a game." : ""}`);
   const SKIPS = ch.id === "roo" ? 3 : ch.id === "octopus" ? 5 : 0, skipName = ch.id === "octopus" ? "Ink Jump" : "Triple Jump";
   document.getElementById("m-go").dataset.extreme = "1";
@@ -3535,11 +3557,11 @@ function bunnyGame() {
   };
   const pickWord = () => { const L = listFor(); let w; do { w = L[rnd(0, L.length - 1)]; } while (L.length > 3 && M.plats?.slice(-3).some(p => p.word === w)); return w; };
   const platTime = word => {
-    if (M.extreme) return (((word.length + 1) / 5) / M.wpm * 60 + .25) * (has("hourglass") ? 1.2 : 1) + (has("clock") ? .5 : 0) + (has("scarf") && M.words < 5 ? 1 : 0);
+    if (M.extreme) return (((word.length + 1) / 5) / M.wpm * 60 + .25) * (has("hourglass") ? R(1.2, 1.35) : 1) + (has("clock") ? R(.5, 1) : 0) + (has("scarf") && M.words < R(5, 10) ? R(1, 1.5) : 0);
     const base = hard() ? 1.6 + word.length * .32 : 3 + word.length * .5;
     const ramp = Math.max(.55, 1 - M.words * .015);
-    const mult = ({ turtle: 1.35, dragon: 1.25, whale: 1.15, trex: 1.45 }[ch.id] || 1) * (has("hourglass") ? 1.2 : 1) * (ch.id === "panda" && M.words < 10 ? 2 : 1);
-    return base * ramp * mult + (has("clock") ? 1 : 0) + (has("scarf") && M.words < 5 ? 2 : 0);
+    const mult = ({ turtle: 1.35, dragon: 1.25, whale: 1.15, trex: 1.45 }[ch.id] || 1) * (has("hourglass") ? R(1.2, 1.35) : 1) * (ch.id === "panda" && M.words < 10 ? 2 : 1);
+    return base * ramp * mult + (has("clock") ? R(1, 2) : 0) + (has("scarf") && M.words < R(5, 10) ? R(2, 3) : 0);
   };
   const newPlat = () => {
     const last = M.plats.at(-1);
@@ -3552,7 +3574,7 @@ function bunnyGame() {
     const skip = document.getElementById("ty-skip"); if (skip) { skip.textContent = `${skipName} (${M.skips})`; skip.disabled = M.skips <= 0; }
     const tgt = M.plats[M.cur + 1]?.word || "", typed = inp.value;
     const nx = document.getElementById("ty-next");
-    const peek = Math.max(has("shades") ? 1 : 0, has("orb") || ch.id === "eagle" ? 2 : 0);
+    const peek = RING ? 3 : Math.max(has("shades") ? 1 : 0, has("orb") || ch.id === "eagle" ? 2 : 0);
     if (nx) nx.textContent = peek ? `👀 coming up: ${M.plats.slice(M.cur + 2, M.cur + 2 + peek).map(p => p.word).join(", ")}` : "";
     document.getElementById("ty-word").innerHTML = `${[...tgt].map((l, i) => `<span class="${i < typed.length ? "ok" : ""}">${l}</span>`).join("")}`;
   };
@@ -3561,8 +3583,8 @@ function bunnyGame() {
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
     M.cur++; M.words++;
     const mult = { unicorn: 2, dragon: 3, trex: 4, whale: 1.5 }[ch.id] || 1;
-    let gain = Math.round((M.extreme ? 3 : hard() ? 2 : 1) * mult) + (has("tophat") ? 1 : 0) + (ch.id === "bee" ? 1 : 0) + (has("cape") ? 1 : 0);
-    if (has("clover") && Math.random() < .1) { gain += 5; M.pops.push({ x: to.x, y: to.y - 110, t: 0, txt: "🍀 Lucky! +5" }); }
+    let gain = Math.round((M.extreme ? 3 : hard() ? 2 : 1) * mult) + (RING ? 4 : (has("tophat") ? 1 : 0) + (has("cape") ? 1 : 0)) + (ch.id === "bee" ? 1 : 0);
+    if (has("clover") && Math.random() < R(.1, .2)) { const luck = R(5, 10); gain += luck; M.pops.push({ x: to.x, y: to.y - 110, t: 0, txt: `🍀 Lucky! +${luck}` }); }
     if (ch.id === "monkey" && M.words % 15 === 0 && M.lives < 3) { M.lives++; M.pops.push({ x: to.x, y: to.y - 150, t: 0, txt: "🐵 Swing! +1 life" }); }
     if (M.extreme) {
       M.wpm += TY_STEP_WPM; M.topWpm = Math.max(M.topWpm, M.wpm);
@@ -3570,7 +3592,7 @@ function bunnyGame() {
     }
     M.carrots += gain;
     M.streak++;
-    if (M.streak % (has("magnet") || ch.id === "lion" ? 5 : 10) === 0) { const bonus = has("crown") ? 10 : 5; M.carrots += bonus; M.pops.push({ x: to.x, y: to.y - 90, t: 0, txt: `Streak bonus +${bonus} 🥕` }); }
+    if (M.streak % (RING ? 3 : has("magnet") || ch.id === "lion" ? 5 : 10) === 0) { const bonus = has("crown") ? R(10, 15) : 5; M.carrots += bonus; M.pops.push({ x: to.x, y: to.y - 90, t: 0, txt: `Streak bonus +${bonus} 🥕` }); }
     M.pops.push({ x: to.x, y: to.y - 60, t: 0, txt: `+${gain} 🥕` });
     let k = 0;
     TY_TRACKS.filter(tr => tr.kind === "run").forEach(tr => {
@@ -3587,9 +3609,10 @@ function bunnyGame() {
     M.left = M.tmax = platTime(M.plats[M.cur + 1].word);
     inp.value = ""; hud();
     tone([660, 990], .05, "triangle", .06);
-    if (has("rocket") && !M.rocketing && M.words % 10 === 0) {
+    if (has("rocket") && !M.rocketing && M.words % R(10, 8) === 0) {
       M.rocketing = true; M.pops.push({ x: to.x, y: to.y - 170, t: 0, txt: "🚀 Rocket boost!" });
-      hop(); hop(); M.rocketing = false;
+      for (let r = 0; r < R(2, 3); r++) hop();
+      M.rocketing = false;
     }
   };
   const fall = () => {
@@ -3609,7 +3632,7 @@ function bunnyGame() {
       inp.value = v.slice(0, k); M.miss++;
       inp.classList.remove("bad"); void inp.offsetWidth; inp.classList.add("bad");
       tone([180], .05, "sawtooth", .04);
-    } else { inp.value = v; if (has("headphones") && v.length) tone([392 * Math.pow(2, v.length / 12)], .06, "sine", .06); }
+    } else { inp.value = v; if (has("headphones") && v.length) { const f = 392 * Math.pow(2, v.length / 12); tone(RING ? [f, f * 1.26, f * 1.5] : [f], RING ? .03 : .06, "sine", .06); } }
     M.typed += 1;
     if (inp.value === tgt) hop();
     hud();
@@ -3701,19 +3724,19 @@ function bunnyGame() {
     if (!M.running) return;
     M.left -= dt;
     if (M.left <= 0) {
-      if (has("wings") && M.hovers > 0) { M.hovers--; M.left = 1.5; M.tmax = Math.max(M.tmax, 1.5); M.pops.push({ x: M.plats[M.cur].x, y: M.plats[M.cur].y - 100, t: 0, txt: `🪽 Hover! (${M.hovers} left)` }); tone([880, 1320], .06, "sine", .06); }
+      if (has("wings") && M.hovers > 0) { M.hovers--; M.left = R(1.5, 2.5); M.tmax = Math.max(M.tmax, M.left); M.pops.push({ x: M.plats[M.cur].x, y: M.plats[M.cur].y - 100, t: 0, txt: `🪽 Hover! (${M.hovers} left)` }); tone([880, 1320], .06, "sine", .06); }
       else fall();
     }
   }
   const me = {};
   function go() {
     Object.assign(M, { me, plats: [], cur: 0, words: 0, carrots: 0, streak: 0, typed: 0, miss: 0, pops: [], cam: 0, jump: null, falling: null,
-      lives: ({ dragon: 3, cat: 2, lion: 2, trex: 4 }[ch.id] || 1) + (has("bubble") ? 1 : 0) + (has("cape") ? 1 : 0), hovers: has("wings") ? 3 : 0, skips: SKIPS, running: true, started: performance.now(),
+      lives: ({ dragon: 3, cat: 2, lion: 2, trex: 4 }[ch.id] || 1) + (RING ? 3 : (has("bubble") ? 1 : 0) + (has("cape") ? 1 : 0)), hovers: has("wings") ? R(3, 5) : 0, skips: SKIPS, running: true, started: performance.now(),
       extreme: TY_EXTREME, wpm: TY_START_WPM, topWpm: TY_START_WPM, beatWR: false, flash: 0,
       goalLog: [] });
-    if (has("bow")) M.carrots += 3;
+    if (has("bow")) M.carrots += R(3, 10);
     closeShop();
-    newPlat(); newPlat(); newPlat(); newPlat();
+    newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); // enough platforms ahead to peek at 3 words
     M.left = M.tmax = platTime(M.plats[1].word) + 1.5;
     if (isChamp(TY)) {
       const a3 = tyLoad(TY);
