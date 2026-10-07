@@ -599,29 +599,63 @@ const SCIENCE = [
   { q: "Which part of a plant takes in water from the soil?", a: "Roots", w: ["Leaves", "Flowers", "Seeds"], why: "Roots also hold the plant in place." },
   { q: "What is the closest star to Earth?", a: "The Sun", w: ["The North Star", "The Moon", "Mars"], why: "The Sun is a star. The Moon is not a star." }
 ];
-const HEALTH = [
-  { q: "Which nutrient is the body's main source of energy?", a: "Carbohydrates", w: ["Vitamins", "Minerals", "Water"], why: "Breads, rice, fruits, and pasta are carbohydrates." },
-  { q: "Which nutrient builds and repairs muscles?", a: "Protein", w: ["Sugar", "Fiber", "Water"], why: "Meat, beans, eggs, and nuts have protein." },
+// Health is split into three topics: Safety, Body, and Food.
+const HEALTH_SAFETY = [
+  { q: "What should you do if you see someone being bullied?", a: "Tell a trusted adult and be kind to the person being bullied", w: ["Join in", "Ignore it forever", "Record it and post it online"], why: "Getting help from an adult is the safe, right choice." },
+  { q: "What SPF sunscreen do doctors recommend?", a: "SPF 30 or higher", w: ["SPF 2", "SPF 5", "None on cloudy days"], why: "UV rays can burn skin even when it is cloudy." },
+  { q: "Nicotine is the addictive drug found in what?", a: "Tobacco products and vapes", w: ["Fruit juice", "Milk", "Vitamins"], why: "Nicotine is very addictive and harms the developing brain." },
+  { q: "If your clothes catch on fire, what should you do?", a: "Stop, drop, and roll", w: ["Run as fast as you can", "Wave your arms", "Hide under a bed"], why: "Running feeds the fire more air." },
+  { q: "What number do you call for an emergency in the United States?", a: "911", w: ["411", "311", "711"], why: "Stay calm and tell them where you are." },
+  { q: "What should you always wear when riding a bike?", a: "A helmet", w: ["Sunglasses", "Flip-flops", "Headphones"], why: "A helmet protects your brain if you fall." },
+  { q: "Where should kids under 13 ride in a car?", a: "In the back seat, buckled up", w: ["In the front seat", "On someone's lap", "Anywhere, without a seat belt"], why: "The back seat is the safest place, and seat belts save lives." },
+  { q: "Someone you only know online asks for your address. What should you do?", a: "Don't share it, and tell a trusted adult", w: ["Send it right away", "Post it publicly", "Share your school name instead"], why: "Never share personal information with people you only know online." },
+  { q: "What should you do before crossing the street?", a: "Look left, right, and left again", w: ["Run across quickly", "Look only at your phone", "Close your eyes and listen"], why: "Always check for traffic in both directions before you cross." },
+  { q: "What is the safest way to go swimming?", a: "With a buddy, where a lifeguard or adult is watching", w: ["Alone at night", "In a storm", "Diving into shallow water"], why: "Never swim alone. A grown-up watching can help fast." },
+  { q: "If you find medicine or pills lying around, what should you do?", a: "Leave them alone and tell an adult", w: ["Taste one to see what it is", "Share them with friends", "Hide them in your pocket"], why: "Medicine can be dangerous if it isn't yours or used the wrong way." },
+  { q: "How often should smoke alarms be tested?", a: "Once a month", w: ["Once every 10 years", "Never", "Only when there's a fire"], why: "Testing makes sure the alarm will warn you in time." },
+  { q: "If there is smoke during a fire, how should you move?", a: "Get low and crawl under the smoke", w: ["Stand up tall and walk", "Hide in a closet", "Open every window first"], why: "The cleanest air is near the floor." },
+  { q: "What is a good family fire escape plan?", a: "Two ways out of every room and a meeting spot outside", w: ["Everyone hides under their beds", "Go back in for toys", "Wait inside until someone finds you"], why: "Practice the plan so everyone knows what to do." },
+  { q: "A stranger offers you a ride home. What should you do?", a: "Say no, get away, and tell a trusted adult", w: ["Get in if they seem nice", "Ask them to wait", "Give them your phone number"], why: "Never go anywhere with someone your family hasn't said is okay." },
+  { q: "During a thunderstorm, where is the safest place to be?", a: "Inside a building", w: ["Under a tall tree", "In a swimming pool", "In an open field"], why: "When thunder roars, go indoors!" }
+];
+const HEALTH_BODY = [
   { q: "About how much sleep do kids ages 6–12 need each night?", a: "9 to 12 hours", w: ["4 to 5 hours", "6 to 7 hours", "14 to 16 hours"], why: "Sleep helps your brain, mood, and growth." },
   { q: "How much physical activity should kids get?", a: "At least 60 minutes every day", w: ["10 minutes a week", "5 minutes a day", "2 hours a month"], why: "Daily activity keeps your heart, bones, and muscles strong." },
   { q: "Which organ pumps blood through your body?", a: "The heart", w: ["The lungs", "The stomach", "The liver"], why: "The heart is part of the circulatory system." },
   { q: "Which body system includes the lungs?", a: "Respiratory system", w: ["Digestive system", "Skeletal system", "Nervous system"], why: "The respiratory system brings in oxygen and removes carbon dioxide." },
   { q: "Which body system includes the brain, spinal cord, and nerves?", a: "Nervous system", w: ["Muscular system", "Circulatory system", "Digestive system"], why: "The nervous system sends messages around your body." },
+  { q: "Which body system breaks down the food you eat?", a: "Digestive system", w: ["Nervous system", "Skeletal system", "Respiratory system"], why: "The stomach and intestines are part of the digestive system." },
+  { q: "Which body system moves your bones by pulling on them?", a: "Muscular system", w: ["Digestive system", "Nervous system", "Respiratory system"], why: "Muscles pull on bones so you can move." },
+  { q: "How many bones are in an adult human body?", a: "206", w: ["56", "106", "306"], why: "Babies are born with more bones, and some join together as they grow." },
+  { q: "Which gas do your lungs take in that your body needs?", a: "Oxygen", w: ["Carbon dioxide", "Helium", "Smoke"], why: "You breathe in oxygen and breathe out carbon dioxide." },
+  { q: "Which blood vessels carry blood away from the heart?", a: "Arteries", w: ["Veins", "Nerves", "Tendons"], why: "Arteries carry blood away; veins bring it back to the heart." },
   { q: "What is the best way to stop germs from spreading?", a: "Wash hands with soap and water for at least 20 seconds", w: ["Rinse hands with water for 2 seconds", "Wipe hands on your shirt", "Blow on your hands"], why: "Soap and scrubbing remove germs." },
-  { q: "On MyPlate, how much of your plate should be fruits and vegetables?", a: "About half", w: ["None", "A tiny corner", "All of it"], why: "Fruits and vegetables give vitamins, minerals, and fiber." },
-  { q: "What is the best drink for staying hydrated?", a: "Water", w: ["Soda", "Energy drinks", "Sweet tea"], why: "Water has no added sugar and keeps your body working well." },
-  { q: "What should you do if you see someone being bullied?", a: "Tell a trusted adult and be kind to the person being bullied", w: ["Join in", "Ignore it forever", "Record it and post it online"], why: "Getting help from an adult is the safe, right choice." },
-  { q: "Which is a healthy way to handle stress?", a: "Exercise, deep breathing, or talking to someone", w: ["Skipping meals", "Staying up all night", "Keeping it all inside"], why: "Healthy coping helps your body and mind." },
-  { q: "What SPF sunscreen do doctors recommend?", a: "SPF 30 or higher", w: ["SPF 2", "SPF 5", "None on cloudy days"], why: "UV rays can burn skin even when it is cloudy." },
-  { q: "Nicotine is the addictive drug found in what?", a: "Tobacco products and vapes", w: ["Fruit juice", "Milk", "Vitamins"], why: "Nicotine is very addictive and harms the developing brain." },
   { q: "How do vaccines help your body?", a: "They help your body build protection against diseases", w: ["They give you energy", "They make bones longer", "They replace sleep"], why: "Vaccines train the immune system." },
+  { q: "How often should you brush your teeth?", a: "At least twice a day, for 2 minutes", w: ["Once a week", "Only when they hurt", "Once a month"], why: "Brushing removes plaque that causes cavities." },
   { q: "How often should you replace your toothbrush?", a: "Every 3 to 4 months", w: ["Every 5 years", "Never", "Every day"], why: "Worn bristles don't clean teeth well." },
-  { q: "If your clothes catch on fire, what should you do?", a: "Stop, drop, and roll", w: ["Run as fast as you can", "Wave your arms", "Hide under a bed"], why: "Running feeds the fire more air." },
-  { q: "What number do you call for an emergency in the United States?", a: "911", w: ["411", "311", "711"], why: "Stay calm and tell them where you are." },
+  { q: "Which is a healthy way to handle stress?", a: "Exercise, deep breathing, or talking to someone", w: ["Skipping meals", "Staying up all night", "Keeping it all inside"], why: "Healthy coping helps your body and mind." },
   { q: "What is the largest organ of the human body?", a: "The skin", w: ["The heart", "The brain", "The liver"], why: "Skin protects your body from germs and injury." },
-  { q: "Which mineral helps build strong bones and teeth?", a: "Calcium", w: ["Sugar", "Caffeine", "Sodium"], why: "Milk, yogurt, cheese, and leafy greens have calcium." },
-  { q: "What do the bones of the skull protect?", a: "The brain", w: ["The heart", "The stomach", "The lungs"], why: "The rib cage protects the heart and lungs." }
+  { q: "What do the bones of the skull protect?", a: "The brain", w: ["The heart", "The stomach", "The lungs"], why: "The rib cage protects the heart and lungs." },
+  { q: "Which activity is great exercise for your heart?", a: "Riding a bike or running", w: ["Watching TV", "Playing video games", "Napping"], why: "Activities that get you breathing hard make your heart stronger." }
 ];
+const HEALTH_FOOD = [
+  { q: "Which nutrient is the body's main source of energy?", a: "Carbohydrates", w: ["Vitamins", "Minerals", "Water"], why: "Breads, rice, fruits, and pasta are carbohydrates." },
+  { q: "Which nutrient builds and repairs muscles?", a: "Protein", w: ["Sugar", "Fiber", "Water"], why: "Meat, beans, eggs, and nuts have protein." },
+  { q: "On MyPlate, how much of your plate should be fruits and vegetables?", a: "About half", w: ["None", "A tiny corner", "All of it"], why: "Fruits and vegetables give vitamins, minerals, and fiber." },
+  { q: "What are the five food groups on MyPlate?", a: "Fruits, vegetables, grains, protein, and dairy", w: ["Candy, chips, soda, cake, and cookies", "Breakfast, lunch, dinner, snacks, and dessert", "Hot, cold, sweet, salty, and sour"], why: "Eating from all five groups gives your body what it needs." },
+  { q: "What is the best drink for staying hydrated?", a: "Water", w: ["Soda", "Energy drinks", "Sweet tea"], why: "Water has no added sugar and keeps your body working well." },
+  { q: "Which mineral helps build strong bones and teeth?", a: "Calcium", w: ["Sugar", "Caffeine", "Sodium"], why: "Milk, yogurt, cheese, and leafy greens have calcium." },
+  { q: "Which foods are good sources of fiber?", a: "Beans and whole grains", w: ["Candy", "Soda", "Butter"], why: "Fiber helps your digestive system work well." },
+  { q: "Which foods are high in vitamin C?", a: "Oranges and strawberries", w: ["Bacon and sausage", "White bread", "Butter"], why: "Vitamin C helps your body heal and fight germs." },
+  { q: "Which is a whole grain?", a: "Brown rice", w: ["Sugar cookies", "Potato chips", "Cotton candy"], why: "Whole grains keep all the healthy parts of the grain." },
+  { q: "Which drink usually has the most added sugar?", a: "A can of regular soda", w: ["Water", "Plain milk", "Unsweetened tea"], why: "A can of soda can have about 10 teaspoons of sugar." },
+  { q: "Which is the healthiest snack?", a: "Apple slices with peanut butter", w: ["A bag of candy", "A large soda", "A bag of chips"], why: "It has fruit, protein, and healthy fat." },
+  { q: "On a food label, what does the serving size tell you?", a: "How much food the nutrition facts are for", w: ["How old you must be to eat it", "The price", "How long to cook it"], why: "If you eat two servings, you get double the numbers on the label." },
+  { q: "Why is eating breakfast important?", a: "It gives your body and brain energy to start the day", w: ["It makes you sleepy", "It replaces lunch and dinner", "It has no effect"], why: "Breakfast helps you focus at school." },
+  { q: "Why should chicken be cooked all the way through?", a: "To kill germs that can make you sick", w: ["To make it cold", "To add vitamins", "So it tastes like candy"], why: "Undercooked chicken can carry germs like salmonella." },
+  { q: "Which foods have healthy fats?", a: "Avocados and nuts", w: ["Fried candy bars", "Soda", "Cotton candy"], why: "Healthy fats help your brain and heart." }
+];
+const HEALTH = [...HEALTH_SAFETY, ...HEALTH_BODY, ...HEALTH_FOOD];
 const ELA = [
   { q: "What is a noun?", a: "A person, place, thing, or idea", w: ["An action word", "A word that describes a noun", "A word that joins sentences"], why: "Dog, school, and freedom are all nouns." },
   { q: "What is a verb?", a: "An action or state-of-being word", w: ["A naming word", "A describing word", "A punctuation mark"], why: "Run, think, and is are verbs." },
@@ -766,7 +800,7 @@ const SUBJECTS = {
   ss: { name: "Social Studies", desc: "Early Humans test" },
   math: { name: "Math", desc: "Endless new problems" },
   science: { name: "Science", desc: "Cells, Earth, energy, space" },
-  health: { name: "Health", desc: "Body, food, and safety" },
+  health: { name: "Health", desc: "Safety, body, and food" },
   ela: { name: "Reading & Writing", desc: "Grammar and story words" },
   art: { name: "Art", desc: "Color, design, and artists" },
   mix: { name: "Mix it up", desc: "A bit of everything" }
@@ -931,12 +965,23 @@ function sourceFor(set) {
   const mathhard = [...MATH_HARD_GENS, ...MATH_HARD_GENS].map(gen => () => mathQuestion(gen));
   const sci = SCIENCE.map(x => () => bankQuestion("Science")(x));
   const health = HEALTH.map(x => () => bankQuestion("Health")(x));
+  const health_safety = HEALTH_SAFETY.map(x => () => bankQuestion("Health · Safety")(x));
+  const health_body = HEALTH_BODY.map(x => () => bankQuestion("Health · Body")(x));
+  const health_food = HEALTH_FOOD.map(x => () => bankQuestion("Health · Food")(x));
   const ela = ELA.map(x => () => bankQuestion("Reading & Writing")(x));
   const art = ART.map(x => () => bankQuestion("Art")(x));
-  return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, mathhard, science: sci, health, ela, art,
+  return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, mathhard, science: sci, health, health_safety, health_body, health_food, ela, art,
     mix: [...v, ...q, ...g, ...math, ...mathhard, ...sci, ...health, ...ela, ...art] }[set];
 }
-const currentSet = () => choice.subject === "ss" ? choice.set : choice.subject === "math" && choice.mlevel === "hard" ? "mathhard" : choice.subject;
+const currentSet = () => choice.subject === "ss" ? choice.set
+  : choice.subject === "math" && choice.mlevel === "hard" ? "mathhard"
+  : choice.subject === "health" ? "health_" + choice.hpart
+  : choice.subject;
+const HEALTH_PARTS = {
+  safety: { name: "Safety", desc: "Fire, bikes, the internet, and emergencies" },
+  body: { name: "Body", desc: "Organs, sleep, exercise, and germs" },
+  food: { name: "Food", desc: "Nutrition, food groups, and healthy choices" }
+};
 const MATH_LEVELS = {
   easy: { name: "Easy", desc: "Times tables, negatives, equations, percents, area" },
   hard: { name: "Hard", desc: "Long multiplication and division, decimals, fractions" }
@@ -953,6 +998,8 @@ function makeDeck(set) {
 /* ---------- Home ---------- */
 let choice = { subject: store.get("subject", "ss"), set: store.get("set", "all"), mlevel: store.get("mlevel", "easy"), goal: store.get("goal", "r10k") };
 if (!["easy", "hard"].includes(choice.mlevel)) choice.mlevel = "easy";
+choice.hpart = store.get("hpart", "safety");
+if (!HEALTH_PARTS[choice.hpart]) choice.hpart = "safety";
 if (!SUBJECTS[choice.subject]) choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
@@ -997,6 +1044,7 @@ function showHome() {
       <span class="label">Tap a subject to start studying</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
       <span class="label">Math level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
+      <span class="label">Health topic</span><div class="chips">${chipRow(HEALTH_PARTS, "hpart")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
     ${ss ? `<div class="panel">
@@ -1013,6 +1061,10 @@ function showHome() {
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     choice.subject = b.dataset.subject; store.set("subject", choice.subject);
     if (choice.subject === "ss") { choice.set = "all"; store.set("set", "all"); }
+    startStudy();
+  }));
+  $app.querySelectorAll("[data-hpart]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = "health"; choice.hpart = b.dataset.hpart; store.set("subject", "health"); store.set("hpart", choice.hpart);
     startStudy();
   }));
   $app.querySelectorAll("[data-mlevel]").forEach(b => b.addEventListener("click", () => {
@@ -2707,6 +2759,7 @@ function startStack() {
 const STUDY_LEN = 10;
 function studyTitle() {
   if (choice.subject === "math") return `Math · ${MATH_LEVELS[choice.mlevel].name}`;
+  if (choice.subject === "health") return `Health · ${HEALTH_PARTS[choice.hpart].name}`;
   return choice.subject === "ss" ? `Social Studies · ${SETS[choice.set].name}` : SUBJECTS[choice.subject].name;
 }
 function startStudy() {
