@@ -404,6 +404,29 @@
   .pause-card { background: var(--panel); border-radius: 20px; padding: 24px; text-align: center; display: flex; flex-direction: column; gap: 12px; max-width: 420px; width: 100%; }
   .pause-card h2 { font-size: 2rem; }
 
+  .write-card { background: linear-gradient(160deg, #1d3a5c, var(--panel) 70%); }
+  .story-wrap { gap: 14px; }
+  .story-opts { display: flex; flex-direction: column; gap: 6px; }
+  .chip.mini { padding: 6px 12px; font-size: .85rem; border-width: 2px; }
+  .story-start { background: var(--ink); color: #1a1240; border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .story-start p { font-family: Georgia, "Times New Roman", serif; font-size: 1.15rem; line-height: 1.6; }
+  .story-start .pill { background: #e4dcff; color: #4a3c94; }
+  .story-start .btn { padding: 8px 14px; font-size: .85rem; }
+  .story-text { width: 100%; min-height: 260px; resize: vertical; font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; line-height: 1.7; padding: 14px 16px; border-radius: 14px; border: 3px solid var(--line); background: #fffdf6; color: #1a1240; }
+  .story-text:focus { outline: none; border-color: var(--gold); }
+  .story-goal { display: flex; flex-direction: column; gap: 6px; }
+  .story-goal .row { gap: 6px; font-size: .85rem; }
+  .story-tips summary { cursor: pointer; font-weight: 700; color: var(--gold); }
+  .story-tips ul { margin: 8px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 4px; }
+  .story-name { display: flex; align-items: center; gap: 8px; font-size: .9rem; flex: 1; min-width: 180px; }
+  .story-name input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); }
+  .shelf { display: flex; flex-direction: column; gap: 12px; }
+  .shelf-item { background: #fffdf6; color: #1a1240; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .shelf-item .soft { color: #6a5bb0; font-size: .85rem; }
+  .shelf-item .iconbtn { color: #b8412c; align-self: flex-end; }
+  .story-begin { font-family: Georgia, serif; font-style: italic; color: #4a3c94; }
+  .story-mine { font-family: Georgia, serif; line-height: 1.6; }
+
   @media (max-width: 520px) {
     .tiles { grid-template-columns: 1fr; }
     .tiles.six { grid-template-columns: repeat(2, 1fr); }
@@ -855,7 +878,7 @@ const store = {
   }
 };
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|sc_crys|sc_balls|sc_ball|sc_shield|ty_acct_[a-z]+)$/.test(k);
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|ty_acct_[a-z]+)$/.test(k);
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -1047,6 +1070,12 @@ function showHome() {
       <span class="label">Health topic</span><div class="chips">${chipRow(HEALTH_PARTS, "hpart")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
+    <div class="panel write-card">
+      <span class="label">Writing</span>
+      <h2>Story Starters</h2>
+      <p>We give you the beginning of a story, from one sentence to a whole paragraph. You keep writing and decide what happens next!</p>
+      <button class="btn go" id="write">Start writing</button>
+    </div>
     ${ss ? `<div class="panel">
       <span class="label">Social Studies extras</span>
       <div class="extras">
@@ -1086,6 +1115,7 @@ function showHome() {
   $app.querySelectorAll("[data-more]").forEach(b => b.addEventListener("click", () => MORE_GAMES.find(g => g.id === b.dataset.more).start()));
   document.getElementById("start").addEventListener("click", pickCash);
   keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
+  document.getElementById("write").addEventListener("click", startStories);
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
     document.getElementById("fq").addEventListener("click", startFocus);
@@ -4146,6 +4176,156 @@ function drawAll() {
     c.fillStyle = "#ffc93c"; c.strokeStyle = "#3a2600"; c.lineWidth = 2;
     c.beginPath(); c.arc(b.x + b.w, b.y + b.h, 11 * Math.max(1, (DR.k || 1) * .8), 0, 7); c.fill(); c.stroke();
   }
+}
+
+/* ---------- Story Starters ---------- */
+// A story beginning (one sentence up to a full paragraph); the writer continues it.
+// The draft saves as you type, and finished stories go on a shelf to read again.
+const STARTERS = [
+  { len: "sentence", genre: "Mystery", text: "The note under my door said only: “Don't open the attic.”" },
+  { len: "sentence", genre: "Funny", text: "On Monday morning, my dog started talking, and the first thing he said was, “We need to talk about the cat.”" },
+  { len: "sentence", genre: "Adventure", text: "The map we found in Grandpa's old boots had a big red X right in the middle of our backyard." },
+  { len: "sentence", genre: "Sci-fi", text: "When the school bell rang, every clock in town stopped at exactly 2:47." },
+  { len: "sentence", genre: "Fantasy", text: "The tiny dragon hatched from the egg on my desk and immediately ate my homework." },
+  { len: "sentence", genre: "Animals", text: "Nobody believed me when I said the squirrels in our park were planning something." },
+  { len: "sentence", genre: "Funny", text: "I wished my little brother would disappear, and then, at dinner, he did." },
+  { len: "sentence", genre: "Sports", text: "Down by one point with three seconds left, the ball bounced straight into my hands." },
+  { len: "sentence", genre: "History", text: "I woke up in a hut made of mud and reeds, and a girl holding a stone sickle was staring at me." },
+  { len: "sentence", genre: "Spooky", text: "The house at the end of our street had been empty for years, so why was there a light on in the window?" },
+  { len: "few", genre: "Adventure", text: "The raft was sinking faster than we had planned. Maya grabbed the backpack and pointed at the shore. “Swim for it!” she yelled, but then something huge moved under the water." },
+  { len: "few", genre: "Sci-fi", text: "The new kid in class never ate lunch. He never got tired at recess, either. Today, when he scraped his knee, it didn't bleed. It sparked." },
+  { len: "few", genre: "Mystery", text: "Every morning for a week, a perfect paper airplane had been waiting on my windowsill. Each one had a single letter written on it. Today's letter was the last one I needed." },
+  { len: "few", genre: "Funny", text: "The science fair was going great until my volcano actually erupted. Not baking-soda erupted. Real-lava erupted. The judges were very quiet." },
+  { len: "few", genre: "Fantasy", text: "The library had a door I had never noticed before. It was small, painted gold, and had a sign that read, “Readers only.” I checked my pocket. I had my library card." },
+  { len: "few", genre: "Animals", text: "Our class hamster, Pickles, escaped on Friday. On Monday, there were tiny footprints in the paint on the art room floor. They led straight to the principal's office." },
+  { len: "few", genre: "Sports", text: "I had never skated in front of a crowd before. My hands were shaking as I laced up my skates. Then the music started, and it wasn't my song." },
+  { len: "few", genre: "History", text: "Our village had grown a surplus of grain for the first time ever. The elders said we could trade it at the big river market. I had never left home before, but this year, I was going." },
+  { len: "paragraph", genre: "Adventure", text: "The storm had blown our tiny plane far off course. When the clouds finally cleared, there was nothing below us but jungle, as green and endless as an ocean. The pilot tapped the fuel gauge and frowned. Then, out the window, I saw it: a stone pyramid poking out of the trees, with smoke rising from the top. Someone was down there. And the plane was going down too." },
+  { len: "paragraph", genre: "Mystery", text: "Mrs. Patel's prize-winning pie had vanished from the county fair, and everyone was blaming my best friend, Leo. He had been the last one near the table, and he did have crumbs on his shirt. But I knew Leo. He hated cherries. So I grabbed my notebook, borrowed my mom's magnifying glass, and started looking for clues. The first one was a trail of tiny purple paw prints." },
+  { len: "paragraph", genre: "Sci-fi", text: "The year was 2150, and I was the first kid ever chosen to ride the space elevator to the Moon Station. My bag was packed with three shirts, a toothbrush, and a secret: my pet lizard, Rocket, hidden in a sock. Halfway up, the elevator jerked to a stop. The lights flickered red. A calm voice said, “Please remain seated.” That was when I noticed the sock was empty." },
+  { len: "paragraph", genre: "Fantasy", text: "In the kingdom of Bramblewood, every kid gets a magical power on their twelfth birthday. My sister can talk to birds. My best friend can make flowers bloom with a touch. So when I blew out my candles and nothing happened, I tried not to cry. Then I sneezed, and the whole cake floated up to the ceiling. Everyone stared at me. The cake started to spin." },
+  { len: "paragraph", genre: "Funny", text: "It started as a normal Saturday. I made a sandwich, sat on the couch, and picked up the TV remote. But this remote had an extra button I had never seen before. It was bright orange and said PAUSE LIFE. Of course, I pushed it. Outside the window, a bird froze in midair. My mom froze mid-sneeze. The whole world was perfectly still, except for me and the cat, who looked very annoyed." },
+  { len: "paragraph", genre: "Animals", text: "The farm had always been quiet at night, but tonight the animals were acting strange. The cows stood in a perfect circle. The chickens were lined up on the fence like they were waiting for something. Even our old dog, Biscuit, sat at the barn door with his ears pointed straight up. I crept outside in my pajamas to see what was going on. That's when the barn doors slowly creaked open by themselves." },
+  { len: "paragraph", genre: "History", text: "Ten thousand years ago, my family followed the herds wherever they went. We carried only what we needed: spears, baskets, and warm furs. But this spring, my mother found something amazing near the river. Wild wheat was growing everywhere, more than we could ever eat. “What if we stayed?” she asked. Everyone went quiet. Staying in one place had never been our way. But I looked at the river, the fertile soil, and the golden wheat, and I knew our lives were about to change." },
+  { len: "paragraph", genre: "Spooky", text: "Every year, our class takes a field trip to the old museum downtown. This year, I got separated from my group in the dinosaur hall. The lights clicked off one by one until only the exit sign glowed red. I heard footsteps behind me. Big, slow footsteps. I turned around, but there was only the giant T-Rex skeleton, standing exactly where it always stood. Except now, its head was facing me." }
+];
+const STORY_LENS = { any: "Any length", sentence: "1 sentence", few: "A few sentences", paragraph: "A paragraph" };
+const STORY_GOALS = [50, 100, 200, 300];
+const wordCount = t => (t.trim().match(/\S+/g) || []).length;
+let STORY = null;
+
+function startStories() {
+  stopSlope(); stopArchers(); stopMini(); closeShop();
+  keyHandler = null;
+  const d = store.get("story_draft", null);
+  STORY = { len: store.get("story_len", "any"), goal: store.get("story_goal", 100), starter: d?.starter ?? null, name: d?.name || "" };
+  if (STORY.starter == null) STORY.starter = pickStarter();
+  renderStoryDesk(d?.text || "");
+}
+function pickStarter() {
+  const pool = STARTERS.map((s, i) => i).filter(i => STORY.len === "any" || STARTERS[i].len === STORY.len);
+  const choices = pool.filter(i => i !== STORY?.starter);
+  return (choices.length ? choices : pool)[rnd(0, (choices.length ? choices : pool).length - 1)];
+}
+function saveDraft() {
+  const text = document.getElementById("st-text")?.value ?? "";
+  store.set("story_draft", { starter: STORY.starter, text, name: STORY.name });
+}
+function renderStoryDesk(text) {
+  const st = STARTERS[STORY.starter];
+  const shelf = store.get("stories", []);
+  $app.innerHTML = `
+    <div class="panel story-wrap">
+      <div class="topline"><span class="label">Story Starters</span><button class="iconbtn" id="st-shelf">My stories (${shelf.length})</button></div>
+      <h2>Keep the story going!</h2>
+      <p class="soft">Read the beginning, then write what happens next. There's no wrong answer. Make it yours!</p>
+      <div class="story-opts">
+        <span class="label">Story beginning length</span>
+        <div class="row">${Object.entries(STORY_LENS).map(([k, v]) => `<button class="chip mini" data-len="${k}" aria-pressed="${STORY.len === k}">${v}</button>`).join("")}</div>
+      </div>
+      <div class="story-start">
+        <div class="topline"><span class="pill">${st.genre} · ${STORY_LENS[st.len]}</span><button class="btn" id="st-new">New story beginning</button></div>
+        <p>${esc(st.text)}</p>
+      </div>
+      <label for="st-text" class="label">Now you write what happens next</label>
+      <textarea id="st-text" class="story-text" placeholder="Start writing here…" spellcheck="true">${esc(text)}</textarea>
+      <div class="story-goal">
+        <div class="topline"><span id="st-count"></span><span class="row">Goal: ${STORY_GOALS.map(g => `<button class="chip mini" data-goal="${g}" aria-pressed="${STORY.goal === g}">${g} words</button>`).join("")}</span></div>
+        <div class="goalbar"><div id="st-bar"></div></div>
+      </div>
+      <details class="story-tips"><summary>Writing tips</summary><ul>
+        <li><b>Who?</b> Give your characters names and feelings.</li>
+        <li><b>Problem:</b> What goes wrong? Stories need a problem to solve.</li>
+        <li><b>Senses:</b> What do the characters see, hear, smell, or feel?</li>
+        <li><b>Talking:</b> Add dialogue with quotation marks: “Look out!” she yelled.</li>
+        <li><b>Ending:</b> How is the problem solved? Wrap it up!</li>
+      </ul></details>
+      <div class="row">
+        <label class="story-name">Your name <input id="st-name" type="text" maxlength="30" value="${esc(STORY.name)}" placeholder="Optional"></label>
+        <button class="btn go" id="st-done">I'm done! Save my story</button>
+      </div>
+      <p class="soft" id="st-saved">Your writing saves automatically as you type.</p>
+    </div>`;
+  const ta = document.getElementById("st-text");
+  let timer;
+  const update = () => {
+    const n = wordCount(ta.value), pct = Math.min(100, n / STORY.goal * 100);
+    document.getElementById("st-count").innerHTML = n >= STORY.goal ? `<b class="gold-t">🎉 ${n} words. You reached your goal!</b>` : `<b>${n}</b> / ${STORY.goal} words`;
+    document.getElementById("st-bar").style.width = pct + "%";
+  };
+  ta.addEventListener("input", () => {
+    const before = wordCount(ta.value) >= STORY.goal;
+    update();
+    clearTimeout(timer); timer = setTimeout(() => { saveDraft(); const s = document.getElementById("st-saved"); if (s) s.textContent = "✓ Draft saved"; }, 500);
+    if (!before && wordCount(ta.value) >= STORY.goal && !STORY.cheered) { STORY.cheered = true; sfx.buy(); toast(`🎉 You wrote ${STORY.goal} words!`); }
+  });
+  document.getElementById("st-name").addEventListener("input", e => { STORY.name = e.target.value; saveDraft(); });
+  $app.querySelectorAll("[data-len]").forEach(b => b.addEventListener("click", () => {
+    STORY.len = b.dataset.len; store.set("story_len", STORY.len);
+    if (!ta.value.trim()) STORY.starter = pickStarter();
+    else if (STARTERS[STORY.starter].len !== STORY.len && STORY.len !== "any") toast("Tap “New story beginning” to get one this length.");
+    saveDraft(); renderStoryDesk(ta.value);
+  }));
+  $app.querySelectorAll("[data-goal]").forEach(b => b.addEventListener("click", () => { STORY.goal = +b.dataset.goal; STORY.cheered = false; store.set("story_goal", STORY.goal); renderStoryDesk(ta.value); }));
+  const nb = document.getElementById("st-new");
+  nb.addEventListener("click", () => {
+    if (ta.value.trim() && !nb.dataset.armed) { nb.dataset.armed = "1"; nb.textContent = "Tap again (your writing will be cleared)"; setTimeout(() => { if (nb.isConnected) { delete nb.dataset.armed; nb.textContent = "New story beginning"; } }, 3000); return; }
+    STORY.starter = pickStarter(); STORY.cheered = false; renderStoryDesk(""); saveDraft();
+  });
+  document.getElementById("st-done").addEventListener("click", () => {
+    const n = wordCount(ta.value);
+    if (n < 5) { toast("Write a little more first!"); ta.focus(); return; }
+    const shelf2 = store.get("stories", []);
+    shelf2.unshift({ starter: STARTERS[STORY.starter].text, genre: STARTERS[STORY.starter].genre, text: ta.value, words: n, name: STORY.name.trim(), date: new Date().toLocaleDateString() });
+    store.set("stories", shelf2.slice(0, 100));
+    store.set("story_draft", null);
+    sfx.buy(); toast(`📚 Saved to your shelf! ${n} words.`);
+    STORY.starter = pickStarter(); STORY.cheered = false;
+    renderStoryDesk("");
+  });
+  document.getElementById("st-shelf").addEventListener("click", () => { saveDraft(); storyShelf(); });
+  update();
+}
+function storyShelf() {
+  const shelf = store.get("stories", []);
+  $app.innerHTML = `
+    <div class="panel story-wrap">
+      <div class="topline"><span class="label">My stories</span><button class="iconbtn" id="sh-back">Back to writing</button></div>
+      <h2>${shelf.length ? `${shelf.length} ${shelf.length === 1 ? "story" : "stories"} on your shelf` : "Your shelf is empty"}</h2>
+      ${shelf.length ? "" : `<p class="soft">Finish a story and tap "I'm done!" to save it here.</p>`}
+      <div class="shelf">${shelf.map((s, i) => `
+        <article class="shelf-item">
+          <div class="topline"><span class="pill">${esc(s.genre)}</span><span class="soft">${s.name ? esc(s.name) + " · " : ""}${esc(s.date)} · ${s.words} words</span></div>
+          <p class="story-begin">${esc(s.starter)}</p>
+          <p class="story-mine">${esc(s.text).replace(/\n/g, "<br>")}</p>
+          <button class="iconbtn" data-del="${i}">Delete</button>
+        </article>`).join("")}</div>
+    </div>`;
+  document.getElementById("sh-back").addEventListener("click", startStories);
+  $app.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Tap again to delete"; return; }
+    const s2 = store.get("stories", []); s2.splice(+b.dataset.del, 1); store.set("stories", s2); storyShelf();
+  }));
 }
 
 /* ---------- Timeline ---------- */
