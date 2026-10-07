@@ -3330,7 +3330,7 @@ const TY_CHARS = [
   { id: "eagle", emoji: "🦅", name: "Eagle", cost: 85, power: "Sharp eyes: see the next 2 words coming." },
   { id: "lion", emoji: "🦁", name: "Lion", cost: 100, power: "2 lives and a streak bonus every 5 words." },
   { id: "whale", emoji: "🐳", name: "Whale", cost: 120, power: "1.5× carrots and platforms last 15% longer." },
-  { id: "trex", emoji: "🦖", name: "T-Rex", cost: 250, power: "4 lives and QUADRUPLE carrots!" }
+  { id: "trex", emoji: "🦖", name: "T-Rex", cost: 250, power: "4 lives, QUADRUPLE carrots, and platforms last 45% longer!" }
 ];
 const TY_WORDS = {
   easy: "cat dog sun hat run hop jump frog cake milk star tree bird fish rain snow moon ship book desk lamp bunny green apple happy smile water light clock house plant grape lemon kite ball game play fast duck bear pond leaf wind cloud chair bread juice train truck river beach horse mouse tiger zebra".split(" "),
@@ -3538,7 +3538,7 @@ function bunnyGame() {
     if (M.extreme) return (((word.length + 1) / 5) / M.wpm * 60 + .25) * (has("hourglass") ? 1.2 : 1) + (has("clock") ? .5 : 0) + (has("scarf") && M.words < 5 ? 1 : 0);
     const base = hard() ? 1.6 + word.length * .32 : 3 + word.length * .5;
     const ramp = Math.max(.55, 1 - M.words * .015);
-    const mult = ({ turtle: 1.35, dragon: 1.25, whale: 1.15 }[ch.id] || 1) * (has("hourglass") ? 1.2 : 1) * (ch.id === "panda" && M.words < 10 ? 2 : 1);
+    const mult = ({ turtle: 1.35, dragon: 1.25, whale: 1.15, trex: 1.45 }[ch.id] || 1) * (has("hourglass") ? 1.2 : 1) * (ch.id === "panda" && M.words < 10 ? 2 : 1);
     return base * ramp * mult + (has("clock") ? 1 : 0) + (has("scarf") && M.words < 5 ? 2 : 0);
   };
   const newPlat = () => {
