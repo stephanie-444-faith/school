@@ -342,11 +342,9 @@
   .sc-ball { width: 48px; height: 48px; border-radius: 50%; display: block; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
   .steer #s-j { flex: 1.2; }
 
-  .bunny-btn { position: absolute; top: 0; right: 0; z-index: 11; width: 44px; height: 44px; border-radius: 12px; border: 0; background: var(--panel); font-size: 1.6rem; line-height: 1; cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
+  .bunny-btn { position: absolute; top: 0; left: 0; z-index: 11; width: 44px; height: 44px; border-radius: 12px; border: 0; background: var(--panel); font-size: 1.6rem; line-height: 1; cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
   .bunny-btn:hover { transform: scale(1.08); }
   .bunny-btn:focus-visible { outline: 3px solid var(--gold); }
-  .topbar .gamesmenu { right: 52px; }
-  .topbar .gamesmenu .gm-panel { right: -52px; }
   .ty-wrap { gap: 14px; }
   .ty-accounts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
   .ty-acct { border: 3px solid var(--line); background: var(--panel-2); border-radius: 16px; padding: 14px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -395,6 +393,10 @@
   .ty-bar { justify-content: center; gap: 16px; font-weight: 700; }
 
   .pause-all { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 104px; z-index: 50; border: 0; border-radius: 99px; padding: 8px 16px; font-weight: 700; font-size: .9rem; background: var(--gold); color: #3a2600; box-shadow: 0 4px 14px rgba(0,0,0,.45); cursor: pointer; }
+  .save-state { font-size: .85rem; font-weight: 700; }
+  .save-state.ok { color: var(--money); }
+  .save-state.saving { color: var(--ink-soft); }
+  .save-state.warn { color: var(--gold); cursor: help; }
   .pause-all { display: inline-flex; align-items: center; gap: 6px; }
   .pause-all[hidden] { display: none; }
   .pause-all:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
@@ -422,7 +424,7 @@
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
 <button class="pause-all" id="pause-all" type="button" hidden aria-pressed="false">Pause</button>
 <div class="wrap" id="app"></div>
-<footer><button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
+<footer><span class="save-state saving" id="save-state" role="status">Connecting save…</span> · <button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
 
 <script>
 /* ---------- Study content (from the study guide) ---------- */
@@ -796,10 +798,96 @@ function fmt(n) {
   if (n >= 1e6) return +(n / 1e6).toFixed(2) + "M";
   return n.toLocaleString("en-US");
 }
+/* Saving. Every save goes three places at once:
+   1. memory (so the page keeps working even if the browser blocks storage),
+   2. this browser's storage (instant, works offline),
+   3. the artifact's cloud database (survives cleared browsers and syncs other devices).
+   Each save is stamped with the time, and when the browser and the cloud disagree the newest copy wins. */
+const MEM = {};
+const copy = v => v === undefined ? v : JSON.parse(JSON.stringify(v));
+const localT = k => { try { return +localStorage.getItem("ctc-t-" + k) || 0; } catch (e) { return MEM_T[k] || 0; } };
+const MEM_T = {};
 const store = {
-  get(k, d) { try { const v = localStorage.getItem("ctc-" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem("ctc-" + k, JSON.stringify(v)); } catch (e) {} }
+  get(k, d) {
+    if (k in MEM) return copy(MEM[k]);
+    try { const v = localStorage.getItem("ctc-" + k); if (v != null) { MEM[k] = JSON.parse(v); return copy(MEM[k]); } } catch (e) {}
+    return d;
+  },
+  set(k, v) {
+    const t = Math.max(Date.now(), localT(k) + 1);
+    MEM[k] = copy(v); MEM_T[k] = t;
+    try { localStorage.setItem("ctc-" + k, JSON.stringify(v)); localStorage.setItem("ctc-t-" + k, String(t)); } catch (e) {}
+    cloudQueue(k, v, t);
+  }
 };
+// Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
+const isCloudKey = k => /^(best|seen|drawing|sc_crys|sc_balls|sc_ball|sc_shield|ty_acct_[a-z]+)$/.test(k);
+let CLOUD = null, cloudTimer = null, saveState = "connecting";
+const pending = new Map();
+function cloudQueue(k, v, t) {
+  if (!isCloudKey(k)) return;
+  pending.set(k, { v: copy(v), t });
+  if (CLOUD) { clearTimeout(cloudTimer); cloudTimer = setTimeout(cloudFlush, 250); }
+  showSaveState();
+}
+async function cloudFlush() {
+  if (!CLOUD || !pending.size) return showSaveState();
+  const items = [...pending]; pending.clear();
+  for (const [k, item] of items) {
+    try {
+      await CLOUD.doc("saves/" + k).set({ k, v: item.v, t: item.t });
+      if (saveState !== "cloud") { saveState = "cloud"; }
+    } catch (e) {
+      const code = e && e.code;
+      if (!pending.has(k)) pending.set(k, item);       // never drop a save: keep it for the next try
+      if (code === "unavailable" || code === "resource_exhausted" || !code) { clearTimeout(cloudTimer); cloudTimer = setTimeout(cloudFlush, 2000 + Math.random() * 2000); }
+      else if (code === "invalid_argument" && k === "drawing") pending.delete(k); // a huge drawing stays on this device only
+      else saveState = "local";
+    }
+  }
+  showSaveState();
+}
+function showSaveState() {
+  const el = document.getElementById("save-state");
+  if (!el) return;
+  const busy = pending.size > 0;
+  el.className = "save-state " + (saveState === "cloud" ? (busy ? "saving" : "ok") : saveState === "connecting" ? "saving" : "warn");
+  el.textContent = saveState === "cloud" ? (busy ? "Saving…" : "✓ Progress saved") : saveState === "connecting" ? "Connecting save…" : "Saved on this device only";
+  el.title = saveState === "local" ? "Your progress is saved in this browser. To also save it online, open the page while signed in to Claude, with Contributor access or higher." : "";
+}
+// Connect to the cloud save, merge it with this browser's saves, and keep them in sync.
+async function cloudConnect() {
+  const db = window.claude && window.claude.use ? await window.claude.use("db").catch(() => null) : null;
+  if (!db) { saveState = "local"; return showSaveState(); }
+  try {
+    const snap = await db.collection("saves").get();
+    const remote = {};
+    let changed = false;
+    snap.docs.forEach(d => {
+      const x = d.data(); if (!x || typeof x.k !== "string" || !isCloudKey(x.k)) return;
+      remote[x.k] = x.t || 0;
+      if ((x.t || 0) > localT(x.k)) {
+        MEM[x.k] = copy(x.v); MEM_T[x.k] = x.t;
+        try { localStorage.setItem("ctc-" + x.k, JSON.stringify(x.v)); localStorage.setItem("ctc-t-" + x.k, String(x.t)); } catch (e) {}
+        changed = true;
+      }
+    });
+    // Anything this browser has that is newer than the cloud gets uploaded.
+    const localKeys = new Set(Object.keys(MEM));
+    try { for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key && key.startsWith("ctc-") && !key.startsWith("ctc-t-")) localKeys.add(key.slice(4)); } } catch (e) {}
+    localKeys.forEach(k => { if (isCloudKey(k) && localT(k) > (remote[k] || 0)) pending.set(k, { v: store.get(k), t: localT(k) }); });
+    CLOUD = db; saveState = "cloud";
+    await cloudFlush();
+    if (changed && document.getElementById("gamesmenu")) showHome();   // show the synced progress on the main page
+  } catch (e) {
+    saveState = "local"; showSaveState();
+    setTimeout(cloudConnect, 8000);   // try again in a moment
+  }
+}
+// Last chance before the page closes or is hidden: push anything waiting.
+const flushNow = () => { if (CLOUD && pending.size) { clearTimeout(cloudTimer); cloudFlush(); } };
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushNow(); });
+window.addEventListener("pagehide", flushNow);
 let keyHandler = null;
 document.addEventListener("keydown", e => { if (keyHandler) keyHandler(e); });
 
@@ -1875,8 +1963,8 @@ function slopeStep(dt) {
   const seg = slopeSeg(Math.floor(S.dist));
   const onGround = S.y <= .01;
   // crystals
-  seg.crystals.forEach(c => { if (!c.got && Math.abs(S.x - c.x) < .55 && S.y < 1.3) { c.got = true; S.crys++; S.pops.push({ txt: "+1", t: 0, crystal: true }); tone([1175, 1568], .04, "square", .04); } });
-  if (seg.glass && !seg.smashed) { seg.smashed = true; S.crys++; S.pops.push({ txt: "SMASH! +1", t: 0 }); tone([1500, 900, 600], .03, "square", .05); }
+  seg.crystals.forEach(c => { if (!c.got && Math.abs(S.x - c.x) < .55 && S.y < 1.3) { c.got = true; S.crys++; store.set("sc_crys", scBank() + 1); S.pops.push({ txt: "+1", t: 0, crystal: true }); tone([1175, 1568], .04, "square", .04); } });
+  if (seg.glass && !seg.smashed) { seg.smashed = true; S.crys++; store.set("sc_crys", scBank() + 1); S.pops.push({ txt: "SMASH! +1", t: 0 }); tone([1500, 900, 600], .03, "square", .05); }
   if (S.inv > 0) return;
   if (onGround && (Math.abs(S.x) > HW + .15 || seg.gaps.some(([a, b]) => S.x > a && S.x < b))) slopeHit("fall");
   else if (seg.blocks.some(([a, b]) => S.x + .3 > a && S.x - .3 < b)) slopeHit("crash");
@@ -2012,7 +2100,7 @@ function slopeOver() {
   const d = Math.floor(S.dist), best = store.get("best", {}), k = bestKey("slope");
   const nb = !best[k] || d > best[k];
   if (nb) { best[k] = d; store.set("best", best); }
-  store.set("sc_crys", scBank() + S.crys);
+  // (crystals were already saved one by one as they were collected)
   const o = document.getElementById("s-over");
   o.innerHTML = `<h2>${S.dead === "crash" ? "Crash!" : "You fell!"}</h2><p class="big money">${d} m</p><p>${nb ? "New best distance!" : `Best: ${fmt(best[k])} m`} · ${crystalIcon()} +${S.crys} crystals</p>
     ${slopeShopRow()}<div class="row" style="justify-content:center"><button class="btn go" id="s-go">Play again</button><button class="btn" id="s-menu">Menu</button></div>`;
@@ -3578,6 +3666,15 @@ function bunnyGame() {
     if (nx) nx.textContent = peek ? `👀 coming up: ${M.plats.slice(M.cur + 2, M.cur + 2 + peek).map(p => p.word).join(", ")}` : "";
     document.getElementById("ty-word").innerHTML = `${[...tgt].map((l, i) => `<span class="${i < typed.length ? "ok" : ""}">${l}</span>`).join("")}`;
   };
+  // Save progress after every word, so nothing is lost if the page closes mid-game.
+  const bank = () => {
+    const a2 = tyLoad(TY), key = M.extreme ? "extreme" : hard() ? "hard" : "easy";
+    a2.carrots += M.carrots - M.bankC; a2.words += M.words - M.bankW;
+    M.bankC = M.carrots; M.bankW = M.words;
+    a2.best[key] = Math.max(a2.best[key] || 0, M.words);
+    if (M.extreme) { a2.topWpm = Math.max(a2.topWpm || 0, M.topWpm); if (M.beatWR) a2.beatWR = true; }
+    tySave(TY, a2);
+  };
   const hop = () => {
     const from = M.plats[M.cur], to = M.plats[M.cur + 1];
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
@@ -3614,6 +3711,7 @@ function bunnyGame() {
       for (let r = 0; r < R(2, 3); r++) hop();
       M.rocketing = false;
     }
+    bank();
   };
   const fall = () => {
     const p = M.plats[M.cur]; p.gone = true;
@@ -3641,11 +3739,9 @@ function bunnyGame() {
   document.getElementById("ty-skip")?.addEventListener("click", skip);
   inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); skip(); } });
   function over() {
+    bank();
     const a2 = tyLoad(TY), key = M.extreme ? "extreme" : hard() ? "hard" : "easy";
-    if (M.extreme) { a2.topWpm = Math.max(a2.topWpm || 0, M.topWpm); if (M.beatWR) a2.beatWR = true; }
-    const nb = M.words > (a2.best[key] || 0);
-    if (nb) a2.best[key] = M.words;
-    a2.carrots += M.carrots; a2.words += M.words; tySave(TY, a2);
+    const nb = M.words > M.startBest;
     M.goalLog.push(...tyCheckLife(TY));
     a2.carrots = tyLoad(TY).carrots;
     const acc = M.typed ? Math.round((M.typed - M.miss) / M.typed * 100) : 100;
@@ -3735,6 +3831,8 @@ function bunnyGame() {
       extreme: TY_EXTREME, wpm: TY_START_WPM, topWpm: TY_START_WPM, beatWR: false, flash: 0,
       goalLog: [] });
     if (has("bow")) M.carrots += R(3, 10);
+    M.bankC = 0; M.bankW = 0;
+    M.startBest = tyLoad(TY).best[M.extreme ? "extreme" : hard() ? "hard" : "easy"] || 0;
     closeShop();
     newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); // enough platforms ahead to peek at 3 words
     M.left = M.tmax = platTime(M.plats[1].word) + 1.5;
@@ -4209,4 +4307,6 @@ new MutationObserver(() => {
 }).observe($app, { childList: true });
 
 showHome();
+showSaveState();
+cloudConnect();
 </script>
