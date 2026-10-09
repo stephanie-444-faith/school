@@ -3633,6 +3633,19 @@ const tyChampions = () => tyTitles().carrot;
 const isChamp = id => tyTitles().carrot.includes(id);
 const isSpeedChamp = id => tyTitles().speed.includes(id);
 const mustPick = id => tyTitles().undecided.includes(id);
+// Becoming Carrot Champion pays a one-time 100 carrot prize (again each time you win the title back).
+const TY_CHAMP_PRIZE = 100;
+function tyChampPrize() {
+  const champs = tyTitles().carrot, won = [];
+  TY_ACCOUNTS.forEach(ac => {
+    const a = tyLoad(ac.id), now = champs.includes(ac.id);
+    if (now === !!a.wasChamp) return;
+    a.wasChamp = now;
+    if (now) { a.carrots += TY_CHAMP_PRIZE; won.push(ac.id); }
+    tySave(ac.id, a);
+  });
+  return won;
+}
 // Items marked fixedPrice cost the same for everyone (no Champion discount).
 const tyPrice = (item, id) => !item.fixedPrice && isChamp(id) ? Math.ceil(item.cost / 2) : item.cost;
 const lifeWait = a => Math.max(0, (a.lifeAt || 0) + TY_LIFE_MS - Date.now());
@@ -3741,6 +3754,7 @@ function bunnyLobby() {
   const ac = TY_ACCOUNTS.find(x => x.id === TY);
   const a0 = tyLoad(TY);
   const fresh = tyCheckLife(TY);
+  if (tyChampPrize().includes(TY)) { sfx.buy(); toast(`⭐ You're the new Carrot Champion! +${TY_CHAMP_PRIZE} 🥕 prize!`); }
   fresh.forEach((g, i) => setTimeout(() => toast(`🎯 Goal done: ${g.name}! +${g.reward} 🥕 New goal unlocked!`), i * 2000));
   const a = tyLoad(TY);
   $app.innerHTML = `
@@ -3911,6 +3925,7 @@ function bunnyGame() {
     // Speed: standard words per minute (5 letters = 1 word), only after 10 typed words so it's fair
     if (M.typedWords >= 10 && M.playT > 3) a2.speedWpm = Math.max(a2.speedWpm || 0, Math.round(M.chars / 5 / (M.playT / 60)));
     tySave(TY, a2);
+    if (tyChampPrize().includes(TY)) { toast(`⭐ You're the new Carrot Champion! +${TY_CHAMP_PRIZE} 🥕 prize!`); sfx.buy(); }
   };
   const hop = () => {
     const from = M.plats[M.cur], to = M.plats[M.cur + 1];
