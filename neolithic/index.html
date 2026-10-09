@@ -3661,6 +3661,27 @@ const tyChampions = () => tyTitles().carrot;
 const isChamp = id => tyTitles().carrot.includes(id);
 const isSpeedChamp = id => tyTitles().speed.includes(id);
 const mustPick = id => tyTitles().undecided.includes(id);
+// 🏛️ Carrot tax and 🎁 donations (counting only carrots earned from now on):
+// for every 100 carrots a player earns, the richest player pays 10 carrots tax (10%),
+// and a player who isn't any kind of champion gets a 10 carrot donation.
+function tyTax(id, earned) {
+  if (!(earned > 0)) return;
+  const a = tyLoad(id);
+  a.earnBucket = (a.earnBucket || 0) + earned;
+  let tax = 0, gift = 0;
+  while (a.earnBucket >= 100) {
+    a.earnBucket -= 100;
+    const top = Math.max(...TY_ACCOUNTS.map(x => x.id === id ? a.carrots : tyLoad(x.id).carrots));
+    const t = tyTitles(), champ = t.carrot.includes(id) || t.speed.includes(id) || t.undecided.includes(id);
+    if (a.carrots >= top) { const n = Math.min(10, a.carrots); a.carrots -= n; tax += n; }
+    else if (!champ) { a.carrots += 10; gift += 10; }
+  }
+  a.taxPaid = (a.taxPaid || 0) + tax; a.donations = (a.donations || 0) + gift;
+  tySave(id, a);
+  if (id !== TY) return;
+  if (tax) toast(`🏛️ Carrot tax: the richest player pays ${tax} 🥕 (10% of every 100 earned).`);
+  if (gift) { toast(`🎁 Donation! You got ${gift} free 🥕 for earning 100 carrots.`); sfx.buy(); }
+}
 // Becoming Carrot Champion pays a one-time 100 carrot prize (again each time you win the title back).
 const TY_CHAMP_PRIZE = 100;
 function tyChampPrize() {
@@ -3775,6 +3796,7 @@ function tyQuestWin(id, q) {
   a.goalsDone = (a.goalsDone || 0) + 1;
   a.carrots += reward;
   tySave(id, a);
+  tyTax(id, reward);
   return { name: `Quest #${q.n}: ${q.desc}`, reward, icon: q.icon };
 }
 // Pays for a finished goal and moves that track up one level. Returns what was earned.
@@ -3786,6 +3808,7 @@ function tyLevelUp(id, tr) {
   a.goalsDone = (a.goalsDone || 0) + 1;
   a.carrots += reward;
   tySave(id, a);
+  tyTax(id, reward);
   return { name: tr.desc(t), reward, icon: tr.icon };
 }
 // Keeps finishing life goals for as long as they're met (one purchase can complete several).
@@ -3815,7 +3838,9 @@ function bunnyLobby() {
       <div class="ty-hero">${tyWear(a, "ty-big")}
         <div><h2>${esc(ac.name)}</h2><p>🥕 <b>${a.carrots}</b> carrots · ${a.words} words typed</p>
         <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0} · Extreme ${a.best.extreme || 0}${a.topWpm ? ` (top ${a.topWpm} WPM${a.beatWR ? " 🏆" : ""})` : ""}</p>
-        <p class="soft">⚡ Your fastest typing speed: <b>${a.speedWpm || 0} WPM</b></p></div></div>
+        <p class="soft">⚡ Your fastest typing speed: <b>${a.speedWpm || 0} WPM</b></p>
+        <p class="soft">🏛️ Taxes paid: <b>${a.taxPaid || 0}</b> · 🎁 Donations received: <b>${a.donations || 0}</b></p></div></div>
+      <p class="soft">🏛️ For every 100 carrots earned, the richest player pays 10% tax (10 carrots), and players who aren't a champion get a 10 carrot donation.</p>
       ${mustPick(TY) ? `<div class="ty-champbox pickbox"><b>🏆 You won BOTH titles!</b> You can only be one champion at a time, so pick one for today (until you pick, you're Carrot Champion). The other title goes to the next best player. Tomorrow you can pick again.
         <div class="ty-pickrow"><button class="btn" data-pick="carrot">⭐ Be Carrot Champion today</button><button class="btn" data-pick="speed">⚡ Be Speed Champion today</button></div></div>` : ""}
       ${isSpeedChamp(TY) ? `<div class="ty-champbox speedbox"><b>⚡ Speed Champion!</b> You're the fastest typer, so you can buy the Speed Champion characters and accessories, plus all the best ⭐ Champion Accessories (even the Planet Ring)!</div>`
@@ -4133,14 +4158,15 @@ function bunnyGame() {
   };
   // Save progress after every word, so nothing is lost if the page closes mid-game.
   const bank = () => {
-    const a2 = tyLoad(TY), key = M.extreme ? "extreme" : hard() ? "hard" : "easy";
-    a2.carrots += M.carrots - M.bankC; a2.words += M.words - M.bankW;
+    const a2 = tyLoad(TY), key = M.extreme ? "extreme" : hard() ? "hard" : "easy", earned = M.carrots - M.bankC;
+    a2.carrots += earned; a2.words += M.words - M.bankW;
     M.bankC = M.carrots; M.bankW = M.words;
     a2.best[key] = Math.max(a2.best[key] || 0, M.words);
     if (M.extreme) { a2.topWpm = Math.max(a2.topWpm || 0, M.topWpm); if (M.beatWR) a2.beatWR = true; }
     // Speed: standard words per minute (5 letters = 1 word), only after 10 typed words so it's fair
     if (M.typedWords >= 10 && M.playT > 3) a2.speedWpm = Math.max(a2.speedWpm || 0, Math.round(M.chars / 5 / (M.playT / 60)));
     tySave(TY, a2);
+    tyTax(TY, earned);
     if (tyChampPrize().includes(TY)) { toast(`⭐ You're the new Carrot Champion! +${TY_CHAMP_PRIZE} 🥕 prize!`); sfx.buy(); }
   };
   // 💬 Coach: pop-up tips while you type, telling you how to become Carrot or Speed Champion.
