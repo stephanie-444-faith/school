@@ -375,6 +375,23 @@
   .tr-line .bad { color: var(--bad); background: rgba(255,90,90,.18); border-radius: 3px; }
   .tr-line .cur { border-bottom: 3px solid var(--gold); }
   .tr-stats { font-weight: 700; }
+  .tr-next { min-height: 1.6em; font-size: 1.1rem; text-align: center; margin: 4px 0; }
+  .tr-big { font-size: 1.5rem; padding: 0 6px; background: var(--panel-2); border-radius: 6px; }
+  .kb { display: flex; flex-direction: column; gap: 5px; align-items: center; margin: 8px 0; user-select: none; }
+  .kb-row { display: flex; gap: clamp(2px, .8vw, 4px); }
+  .kb-row.r2 { margin-left: clamp(6px, 2vw, 14px); } .kb-row.r3 { margin-left: clamp(12px, 4vw, 30px); }
+  .kb-key { width: clamp(20px, 6.4vw, 44px); height: clamp(28px, 8vw, 44px); display: grid; place-items: center; border-radius: 7px; font-weight: 700; font-size: clamp(.75rem, 3vw, 1rem);
+    background: color-mix(in srgb, var(--fc) 30%, var(--panel-2)); border: 2px solid color-mix(in srgb, var(--fc) 60%, transparent); color: var(--text, #fff); transition: transform .1s; }
+  .kb-key.wide { width: clamp(26px, 8vw, 60px); }
+  .kb-key.space { width: clamp(150px, 50vw, 280px); font-size: .8rem; }
+  .kb-key.bump { text-decoration: underline; text-underline-offset: 4px; }
+  .kb-key.next { background: var(--fc); color: #111; transform: scale(1.18); box-shadow: 0 0 14px var(--fc); border-color: #fff; }
+  .tr-hands { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin: 4px 0 8px; }
+  .tr-finger { font-size: .75rem; padding: 3px 7px; border-radius: 99px; border: 2px solid var(--fc); opacity: .55; }
+  .tr-finger.on { background: var(--fc); color: #111; opacity: 1; font-weight: 700; }
+  .tr-plan { background: linear-gradient(135deg, #4a3a1a, var(--panel-2)); border: 2px solid var(--gold); border-radius: 14px; padding: 10px 14px; margin: 10px 0; }
+  .tr-plan ol { margin: 6px 0 0; padding-left: 20px; line-height: 1.5; }
+  .tr-plan li { margin-bottom: 4px; }
   .ring-list { text-align: left; font-size: .82rem; width: 100%; }
   .ring-list summary { cursor: pointer; color: var(--gold); font-weight: 700; text-align: center; }
   .ring-list ul { margin: 6px 0 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 3px; color: var(--ink-soft); }
@@ -3880,13 +3897,39 @@ function bunnyLobby() {
   }));
 }
 
+// 🛒 Shop advisor: which item would help this player earn carrots fastest (to win Carrot Champion).
+const tyCharPower = c => ({ unicorn: 2, dragon: 3, trex: 4, whale: 1.5 }[c.id] || c.perks?.mult || 1);
+const tyCharPlus = c => (c.id === "bee" ? 1 : 0) + (c.perks?.plus || 0);
+const tyAccPower = x => !x ? 1 : x.perks?.mult || 1;
+const tyAccPlus = x => !x ? 0 : ({ tophat: 1, cape: 1, ring: 4, crown: .5, magnet: .5, clover: .5, bow: .2 }[x.id] || 0) + (x.perks?.plus || 0) + (x.id === "comet" ? 4 : 0);
+const tyPerWord = (c, x) => tyCharPower(c) * tyAccPower(x) + tyCharPlus(c) + tyAccPlus(x);
+function tyShopTip(id) {
+  const a = tyLoad(id), c0 = tyChar(a), x0 = tyAcc(a), now = tyPerWord(c0, x0);
+  const canBuy = it => (!it.champ || isChamp(id) || (TY_ACC.includes(it) && isSpeedChamp(id))) && (!it.speed || isSpeedChamp(id));
+  const opts = [
+    ...TY_CHARS.filter(c => !a.owned.includes(c.id) && canBuy(c)).map(c => ({ it: c, kind: "char", per: tyPerWord(c, x0) })),
+    ...TY_ACC.filter(x => !a.accOwned.includes(x.id) && canBuy(x)).map(x => ({ it: x, kind: "acc", per: tyPerWord(c0, x) }))
+  ].map(o => ({ ...o, gain: o.per - now, price: tyPrice(o.it, id) })).filter(o => o.gain >= .5);
+  // also: something they already own but aren't using
+  const ownBest = [...TY_CHARS.filter(c => a.owned.includes(c.id)).map(c => ({ it: c, per: tyPerWord(c, x0) })), ...TY_ACC.filter(x => a.accOwned.includes(x.id)).map(x => ({ it: x, per: tyPerWord(c0, x) }))].sort((p, q) => q.per - p.per)[0];
+  const per = n => `${Math.round(n * 10) / 10}`;
+  if (ownBest && ownBest.per - now >= .5) return `🛒 You already own the ${ownBest.it.emoji} ${ownBest.it.name}! Use it to earn about ${per(ownBest.per)} carrots a word instead of ${per(now)}.`;
+  const afford = opts.filter(o => o.price <= a.carrots).sort((p, q) => q.gain - p.gain || p.price - q.price)[0];
+  if (afford) return `🛒 Buy the ${afford.it.emoji} <b>${afford.it.name}</b> for ${fmt(afford.price)} 🥕. You'll earn about ${per(afford.per)} carrots a word instead of ${per(now)}, so you'll win faster!`;
+  const save = opts.sort((p, q) => q.gain / q.price - p.gain / p.price)[0];
+  if (save) return `🛒 Save up for the ${save.it.emoji} <b>${save.it.name}</b> (${fmt(save.price - a.carrots)} more carrots). It earns about ${per(save.per)} carrots a word instead of ${per(now)}!`;
+  return "🛒 You already have the best carrot gear you can buy. Play on Hard (2× carrots) or Extreme (3× carrots) to earn even more!";
+}
+
 // 🌀 Training Ground: practice typing with no lives and no falling. Shows speed (WPM) and accuracy.
 const TY_DRILLS = {
-  home: { name: "Home row", desc: "a s d f · j k l", letters: "asdfjkl" },
-  top: { name: "Top row", desc: "q w e r t y u i o p", letters: "qwertyuiop" },
-  bottom: { name: "Bottom row", desc: "z x c v b n m", letters: "zxcvbnm" },
-  easy: { name: "Easy words", desc: "short, common words" },
-  hard: { name: "Long words", desc: "bigger words for speed" }
+  fj: { name: "1. Find F & J", desc: "pointer fingers", letters: "fj" },
+  home: { name: "2. Home row", desc: "a s d f · j k l ;", letters: "asdfjkl;" },
+  gh: { name: "3. Reach G & H", desc: "stretch pointers", letters: "asdfghjkl" },
+  top: { name: "4. Top row", desc: "q w e r t y u i o p", letters: "qwertyuiop" },
+  bottom: { name: "5. Bottom row", desc: "z x c v b n m", letters: "zxcvbnm" },
+  easy: { name: "6. Easy words", desc: "short, common words" },
+  hard: { name: "7. Long words", desc: "bigger words for speed" }
 };
 const TY_TIPS = [
   "Rest your fingers on the home row: left hand on A S D F, right hand on J K L ;. Feel the bumps on F and J!",
@@ -3900,7 +3943,7 @@ function tyTraining() {
   stopMini(); stopSlope(); stopArchers();
   keyHandler = null;
   const ac = TY_ACCOUNTS.find(x => x.id === TY);
-  let drill = "home", lines = 0, best = 0, T = null;
+  let drill = "fj", lines = 0, best = 0, T = null, demo = 0;
   const makeLine = () => {
     const d = TY_DRILLS[drill], out = [];
     if (d.letters) for (let i = 0; i < 6; i++) { let w = ""; const n = rnd(3, 5); for (let k = 0; k < n; k++) w += d.letters[rnd(0, d.letters.length - 1)]; out.push(w); }
@@ -3918,11 +3961,25 @@ function tyTraining() {
         <div class="row tr-drills">${Object.entries(TY_DRILLS).map(([k, d]) => `<button class="chip" data-drill="${k}" aria-pressed="${k === drill}"><b>${d.name}</b><span>${d.desc}</span></button>`).join("")}</div>
         <div class="tr-line" id="tr-line"></div>
         <input id="tr-in" class="ty-in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Start typing here" aria-label="Type the line">
+        <div class="tr-next" id="tr-next"></div>
+        ${kbHTML()}
+        <div class="tr-hands">${FINGERS.map(f => `<span class="tr-finger" data-f="${f.id}" style="--fc:${f.color}">${f.label}</span>`).join("")}</div>
+        <div class="row"><button class="btn" id="tr-demo">▶ Show me how</button></div>
         <p class="tr-stats" id="tr-stats">Speed: 0 WPM · Correct: 100% · Lines done: ${lines} · Best: ${best} WPM</p>
+        <div class="tr-plan"><h3>⭐ How to win the Carrot Championship</h3><ol>
+          <li><b>Hands on the home row.</b> Left fingers on A S D F, right fingers on J K L ;. Thumbs rest on the space bar.</li>
+          <li><b>Every finger has its own keys.</b> Look at the colors on the keyboard above. Reach up or down, then come back home.</li>
+          <li><b>Be correct, not just fast.</b> No mistakes keeps your streak going, and streaks give bonus carrots.</li>
+          <li><b>Type the word the moment the platform appears.</b> Read the next word while you're still hopping (Cool Shades or the Crystal Ball show it early).</li>
+          <li><b>Play harder levels.</b> Hard gives 2× carrots and Extreme gives 3×, once you're ready.</li>
+          <li><b>Finish goals and Goal Quests.</b> They pay lots of free carrots.</li>
+          <li><b>Buy carrot boosters.</b> ${tyShopTip(TY)}</li>
+        </ol></div>
         <p class="soft">⚡ Your Bunny Hop record: <b>${a.speedWpm || 0} WPM</b>${t.speed.length && !t.speed.includes(TY) ? ` · The Speed Champion has <b>${tyLoad(t.speed[0]).speedWpm} WPM</b>` : t.speed.includes(TY) ? " · You're the Speed Champion!" : ""}</p>
       </div>`;
     document.getElementById("tr-back").addEventListener("click", bunnyLobby);
     $app.querySelectorAll("[data-drill]").forEach(b => b.addEventListener("click", () => { drill = b.dataset.drill; render(); }));
+    document.getElementById("tr-demo").addEventListener("click", showMe);
     newLine();
   };
   const newLine = () => {
@@ -3952,14 +4009,55 @@ function tyTraining() {
       html += i < v.length ? `<span class="${v[i] === txt[i] ? "ok" : "bad"}">${c}</span>` : i === v.length ? `<span class="cur">${c}</span>` : `<span>${c}</span>`;
     }
     el.innerHTML = html;
+    const wrong = [...v].some((ch, i) => ch !== txt[i]);
+    showKey(wrong ? "back" : txt[v.length]);
     if (T.start && v.length) {
       const mins = (performance.now() - T.start) / 60000, wpm = Math.round(v.length / 5 / Math.max(mins, 1 / 600));
       let right = 0; for (let i = 0; i < v.length; i++) if (v[i] === txt[i]) right++;
       document.getElementById("tr-stats").textContent = `Speed: ${wpm} WPM · Correct: ${Math.round(right / v.length * 100)}% · Lines done: ${lines} · Best: ${best} WPM`;
     }
   };
+  // keyboard helpers
+  function kbHTML() {
+    const row = (keys, cls = "") => `<div class="kb-row ${cls}">${keys.map(k => { const f = keyFinger(k); return `<span class="kb-key${k === "f" || k === "j" ? " bump" : ""}${k === "back" ? " wide" : ""}" data-k="${esc(k)}" style="--fc:${f.color}">${k === "back" ? "⌫" : k.toUpperCase()}</span>`; }).join("")}</div>`;
+    return `<div class="kb" aria-hidden="true">${row([..."qwertyuiop", "back"])}${row([..."asdfghjkl;"], "r2")}${row([..."zxcvbnm,./"], "r3")}<div class="kb-row"><span class="kb-key space" data-k=" " style="--fc:${FINGERS[8].color}">space</span></div></div>`;
+  }
+  function showKey(k) {
+    document.querySelectorAll(".kb-key.next, .tr-finger.on").forEach(e => e.classList.remove("next", "on"));
+    const box = document.getElementById("tr-next");
+    if (k == null) { box.innerHTML = "🎉 Line done!"; return; }
+    const f = keyFinger(k);
+    document.querySelector(`.kb-key[data-k="${k === " " ? " " : CSS.escape(k)}"]`)?.classList.add("next");
+    document.querySelector(`.tr-finger[data-f="${f.id}"]`)?.classList.add("on");
+    const name = k === "back" ? "⌫ Backspace (oops, fix the mistake!)" : k === " " ? "the SPACE bar" : `<b class="tr-big">${esc(k.toUpperCase())}</b>`;
+    box.innerHTML = `Now press ${name} with your <b style="color:${f.color}">${f.name}</b>${f.id === "th" ? "" : ` (${f.hand} hand)`}`;
+  }
+  function showMe() {
+    const my = ++demo, txt = T.text.split(" ")[0] + " ";
+    let i = 0;
+    const step = () => {
+      if (my !== demo || !document.getElementById("tr-line")) return;
+      if (i >= txt.length) { demo++; paint(document.getElementById("tr-in").value); return; }
+      showKey(txt[i]); tone([440 + i * 40], .06, "triangle", .05); i++;
+      setTimeout(step, 700);
+    };
+    step();
+  }
   render();
 }
+// Which finger presses each key (standard touch typing).
+const FINGERS = [
+  { id: "lp", name: "pinky", hand: "left", label: "L pinky", color: "#ff7aa8", keys: "qaz" },
+  { id: "lr", name: "ring finger", hand: "left", label: "L ring", color: "#ffb35c", keys: "wsx" },
+  { id: "lm", name: "middle finger", hand: "left", label: "L middle", color: "#ffe066", keys: "edc" },
+  { id: "li", name: "pointer finger", hand: "left", label: "L pointer", color: "#7ee08a", keys: "rfvtgb" },
+  { id: "ri", name: "pointer finger", hand: "right", label: "R pointer", color: "#5cc8ff", keys: "yhnujm" },
+  { id: "rm", name: "middle finger", hand: "right", label: "R middle", color: "#b49cff", keys: "ik," },
+  { id: "rr", name: "ring finger", hand: "right", label: "R ring", color: "#ff9de0", keys: "ol." },
+  { id: "rp", name: "pinky", hand: "right", label: "R pinky", color: "#ff8f6b", keys: "p;/'" },
+  { id: "th", name: "thumb", hand: "", label: "Thumbs", color: "#d9d9e3", keys: " " }
+];
+const keyFinger = k => k === "back" ? FINGERS[7] : FINGERS.find(f => f.keys.includes(k)) || FINGERS[8];
 
 function bunnyGame() {
   const a = tyLoad(TY), ch = tyChar(a), ac = TY_ACCOUNTS.find(x => x.id === TY), acc = tyAcc(a), RING = !!acc && ["ring", "planet", "comet"].includes(acc.id);
@@ -4038,11 +4136,11 @@ function bunnyGame() {
     if (M.coachN++ % 2 === 0) {
       if (t.carrot.includes(TY)) {
         const next = others.sort((x, y) => y.carrots - x.carrots)[0];
-        msg = `⭐ You're the Carrot Champion! ${next ? `${esc(nameOf(next.id))} is ${fmt(me.carrots - next.carrots)} carrots behind you. Keep hopping!` : ""}`;
+        msg = `⭐ You're the Carrot Champion! ${next ? `${esc(nameOf(next.id))} is ${fmt(me.carrots - next.carrots)} carrots behind you. Keep hopping!` : ""}<br>${tyShopTip(TY)}`;
       } else {
         const top = others.filter(x => t.carrot.includes(x.id))[0] || others.sort((x, y) => y.carrots - x.carrots)[0];
         const need = top ? top.carrots - me.carrots + 1 : 1;
-        msg = `⭐ Get <b>${fmt(Math.max(1, need))} more carrots</b>${top ? ` to pass ${esc(nameOf(top.id))}` : ""} and become Carrot Champion! Tip: long streaks and goals give lots of carrots.`;
+        msg = `⭐ Get <b>${fmt(Math.max(1, need))} more carrots</b>${top ? ` to pass ${esc(nameOf(top.id))}` : ""} and become Carrot Champion!<br>${tyShopTip(TY)}`;
       }
     } else {
       if (t.speed.includes(TY)) msg = `⚡ You're the Speed Champion with ${me.speedWpm} WPM! Right now you're typing ${runWpm} WPM.`;
