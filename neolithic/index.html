@@ -365,6 +365,16 @@
   .acc-side { right: -.35em; bottom: 0; }
   .acc-back { left: -.4em; top: .1em; }
   .ty-next { font-size: .95rem; min-height: 1.2em; }
+  .ty-coach { background: #2e1a4a; border: 2px solid #c79bff; border-radius: 14px; padding: 10px 14px; max-width: 520px; line-height: 1.45; animation: coachIn .25s ease-out; }
+  .ty-coach .row { margin-top: 8px; gap: 8px; flex-wrap: wrap; }
+  @keyframes coachIn { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .ty-tip { background: var(--panel-2); border-left: 4px solid var(--gold); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .tr-drills { flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .tr-line { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: clamp(1.1rem, 4.5vw, 1.6rem); background: var(--panel-2); border-radius: 12px; padding: 14px; margin: 8px 0; white-space: pre-wrap; letter-spacing: .04em; }
+  .tr-line .ok { color: var(--money); }
+  .tr-line .bad { color: var(--bad); background: rgba(255,90,90,.18); border-radius: 3px; }
+  .tr-line .cur { border-bottom: 3px solid var(--gold); }
+  .tr-stats { font-weight: 700; }
   .ring-list { text-align: left; font-size: .82rem; width: 100%; }
   .ring-list summary { cursor: pointer; color: var(--gold); font-weight: 700; text-align: center; }
   .ring-list ul { margin: 6px 0 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 3px; color: var(--ink-soft); }
@@ -3778,7 +3788,7 @@ function bunnyLobby() {
       ${isChamp(TY) ? `<div class="ty-champbox"><b>⭐ Carrot Champion!</b> You have the most carrots, so you get <b>50% off</b> everything and a <b>free extra life</b> every 10 minutes.
         <span id="ty-life">${lifeWait(a) ? `Next free life in ${formatTime(Math.ceil(lifeWait(a) / 1000))}.` : "Your free life is ready! It's added when you start a game."}</span></div>`
         : `<p class="soft">⭐ The account with the most carrots becomes Carrot Champion: 50% off everything and a free extra life every 10 minutes.</p>`}
-      <button class="btn go" id="ty-play">Play as ${tyChar(a).name}${tyAcc(a) ? ` with ${tyAcc(a).name}` : ""}</button>
+      <div class="row"><button class="btn go" id="ty-play">Play as ${tyChar(a).name}${tyAcc(a) ? ` with ${tyAcc(a).name}` : ""}</button><button class="btn" id="ty-train">🌀 Training Ground</button></div>
       <h3>Goals · ${a.goalsDone || 0} finished so far</h3>
       <p class="soft">Reach a goal to win free carrots. Every time you finish one, a harder goal with a bigger reward takes its place!</p>
       <div class="ty-goals">${TY_TRACKS.map(tr => {
@@ -3862,11 +3872,93 @@ function bunnyLobby() {
     el.textContent = w ? `Next free life in ${formatTime(Math.ceil(w / 1000))}.` : "Your free life is ready! It's added when you start a game.";
   }, 1000);
   document.getElementById("ty-play").addEventListener("click", bunnyGame);
+  document.getElementById("ty-train").addEventListener("click", tyTraining);
   $app.querySelectorAll("[data-char]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), c = TY_CHARS.find(x => x.id === b.dataset.char);
     if (!a2.owned.includes(c.id)) { if (c.champ && !c.anyone && !isChamp(TY)) return toast("Only the Carrot Champion can buy that one!"); if (c.speed && !isSpeedChamp(TY)) return toast("Only the Speed Champion can buy that one!"); const price = tyPrice(c, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.owned.push(c.id); sfx.buy(); toast(`You got ${c.name}!`); }
     a2.char = c.id; tySave(TY, a2); bunnyLobby();
   }));
+}
+
+// 🌀 Training Ground: practice typing with no lives and no falling. Shows speed (WPM) and accuracy.
+const TY_DRILLS = {
+  home: { name: "Home row", desc: "a s d f · j k l", letters: "asdfjkl" },
+  top: { name: "Top row", desc: "q w e r t y u i o p", letters: "qwertyuiop" },
+  bottom: { name: "Bottom row", desc: "z x c v b n m", letters: "zxcvbnm" },
+  easy: { name: "Easy words", desc: "short, common words" },
+  hard: { name: "Long words", desc: "bigger words for speed" }
+};
+const TY_TIPS = [
+  "Rest your fingers on the home row: left hand on A S D F, right hand on J K L ;. Feel the bumps on F and J!",
+  "Try to look at the screen, not your fingers.",
+  "Be correct first, then get fast. Speed comes from not making mistakes.",
+  "Use both hands. Each finger has its own keys to press.",
+  "Keep a steady rhythm, like a drum. Tap, tap, tap!",
+  "Sit up tall and keep your wrists off the desk."
+];
+function tyTraining() {
+  stopMini(); stopSlope(); stopArchers();
+  keyHandler = null;
+  const ac = TY_ACCOUNTS.find(x => x.id === TY);
+  let drill = "home", lines = 0, best = 0, T = null;
+  const makeLine = () => {
+    const d = TY_DRILLS[drill], out = [];
+    if (d.letters) for (let i = 0; i < 6; i++) { let w = ""; const n = rnd(3, 5); for (let k = 0; k < n; k++) w += d.letters[rnd(0, d.letters.length - 1)]; out.push(w); }
+    else { const L = TY_WORDS[drill]; for (let i = 0; i < 6; i++) out.push(L[rnd(0, L.length - 1)]); }
+    return out.join(" ");
+  };
+  const render = () => {
+    const a = tyLoad(TY), t = tyTitles();
+    $app.innerHTML = `
+      <div class="panel ty-wrap">
+        <div class="topline"><span class="label">🌀 Training Ground · ${esc(ac.name)}</span><button class="iconbtn" id="tr-back">🌀 Teleport back to Bunny Hop</button></div>
+        <h2>Practice your typing!</h2>
+        <p class="soft">No lives, no falling. Just practice! Type the line below and see how fast and how correct you are. (Practice doesn't change your champion speed. Play Bunny Hop to set a new record.)</p>
+        <div class="ty-tip">💡 ${TY_TIPS[rnd(0, TY_TIPS.length - 1)]}</div>
+        <div class="row tr-drills">${Object.entries(TY_DRILLS).map(([k, d]) => `<button class="chip" data-drill="${k}" aria-pressed="${k === drill}"><b>${d.name}</b><span>${d.desc}</span></button>`).join("")}</div>
+        <div class="tr-line" id="tr-line"></div>
+        <input id="tr-in" class="ty-in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Start typing here" aria-label="Type the line">
+        <p class="tr-stats" id="tr-stats">Speed: 0 WPM · Correct: 100% · Lines done: ${lines} · Best: ${best} WPM</p>
+        <p class="soft">⚡ Your Bunny Hop record: <b>${a.speedWpm || 0} WPM</b>${t.speed.length && !t.speed.includes(TY) ? ` · The Speed Champion has <b>${tyLoad(t.speed[0]).speedWpm} WPM</b>` : t.speed.includes(TY) ? " · You're the Speed Champion!" : ""}</p>
+      </div>`;
+    document.getElementById("tr-back").addEventListener("click", bunnyLobby);
+    $app.querySelectorAll("[data-drill]").forEach(b => b.addEventListener("click", () => { drill = b.dataset.drill; render(); }));
+    newLine();
+  };
+  const newLine = () => {
+    T = { text: makeLine(), start: 0, typed: 0, wrong: 0 };
+    const inp = document.getElementById("tr-in");
+    inp.value = ""; paint(""); inp.focus();
+    inp.oninput = () => {
+      const v = inp.value;
+      if (!T.start && v) T.start = performance.now();
+      if (v.length > T.typed) { T.typed = v.length; if (v[v.length - 1] !== T.text[v.length - 1]) { T.wrong++; tone([180], .05, "square", .03); } }
+      paint(v);
+      if (v === T.text) {
+        const mins = (performance.now() - T.start) / 60000, wpm = Math.round(T.text.length / 5 / Math.max(mins, 1 / 600));
+        const accu = Math.max(0, Math.round((1 - T.wrong / T.text.length) * 100));
+        lines++; best = Math.max(best, wpm); sfx.buy();
+        toast(`Line done! ${wpm} WPM, ${accu}% correct${accu === 100 ? " 🌟 Perfect!" : ""}`);
+        document.getElementById("tr-stats").textContent = `Last line: ${wpm} WPM · Correct: ${accu}% · Lines done: ${lines} · Best: ${best} WPM`;
+        newLine();
+      }
+    };
+  };
+  const paint = v => {
+    const el = document.getElementById("tr-line"), txt = T.text;
+    let html = "";
+    for (let i = 0; i < txt.length; i++) {
+      const c = esc(txt[i]);
+      html += i < v.length ? `<span class="${v[i] === txt[i] ? "ok" : "bad"}">${c}</span>` : i === v.length ? `<span class="cur">${c}</span>` : `<span>${c}</span>`;
+    }
+    el.innerHTML = html;
+    if (T.start && v.length) {
+      const mins = (performance.now() - T.start) / 60000, wpm = Math.round(v.length / 5 / Math.max(mins, 1 / 600));
+      let right = 0; for (let i = 0; i < v.length; i++) if (v[i] === txt[i]) right++;
+      document.getElementById("tr-stats").textContent = `Speed: ${wpm} WPM · Correct: ${Math.round(right / v.length * 100)}% · Lines done: ${lines} · Best: ${best} WPM`;
+    }
+  };
+  render();
 }
 
 function bunnyGame() {
@@ -3884,6 +3976,7 @@ function bunnyGame() {
   document.getElementById("m-home").addEventListener("click", bunnyLobby);
   document.getElementById("m-pad").innerHTML = `
     <div class="ty-type">
+      <div class="ty-coach" id="ty-coach" hidden></div>
       <div class="ty-word" id="ty-word" aria-live="polite"></div><div class="ty-next soft" id="ty-next"></div>
       <input id="ty-in" class="ty-in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type here" aria-label="Type the word">
       <div class="row ty-bar"><span id="ty-lives"></span><span id="ty-carrots"></span>${SKIPS ? `<button class="btn gold" id="ty-skip">${skipName} (${SKIPS})</button>` : ""}</div>
@@ -3934,6 +4027,43 @@ function bunnyGame() {
     tySave(TY, a2);
     if (tyChampPrize().includes(TY)) { toast(`⭐ You're the new Carrot Champion! +${TY_CHAMP_PRIZE} 🥕 prize!`); sfx.buy(); }
   };
+  // 💬 Coach: pop-up tips while you type, telling you how to become Carrot or Speed Champion.
+  const nameOf = id => TY_ACCOUNTS.find(x => x.id === id)?.name || id;
+  const coach = () => {
+    const box = document.getElementById("ty-coach");
+    if (!box) return;
+    const me = tyLoad(TY), t = tyTitles(), others = TY_ACCOUNTS.filter(x => x.id !== TY).map(x => ({ id: x.id, ...tyLoad(x.id) }));
+    const runWpm = M.playT > 3 ? Math.round(M.chars / 5 / (M.playT / 60)) : 0;
+    let msg, train = false;
+    if (M.coachN++ % 2 === 0) {
+      if (t.carrot.includes(TY)) {
+        const next = others.sort((x, y) => y.carrots - x.carrots)[0];
+        msg = `⭐ You're the Carrot Champion! ${next ? `${esc(nameOf(next.id))} is ${fmt(me.carrots - next.carrots)} carrots behind you. Keep hopping!` : ""}`;
+      } else {
+        const top = others.filter(x => t.carrot.includes(x.id))[0] || others.sort((x, y) => y.carrots - x.carrots)[0];
+        const need = top ? top.carrots - me.carrots + 1 : 1;
+        msg = `⭐ Get <b>${fmt(Math.max(1, need))} more carrots</b>${top ? ` to pass ${esc(nameOf(top.id))}` : ""} and become Carrot Champion! Tip: long streaks and goals give lots of carrots.`;
+      }
+    } else {
+      if (t.speed.includes(TY)) msg = `⚡ You're the Speed Champion with ${me.speedWpm} WPM! Right now you're typing ${runWpm} WPM.`;
+      else {
+        const top = others.filter(x => t.speed.includes(x.id))[0] || others.sort((x, y) => (y.speedWpm || 0) - (x.speedWpm || 0))[0];
+        const goal = Math.max(1, (top?.speedWpm || 0) + 1);
+        msg = `⚡ You're typing <b>${runWpm} WPM</b>. Reach <b>${goal} WPM</b> in a game of 10+ words${top && top.speedWpm ? ` to beat ${esc(nameOf(top.id))}` : ""} and become Speed Champion!`;
+        train = runWpm < goal;
+      }
+    }
+    if (!train && M.coachN % 3 === 0) { msg += " Want to practice your typing?"; train = true; }
+    else if (train) msg += " Want to get faster?";
+    box.innerHTML = `<span>${msg}</span>${train ? `<div class="row"><button class="btn gold" id="ty-tele">🌀 Teleport me to the Training Ground</button><button class="btn" id="ty-nothx">No thanks</button></div>` : ""}`;
+    box.hidden = false;
+    clearTimeout(M.coachT);
+    M.coachT = setTimeout(() => { const b = document.getElementById("ty-coach"); if (b) b.hidden = true; }, train ? 9000 : 6000);
+    if (train) {
+      document.getElementById("ty-tele").addEventListener("click", () => { bank(); clearTimeout(M.coachT); toast("🌀 Whoosh! Your carrots are saved."); tyTraining(); });
+      document.getElementById("ty-nothx").addEventListener("click", () => { box.hidden = true; inp.focus(); });
+    }
+  };
   const hop = () => {
     const from = M.plats[M.cur], to = M.plats[M.cur + 1];
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
@@ -3962,6 +4092,7 @@ function bunnyGame() {
         sfx.buy();
       }
     });
+    if (M.words === 3 || (M.words > 3 && (M.words - 3) % 15 === 0)) coach();
     for (const q of questOpen(tyLoad(TY))) {
       if (!q.check(M, ch, acc)) continue;
       const g = tyQuestWin(TY, q); M.goalLog.push(g);
@@ -4096,7 +4227,7 @@ function bunnyGame() {
   function go() {
     Object.assign(M, { me, plats: [], cur: 0, words: 0, carrots: 0, streak: 0, typed: 0, miss: 0, pops: [], cam: 0, jump: null, falling: null,
       lives: ({ dragon: 3, cat: 2, lion: 2, trex: 4 }[ch.id] || PK.lives || 1) + (RING ? 3 : (has("bubble") ? 1 : 0) + (has("cape") ? 1 : 0)) + (AP.lives || 0), hovers: (has("wings") ? R(3, 5) : 0) + (PK.hovers || 0) + (AP.hovers || 0), skips: SKIPS, running: true, started: performance.now(),
-      extreme: TY_EXTREME, wpm: TY_START_WPM, topWpm: TY_START_WPM, beatWR: false, flash: 0, chars: 0, typedWords: 0, playT: 0,
+      extreme: TY_EXTREME, wpm: TY_START_WPM, topWpm: TY_START_WPM, beatWR: false, flash: 0, chars: 0, typedWords: 0, playT: 0, coachN: 0, coachT: 0,
       goalLog: [] });
     if (has("bow")) M.carrots += R(3, 10);
     M.carrots += AP.start || 0;
