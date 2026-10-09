@@ -371,6 +371,7 @@
   .ty-goals { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; }
   .ty-goal { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
   .ty-goal.done { background: #173826; }
+  .ty-gbar.quest { margin: 0 0 8px; height: 10px; }
   .ty-gicon { font-size: 1.6rem; flex: none; }
   .ty-gtext { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; font-size: .9rem; }
   .ty-gtext span, .ty-gtext small { color: var(--ink-soft); }
@@ -3680,6 +3681,37 @@ const TY_TRACKS = [
   { id: "accs", icon: "🎩", kind: "life", target: n => [1, 3, 6, 10, 16, 21, TY_ACC.length][n], reward: t => 10 + t * 5, desc: t => `Own ${t} accessor${t === 1 ? "y" : "ies"}`, check: (a, t) => a.accOwned.length >= t, prog: a => a.accOwned.length }
 ];
 const goalLv = (a, tr) => (a.goalLv || {})[tr.id] || 0;
+// 🏅 Goal Quest: 500 more goals that get harder as you go. 3 are open at a time, and you can finish them in any order.
+const TY_QUEST = (() => {
+  const chars = TY_CHARS.filter(c => !c.champ && !c.speed).sort((x, y) => x.cost - y.cost);
+  const accs = TY_ACC.filter(x => !x.champ && !x.speed).sort((x, y) => x.cost - y.cost);
+  const list = [];
+  for (let i = 0; i < 500; i++) {
+    const k = Math.floor(i / 8), reward = 15 + i * 4;
+    let g;
+    switch (i % 8) {
+      case 0: { const t = 15 + k * 4; g = { icon: "📝", desc: `Type ${t} words in one game`, check: m => m.words >= t }; break; }
+      case 1: { const t = 30 + k * 25; g = { icon: "🥕", desc: `Get ${t} carrots in one game`, check: m => m.carrots >= t }; break; }
+      case 2: { const t = 10 + k * 3; g = { icon: "🔥", desc: `Type ${t} words in a row without falling`, check: m => m.streak >= t }; break; }
+      case 3: { const t = 8 + k * 2; g = { icon: "🎯", desc: `Type ${t} words in a game with no mistakes`, check: m => m.miss === 0 && m.words >= t }; break; }
+      case 4: { const t = 10 + k * 3; g = { icon: "💪", desc: `Type ${t} words in one game on Hard`, check: m => !m.extreme && hard() && m.words >= t }; break; }
+      case 5: { const t = 10 + k * 2, c = chars[k % chars.length]; g = { icon: c.emoji, desc: `Type ${t} words in one game as ${c.name}`, check: (m, ch) => ch.id === c.id && m.words >= t }; break; }
+      case 6: { const t = 10 + k * 2, x = accs[k % accs.length]; g = { icon: x.emoji, desc: `Type ${t} words in one game wearing the ${x.name}`, check: (m, ch, acc) => !!acc && acc.id === x.id && m.words >= t }; break; }
+      default: { const t = 10 + k * 3; g = { icon: "🌋", desc: `Type ${t} words in one game on Extreme`, check: m => m.extreme && m.words >= t }; }
+    }
+    list.push({ ...g, n: i + 1, reward });
+  }
+  return list;
+})();
+const questOpen = a => { const done = new Set(a.questDone || []); return TY_QUEST.filter(q => !done.has(q.n)).slice(0, 3); };
+function tyQuestWin(id, q) {
+  const a = tyLoad(id), reward = q.reward * (a.acc === "ring" ? 3 : (TY_ACC.find(x => x.id === a.acc)?.perks?.goalMult || 1));
+  a.questDone = [...(a.questDone || []), q.n];
+  a.goalsDone = (a.goalsDone || 0) + 1;
+  a.carrots += reward;
+  tySave(id, a);
+  return { name: `Quest #${q.n}: ${q.desc}`, reward, icon: q.icon };
+}
 // Pays for a finished goal and moves that track up one level. Returns what was earned.
 function tyLevelUp(id, tr) {
   const a = tyLoad(id), lv = goalLv(a, tr), t = tr.target(lv);
@@ -3736,6 +3768,12 @@ function bunnyLobby() {
           <div class="ty-gtext"><b>${tr.desc(t)}</b><span>Level ${lv + 1}${tr.kind === "run" ? " · in one game" : ""}</span>${pr != null ? `<div class="ty-gbar"><i style="width:${Math.min(100, pr / t * 100)}%"></i></div><small>${Math.min(pr, t)} / ${t}</small>` : ""}</div>
           <span class="ty-greward">+${tr.reward(t)} 🥕</span></div>`;
       }).join("")}</div>
+      <h3>🏅 Goal Quest · ${(a.questDone || []).length} / ${TY_QUEST.length} done</h3>
+      <p class="soft">500 more goals! Three are open at a time. Finish any of them during a game, and the next quest goal opens up.</p>
+      <div class="ty-gbar quest"><i style="width:${(a.questDone || []).length / TY_QUEST.length * 100}%"></i></div>
+      <div class="ty-goals">${questOpen(a).map(q => `<div class="ty-goal"><span class="ty-gicon">${q.icon}</span>
+          <div class="ty-gtext"><b>${q.desc}</b><span>Quest #${q.n} of ${TY_QUEST.length}</span></div>
+          <span class="ty-greward">+${q.reward} 🥕</span></div>`).join("") || `<div class="ty-goal done"><span class="ty-gicon">🏆</span><div class="ty-gtext"><b>Quest complete!</b><span>You finished all ${TY_QUEST.length} quest goals!</span></div></div>`}</div>
       <h3>Characters</h3>
       <p class="soft">Earn carrots by typing words. Free characters are ready to use. Some characters have special powers!</p>
       <div class="ty-chars">${TY_CHARS.filter(c => !c.champ && !c.speed).sort((x, y) => x.cost - y.cost).map(c => {
@@ -3902,6 +3940,13 @@ function bunnyGame() {
         sfx.buy();
       }
     });
+    for (const q of questOpen(tyLoad(TY))) {
+      if (!q.check(M, ch, acc)) continue;
+      const g = tyQuestWin(TY, q); M.goalLog.push(g);
+      M.pops.push({ x: to.x, y: to.y - 130 - k++ * 26, t: 0, txt: `🏅 Quest! +${g.reward} 🥕` });
+      toast(`🏅 ${g.name}! +${g.reward} 🥕`);
+      sfx.buy();
+    }
     newPlat();
     M.left = M.tmax = platTime(M.plats[M.cur + 1].word);
     inp.value = ""; hud();
