@@ -3512,7 +3512,7 @@ const TY_CHARS = [
   { id: "dolphin", champ: true, emoji: "🐬", name: "Dolphin Genius", cost: 600, power: "10 free Splash Jumps and 4× carrots.", perks: { skips: 10, skipName: "Splash Jump", mult: 4 } },
   { id: "butterfly", champ: true, emoji: "🦋", name: "Rainbow Butterfly", cost: 700, power: "5 hovers of 2.5 seconds, 5× carrots, and 3 lives.", perks: { hovers: 5, mult: 5, lives: 3 } },
   { id: "bronto", champ: true, emoji: "🦕", name: "Ancient Brontosaurus", cost: 800, power: "Platforms last TWICE as long, 5 lives, and 4× carrots.", perks: { time: 2, lives: 5, mult: 4 } },
-  { id: "dragonking", champ: true, anyone: true, fixedPrice: true, emoji: "🐲", name: "Golden Dragon King", cost: 105000, power: "The best of all: 7 lives, 7× carrots, platforms last 75% longer, see 3 words ahead, 5 free Royal Jumps, a streak bonus every 3 words, and an extra life every 15 words.", perks: { lives: 7, mult: 7, time: 1.75, peek: 3, skips: 5, skipName: "Royal Jump", streakEvery: 3, lifeEvery: 15, lifeMax: 9 } }
+  { id: "dragonking", champ: true, fixedPrice: true, emoji: "🐲", name: "Golden Dragon King", cost: 105000, power: "The best of all: 7 lives, 7× carrots, platforms last 75% longer, see 3 words ahead, 5 free Royal Jumps, a streak bonus every 3 words, and an extra life every 15 words.", perks: { lives: 7, mult: 7, time: 1.75, peek: 3, skips: 5, skipName: "Royal Jump", streakEvery: 3, lifeEvery: 15, lifeMax: 9 } }
 ];
 const TY_WORDS = {
   easy: "cat dog sun hat run hop jump frog cake milk star tree bird fish rain snow moon ship book desk lamp bunny green apple happy smile water light clock house plant grape lemon kite ball game play fast duck bear pond leaf wind cloud chair bread juice train truck river beach horse mouse tiger zebra boat drum fork glove honey jelly kitten ladder magnet nest ocean puppy queen robot sock tent wagon yarn zoom bike".split(" "),
@@ -3554,7 +3554,7 @@ const TY_ACC = [
   { id: "trident", champ: true, emoji: "🔱", name: "Golden Trident", cost: 900, spot: "side", power: "3× carrots, see the next 3 words, and 5 free Wave Jumps.", perks: { mult: 3, peek: 3, skips: 5, skipName: "Wave Jump" } },
   // The Planet Ring has EVERY other accessory built in: all the Diamond Ring's powers (it counts as wearing the
   // Diamond Ring) plus every Champion accessory's powers added together.
-  { id: "planet", champ: true, anyone: true, fixedPrice: true, emoji: "🪐", name: "Planet Ring", cost: 105000, spot: "top", power: "The ultimate: has EVERY other accessory built in, all the Diamond Ring's powers plus every Champion accessory's powers!",
+  { id: "planet", champ: true, fixedPrice: true, emoji: "🪐", name: "Planet Ring", cost: 105000, spot: "top", power: "The ultimate: has EVERY other accessory built in, all the Diamond Ring's powers plus every Champion accessory's powers!",
     perks: { mult: 6, plus: 8, lives: 11, time: 1.95, addTime: 3, hovers: 8, skips: 18, skipName: "Orbit Jump", peek: 4, goalMult: 4, start: 25, streakEvery: 3, streakBonus: 25, lifeEvery: 10, lifeMax: 20, keepStreak: true } }
 ];
 const tyAcc = a => TY_ACC.find(x => x.id === a.acc) || null;
@@ -3709,7 +3709,7 @@ function bunnyLobby() {
       <div class="ty-chars">${TY_CHARS.filter(c => c.champ).map(c => {
         const own = a.owned.includes(c.id), on = a.char === c.id, champ = isChamp(TY) || c.anyone;
         const label = on ? "Playing" : own ? "Use" : champ ? priceTag(c, TY) : "⭐ Champions only";
-        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>${c.anyone ? `<p class="gold-t">Anyone can buy it: 105,000 carrots, no discounts.</p>` : ""}
+        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>${c.fixedPrice ? `<p class="gold-t">105,000 carrots, even for the Champion. No discounts!</p>` : ""}
           <button class="btn" data-char="${c.id}" ${on || (!own && (!champ || a.carrots < tyPrice(c, TY))) ? "disabled" : ""}>${label}</button></div>`;
       }).join("")}</div>
       <h3>Accessories</h3>
@@ -3724,7 +3724,7 @@ function bunnyLobby() {
       <div class="ty-chars">${TY_ACC.filter(x => x.champ).map(x => {
         const own = a.accOwned.includes(x.id), on = a.acc === x.id, champ = isChamp(TY) || x.anyone;
         const label = on ? "Take off" : own ? "Wear" : champ ? priceTag(x, TY) : "⭐ Champions only";
-        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>${x.anyone ? `<p class="gold-t">Anyone can buy it: 105,000 carrots, no discounts.</p>` : ""}${x.id === "planet" ? `<details class="ring-list"><summary>See all its powers</summary><ul>${PLANET_POWERS.map(r => `<li>${r}</li>`).join("")}</ul></details>` : ""}
+        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>${x.fixedPrice ? `<p class="gold-t">105,000 carrots, even for the Champion. No discounts!</p>` : ""}${x.id === "planet" ? `<details class="ring-list"><summary>See all its powers</summary><ul>${PLANET_POWERS.map(r => `<li>${r}</li>`).join("")}</ul></details>` : ""}
           <button class="btn" data-acc="${x.id}" ${!own && (!champ || a.carrots < tyPrice(x, TY)) ? "disabled" : ""}>${label}</button></div>`;
       }).join("")}</div>
     </div>`;
