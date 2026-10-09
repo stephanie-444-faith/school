@@ -3512,7 +3512,7 @@ const TY_CHARS = [
   { id: "dolphin", champ: true, emoji: "🐬", name: "Dolphin Genius", cost: 600, power: "10 free Splash Jumps and 4× carrots.", perks: { skips: 10, skipName: "Splash Jump", mult: 4 } },
   { id: "butterfly", champ: true, emoji: "🦋", name: "Rainbow Butterfly", cost: 700, power: "5 hovers of 2.5 seconds, 5× carrots, and 3 lives.", perks: { hovers: 5, mult: 5, lives: 3 } },
   { id: "bronto", champ: true, emoji: "🦕", name: "Ancient Brontosaurus", cost: 800, power: "Platforms last TWICE as long, 5 lives, and 4× carrots.", perks: { time: 2, lives: 5, mult: 4 } },
-  { id: "dragonking", champ: true, emoji: "🐲", name: "Golden Dragon King", cost: 1000, power: "The best of all: 7 lives, 7× carrots, platforms last 75% longer, see 3 words ahead, 5 free Royal Jumps, a streak bonus every 3 words, and an extra life every 15 words.", perks: { lives: 7, mult: 7, time: 1.75, peek: 3, skips: 5, skipName: "Royal Jump", streakEvery: 3, lifeEvery: 15, lifeMax: 9 } }
+  { id: "dragonking", champ: true, anyone: true, fixedPrice: true, emoji: "🐲", name: "Golden Dragon King", cost: 105000, power: "The best of all: 7 lives, 7× carrots, platforms last 75% longer, see 3 words ahead, 5 free Royal Jumps, a streak bonus every 3 words, and an extra life every 15 words.", perks: { lives: 7, mult: 7, time: 1.75, peek: 3, skips: 5, skipName: "Royal Jump", streakEvery: 3, lifeEvery: 15, lifeMax: 9 } }
 ];
 const TY_WORDS = {
   easy: "cat dog sun hat run hop jump frog cake milk star tree bird fish rain snow moon ship book desk lamp bunny green apple happy smile water light clock house plant grape lemon kite ball game play fast duck bear pond leaf wind cloud chair bread juice train truck river beach horse mouse tiger zebra boat drum fork glove honey jelly kitten ladder magnet nest ocean puppy queen robot sock tent wagon yarn zoom bike".split(" "),
@@ -3554,7 +3554,7 @@ const TY_ACC = [
   { id: "trident", champ: true, emoji: "🔱", name: "Golden Trident", cost: 900, spot: "side", power: "3× carrots, see the next 3 words, and 5 free Wave Jumps.", perks: { mult: 3, peek: 3, skips: 5, skipName: "Wave Jump" } },
   // The Planet Ring has EVERY other accessory built in: all the Diamond Ring's powers (it counts as wearing the
   // Diamond Ring) plus every Champion accessory's powers added together.
-  { id: "planet", champ: true, emoji: "🪐", name: "Planet Ring", cost: 1200, spot: "top", power: "The ultimate: has EVERY other accessory built in, all the Diamond Ring's powers plus every Champion accessory's powers!",
+  { id: "planet", champ: true, anyone: true, fixedPrice: true, emoji: "🪐", name: "Planet Ring", cost: 105000, spot: "top", power: "The ultimate: has EVERY other accessory built in, all the Diamond Ring's powers plus every Champion accessory's powers!",
     perks: { mult: 6, plus: 8, lives: 11, time: 1.95, addTime: 3, hovers: 8, skips: 18, skipName: "Orbit Jump", peek: 4, goalMult: 4, start: 25, streakEvery: 3, streakBonus: 25, lifeEvery: 10, lifeMax: 20, keepStreak: true } }
 ];
 const tyAcc = a => TY_ACC.find(x => x.id === a.acc) || null;
@@ -3598,9 +3598,10 @@ function tyChampions() {
   return top > 0 ? totals.filter(t => t[1] === top).map(t => t[0]) : [];
 }
 const isChamp = id => tyChampions().includes(id);
-const tyPrice = (cost, id) => isChamp(id) ? Math.ceil(cost / 2) : cost;
+// Items marked fixedPrice cost the same for everyone (no Champion discount).
+const tyPrice = (item, id) => !item.fixedPrice && isChamp(id) ? Math.ceil(item.cost / 2) : item.cost;
 const lifeWait = a => Math.max(0, (a.lifeAt || 0) + TY_LIFE_MS - Date.now());
-const priceTag = (cost, id) => isChamp(id) && cost ? `<s>${cost}</s> 🥕 ${tyPrice(cost, id)}` : `🥕 ${cost}`;
+const priceTag = (item, id) => !item.fixedPrice && isChamp(id) && item.cost ? `<s>${fmt(item.cost)}</s> 🥕 ${fmt(tyPrice(item, id))}` : `🥕 ${fmt(item.cost)}`;
 const tyWear = (a, cls) => { const x = tyAcc(a); return `<span class="ty-wear ${cls}">${tyChar(a).emoji}${x ? `<span class="ty-acc acc-${x.spot}">${x.emoji}</span>` : ""}</span>`; };
 const tySave = (id, a) => store.set(tyKey(id), a);
 const tyChar = a => TY_CHARS.find(c => c.id === a.char) || TY_CHARS[0];
@@ -3701,35 +3702,35 @@ function bunnyLobby() {
       <div class="ty-chars">${TY_CHARS.filter(c => !c.champ).sort((x, y) => x.cost - y.cost).map(c => {
         const own = a.owned.includes(c.id), on = a.char === c.id;
         return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>
-          <button class="btn" data-char="${c.id}" ${on || (!own && a.carrots < tyPrice(c.cost, TY)) ? "disabled" : ""}>${on ? "Playing" : own ? "Use" : priceTag(c.cost, TY)}</button></div>`;
+          <button class="btn" data-char="${c.id}" ${on || (!own && a.carrots < tyPrice(c, TY)) ? "disabled" : ""}>${on ? "Playing" : own ? "Use" : priceTag(c, TY)}</button></div>`;
       }).join("")}</div>
       <h3>⭐ Champion Characters</h3>
       <p class="soft">${isChamp(TY) ? "You're the Carrot Champion, so you can buy these super-powered characters (and they're half price)!" : "Only the Carrot Champion can buy these. Once you buy one, it's yours to keep, even if you lose the title."}</p>
       <div class="ty-chars">${TY_CHARS.filter(c => c.champ).map(c => {
-        const own = a.owned.includes(c.id), on = a.char === c.id, champ = isChamp(TY);
-        const label = on ? "Playing" : own ? "Use" : champ ? priceTag(c.cost, TY) : "⭐ Champions only";
-        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>
-          <button class="btn" data-char="${c.id}" ${on || (!own && (!champ || a.carrots < tyPrice(c.cost, TY))) ? "disabled" : ""}>${label}</button></div>`;
+        const own = a.owned.includes(c.id), on = a.char === c.id, champ = isChamp(TY) || c.anyone;
+        const label = on ? "Playing" : own ? "Use" : champ ? priceTag(c, TY) : "⭐ Champions only";
+        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>${c.anyone ? `<p class="gold-t">Anyone can buy it: 105,000 carrots, no discounts.</p>` : ""}
+          <button class="btn" data-char="${c.id}" ${on || (!own && (!champ || a.carrots < tyPrice(c, TY))) ? "disabled" : ""}>${label}</button></div>`;
       }).join("")}</div>
       <h3>Accessories</h3>
       <p class="soft">Your character can wear one accessory at a time. Each one gives you something cool!</p>
       <div class="ty-chars">${TY_ACC.filter(x => !x.champ).sort((p, q) => p.cost - q.cost).map(x => {
         const own = a.accOwned.includes(x.id), on = a.acc === x.id;
         return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>${x.id === "ring" ? `<details class="ring-list"><summary>See all its powers</summary><ul>${RING_POWERS.map(r => `<li>${r}</li>`).join("")}</ul></details>` : ""}
-          <button class="btn" data-acc="${x.id}" ${!own && a.carrots < tyPrice(x.cost, TY) ? "disabled" : ""}>${on ? "Take off" : own ? "Wear" : priceTag(x.cost, TY)}</button></div>`;
+          <button class="btn" data-acc="${x.id}" ${!own && a.carrots < tyPrice(x, TY) ? "disabled" : ""}>${on ? "Take off" : own ? "Wear" : priceTag(x, TY)}</button></div>`;
       }).join("")}</div>
       <h3>⭐ Champion Accessories</h3>
       <p class="soft">${isChamp(TY) ? "You're the Carrot Champion, so you can buy these super accessories (half price)!" : "Only the Carrot Champion can buy these. Once you buy one, it's yours to keep, even if you lose the title."}</p>
       <div class="ty-chars">${TY_ACC.filter(x => x.champ).map(x => {
-        const own = a.accOwned.includes(x.id), on = a.acc === x.id, champ = isChamp(TY);
-        const label = on ? "Take off" : own ? "Wear" : champ ? priceTag(x.cost, TY) : "⭐ Champions only";
-        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>${x.id === "planet" ? `<details class="ring-list"><summary>See all its powers</summary><ul>${PLANET_POWERS.map(r => `<li>${r}</li>`).join("")}</ul></details>` : ""}
-          <button class="btn" data-acc="${x.id}" ${!own && (!champ || a.carrots < tyPrice(x.cost, TY)) ? "disabled" : ""}>${label}</button></div>`;
+        const own = a.accOwned.includes(x.id), on = a.acc === x.id, champ = isChamp(TY) || x.anyone;
+        const label = on ? "Take off" : own ? "Wear" : champ ? priceTag(x, TY) : "⭐ Champions only";
+        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>${x.anyone ? `<p class="gold-t">Anyone can buy it: 105,000 carrots, no discounts.</p>` : ""}${x.id === "planet" ? `<details class="ring-list"><summary>See all its powers</summary><ul>${PLANET_POWERS.map(r => `<li>${r}</li>`).join("")}</ul></details>` : ""}
+          <button class="btn" data-acc="${x.id}" ${!own && (!champ || a.carrots < tyPrice(x, TY)) ? "disabled" : ""}>${label}</button></div>`;
       }).join("")}</div>
     </div>`;
   $app.querySelectorAll("[data-acc]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), x = TY_ACC.find(y => y.id === b.dataset.acc);
-    if (!a2.accOwned.includes(x.id)) { if (x.champ && !isChamp(TY)) return toast("Only the Carrot Champion can buy that one!"); const price = tyPrice(x.cost, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.accOwned.push(x.id); sfx.buy(); toast(`You got the ${x.name}!`); a2.acc = x.id; }
+    if (!a2.accOwned.includes(x.id)) { if (x.champ && !x.anyone && !isChamp(TY)) return toast("Only the Carrot Champion can buy that one!"); const price = tyPrice(x, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.accOwned.push(x.id); sfx.buy(); toast(`You got the ${x.name}!`); a2.acc = x.id; }
     else a2.acc = a2.acc === x.id ? null : x.id;
     tySave(TY, a2); bunnyLobby();
   }));
@@ -3744,7 +3745,7 @@ function bunnyLobby() {
   document.getElementById("ty-play").addEventListener("click", bunnyGame);
   $app.querySelectorAll("[data-char]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), c = TY_CHARS.find(x => x.id === b.dataset.char);
-    if (!a2.owned.includes(c.id)) { if (c.champ && !isChamp(TY)) return toast("Only the Carrot Champion can buy that one!"); const price = tyPrice(c.cost, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.owned.push(c.id); sfx.buy(); toast(`You got ${c.name}!`); }
+    if (!a2.owned.includes(c.id)) { if (c.champ && !c.anyone && !isChamp(TY)) return toast("Only the Carrot Champion can buy that one!"); const price = tyPrice(c, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.owned.push(c.id); sfx.buy(); toast(`You got ${c.name}!`); }
     a2.char = c.id; tySave(TY, a2); bunnyLobby();
   }));
 }
