@@ -375,6 +375,13 @@
   .tr-line .bad { color: var(--bad); background: rgba(255,90,90,.18); border-radius: 3px; }
   .tr-line .cur { border-bottom: 3px solid var(--gold); }
   .tr-stats { font-weight: 700; }
+  .tr-gold { background: linear-gradient(135deg, #5a4210, var(--panel-2)); border: 2px solid var(--gold); border-radius: 14px; padding: 10px 14px; margin: 8px 0; }
+  .tr-gold-top { display: flex; gap: 10px; align-items: center; }
+  .tr-gold-top small, .tr-note small { display: block; opacity: .8; font-size: .8rem; margin-top: 2px; }
+  .tr-gold-c { font-size: 2rem; filter: sepia(1) saturate(4) hue-rotate(5deg) brightness(1.15) drop-shadow(0 0 6px gold); }
+  .tr-gold-c.pop { animation: goldPop .6s ease-out; }
+  @keyframes goldPop { 0% { transform: scale(.4) rotate(-20deg); } 60% { transform: scale(1.4) rotate(10deg); } 100% { transform: none; } }
+  .tr-note { margin-top: 8px; background: rgba(255,255,255,.06); border-radius: 10px; padding: 8px 10px; line-height: 1.45; }
   .tr-next { min-height: 1.6em; font-size: 1.1rem; text-align: center; margin: 4px 0; }
   .tr-big { font-size: 1.5rem; padding: 0 6px; background: var(--panel-2); border-radius: 6px; }
   .kb { display: flex; flex-direction: column; gap: 5px; align-items: center; margin: 8px 0; user-select: none; }
@@ -3839,6 +3846,7 @@ function bunnyLobby() {
         <div><h2>${esc(ac.name)}</h2><p>🥕 <b>${a.carrots}</b> carrots · ${a.words} words typed</p>
         <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0} · Extreme ${a.best.extreme || 0}${a.topWpm ? ` (top ${a.topWpm} WPM${a.beatWR ? " 🏆" : ""})` : ""}</p>
         <p class="soft">⚡ Your fastest typing speed: <b>${a.speedWpm || 0} WPM</b></p>
+        <p class="soft">🌟 Golden carrots: <b>${a.golden || 0}</b> (from the Training Ground, worth ${TY_GOLD_VALUE} carrots each)</p>
         <p class="soft">🏛️ Taxes paid: <b>${a.taxPaid || 0}</b> · 🎁 Donations received: <b>${a.donations || 0}</b></p></div></div>
       <p class="soft">🏛️ For every 100 carrots earned, the richest player pays 10% tax (10 carrots), and players who aren't a champion get a 10 carrot donation.</p>
       ${mustPick(TY) ? `<div class="ty-champbox pickbox"><b>🏆 You won BOTH titles!</b> You can only be one champion at a time, so pick one for today (until you pick, you're Carrot Champion). The other title goes to the next best player. Tomorrow you can pick again.
@@ -3982,6 +3990,60 @@ const TY_TIPS = [
   "Keep a steady rhythm, like a drum. Tap, tap, tap!",
   "Sit up tall and keep your wrists off the desk."
 ];
+// 🌟 Golden carrots (worth 3 carrots each) and 500 kind notes, earned in the Training Ground.
+const TY_GOLD_VALUE = 3;
+const TY_NOTE_START = [
+  "You're doing great!",
+  "Wow!",
+  "Way to go!",
+  "Super job!",
+  "Keep it up!",
+  "Awesome work!",
+  "Look at you go!",
+  "Hooray!",
+  "Nice typing!",
+  "You're a star!",
+  "Fantastic!",
+  "High five!",
+  "Amazing!",
+  "You did it!",
+  "Great effort!",
+  "Brilliant!",
+  "Yay, {name}!",
+  "Hop hop hooray!",
+  "Bravo!",
+  "You rock!"
+];
+const TY_NOTE_BODY = [
+  "Your fingers are getting faster every day.",
+  "Practice makes progress, and you're practicing!",
+  "Every line you type makes you a better typer.",
+  "Mistakes help us learn, so never be afraid to try.",
+  "The bunnies are cheering for you!",
+  "You should be proud of how hard you're working.",
+  "Being kind and trying your best is what makes a real champion.",
+  "Your brain is growing stronger with every word.",
+  "Slow and steady wins the race, and you're winning!",
+  "You make the Training Ground a happier place.",
+  "Keep your fingers on the home row and you'll fly!",
+  "You are smart, kind, and brave.",
+  "Even champions started as beginners, just like you.",
+  "You're learning a skill you'll use your whole life.",
+  "Take a deep breath and smile. You're doing awesome.",
+  "Someone out there is proud of you today.",
+  "Your hard work today is a gift to future you.",
+  "You never give up, and that's super cool.",
+  "Every carrot you earn here is a golden one!",
+  "You are getting better than yesterday.",
+  "Your typing is like music: tap, tap, tap!",
+  "Believe in yourself, because we believe in you.",
+  "Learning new things takes courage, and you have lots of it.",
+  "You're a great friend to your keyboard!",
+  "Remember to have fun. You're doing wonderfully."
+];
+// 20 × 25 = 500 different kind notes, shown in a mixed-up order so each one feels new.
+const TY_NOTES = TY_NOTE_START.flatMap(st => TY_NOTE_BODY.map(bd => `${st} ${bd}`));
+const tyNote = (n, name) => TY_NOTES[(n * 37) % TY_NOTES.length].replace("{name}", name);
 function tyTraining() {
   stopMini(); stopSlope(); stopArchers();
   keyHandler = null;
@@ -4008,6 +4070,7 @@ function tyTraining() {
         ${kbHTML()}
         <div class="tr-hands">${FINGERS.map(f => `<span class="tr-finger" data-f="${f.id}" style="--fc:${f.color}">${f.label}</span>`).join("")}</div>
         <div class="row"><button class="btn" id="tr-demo">▶ Show me how</button></div>
+        <div class="tr-gold" id="tr-gold">${goldHTML()}</div>
         <p class="tr-stats" id="tr-stats">Speed: 0 WPM · Correct: 100% · Lines done: ${lines} · Best: ${best} WPM</p>
         <div class="tr-plan"><h3>⭐ How to win the Carrot Championship</h3><ol>
           <li><b>Hands on the home row.</b> Left fingers on A S D F, right fingers on J K L ;. Thumbs rest on the space bar.</li>
@@ -4038,7 +4101,16 @@ function tyTraining() {
         const mins = (performance.now() - T.start) / 60000, wpm = Math.round(T.text.length / 5 / Math.max(mins, 1 / 600));
         const accu = Math.max(0, Math.round((1 - T.wrong / T.text.length) * 100));
         lines++; best = Math.max(best, wpm); sfx.buy();
-        toast(`Line done! ${wpm} WPM, ${accu}% correct${accu === 100 ? " 🌟 Perfect!" : ""}`);
+        // golden carrots: 1 for a line that's at least 80% correct, 2 for a perfect line
+        const gold = accu === 100 ? 2 : accu >= 80 ? 1 : 0;
+        if (gold) {
+          const a = tyLoad(TY);
+          a.golden = (a.golden || 0) + gold; a.carrots += gold * TY_GOLD_VALUE;
+          a.lastNote = tyNote(a.notesN || 0, ac.name); a.notesN = (a.notesN || 0) + 1;
+          tySave(TY, a); tyTax(TY, gold * TY_GOLD_VALUE);
+          document.getElementById("tr-gold").innerHTML = goldHTML(gold);
+        }
+        toast(`Line done! ${wpm} WPM, ${accu}% correct${accu === 100 ? " 🌟 Perfect!" : ""}${gold ? ` +${gold} golden carrot${gold > 1 ? "s" : ""}!` : " (get 80% correct to earn a golden carrot)"}`);
         document.getElementById("tr-stats").textContent = `Last line: ${wpm} WPM · Correct: ${accu}% · Lines done: ${lines} · Best: ${best} WPM`;
         newLine();
       }
@@ -4060,6 +4132,12 @@ function tyTraining() {
       document.getElementById("tr-stats").textContent = `Speed: ${wpm} WPM · Correct: ${Math.round(right / v.length * 100)}% · Lines done: ${lines} · Best: ${best} WPM`;
     }
   };
+  function goldHTML(got = 0) {
+    const a = tyLoad(TY), n = a.golden || 0;
+    return `<div class="tr-gold-top"><span class="tr-gold-c${got ? " pop" : ""}">🥕</span><div><b>${got ? `+${got} golden carrot${got > 1 ? "s" : ""}! ` : ""}Golden carrots: ${n}</b>
+      <small>Each one is worth ${TY_GOLD_VALUE} carrots (${fmt(n * TY_GOLD_VALUE)} so far). Finish a line 80% correct for 1, or perfect for 2!</small></div></div>
+      ${a.lastNote ? `<div class="tr-note">💌 <i>${esc(a.lastNote)}</i><small>Kind note ${Math.min(a.notesN, TY_NOTES.length)} of ${TY_NOTES.length}</small></div>` : `<div class="tr-note soft">💌 Earn a golden carrot to get a kind note. There are ${TY_NOTES.length} to collect!</div>`}`;
+  }
   // keyboard helpers
   function kbHTML() {
     const row = (keys, cls = "") => `<div class="kb-row ${cls}">${keys.map(k => { const f = keyFinger(k); return `<span class="kb-key${k === "f" || k === "j" ? " bump" : ""}${k === "back" ? " wide" : ""}" data-k="${esc(k)}" style="--fc:${f.color}">${k === "back" ? "⌫" : k.toUpperCase()}</span>`; }).join("")}</div>`;
