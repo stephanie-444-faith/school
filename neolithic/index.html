@@ -3720,7 +3720,7 @@ function bunnyLobby() {
         <p class="soft">⚡ Your fastest typing speed: <b>${a.speedWpm || 0} WPM</b></p></div></div>
       ${mustPick(TY) ? `<div class="ty-champbox pickbox"><b>🏆 You won BOTH titles!</b> You can only be one champion at a time, so pick one for today (until you pick, you're Carrot Champion). The other title goes to the next best player. Tomorrow you can pick again.
         <div class="ty-pickrow"><button class="btn" data-pick="carrot">⭐ Be Carrot Champion today</button><button class="btn" data-pick="speed">⚡ Be Speed Champion today</button></div></div>` : ""}
-      ${isSpeedChamp(TY) ? `<div class="ty-champbox speedbox"><b>⚡ Speed Champion!</b> You're the fastest typer, so you can buy the Speed Champion characters and accessories.</div>`
+      ${isSpeedChamp(TY) ? `<div class="ty-champbox speedbox"><b>⚡ Speed Champion!</b> You're the fastest typer, so you can buy the Speed Champion characters and accessories, plus all the best ⭐ Champion Accessories (even the Planet Ring)!</div>`
         : `<p class="soft">⚡ The fastest typer (best words per minute in a game of 10+ words) becomes Speed Champion and can buy special Speed items.</p>`}
       ${isChamp(TY) ? `<div class="ty-champbox"><b>⭐ Carrot Champion!</b> You have the most carrots, so you get <b>50% off</b> everything and a <b>free extra life</b> every 10 minutes.
         <span id="ty-life">${lifeWait(a) ? `Next free life in ${formatTime(Math.ceil(lifeWait(a) / 1000))}.` : "Your free life is ready! It's added when you start a game."}</span></div>`
@@ -3767,9 +3767,9 @@ function bunnyLobby() {
           <button class="btn" data-acc="${x.id}" ${!own && a.carrots < tyPrice(x, TY) ? "disabled" : ""}>${on ? "Take off" : own ? "Wear" : priceTag(x, TY)}</button></div>`;
       }).join("")}</div>
       <h3>⭐ Champion Accessories</h3>
-      <p class="soft">${isChamp(TY) ? "You're the Carrot Champion, so you can buy these super accessories (half price)!" : "Only the Carrot Champion can buy these. Once you buy one, it's yours to keep, even if you lose the title."}</p>
+      <p class="soft">${isChamp(TY) ? "You're the Carrot Champion, so you can buy these super accessories (half price)!" : isSpeedChamp(TY) ? "You're the Speed Champion, so you can buy these best accessories too!" : "Only the Carrot Champion or the Speed Champion can buy these. Once you buy one, it's yours to keep, even if you lose the title."}</p>
       <div class="ty-chars">${TY_ACC.filter(x => x.champ).map(x => {
-        const own = a.accOwned.includes(x.id), on = a.acc === x.id, champ = isChamp(TY) || x.anyone;
+        const own = a.accOwned.includes(x.id), on = a.acc === x.id, champ = isChamp(TY) || isSpeedChamp(TY) || x.anyone;
         const label = on ? "Take off" : own ? "Wear" : champ ? priceTag(x, TY) : "⭐ Champions only";
         return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${x.emoji}</span><h3>${x.name}</h3><p>${x.power}</p>${x.fixedPrice ? `<p class="gold-t">105,000 carrots, even for the Champion. No discounts!</p>` : ""}${x.id === "planet" ? `<details class="ring-list"><summary>See all its powers</summary><ul>${PLANET_POWERS.map(r => `<li>${r}</li>`).join("")}</ul></details>` : ""}
           <button class="btn" data-acc="${x.id}" ${!own && (!champ || a.carrots < tyPrice(x, TY)) ? "disabled" : ""}>${label}</button></div>`;
@@ -3790,7 +3790,7 @@ function bunnyLobby() {
   }));
   $app.querySelectorAll("[data-acc]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), x = TY_ACC.find(y => y.id === b.dataset.acc);
-    if (!a2.accOwned.includes(x.id)) { if (x.champ && !x.anyone && !isChamp(TY)) return toast("Only the Carrot Champion can buy that one!"); if (x.speed && !isSpeedChamp(TY)) return toast("Only the Speed Champion can buy that one!"); const price = tyPrice(x, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.accOwned.push(x.id); sfx.buy(); toast(`You got the ${x.name}!`); a2.acc = x.id; }
+    if (!a2.accOwned.includes(x.id)) { if (x.champ && !x.anyone && !isChamp(TY) && !isSpeedChamp(TY)) return toast("Only the Carrot Champion or Speed Champion can buy that one!"); if (x.speed && !isSpeedChamp(TY)) return toast("Only the Speed Champion can buy that one!"); const price = tyPrice(x, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.accOwned.push(x.id); sfx.buy(); toast(`You got the ${x.name}!`); a2.acc = x.id; }
     else a2.acc = a2.acc === x.id ? null : x.id;
     tySave(TY, a2); bunnyLobby();
   }));
