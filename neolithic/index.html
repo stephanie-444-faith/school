@@ -384,6 +384,7 @@
   .ty-chars { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
   .ty-char { align-items: center; text-align: center; }
   .ty-char p { min-height: 2.6em; }
+  .champ-char { background: linear-gradient(160deg, #4a3a1a, var(--panel-2) 70%); border: 2px solid rgba(255,201,60,.5); }
   .ty-cemoji { font-size: 2.6rem; line-height: 1; }
   .ty-type { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: 4px; }
   .ty-word { font-family: var(--display); font-size: clamp(1.8rem, 8vw, 2.6rem); letter-spacing: .06em; min-height: 1.3em; }
@@ -3500,7 +3501,18 @@ const TY_CHARS = [
   { id: "eagle", emoji: "🦅", name: "Eagle", cost: 85, power: "Sharp eyes: see the next 2 words coming." },
   { id: "lion", emoji: "🦁", name: "Lion", cost: 100, power: "2 lives and a streak bonus every 5 words." },
   { id: "whale", emoji: "🐳", name: "Whale", cost: 120, power: "1.5× carrots and platforms last 15% longer." },
-  { id: "trex", emoji: "🦖", name: "T-Rex", cost: 250, power: "4 lives, QUADRUPLE carrots, and platforms last 45% longer!" }
+  { id: "trex", emoji: "🦖", name: "T-Rex", cost: 250, power: "4 lives, QUADRUPLE carrots, and platforms last 45% longer!" },
+  // ⭐ Champion-only characters: only the Carrot Champion can buy them, but you keep them forever.
+  { id: "tiger", champ: true, emoji: "🐯", name: "Thunder Tiger", cost: 300, power: "5 lives and 5× carrots.", perks: { lives: 5, mult: 5 } },
+  { id: "shark", champ: true, emoji: "🦈", name: "Mega Shark", cost: 350, power: "4× carrots, platforms last 50% longer, and 5 free Chomp Jumps.", perks: { mult: 4, time: 1.5, skips: 5, skipName: "Chomp Jump" } },
+  { id: "wolf", champ: true, emoji: "🐺", name: "Moon Wolf", cost: 400, power: "6 lives, falling never breaks your streak, and a streak bonus every 3 words.", perks: { lives: 6, keepStreak: true, streakEvery: 3, mult: 2 } },
+  { id: "peacock", champ: true, emoji: "🦚", name: "Royal Peacock", cost: 450, power: "6× carrots and 3 lives.", perks: { mult: 6, lives: 3 } },
+  { id: "elephant", champ: true, emoji: "🐘", name: "Mighty Elephant", cost: 500, power: "8 lives, 3× carrots, and platforms last 40% longer.", perks: { lives: 8, mult: 3, time: 1.4 } },
+  { id: "giraffe", champ: true, emoji: "🦒", name: "Sky Giraffe", cost: 550, power: "See the next 3 words, platforms last 60% longer, 3 lives, and 4× carrots.", perks: { peek: 3, time: 1.6, lives: 3, mult: 4 } },
+  { id: "dolphin", champ: true, emoji: "🐬", name: "Dolphin Genius", cost: 600, power: "10 free Splash Jumps and 4× carrots.", perks: { skips: 10, skipName: "Splash Jump", mult: 4 } },
+  { id: "butterfly", champ: true, emoji: "🦋", name: "Rainbow Butterfly", cost: 700, power: "5 hovers of 2.5 seconds, 5× carrots, and 3 lives.", perks: { hovers: 5, mult: 5, lives: 3 } },
+  { id: "bronto", champ: true, emoji: "🦕", name: "Ancient Brontosaurus", cost: 800, power: "Platforms last TWICE as long, 5 lives, and 4× carrots.", perks: { time: 2, lives: 5, mult: 4 } },
+  { id: "dragonking", champ: true, emoji: "🐲", name: "Golden Dragon King", cost: 1000, power: "The best of all: 7 lives, 7× carrots, platforms last 75% longer, see 3 words ahead, 5 free Royal Jumps, a streak bonus every 3 words, and an extra life every 15 words.", perks: { lives: 7, mult: 7, time: 1.75, peek: 3, skips: 5, skipName: "Royal Jump", streakEvery: 3, lifeEvery: 15, lifeMax: 9 } }
 ];
 const TY_WORDS = {
   easy: "cat dog sun hat run hop jump frog cake milk star tree bird fish rain snow moon ship book desk lamp bunny green apple happy smile water light clock house plant grape lemon kite ball game play fast duck bear pond leaf wind cloud chair bread juice train truck river beach horse mouse tiger zebra boat drum fork glove honey jelly kitten ladder magnet nest ocean puppy queen robot sock tent wagon yarn zoom bike".split(" "),
@@ -3602,7 +3614,7 @@ const TY_TRACKS = [
   { id: "speed", icon: "⚡", kind: "run", target: n => 100 + n * 30, reward: t => Math.round(t / 2.5), desc: t => `Reach ${t} WPM in Extreme${t > TY_WR ? " (faster than the world record!)" : ""}`, check: (m, t) => m.extreme && m.wpm >= t },
   { id: "total", icon: "🏃", kind: "life", target: n => 200 * Math.pow(2, n), reward: t => Math.round(t / 4), desc: t => `Type ${t} words in total`, check: (a, t) => a.words >= t, prog: a => a.words },
   { id: "bank", icon: "💰", kind: "life", target: n => 100 * Math.pow(2, n), reward: t => Math.round(t / 4), desc: t => `Have ${t} carrots saved up at once`, check: (a, t) => a.carrots >= t, prog: a => a.carrots },
-  { id: "chars", icon: "🐾", kind: "life", target: n => [5, 8, 11, 14, TY_CHARS.length][n], reward: t => t * 6, desc: t => `Own ${t} characters`, check: (a, t) => a.owned.length >= t, prog: a => a.owned.length },
+  { id: "chars", icon: "🐾", kind: "life", target: n => [5, 8, 11, 14, 19, 24, TY_CHARS.length][n], reward: t => t * 6, desc: t => `Own ${t} characters`, check: (a, t) => a.owned.length >= t, prog: a => a.owned.length },
   { id: "accs", icon: "🎩", kind: "life", target: n => [1, 3, 6, 10, TY_ACC.length][n], reward: t => 10 + t * 5, desc: t => `Own ${t} accessor${t === 1 ? "y" : "ies"}`, check: (a, t) => a.accOwned.length >= t, prog: a => a.accOwned.length }
 ];
 const goalLv = (a, tr) => (a.goalLv || {})[tr.id] || 0;
@@ -3659,10 +3671,18 @@ function bunnyLobby() {
       }).join("")}</div>
       <h3>Characters</h3>
       <p class="soft">Earn carrots by typing words. Free characters are ready to use. Some characters have special powers!</p>
-      <div class="ty-chars">${TY_CHARS.slice().sort((x, y) => x.cost - y.cost).map(c => {
+      <div class="ty-chars">${TY_CHARS.filter(c => !c.champ).sort((x, y) => x.cost - y.cost).map(c => {
         const own = a.owned.includes(c.id), on = a.char === c.id;
         return `<div class="item ty-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>
           <button class="btn" data-char="${c.id}" ${on || (!own && a.carrots < tyPrice(c.cost, TY)) ? "disabled" : ""}>${on ? "Playing" : own ? "Use" : priceTag(c.cost, TY)}</button></div>`;
+      }).join("")}</div>
+      <h3>⭐ Champion Characters</h3>
+      <p class="soft">${isChamp(TY) ? "You're the Carrot Champion, so you can buy these super-powered characters (and they're half price)!" : "Only the Carrot Champion can buy these. Once you buy one, it's yours to keep, even if you lose the title."}</p>
+      <div class="ty-chars">${TY_CHARS.filter(c => c.champ).map(c => {
+        const own = a.owned.includes(c.id), on = a.char === c.id, champ = isChamp(TY);
+        const label = on ? "Playing" : own ? "Use" : champ ? priceTag(c.cost, TY) : "⭐ Champions only";
+        return `<div class="item ty-char champ-char${on ? " owned" : ""}"><span class="ty-cemoji">${c.emoji}</span><h3>${c.name}</h3><p>${c.power}</p>
+          <button class="btn" data-char="${c.id}" ${on || (!own && (!champ || a.carrots < tyPrice(c.cost, TY))) ? "disabled" : ""}>${label}</button></div>`;
       }).join("")}</div>
       <h3>Accessories</h3>
       <p class="soft">Your character can wear one accessory at a time. Each one gives you something cool!</p>
@@ -3689,7 +3709,7 @@ function bunnyLobby() {
   document.getElementById("ty-play").addEventListener("click", bunnyGame);
   $app.querySelectorAll("[data-char]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), c = TY_CHARS.find(x => x.id === b.dataset.char);
-    if (!a2.owned.includes(c.id)) { const price = tyPrice(c.cost, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.owned.push(c.id); sfx.buy(); toast(`You got ${c.name}!`); }
+    if (!a2.owned.includes(c.id)) { if (c.champ && !isChamp(TY)) return toast("Only the Carrot Champion can buy that one!"); const price = tyPrice(c.cost, TY); if (a2.carrots < price) return; a2.carrots -= price; a2.owned.push(c.id); sfx.buy(); toast(`You got ${c.name}!`); }
     a2.char = c.id; tySave(TY, a2); bunnyLobby();
   }));
 }
@@ -3699,7 +3719,8 @@ function bunnyGame() {
   const has = id => RING || (!!acc && acc.id === id);
   const R = (normal, ring) => RING ? ring : normal;
   const { cv, stage } = gameShell(`Bunny Hop · ${ch.name}`, `Type the word on the next platform to hop onto it.<br>Hurry! The platform you're standing on crumbles away.${ch.id === "roo" ? "<br>Kangaroo: tap Triple Jump (or press Enter) to skip a word, 3 times a game." : ch.id === "octopus" ? "<br>Octopus: tap Ink Jump (or press Enter) to skip a word, 5 times a game." : ""}`);
-  const SKIPS = ch.id === "roo" ? 3 : ch.id === "octopus" ? 5 : 0, skipName = ch.id === "octopus" ? "Ink Jump" : "Triple Jump";
+  const PK = ch.perks || {};
+  const SKIPS = ch.id === "roo" ? 3 : ch.id === "octopus" ? 5 : PK.skips || 0, skipName = PK.skipName || (ch.id === "octopus" ? "Ink Jump" : "Triple Jump");
   document.getElementById("m-go").dataset.extreme = "1";
   document.querySelector("#m-over p").insertAdjacentHTML("beforeend", `<br><b>Extreme</b> starts at Hard and gets faster every word, all the way past the typing world record (about ${TY_WR} words per minute)!`);
   document.getElementById("m-home").textContent = "Back to lobby";
@@ -3727,7 +3748,7 @@ function bunnyGame() {
     if (M.extreme) return (((word.length + 1) / 5) / M.wpm * 60 + .25) * (has("hourglass") ? R(1.2, 1.35) : 1) + (has("clock") ? R(.5, 1) : 0) + (has("scarf") && M.words < R(5, 10) ? R(1, 1.5) : 0);
     const base = hard() ? 1.6 + word.length * .32 : 3 + word.length * .5;
     const ramp = Math.max(.55, 1 - M.words * .015);
-    const mult = ({ turtle: 1.35, dragon: 1.25, whale: 1.15, trex: 1.45 }[ch.id] || 1) * (has("hourglass") ? R(1.2, 1.35) : 1) * (ch.id === "panda" && M.words < 10 ? 2 : 1);
+    const mult = ({ turtle: 1.35, dragon: 1.25, whale: 1.15, trex: 1.45 }[ch.id] || PK.time || 1) * (has("hourglass") ? R(1.2, 1.35) : 1) * (ch.id === "panda" && M.words < 10 ? 2 : 1);
     return base * ramp * mult + (has("clock") ? R(1, 2) : 0) + (has("scarf") && M.words < R(5, 10) ? R(2, 3) : 0);
   };
   const newPlat = () => {
@@ -3741,7 +3762,7 @@ function bunnyGame() {
     const skip = document.getElementById("ty-skip"); if (skip) { skip.textContent = `${skipName} (${M.skips})`; skip.disabled = M.skips <= 0; }
     const tgt = M.plats[M.cur + 1]?.word || "", typed = inp.value;
     const nx = document.getElementById("ty-next");
-    const peek = RING ? 3 : Math.max(has("shades") ? 1 : 0, has("orb") || ch.id === "eagle" ? 2 : 0);
+    const peek = Math.max(RING ? 3 : 0, has("shades") ? 1 : 0, has("orb") || ch.id === "eagle" ? 2 : 0, PK.peek || 0);
     if (nx) nx.textContent = peek ? `👀 coming up: ${M.plats.slice(M.cur + 2, M.cur + 2 + peek).map(p => p.word).join(", ")}` : "";
     document.getElementById("ty-word").innerHTML = `${[...tgt].map((l, i) => `<span class="${i < typed.length ? "ok" : ""}">${l}</span>`).join("")}`;
   };
@@ -3758,17 +3779,18 @@ function bunnyGame() {
     const from = M.plats[M.cur], to = M.plats[M.cur + 1];
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
     M.cur++; M.words++;
-    const mult = { unicorn: 2, dragon: 3, trex: 4, whale: 1.5 }[ch.id] || 1;
+    const mult = { unicorn: 2, dragon: 3, trex: 4, whale: 1.5 }[ch.id] || PK.mult || 1;
     let gain = Math.round((M.extreme ? 3 : hard() ? 2 : 1) * mult) + (RING ? 4 : (has("tophat") ? 1 : 0) + (has("cape") ? 1 : 0)) + (ch.id === "bee" ? 1 : 0);
     if (has("clover") && Math.random() < R(.1, .2)) { const luck = R(5, 10); gain += luck; M.pops.push({ x: to.x, y: to.y - 110, t: 0, txt: `🍀 Lucky! +${luck}` }); }
-    if (ch.id === "monkey" && M.words % 15 === 0 && M.lives < 3) { M.lives++; M.pops.push({ x: to.x, y: to.y - 150, t: 0, txt: "🐵 Swing! +1 life" }); }
+    const lifeEvery = ch.id === "monkey" ? 15 : PK.lifeEvery, lifeMax = ch.id === "monkey" ? 3 : PK.lifeMax || 3;
+    if (lifeEvery && M.words % lifeEvery === 0 && M.lives < lifeMax) { M.lives++; M.pops.push({ x: to.x, y: to.y - 150, t: 0, txt: `${ch.emoji} +1 life!` }); }
     if (M.extreme) {
       M.wpm += TY_STEP_WPM; M.topWpm = Math.max(M.topWpm, M.wpm);
       if (!M.beatWR && M.wpm > TY_WR) { M.beatWR = true; M.flash = 2.5; M.pops.push({ x: to.x, y: to.y - 120, t: 0, txt: "WORLD RECORD SPEED!" }); sfx.buy(); }
     }
     M.carrots += gain;
     M.streak++;
-    if (M.streak % (RING ? 3 : has("magnet") || ch.id === "lion" ? 5 : 10) === 0) { const bonus = has("crown") ? R(10, 15) : 5; M.carrots += bonus; M.pops.push({ x: to.x, y: to.y - 90, t: 0, txt: `Streak bonus +${bonus} 🥕` }); }
+    if (M.streak % Math.min(RING ? 3 : 99, has("magnet") || ch.id === "lion" ? 5 : 10, PK.streakEvery || 99) === 0) { const bonus = has("crown") ? R(10, 15) : 5; M.carrots += bonus; M.pops.push({ x: to.x, y: to.y - 90, t: 0, txt: `Streak bonus +${bonus} 🥕` }); }
     M.pops.push({ x: to.x, y: to.y - 60, t: 0, txt: `+${gain} 🥕` });
     let k = 0;
     TY_TRACKS.filter(tr => tr.kind === "run").forEach(tr => {
@@ -3794,7 +3816,7 @@ function bunnyGame() {
   };
   const fall = () => {
     const p = M.plats[M.cur]; p.gone = true;
-    M.lives--; if (ch.id !== "fox") M.streak = 0; sfx.wrong();
+    M.lives--; if (ch.id !== "fox" && !PK.keepStreak) M.streak = 0; sfx.wrong();
     if (M.lives <= 0) { M.falling = { t: 0, x: p.x, y: p.y }; M.running = false; setTimeout(() => M && M.me === me && over(), 900); hud(); return; }
     M.pops.push({ x: p.x, y: p.y - 60, t: 0, txt: "Saved! -1 life" });
     // land on the next platform and keep going
@@ -3899,14 +3921,14 @@ function bunnyGame() {
     if (!M.running) return;
     M.left -= dt;
     if (M.left <= 0) {
-      if (has("wings") && M.hovers > 0) { M.hovers--; M.left = R(1.5, 2.5); M.tmax = Math.max(M.tmax, M.left); M.pops.push({ x: M.plats[M.cur].x, y: M.plats[M.cur].y - 100, t: 0, txt: `🪽 Hover! (${M.hovers} left)` }); tone([880, 1320], .06, "sine", .06); }
+      if ((has("wings") || PK.hovers) && M.hovers > 0) { M.hovers--; M.left = has("wings") ? R(1.5, 2.5) : 2.5; M.tmax = Math.max(M.tmax, M.left); M.pops.push({ x: M.plats[M.cur].x, y: M.plats[M.cur].y - 100, t: 0, txt: `🪽 Hover! (${M.hovers} left)` }); tone([880, 1320], .06, "sine", .06); }
       else fall();
     }
   }
   const me = {};
   function go() {
     Object.assign(M, { me, plats: [], cur: 0, words: 0, carrots: 0, streak: 0, typed: 0, miss: 0, pops: [], cam: 0, jump: null, falling: null,
-      lives: ({ dragon: 3, cat: 2, lion: 2, trex: 4 }[ch.id] || 1) + (RING ? 3 : (has("bubble") ? 1 : 0) + (has("cape") ? 1 : 0)), hovers: has("wings") ? R(3, 5) : 0, skips: SKIPS, running: true, started: performance.now(),
+      lives: ({ dragon: 3, cat: 2, lion: 2, trex: 4 }[ch.id] || PK.lives || 1) + (RING ? 3 : (has("bubble") ? 1 : 0) + (has("cape") ? 1 : 0)), hovers: (has("wings") ? R(3, 5) : 0) + (PK.hovers || 0), skips: SKIPS, running: true, started: performance.now(),
       extreme: TY_EXTREME, wpm: TY_START_WPM, topWpm: TY_START_WPM, beatWR: false, flash: 0,
       goalLog: [] });
     if (has("bow")) M.carrots += R(3, 10);
