@@ -3508,6 +3508,9 @@ const TY_CHARS = [
   { id: "lion", emoji: "🦁", name: "Lion", cost: 100, power: "2 lives and a streak bonus every 5 words." },
   { id: "whale", emoji: "🐳", name: "Whale", cost: 120, power: "1.5× carrots and platforms last 15% longer." },
   { id: "trex", emoji: "🦖", name: "T-Rex", cost: 250, power: "4 lives, QUADRUPLE carrots, and platforms last 45% longer!" },
+  { id: "peanut", emoji: "🐹", name: "Peanut the Small and Cute", cost: 60, power: "So small and cute! +2 extra carrots for every word, and platforms last 20% longer.", perks: { plus: 2, time: 1.2 } },
+  { id: "franklin", emoji: "🐢", name: "Franklin the Wise", cost: 175, power: "So wise! 3 lives, double carrots, platforms last 35% longer, and he sees the next 2 words coming.", perks: { lives: 3, mult: 2, time: 1.35, peek: 2 } },
+  { id: "ewalk", emoji: "🦚", name: "E-walk the Magnificent", cost: 300, power: "Magnificent! 4 lives, 5× carrots, platforms last 50% longer, and a streak bonus every 5 words.", perks: { lives: 4, mult: 5, time: 1.5, streakEvery: 5 } },
   // ⭐ Champion-only characters: only the Carrot Champion can buy them, but you keep them forever.
   { id: "tiger", champ: true, emoji: "🐯", name: "Thunder Tiger", cost: 300, power: "5 lives and 5× carrots.", perks: { lives: 5, mult: 5 } },
   { id: "shark", champ: true, emoji: "🦈", name: "Mega Shark", cost: 350, power: "4× carrots, platforms last 50% longer, and 5 free Chomp Jumps.", perks: { mult: 4, time: 1.5, skips: 5, skipName: "Chomp Jump" } },
@@ -3932,7 +3935,7 @@ function bunnyGame() {
     M.jump = { t: 0, fx: from.x, fy: from.y, tx: to.x, ty: to.y };
     M.cur++; M.words++;
     const mult = { unicorn: 2, dragon: 3, trex: 4, whale: 1.5 }[ch.id] || PK.mult || 1;
-    let gain = Math.round((M.extreme ? 3 : hard() ? 2 : 1) * mult * (AP.mult || 1)) + (RING ? 4 : (has("tophat") ? 1 : 0) + (has("cape") ? 1 : 0)) + (ch.id === "bee" ? 1 : 0) + (AP.plus || 0);
+    let gain = Math.round((M.extreme ? 3 : hard() ? 2 : 1) * mult * (AP.mult || 1)) + (RING ? 4 : (has("tophat") ? 1 : 0) + (has("cape") ? 1 : 0)) + (ch.id === "bee" ? 1 : 0) + (PK.plus || 0) + (AP.plus || 0);
     if (has("clover") && Math.random() < R(.1, .2)) { const luck = R(5, 10); gain += luck; M.pops.push({ x: to.x, y: to.y - 110, t: 0, txt: `🍀 Lucky! +${luck}` }); }
     const lifeEvery = Math.min(ch.id === "monkey" ? 15 : PK.lifeEvery || 999, AP.lifeEvery || 999), lifeMax = Math.max(ch.id === "monkey" ? 3 : PK.lifeMax || 3, AP.lifeMax || 0);
     if (lifeEvery < 999 && M.words % lifeEvery === 0 && M.lives < lifeMax) { M.lives++; M.pops.push({ x: to.x, y: to.y - 150, t: 0, txt: `${ch.emoji} +1 life!` }); }
