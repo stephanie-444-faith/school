@@ -3722,12 +3722,30 @@ const TY_TRACKS = [
   { id: "accs", icon: "🎩", kind: "life", target: n => [1, 3, 6, 10, 16, 21, TY_ACC.length][n], reward: t => 10 + t * 5, desc: t => `Own ${t} accessor${t === 1 ? "y" : "ies"}`, check: (a, t) => a.accOwned.length >= t, prog: a => a.accOwned.length }
 ];
 const goalLv = (a, tr) => (a.goalLv || {})[tr.id] || 0;
-// 🏅 Goal Quest: 1,500 goals that get harder as you go. 3 are open at a time, and you can finish them in any order.
+// 🏅 Goal Quest: 2,500 goals that get harder as you go. 3 are open at a time, and you can finish them in any order.
 const TY_QUEST = (() => {
   const chars = TY_CHARS.filter(c => !c.champ && !c.speed).sort((x, y) => x.cost - y.cost);
   const accs = TY_ACC.filter(x => !x.champ && !x.speed).sort((x, y) => x.cost - y.cost);
   const list = [];
-  for (let i = 0; i < 1500; i++) {
+  for (let i = 0; i < 2500; i++) {
+    if (i >= 1500) {
+      // goals 1,501-2,500: 10 kinds that grow more gently, so they stay possible
+      const j = Math.floor((i - 1500) / 10), reward = 15 + i * 4, c = chars[j % chars.length], x = accs[j % accs.length];
+      const G = [
+        () => { const t = 100 + j * 3; return { icon: "📚", desc: `Type ${t} words in one game`, check: m => m.words >= t }; },
+        () => { const t = 500 + j * 40; return { icon: "🥕", desc: `Get ${t} carrots in one game`, check: m => m.carrots >= t }; },
+        () => { const t = 60 + j * 2; return { icon: "🔥", desc: `Type ${t} words in a row without falling`, check: m => m.streak >= t }; },
+        () => { const t = 40 + j * 2; return { icon: "🎯", desc: `Type ${t} words in a game with no mistakes`, check: m => m.miss === 0 && m.words >= t }; },
+        () => { const t = 30 + j; return { icon: c.emoji, desc: `Type ${t} words in one game as ${c.name}`, check: (m, ch) => ch.id === c.id && m.words >= t }; },
+        () => { const t = 30 + j; return { icon: x.emoji, desc: `Type ${t} words in one game wearing the ${x.name}`, check: (m, ch, acc) => !!acc && acc.id === x.id && m.words >= t }; },
+        () => { const t = 60 + j * 2; return { icon: "💪", desc: `Type ${t} words in one game on Hard`, check: m => !m.extreme && hard() && m.words >= t }; },
+        () => { const t = 40 + j * 2; return { icon: "🌋", desc: `Type ${t} words in one game on Extreme`, check: m => m.extreme && m.words >= t }; },
+        () => { const t = 80 + Math.floor(j * 1.2); return { icon: "⚡", desc: `Reach ${t} WPM in Extreme`, check: m => m.extreme && m.wpm >= t }; },
+        () => { const t = 300 + j * 30; return { icon: "🌱", desc: `Get ${t} carrots in one game on Easy`, check: m => !m.extreme && !hard() && m.carrots >= t }; }
+      ];
+      list.push({ ...G[(i - 1500) % 10](), n: i + 1, reward });
+      continue;
+    }
     // goals 1-500 cycle through 8 kinds; goals 501-1,500 add 4 new kinds (12 in all)
     const late = i >= 500, kind = late ? (i - 500) % 12 : i % 8, j = Math.floor((i - 500) / 12);
     const k = late ? 63 + j : Math.floor(i / 8), reward = 15 + i * 4;
@@ -3817,7 +3835,7 @@ function bunnyLobby() {
           <span class="ty-greward">+${tr.reward(t)} 🥕</span></div>`;
       }).join("")}</div>
       <h3>🏅 Goal Quest · ${(a.questDone || []).length} / ${TY_QUEST.length} done</h3>
-      <p class="soft">1,500 goals to beat! Three are open at a time. Finish any of them during a game, and the next quest goal opens up.</p>
+      <p class="soft">2,500 goals to beat! Three are open at a time. Finish any of them during a game, and the next quest goal opens up.</p>
       <div class="ty-gbar quest"><i style="width:${(a.questDone || []).length / TY_QUEST.length * 100}%"></i></div>
       <div class="ty-goals">${questOpen(a).map(q => `<div class="ty-goal"><span class="ty-gicon">${q.icon}</span>
           <div class="ty-gtext"><b>${q.desc}</b><span>Quest #${q.n} of ${TY_QUEST.length}</span></div>
