@@ -375,6 +375,11 @@
   .tr-line .bad { color: var(--bad); background: rgba(255,90,90,.18); border-radius: 3px; }
   .tr-line .cur { border-bottom: 3px solid var(--gold); }
   .tr-stats { font-weight: 700; }
+  .ty-addons { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 8px; }
+  .ty-addon { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; border: 2px solid transparent; }
+  .ty-addon.ready { border-color: var(--money); }
+  .ty-addon > div { flex: 1; } .ty-addon small { display: block; opacity: .85; font-size: .8rem; }
+  .ty-aemoji { font-size: 1.6rem; min-width: 2.2rem; text-align: center; }
   .tr-gold { background: linear-gradient(135deg, #5a4210, var(--panel-2)); border: 2px solid var(--gold); border-radius: 14px; padding: 10px 14px; margin: 8px 0; }
   .tr-gold-top { display: flex; gap: 10px; align-items: center; }
   .tr-gold-top small, .tr-note small { display: block; opacity: .8; font-size: .8rem; margin-top: 2px; }
@@ -3857,6 +3862,13 @@ function bunnyLobby() {
         <span id="ty-life">${lifeWait(a) ? `Next free life in ${formatTime(Math.ceil(lifeWait(a) / 1000))}.` : "Your free life is ready! It's added when you start a game."}</span></div>`
         : `<p class="soft">⭐ The account with the most carrots becomes Carrot Champion: 50% off everything and a free extra life every 10 minutes.</p>`}
       <div class="row"><button class="btn go" id="ty-play">Play as ${tyChar(a).name}${tyAcc(a) ? ` with ${tyAcc(a).name}` : ""}</button><button class="btn" id="ty-train">🌀 Training Ground</button></div>
+      <h3>🎒 Quick Add-ons · for one game</h3>
+      <p class="soft">Buy a boost for your next game only. Prices depend on how many carrots you have: cheap if you have a few, expensive if you're rich!</p>
+      <div class="ty-addons">${TY_ADDONS.map(ad => {
+        const have = (a.addons || {})[ad.id] || 0, price = tyAddonPrice(ad, TY), full = have >= ad.max;
+        return `<div class="ty-addon${have ? " ready" : ""}"><span class="ty-aemoji">${ad.emoji}</span><div><b>${ad.name}</b><small>${ad.desc}</small>${have ? `<small class="money">✅ Ready for next game${ad.max > 1 ? `: ${have}` : ""}</small>` : ""}</div>
+          <button class="btn" data-addon="${ad.id}" ${full || a.carrots < price ? "disabled" : ""}>${full ? "Ready!" : `🥕 ${fmt(price)}`}</button></div>`;
+      }).join("")}</div>
       <h3>Goals · ${a.goalsDone || 0} finished so far</h3>
       <p class="soft">Reach a goal to win free carrots. Every time you finish one, a harder goal with a bigger reward takes its place!</p>
       <div class="ty-goals">${TY_TRACKS.map(tr => {
@@ -3940,6 +3952,14 @@ function bunnyLobby() {
     el.textContent = w ? `Next free life in ${formatTime(Math.ceil(w / 1000))}.` : "Your free life is ready! It's added when you start a game.";
   }, 1000);
   document.getElementById("ty-play").addEventListener("click", bunnyGame);
+  $app.querySelectorAll("[data-addon]").forEach(b => b.addEventListener("click", () => {
+    const a2 = tyLoad(TY), ad = TY_ADDONS.find(x => x.id === b.dataset.addon), price = tyAddonPrice(ad, TY);
+    a2.addons = a2.addons || {};
+    if ((a2.addons[ad.id] || 0) >= ad.max || a2.carrots < price) return;
+    a2.carrots -= price; a2.addons[ad.id] = (a2.addons[ad.id] || 0) + 1;
+    tySave(TY, a2); sfx.buy(); toast(`${ad.emoji} ${ad.name} is ready for your next game!`);
+    bunnyLobby();
+  }));
   document.getElementById("ty-train").addEventListener("click", tyTraining);
   $app.querySelectorAll("[data-char]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), c = TY_CHARS.find(x => x.id === b.dataset.char);
@@ -3947,6 +3967,17 @@ function bunnyLobby() {
     a2.char = c.id; tySave(TY, a2); bunnyLobby();
   }));
 }
+
+// 🎒 Quick add-ons: one-game power-ups. They cost a small part of your carrots,
+// so they're cheap for players with few carrots and expensive for rich players.
+const TY_ADDONS = [
+  { id: "life", emoji: "❤️", name: "Extra Life", desc: "+1 life for your next game. You can stack up to 5!", base: 10, pct: .02, max: 5 },
+  { id: "double", emoji: "🥕🥕", name: "Double Carrots", desc: "Every carrot you earn next game counts twice.", base: 20, pct: .04, max: 1 },
+  { id: "gold", emoji: "🌟", name: "Golden Carrots Only", desc: "Every carrot next game is a golden carrot, worth 3 normal carrots!", base: 40, pct: .08, max: 1 },
+  { id: "slow", emoji: "🐌", name: "Slow Motion", desc: "Platforms crumble 50% slower next game.", base: 10, pct: .02, max: 1 },
+  { id: "peek", emoji: "👀", name: "Sneak Peek", desc: "See the next 3 words coming next game.", base: 8, pct: .015, max: 1 }
+];
+const tyAddonPrice = (ad, id) => Math.max(ad.base, Math.round(tyLoad(id).carrots * ad.pct));
 
 // 🛒 Shop advisor: which item would help this player earn carrots fastest (to win Carrot Champion).
 const tyCharPower = c => ({ unicorn: 2, dragon: 3, trex: 4, whale: 1.5 }[c.id] || c.perks?.mult || 1);
@@ -4213,11 +4244,11 @@ function bunnyGame() {
   };
   const pickWord = () => { const L = listFor(); let w; do { w = L[rnd(0, L.length - 1)]; } while (L.length > 3 && M.plats?.slice(-3).some(p => p.word === w)); return w; };
   const platTime = word => {
-    if (M.extreme) return (((word.length + 1) / 5) / M.wpm * 60 + .25) * (has("hourglass") ? R(1.2, 1.35) : 1) + (has("clock") ? R(.5, 1) : 0) + (has("scarf") && M.words < R(5, 10) ? R(1, 1.5) : 0) + (AP.addTime || 0) / 2;
+    if (M.extreme) return (M.slow ? 1.5 : 1) * (((word.length + 1) / 5) / M.wpm * 60 + .25) * (has("hourglass") ? R(1.2, 1.35) : 1) + (has("clock") ? R(.5, 1) : 0) + (has("scarf") && M.words < R(5, 10) ? R(1, 1.5) : 0) + (AP.addTime || 0) / 2;
     const base = hard() ? 1.6 + word.length * .32 : 3 + word.length * .5;
     const ramp = Math.max(.55, 1 - M.words * .015);
     const mult = ({ turtle: 1.35, dragon: 1.25, whale: 1.15, trex: 1.45 }[ch.id] || PK.time || 1) * (has("hourglass") ? R(1.2, 1.35) : 1) * (ch.id === "panda" && M.words < 10 ? 2 : 1) * (AP.time || 1);
-    return base * ramp * mult + (has("clock") ? R(1, 2) : 0) + (has("scarf") && M.words < R(5, 10) ? R(2, 3) : 0) + (AP.addTime || 0);
+    return (M.slow ? 1.5 : 1) * base * ramp * mult + (has("clock") ? R(1, 2) : 0) + (has("scarf") && M.words < R(5, 10) ? R(2, 3) : 0) + (AP.addTime || 0);
   };
   const newPlat = () => {
     const last = M.plats.at(-1);
@@ -4230,7 +4261,7 @@ function bunnyGame() {
     const skip = document.getElementById("ty-skip"); if (skip) { skip.textContent = `${skipName} (${M.skips})`; skip.disabled = M.skips <= 0; }
     const tgt = M.plats[M.cur + 1]?.word || "", typed = inp.value;
     const nx = document.getElementById("ty-next");
-    const peek = Math.max(RING ? 3 : 0, has("shades") ? 1 : 0, has("orb") || ch.id === "eagle" ? 2 : 0, PK.peek || 0, AP.peek || 0);
+    const peek = Math.max(RING ? 3 : 0, has("shades") ? 1 : 0, has("orb") || ch.id === "eagle" ? 2 : 0, PK.peek || 0, AP.peek || 0, M.addPeek || 0);
     if (nx) nx.textContent = peek ? `👀 coming up: ${M.plats.slice(M.cur + 2, M.cur + 2 + peek).map(p => p.word).join(", ")}` : "";
     document.getElementById("ty-word").innerHTML = `${[...tgt].map((l, i) => `<span class="${i < typed.length ? "ok" : ""}">${l}</span>`).join("")}`;
   };
@@ -4238,6 +4269,7 @@ function bunnyGame() {
   const bank = () => {
     const a2 = tyLoad(TY), key = M.extreme ? "extreme" : hard() ? "hard" : "easy", earned = M.carrots - M.bankC;
     a2.carrots += earned; a2.words += M.words - M.bankW;
+    a2.golden = (a2.golden || 0) + (M.golden || 0) - (M.bankG || 0); M.bankG = M.golden || 0;
     M.bankC = M.carrots; M.bankW = M.words;
     a2.best[key] = Math.max(a2.best[key] || 0, M.words);
     if (M.extreme) { a2.topWpm = Math.max(a2.topWpm || 0, M.topWpm); if (M.beatWR) a2.beatWR = true; }
@@ -4291,6 +4323,8 @@ function bunnyGame() {
     const mult = { unicorn: 2, dragon: 3, trex: 4, whale: 1.5 }[ch.id] || PK.mult || 1;
     let gain = Math.round((M.extreme ? 3 : hard() ? 2 : 1) * mult * (AP.mult || 1)) + (RING ? 4 : (has("tophat") ? 1 : 0) + (has("cape") ? 1 : 0)) + (ch.id === "bee" ? 1 : 0) + (PK.plus || 0) + (AP.plus || 0);
     if (has("clover") && Math.random() < R(.1, .2)) { const luck = R(5, 10); gain += luck; M.pops.push({ x: to.x, y: to.y - 110, t: 0, txt: `🍀 Lucky! +${luck}` }); }
+    if (M.dbl) gain *= 2;
+    if (M.goldOnly) { M.golden += gain; gain *= TY_GOLD_VALUE; }
     const lifeEvery = Math.min(ch.id === "monkey" ? 15 : PK.lifeEvery || 999, AP.lifeEvery || 999), lifeMax = Math.max(ch.id === "monkey" ? 3 : PK.lifeMax || 3, AP.lifeMax || 0);
     if (lifeEvery < 999 && M.words % lifeEvery === 0 && M.lives < lifeMax) { M.lives++; M.pops.push({ x: to.x, y: to.y - 150, t: 0, txt: `${ch.emoji} +1 life!` }); }
     if (M.extreme) {
@@ -4371,7 +4405,7 @@ function bunnyGame() {
     o.innerHTML = `<div class="shop-inner find" style="text-align:center;align-items:center">${tyWear(a, "ty-big")}<h2>Splash! You fell.</h2><p class="big money">${M.words} words</p>
       ${M.extreme ? `<p><b>Top speed: ${M.topWpm} WPM.</b> ${M.beatWR ? "🏆 You went faster than the typing world record (about 212 WPM)!" : `World record: about ${TY_WR} WPM. ${TY_WR - M.topWpm} to go!`}</p>` : ""}
       ${M.goalLog.length ? `<div class="ty-goalwin">🎯 Goals finished: ${M.goalLog.map(g => `<b>${g.name}</b> (+${g.reward} 🥕)`).join(", ")}. New, harder goals are waiting in the lobby!</div>` : ""}
-      <p>🥕 +${M.carrots} carrots${M.goalLog.length ? ` + ${M.goalLog.reduce((t, g) => t + g.reward, 0)} goal bonus` : ""} (total ${a2.carrots}) · your speed: ${M.playT > 3 ? Math.round(M.chars / 5 / (M.playT / 60)) : 0} WPM · ${acc}% accuracy</p>
+      <p>🥕 +${M.carrots} carrots${M.golden ? ` (🌟 ${M.golden} golden)` : ""}${M.goalLog.length ? ` + ${M.goalLog.reduce((t, g) => t + g.reward, 0)} goal bonus` : ""} (total ${a2.carrots}) · your speed: ${M.playT > 3 ? Math.round(M.chars / 5 / (M.playT / 60)) : 0} WPM · ${acc}% accuracy</p>
       <p>${nb ? "New best!" : `Best on ${key === "extreme" ? "Extreme" : key === "hard" ? "Hard" : "Easy"}: ${a2.best[key]}`}</p>
       <div class="row" style="justify-content:center"><button class="btn go" id="m-go" data-extreme="1">Play again</button><button class="btn" id="ty-lob">Characters & shop</button></div></div>`;
     o.querySelector("#m-go").addEventListener("click", go);
@@ -4451,7 +4485,12 @@ function bunnyGame() {
       goalLog: [] });
     if (has("bow")) M.carrots += R(3, 10);
     M.carrots += AP.start || 0;
-    M.bankC = 0; M.bankW = 0;
+    M.bankC = 0; M.bankW = 0; M.golden = 0; M.bankG = 0;
+    // 🎒 quick add-ons are used up by this game
+    const aA = tyLoad(TY), ads = aA.addons || {};
+    M.lives += ads.life || 0; M.dbl = !!ads.double; M.goldOnly = !!ads.gold; M.slow = !!ads.slow; M.addPeek = ads.peek ? 3 : 0;
+    const used = TY_ADDONS.filter(ad => ads[ad.id]);
+    if (used.length) { aA.addons = {}; tySave(TY, aA); setTimeout(() => toast(`🎒 Add-ons on: ${used.map(ad => `${ad.emoji} ${ad.name}${ad.id === "life" && ads.life > 1 ? ` ×${ads.life}` : ""}`).join(", ")}`), 300); }
     M.startBest = tyLoad(TY).best[M.extreme ? "extreme" : hard() ? "hard" : "easy"] || 0;
     closeShop();
     newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); // enough platforms ahead to peek at 5 words
