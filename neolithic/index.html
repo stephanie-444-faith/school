@@ -3572,7 +3572,7 @@ const TY_ACC = [
   { id: "stopwatch", speed: true, fixedPrice: true, emoji: "⏱️", name: "Golden Stopwatch", cost: 2500, spot: "side", power: "Platforms last 60% longer plus 2 seconds, 5 hovers, and 4 extra lives.", perks: { time: 1.6, addTime: 2, hovers: 5, lives: 4 } },
   { id: "racecar", speed: true, fixedPrice: true, emoji: "🏎️", name: "Race Car", cost: 3000, spot: "back", power: "5× carrots, 10 free Turbo Jumps, and see 3 words ahead.", perks: { mult: 5, skips: 10, skipName: "Turbo Jump", peek: 3 } },
   { id: "tornado", speed: true, fixedPrice: true, emoji: "🌪️", name: "Tornado Boots", cost: 3500, spot: "side", power: "6 extra lives, an extra life every 12 words, falling never breaks your streak, and a +20 streak bonus every 3 words.", perks: { lives: 6, lifeEvery: 12, lifeMax: 14, keepStreak: true, streakEvery: 3, streakBonus: 20 } },
-  { id: "comet", speed: true, fixedPrice: true, emoji: "☄️", name: "Comet Crown", cost: 5000, spot: "top", power: "Almost a Planet Ring: has all the Diamond Ring's powers built in, plus 3× carrots, 4 extra lives, and see 4 words ahead.", perks: { mult: 3, lives: 4, peek: 4 } }
+  { id: "comet", speed: true, fixedPrice: true, emoji: "☄️", name: "Comet Crown", cost: 5000, spot: "top", power: "Even better than the Planet Ring! Every Planet Ring and Diamond Ring power, but much bigger: 10× carrots, +15 carrots per word, 18 extra lives, platforms last 2.5× longer plus 5 seconds, 14 hovers, 30 Comet Jumps, see 5 words ahead, 6× goal rewards, start with 50 carrots, a +40 streak bonus every 3 words, an extra life every 7 words (up to 30), and falling never breaks your streak.", perks: { mult: 10, plus: 15, lives: 18, time: 2.5, addTime: 5, hovers: 14, skips: 30, skipName: "Comet Jump", peek: 5, goalMult: 6, start: 50, streakEvery: 3, streakBonus: 40, lifeEvery: 7, lifeMax: 30, keepStreak: true } }
 ];
 const tyAcc = a => TY_ACC.find(x => x.id === a.acc) || null;
 // What the Diamond Ring does: every other accessory, powered up.
@@ -4036,7 +4036,7 @@ function bunnyGame() {
     M.bankC = 0; M.bankW = 0;
     M.startBest = tyLoad(TY).best[M.extreme ? "extreme" : hard() ? "hard" : "easy"] || 0;
     closeShop();
-    newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); // enough platforms ahead to peek at 4 words
+    newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); newPlat(); // enough platforms ahead to peek at 5 words
     M.left = M.tmax = platTime(M.plats[1].word) + 1.5;
     if (isChamp(TY)) {
       const a3 = tyLoad(TY);
