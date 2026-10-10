@@ -383,6 +383,14 @@
   .ty-drop[open] > summary::after { transform: rotate(180deg); }
   .ty-drop > summary small { font-size: .82rem; font-weight: 600; opacity: .8; }
   .ty-dropbody { padding: 4px 12px 12px; }
+  .ty-hfilters { flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .ty-hfilters select { font: inherit; padding: 8px 10px; border-radius: 10px; background: var(--panel); color: inherit; border: 2px solid var(--line); }
+  .ty-homes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; }
+  .ty-homes > .btn, .ty-homes > p { grid-column: 1 / -1; }
+  .ty-home { display: flex; align-items: center; gap: 10px; background: var(--panel); border-radius: 12px; padding: 8px 10px; border: 2px solid transparent; }
+  .ty-home > div { flex: 1; } .ty-home small { display: block; opacity: .8; font-size: .8rem; }
+  .ty-home.owned { border-color: var(--money); } .ty-home.here { border-color: var(--gold); background: linear-gradient(135deg, #4a3a1a, var(--panel)); }
+  .ty-hemoji { font-size: 1.8rem; }
   .ty-give { display: flex; flex-direction: column; gap: 8px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
   .ty-give select { font: inherit; padding: 8px 10px; border-radius: 10px; background: var(--panel); color: inherit; border: 2px solid var(--line); }
   .ty-give .row { flex-wrap: wrap; gap: 6px; }
@@ -3847,6 +3855,36 @@ function tyCheckLife(id) {
   if (won.length) sfx.buy();
   return won;
 }
+// 🏠 Homes: 1,000 homes to buy and own, from a cardboard box to a moon base. Homes are just for fun: they don't earn anything.
+const TY_HOME_TYPES = [
+  ["box", "📦", "Cardboard Box", 10, "Tiny"], ["tent", "⛺", "Tent", 25, "Tiny"], ["burrow", "🐇", "Bunny Burrow", 40, "Tiny"], ["igloo", "🧊", "Igloo", 60, "Tiny"],
+  ["tree", "🌳", "Treehouse", 100, "Small"], ["hut", "🛖", "Hut", 150, "Small"], ["cabin", "🪵", "Cabin", 250, "Small"], ["cottage", "🏡", "Cottage", 400, "Small"],
+  ["boat", "⛵", "Houseboat", 700, "Medium"], ["house", "🏠", "House", 1200, "Medium"], ["farm", "🌾", "Farmhouse", 2000, "Medium"], ["town", "🏘️", "Townhouse", 3500, "Medium"],
+  ["light", "🗼", "Lighthouse", 6000, "Big"], ["mansion", "🏛️", "Mansion", 15000, "Big"], ["castle", "🏰", "Castle", 40000, "Big"],
+  ["palace", "🕌", "Palace", 90000, "Huge"], ["lair", "🌋", "Volcano Lair", 150000, "Huge"], ["sky", "☁️", "Sky Island", 250000, "Huge"],
+  ["dome", "🐠", "Underwater Dome", 400000, "Gigantic"], ["moon", "🌙", "Moon Base", 750000, "Gigantic"]
+];
+const TY_HOME_STYLES = [["Old", .6], ["Little", .7], ["Spooky", .9], ["Cozy", 1], ["Sunny", 1.1], ["Candy", 1.2], ["Rainbow", 1.25], ["Sparkly", 1.4], ["Fancy", 1.6], ["Golden", 2]];
+const TY_HOME_PLACES = [["on Snowy Peak", .9], ["on Carrot Hill", 1], ["in Maple Woods", 1.1], ["in Bunny Town", 1.2], ["by Sunny Beach", 1.3]];
+const TY_HOME_ROOMS = { Tiny: 1, Small: 2, Medium: 5, Big: 12, Huge: 40, Gigantic: 100 };
+const TY_SIZES = ["Tiny", "Small", "Medium", "Big", "Huge", "Gigantic"];
+const nicePrice = n => { const m = Math.pow(10, Math.max(0, Math.floor(Math.log10(n)) - 1)); return Math.max(5, Math.round(n / m) * m); };
+const TY_HOMES = TY_HOME_TYPES.flatMap(([tid, emoji, type, base, size]) => TY_HOME_STYLES.flatMap(([style, sm], si) => TY_HOME_PLACES.map(([place, pm], pi) => ({
+  id: `${tid}-${si}-${pi}`, emoji, size, name: `${style} ${type} ${place}`,
+  cost: nicePrice(base * sm * pm), rooms: Math.max(1, Math.round(TY_HOME_ROOMS[size] * (sm + pm) / 2))
+}))));
+const tyHome = id => TY_HOMES.find(h => h.id === id);
+const TY_HF = { size: "all", sort: "cheap", which: "all", shown: 40 }; // home list filters
+function tyHomesList(a) {
+  let list = TY_HOMES.filter(h => (TY_HF.size === "all" || h.size === TY_HF.size) && (TY_HF.which === "all" || (TY_HF.which === "mine" ? (a.homes || []).includes(h.id) : !(a.homes || []).includes(h.id) && h.cost <= a.carrots)));
+  list = list.sort((x, y) => TY_HF.sort === "cheap" ? x.cost - y.cost : y.cost - x.cost);
+  const rows = list.slice(0, TY_HF.shown).map(h => {
+    const own = (a.homes || []).includes(h.id), here = a.home === h.id;
+    return `<div class="ty-home${own ? " owned" : ""}${here ? " here" : ""}"><span class="ty-hemoji">${h.emoji}</span><div><b>${h.name}</b><small>${h.size} · ${h.rooms} room${h.rooms > 1 ? "s" : ""}${own ? " · ✅ Yours" : ""}</small></div>
+      <button class="btn" data-home="${h.id}" ${here || (!own && a.carrots < h.cost) ? "disabled" : ""}>${here ? "🏠 You live here" : own ? "Live here" : `🥕 ${fmt(h.cost)}`}</button></div>`;
+  }).join("");
+  return `${rows || `<p class="soft">No homes here yet. Try a different choice above!</p>`}${list.length > TY_HF.shown ? `<button class="btn" id="ty-home-more">Show more homes (${fmt(list.length - TY_HF.shown)} left)</button>` : ""}`;
+}
 const TY_OPEN = new Set(); // which lobby drop-down menus are open
 const dOpen = k => TY_OPEN.has(k) ? " open" : "";
 function bunnyLobby() {
@@ -3870,6 +3908,7 @@ function bunnyLobby() {
         <div><h2>${esc(ac.name)}</h2><p>🥕 <b>${a.carrots}</b> carrots · ${a.words} words typed</p>
         <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0} · Extreme ${a.best.extreme || 0}${a.topWpm ? ` (top ${a.topWpm} WPM${a.beatWR ? " 🏆" : ""})` : ""}</p>
         <p class="soft">⚡ Your fastest typing speed: <b>${a.speedWpm || 0} WPM</b></p>
+        ${a.home && tyHome(a.home) ? `<p class="soft">${tyHome(a.home).emoji} Lives in: <b>${tyHome(a.home).name}</b></p>` : ""}
         <p class="soft">🌟 Golden carrots: <b>${a.golden || 0}</b> (from the Training Ground, worth ${TY_GOLD_VALUE} carrots each)</p>
         <p class="soft">🏛️ Taxes paid: <b>${a.taxPaid || 0}</b> · 🎁 Donations received: <b>${a.donations || 0}</b></p></div></div>
       <p class="soft">🏛️ For every 100 carrots earned, the richest player pays 10% tax (10 carrots), and players who aren't a champion get a 10 carrot donation.</p>
@@ -3965,7 +4004,30 @@ function bunnyLobby() {
           <button class="btn" data-acc="${x.id}" ${!own && (!sc || a.carrots < tyPrice(x, TY)) ? "disabled" : ""}>${label}</button></div>`;
       }).join("")}</div>
       </div></details>
+      <details class="ty-drop" data-drop="homes"${dOpen("homes")}><summary>🏠 Homes <small>${(a.homes || []).length} of ${fmt(TY_HOMES.length)} owned${a.home && tyHome(a.home) ? ` · living in ${tyHome(a.home).emoji} ${tyHome(a.home).name}` : ""}</small></summary><div class="ty-dropbody">
+        <p class="soft">Buy a home to own! There are ${fmt(TY_HOMES.length)} homes, from tiny and cheap to gigantic and super expensive. Homes are just for fun: they don't earn you any carrots.</p>
+        <div class="row ty-hfilters">
+          <select id="ty-hsize" aria-label="Home size"><option value="all">All sizes</option>${TY_SIZES.map(z => `<option value="${z}"${TY_HF.size === z ? " selected" : ""}>${z}</option>`).join("")}</select>
+          <select id="ty-hsort" aria-label="Sort homes"><option value="cheap"${TY_HF.sort === "cheap" ? " selected" : ""}>Cheapest first</option><option value="rich"${TY_HF.sort === "rich" ? " selected" : ""}>Most expensive first</option></select>
+          <select id="ty-hwhich" aria-label="Which homes"><option value="all">All homes</option><option value="afford"${TY_HF.which === "afford" ? " selected" : ""}>Ones I can buy</option><option value="mine"${TY_HF.which === "mine" ? " selected" : ""}>My homes</option></select>
+        </div>
+        <div class="ty-homes" id="ty-homes">${tyHomesList(a)}</div>
+      </div></details>
     </div>`;
+  const bindHomes = () => {
+    document.getElementById("ty-home-more")?.addEventListener("click", () => { TY_HF.shown += 40; document.getElementById("ty-homes").innerHTML = tyHomesList(tyLoad(TY)); bindHomes(); });
+    $app.querySelectorAll("[data-home]").forEach(b => b.addEventListener("click", () => {
+      const a2 = tyLoad(TY), h = tyHome(b.dataset.home);
+      a2.homes = a2.homes || [];
+      if (!a2.homes.includes(h.id)) { if (a2.carrots < h.cost) return; a2.carrots -= h.cost; a2.homes.push(h.id); sfx.buy(); toast(`${h.emoji} You bought the ${h.name}! Welcome home!`); }
+      else toast(`${h.emoji} You moved into the ${h.name}!`);
+      a2.home = h.id; tySave(TY, a2); bunnyLobby();
+    }));
+  };
+  bindHomes();
+  [["ty-hsize", "size"], ["ty-hsort", "sort"], ["ty-hwhich", "which"]].forEach(([el, k]) => document.getElementById(el).addEventListener("change", e => {
+    TY_HF[k] = e.target.value; TY_HF.shown = 40; document.getElementById("ty-homes").innerHTML = tyHomesList(tyLoad(TY)); bindHomes();
+  }));
   $app.querySelectorAll(".ty-drop").forEach(d => d.addEventListener("toggle", () => { d.open ? TY_OPEN.add(d.dataset.drop) : TY_OPEN.delete(d.dataset.drop); }));
   $app.querySelectorAll("[data-pick]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY); a2.champPick = { day: tyToday(), which: b.dataset.pick }; tySave(TY, a2);
