@@ -386,6 +386,7 @@
   .ty-give { display: flex; flex-direction: column; gap: 8px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
   .ty-give select { font: inherit; padding: 8px 10px; border-radius: 10px; background: var(--panel); color: inherit; border: 2px solid var(--line); }
   .ty-give .row { flex-wrap: wrap; gap: 6px; }
+  .ty-give-own input { flex: 1; min-width: 120px; font: inherit; font-size: 1.1rem; padding: 8px 10px; border-radius: 10px; background: var(--panel); color: inherit; border: 2px solid var(--gold); }
   .ty-addons { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 8px; }
   .ty-addon { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; border: 2px solid transparent; }
   .ty-addon.ready { border-color: var(--money); }
@@ -3884,7 +3885,9 @@ function bunnyLobby() {
       <p class="soft">Share some of your carrots just for fun! They'll get a surprise message next time they play. ${a.given ? `You've given away <b>${fmt(a.given)}</b> carrots so far. So kind! 💛` : ""}</p>
       <div class="ty-give">
         <select id="ty-give-to" aria-label="Who to give carrots to">${TY_ACCOUNTS.filter(x => x.id !== TY).map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select>
-        <div class="row">${[1, 5, 10, 25, 50, 100].map(n => `<button class="btn" data-give="${n}" ${a.carrots < n ? "disabled" : ""}>🥕 ${n}</button>`).join("")}</div>
+        <div class="row ty-give-own"><input id="ty-give-n" type="number" min="1" max="${a.carrots}" step="1" inputmode="numeric" placeholder="How many?" aria-label="How many carrots to give"><button class="btn gold" id="ty-give-go" ${a.carrots < 1 ? "disabled" : ""}>🎁 Give</button></div>
+        <div class="row">${[1, 5, 10, 25, 50, 100, 500, 1000].map(n => `<button class="btn" data-give="${n}" ${a.carrots < n ? "disabled" : ""}>🥕 ${fmt(n)}</button>`).join("")}</div>
+        <small class="soft">Type any amount up to ${fmt(a.carrots)}, or tap a quick button.</small>
       </div>
       <details class="ty-drop" data-drop="addons"${dOpen("addons")}><summary>🎒 Quick Add-ons <small>${TY_ADDONS.length} boosts for one game${Object.values(a.addons || {}).some(n => n) ? ` · ✅ ${Object.values(a.addons).reduce((t, n) => t + n, 0)} ready` : ""}</small></summary><div class="ty-dropbody">
       <p class="soft">Buy a boost for your next game only. Prices depend on how many carrots you have: cheap if you have a few, expensive if you're rich!</p>
@@ -3984,15 +3987,20 @@ function bunnyLobby() {
     el.textContent = w ? `Next free life in ${formatTime(Math.ceil(w / 1000))}.` : "Your free life is ready! It's added when you start a game.";
   }, 1000);
   document.getElementById("ty-play").addEventListener("click", bunnyGame);
-  $app.querySelectorAll("[data-give]").forEach(b => b.addEventListener("click", () => {
-    const n = +b.dataset.give, to = document.getElementById("ty-give-to").value, giver = tyLoad(TY);
-    if (giver.carrots < n || to === TY) return;
+  const giveCarrots = n => {
+    const to = document.getElementById("ty-give-to").value, giver = tyLoad(TY);
+    if (!Number.isInteger(n) || n < 1) return toast("Type how many carrots you want to give (1 or more).");
+    if (giver.carrots < n) return toast(`You only have ${fmt(giver.carrots)} carrots to give.`);
+    if (to === TY) return;
     giver.carrots -= n; giver.given = (giver.given || 0) + n; tySave(TY, giver);
     const r = tyLoad(to); r.carrots += n; r.gifts = [...(r.gifts || []), { from: TY, n }]; tySave(to, r);
-    sfx.buy(); toast(`🎁 You gave ${n} carrot${n > 1 ? "s" : ""} to ${TY_ACCOUNTS.find(x => x.id === to).name}! That was so nice!`);
+    sfx.buy(); toast(`🎁 You gave ${fmt(n)} carrot${n > 1 ? "s" : ""} to ${TY_ACCOUNTS.find(x => x.id === to).name}! That was so nice!`);
     bunnyLobby();
     document.getElementById("ty-give-to").value = to;
-  }));
+  };
+  $app.querySelectorAll("[data-give]").forEach(b => b.addEventListener("click", () => giveCarrots(+b.dataset.give)));
+  document.getElementById("ty-give-go").addEventListener("click", () => giveCarrots(Math.floor(+document.getElementById("ty-give-n").value)));
+  document.getElementById("ty-give-n").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("ty-give-go").click(); });
   $app.querySelectorAll("[data-addon]").forEach(b => b.addEventListener("click", () => {
     const a2 = tyLoad(TY), ad = TY_ADDONS.find(x => x.id === b.dataset.addon), price = tyAddonPrice(ad, TY);
     a2.addons = a2.addons || {};
