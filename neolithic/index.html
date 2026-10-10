@@ -3763,11 +3763,11 @@ function startBunny() {
 // Goals: each track always shows one goal. Finishing it pays carrots and swaps in a harder goal
 // (bigger target, bigger reward). "run" goals are checked during a game; "life" goals add up over time.
 const TY_TRACKS = [
-  { id: "carrots", icon: "🥕", kind: "run", target: n => 25 + n * 20 + n * n * 5, reward: t => Math.round(t * .6), desc: t => `Get ${t} carrots in one run`, check: (m, t) => m.carrots >= t, now: m => m.carrots },
-  { id: "words", icon: "📝", kind: "run", target: n => 20 + n * 10 + n * n * 2, reward: t => t, desc: t => `Type ${t} words in one run`, check: (m, t) => m.words >= t, now: m => m.words },
-  { id: "perfect", icon: "🎯", kind: "run", target: n => 10 + n * 5, reward: t => t + 5, desc: t => `Type ${t} words in a run with no mistakes`, check: (m, t) => m.miss === 0 && m.words >= t },
+  { id: "carrots", icon: "🥕", kind: "run", target: n => 25 + n * 20 + n * n * 5, reward: t => Math.round(t * .6), desc: t => `Get ${t} carrots in one game`, check: (m, t) => m.carrots >= t, now: m => m.carrots },
+  { id: "words", icon: "📝", kind: "run", target: n => 20 + n * 10 + n * n * 2, reward: t => t, desc: t => `Type ${t} words in one game`, check: (m, t) => m.words >= t, now: m => m.words },
+  { id: "perfect", icon: "🎯", kind: "run", target: n => 10 + n * 5, reward: t => t + 5, desc: t => `Type ${t} words in a game with no mistakes`, check: (m, t) => m.miss === 0 && m.words >= t },
   { id: "streak", icon: "🔥", kind: "run", target: n => 20 + n * 10, reward: t => t, desc: t => `Type ${t} words in a row without falling`, check: (m, t) => m.streak >= t },
-  { id: "hard", icon: "💪", kind: "run", target: n => 15 + n * 7, reward: t => t + 10, desc: t => `Type ${t} words in one run on Hard`, check: (m, t) => !m.extreme && hard() && m.words >= t },
+  { id: "hard", icon: "💪", kind: "run", target: n => 15 + n * 7, reward: t => t + 10, desc: t => `Type ${t} words in one game on Hard`, check: (m, t) => !m.extreme && hard() && m.words >= t },
   { id: "speed", icon: "⚡", kind: "run", target: n => 100 + n * 30, reward: t => Math.round(t / 2.5), desc: t => `Reach ${t} WPM in Extreme${t > TY_WR ? " (faster than the world record!)" : ""}`, check: (m, t) => m.extreme && m.wpm >= t },
   { id: "total", icon: "🏃", kind: "life", target: n => 200 * Math.pow(2, n), reward: t => Math.round(t / 4), desc: t => `Type ${t} words in total`, check: (a, t) => a.words >= t, prog: a => a.words },
   { id: "bank", icon: "💰", kind: "life", target: n => 100 * Math.pow(2, n), reward: t => Math.round(t / 4), desc: t => `Have ${t} carrots saved up at once`, check: (a, t) => a.carrots >= t, prog: a => a.carrots },
@@ -3775,7 +3775,7 @@ const TY_TRACKS = [
   { id: "accs", icon: "🎩", kind: "life", target: n => [1, 3, 6, 10, 16, 21, TY_ACC.length][n], reward: t => 10 + t * 5, desc: t => `Own ${t} accessor${t === 1 ? "y" : "ies"}`, check: (a, t) => a.accOwned.length >= t, prog: a => a.accOwned.length }
 ];
 const goalLv = (a, tr) => (a.goalLv || {})[tr.id] || 0;
-// 🏅 Goal Quest: 2,500 goals that get harder as you go. 3 are open at a time, and you can finish them in any order.
+// 🎯 Numbered goals (shown with the other goals): 2,500 goals that get harder as you go. 3 are open at a time, and you can finish them in any order.
 const TY_QUEST = (() => {
   const chars = TY_CHARS.filter(c => !c.champ && !c.speed).sort((x, y) => x.cost - y.cost);
   const accs = TY_ACC.filter(x => !x.champ && !x.speed).sort((x, y) => x.cost - y.cost);
@@ -3829,7 +3829,7 @@ function tyQuestWin(id, q) {
   a.carrots += reward;
   tySave(id, a);
   tyTax(id, reward);
-  return { name: `Quest #${q.n}: ${q.desc}`, reward, icon: q.icon };
+  return { name: `Goal #${q.n}: ${q.desc}`, reward, icon: q.icon };
 }
 // Pays for a finished goal and moves that track up one level. Returns what was earned.
 function tyLevelUp(id, tr) {
@@ -3936,8 +3936,9 @@ function bunnyLobby() {
           <button class="btn" data-addon="${ad.id}" ${full || a.carrots < price ? "disabled" : ""}>${full ? "Ready!" : `🥕 ${fmt(price)}`}</button></div>`;
       }).join("")}</div>
       </div></details>
-      <details class="ty-drop" data-drop="goals"${dOpen("goals")}><summary>🎯 Goals <small>${a.goalsDone || 0} finished so far</small></summary><div class="ty-dropbody">
-      <p class="soft">Reach a goal to win free carrots. Every time you finish one, a harder goal with a bigger reward takes its place!</p>
+      <details class="ty-drop" data-drop="goals"${dOpen("goals")}><summary>🎯 Goals <small>${a.goalsDone || 0} finished so far · ${(a.questDone || []).length} / ${fmt(TY_QUEST.length)} numbered goals</small></summary><div class="ty-dropbody">
+      <p class="soft">Reach a goal to win free carrots! Every time you finish one, a new goal takes its place. There are also ${fmt(TY_QUEST.length)} numbered goals that get harder as you go.</p>
+      <div class="ty-gbar quest"><i style="width:${(a.questDone || []).length / TY_QUEST.length * 100}%"></i></div>
       <div class="ty-goals">${TY_TRACKS.map(tr => {
         const lv = goalLv(a, tr), t = tr.target(lv);
         if (t == null) return `<div class="ty-goal done"><span class="ty-gicon">✅</span><div class="ty-gtext"><b>All done!</b><span>You finished every ${tr.id === "chars" ? "character" : "accessory"} goal.</span></div></div>`;
@@ -3945,14 +3946,9 @@ function bunnyLobby() {
         return `<div class="ty-goal"><span class="ty-gicon">${tr.icon}</span>
           <div class="ty-gtext"><b>${tr.desc(t)}</b><span>Level ${lv + 1}${tr.kind === "run" ? " · in one game" : ""}</span>${pr != null ? `<div class="ty-gbar"><i style="width:${Math.min(100, pr / t * 100)}%"></i></div><small>${Math.min(pr, t)} / ${t}</small>` : ""}</div>
           <span class="ty-greward">+${tr.reward(t)} 🥕</span></div>`;
-      }).join("")}</div>
-      </div></details>
-      <details class="ty-drop" data-drop="quest"${dOpen("quest")}><summary>🏅 Goal Quest <small>${(a.questDone || []).length} / ${TY_QUEST.length} done</small></summary><div class="ty-dropbody">
-      <p class="soft">2,500 goals to beat! Three are open at a time. Finish any of them during a game, and the next quest goal opens up.</p>
-      <div class="ty-gbar quest"><i style="width:${(a.questDone || []).length / TY_QUEST.length * 100}%"></i></div>
-      <div class="ty-goals">${questOpen(a).map(q => `<div class="ty-goal"><span class="ty-gicon">${q.icon}</span>
-          <div class="ty-gtext"><b>${q.desc}</b><span>Quest #${q.n} of ${TY_QUEST.length}</span></div>
-          <span class="ty-greward">+${q.reward} 🥕</span></div>`).join("") || `<div class="ty-goal done"><span class="ty-gicon">🏆</span><div class="ty-gtext"><b>Quest complete!</b><span>You finished all ${TY_QUEST.length} quest goals!</span></div></div>`}</div>
+      }).join("")}${questOpen(a).map(q => `<div class="ty-goal"><span class="ty-gicon">${q.icon}</span>
+          <div class="ty-gtext"><b>${q.desc}</b><span>Goal #${q.n} of ${fmt(TY_QUEST.length)}</span></div>
+          <span class="ty-greward">+${q.reward} 🥕</span></div>`).join("") || `<div class="ty-goal done"><span class="ty-gicon">🏆</span><div class="ty-gtext"><b>All numbered goals done!</b><span>You finished all ${TY_QUEST.length} quest goals!</span></div></div>`}</div>
       </div></details>
       <details class="ty-drop" data-drop="chars"${dOpen("chars")}><summary>🐾 Characters <small>${a.owned.length} of ${TY_CHARS.length} owned · playing ${tyChar(a).emoji} ${tyChar(a).name}</small></summary><div class="ty-dropbody">
       <h3>Characters</h3>
@@ -4284,7 +4280,7 @@ function tyTraining() {
           <li><b>Be correct, not just fast.</b> No mistakes keeps your streak going, and streaks give bonus carrots.</li>
           <li><b>Type the word the moment the platform appears.</b> Read the next word while you're still hopping (Cool Shades or the Crystal Ball show it early).</li>
           <li><b>Play harder levels.</b> Hard gives 2× carrots and Extreme gives 3×, once you're ready.</li>
-          <li><b>Finish goals and Goal Quests.</b> They pay lots of free carrots.</li>
+          <li><b>Finish goals.</b> They pay lots of free carrots.</li>
           <li><b>Buy carrot boosters.</b> ${tyShopTip(TY)}</li>
         </ol></div>
         <p class="soft">⚡ Your Bunny Hop record: <b>${a.speedWpm || 0} WPM</b>${t.speed.length && !t.speed.includes(TY) ? ` · The Speed Champion has <b>${tyLoad(t.speed[0]).speedWpm} WPM</b>` : t.speed.includes(TY) ? " · You're the Speed Champion!" : ""}</p>
@@ -4524,8 +4520,8 @@ function bunnyGame() {
     for (const q of questOpen(tyLoad(TY))) {
       if (!q.check(M, ch, acc)) continue;
       const g = tyQuestWin(TY, q); M.goalLog.push(g);
-      M.pops.push({ x: to.x, y: to.y - 130 - k++ * 26, t: 0, txt: `🏅 Quest! +${g.reward} 🥕` });
-      toast(`🏅 ${g.name}! +${g.reward} 🥕`);
+      M.pops.push({ x: to.x, y: to.y - 130 - k++ * 26, t: 0, txt: `🎯 Goal! +${g.reward} 🥕` });
+      toast(`🎯 ${g.name}! +${g.reward} 🥕`);
       sfx.buy();
     }
     newPlat();
