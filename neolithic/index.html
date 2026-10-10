@@ -385,12 +385,16 @@
   .ty-dropbody { padding: 4px 12px 12px; }
   .ty-hfilters { flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .ty-hfilters select { font: inherit; padding: 8px 10px; border-radius: 10px; background: var(--panel); color: inherit; border: 2px solid var(--line); }
-  .ty-homes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; }
+  .ty-homes { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
   .ty-homes > .btn, .ty-homes > p { grid-column: 1 / -1; }
-  .ty-home { display: flex; align-items: center; gap: 10px; background: var(--panel); border-radius: 12px; padding: 8px 10px; border: 2px solid transparent; }
+  .ty-home { display: flex; flex-direction: column; gap: 6px; background: var(--panel); border-radius: 12px; padding: 8px; border: 2px solid transparent; }
+  .ty-home svg.hp { width: 100%; height: auto; }
+  .ty-home b { font-size: .9rem; line-height: 1.2; } .ty-home .btn { width: 100%; }
   .ty-home > div { flex: 1; } .ty-home small { display: block; opacity: .8; font-size: .8rem; }
   .ty-home.owned { border-color: var(--money); } .ty-home.here { border-color: var(--gold); background: linear-gradient(135deg, #4a3a1a, var(--panel)); }
   .ty-hemoji { font-size: 1.8rem; }
+  svg.hp { width: 84px; height: 56px; flex: none; border-radius: 8px; border: 2px solid #0003; background: #fff1; }
+  svg.hp.big { width: 100%; height: auto; max-width: 420px; align-self: center; border-radius: 12px; }
   .ty-furn { background: var(--panel); border: 2px solid var(--money); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
   .ty-furn-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; } .ty-furn-top > div { flex: 1; min-width: 180px; }
   .ty-furn small { display: block; font-size: .8rem; }
@@ -3875,18 +3879,93 @@ const TY_HOME_TYPES = [
   ["boat", "⛵", "Houseboat", 700, "Medium"], ["house", "🏠", "House", 1200, "Medium"], ["farm", "🌾", "Farmhouse", 2000, "Medium"], ["town", "🏘️", "Townhouse", 3500, "Medium"],
   ["light", "🗼", "Lighthouse", 6000, "Big"], ["mansion", "🏛️", "Mansion", 15000, "Big"], ["castle", "🏰", "Castle", 40000, "Big"],
   ["palace", "🕌", "Palace", 90000, "Huge"], ["lair", "🌋", "Volcano Lair", 150000, "Huge"], ["sky", "☁️", "Sky Island", 250000, "Huge"],
-  ["dome", "🐠", "Underwater Dome", 400000, "Gigantic"], ["moon", "🌙", "Moon Base", 750000, "Gigantic"]
+  ["dome", "🐠", "Underwater Dome", 400000, "Gigantic"], ["moon", "🌙", "Moon Base", 750000, "Gigantic"],
+  // bigger, better, and WAY more expensive: all the way up to 10 billion carrots!
+  ["mars", "🪐", "Mars Colony", 1500000, "Mega"], ["city", "🏙️", "Floating City", 3000000, "Mega"], ["crystal", "💎", "Crystal Kingdom", 6000000, "Mega"], ["candy", "🍬", "Candy Kingdom", 12000000, "Mega"],
+  ["dragonmtn", "🐉", "Dragon Mountain", 25000000, "Ultra"], ["cloud", "🌥️", "Cloud Empire", 50000000, "Ultra"], ["rainbow", "🌈", "Rainbow Galaxy Palace", 100000000, "Ultra"], ["star", "⭐", "Star Fortress", 250000000, "Ultra"],
+  ["planet", "🌍", "Planet Mansion", 500000000, "Cosmic"], ["sun", "☀️", "Sun Palace", 1000000000, "Cosmic"], ["galaxy", "🌌", "Galaxy Castle", 2000000000, "Cosmic"], ["universe", "✨", "Universe Palace", 3846153846, "Cosmic"]
 ];
 const TY_HOME_STYLES = [["Old", .6], ["Little", .7], ["Spooky", .9], ["Cozy", 1], ["Sunny", 1.1], ["Candy", 1.2], ["Rainbow", 1.25], ["Sparkly", 1.4], ["Fancy", 1.6], ["Golden", 2]];
 const TY_HOME_PLACES = [["on Snowy Peak", .9], ["on Carrot Hill", 1], ["in Maple Woods", 1.1], ["in Bunny Town", 1.2], ["by Sunny Beach", 1.3]];
-const TY_HOME_ROOMS = { Tiny: 1, Small: 2, Medium: 5, Big: 12, Huge: 40, Gigantic: 100 };
-const TY_SIZES = ["Tiny", "Small", "Medium", "Big", "Huge", "Gigantic"];
+const TY_HOME_ROOMS = { Tiny: 1, Small: 2, Medium: 5, Big: 12, Huge: 40, Gigantic: 100, Mega: 300, Ultra: 1000, Cosmic: 5000 };
+const TY_SIZES = ["Tiny", "Small", "Medium", "Big", "Huge", "Gigantic", "Mega", "Ultra", "Cosmic"];
 const nicePrice = n => { const m = Math.pow(10, Math.max(0, Math.floor(Math.log10(n)) - 1)); return Math.max(5, Math.round(n / m) * m); };
 const TY_HOMES = TY_HOME_TYPES.flatMap(([tid, emoji, type, base, size]) => TY_HOME_STYLES.flatMap(([style, sm], si) => TY_HOME_PLACES.map(([place, pm], pi) => ({
-  id: `${tid}-${si}-${pi}`, emoji, size, name: `${style} ${type} ${place}`,
+  id: `${tid}-${si}-${pi}`, tid, si, pi, emoji, size, name: `${style} ${type} ${place}`,
   cost: nicePrice(base * sm * pm), rooms: Math.max(1, Math.round(TY_HOME_ROOMS[size] * (sm + pm) / 2))
 }))));
 const tyHome = id => TY_HOMES.find(h => h.id === id);
+// 🖼️ Home pictures: a little drawing for every home (the kind of home, its style colors, and where it is).
+const HP_STYLE = [
+  { wall: "#9a8a78", roof: "#5e4b3c", win: "#d8cfa0" }, { wall: "#ffd6e0", roof: "#ff8fab", win: "#fff6c2" }, { wall: "#4b3b6b", roof: "#22163a", win: "#7dff8a" },
+  { wall: "#e8b07a", roof: "#a0522d", win: "#ffe79a" }, { wall: "#ffe066", roof: "#ff9f1c", win: "#fffbe0" }, { wall: "#ffc8f0", roof: "#ff5fa2", win: "#ffffff", stripes: true },
+  { wall: "#9fe6ff", roof: "url(#hpRain)", win: "#ffffff" }, { wall: "#b8f2ff", roof: "#7b61ff", win: "#ffffff", sparkle: true },
+  { wall: "#f5f0ff", roof: "#6a4c93", win: "#ffe9a8", trim: true }, { wall: "#ffd166", roof: "#d99a00", win: "#fff4c4", sparkle: true, trim: true }
+];
+const HP_SPACE = ["moon", "mars", "planet", "sun", "galaxy", "universe", "star"], HP_AIR = ["sky", "city", "cloud", "rainbow"];
+function homeSVG(h, big) {
+  const st = HP_STYLE[h.si] || HP_STYLE[3], W = 120, G = 62; // ground line
+  const R = (x, y, w, hh, f, extra = "") => `<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="${f}" ${extra}/>`;
+  const win = (x, y, w = 6, hh = 6) => R(x, y, w, hh, st.win, `rx="1" stroke="#0003" stroke-width=".6"`);
+  const door = (x, w = 7, hh = 11) => R(x, G - hh, w, hh, "#6b3f1f", `rx="3"`);
+  const roofTri = (x, w, y, hh) => `<polygon points="${x - 3},${y} ${x + w / 2},${y - hh} ${x + w + 3},${y}" fill="${st.roof}" stroke="#0003" stroke-width=".6"/>`;
+  const house = (x, w, hh, rh = 14) => `${R(x, G - hh, w, hh, st.wall, `stroke="#0003" stroke-width=".6"`)}${st.stripes ? R(x, G - hh + 4, w, 3, "#fff8") : ""}${roofTri(x, w, G - hh, rh)}${st.trim ? R(x, G - hh, w, 2, "#ffcc33") : ""}`;
+  const tower = (x, w, hh, top = "cone", c = st.wall) => `${R(x, G - hh, w, hh, c, `stroke="#0003" stroke-width=".6"`)}${top === "cone" ? `<polygon points="${x - 2},${G - hh} ${x + w / 2},${G - hh - 12} ${x + w + 2},${G - hh}" fill="${st.roof}"/>` : top === "dome" ? `<ellipse cx="${x + w / 2}" cy="${G - hh}" rx="${w / 2 + 1}" ry="${w / 2}" fill="${st.roof}"/>` : [0, 1, 2].map(i => R(x + i * w / 3, G - hh - 4, w / 5, 4, c)).join("")}${win(x + w / 2 - 2.5, G - hh + 6, 5, 6)}`;
+  const flag = (x, y) => `<line x1="${x}" y1="${y}" x2="${x}" y2="${y - 9}" stroke="#555" stroke-width="1"/><polygon points="${x},${y - 9} ${x + 7},${y - 7} ${x},${y - 5}" fill="#ff4d6d"/>`;
+  const domeShape = (cx, r, f, o = 1) => `<path d="M${cx - r},${G} A${r},${r} 0 0 1 ${cx + r},${G} Z" fill="${f}" opacity="${o}" stroke="#0003" stroke-width=".6"/>`;
+  const castle = (x, w) => `${tower(x, 12, 30, "top")}${tower(x + w - 12, 12, 30, "top")}${R(x + 10, G - 22, w - 20, 22, st.wall, `stroke="#0003" stroke-width=".6"`)}${[...Array(Math.floor((w - 20) / 6))].map((_, i) => R(x + 11 + i * 6, G - 25, 3, 3, st.wall)).join("")}${door(x + w / 2 - 4, 8, 12)}${flag(x + 6, G - 34)}${flag(x + w - 6, G - 34)}`;
+  // background
+  let bg;
+  if (HP_SPACE.includes(h.tid)) bg = `${R(0, 0, W, 80, h.tid === "sun" ? "#2b0f3a" : "#0b1033")}${[...Array(22)].map((_, i) => `<circle cx="${(i * 37) % W}" cy="${(i * 23) % 56}" r="${i % 4 ? .6 : 1.1}" fill="#fff"/>`).join("")}${R(0, G, W, 18, { moon: "#b9b9c6", mars: "#c1440e", planet: "#3fae5a", sun: "#ffb703", galaxy: "#5b2a86", universe: "#2d1b69", star: "#ffd60a" }[h.tid])}`;
+  else if (h.tid === "dome") bg = `${R(0, 0, W, 80, "#1d6fb8")}${R(0, G, W, 18, "#e9d39b")}<circle cx="15" cy="20" r="2" fill="#bde0fe"/><circle cx="100" cy="30" r="1.5" fill="#bde0fe"/><text x="96" y="20" font-size="9">🐟</text><text x="8" y="44" font-size="8">🐠</text>`;
+  else if (HP_AIR.includes(h.tid)) bg = `${R(0, 0, W, 80, h.tid === "rainbow" ? "#c3b1ff" : "#8fd3ff")}<ellipse cx="20" cy="18" rx="14" ry="5" fill="#fff"/><ellipse cx="98" cy="12" rx="12" ry="4" fill="#fff"/>`;
+  else bg = [
+    `${R(0, 0, W, 80, "#cfe8ff")}<polygon points="0,${G} 25,20 50,${G}" fill="#dfe7f1"/><polygon points="18,32 25,20 32,32" fill="#fff"/><polygon points="60,${G} 92,14 124,${G}" fill="#cbd5e1"/><polygon points="83,28 92,14 101,28" fill="#fff"/>${R(0, G, W, 18, "#f4f8ff")}`,
+    `${R(0, 0, W, 80, "#9be7ff")}<ellipse cx="60" cy="${G + 14}" rx="80" ry="22" fill="#6cc56c"/><text x="6" y="${G + 12}" font-size="8">🥕</text><text x="104" y="${G + 12}" font-size="8">🥕</text>`,
+    `${R(0, 0, W, 80, "#bfe9d3")}${R(0, G, W, 18, "#5aa05a")}${[8, 22, 98, 110].map(x => `${R(x - 1, G - 10, 2, 10, "#6b3f1f")}<circle cx="${x}" cy="${G - 14}" r="6" fill="${x % 2 ? "#e76f51" : "#f4a261"}"/>`).join("")}`,
+    `${R(0, 0, W, 80, "#ffe5b4")}${R(0, G, W, 18, "#8bc34a")}${[4, 98].map(x => `${R(x, G - 12, 16, 12, "#e0c3fc")}<polygon points="${x - 2},${G - 12} ${x + 8},${G - 20} ${x + 18},${G - 12}" fill="#b5838d"/>`).join("")}`,
+    `${R(0, 0, W, 80, "#87ceeb")}<circle cx="104" cy="14" r="8" fill="#ffd60a"/>${R(0, G - 4, W, 8, "#2e86de")}${R(0, G + 2, W, 18, "#f6d58e")}`
+  ][h.pi] || "";
+  // the home itself
+  const m = 60; // middle
+  const art = {
+    box: `${R(m - 14, G - 18, 28, 18, "#c8a26b", `stroke="#7a5c33" stroke-width=".8"`)}<polygon points="${m - 14},${G - 18} ${m - 20},${G - 25} ${m - 6},${G - 25} ${m},${G - 18}" fill="#b08d57"/><polygon points="${m},${G - 18} ${m + 6},${G - 25} ${m + 20},${G - 25} ${m + 14},${G - 18}" fill="#b08d57"/>${door(m - 3, 6, 9)}`,
+    tent: `<polygon points="${m - 20},${G} ${m},${G - 26} ${m + 20},${G}" fill="${st.roof}" stroke="#0003"/><polygon points="${m - 5},${G} ${m},${G - 12} ${m + 5},${G}" fill="#3a2a1a"/>`,
+    burrow: `${domeShape(m, 18, "#8d6e63")}<ellipse cx="${m}" cy="${G - 5}" rx="6" ry="6" fill="#3e2723"/><text x="${m + 8}" y="${G - 16}" font-size="8">🐰</text>`,
+    igloo: `${domeShape(m, 18, "#eef6ff")}<path d="M${m - 6},${G} A6,7 0 0 1 ${m + 6},${G} Z" fill="#9db4c8"/><path d="M${m - 18},${G - 8} H${m + 18} M${m - 14},${G - 15} H${m + 14}" stroke="#b8cde0" stroke-width=".8"/>`,
+    tree: `<circle cx="${m}" cy="${G - 40}" r="22" fill="#3fa34d"/>${R(m - 4, G - 30, 8, 30, "#7b4a26")}${R(m - 16, G - 31, 32, 3, "#7b4a26")}${R(m - 10, G - 43, 20, 12, st.wall, `stroke="#0003" stroke-width=".6"`)}<polygon points="${m - 13},${G - 43} ${m},${G - 53} ${m + 13},${G - 43}" fill="${st.roof}"/>${win(m - 3, G - 40, 6, 5)}<path d="M${m + 6},${G - 28} V${G}" stroke="#c9a227" stroke-width="1" stroke-dasharray="2 2"/>`,
+    hut: `${R(m - 14, G - 14, 28, 14, st.wall, `rx="3"`)}<polygon points="${m - 18},${G - 14} ${m},${G - 30} ${m + 18},${G - 14}" fill="#c9a227"/>${door(m - 3)}`,
+    cabin: `${house(m - 18, 36, 18)}${[0, 1, 2].map(i => `<line x1="${m - 18}" y1="${G - 4 - i * 5}" x2="${m + 18}" y2="${G - 4 - i * 5}" stroke="#0002"/>`).join("")}${door(m - 3)}${win(m - 13, G - 13)}${win(m + 7, G - 13)}`,
+    cottage: `${house(m - 18, 36, 20, 16)}${R(m + 8, G - 40, 5, 10, "#8d5524")}${door(m - 3)}${win(m - 13, G - 15)}${win(m + 7, G - 15)}<text x="${m - 22}" y="${G}" font-size="7">🌷</text>`,
+    boat: `<path d="M${m - 26},${G - 6} H${m + 26} L${m + 18},${G + 4} H${m - 18} Z" fill="#7b4a26"/>${R(m - 12, G - 18, 24, 12, st.wall)}${roofTri(m - 12, 24, G - 18, 8)}${win(m - 8, G - 15)}${win(m + 2, G - 15)}${R(0, G + 2, W, 3, "#2e86de")}`,
+    house: `${house(m - 20, 40, 24, 16)}${door(m - 4, 8, 12)}${win(m - 15, G - 18)}${win(m + 9, G - 18)}${win(m - 15, G - 9)}${win(m + 9, G - 9)}`,
+    farm: `${house(m - 30, 30, 22, 14)}${door(m - 19)}${win(m - 27, G - 16)}${win(m - 7, G - 16)}${R(m + 4, G - 26, 18, 26, "#c0392b", `stroke="#0003"`)}<polygon points="${m + 2},${G - 26} ${m + 13},${G - 36} ${m + 24},${G - 26}" fill="#7f1d1d"/>${R(m + 24, G - 34, 8, 34, "#bdc3c7", `rx="4"`)}`,
+    town: `${house(m - 30, 20, 30, 12)}${house(m - 10, 20, 34, 12)}${house(m + 10, 20, 30, 12)}${[m - 26, m - 6, m + 14].map(x => win(x, G - 24) + win(x + 6, G - 24) + door(x + 2, 6, 10)).join("")}`,
+    light: `${R(m - 7, G - 44, 14, 44, "#fff", `stroke="#0003"`)}${[0, 1, 2].map(i => R(m - 7, G - 38 + i * 12, 14, 5, st.roof)).join("")}${R(m - 9, G - 50, 18, 6, "#333")}<circle cx="${m}" cy="${G - 53}" r="4" fill="#ffd60a"/><polygon points="${m + 4},${G - 54} ${m + 40},${G - 62} ${m + 40},${G - 46}" fill="#fff59d" opacity=".6"/>${house(m + 9, 16, 12, 8)}`,
+    mansion: `${R(m - 34, G - 28, 68, 28, st.wall, `stroke="#0003"`)}<polygon points="${m - 38},${G - 28} ${m},${G - 42} ${m + 38},${G - 28}" fill="${st.roof}"/>${[...Array(6)].map((_, i) => R(m - 30 + i * 12, G - 26, 3, 26, "#fff")).join("")}${door(m - 4, 8, 13)}${[...Array(4)].map((_, i) => win(m - 26 + i * 15 + (i > 1 ? 8 : 0), G - 22)).join("")}`,
+    castle: castle(m - 32, 64),
+    palace: `${R(m - 34, G - 24, 68, 24, st.wall, `stroke="#0003"`)}<ellipse cx="${m}" cy="${G - 24}" rx="16" ry="14" fill="${st.roof}"/>${tower(m - 40, 10, 34, "dome")}${tower(m + 30, 10, 34, "dome")}<line x1="${m}" y1="${G - 38}" x2="${m}" y2="${G - 46}" stroke="#ffcc33" stroke-width="1.5"/>${door(m - 5, 10, 14)}${win(m - 24, G - 18)}${win(m + 18, G - 18)}`,
+    lair: `<polygon points="${m - 40},${G} ${m - 10},${G - 40} ${m + 10},${G - 40} ${m + 40},${G}" fill="#5d4037"/><polygon points="${m - 10},${G - 40} ${m},${G - 50} ${m + 10},${G - 40}" fill="#ff6d00"/><circle cx="${m - 4}" cy="${G - 56}" r="3" fill="#888" opacity=".7"/>${door(m - 5, 10, 14)}${win(m - 22, G - 14)}${win(m + 16, G - 14)}`,
+    sky: `<path d="M${m - 34},${G} H${m + 34} L${m + 10},${G + 14} L${m},${G + 18} L${m - 14},${G + 10} Z" fill="#8d6e63"/>${R(m - 34, G - 2, 68, 4, "#6cc56c")}${house(m - 14, 28, 20, 12)}${door(m - 3)}`,
+    dome: `${domeShape(m, 30, "#bde0fe", .55)}${house(m - 14, 28, 18, 10)}${door(m - 3)}<path d="M${m - 30},${G} A30,30 0 0 1 ${m + 30},${G}" fill="none" stroke="#fff" stroke-width="1.2"/>`,
+    moon: `${domeShape(m - 18, 14, "#d0d7e2", .9)}${domeShape(m + 14, 20, "#e6ebf2", .9)}${R(m - 6, G - 6, 10, 6, "#9aa5b1")}<circle cx="${m + 30}" cy="${G + 8}" r="4" fill="#9a9aa8"/><text x="${m + 28}" y="${G - 24}" font-size="9">🚀</text>`,
+    mars: `${domeShape(m - 20, 16, "#ffe0d0", .9)}${domeShape(m + 12, 22, "#fff0e6", .9)}${tower(m + 32, 6, 30, "top", "#ddd")}<text x="${m - 40}" y="${G - 30}" font-size="10">🪐</text>`,
+    city: `<ellipse cx="${m}" cy="${G + 4}" rx="44" ry="9" fill="#fff"/>${[[-30, 34], [-18, 48], [-6, 40], [6, 56], [18, 36], [28, 44]].map(([dx, hh]) => `${R(m + dx, G - hh, 10, hh, st.wall, `stroke="#0003"`)}${[...Array(Math.floor(hh / 9))].map((_, k) => win(m + dx + 2, G - hh + 4 + k * 9, 6, 4)).join("")}`).join("")}`,
+    crystal: `${[[-28, 30, "#a0e7ff"], [-12, 50, "#c77dff"], [4, 42, "#80ffdb"], [20, 34, "#ffafcc"]].map(([dx, hh, c]) => `<polygon points="${m + dx},${G} ${m + dx + 6},${G - hh} ${m + dx + 12},${G}" fill="${c}" stroke="#fff" stroke-width=".8"/>`).join("")}${door(m - 4, 8, 12)}`,
+    candy: `${castle(m - 32, 64).replace(new RegExp(st.wall, "g"), "#ffc8f0")}<circle cx="${m - 38}" cy="${G - 16}" r="6" fill="#ff5fa2"/><circle cx="${m - 38}" cy="${G - 16}" r="3" fill="#fff"/>${R(m - 39, G - 10, 2, 10, "#fff")}<text x="${m + 34}" y="${G - 4}" font-size="9">🍭</text>`,
+    dragonmtn: `<polygon points="${m - 48},${G} ${m},${G - 50} ${m + 48},${G}" fill="#6d4c41"/>${castle(m - 18, 36)}<text x="${m + 20}" y="${G - 38}" font-size="14">🐉</text>`,
+    cloud: `<ellipse cx="${m}" cy="${G + 2}" rx="46" ry="10" fill="#fff"/><ellipse cx="${m - 26}" cy="${G - 2}" rx="16" ry="8" fill="#fff"/><ellipse cx="${m + 26}" cy="${G - 2}" rx="16" ry="8" fill="#fff"/>${castle(m - 26, 52)}`,
+    rainbow: `<path d="M${m - 50},${G + 10} A50,50 0 0 1 ${m + 50},${G + 10}" fill="none" stroke="url(#hpRain)" stroke-width="10"/>${R(m - 50, G, 100, 18, "#fff")}${castle(m - 24, 48)}`,
+    star: `<polygon points="${m},${G - 50} ${m + 9},${G - 24} ${m + 36},${G - 24} ${m + 14},${G - 8} ${m + 22},${G + 16} ${m},${G} ${m - 22},${G + 16} ${m - 14},${G - 8} ${m - 36},${G - 24} ${m - 9},${G - 24}" fill="#ffd60a" opacity=".5"/>${castle(m - 22, 44)}`,
+    planet: `<circle cx="${m}" cy="${G + 30}" r="40" fill="#3fae5a"/><path d="M${m - 40},${G + 22} Q${m},${G + 10} ${m + 40},${G + 22}" stroke="#2b7bd6" stroke-width="5" fill="none"/>${R(m - 30, G - 24, 60, 24, st.wall, `stroke="#0003"`)}${roofTri(m - 30, 60, G - 24, 14)}${[...Array(5)].map((_, i) => win(m - 26 + i * 12, G - 18)).join("")}`,
+    sun: `<circle cx="${m}" cy="${G - 18}" r="30" fill="#ffb703" opacity=".55"/><circle cx="${m}" cy="${G - 18}" r="22" fill="#ffd60a" opacity=".6"/>${R(m - 30, G - 22, 60, 22, "#fff3b0", `stroke="#0003"`)}<ellipse cx="${m}" cy="${G - 22}" rx="14" ry="12" fill="#ff9f1c"/>${tower(m - 36, 9, 32, "dome", "#fff3b0")}${tower(m + 27, 9, 32, "dome", "#fff3b0")}${door(m - 5, 10, 14)}`,
+    galaxy: `<ellipse cx="${m}" cy="${G - 28}" rx="44" ry="14" fill="#c77dff" opacity=".35" transform="rotate(-12 ${m} ${G - 28})"/>${castle(m - 32, 64)}`,
+    universe: `${[...Array(8)].map((_, i) => `<circle cx="${10 + i * 14}" cy="${8 + (i % 3) * 6}" r="${2 + (i % 2)}" fill="${["#ff4d6d", "#ffd60a", "#80ffdb", "#c77dff"][i % 4]}"/>`).join("")}${castle(m - 40, 80)}${tower(m - 8, 16, 46, "dome")}`
+  }[h.tid] || "";
+  const sparkle = st.sparkle ? [[18, 30], [100, 40], [60, 8]].map(([x, y]) => `<text x="${x}" y="${y}" font-size="7" fill="#fff">✦</text>`).join("") : "";
+  const spooky = h.si === 2 ? `<text x="96" y="22" font-size="9">🦇</text><text x="12" y="${G + 12}" font-size="8">🎃</text>` : "";
+  return `<svg class="hp${big ? " big" : ""}" viewBox="0 0 120 80" role="img" aria-label="Picture of the ${esc(h.name)}"><defs><linearGradient id="hpRain" x1="0" x2="1"><stop offset="0" stop-color="#ff4d6d"/><stop offset=".25" stop-color="#ffd60a"/><stop offset=".5" stop-color="#80ffdb"/><stop offset=".75" stop-color="#4cc9f0"/><stop offset="1" stop-color="#c77dff"/></linearGradient></defs>${bg}${art}${sparkle}${spooky}</svg>`;
+}
 const tyBestHome = a => Math.max(0, ...(a.homes || []).map(id => tyHome(id)?.cost || 0));
 // 🛋️ Furniture: put it in your homes and it makes carrots every hour (collect them in the Homes menu).
 const TY_FURN = [
@@ -3912,6 +3991,7 @@ function tyFurnHTML(a) {
   if (!h) return `<div class="ty-furn"><b>🛋️ Furniture</b><p class="soft">Buy a home first, then fill it with furniture. Furniture makes carrots every hour!</p></div>`;
   const list = (a.furn || {})[h.id] || [], slots = tyFurnSlots(h), rate = tyFurnRate(a), pend = Math.floor(tyFurnPending(a));
   return `<div class="ty-furn">
+    ${homeSVG(h, true)}
     <div class="ty-furn-top"><div><b>${h.emoji} ${h.name}</b><small>Furniture: ${list.length} / ${slots} spots · all your homes make <b>${fmt(Math.round(rate * 10) / 10)} 🥕 an hour</b></small></div>
       <button class="btn gold" id="ty-collect" ${pend < 1 ? "disabled" : ""}>Collect 🥕 ${fmt(pend)}</button></div>
     <div class="ty-room">${list.length ? list.map(f => `<span title="${tyFurn(f)?.name || ""}">${tyFurn(f)?.emoji || "❓"}</span>`).join("") : `<small class="soft">This home is empty. Add some furniture below!</small>`}</div>
@@ -3926,7 +4006,7 @@ function tyHomesList(a) {
   list = list.sort((x, y) => TY_HF.sort === "cheap" ? x.cost - y.cost : y.cost - x.cost);
   const rows = list.slice(0, TY_HF.shown).map(h => {
     const own = (a.homes || []).includes(h.id), here = a.home === h.id;
-    return `<div class="ty-home${own ? " owned" : ""}${here ? " here" : ""}"><span class="ty-hemoji">${h.emoji}</span><div><b>${h.name}</b><small>${h.size} · ${h.rooms} room${h.rooms > 1 ? "s" : ""}${own ? " · ✅ Yours" : ""}</small></div>
+    return `<div class="ty-home${own ? " owned" : ""}${here ? " here" : ""}">${homeSVG(h)}<div><b>${h.name}</b><small>${h.size} · ${h.rooms} room${h.rooms > 1 ? "s" : ""}${own ? " · ✅ Yours" : ""}</small></div>
       <button class="btn" data-home="${h.id}" ${here || (!own && a.carrots < h.cost) ? "disabled" : ""}>${here ? "🏠 You live here" : own ? "Live here" : `🥕 ${fmt(h.cost)}`}</button></div>`;
   }).join("");
   return `${rows || `<p class="soft">No homes here yet. Try a different choice above!</p>`}${list.length > TY_HF.shown ? `<button class="btn" id="ty-home-more">Show more homes (${fmt(list.length - TY_HF.shown)} left)</button>` : ""}`;
