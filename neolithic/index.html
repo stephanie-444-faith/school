@@ -393,6 +393,8 @@
   .ty-home > div { flex: 1; } .ty-home small { display: block; opacity: .8; font-size: .8rem; }
   .ty-home.owned { border-color: var(--money); } .ty-home.here { border-color: var(--gold); background: linear-gradient(135deg, #4a3a1a, var(--panel)); }
   .ty-hemoji { font-size: 1.8rem; }
+  .rodeo-rider { display: block; margin: 8px 0; font-weight: 700; }
+  .rodeo-rider select { font: inherit; padding: 6px 10px; border-radius: 10px; background: var(--panel-2); color: inherit; border: 2px solid var(--gold); margin-left: 4px; }
   .rodeo-zoo { max-height: 50vh; overflow-y: auto; text-align: left; display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
   .rodeo-land b { font-size: .85rem; } .rodeo-land div { display: flex; flex-wrap: wrap; gap: 4px; }
   .rodeo-land span { font-size: 1.6rem; display: inline-flex; flex-direction: column; align-items: center; min-width: 2.2rem; }
@@ -962,7 +964,7 @@ const store = {
   }
 };
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|ty_acct_[a-z]+)$/.test(k);
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z]+)$/.test(k);
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -3306,15 +3308,33 @@ const RODEO_LAND_M = 400; // a new land every 400 meters
 function startRodeo() {
   const { cv, stage } = gameShell("Rodeo Stampede", `Ride the stampede! <b>Hold Space</b> (or hold down your finger or mouse) to leap off your animal, and <b>let go</b> to land on another one. Steer with the arrow keys or by moving your finger.<br>Don't land on the ground! Watch the ring: when it runs out, your animal bucks you off. Ride an animal long enough to <b>tame it</b> for your zoo. There are ${RODEO_ANIMALS.length} animals in 6 lands to find!<br>🐘 Big animals smash trees · 🦩 flyers fly over them · 🦒 jumpers leap farther`);
   const W = 400, H = 600, PY = 440, me = M;
-  const zoo = () => store.get("rodeo_zoo", {});
-  document.querySelector("#m-over p").insertAdjacentHTML("afterend", `<button class="btn" id="rodeo-zoo-btn">🏞️ My Zoo (${Object.keys(zoo()).length} / ${RODEO_ANIMALS.length})</button>`);
+  // every Bunny Hop account is a rider here too, each with their own zoo and best distance
+  const riders = () => {
+    const r = store.get("rodeo_riders", {});
+    if (!r.emmett && Object.keys(store.get("rodeo_zoo", {})).length) { r.emmett = { zoo: store.get("rodeo_zoo", {}), best: store.get("best", {}).rodeo || 0 }; store.set("rodeo_riders", r); } // older single zoo belongs to MR.E
+    return r;
+  };
+  let RIDER = store.get("rodeo_rider", "emmett");
+  if (!TY_ACCOUNTS.some(a => a.id === RIDER)) RIDER = "emmett";
+  const riderName = () => TY_ACCOUNTS.find(a => a.id === RIDER).name;
+  const me1 = () => riders()[RIDER] || { zoo: {}, best: 0 };
+  const zoo = () => me1().zoo || {};
+  const saveRider = d => { const r = riders(); r[RIDER] = { ...me1(), ...d }; store.set("rodeo_riders", r); };
+  const riderPick = () => `<label class="rodeo-rider">🤠 Rider: <select id="rodeo-rider">${TY_ACCOUNTS.map(a => `<option value="${a.id}"${a.id === RIDER ? " selected" : ""}>${esc(a.name)}</option>`).join("")}</select></label>`;
+  const bindRider = () => document.getElementById("rodeo-rider")?.addEventListener("change", e => {
+    RIDER = e.target.value; store.set("rodeo_rider", RIDER);
+    const zb = document.getElementById("rodeo-zoo-btn"); if (zb) zb.textContent = `🏞️ ${riderName()}'s Zoo (${Object.keys(zoo()).length} / ${RODEO_ANIMALS.length})`;
+  });
+  document.querySelector("#m-over p").insertAdjacentHTML("afterend", `${riderPick()}<button class="btn" id="rodeo-zoo-btn">🏞️ ${esc(riderName())}'s Zoo (${Object.keys(zoo()).length} / ${RODEO_ANIMALS.length})</button>`);
+  bindRider();
   const showZoo = () => {
     const z = zoo(), o = document.getElementById("m-over");
-    o.innerHTML = `<h2>🏞️ My Zoo</h2><p>${Object.keys(z).length} of ${RODEO_ANIMALS.length} animals tamed</p>
+    o.innerHTML = `<h2>🏞️ ${esc(riderName())}'s Zoo</h2><p>${Object.keys(z).length} of ${RODEO_ANIMALS.length} animals tamed${me1().best ? ` · best ride ${fmt(me1().best)} m` : ""}</p>${riderPick()}
       <div class="rodeo-zoo">${RODEO_LANDS.map((l, li) => `<div class="rodeo-land"><b>${l.name}</b><div>${RODEO_ANIMALS.filter(a => a.land === li).map(a => z[a.name] ? `<span title="${a.name} ×${z[a.name]}">${a.emoji}<small>×${z[a.name]}</small></span>` : `<span class="rodeo-unk" title="Not tamed yet">❔</span>`).join("")}</div></div>`).join("")}</div>
       <div class="row" style="justify-content:center"><button class="btn go" id="m-go">Play</button><button class="btn" id="m-menu">Menu</button></div>`;
     o.hidden = false;
     document.getElementById("m-go").addEventListener("click", go); document.getElementById("m-menu").addEventListener("click", showHome);
+    document.getElementById("rodeo-rider").addEventListener("change", e => { RIDER = e.target.value; store.set("rodeo_rider", RIDER); showZoo(); });
   };
   document.getElementById("rodeo-zoo-btn").addEventListener("click", showZoo);
   M.rs = () => { M.ctx = canvasFit(cv, stage, W, H, 420); draw(); };
@@ -3375,10 +3395,13 @@ function startRodeo() {
     return M.herd.filter(a => Math.hypot(a.x - M.px, a.y - M.py) < reach(a)).sort((p, q) => Math.hypot(p.x - M.px, p.y - M.py) - Math.hypot(q.x - M.px, q.y - M.py))[0];
   }
   function finish() {
-    const dist = Math.floor(M.dist), r = record("rodeo", dist), z = zoo();
+    const dist = Math.floor(M.dist), z = zoo(), pb = dist > (me1().best || 0);
+    record("rodeo", dist); if (pb) saveRider({ best: dist });
+    const r = { nb: pb, best: me1().best };
     const tamed = Object.entries(M.tamedRun);
-    overScreen("Rodeo over!", `${fmt(dist)} m`, `${r.nb ? "New best distance!" : `Best: ${fmt(r.best)} m`} · 🪙 ${M.coins} coins<br>${tamed.length ? `Tamed this ride: ${tamed.map(([n, c]) => `${RODEO_ANIMALS.find(a => a.name === n).emoji} ${n}${c > 1 ? ` ×${c}` : ""}`).join(", ")}` : "Ride an animal until its ring fills to tame it!"}<br>🏞️ Zoo: ${Object.keys(z).length} / ${RODEO_ANIMALS.length} animals`, go);
-    document.querySelector("#m-over .row").insertAdjacentHTML("beforeend", `<button class="btn" id="rodeo-zoo2">🏞️ My Zoo</button>`);
+    overScreen("Rodeo over!", `${fmt(dist)} m`, `🤠 ${esc(riderName())} · ${r.nb ? "New best distance!" : `Best: ${fmt(r.best)} m`} · 🪙 ${M.coins} coins<br>${tamed.length ? `Tamed this ride: ${tamed.map(([n, c]) => `${RODEO_ANIMALS.find(a => a.name === n).emoji} ${n}${c > 1 ? ` ×${c}` : ""}`).join(", ")}` : "Ride an animal until its ring fills to tame it!"}<br>🏞️ Zoo: ${Object.keys(z).length} / ${RODEO_ANIMALS.length} animals`, go);
+    document.querySelector("#m-over .row").insertAdjacentHTML("beforebegin", riderPick()); bindRider();
+    document.querySelector("#m-over .row").insertAdjacentHTML("beforeend", `<button class="btn" id="rodeo-zoo2">🏞️ Zoo</button>`);
     document.getElementById("rodeo-zoo2").addEventListener("click", showZoo);
   }
   function step(dt) {
@@ -3406,7 +3429,7 @@ function startRodeo() {
       const z = zoo();
       if (M.rideT >= M.ride.k.tame && !M.ride.tamed) {
         M.ride.tamed = true; const n = M.ride.k.name, isNew = !z[n];
-        z[n] = (z[n] || 0) + 1; store.set("rodeo_zoo", z); M.tamedRun[n] = (M.tamedRun[n] || 0) + 1;
+        z[n] = (z[n] || 0) + 1; saveRider({ zoo: z }); M.tamedRun[n] = (M.tamedRun[n] || 0) + 1;
         const bonus = M.ride.k.gold ? 50 : isNew ? 10 : 3; M.coins += bonus;
         pop(`${M.ride.k.emoji} ${isNew ? "NEW! " : ""}Tamed a ${n}! +${bonus} 🪙`, isNew ? "#42e392" : "#fff"); sfx.buy();
       }
@@ -3487,7 +3510,7 @@ function startRodeo() {
     // HUD
     c.fillStyle = "rgba(0,0,0,.35)"; c.fillRect(0, 0, W, 34);
     c.fillStyle = "#fff"; c.font = "700 15px system-ui"; c.textAlign = "left"; c.textBaseline = "middle";
-    c.fillText(`${fmt(Math.floor(M.dist))} m   🪙 ${M.coins}`, 10, 17);
+    const rn = riderName(); c.fillText(`🤠 ${rn.length > 10 ? rn.slice(0, 9) + "…" : rn}  ${fmt(Math.floor(M.dist))} m  🪙 ${M.coins}`, 10, 17);
     c.textAlign = "right"; c.fillText(`${"❤️".repeat(Math.max(0, M.lives))}  ${RODEO_LANDS[M.land || 0].name}`, W - 10, 17);
     M.pops.forEach((p, i) => { c.globalAlpha = Math.max(0, 1 - p.t / 1.6); c.fillStyle = p.color; c.font = "800 18px system-ui"; c.textAlign = "center"; c.strokeStyle = "rgba(0,0,0,.6)"; c.lineWidth = 4; const y = 90 + i * 26 - p.t * 20; c.strokeText(p.txt, W / 2, y); c.fillText(p.txt, W / 2, y); });
     c.globalAlpha = 1;
@@ -3784,7 +3807,7 @@ function startPong() {
 // Type the word on the next platform to hop to it before the platform you're on crumbles.
 // Each account keeps its own carrots, characters, and best scores (saved on this device).
 const TY_ACCOUNTS = [
-  { id: "emmett", name: "Emmett" }, { id: "dakota", name: "Dakota" }, { id: "stephenie", name: "Stephenie" },
+  { id: "emmett", name: "MR.E" }, { id: "dakota", name: "Dakota" }, { id: "stephenie", name: "Stephenie" },
   { id: "madison", name: "Madison" }, { id: "seirra", name: "Seirra" }, { id: "shawn", name: "Shawn" },
   { id: "franklin", name: "Franklin the Wise" }, { id: "peanut", name: "Peanut the Small and Cute" }, { id: "ewalk", name: "E-walk the Magnificent" },
   { id: "goodtyper", name: "Good Typer", guest: true }, { id: "funnytyper", name: "Funny Typer", guest: true }
