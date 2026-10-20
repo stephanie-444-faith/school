@@ -393,23 +393,49 @@
   .ty-home > div { flex: 1; } .ty-home small { display: block; opacity: .8; font-size: .8rem; }
   .ty-home.owned { border-color: var(--money); } .ty-home.here { border-color: var(--gold); background: linear-gradient(135deg, #4a3a1a, var(--panel)); }
   .ty-hemoji { font-size: 1.8rem; }
-  .search-btn { background: linear-gradient(135deg, #4cc9f0, #7b61ff); }
-  .srch-logo { text-align: center; font-size: clamp(2.2rem, 10vw, 3.6rem); margin: 6px 0 12px; letter-spacing: .02em; }
-  .srch-bar { display: flex; gap: 8px; flex-wrap: wrap; }
-  .srch-bar input { flex: 1; min-width: 180px; font: inherit; font-size: 1.15rem; padding: 12px 16px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
-  .srch-bar input:focus { outline: none; border-color: #4cc9f0; box-shadow: 0 0 0 3px #4cc9f044; }
-  .srch-ideas { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; justify-content: center; }
-  .srch-idea { font-size: .85rem; padding: 6px 12px; }
-  .srch-calc { font-size: 1.6rem; text-align: center; background: var(--panel-2); border: 2px solid #ffd60a; border-radius: 14px; padding: 12px; margin: 10px 0; }
-  .srch-answer { background: linear-gradient(135deg, #1d3557, var(--panel-2)); border: 2px solid #4cc9f0; border-radius: 14px; padding: 12px 14px; margin: 10px 0; }
-  .srch-ans-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .srch-ans-text { white-space: pre-wrap; line-height: 1.55; font-size: 1.02rem; margin-bottom: 8px; }
-  .srch-h { display: flex; gap: 8px; align-items: baseline; } .srch-h small { opacity: .7; font-size: .8rem; }
-  .srch-results { display: flex; flex-direction: column; gap: 8px; }
-  .srch-r { display: flex; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
-  .srch-r p { margin: 2px 0 0; font-size: .9rem; opacity: .9; line-height: 1.4; }
-  .srch-ri { font-size: 1.5rem; } .srch-type { display: block; color: #42e392; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
-  .srch-link { background: none; border: 0; padding: 0; color: #8ab4ff; font: inherit; font-weight: 800; font-size: 1.05rem; text-decoration: underline; cursor: pointer; text-align: left; }
+  .search-btn { background: linear-gradient(135deg, #4285f4, #34a853); }
+  .srch { background: #fff; color: #202124; border-radius: 16px; padding: 16px; min-height: 70vh; font-family: Arial, "Helvetica Neue", sans-serif; display: flex; flex-direction: column; }
+  .srch-home { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 40px 0 20px; }
+  .srch-logo { font-family: "Product Sans", Arial, sans-serif; font-weight: 700; letter-spacing: -.02em; font-size: 1.6rem; }
+  .srch-logo.big { font-size: clamp(2.8rem, 13vw, 5.2rem); }
+  .srch-bar { display: flex; align-items: center; width: 100%; max-width: 580px; border: 1px solid #dfe1e5; border-radius: 24px; padding: 0 8px 0 14px; background: #fff; }
+  .srch-bar:hover, .srch-bar:focus-within { box-shadow: 0 1px 6px rgba(32,33,36,.28); border-color: #dfe1e500; }
+  .srch-bar input { flex: 1; min-width: 0; border: 0; outline: none; font-size: 1.05rem; padding: 12px 10px; background: transparent; color: #202124; }
+  .srch-bar input::-webkit-search-cancel-button { display: none; }
+  .srch-mag { opacity: .6; } .srch-x, .srch-go { border: 0; background: none; cursor: pointer; color: #70757a; font-size: 1rem; padding: 6px; }
+  .srch-go { color: #4285f4; font-weight: 700; border-left: 1px solid #dfe1e5; padding-left: 10px; }
+  .srch-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .srch-gbtn { background: #f8f9fa; border: 1px solid #f8f9fa; border-radius: 6px; color: #3c4043; font-size: .9rem; padding: 10px 16px; cursor: pointer; }
+  .srch-gbtn:hover { border-color: #dadce0; box-shadow: 0 1px 1px rgba(0,0,0,.1); }
+  .srch-try { font-size: .85rem; color: #4d5156; text-align: center; line-height: 2; }
+  .srch-idea { background: none; border: 0; color: #1a0dab; cursor: pointer; font-size: .85rem; padding: 0 6px; text-decoration: underline; }
+  .srch-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-bottom: 8px; }
+  .srch-top .srch-bar { flex: 1; min-width: 220px; }
+  .srch-tabs { display: flex; gap: 4px; border-bottom: 1px solid #ebebeb; overflow-x: auto; margin: 0 -16px; padding: 0 16px; }
+  .srch-tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 12px; color: #5f6368; font-size: .9rem; cursor: pointer; white-space: nowrap; }
+  .srch-tab.on { color: #1a73e8; border-bottom-color: #1a73e8; font-weight: 700; }
+  .srch-results { max-width: 650px; padding-top: 8px; }
+  .srch-stats { color: #70757a; font-size: .85rem; margin: 4px 0 14px; }
+  .srch-calc { border: 1px solid #dadce0; border-radius: 10px; padding: 14px 16px; margin-bottom: 18px; display: flex; flex-direction: column; }
+  .srch-calc small { color: #70757a; font-size: .95rem; } .srch-calc b { font-size: 2.2rem; font-weight: 400; } .srch-calc span { color: #70757a; font-size: .8rem; margin-top: 4px; }
+  .srch-ai { background: linear-gradient(135deg, #e8f0fe, #f3e8fd); border-radius: 14px; padding: 14px 16px; margin-bottom: 20px; }
+  .srch-ai-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .srch-ai-text { white-space: pre-wrap; line-height: 1.6; font-size: 1rem; margin-bottom: 8px; }
+  .srch-ai small { color: #5f6368; font-size: .75rem; }
+  .srch-stop { background: #fff; border: 1px solid #dadce0; border-radius: 99px; padding: 4px 12px; cursor: pointer; color: #3c4043; }
+  .srch-r { margin-bottom: 24px; }
+  .srch-site { display: flex; gap: 10px; align-items: center; margin-bottom: 4px; }
+  .srch-fav { width: 28px; height: 28px; border-radius: 50%; background: #f1f3f4; display: grid; place-items: center; font-size: .95rem; }
+  .srch-site b { display: block; font-size: .85rem; font-weight: 400; color: #202124; } .srch-site small { color: #4d5156; font-size: .75rem; }
+  .srch-title { color: #1a0dab; font-size: 1.2rem; text-decoration: none; line-height: 1.3; display: inline-block; }
+  .srch-title:hover { text-decoration: underline; } .srch-title:visited { color: #681da8; }
+  .srch-r p { color: #4d5156; font-size: .9rem; line-height: 1.55; margin: 4px 0 0; }
+  .srch-paa { margin-bottom: 24px; } .srch-paa h3 { font-size: 1.2rem; font-weight: 400; margin: 0 0 6px; }
+  .srch-paa details { border-bottom: 1px solid #dadce0; } .srch-paa summary { padding: 14px 0; cursor: pointer; font-size: .95rem; color: #202124; font-weight: 400; }
+  .srch-paa p { color: #4d5156; font-size: .9rem; line-height: 1.55; margin: 0 0 12px; }
+  .srch-none { color: #202124; font-size: .95rem; line-height: 1.6; }
+  .srch-foot { border-top: 1px solid #ebebeb; margin: 16px -16px -16px; padding: 12px 16px; background: #f2f2f2; border-radius: 0 0 16px 16px; }
+  .srch-backlink { background: none; border: 0; color: #70757a; cursor: pointer; font-size: .85rem; }
   svg.hp { width: 84px; height: 56px; flex: none; border-radius: 8px; border: 2px solid #0003; background: #fff1; }
   svg.hp.big { width: 100%; height: auto; max-width: 420px; align-self: center; border-radius: 12px; }
   .ty-furn { background: var(--panel); border: 2px solid var(--money); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -1143,7 +1169,6 @@ function showHome() {
       </div>
       <button class="bunny-btn" id="bunny" type="button" aria-label="Bunny Hop Typing" title="Bunny Hop Typing">🐰</button>
       <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: keep the story going!">🐶</button>
-      <button class="bunny-btn search-btn" id="searchable-top" type="button" aria-label="Searchable" title="Searchable: search for anything!">🔍</button>
       <details class="gamesmenu" id="gamesmenu">
         <summary aria-label="Games menu">⋯</summary>
         <div class="gm-panel">
@@ -1155,6 +1180,7 @@ function showHome() {
             <select id="goal-pick">${Object.entries(GOALS).map(([k, v]) => `<option value="${k}" ${choice.goal === k ? "selected" : ""}>${v.name}</option>`).join("")}</select>
           </div>
           <button class="gm-item" id="slope"><b>Slope City</b><span>Roll, jump, and smash through a neon city. Collect crystals for new balls. No questions.</span>${bestLine(best.slope ? "Best " + fmt(best.slope) + " m" : "")}</button>
+          <button class="gm-item" id="gm-bunny"><b>🐰 Bunny Hop Typing</b><span>Type words to hop across platforms. Earn carrots, buy characters, homes, and more.</span></button>
           <button class="gm-item" id="searchable"><b>🔍 Searchable</b><span>A search engine! Search anything, from homework to games.</span></button>
           <button class="gm-item" id="draw"><b>Drawing Studio</b><span>Draw with any color, add shapes, and move everything around.</span></button>
           <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Enemies get tougher every round. Trade kills for better bows and gear. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
@@ -1205,7 +1231,7 @@ function showHome() {
   document.getElementById("bunny").addEventListener("click", startBunny);
   document.getElementById("draw").addEventListener("click", startDraw);
   document.getElementById("searchable").addEventListener("click", () => startSearch());
-  document.getElementById("searchable-top").addEventListener("click", () => startSearch());
+  document.getElementById("gm-bunny").addEventListener("click", startBunny);
   document.getElementById("m-snake").addEventListener("click", startSnake);
   document.getElementById("m-stack").addEventListener("click", startStack);
   $app.querySelectorAll("[data-more]").forEach(b => b.addEventListener("click", () => MORE_GAMES.find(g => g.id === b.dataset.more).start()));
@@ -2955,31 +2981,32 @@ function studyResults(st) {
 /* ---------- 🔍 Searchable: a search engine for homework, facts, and games ---------- */
 let SEARCH_INDEX = null;
 const SEARCH_STOP = new Set("a an the is are was were of to in on at for and or what who how why when where which do does did can i me my you your it its be by with about from this that these those please tell".split(" "));
+// Each result: tab (All/Games/Study/Words/Bunny Hop), crumb (like a web address), title, snippet, open() to go there.
 function buildSearchIndex() {
   const out = [];
-  const add = (type, icon, title, text, open) => out.push({ type, icon, title, text, open, hay: (title + " " + text).toLowerCase(), tl: title.toLowerCase() });
+  const add = (tab, crumb, icon, title, text, open, qa) => out.push({ tab, crumb, icon, title, text, open, qa, hay: (title + " " + text).toLowerCase(), tl: title.toLowerCase() });
   const study = (subject, extra = {}) => () => { choice.subject = subject; store.set("subject", subject); Object.entries(extra).forEach(([k, v]) => { choice[k] = v; store.set(k, v); }); startStudy(); };
   [["Bunny Hop Typing", "Type words to hop across platforms, earn carrots, buy characters, accessories, homes and more. Typing game keyboard practice.", startBunny],
    ["Story Starters", "Keep a story going and write your own stories. Writing practice.", startStories],
    ["Dig It Up", "Mine gems, craft pickaxes, answer pop-up questions.", pickDig], ["Cash Race", "Earn money for right answers and buy upgrades.", pickCash],
    ["Slope City", "Roll, jump, and smash through a neon city. Collect crystals for new balls.", startSlope], ["Drawing Studio", "Draw with any color, add shapes, art and drawing.", startDraw],
    ["Ragdoll Archers", "Bow and arrow battles. Trade kills for better bows and gear.", startArchers]
-  ].forEach(([t, d, f]) => add("Game", "🎮", t, d, f));
-  MORE_GAMES.forEach(g => add("Game", "🎮", g.name, g.desc, g.start));
-  Object.entries(SUBJECTS).forEach(([k, v]) => add("Study", "📚", `Study ${v.name}`, v.desc, study(k)));
-  Object.entries(MATH_LEVELS).forEach(([k, v]) => add("Study", "➗", `Math: ${v.name}`, v.desc + " math times tables multiplication division", study("math", { mlevel: k })));
-  Object.entries(HEALTH_PARTS).forEach(([k, v]) => add("Study", "❤️", `Health: ${v.name}`, v.desc, study("health", { hpart: k })));
-  add("Study", "🗓️", "Social Studies Timeline", "Put events in order from early humans in Africa to the first cities.", startTimeline);
-  add("Study", "❓", "Focus Questions", "The 8 Social Studies questions from the study guide, with model answers.", startFocus);
-  VOCAB.forEach(v => add("Word", "📖", v.t, `${v.d} ${v.why}`, null));
-  const qs = (list, icon, tag) => list.forEach(q => add(tag, icon, q.q, `Answer: ${String(q.a).replace(/\.$/, "")}. ${q.why || ""}`, null));
-  qs(QUIZ, "🏺", "Social Studies"); qs(SCIENCE, "🔬", "Science"); qs(HEALTH, "❤️", "Health"); qs(ELA, "✏️", "Reading & Writing"); qs(ART, "🎨", "Art");
-  FOCUS.forEach(f => add("Social Studies", "❓", f.q, [].concat(f.a).join(" "), null));
-  TIMELINE.forEach((t, i) => add("Timeline", "🗓️", `Timeline step ${i + 1}`, t, null));
-  TY_CHARS.forEach(c => add("Bunny Hop character", c.emoji, c.name, `${c.power} Costs ${fmt(c.cost)} carrots.${c.champ ? " Carrot Champion only." : c.speed ? " Speed Champion only." : ""}`, startBunny));
-  TY_ACC.forEach(x => add("Bunny Hop accessory", x.emoji, x.name, `${x.power} Costs ${fmt(x.cost)} carrots.`, startBunny));
-  TY_HOME_TYPES.forEach(([, e, n, c, z]) => add("Bunny Hop home", e, n, `A ${z.toLowerCase()} home you can buy in Bunny Hop, starting around ${fmt(nicePrice(c * .54))} carrots.`, startBunny));
-  TY_ADDONS.forEach(ad => add("Bunny Hop boost", ad.emoji, ad.name, ad.desc, startBunny));
+  ].forEach(([t, d, f]) => add("Games", "games", "🎮", t, d + " Play it free on Study Arcade.", f));
+  MORE_GAMES.forEach(g => add("Games", "games", "🎮", g.name, g.desc + " Play it free on Study Arcade.", g.start));
+  Object.entries(SUBJECTS).forEach(([k, v]) => add("Study", "study", "📚", `Study ${v.name}`, `${v.desc}. Practice questions with answers and explanations.`, study(k)));
+  Object.entries(MATH_LEVELS).forEach(([k, v]) => add("Study", "study › math", "➗", `Math: ${v.name}`, v.desc + ". Times tables, multiplication, division and more.", study("math", { mlevel: k })));
+  Object.entries(HEALTH_PARTS).forEach(([k, v]) => add("Study", "study › health", "❤️", `Health: ${v.name}`, v.desc, study("health", { hpart: k })));
+  add("Study", "study › social-studies", "🗓️", "Social Studies Timeline", "Put events in order from early humans in Africa to the first cities.", startTimeline);
+  add("Study", "study › social-studies", "❓", "Focus Questions", "The 8 Social Studies questions from the study guide, with model answers.", startFocus);
+  VOCAB.forEach(v => add("Words", "words", "📖", v.t, `${v.d} ${v.why}`, study("ss", { set: "vocab" }), v.d));
+  const qs = (list, icon, crumb, subject, extra) => list.forEach(q => add("Study", `study › ${crumb}`, icon, q.q, `${String(q.a).replace(/\.$/, "")}. ${q.why || ""}`, study(subject, extra), `${String(q.a).replace(/\.$/, "")}. ${q.why || ""}`));
+  qs(QUIZ, "🏺", "social-studies", "ss", { set: "quiz" }); qs(SCIENCE, "🔬", "science", "science"); qs(HEALTH, "❤️", "health", "health"); qs(ELA, "✏️", "reading-writing", "ela"); qs(ART, "🎨", "art", "art");
+  FOCUS.forEach(f => add("Study", "study › social-studies", "❓", f.q, [].concat(f.a).join(" "), startFocus, [].concat(f.a).join(" ")));
+  TIMELINE.forEach((t, i) => add("Study", "study › timeline", "🗓️", `Timeline step ${i + 1}`, t, startTimeline));
+  TY_CHARS.forEach(c => add("Bunny Hop", "bunny-hop › characters", c.emoji, c.name, `${c.power} Costs ${fmt(c.cost)} carrots.${c.champ ? " Carrot Champion only." : c.speed ? " Speed Champion only." : ""}`, startBunny));
+  TY_ACC.forEach(x => add("Bunny Hop", "bunny-hop › accessories", x.emoji, x.name, `${x.power} Costs ${fmt(x.cost)} carrots.`, startBunny));
+  TY_HOME_TYPES.forEach(([, e, n, c, z]) => add("Bunny Hop", "bunny-hop › homes", e, n, `A ${z.toLowerCase()} home you can buy in Bunny Hop, starting around ${fmt(nicePrice(c * .54))} carrots.`, startBunny));
+  TY_ADDONS.forEach(ad => add("Bunny Hop", "bunny-hop › boosts", ad.emoji, ad.name, ad.desc, startBunny));
   return out;
 }
 function searchSite(q) {
@@ -2989,60 +3016,87 @@ function searchSite(q) {
   const phrase = q.toLowerCase().trim();
   return SEARCH_INDEX.map(e => {
     let sc = 0, hits = 0;
-    words.forEach(w => { const re = new RegExp(`\\b${w.replace(/[-]/g, "\\-")}`); if (re.test(e.tl)) { sc += 4; hits++; } else if (re.test(e.hay)) { sc += 1; hits++; } });
+    words.forEach(w => { const re = new RegExp(`\\b${w.replace(/-/g, "\\-")}`); if (re.test(e.tl)) { sc += 4; hits++; } else if (re.test(e.hay)) { sc += 1; hits++; } });
     if (e.tl === phrase) sc += 10; else if (e.hay.includes(phrase) && phrase.length > 3) sc += 4;
     if (hits < Math.min(words.length, 2)) sc = 0;
-    if (e.type === "Game" && sc) sc += 1;
+    if (e.tab === "Games" && sc) sc += 1;
     return { e, sc };
-  }).filter(r => r.sc > 0).sort((x, y) => y.sc - x.sc).slice(0, 12).map(r => r.e);
+  }).filter(r => r.sc > 0).sort((x, y) => y.sc - x.sc).slice(0, 30).map(r => r.e);
 }
 let SEARCH_CTL = null;
-function startSearch(initial = "") {
+const SRCH_LOGO = (big) => `<span class="srch-logo${big ? " big" : ""}" aria-label="Searchable">${[..."Searchable"].map((c, i) => `<span style="color:${["#4285f4", "#ea4335", "#fbbc05", "#4285f4", "#34a853", "#ea4335", "#a142f4", "#fbbc05", "#34a853", "#ea4335"][i]}">${c}</span>`).join("")}</span>`;
+const SRCH_BOX = (val) => `<form class="srch-bar" id="srch-form" role="search"><span class="srch-mag">🔍</span><input id="srch-q" type="search" autocomplete="off" placeholder="Search homework, facts, games…" aria-label="Search" value="${esc(val)}"><button type="button" class="srch-x" id="srch-x" aria-label="Clear">✕</button><button type="submit" class="srch-go" aria-label="Search">Go</button></form>`;
+function srchShell(inner) {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
   keyHandler = null;
-  const seen = store.get("seen", {}); seen.searchable = true; store.set("seen", seen);
-  const ideas = ["What is photosynthesis?", "7 × 8", "Neolithic Revolution", "surplus", "fun games", "How do volcanoes work?", "nouns and verbs", "Planet Ring"];
-  $app.innerHTML = `
-    <div class="panel srch">
-      <div class="topline"><span class="label">🔍 Searchable</span><button class="iconbtn" id="srch-home">Back to menu</button></div>
-      <h1 class="srch-logo" aria-label="Searchable">${[..."Searchable"].map((c, i) => `<span style="color:${["#4cc9f0", "#ff4d6d", "#ffd60a", "#4cc9f0", "#42e392", "#ff4d6d", "#c77dff", "#ffd60a", "#42e392", "#ff9f1c"][i]}">${c}</span>`).join("")}</h1>
-      <form class="srch-bar" id="srch-form" role="search">
-        <input id="srch-q" type="search" autocomplete="off" placeholder="Search homework, facts, games…" aria-label="Search" value="${esc(initial)}">
-        <button class="btn go" type="submit">🔍 Search</button>
-      </form>
-      <div class="srch-ideas">${ideas.map(t => `<button class="chip srch-idea" type="button">${esc(t)}</button>`).join("")}</div>
-      <div id="srch-out"></div>
-    </div>`;
+  $app.innerHTML = `<div class="srch">${inner}</div>`;
+  $app.querySelector(".srch").insertAdjacentHTML("beforeend", `<div class="srch-foot"><button class="srch-backlink" id="srch-home">← Back to Study Arcade</button></div>`);
   document.getElementById("srch-home").addEventListener("click", () => { SEARCH_CTL?.abort(); showHome(); });
   const box = document.getElementById("srch-q");
-  document.getElementById("srch-form").addEventListener("submit", e => { e.preventDefault(); runSearch(box.value); });
-  $app.querySelectorAll(".srch-idea").forEach(b => b.addEventListener("click", () => { box.value = b.textContent; runSearch(b.textContent); }));
-  box.focus();
-  if (initial) runSearch(initial);
+  document.getElementById("srch-form").addEventListener("submit", e => { e.preventDefault(); if (box.value.trim()) runSearch(box.value); });
+  document.getElementById("srch-x").addEventListener("click", () => { box.value = ""; box.focus(); });
+  return box;
 }
-async function runSearch(qRaw) {
-  const q = qRaw.trim().slice(0, 300), out = document.getElementById("srch-out");
+function startSearch(initial = "") {
+  const seen = store.get("seen", {}); seen.searchable = true; store.set("seen", seen);
+  if (initial) return runSearch(initial);
+  SEARCH_CTL?.abort();
+  const ideas = ["What is photosynthesis?", "7 × 8", "Neolithic Revolution", "How do volcanoes work?", "fun games", "nouns and verbs"];
+  const box = srchShell(`<div class="srch-home">${SRCH_LOGO(true)}${SRCH_BOX("")}
+    <div class="srch-btns"><button class="srch-gbtn" id="srch-search">Searchable Search</button><button class="srch-gbtn" id="srch-lucky">I'm Feeling Lucky</button></div>
+    <div class="srch-try">Try: ${ideas.map(t => `<button class="srch-idea" type="button">${esc(t)}</button>`).join("")}</div></div>`);
+  document.getElementById("srch-search").addEventListener("click", () => box.value.trim() && runSearch(box.value));
+  document.getElementById("srch-lucky").addEventListener("click", () => {
+    const q = box.value.trim();
+    if (!q) { const games = (SEARCH_INDEX = SEARCH_INDEX || buildSearchIndex()).filter(e => e.tab === "Games"); return games[rnd(0, games.length - 1)].open(); } // lucky with nothing typed: a surprise game!
+    const top = searchSite(q)[0];
+    top ? top.open() : runSearch(q);
+  });
+  $app.querySelectorAll(".srch-idea").forEach(b => b.addEventListener("click", () => runSearch(b.textContent)));
+  box.focus();
+}
+const SRCH_TABS = ["All", "Games", "Study", "Words", "Bunny Hop"];
+async function runSearch(qRaw, tab = "All") {
+  const q = qRaw.trim().slice(0, 300);
   if (!q) return;
   SEARCH_CTL?.abort();
-  const hits = searchSite(q);
+  const t0 = performance.now();
+  let hits = searchSite(q);
   // 🧮 calculator: simple math like "7 x 8" or "120 ÷ 4 + 3"
   const expr = q.replace(/[×xX]/g, "*").replace(/÷/g, "/").replace(/=\s*\??$/, "").replace(/\?$/, "").replace(/^what\s+is\s+/i, "").trim();
   let calc = "";
   if (/^[\d\s.+\-*/()]+$/.test(expr) && /\d\s*[+\-*/]\s*[\d(]/.test(expr)) {
-    try { const v = Function(`"use strict"; return (${expr});`)(); if (Number.isFinite(v)) calc = `<div class="srch-calc">🧮 ${esc(expr.replace(/\*/g, " × ").replace(/\//g, " ÷ ").replace(/\s+/g, " "))} = <b>${esc(String(Math.round(v * 1e6) / 1e6))}</b></div>`; } catch (e) {}
-    if (calc) hits.unshift(...(SEARCH_INDEX || []).filter(e => e.title.startsWith("Math:")).slice(0, 2));
+    try { const v = Function(`"use strict"; return (${expr});`)(); if (Number.isFinite(v)) calc = `<div class="srch-calc"><small>${esc(expr.replace(/\*/g, " × ").replace(/\//g, " ÷ ").replace(/\s+/g, " "))} =</small><b>${esc(String(Math.round(v * 1e6) / 1e6))}</b><span>🧮 Calculator</span></div>`; } catch (e) {}
+    if (calc) hits.unshift(...SEARCH_INDEX.filter(e => e.title.startsWith("Math:")).slice(0, 2));
   }
-  out.innerHTML = `${calc}
-    <div class="srch-answer" id="srch-ans"><div class="srch-ans-head"><b>🤖 Smart answer</b><button class="btn" id="srch-stop" hidden>Stop</button></div><div class="srch-ans-text" id="srch-ans-text">Thinking…</div><small class="soft">Smart answers are written by Claude, an AI. It can make mistakes, so check with your teacher if something seems wrong.</small></div>
-    <h3 class="srch-h">On Study Arcade <small>${hits.length ? `${hits.length} result${hits.length > 1 ? "s" : ""}` : "nothing found"}</small></h3>
-    <div class="srch-results">${hits.map((e, i) => `<div class="srch-r"><span class="srch-ri">${e.icon}</span><div><small class="srch-type">${esc(e.type)}</small>
-      ${e.open ? `<button class="srch-link" data-open="${i}">${esc(e.title)}</button>` : `<b>${esc(e.title)}</b>`}<p>${esc(e.text)}</p></div></div>`).join("") || `<p class="soft">No games or study cards match that. Try different words, or read the smart answer above!</p>`}</div>`;
-  out.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => { SEARCH_CTL?.abort(); hits[+b.dataset.open].open(); }));
-  // smart answer from Claude (uses the viewer's own Claude, so only on a search they asked for)
+  const all = hits;
+  if (tab !== "All") hits = hits.filter(e => e.tab === tab);
+  const paa = all.filter(e => e.qa && /\?$/.test(e.title) && !hits.slice(0, 3).includes(e)).slice(0, 4); // "People also ask"
+  const secs = Math.max(.01, (performance.now() - t0) / 1000 + Math.random() * .2).toFixed(2);
+  srchShell(`<div class="srch-top">${SRCH_LOGO(false)}${SRCH_BOX(q)}</div>
+    <div class="srch-tabs">${SRCH_TABS.map(t => `<button class="srch-tab${t === tab ? " on" : ""}" data-tab="${t}">${t}</button>`).join("")}</div>
+    <div class="srch-results">
+      <p class="srch-stats">About ${hits.length} result${hits.length === 1 ? "" : "s"} (${secs} seconds)</p>
+      ${tab === "All" ? calc : ""}
+      ${tab === "All" ? `<div class="srch-ai" id="srch-ans"><div class="srch-ai-head"><b>✨ Smart Overview</b><button class="srch-stop" id="srch-stop" hidden>Stop</button></div><div class="srch-ai-text" id="srch-ans-text">Thinking…</div><small>Written by Claude, an AI. It can make mistakes, so check with your teacher if something seems wrong.</small></div>` : ""}
+      ${hits.slice(0, 3).map(resultHTML).join("")}
+      ${tab === "All" && paa.length ? `<div class="srch-paa"><h3>People also ask</h3>${paa.map(e => `<details><summary>${esc(e.title)}</summary><p>${esc(e.qa)}</p></details>`).join("")}</div>` : ""}
+      ${hits.slice(3).map(resultHTML).join("")}
+      ${hits.length ? "" : `<div class="srch-none"><p>Your search - <b>${esc(q)}</b> - did not match any games or study cards.</p><p>Suggestions:</p><ul><li>Make sure all words are spelled correctly.</li><li>Try different or fewer words.</li>${tab !== "All" ? `<li>Look in the <b>All</b> tab.</li>` : "<li>Read the Smart Overview above!</li>"}</ul></div>`}
+    </div>`);
+  $app.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => runSearch(q, b.dataset.tab)));
+  $app.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", e => { e.preventDefault(); SEARCH_CTL?.abort(); hits[+b.dataset.open].open(); }));
+  function resultHTML(e) {
+    const i = hits.indexOf(e);
+    return `<div class="srch-r"><div class="srch-site"><span class="srch-fav">${e.icon}</span><div><b>Study Arcade</b><small>studyarcade › ${esc(e.crumb)}</small></div></div>
+      <a href="#" class="srch-title" data-open="${i}">${esc(e.title)}</a><p>${esc(e.text.length > 220 ? e.text.slice(0, 217) + "…" : e.text)}</p></div>`;
+  }
+  if (tab !== "All") return;
+  // ✨ Smart Overview from Claude (uses the viewer's own Claude, only when they search)
   const ansEl = document.getElementById("srch-ans-text"), stop = document.getElementById("srch-stop"), ansBox = document.getElementById("srch-ans");
   const sample = window.claude?.use ? await window.claude.use("sample").catch(() => null) : null;
-  if (!sample) { ansBox.hidden = true; return; }
+  if (!sample || !document.body.contains(ansEl)) { ansBox.hidden = true; return; }
   const ctl = SEARCH_CTL = new AbortController();
   stop.hidden = false; stop.onclick = () => ctl.abort();
   const prompt = `You are "Searchable", a friendly search engine inside a study website for a kid in elementary or middle school.
@@ -3060,11 +3114,11 @@ Write the best short answer for them:
     const { truncated } = await sample(prompt, { signal: ctl.signal, modelTier: "quick", onText: ({ text }) => { ansEl.textContent = text; } });
     if (truncated) ansEl.textContent += " …";
   } catch (e) {
-    if (e.code === "cancelled") { ansEl.textContent = e.text || "Stopped."; }
+    if (e.code === "cancelled") { if (document.body.contains(ansEl)) ansEl.textContent = e.text || "Stopped."; }
     else if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e.code)) ansBox.hidden = true;
     else if (e.code === "rate_limited") ansEl.textContent = (e.text ? e.text + "\n\n" : "") + "Too many searches right now. Wait a little, then search again.";
     else if (e.code === "refused") ansEl.textContent = "Searchable can't answer that one. Try asking a parent or teacher!";
-    else ansEl.textContent = (e.text ? e.text + "\n\n" : "") + "Oops, the smart answer didn't load. Press Search to try again.";
+    else ansEl.textContent = (e.text ? e.text + "\n\n" : "") + "Oops, the Smart Overview didn't load. Press Search to try again.";
   } finally { if (SEARCH_CTL === ctl) stop.hidden = true; }
 }
 
