@@ -444,6 +444,11 @@
   .sky-zoo .soft { color: #eef7ff; opacity: .95; }
   @keyframes skyBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
   @media (prefers-reduced-motion: reduce) { .sky-clouds, .sky-hero span, .sky-zoo .rodeo-land { animation: none; } } .slope-over.zoo-open > * { flex-shrink: 0; }
+  .rodeo-best { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 380px; margin: 6px 0; }
+  .rodeo-best > div { background: rgba(0,0,0,.35); border: 2px solid var(--gold); border-radius: 12px; padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .rodeo-best span { font-size: .75rem; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: .05em; }
+  .rodeo-best b { font-size: 1rem; } .rodeo-best small { font-size: .72rem; opacity: .85; line-height: 1.25; }
+  .rodeo-best .btn { padding: 4px 10px; font-size: .8rem; margin-top: 4px; }
   .rodeo-extras { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .rodeo-reviews { width: 100%; max-width: 380px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; text-align: left; }
   .rodeo-review { display: flex; gap: 8px; align-items: flex-start; } .rodeo-review > span { font-size: 1.5rem; }
@@ -3717,12 +3722,25 @@ function startRodeo() {
     return news;
   }
   const nextGradeInfo = () => { const sc = rodeoZooScore(zoo()), nxt = [...RODEO_GRADE_AT].reverse().find(([, m]) => m > sc); return `Zoo score: <b>${sc}</b>${nxt ? ` · ${nxt[1] - sc} more point${nxt[1] - sc === 1 ? "" : "s"} for a typical ${nxt[0]}` : ""}`; };
-  const extrasHTML = () => `${riderPick()}
+  // 🏆 this rider's strongest and fastest tamed animals
+  const power = a => a.speed / 100 + (a.big ? 2 : 0) + (a.fly ? 3 : 0) + (a.jump ? 1 : 0) + a.buck / 4 + (a.dragon ? 10 : 0) + (a.gold ? 2 : 0) + (a.variant ? 1 : 0);
+  const why = a => [a.dragon && "the legendary Dragon", a.fly && "flies over trees and rocks", a.big && "smashes trees and rocks", a.jump && "leaps far", a.buck >= 8 && "rides a long time", a.speed >= 280 && "super fast"].filter(Boolean).slice(0, 2).join(", ") || "a steady ride";
+  const bestAnimals = () => {
+    const mine = RODEO_ANIMALS.filter(a => zoo()[a.name]);
+    if (!mine.length) return null;
+    return { strong: [...mine].sort((p, q) => power(q) - power(p))[0], fast: [...mine].sort((p, q) => q.speed - p.speed || power(q) - power(p))[0] };
+  };
+  const bestHTML = () => { const b = bestAnimals(); return b ? `<div class="rodeo-best">
+      <div><span>💪 Strongest</span><b>${b.strong.emoji} ${esc(b.strong.name)}</b><small>${why(b.strong)}</small><button class="btn" data-ridebest="${esc(b.strong.name)}">${starter() === b.strong ? "✅ Riding it" : "Ride it"}</button></div>
+      <div><span>⚡ Fastest</span><b>${b.fast.emoji} ${esc(b.fast.name)}</b><small>speed ${Math.round(b.fast.speed)}${b.fast.speed >= 300 ? " · almost nothing can knock you off" : ""}</small><button class="btn" data-ridebest="${esc(b.fast.name)}">${starter() === b.fast ? "✅ Riding it" : "Ride it"}</button></div>
+    </div>` : `<p class="soft">🏆 Tame animals to see your strongest and fastest ones here!</p>`; };
+  const extrasHTML = () => `${riderPick()}${bestHTML()}
     ${unlocked() ? `<label class="rodeo-rider">🗺️ Ride in: <select id="rodeo-where"><option value="">The Stampede (all lands)</option><option value="secret"${whereNow() ? " selected" : ""}>✨ Secret Wonderland</option></select></label>` : ""}
     <div class="row" style="justify-content:center"><button class="btn" id="rodeo-zoo-btn">🎈 ${esc(riderName())}'s Sky Zoo (${Object.keys(zoo()).length} / ${shownTotal()})</button></div>`;
   const bindExtras = () => {
     document.getElementById("rodeo-rider")?.addEventListener("change", e => { RIDER = e.target.value; store.set("rodeo_rider", RIDER); refreshExtras(); });
     document.getElementById("rodeo-where")?.addEventListener("change", e => { WHERE = e.target.value; store.set("rodeo_where", WHERE); });
+    document.querySelectorAll("[data-ridebest]").forEach(b => b.addEventListener("click", () => { saveRider({ starter: b.dataset.ridebest }); tone([660, 880], .05, "triangle", .06); toast(`Your next ride starts on the ${b.dataset.ridebest}!`); document.getElementById("m-over").classList.contains("sky-zoo") ? showZoo() : refreshExtras(); }));
     document.getElementById("rodeo-zoo-btn")?.addEventListener("click", showZoo);
   };
   const refreshExtras = () => { const box = document.getElementById("rodeo-extras"); if (box) { box.innerHTML = extrasHTML(); bindExtras(); } };
