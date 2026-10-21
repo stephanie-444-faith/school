@@ -3687,7 +3687,22 @@ RODEO_ANIMALS.push(...RODEO_ANIMALS.filter(a => !RODEO_LANDS[a.land].secret && R
   .map(a => a.name === "Baby Monkey" ? { ...a, name: "Tiny Monkey" } : a));   // "Baby Monkey" already lives in Pet Town
 // 🐉 The Dragon is the best animal: the fastest, flies over everything, smashes, leaps far, and lets you ride the longest.
 // It's also the hardest to get: it only shows up deep in Fantasy Land, very rarely, and takes 8 seconds of riding to tame.
-const RODEO_LAND_M = 400; // a new land every 400 meters
+const RODEO_LAND_M = 400;
+// 🎨 Extra scenery for every land (added on top of each land's ground; nothing removed)
+const RODEO_DECOR = {
+  "Savanna": { items: ["🪨", "🌾", "🦴", "🌿", "🪵"], tex: "cracks", tint: "#c9a656" },
+  "Jungle": { items: ["🌺", "🍃", "🌿", "🍄", "🪷"], tex: "puddles", tint: "#3f7a3a" },
+  "Snowy Mountains": { items: ["🌲", "❄️", "⛄", "🧊", "🌲"], tex: "sparkle", tint: "#ffffff" },
+  "Desert": { items: ["🌵", "🦴", "🪨", "🌵", "🏜️"], tex: "ripples", tint: "#d9b56a" },
+  "Farm": { items: ["🌻", "🌽", "🥕", "🌷", "🪵"], tex: "rows", tint: "#7fbf5f" },
+  "Ocean Shore": { items: ["🐚", "⭐", "🦀", "🪸", "🐚"], tex: "waves", tint: "#ffffff" },
+  "Forest": { items: ["🍄", "🍂", "🌰", "🪵", "🍁"], tex: "leaves", tint: "#d98a3a" },
+  "Bug Garden": { items: ["🌼", "🌸", "🍀", "🌷", "🌻"], tex: "petals", tint: "#ffd1ec" },
+  "Sky Kingdom": { items: ["☁️", "🌈", "✨", "🪶", "☁️"], tex: "clouds", tint: "#ffffff" },
+  "Pet Town": { items: ["🦴", "🎾", "🧶", "🐾", "🥎"], tex: "paws", tint: "#d690ab" },
+  "Secret Wonderland": { items: ["💎", "🔮", "✨", "🍄", "🌟"], tex: "glow", tint: "#8be9ff" },
+  "Fantasy Land": { items: ["🌈", "⭐", "🍭", "💎", "🌟"], tex: "stars", tint: "#ffffff" }
+}; // a new land every 400 meters
 function startRodeo() {
   const { cv, stage } = gameShell("Rodeo Stampede", `Ride the stampede! <b>Hold Space</b> (or hold down your finger or mouse) to leap off your animal, and <b>let go</b> to land on another one. Steer with the arrow keys or by moving your finger.<br>Don't land on the ground! Watch the ring: when it runs out, your animal bucks you off. Ride an animal long enough to <b>tame it</b> for your zoo. If a <b>faster</b> animal runs into yours, it knocks you off! If a <b>slower</b> one bumps into you, press <b>Enter</b> (or tap the button) to hop onto it. There are ${RODEO_ANIMALS.length - 10} animals in ${RODEO_NORMAL} lands to find, plus a secret land: get an <b>A+</b> from the visitors who grade your Sky Zoo to unlock it!<br>🐘 Big animals smash trees · 🦩 flyers fly over them · 🦒 jumpers leap farther`);
   const W = 400, H = 600, PY = 440, me = M;
@@ -3939,6 +3954,28 @@ function startRodeo() {
       g.fillStyle = L.dot; g.beginPath(); g.ellipse(x, y, 14, 6, 0, 0, 7); g.fill();
       g.fillStyle = "rgba(0,0,0,.06)"; g.beginPath(); g.ellipse(x + 30, y + 40, 22, 9, 0, 0, 7); g.fill();
       g.strokeStyle = L.tuft; g.lineWidth = 2; g.beginPath(); g.moveTo(gx + 50, y + 20); g.lineTo(gx + 46, y + 10); g.moveTo(gx + 53, y + 20); g.lineTo(gx + 54, y + 9); g.moveTo(gx + 56, y + 20); g.lineTo(gx + 60, y + 12); g.stroke();
+    }
+    // extra scenery: a texture for the land, then little things lying around
+    const D = RODEO_DECOR[L.name], rnd2 = raSeed(L.name + "decor");
+    if (D) {
+      g.save();
+      for (let i = 0; i < 16; i++) {
+        const x = rnd2() * W, y = rnd2() * 160;
+        g.globalAlpha = .35; g.strokeStyle = D.tint; g.fillStyle = D.tint; g.lineWidth = 1.5;
+        if (D.tex === "cracks") { g.beginPath(); g.moveTo(x, y); g.lineTo(x + 8, y + 5); g.lineTo(x + 6, y + 13); g.moveTo(x + 8, y + 5); g.lineTo(x + 16, y + 3); g.stroke(); }
+        else if (D.tex === "puddles") { g.globalAlpha = .25; g.fillStyle = "#2f5f8a"; g.beginPath(); g.ellipse(x, y, 16, 7, 0, 0, 7); g.fill(); }
+        else if (D.tex === "sparkle") { g.globalAlpha = .9; g.fillRect(x, y, 2, 2); g.fillRect(x + 20, y + 12, 1.5, 1.5); }
+        else if (D.tex === "ripples" || D.tex === "waves") { g.beginPath(); g.moveTo(x - 20, y); g.quadraticCurveTo(x, y - 6, x + 20, y); g.quadraticCurveTo(x + 40, y + 6, x + 60, y); g.stroke(); }
+        else if (D.tex === "rows") { g.globalAlpha = .18; g.fillStyle = "#5a3a20"; g.fillRect(0, (i * 10) % 160, W, 3); }
+        else if (D.tex === "leaves" || D.tex === "petals") { g.globalAlpha = .55; g.beginPath(); g.ellipse(x, y, 4, 2, rnd2() * 3, 0, 7); g.fill(); }
+        else if (D.tex === "clouds") { g.globalAlpha = .45; g.beginPath(); g.ellipse(x, y, 26, 9, 0, 0, 7); g.ellipse(x + 14, y - 5, 14, 8, 0, 0, 7); g.fill(); }
+        else if (D.tex === "paws") { g.globalAlpha = .25; g.fillStyle = "#8a4a64"; g.beginPath(); g.arc(x, y, 3.5, 0, 7); g.arc(x - 4, y - 5, 1.6, 0, 7); g.arc(x, y - 7, 1.6, 0, 7); g.arc(x + 4, y - 5, 1.6, 0, 7); g.fill(); }
+        else if (D.tex === "glow") { const gr = g.createRadialGradient(x, y, 0, x, y, 18); gr.addColorStop(0, "rgba(139,233,255,.5)"); gr.addColorStop(1, "rgba(139,233,255,0)"); g.globalAlpha = 1; g.fillStyle = gr; g.fillRect(x - 18, y - 18, 36, 36); }
+        else if (D.tex === "stars") { g.globalAlpha = .7; g.font = "8px sans-serif"; g.fillText("✦", x, y); }
+      }
+      g.globalAlpha = .85; g.textAlign = "center"; g.textBaseline = "middle";
+      for (let i = 0; i < 5; i++) { const x = 15 + rnd2() * (W - 30), y = 12 + rnd2() * 136; g.font = `${12 + Math.floor(rnd2() * 8)}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; g.fillText(D.items[i % D.items.length], x, y); }
+      g.restore();
     }
     return (tiles[L.name] = t);
   }
