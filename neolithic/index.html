@@ -23,6 +23,37 @@
   }
   * { box-sizing: border-box; }
   body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.45; }
+  /* 🌌 Cool background on every page: neon space sky, drifting stars, glowing sun, and a moving synthwave grid */
+  body {
+    background:
+      radial-gradient(circle at 50% 74%, rgba(255,140,60,.55) 0, rgba(255,60,140,.35) 9vmax, transparent 18vmax),
+      radial-gradient(ellipse at 12% 8%, rgba(123,97,255,.38), transparent 45%),
+      radial-gradient(ellipse at 88% 18%, rgba(0,229,255,.22), transparent 42%),
+      radial-gradient(ellipse at 50% 110%, rgba(255,0,153,.4), transparent 60%),
+      linear-gradient(#070514, #120c33 45%, #2a0f3f);
+    background-attachment: fixed;
+  }
+  body::before {
+    content: ""; position: fixed; inset: -200px 0 0; z-index: -2; pointer-events: none;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent), radial-gradient(1px 1px at 90px 120px, #cfe8ff, transparent),
+      radial-gradient(1.5px 1.5px at 160px 60px, #ffe8fb, transparent), radial-gradient(1px 1px at 230px 170px, #fff, transparent),
+      radial-gradient(2px 2px at 300px 90px, #8be9ff, transparent), radial-gradient(1px 1px at 50px 200px, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 130px 240px, #ffd6a5, transparent), radial-gradient(1px 1px at 270px 260px, #fff, transparent);
+    background-size: 320px 280px; opacity: .85;
+    animation: bgStars 90s linear infinite;
+  }
+  body::after {
+    content: ""; position: fixed; left: -50%; right: -50%; bottom: 0; height: 42vh; z-index: -1; pointer-events: none;
+    background-image: linear-gradient(rgba(255,60,200,.55) 2px, transparent 2px), linear-gradient(90deg, rgba(0,229,255,.45) 2px, transparent 2px);
+    background-size: 64px 64px;
+    transform: perspective(320px) rotateX(62deg); transform-origin: 50% 100%;
+    -webkit-mask-image: linear-gradient(to top, #000 15%, transparent 85%); mask-image: linear-gradient(to top, #000 15%, transparent 85%);
+    animation: bgGrid 2.4s linear infinite;
+  }
+  @keyframes bgStars { to { transform: translateY(200px); } }
+  @keyframes bgGrid { to { background-position: 0 64px, 0 0; } }
+  @media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none; } }
   .wrap { max-width: 820px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 16px; }
   h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
   p { margin: 0; }
@@ -395,7 +426,24 @@
   .ty-hemoji { font-size: 1.8rem; }
   .rodeo-rider { display: block; margin: 8px 0; font-weight: 700; }
   .rodeo-rider select { font: inherit; padding: 6px 10px; border-radius: 10px; background: var(--panel-2); color: inherit; border: 2px solid var(--gold); margin-left: 4px; }
-  .slope-over.zoo-open { justify-content: flex-start; } .slope-over.zoo-open > * { flex-shrink: 0; }
+  .slope-over.zoo-open { justify-content: flex-start; }
+  /* 🎈 The Sky Zoo floats in the clouds: every land is a little flying island */
+  .slope-over.sky-zoo { background: linear-gradient(#0f5bc4, #3aa0ff 45%, #8fd8ff); text-shadow: 0 1px 3px rgba(0,0,0,.45); }
+  .sky-clouds { position: absolute; inset: 0; pointer-events: none; opacity: .8; z-index: 0;
+    background: radial-gradient(ellipse 60px 22px at 15% 18%, #fff, transparent 70%), radial-gradient(ellipse 80px 26px at 80% 30%, #fff, transparent 70%),
+      radial-gradient(ellipse 70px 24px at 30% 62%, #fff, transparent 70%), radial-gradient(ellipse 90px 28px at 75% 82%, #fff, transparent 70%);
+    background-size: 100% 600px; animation: skyDrift 26s linear infinite; }
+  @keyframes skyDrift { from { background-position: 0 0; } to { background-position: 400px 0; } }
+  .sky-zoo > *:not(.sky-clouds) { position: relative; z-index: 1; }
+  .sky-hero { font-size: 2rem; display: flex; gap: 16px; align-items: flex-end; }
+  .sky-hero span { animation: skyBob 3s ease-in-out infinite; } .sky-hero span:nth-child(2) { font-size: 3.2rem; animation-delay: -1s; } .sky-hero span:nth-child(3) { animation-delay: -2s; }
+  .sky-zoo .rodeo-land { background: linear-gradient(#5cc85a 0 10px, rgba(20,40,80,.45) 10px); border-radius: 18px 18px 46% 46% / 18px 18px 26px 26px; padding: 14px 12px 22px; box-shadow: 0 10px 0 -2px #8a5a2b, 0 18px 18px rgba(0,0,0,.25); animation: skyBob 4s ease-in-out infinite; }
+  .sky-zoo .rodeo-land:nth-child(2n) { animation-delay: -1.3s; } .sky-zoo .rodeo-land:nth-child(3n) { animation-delay: -2.6s; }
+  .sky-zoo .rodeo-zoo { gap: 22px; padding: 6px 2px 14px; }
+  .sky-zoo .rodeo-reviews { background: rgba(20,40,80,.5); }
+  .sky-zoo .soft { color: #eef7ff; opacity: .95; }
+  @keyframes skyBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @media (prefers-reduced-motion: reduce) { .sky-clouds, .sky-hero span, .sky-zoo .rodeo-land { animation: none; } } .slope-over.zoo-open > * { flex-shrink: 0; }
   .rodeo-extras { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .rodeo-reviews { width: 100%; max-width: 380px; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; text-align: left; }
   .rodeo-review { display: flex; gap: 8px; align-items: flex-start; } .rodeo-review > span { font-size: 1.5rem; }
@@ -3371,8 +3419,9 @@ RODEO_ANIMALS.push(...RODEO_ANIMALS.filter(a => !RODEO_LANDS[a.land].secret && R
 // It's also the hardest to get: it only shows up deep in Fantasy Land, very rarely, and takes 8 seconds of riding to tame.
 const RODEO_LAND_M = 400; // a new land every 400 meters
 function startRodeo() {
-  const { cv, stage } = gameShell("Rodeo Stampede", `Ride the stampede! <b>Hold Space</b> (or hold down your finger or mouse) to leap off your animal, and <b>let go</b> to land on another one. Steer with the arrow keys or by moving your finger.<br>Don't land on the ground! Watch the ring: when it runs out, your animal bucks you off. Ride an animal long enough to <b>tame it</b> for your zoo. If a <b>faster</b> animal runs into yours, it knocks you off! If a <b>slower</b> one bumps into you, press <b>Enter</b> (or tap the button) to hop onto it. There are ${RODEO_ANIMALS.length - 10} animals in ${RODEO_NORMAL} lands to find, plus a secret land: get an <b>A+</b> when friends visit and grade your zoo to unlock it!<br>🐘 Big animals smash trees · 🦩 flyers fly over them · 🦒 jumpers leap farther`);
+  const { cv, stage } = gameShell("Rodeo Stampede", `Ride the stampede! <b>Hold Space</b> (or hold down your finger or mouse) to leap off your animal, and <b>let go</b> to land on another one. Steer with the arrow keys or by moving your finger.<br>Don't land on the ground! Watch the ring: when it runs out, your animal bucks you off. Ride an animal long enough to <b>tame it</b> for your zoo. If a <b>faster</b> animal runs into yours, it knocks you off! If a <b>slower</b> one bumps into you, press <b>Enter</b> (or tap the button) to hop onto it. There are ${RODEO_ANIMALS.length - 10} animals in ${RODEO_NORMAL} lands to find, plus a secret land: get an <b>A+</b> from the visitors who grade your Sky Zoo to unlock it!<br>🐘 Big animals smash trees · 🦩 flyers fly over them · 🦒 jumpers leap farther`);
   const W = 400, H = 600, PY = 440, me = M;
+  document.getElementById("m-over").classList.add("zoo-open");
   // every Bunny Hop account is a rider here too, each with their own zoo and best distance
   const riders = () => {
     const r = store.get("rodeo_riders", {});
@@ -3405,7 +3454,7 @@ function startRodeo() {
   const nextGradeInfo = () => { const sc = rodeoZooScore(zoo()), nxt = [...RODEO_GRADE_AT].reverse().find(([, m]) => m > sc); return `Zoo score: <b>${sc}</b>${nxt ? ` · ${nxt[1] - sc} more point${nxt[1] - sc === 1 ? "" : "s"} for a typical ${nxt[0]}` : ""}`; };
   const extrasHTML = () => `${riderPick()}
     ${unlocked() ? `<label class="rodeo-rider">🗺️ Ride in: <select id="rodeo-where"><option value="">The Stampede (all lands)</option><option value="secret"${whereNow() ? " selected" : ""}>✨ Secret Wonderland</option></select></label>` : ""}
-    <div class="row" style="justify-content:center"><button class="btn" id="rodeo-zoo-btn">🏞️ ${esc(riderName())}'s Zoo (${Object.keys(zoo()).length} / ${shownTotal()})</button></div>`;
+    <div class="row" style="justify-content:center"><button class="btn" id="rodeo-zoo-btn">🎈 ${esc(riderName())}'s Sky Zoo (${Object.keys(zoo()).length} / ${shownTotal()})</button></div>`;
   const bindExtras = () => {
     document.getElementById("rodeo-rider")?.addEventListener("change", e => { RIDER = e.target.value; store.set("rodeo_rider", RIDER); refreshExtras(); });
     document.getElementById("rodeo-where")?.addEventListener("change", e => { WHERE = e.target.value; store.set("rodeo_where", WHERE); });
@@ -3421,9 +3470,9 @@ function startRodeo() {
     return z[a.name] ? `<button class="rodeo-pick${starter() === a ? " on" : ""}${a.dragon ? " legend" : ""}${v}" data-start="${esc(a.name)}" title="Ride the ${a.name}${a.variant ? ` (${a.variant.power})` : ""}">${a.emoji}<small>${starter() === a ? "riding" : a.variant ? a.variant.pre : `×${z[a.name]}`}</small></button>`
       : `<span class="rodeo-unk${v}" title="${a.dragon ? "The legendary Dragon hides deep in Fantasy Land..." : a.variant ? `${a.name}: not tamed yet` : "Not tamed yet"}">${a.dragon ? "🔒" : a.variant ? a.emoji : "❔"}${a.variant ? `<small>${a.variant.pre}</small>` : ""}</span>`; };
   const showZoo = () => {
-    const z = zoo(), o = document.getElementById("m-over"); o.classList.add("zoo-open");
+    const z = zoo(), o = document.getElementById("m-over"); o.classList.add("zoo-open", "sky-zoo");
     const rv = me1().reviews || [];
-    o.innerHTML = `<h2>🏞️ ${esc(riderName())}'s Zoo</h2><p>${Object.keys(z).length} of ${shownTotal()} animals tamed${me1().best ? ` · best ride ${fmt(me1().best)} m` : ""}</p>
+    o.innerHTML = `<div class="sky-clouds" aria-hidden="true"></div><div class="sky-hero" aria-hidden="true"><span>🎈</span><span class="sky-isle">🏝️</span><span>🎈</span></div><h2>🎈 ${esc(riderName())}'s Sky Zoo</h2><p>${Object.keys(z).length} of ${shownTotal()} animals tamed${me1().best ? ` · best ride ${fmt(me1().best)} m` : ""}</p>
       <p class="soft">${nextGradeInfo()}${unlocked() ? " · ✨ You unlocked the Secret Wonderland!" : " · An A+ from a visitor unlocks a secret land!"}</p>
       <div class="rodeo-reviews"><b>🎟️ Visitors</b>${rv.length ? rv.slice(0, 4).map(v => `<div class="rodeo-review"><span>${v.emoji}</span><div><b>${esc(v.bot)}</b> <span class="rodeo-g g-${v.grade === "A+" ? "ap" : v.grade.toLowerCase()}">${v.grade}</span><small>"${esc(v.text)}"</small></div></div>`).join("") : `<small class="soft">No visitors yet. Visitors come after every ride!</small>`}
         <button class="btn" id="rodeo-open">🎟️ Open the gates for visitors</button></div>
@@ -3511,13 +3560,13 @@ function startRodeo() {
     return M.herd.filter(a => Math.hypot(a.x - M.px, a.y - M.py) < reach(a)).sort((p, q) => Math.hypot(p.x - M.px, p.y - M.py) - Math.hypot(q.x - M.px, q.y - M.py))[0];
   }
   function finish() {
-    document.getElementById("m-over").classList.remove("zoo-open");
+    document.getElementById("m-over").classList.remove("zoo-open", "sky-zoo");
     const dist = Math.floor(M.dist), z = zoo(), pb = dist > (me1().best || 0);
     record("rodeo", dist); if (pb) saveRider({ best: dist });
     const r = { nb: pb, best: me1().best };
     const tamed = Object.entries(M.tamedRun);
     const visitors = botVisits(rnd(1, 2));
-    overScreen("Rodeo over!", `${fmt(dist)} m`, `🎟️ Visitors came to your zoo: ${visitors.map(v => `${v.emoji} ${esc(v.bot)} gave it <b>${v.grade}</b>`).join(", ")}<br>🤠 ${esc(riderName())} · ${r.nb ? "New best distance!" : `Best: ${fmt(r.best)} m`} · 🪙 ${M.coins} coins<br>${tamed.length ? `Tamed this ride: ${tamed.map(([n, c]) => `${RODEO_ANIMALS.find(a => a.name === n).emoji} ${n}${c > 1 ? ` ×${c}` : ""}`).join(", ")}` : "Ride an animal until its ring fills to tame it!"}<br>🏞️ Zoo: ${Object.keys(z).length} / ${RODEO_ANIMALS.length} animals`, go);
+    overScreen("Rodeo over!", `${fmt(dist)} m`, `🎟️ Visitors flew up to your Sky Zoo: ${visitors.map(v => `${v.emoji} ${esc(v.bot)} gave it <b>${v.grade}</b>`).join(", ")}<br>🤠 ${esc(riderName())} · ${r.nb ? "New best distance!" : `Best: ${fmt(r.best)} m`} · 🪙 ${M.coins} coins<br>${tamed.length ? `Tamed this ride: ${tamed.map(([n, c]) => `${RODEO_ANIMALS.find(a => a.name === n).emoji} ${n}${c > 1 ? ` ×${c}` : ""}`).join(", ")}` : "Ride an animal until its ring fills to tame it!"}<br>🏞️ Zoo: ${Object.keys(z).length} / ${RODEO_ANIMALS.length} animals`, go);
     document.querySelector("#m-over .row").insertAdjacentHTML("beforebegin", `<div id="rodeo-extras" class="rodeo-extras">${extrasHTML()}</div>`); bindExtras();
   }
   function step(dt) {
@@ -3667,7 +3716,7 @@ function startRodeo() {
     for (let i = 0; i < 6; i++) spawnAnimal(rnd(60, PY - 60));
     for (let y = 0; y < PY - 80; y += 120) spawnThing(y);
     M.things = M.things.filter(o => o.type === "coin" || Math.abs(o.x - W / 2) > 60);
-    document.getElementById("m-over").hidden = true; document.getElementById("m-over").classList.remove("zoo-open");
+    document.getElementById("m-over").hidden = true; document.getElementById("m-over").classList.remove("zoo-open", "sky-zoo");
     pop("Hold to leap, let go to land!", "#ffd60a");
     runLoop(step, draw);
   }
