@@ -1127,6 +1127,7 @@ const sfx = { right: () => tone([660, 880]), wrong: () => tone([220, 160], .16, 
 const muteBtn = document.getElementById("mute");
 const renderMute = () => { muteBtn.textContent = "Sound: " + (muted ? "off" : "on"); };
 muteBtn.addEventListener("click", () => { muted = !muted; store.set("muted", muted); renderMute(); });
+muteBtn.addEventListener("dblclick", () => M?.skip100?.()); // secret Sky Stack skip (the two clicks leave the sound how it was)
 renderMute();
 
 /* ---------- Question deck ---------- */
@@ -2893,6 +2894,12 @@ function startStack() {
   window.addEventListener("keydown", M.kd);
   window.addEventListener("resize", M.rs);
   cv.addEventListener("pointerdown", e => { e.preventDefault(); drop(); });
+  // 🤫 secret: double-click the Sound button to jump straight to 100 blocks
+  M.skip100 = () => {
+    if (!M.running) go();
+    while (M.score < 100) { const top = M.blocks.at(-1); M.blocks.push({ x: top.x, w: top.w, hue: (top.hue + 12) % 360 }); M.score++; }
+    M.perfect = 0; spawn(); sfx.buy();
+  };
   function draw() {
     const c = M.ctx;
     if (!c || !M.blocks) return;
