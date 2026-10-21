@@ -395,10 +395,13 @@
   .ty-hemoji { font-size: 1.8rem; }
   .rodeo-rider { display: block; margin: 8px 0; font-weight: 700; }
   .rodeo-rider select { font: inherit; padding: 6px 10px; border-radius: 10px; background: var(--panel-2); color: inherit; border: 2px solid var(--gold); margin-left: 4px; }
-  .rodeo-zoo { max-height: 50vh; overflow-y: auto; text-align: left; display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+  .slope-over.zoo-open { justify-content: flex-start; } .slope-over.zoo-open > * { flex-shrink: 0; }
+  .rodeo-zoo { text-align: left; display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
   .rodeo-land b { font-size: .85rem; } .rodeo-land div { display: flex; flex-wrap: wrap; gap: 4px; }
   .rodeo-land span { font-size: 1.6rem; display: inline-flex; flex-direction: column; align-items: center; min-width: 2.2rem; }
-  .rodeo-land small { font-size: .6rem; opacity: .8; } .rodeo-unk { opacity: .35; }
+  .rodeo-land small { font-size: .6rem; opacity: .8; }
+  .rodeo-pick { font-size: 1.6rem; display: inline-flex; flex-direction: column; align-items: center; min-width: 2.4rem; background: var(--panel-2); border: 2px solid transparent; border-radius: 10px; padding: 2px 4px; cursor: pointer; color: inherit; }
+  .rodeo-pick.on { border-color: var(--money); } .rodeo-pick.legend { background: linear-gradient(135deg, #7a2e0e, #ff9f1c); } .rodeo-unk { opacity: .35; }
   svg.hp { width: 84px; height: 56px; flex: none; border-radius: 8px; border: 2px solid #0003; background: #fff1; }
   svg.hp.big { width: 100%; height: auto; max-width: 420px; align-self: center; border-radius: 12px; }
   .ty-furn { background: var(--panel); border: 2px solid var(--money); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -3302,13 +3305,15 @@ const RODEO_LANDS = [
   { name: "Bug Garden", bg: "#a8dd7c", dot: "#95c96b", tuft: "#ff9de0", tree: "#e86ab8", animals: [["🐝", "Bee", "w"], ["🐞", "Ladybug", "w"], ["🦋", "Butterfly", "w"], ["🐛", "Caterpillar", "v"], ["🐌", "Snail", "v"], ["🐜", "Ant", "f"], ["🦗", "Cricket", "j"], ["🕷️", "Spider", "f"], ["🪲", "Beetle", "b"], ["🦟", "Mosquito", "w"]] },
   { name: "Sky Kingdom", bg: "#c4e8ff", dot: "#ffffff", tuft: "#e3f4ff", tree: "#ffffff", animals: [["🦢", "Swan", "w"], ["🕊️", "Dove", "w"], ["🦇", "Bat", "wf"], ["🐦", "Bluebird", "w"], ["🐦‍⬛", "Crow", "w"], ["🪿", "Goose", "w"], ["🐤", "Chick", "j"], ["🐥", "Duckling", "s"], ["🐣", "Hatchling", "v"], ["🪽", "Pegasus", "wf"]] },
   { name: "Pet Town", bg: "#f6c9da", dot: "#eab3c8", tuft: "#8fd18f", tree: "#7cc47c", animals: [["🐹", "Hamster", "f"], ["🐰", "Bunny", "j"], ["🐶", "Puppy", "n"], ["🐱", "Kitten", "j"], ["🐟", "Goldfish", "s"], ["🐕‍🦺", "Service Dog", "n"], ["🐈‍⬛", "Black Cat", "f"], ["🧸", "Teddy Bear", "s"], ["🐯", "Tiger Cub", "f"], ["🐵", "Baby Monkey", "j"]] },
-  { name: "Fantasy Land", bg: "#cbb8ff", dot: "#b39dfa", tuft: "#ff9de0", animals: [["🦄", "Unicorn", "fj"], ["🐉", "Dragon", "wb"], ["🦕", "Brontosaurus", "b"], ["🦖", "T-Rex", "fb"], ["🐲", "Baby Dragon", "w"], ["🦤", "Dodo", "s"], ["🦣", "Mammoth", "b"], ["🐋", "Sky Whale", "wb"], ["🦚", "Peacock", "n"], ["🐻", "Golden Bear", "g"]] }
+  { name: "Fantasy Land", bg: "#cbb8ff", dot: "#b39dfa", tuft: "#ff9de0", animals: [["🦄", "Unicorn", "fj"], ["🐉", "Dragon", "wbjd"], ["🦕", "Brontosaurus", "b"], ["🦖", "T-Rex", "fb"], ["🐲", "Baby Dragon", "w"], ["🦤", "Dodo", "s"], ["🦣", "Mammoth", "b"], ["🐋", "Sky Whale", "wb"], ["🦚", "Peacock", "n"], ["🐻", "Golden Bear", "g"]] }
 ];
 const RODEO_ANIMALS = RODEO_LANDS.flatMap((l, li) => l.animals.map(([emoji, name, k]) => ({
   emoji, name, land: li, fast: k.includes("f"), slow: k.includes("s"), vslow: k.includes("v"), big: k.includes("b"), jump: k.includes("j"), fly: k.includes("w"), gold: k.includes("g"),
   speed: k.includes("v") ? 130 : k.includes("s") ? 170 : k.includes("f") ? 300 : 225, size: k.includes("b") ? 46 : k.includes("v") || k.includes("j") ? 32 : 38,
-  buck: k.includes("v") ? 9 : k.includes("s") ? 7.5 : k.includes("f") ? 4.5 : 6, tame: k.includes("g") ? 5 : 3
-})));
+  buck: k.includes("v") ? 9 : k.includes("s") ? 7.5 : k.includes("f") ? 4.5 : 6, tame: k.includes("g") ? 5 : 3, dragon: k.includes("d")
+})).map(a => a.dragon ? { ...a, speed: 380, size: 54, buck: 15, tame: 8 } : a));
+// 🐉 The Dragon is the best animal: the fastest, flies over everything, smashes, leaps far, and lets you ride the longest.
+// It's also the hardest to get: it only shows up deep in Fantasy Land, very rarely, and takes 8 seconds of riding to tame.
 const RODEO_LAND_M = 400; // a new land every 400 meters
 function startRodeo() {
   const { cv, stage } = gameShell("Rodeo Stampede", `Ride the stampede! <b>Hold Space</b> (or hold down your finger or mouse) to leap off your animal, and <b>let go</b> to land on another one. Steer with the arrow keys or by moving your finger.<br>Don't land on the ground! Watch the ring: when it runs out, your animal bucks you off. Ride an animal long enough to <b>tame it</b> for your zoo. If a <b>faster</b> animal runs into yours, it knocks you off! If a <b>slower</b> one bumps into you, press <b>Enter</b> (or tap the button) to hop onto it. There are ${RODEO_ANIMALS.length} animals in ${RODEO_LANDS.length} lands to find!<br>🐘 Big animals smash trees · 🦩 flyers fly over them · 🦒 jumpers leap farther`);
@@ -3324,6 +3329,8 @@ function startRodeo() {
   const riderName = () => TY_ACCOUNTS.find(a => a.id === RIDER).name;
   const me1 = () => riders()[RIDER] || { zoo: {}, best: 0 };
   const zoo = () => me1().zoo || {};
+  // the zoo animal this rider starts on (a Buffalo until they pick one they've tamed)
+  const starter = () => { const n = me1().starter; return (n && zoo()[n] && RODEO_ANIMALS.find(a => a.name === n)) || RODEO_ANIMALS[0]; };
   const saveRider = d => { const r = riders(); r[RIDER] = { ...me1(), ...d }; store.set("rodeo_riders", r); };
   const riderPick = () => `<label class="rodeo-rider">🤠 Rider: <select id="rodeo-rider">${TY_ACCOUNTS.map(a => `<option value="${a.id}"${a.id === RIDER ? " selected" : ""}>${esc(a.name)}</option>`).join("")}</select></label>`;
   const bindRider = () => document.getElementById("rodeo-rider")?.addEventListener("change", e => {
@@ -3333,13 +3340,15 @@ function startRodeo() {
   document.querySelector("#m-over p").insertAdjacentHTML("afterend", `${riderPick()}<button class="btn" id="rodeo-zoo-btn">🏞️ ${esc(riderName())}'s Zoo (${Object.keys(zoo()).length} / ${RODEO_ANIMALS.length})</button>`);
   bindRider();
   const showZoo = () => {
-    const z = zoo(), o = document.getElementById("m-over");
+    const z = zoo(), o = document.getElementById("m-over"); o.classList.add("zoo-open");
     o.innerHTML = `<h2>🏞️ ${esc(riderName())}'s Zoo</h2><p>${Object.keys(z).length} of ${RODEO_ANIMALS.length} animals tamed${me1().best ? ` · best ride ${fmt(me1().best)} m` : ""}</p>${riderPick()}
-      <div class="rodeo-zoo">${RODEO_LANDS.map((l, li) => `<div class="rodeo-land"><b>${l.name}</b><div>${RODEO_ANIMALS.filter(a => a.land === li).map(a => z[a.name] ? `<span title="${a.name} ×${z[a.name]}">${a.emoji}<small>×${z[a.name]}</small></span>` : `<span class="rodeo-unk" title="Not tamed yet">❔</span>`).join("")}</div></div>`).join("")}</div>
+      <p class="soft">Tap an animal you've tamed to start your next ride on it! Starting on: <b>${starter().emoji} ${starter().name}</b></p>
+      <div class="rodeo-zoo">${RODEO_LANDS.map((l, li) => `<div class="rodeo-land"><b>${l.name}</b><div>${RODEO_ANIMALS.filter(a => a.land === li).map(a => z[a.name] ? `<button class="rodeo-pick${starter() === a ? " on" : ""}${a.dragon ? " legend" : ""}" data-start="${esc(a.name)}" title="Ride the ${a.name}">${a.emoji}<small>${starter() === a ? "riding" : `×${z[a.name]}`}</small></button>` : `<span class="rodeo-unk" title="${a.dragon ? "The legendary Dragon hides deep in Fantasy Land..." : "Not tamed yet"}">${a.dragon ? "🔒" : "❔"}</span>`).join("")}</div></div>`).join("")}</div>
       <div class="row" style="justify-content:center"><button class="btn go" id="m-go">Play</button><button class="btn" id="m-menu">Menu</button></div>`;
     o.hidden = false;
     document.getElementById("m-go").addEventListener("click", go); document.getElementById("m-menu").addEventListener("click", showHome);
     document.getElementById("rodeo-rider").addEventListener("change", e => { RIDER = e.target.value; store.set("rodeo_rider", RIDER); showZoo(); });
+    o.querySelectorAll("[data-start]").forEach(b => b.addEventListener("click", () => { saveRider({ starter: b.dataset.start }); tone([660, 880], .05, "triangle", .06); showZoo(); }));
   };
   document.getElementById("rodeo-zoo-btn").addEventListener("click", showZoo);
   M.rs = () => { M.ctx = canvasFit(cv, stage, W, H, 420); draw(); };
@@ -3374,12 +3383,14 @@ function startRodeo() {
   const pickAnimal = () => {
     const li = Math.floor(M.dist / RODEO_LAND_M) % RODEO_LANDS.length;
     if (Math.random() < .025) return RODEO_ANIMALS.find(a => a.gold);           // a rare Golden Bear anywhere!
-    const pool = RODEO_ANIMALS.filter(a => a.land === li && !a.gold);
+    if (RODEO_LANDS[li].name === "Fantasy Land" && Math.random() < .03) return RODEO_ANIMALS.find(a => a.dragon); // the legendary Dragon!
+    const pool = RODEO_ANIMALS.filter(a => a.land === li && !a.gold && !a.dragon);
     return pool[rnd(0, pool.length - 1)];
   };
   const spawnAnimal = (y, kind) => {
     const k = kind || pickAnimal();
     M.herd.push({ k, x: rnd(40, W - 40), y, v: k.speed * (hard() ? 1.12 : 1) * (.9 + Math.random() * .2), wob: Math.random() * 6, dx: 0 });
+    if (k.dragon && M.running && !M.over) { pop("🐉 A DRAGON appeared! Catch it!", "#ff9f1c"); tone([392, 523, 659, 784], .1, "sawtooth", .05); }
   };
   const spawnThing = y => {
     const r = Math.random();
@@ -3411,6 +3422,7 @@ function startRodeo() {
     return M.herd.filter(a => Math.hypot(a.x - M.px, a.y - M.py) < reach(a)).sort((p, q) => Math.hypot(p.x - M.px, p.y - M.py) - Math.hypot(q.x - M.px, q.y - M.py))[0];
   }
   function finish() {
+    document.getElementById("m-over").classList.remove("zoo-open");
     const dist = Math.floor(M.dist), z = zoo(), pb = dist > (me1().best || 0);
     record("rodeo", dist); if (pb) saveRider({ best: dist });
     const r = { nb: pb, best: me1().best };
@@ -3446,7 +3458,8 @@ function startRodeo() {
       if (M.rideT >= M.ride.k.tame && !M.ride.tamed) {
         M.ride.tamed = true; const n = M.ride.k.name, isNew = !z[n];
         z[n] = (z[n] || 0) + 1; saveRider({ zoo: z }); M.tamedRun[n] = (M.tamedRun[n] || 0) + 1;
-        const bonus = M.ride.k.gold ? 50 : isNew ? 10 : 3; M.coins += bonus;
+        const bonus = M.ride.k.dragon ? 200 : M.ride.k.gold ? 50 : isNew ? 10 : 3; M.coins += bonus;
+        if (M.ride.k.dragon) { M.shake = .5; pop("🐉 LEGENDARY! You tamed the DRAGON!", "#ff9f1c"); }
         pop(`${M.ride.k.emoji} ${isNew ? "NEW! " : ""}Tamed a ${n}! +${bonus} 🪙`, isNew ? "#42e392" : "#fff"); sfx.buy();
       }
       // other animals bumping into yours
@@ -3518,6 +3531,7 @@ function startRodeo() {
     [...M.herd].sort((p, q) => p.y - q.y).forEach(a => {
       const bob = Math.sin(a.wob) * 2;
       if (a.k.gold) { c.fillStyle = "rgba(255,214,10,.45)"; c.beginPath(); c.arc(a.x, a.y, a.k.size * .7, 0, 7); c.fill(); }
+      if (a.k.dragon) { c.fillStyle = `rgba(255,${90 + Math.sin(M.t * 6) * 40 | 0},40,.45)`; c.beginPath(); c.arc(a.x, a.y, a.k.size * .78, 0, 7); c.fill(); }
       drawEmoji(c, a.k.emoji, a.x, a.y + bob, a.k.size);
     });
     // a slower animal you can hop onto
@@ -3554,15 +3568,16 @@ function startRodeo() {
     Object.assign(M, { t: 0, dist: 0, coins: 0, lives: hard() ? 1 : 3, herd: [], things: [], pops: [], px: W / 2, py: PY, tx: W / 2, ride: null, air: null, holding: false, ptr: false,
       over: false, shake: 0, safe: 0, grass: 0, land: 0, nextThing: 200, lastSpeed: 220, tamedRun: {}, offer: null, running: true });
     keys.l = keys.r = false;
-    spawnAnimal(PY, RODEO_ANIMALS[0]); mount(M.herd[0]);
+    const st = starter(); spawnAnimal(PY, st); M.herd[0].tamed = !!zoo()[st.name]; mount(M.herd[0]);
+    if (st !== RODEO_ANIMALS[0]) setTimeout(() => M === me && pop(`${st.emoji} Riding your ${st.name} from the zoo!`, "#42e392"), 600);
     for (let i = 0; i < 6; i++) spawnAnimal(rnd(60, PY - 60));
     for (let y = 0; y < PY - 80; y += 120) spawnThing(y);
     M.things = M.things.filter(o => o.type === "coin" || Math.abs(o.x - W / 2) > 60);
-    document.getElementById("m-over").hidden = true;
+    document.getElementById("m-over").hidden = true; document.getElementById("m-over").classList.remove("zoo-open");
     pop("Hold to leap, let go to land!", "#ffd60a");
     runLoop(step, draw);
   }
-  Object.assign(M, { t: 0, dist: 0, coins: 0, lives: 3, herd: [], things: [], pops: [], px: W / 2, py: PY, land: 0, grass: 0, shake: 0 });
+  Object.assign(M, { t: 0, dist: 0, coins: 0, lives: 3, herd: [], things: [], pops: [], px: W / 2, py: PY, land: 0, grass: 0, shake: 0, rideT: 0, buckT: 6 });
   spawnAnimal(PY, RODEO_ANIMALS[0]); M.herd[0].x = W / 2; M.ride = M.herd[0];
   M.rs();
   document.getElementById("m-go").addEventListener("click", go);
