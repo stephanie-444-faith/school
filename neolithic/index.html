@@ -376,6 +376,21 @@
   .bunny-btn { position: absolute; top: 0; left: 0; z-index: 11; width: 44px; height: 44px; border-radius: 12px; border: 0; background: var(--panel); font-size: 1.6rem; line-height: 1; cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
   .bunny-btn:hover { transform: scale(1.08); }
   .dog-btn { left: 52px; }
+  .hippo-btn { left: 104px; }
+  .hip-head { display: flex; gap: 12px; align-items: center; } .hip-head h2 { margin: 0; } .hip-face { font-size: 3.4rem; animation: skyBob 3s ease-in-out infinite; }
+  .hip-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 8px; }
+  .hip-bar input { flex: 1; min-width: 200px; font: inherit; font-size: 1.1rem; padding: 12px 16px; border-radius: 99px; border: 2px solid var(--gold); background: var(--panel-2); color: inherit; }
+  .hip-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; background: var(--panel-2); border: 2px solid var(--gold); border-radius: 16px; padding: 14px; margin: 12px 0; align-items: center; animation: coachIn .25s ease-out; }
+  @media (max-width: 640px) { .hip-card { grid-template-columns: 1fr; } }
+  .hip-diagram svg, .hip-svg { width: 100%; height: auto; background: #fff; border-radius: 12px; display: block; }
+  .hip-text b { font-size: 1.3rem; display: block; margin: 4px 0 6px; line-height: 1.3; } .hip-text p { margin: 0; line-height: 1.5; opacity: .92; }
+  .hip-topic { color: var(--gold); font-weight: 800; text-transform: uppercase; letter-spacing: .05em; font-size: .75rem; }
+  .hip-pic { border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; color: #1a1240; }
+  .hip-pic span { font-size: 5rem; line-height: 1.1; } .hip-pic small { font-weight: 800; font-size: .95rem; }
+  .hip-tries { display: flex; flex-wrap: wrap; gap: 6px; } .hip-try { font-size: .85rem; padding: 6px 12px; }
+  .hip-topics { margin-top: 12px; } .hip-topics summary { cursor: pointer; font-weight: 800; }
+  .hip-topics > div { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; margin-top: 8px; }
+  .hip-topics span { background: var(--panel-2); border-radius: 10px; padding: 6px 10px; display: flex; justify-content: space-between; gap: 8px; font-size: .9rem; }
   .bunny-btn:focus-visible { outline: 3px solid var(--gold); }
   .ty-wrap { gap: 14px; }
   .ty-accounts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
@@ -1207,6 +1222,7 @@ function showHome() {
       </div>
       <button class="bunny-btn" id="bunny" type="button" aria-label="Bunny Hop Typing" title="Bunny Hop Typing">🐰</button>
       <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: keep the story going!">🐶</button>
+      <button class="bunny-btn hippo-btn" id="hippo" type="button" aria-label="Ask Hippo" title="Ask Hippo: questions and answers with pictures">🦛</button>
       <details class="gamesmenu" id="gamesmenu">
         <summary aria-label="Games menu">⋯</summary>
         <div class="gm-panel">
@@ -1272,6 +1288,7 @@ function showHome() {
   document.getElementById("start").addEventListener("click", pickCash);
   keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
   document.getElementById("write").addEventListener("click", startStories);
+  document.getElementById("hippo").addEventListener("click", () => startHippo());
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
     document.getElementById("fq").addEventListener("click", startFocus);
@@ -5884,6 +5901,300 @@ const STORY_LENS = { any: "Any length", sentence: "1 sentence", few: "A few sent
 const STORY_GOALS = [50, 100, 200, 300];
 const wordCount = t => (t.trim().match(/\S+/g) || []).length;
 let STORY = null;
+
+/* ---------- 🦛 Ask Hippo: a question-and-answer helper. Every answer comes with a picture or diagram. ---------- */
+// Animal facts: kind | what it eats | where it lives | fun fact
+const HIPPO_ANIMALS = {
+  Buffalo: "mammal|grass|African grasslands|African buffalo live in big herds and protect each other from lions.",
+  Zebra: "mammal|grass|African grasslands|No two zebras have the exact same stripes, just like fingerprints.",
+  Elephant: "mammal|grass, leaves, bark and fruit|Africa and Asia|Elephants are the largest land animals and use their trunks like a hand.",
+  Giraffe: "mammal|leaves from tall trees|African savannas|Giraffes are the tallest animals and their tongues can be about 50 cm long.",
+  Rhino: "mammal|grass and leaves|Africa and Asia|A rhino's horn is made of keratin, the same stuff as your fingernails.",
+  Hippo: "mammal|grass|African rivers and lakes|Hippos spend most of the day in water to stay cool and can hold their breath for about 5 minutes.",
+  Cheetah: "mammal|meat (gazelles and other small animals)|African grasslands|Cheetahs are the fastest land animals, reaching about 100 km/h (60 mph) in short bursts.",
+  Lion: "mammal|meat|African savannas|Lions live in groups called prides, and a lion's roar can be heard 8 km away.",
+  Warthog: "mammal|grass, roots and bulbs|African savannas|Warthogs kneel on their front knees to eat short grass.",
+  Flamingo: "bird|shrimp and algae|lakes and lagoons|Flamingos are pink because of the colors in the food they eat.",
+  Gorilla: "mammal|leaves, stems and fruit|African rainforests|Gorillas are the largest apes and share about 98% of their DNA with people.",
+  Monkey: "mammal|fruit, leaves and insects|forests around the world|Many monkeys use their tails to hold onto branches.",
+  Tiger: "mammal|meat|forests of Asia|Tigers are the biggest cats, and they like to swim.",
+  Crocodile: "reptile|fish, birds and mammals|rivers and swamps|Crocodiles have been around since the time of the dinosaurs.",
+  Parrot: "bird|seeds, nuts and fruit|tropical forests|Some parrots can copy human words.",
+  Snake: "reptile|mice, birds, eggs and insects|almost everywhere except Antarctica|Snakes smell with their tongues.",
+  Sloth: "mammal|leaves|rainforests of Central and South America|Sloths move so slowly that algae grows on their fur.",
+  Frog: "amphibian|insects|ponds and wet forests|Frogs drink water through their skin.",
+  Orangutan: "mammal|fruit and leaves|rainforests of Borneo and Sumatra|Orangutans build a new sleeping nest in the trees every night.",
+  Panda: "mammal|bamboo|mountain forests of China|Giant pandas eat bamboo for up to 14 hours a day.",
+  "Polar Bear": "mammal|seals|the Arctic|A polar bear's fur looks white, but its skin underneath is black.",
+  Penguin: "bird|fish, squid and krill|the Southern Hemisphere, mostly Antarctica|Penguins can't fly, but they are amazing swimmers.",
+  Reindeer: "mammal|lichen, grass and leaves|the Arctic and cold northern lands|Both male and female reindeer grow antlers.",
+  Wolf: "mammal|meat|forests and tundra in the Northern Hemisphere|Wolves live in family groups called packs and howl to talk to each other.",
+  Seal: "mammal|fish and squid|cold oceans and coasts|Seals can sleep underwater for short times.",
+  Ram: "mammal|grass|mountains|A ram is a male sheep, and bighorn rams have huge curled horns.",
+  Bison: "mammal|grass|North American prairies|Bison are the heaviest land animals in North America.",
+  "Snow Hare": "mammal|plants, twigs and bark|snowy northern forests|Snowshoe hares turn white in winter and brown in summer.",
+  "Snowy Owl": "bird|lemmings and other small animals|the Arctic tundra|Unlike most owls, snowy owls hunt during the day.",
+  "Arctic Fox": "mammal|lemmings, birds and eggs|the Arctic|Arctic foxes have fur on the bottoms of their feet to keep them warm.",
+  Camel: "mammal|desert plants|deserts|A camel's hump stores fat, not water.",
+  "Two-Hump Camel": "mammal|desert plants|cold deserts of Asia|Two-hump camels are called Bactrian camels.",
+  "Giant Scorpion": "arachnid|insects and spiders|deserts and forests|Scorpions glow under ultraviolet (black) light.",
+  Lizard: "reptile|insects|warm places around the world|Some lizards can drop their tail to escape, then grow a new one.",
+  "Wild Horse": "mammal|grass|grasslands|Horses can sleep standing up.",
+  Donkey: "mammal|grass and hay|dry lands and farms|Donkeys have big ears to help them hear far away and stay cool.",
+  Eagle: "bird|fish and small animals|mountains, rivers and coasts|Eagles can see about 4 to 5 times farther than people.",
+  Tortoise: "reptile|grass, plants and fruit|dry lands|Some tortoises live more than 150 years.",
+  Kangaroo: "mammal (marsupial)|grass|Australia|Baby kangaroos are called joeys and live in their mother's pouch.",
+  Goat: "mammal|grass, leaves and shrubs|farms and mountains|Goats are great climbers and can stand on steep rocks.",
+  Cow: "mammal|grass and hay|farms|Cows have one stomach with four parts.",
+  Pig: "mammal|plants and almost anything|farms|Pigs are very smart and can learn tricks.",
+  Rooster: "bird|seeds, grain and bugs|farms|A rooster is a male chicken and crows in the morning.",
+  Sheep: "mammal|grass|farms and hills|Sheep wool keeps growing, so farmers shear it every year.",
+  Dog: "mammal|meat and dog food|everywhere people live|Dogs can smell thousands of times better than people.",
+  Cat: "mammal|meat|everywhere people live|Cats spend about two-thirds of their lives sleeping.",
+  Duck: "bird|plants, seeds and bugs|ponds and lakes|Duck feathers are waterproof.",
+  Turkey: "bird|seeds, nuts and insects|North American forests|Wild turkeys can fly short distances and run fast.",
+  Ox: "mammal|grass and hay|farms|An ox is a cow or bull trained to pull heavy loads.",
+  Pony: "mammal|grass and hay|farms|A pony is a small kind of horse.",
+  Crab: "crustacean|algae and small animals|oceans and beaches|Crabs walk sideways.",
+  Lobster: "crustacean|fish, clams and snails|the ocean floor|Lobsters can grow back lost claws.",
+  Octopus: "mollusk|crabs and shrimp|oceans|An octopus has three hearts and blue blood.",
+  Squid: "mollusk|fish and shrimp|oceans|Squid squirt ink to escape from enemies.",
+  Dolphin: "mammal|fish and squid|oceans|Dolphins breathe air and talk with clicks and whistles.",
+  Shark: "fish|fish and seals|oceans|Sharks have been around for over 400 million years, longer than trees.",
+  Whale: "mammal|krill and fish|oceans|The blue whale is the largest animal that has ever lived.",
+  Otter: "mammal|fish, clams and crabs|rivers and coasts|Sea otters hold hands while they sleep so they don't drift apart.",
+  Pufferfish: "fish|algae and shellfish|warm oceans|Pufferfish blow up like a balloon when they're scared.",
+  "Tropical Fish": "fish|algae and tiny animals|coral reefs|Coral reefs are home to about a quarter of all ocean fish species.",
+  Koala: "mammal (marsupial)|eucalyptus leaves|Australia|Koalas sleep up to 20 hours a day.",
+  Badger: "mammal|worms, insects and roots|forests and fields|Badgers dig big underground homes called setts.",
+  Beaver: "mammal|bark and plants|rivers and ponds|Beavers build dams with sticks and mud.",
+  Skunk: "mammal|insects, fruit and small animals|North and South America|Skunks spray a stinky smell to protect themselves.",
+  Hedgehog: "mammal|insects and worms|Europe, Asia and Africa|A hedgehog has about 5,000 spines.",
+  Chipmunk: "mammal|nuts, seeds and berries|North American forests|Chipmunks carry food in their stretchy cheek pouches.",
+  Raccoon: "mammal|almost anything|North American forests and cities|Raccoons have very sensitive front paws, like hands.",
+  Llama: "mammal|grass|the Andes mountains of South America|Llamas sometimes spit when they're annoyed.",
+  Poodle: "mammal (dog)|dog food|homes|Poodles are among the smartest dog breeds.",
+  Mouse: "mammal|seeds, grains and fruit|almost everywhere|A mouse's teeth never stop growing.",
+  Bee: "insect|nectar and pollen|meadows and gardens|Honeybees dance to tell other bees where flowers are.",
+  Ladybug: "insect|aphids (tiny plant bugs)|gardens and fields|A ladybug can eat about 5,000 aphids in its life.",
+  Butterfly: "insect|nectar|gardens and meadows|Butterflies taste with their feet.",
+  Caterpillar: "insect larva|leaves|gardens and forests|A caterpillar turns into a butterfly or moth inside a chrysalis or cocoon.",
+  Snail: "mollusk|plants|gardens and wet places|Snails carry their shell homes everywhere they go.",
+  Ant: "insect|seeds, insects and sweet things|almost everywhere|Ants can carry many times their own body weight.",
+  Cricket: "insect|plants and small insects|grasslands and gardens|Crickets chirp by rubbing their wings together.",
+  Spider: "arachnid|insects|almost everywhere|Spiders have 8 legs, so they are not insects.",
+  Beetle: "insect|plants, wood and other bugs|almost everywhere|There are more kinds of beetles than any other animal.",
+  Mosquito: "insect|nectar (females also drink blood)|wet places|Only female mosquitoes bite.",
+  Swan: "bird|water plants|lakes and ponds|Swans often stay with the same partner for life.",
+  Dove: "bird|seeds|towns and woodlands|Doves are a symbol of peace.",
+  Bat: "mammal|insects and fruit|caves and forests|Bats are the only mammals that can truly fly.",
+  Bluebird: "bird|insects and berries|fields and open woods|Bluebirds look blue because of how light bounces off their feathers.",
+  Crow: "bird|almost anything|everywhere|Crows are very smart and can use tools.",
+  Goose: "bird|grass and plants|lakes and fields|Geese fly in a V shape to save energy.",
+  Chick: "bird|seeds and bugs|farms|A chick is a baby chicken.",
+  Duckling: "bird|plants and bugs|ponds|Ducklings follow the first moving thing they see, usually their mom.",
+  Hatchling: "baby animal|depends on the animal|nests|A hatchling is any baby animal that just came out of an egg.",
+  Hamster: "mammal|seeds, grains and veggies|homes (wild ones live in deserts)|Hamsters stuff food in their cheeks to carry it.",
+  Bunny: "mammal|grass and vegetables|fields and homes|A rabbit's teeth never stop growing.",
+  Puppy: "mammal (dog)|puppy food|homes|Puppies are born with their eyes closed.",
+  Kitten: "mammal (cat)|kitten food|homes|Kittens start to purr when they are a few days old.",
+  Goldfish: "fish|fish flakes and plants|ponds and tanks|Goldfish can see more colors than people.",
+  "Service Dog": "mammal (dog)|dog food|homes|Service dogs are trained to help people with special needs.",
+  "Black Cat": "mammal (cat)|meat|homes|In some countries black cats are thought to bring good luck.",
+  "Tiger Cub": "mammal|milk, then meat|forests of Asia|Tiger cubs stay with their mother for about 2 years.",
+  "Baby Monkey": "mammal|milk, then fruit|forests|Baby monkeys ride on their mother's back.",
+  Moose: "mammal|leaves, twigs and water plants|northern forests|Moose are the largest kind of deer.",
+  Shrimp: "crustacean|tiny plants and animals|oceans and rivers|Some shrimp can snap their claws so fast it makes a loud pop.",
+  Chicken: "bird|seeds, grain and bugs|farms|There are more chickens on Earth than people.",
+  Rat: "mammal|almost anything|almost everywhere|Rats laugh when they're tickled, but the sound is too high for us to hear.",
+  Worm: "annelid|dead leaves and soil|soil|Earthworms help plants grow by mixing and airing the soil.",
+  Jellyfish: "cnidarian|tiny sea animals|oceans|Jellyfish have no brain, heart or bones.",
+  Mammoth: "mammal (extinct)|grass|cold lands during the Ice Age|Woolly mammoths lived at the same time as early humans.",
+  Brontosaurus: "dinosaur (extinct)|plants|ancient North America|Brontosaurus had a neck about 6 meters long.",
+  "T-Rex": "dinosaur (extinct)|meat|ancient North America|T-Rex had teeth as long as bananas.",
+  Dodo: "bird (extinct)|fruit and seeds|the island of Mauritius|Dodos couldn't fly and died out in the 1600s.",
+  Peacock: "bird|seeds, insects and plants|India and Sri Lanka|Only male peafowl, called peacocks, have the big colorful tail."
+};
+const HIPPO_PLANETS = [
+  ["Mercury", "closest to the Sun and the smallest planet", 0, "#a8a29e", 6], ["Venus", "the hottest planet, covered in thick clouds", 0, "#e9c46a", 9], ["Earth", "our home, the only planet known to have life", 1, "#3a86ff", 10],
+  ["Mars", "the Red Planet, with the tallest volcano in the solar system", 2, "#d9583b", 8], ["Jupiter", "the biggest planet, with a giant storm called the Great Red Spot", 95, "#d4a373", 22],
+  ["Saturn", "famous for its beautiful rings made of ice and rock", 146, "#e9d8a6", 19], ["Uranus", "an ice giant that spins on its side", 28, "#8ecae6", 14], ["Neptune", "the windiest planet, farthest from the Sun", 16, "#3d5a80", 14]
+];
+const HIPPO_COUNTRIES = "United States:US:Washington, D.C.:North America|Canada:CA:Ottawa:North America|Mexico:MX:Mexico City:North America|Brazil:BR:Brasília:South America|Argentina:AR:Buenos Aires:South America|Chile:CL:Santiago:South America|Peru:PE:Lima:South America|Colombia:CO:Bogotá:South America|Venezuela:VE:Caracas:South America|United Kingdom:GB:London:Europe|France:FR:Paris:Europe|Germany:DE:Berlin:Europe|Italy:IT:Rome:Europe|Spain:ES:Madrid:Europe|Portugal:PT:Lisbon:Europe|Ireland:IE:Dublin:Europe|Netherlands:NL:Amsterdam:Europe|Belgium:BE:Brussels:Europe|Switzerland:CH:Bern:Europe|Austria:AT:Vienna:Europe|Poland:PL:Warsaw:Europe|Sweden:SE:Stockholm:Europe|Norway:NO:Oslo:Europe|Finland:FI:Helsinki:Europe|Denmark:DK:Copenhagen:Europe|Greece:GR:Athens:Europe|Ukraine:UA:Kyiv:Europe|Russia:RU:Moscow:Europe and Asia|Turkey:TR:Ankara:Europe and Asia|Egypt:EG:Cairo:Africa|Nigeria:NG:Abuja:Africa|Kenya:KE:Nairobi:Africa|South Africa:ZA:Pretoria:Africa|Ethiopia:ET:Addis Ababa:Africa|Morocco:MA:Rabat:Africa|Ghana:GH:Accra:Africa|China:CN:Beijing:Asia|Japan:JP:Tokyo:Asia|South Korea:KR:Seoul:Asia|India:IN:New Delhi:Asia|Pakistan:PK:Islamabad:Asia|Indonesia:ID:Jakarta:Asia|Thailand:TH:Bangkok:Asia|Vietnam:VN:Hanoi:Asia|Philippines:PH:Manila:Asia|Saudi Arabia:SA:Riyadh:Asia|Iran:IR:Tehran:Asia|Iraq:IQ:Baghdad:Asia|Israel:IL:Jerusalem:Asia|Australia:AU:Canberra:Oceania|New Zealand:NZ:Wellington:Oceania|Cuba:CU:Havana:North America|Jamaica:JM:Kingston:North America|Iceland:IS:Reykjavík:Europe|Mongolia:MN:Ulaanbaatar:Asia|Nepal:NP:Kathmandu:Asia".split("|").map(r => r.split(":"));
+const HIPPO_STATES = "Alabama:Montgomery|Alaska:Juneau|Arizona:Phoenix|Arkansas:Little Rock|California:Sacramento|Colorado:Denver|Connecticut:Hartford|Delaware:Dover|Florida:Tallahassee|Georgia:Atlanta|Hawaii:Honolulu|Idaho:Boise|Illinois:Springfield|Indiana:Indianapolis|Iowa:Des Moines|Kansas:Topeka|Kentucky:Frankfort|Louisiana:Baton Rouge|Maine:Augusta|Maryland:Annapolis|Massachusetts:Boston|Michigan:Lansing|Minnesota:Saint Paul|Mississippi:Jackson|Missouri:Jefferson City|Montana:Helena|Nebraska:Lincoln|Nevada:Carson City|New Hampshire:Concord|New Jersey:Trenton|New Mexico:Santa Fe|New York:Albany|North Carolina:Raleigh|North Dakota:Bismarck|Ohio:Columbus|Oklahoma:Oklahoma City|Oregon:Salem|Pennsylvania:Harrisburg|Rhode Island:Providence|South Carolina:Columbia|South Dakota:Pierre|Tennessee:Nashville|Texas:Austin|Utah:Salt Lake City|Vermont:Montpelier|Virginia:Richmond|Washington:Olympia|West Virginia:Charleston|Wisconsin:Madison|Wyoming:Cheyenne".split("|").map(r => r.split(":"));
+const HIPPO_ELEMENTS = "Hydrogen:H|Helium:He|Lithium:Li|Beryllium:Be|Boron:B|Carbon:C|Nitrogen:N|Oxygen:O|Fluorine:F|Neon:Ne|Sodium:Na|Magnesium:Mg|Aluminum:Al|Silicon:Si|Phosphorus:P|Sulfur:S|Chlorine:Cl|Argon:Ar|Potassium:K|Calcium:Ca".split("|").map((r, i) => [...r.split(":"), i + 1]);
+const HIPPO_SHAPES = { triangle: 3, square: 4, rectangle: 4, quadrilateral: 4, pentagon: 5, hexagon: 6, heptagon: 7, octagon: 8, nonagon: 9, decagon: 10, hendecagon: 11, dodecagon: 12 };
+// ---- diagrams (little SVG pictures) ----
+const HV = (inner, h = 180) => `<svg class="hip-svg" viewBox="0 0 320 ${h}" role="img">${inner}</svg>`;
+const hT = (x, y, t, o = {}) => `<text x="${x}" y="${y}" font-size="${o.s || 13}" font-weight="${o.b ? 800 : 500}" fill="${o.c || "#1a1240"}" text-anchor="${o.a || "middle"}" font-family="system-ui,sans-serif">${esc(String(t))}</text>`;
+function hNumberLine(from, to, marks, jumps = []) {
+  const lo = Math.min(from, to), hi = Math.max(from, to), X = v => 20 + (v - lo) / Math.max(1, hi - lo) * 280;
+  let s = `<line x1="14" y1="120" x2="306" y2="120" stroke="#1a1240" stroke-width="2"/>`;
+  const step = Math.max(1, Math.round((hi - lo) / 10));
+  for (let v = lo; v <= hi; v += step) s += `<line x1="${X(v)}" y1="114" x2="${X(v)}" y2="126" stroke="#1a1240"/>` + hT(X(v), 142, v, { s: 10 });
+  jumps.forEach(([a, b, lab, col]) => { const xa = X(a), xb = X(b), mid = (xa + xb) / 2; s += `<path d="M${xa},118 Q${mid},${40} ${xb},118" fill="none" stroke="${col}" stroke-width="3" marker-end="url(#ar)"/>` + hT(mid, 58, lab, { b: 1, c: col, s: 15 }); });
+  marks.forEach(([v, col, lab]) => { s += `<circle cx="${X(v)}" cy="120" r="7" fill="${col}"/>` + hT(X(v), 162, lab ?? v, { b: 1, c: col, s: 14 }); });
+  return HV(`<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e63946"/></marker></defs>` + s);
+}
+function hDots(rows, cols, col = "#3a86ff") { const r = Math.min(9, 130 / Math.max(rows, cols) / 2.4), gap = r * 2.5; let s = ""; for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) s += `<circle cx="${160 - (cols - 1) * gap / 2 + j * gap}" cy="${90 - (rows - 1) * gap / 2 + i * gap}" r="${r}" fill="${col}"/>`; return HV(s + hT(160, 174, `${rows} rows of ${cols}`, { s: 12 })); }
+function hAreaModel(a, b) {
+  const split = n => n >= 10 && n % 10 ? [n - n % 10, n % 10] : [n];
+  const A = split(a), B = split(b), tot = 240, W = tot, H = 130, x0 = 50, y0 = 25;
+  let s = "", x = x0;
+  B.forEach((bv, j) => { const w = W * bv / b; let y = y0; A.forEach((av, i) => { const h = H * av / a; s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${["#bde0fe", "#ffd6a5", "#caffbf", "#ffc6ff"][i * 2 + j]}" stroke="#1a1240"/>` + hT(x + w / 2, y + h / 2 + 5, av * bv, { b: 1, s: 12 }); y += h; }); s += hT(x + w / 2, y0 - 6, bv, { s: 12, b: 1 }); x += w; });
+  let y = y0; A.forEach(av => { const h = H * av / a; s += hT(x0 - 8, y + h / 2 + 4, av, { s: 12, b: 1, a: "end" }); y += h; });
+  return HV(s);
+}
+function hRect(w, h, mode) {
+  const sc = Math.min(200 / w, 120 / h), W = w * sc, H = h * sc, x = 160 - W / 2, y = 85 - H / 2;
+  let s = `<rect x="${x}" y="${y}" width="${W}" height="${H}" fill="${mode === "area" ? "#caffbf" : "#fff"}" stroke="${mode === "perim" ? "#e63946" : "#1a1240"}" stroke-width="${mode === "perim" ? 4 : 2}"/>`;
+  if (mode === "area" && w <= 15 && h <= 15) for (let i = 1; i < w; i++) s += `<line x1="${x + i * sc}" y1="${y}" x2="${x + i * sc}" y2="${y + H}" stroke="#2a9d8f" stroke-width=".7"/>`;
+  if (mode === "area" && w <= 15 && h <= 15) for (let i = 1; i < h; i++) s += `<line x1="${x}" y1="${y + i * sc}" x2="${x + W}" y2="${y + i * sc}" stroke="#2a9d8f" stroke-width=".7"/>`;
+  return HV(s + hT(160, y - 6, w, { b: 1 }) + hT(x - 8, 89, h, { b: 1, a: "end" }));
+}
+function hPie(a, b) { let s = ""; for (let i = 0; i < b; i++) { const a0 = i / b * 2 * Math.PI - Math.PI / 2, a1 = (i + 1) / b * 2 * Math.PI - Math.PI / 2; s += `<path d="M160,88 L${160 + 70 * Math.cos(a0)},${88 + 70 * Math.sin(a0)} A70,70 0 ${b === 1 ? 1 : 0} 1 ${160 + 70 * Math.cos(a1)},${88 + 70 * Math.sin(a1)} Z" fill="${i < a ? "#ff9f1c" : "#fff"}" stroke="#1a1240" stroke-width="2"/>`; } return HV(s + hT(160, 176, `${a} of ${b} equal parts`, { s: 12 })); }
+function hGrid100(p) { let s = ""; for (let i = 0; i < 100; i++) s += `<rect x="${110 + (i % 10) * 10}" y="${30 + Math.floor(i / 10) * 10}" width="9" height="9" fill="${i < p ? "#8338ec" : "#e9e3ff"}"/>`; return HV(s + hT(160, 150, `${p} out of 100 squares = ${p}%`, { s: 12 })); }
+function hBars(items) { const mx = Math.max(...items.map(i => i[1]), 1); let s = ""; items.forEach(([lab, v, col], i) => { const w = Math.max(4, v / mx * 220); s += `<rect x="70" y="${30 + i * 60}" width="${w}" height="38" rx="6" fill="${col}"/>` + hT(62, 54 + i * 60, lab, { a: "end", b: 1 }) + hT(76 + w, 54 + i * 60, typeof v === "number" ? (Number.isInteger(v) ? fmt(v) : String(Math.round(v * 1000) / 1000)) : v, { a: "start", b: 1 }); }); return HV(s); }
+function hClock(h, m) { const ha = ((h % 12) + m / 60) / 12 * 2 * Math.PI, ma = m / 60 * 2 * Math.PI; let s = `<circle cx="160" cy="88" r="75" fill="#fff" stroke="#1a1240" stroke-width="4"/>`; for (let i = 1; i <= 12; i++) { const a = i / 12 * 2 * Math.PI; s += hT(160 + 60 * Math.sin(a), 93 - 60 * Math.cos(a), i, { b: 1, s: 14 }); } s += `<line x1="160" y1="88" x2="${160 + 38 * Math.sin(ha)}" y2="${88 - 38 * Math.cos(ha)}" stroke="#1a1240" stroke-width="6" stroke-linecap="round"/><line x1="160" y1="88" x2="${160 + 58 * Math.sin(ma)}" y2="${88 - 58 * Math.cos(ma)}" stroke="#e63946" stroke-width="4" stroke-linecap="round"/><circle cx="160" cy="88" r="5"/>`; return HV(s); }
+function hPoly(n, name) { let p = []; for (let i = 0; i < n; i++) { const a = i / n * 2 * Math.PI - Math.PI / 2; p.push([160 + 65 * Math.cos(a), 88 + 65 * Math.sin(a)]); } if (name === "rectangle") p = [[90, 45], [230, 45], [230, 130], [90, 130]]; return HV(`<polygon points="${p.map(q => q.join(",")).join(" ")}" fill="#ffd6a5" stroke="#1a1240" stroke-width="3"/>${p.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="#e63946"/>`).join("")}` + hT(160, 175, `${n} sides · ${n} corners`, { s: 12, b: 1 })); }
+function hFactors(n) { const f = []; for (let i = 1; i * i <= n; i++) if (n % i === 0) f.push([i, n / i]); const list = [...new Set(f.flat())].sort((a, b) => a - b), X = i => 20 + i * (280 / Math.max(1, list.length - 1)); let s = ""; f.forEach(([a, b], k) => { const xa = X(list.indexOf(a)), xb = X(list.indexOf(b)); s += a === b ? "" : `<path d="M${xa},110 Q${(xa + xb) / 2},${110 - (xb - xa) * .6} ${xb},110" fill="none" stroke="${["#e63946", "#ff9f1c", "#2a9d8f", "#3a86ff", "#8338ec"][k % 5]}" stroke-width="3"/>`; }); list.forEach((v, i) => s += `<circle cx="${X(i)}" cy="122" r="12" fill="#fff" stroke="#1a1240"/>` + hT(X(i), 126, v, { s: list.length > 12 ? 8 : 11, b: 1 })); return HV(s + hT(160, 170, "factor rainbow: each arc joins a pair that multiplies to " + n, { s: 11 })); }
+function hBohr(z, sym) { const shells = []; let left = z; [2, 8, 8, 2].forEach(c => { if (left > 0) { shells.push(Math.min(c, left)); left -= c; } }); let s = `<circle cx="160" cy="88" r="16" fill="#ff9f1c"/>` + hT(160, 93, sym, { b: 1, s: 13 }); shells.forEach((n, i) => { const r = 32 + i * 18; s += `<circle cx="160" cy="88" r="${r}" fill="none" stroke="#8d99ae"/>`; for (let k = 0; k < n; k++) { const a = k / n * 2 * Math.PI; s += `<circle cx="${160 + r * Math.cos(a)}" cy="${88 + r * Math.sin(a)}" r="4.5" fill="#3a86ff"/>`; } }); return HV(s + hT(160, 176, `electrons by shell: ${shells.join(", ")}`, { s: 11 })); }
+function hSolar(idx) { let s = `<circle cx="16" cy="90" r="30" fill="#ffb703"/>`; HIPPO_PLANETS.forEach(([n, , , col, r], i) => { const x = 58 + i * 34; s += `<circle cx="${x}" cy="90" r="${r / 1.6 + 2}" fill="${col}" ${i === idx ? `stroke="#e63946" stroke-width="3"` : ""}/>`; if (i === 5) s += `<ellipse cx="${x}" cy="90" rx="${r / 1.6 + 8}" ry="4" fill="none" stroke="#c9b37a" stroke-width="2"/>`; if (i === idx) s += hT(x, 135, n, { b: 1, c: "#e63946" }) + `<path d="M${x},128 L${x},${90 + r / 1.6 + 6}" stroke="#e63946" stroke-width="2"/>`; }); return HV(`<rect width="320" height="180" fill="#0b1033"/>` + s.replace(/fill="#1a1240"/g, 'fill="#fff"'), 180); }
+const hBig = (emoji, bg = "#e9f5ff", label = "") => `<div class="hip-pic" style="background:${bg}"><span>${emoji}</span>${label ? `<small>${esc(label)}</small>` : ""}</div>`;
+const flagOf = cc => cc.toUpperCase().replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt(0)));
+// ---- the questions Hippo knows (counted so the total is honest) ----
+const HIPPO_UNITS = [["feet", "inches", 12, "📏"], ["yards", "feet", 3, "📏"], ["meters", "centimeters", 100, "📏"], ["kilometers", "meters", 1000, "🛣️"], ["kilograms", "grams", 1000, "⚖️"], ["pounds", "ounces", 16, "⚖️"], ["hours", "minutes", 60, "⏰"], ["minutes", "seconds", 60, "⏱️"], ["days", "hours", 24, "📅"], ["weeks", "days", 7, "📅"], ["years", "months", 12, "📅"], ["dollars", "cents", 100, "💵"], ["gallons", "quarts", 4, "🥛"], ["quarts", "pints", 2, "🥛"], ["pints", "cups", 2, "🥛"], ["miles", "feet", 5280, "🛣️"]];
+const UNIT_ALIASES = { foot: "feet", ft: "feet", inch: "inches", in: "inches", yard: "yards", yd: "yards", meter: "meters", m: "meters", metre: "meters", centimeter: "centimeters", cm: "centimeters", kilometer: "kilometers", km: "kilometers", kilogram: "kilograms", kg: "kilograms", gram: "grams", g: "grams", pound: "pounds", lb: "pounds", lbs: "pounds", ounce: "ounces", oz: "ounces", hour: "hours", hr: "hours", minute: "minutes", min: "minutes", second: "seconds", sec: "seconds", day: "days", week: "weeks", year: "years", month: "months", dollar: "dollars", cent: "cents", gallon: "gallons", quart: "quarts", pint: "pints", cup: "cups", mile: "miles", mi: "miles" };
+const hOne = u => ({ feet: "foot", inches: "inch" }[u] || u.replace(/s$/, ""));
+const hUnit = u => UNIT_ALIASES[u] || UNIT_ALIASES[u.replace(/s$/, "")] || u;
+function hippoBank() {
+  const b = [];
+  const add = (topic, icon, q, a, why) => b.push({ topic, icon, q, a, why, hay: (q + " " + a).toLowerCase() });
+  Object.entries(HIPPO_ANIMALS).forEach(([n]) => ["What does a NAME eat?", "Where does a NAME live?", "What kind of animal is a NAME?", "Tell me a fun fact about the NAME"].forEach(t => add("Animals", "🐾", t.replace("NAME", n), n, "")));
+  HIPPO_PLANETS.forEach(([n]) => ["Tell me about NAME", "How many moons does NAME have?", "What number planet is NAME?"].forEach(t => add("Space", "🪐", t.replace("NAME", n), n, "")));
+  HIPPO_COUNTRIES.forEach(([n]) => ["What is the capital of NAME?", "What continent is NAME in?", "What does the flag of NAME look like?"].forEach(t => add("Countries", "🌍", t.replace("NAME", n), n, "")));
+  HIPPO_STATES.forEach(([n]) => add("U.S. States", "🗺️", `What is the capital of ${n}?`, n, ""));
+  HIPPO_ELEMENTS.forEach(([n]) => ["What is the symbol for NAME?", "What is the atomic number of NAME?", "Show me a NAME atom"].forEach(t => add("Science", "⚛️", t.replace("NAME", n), n, "")));
+  VOCAB.forEach(v => add("Social Studies", "🏺", `What does ${v.t} mean?`, v.d, v.why));
+  const bank = (list, topic, icon) => list.forEach(q => add(topic, icon, q.q, String(q.a), q.why || ""));
+  bank(QUIZ, "Social Studies", "🏺"); bank(SCIENCE, "Science", "🔬"); bank(HEALTH, "Health", "❤️"); bank(ELA, "Reading & Writing", "✏️"); bank(ART, "Art", "🎨");
+  FOCUS.forEach(f => add("Social Studies", "❓", f.q, [].concat(f.a).join(" "), ""));
+  Object.keys(HIPPO_SHAPES).forEach(n => add("Shapes", "🔷", `How many sides does a ${n} have?`, n, ""));
+  return b;
+}
+const HIPPO_FAMILIES = [
+  ["Adding", "➕", 201 * 201, () => { const a = rnd(0, 200), b = rnd(0, 200); return `What is ${a} + ${b}?`; }],
+  ["Subtracting", "➖", 201 * 202 / 2, () => { const a = rnd(0, 200), b = rnd(0, a); return `What is ${a} - ${b}?`; }],
+  ["Multiplying", "✖️", 101 * 101, () => `What is ${rnd(0, 12)} × ${rnd(0, 12)}?`],
+  ["Dividing", "➗", 12 * 101, () => { const d = rnd(1, 12), q = rnd(0, 12); return `What is ${d * q} ÷ ${d}?`; }],
+  ["Comparing numbers", "⚖️", 101 * 100, () => `Which is bigger, ${rnd(0, 100)} or ${rnd(0, 100)}?`],
+  ["Counting (what comes after/before)", "🔢", 20002, () => `What comes ${Math.random() < .5 ? "after" : "before"} ${rnd(1, 10000)}?`],
+  ["Area and perimeter", "📐", 5000, () => `What is the ${Math.random() < .5 ? "area" : "perimeter"} of a ${rnd(1, 15)} by ${rnd(1, 15)} rectangle?`],
+  ["Squares, cubes and square roots", "🟩", 220, () => Math.random() < .5 ? `What is ${rnd(1, 20)} squared?` : `What is the square root of ${rnd(1, 15) ** 2}?`],
+  ["Prime, even and odd", "🔍", 2000, () => Math.random() < .5 ? `Is ${rnd(2, 100)} a prime number?` : `Is ${rnd(1, 1000)} even or odd?`],
+  ["Percents", "💯", 1600, () => `What is ${[10, 20, 25, 50, 75][rnd(0, 4)]}% of ${rnd(1, 20) * 4}?`],
+  ["Fractions", "🍕", 900, () => { const d = rnd(2, 10), n = rnd(1, d - 1); return `What is ${n}/${d} of ${d * rnd(1, 10)}?`; }],
+  ["Rounding", "🎯", 2000, () => `Round ${rnd(1, 999)} to the nearest ${Math.random() < .5 ? "ten" : "hundred"}`],
+  ["Telling time", "🕒", 720, () => `Show ${rnd(1, 12)}:${String(rnd(0, 11) * 5).padStart(2, "0")} on a clock`],
+  ["Measurement", "📏", HIPPO_UNITS.length * 100, () => { const u = HIPPO_UNITS[rnd(0, HIPPO_UNITS.length - 1)]; return `How many ${u[1]} are in ${rnd(1, 12)} ${u[0]}?`; }]
+];
+const hippoCount = () => HIPPO_FAMILIES.reduce((t, f) => t + f[2], 0) + (HIPPO_BANK ||= hippoBank()).length;
+let HIPPO_BANK = null;
+// ---- answering ----
+const hFmt = n => Number.isInteger(n) ? fmt(n) : String(Math.round(n * 1000) / 1000);
+function hippoAnswer(qRaw) {
+  const q = qRaw.toLowerCase().replace(/[?!]/g, "").replace(/,(?=\d{3})/g, "").trim();
+  let m;
+  const R = (topic, icon, text, why, pic) => ({ topic, icon, text, why, pic });
+  // fractions of a number
+  if ((m = q.match(/(\d+)\s*\/\s*(\d+)\s+of\s+(\d+(?:\.\d+)?)/))) { const [a, b, n] = [+m[1], +m[2], +m[3]]; if (b) { const v = n / b * a; return R("Fractions", "🍕", `${a}/${b} of ${hFmt(n)} is ${hFmt(v)}.`, `Split ${hFmt(n)} into ${b} equal parts: each part is ${hFmt(n / b)}. Take ${a} of them: ${a} × ${hFmt(n / b)} = ${hFmt(v)}.`, b <= 16 ? hPie(Math.min(a, b), b) : hBars([["part", n / b, "#ff9f1c"], ["answer", v, "#3a86ff"]])); } }
+  if ((m = q.match(/(\d+(?:\.\d+)?)\s*(?:%|percent)\s*of\s*(\d+(?:\.\d+)?)/))) { const [p, n] = [+m[1], +m[2]], v = p / 100 * n; return R("Percents", "💯", `${hFmt(p)}% of ${hFmt(n)} is ${hFmt(v)}.`, `Percent means "out of 100." ${hFmt(p)}% = ${hFmt(p)}/100, and ${hFmt(p)}/100 × ${hFmt(n)} = ${hFmt(v)}.`, p <= 100 && Number.isInteger(p) ? hGrid100(p) : hBars([["whole", n, "#cdb4db"], ["answer", v, "#8338ec"]])); }
+  if ((m = q.match(/(area|perimeter)[^\d]*(\d+(?:\.\d+)?)\s*(?:by|x|×|\*)\s*(\d+(?:\.\d+)?)/))) { const [w, h] = [+m[2], +m[3]]; return m[1] === "area" ? R("Area and perimeter", "📐", `The area is ${hFmt(w * h)} square units.`, `Area = length × width = ${hFmt(w)} × ${hFmt(h)} = ${hFmt(w * h)}. It's how many unit squares fit inside.`, hRect(w, h, "area")) : R("Area and perimeter", "📐", `The perimeter is ${hFmt(2 * (w + h))} units.`, `Perimeter is the distance around: ${hFmt(w)} + ${hFmt(h)} + ${hFmt(w)} + ${hFmt(h)} = ${hFmt(2 * (w + h))}.`, hRect(w, h, "perim")); }
+  if ((m = q.match(/(\d{1,2}):(\d{2})/))) { const [h, mi] = [+m[1], +m[2]]; if (h >= 0 && h <= 24 && mi < 60) { const h12 = h % 12 || 12; return R("Telling time", "🕒", `Here's ${h12}:${String(mi).padStart(2, "0")} on a clock.`, `The short hand points ${mi ? "between " + h12 + " and " + (h12 % 12 + 1) : "at " + h12} for the hour. The long red hand points at ${mi / 5 === Math.floor(mi / 5) ? (mi / 5 || 12) : "between the numbers"} for ${mi} minutes.`, hClock(h, mi)); } }
+  if ((m = q.match(/square root of (\d+(?:\.\d+)?)|√\s*(\d+(?:\.\d+)?)/))) { const n = +(m[1] || m[2]), r = Math.sqrt(n); return R("Squares, cubes and square roots", "🟩", `The square root of ${hFmt(n)} is ${hFmt(r)}.`, `${hFmt(r)} × ${hFmt(r)} = ${hFmt(n)}, so a square with area ${hFmt(n)} has sides of ${hFmt(r)}.`, Number.isInteger(r) && r <= 15 ? hRect(r, r, "area") : hRect(1, 1, "area")); }
+  if ((m = q.match(/(\d+(?:\.\d+)?)\s*(squared|\^\s*2|cubed|\^\s*3)/))) { const n = +m[1], cube = /cube|3/.test(m[2]), v = cube ? n ** 3 : n ** 2; return R("Squares, cubes and square roots", "🟩", `${hFmt(n)} ${cube ? "cubed" : "squared"} is ${hFmt(v)}.`, cube ? `${hFmt(n)} × ${hFmt(n)} × ${hFmt(n)} = ${hFmt(v)}.` : `${hFmt(n)} × ${hFmt(n)} = ${hFmt(v)}. That's a square ${hFmt(n)} wide and ${hFmt(n)} tall.`, n <= 15 && Number.isInteger(n) ? hRect(n, n, "area") : hBars([["n", n, "#ffd6a5"], ["answer", v, "#2a9d8f"]])); }
+  if ((m = q.match(/is (\d+) (?:a )?prime/))) { const n = +m[1]; let p = n > 1; for (let i = 2; i * i <= n; i++) if (n % i === 0) { p = false; break; } return R("Prime, even and odd", "🔍", `${fmt(n)} is ${p ? "" : "not "}a prime number.`, p ? `A prime number has exactly two factors: 1 and itself. ${fmt(n)} can only be made by 1 × ${fmt(n)}.` : n < 2 ? "Prime numbers start at 2." : `${fmt(n)} has more than two factors, so it's called composite.`, n <= 1000 && n > 0 ? hFactors(n) : hBig("🔍")); }
+  if ((m = q.match(/is (\d+) (?:an? )?(even|odd)/)) || (m = q.match(/(\d+) (even|odd)/))) { const n = +m[1], even = n % 2 === 0; return R("Prime, even and odd", "🔍", `${fmt(n)} is ${even ? "even" : "odd"}.`, `A number is even if it ends in 0, 2, 4, 6 or 8. ${fmt(n)} ends in ${n % 10}, so it's ${even ? "even" : "odd"}.`, n <= 40 ? hDots(Math.ceil(n / 2), 2, even ? "#2a9d8f" : "#e63946") : hBig(String(n % 10), even ? "#caffbf" : "#ffd6d6", `ends in ${n % 10}`)); }
+  if ((m = q.match(/round (\d+(?:\.\d+)?) to the nearest (ten|hundred|thousand|whole)/))) { const n = +m[1], u = { ten: 10, hundred: 100, thousand: 1000, whole: 1 }[m[2]], lo = Math.floor(n / u) * u, v = Math.round(n / u) * u; return R("Rounding", "🎯", `${hFmt(n)} rounded to the nearest ${m[2]} is ${hFmt(v)}.`, `${hFmt(n)} is between ${hFmt(lo)} and ${hFmt(lo + u)}. It's closer to ${hFmt(v)} (exactly halfway rounds up).`, hNumberLine(lo, lo + u, [[n, "#8338ec"], [v, "#e63946", "→ " + hFmt(v)]])); }
+  if ((m = q.match(/(?:bigger|larger|greater|smaller|less|more)[^\d-]*(-?\d+(?:\.\d+)?)[^\d-]+(-?\d+(?:\.\d+)?)/)) || (m = q.match(/(-?\d+(?:\.\d+)?)\s+or\s+(-?\d+(?:\.\d+)?)/))) { const [a, b] = [+m[1], +m[2]], small = /smaller|less/.test(q), pick = small ? Math.min(a, b) : Math.max(a, b); return R("Comparing numbers", "⚖️", a === b ? `They're the same: ${hFmt(a)} = ${hFmt(b)}.` : `${hFmt(pick)} is ${small ? "smaller" : "bigger"}.`, a === b ? "Equal numbers are the same size." : `${hFmt(Math.max(a, b))} > ${hFmt(Math.min(a, b))}. The longer bar is the bigger number.`, hBars([[hFmt(a), Math.abs(a), a === pick ? "#2a9d8f" : "#cdd5e0"], [hFmt(b), Math.abs(b), b === pick ? "#2a9d8f" : "#cdd5e0"]])); }
+  if ((m = q.match(/(?:comes|is)?\s*(after|before)\s+(-?\d+)/))) { const n = +m[2], v = m[1] === "after" ? n + 1 : n - 1; return R("Counting (what comes after/before)", "🔢", `${fmt(v)} comes ${m[1]} ${fmt(n)}.`, m[1] === "after" ? `Count up by 1: ${fmt(n)}, ${fmt(v)}.` : `Count down by 1: ${fmt(n)}, ${fmt(v)}.`, hNumberLine(n - 2, n + 2, [[n, "#8d99ae"], [v, "#e63946"]])); }
+  // unit conversions: "how many inches in 5 feet", "5 feet in inches"
+  if ((m = q.match(/how many (\w+) (?:are )?in (\d+(?:\.\d+)?)\s*(\w+)/)) || (m = q.match(/(\d+(?:\.\d+)?)\s*(\w+) (?:in|to|into) (\w+)/))) {
+    let [n, from, to] = /how many/.test(q) ? [+m[2], hUnit(m[3]), hUnit(m[1])] : [+m[1], hUnit(m[2]), hUnit(m[3])];
+    const u = HIPPO_UNITS.find(x => x[0] === from && x[1] === to), back = HIPPO_UNITS.find(x => x[0] === to && x[1] === from);
+    if (u) return R("Measurement", "📏", `${hFmt(n)} ${from} = ${hFmt(n * u[2])} ${to}.`, `There are ${u[2]} ${to} in 1 ${hOne(from)}. So ${hFmt(n)} × ${u[2]} = ${hFmt(n * u[2])}.`, n <= 10 && Number.isInteger(n) ? hBars([[`1 ${hOne(from)}`, u[2], "#bde0fe"], [`${n} ${from}`, n * u[2], "#3a86ff"]]) : hBig(u[3]));
+    if (back) return R("Measurement", "📏", `${hFmt(n)} ${from} = ${hFmt(n / back[2])} ${to}.`, `There are ${back[2]} ${from} in 1 ${hOne(to)}. So ${hFmt(n)} ÷ ${back[2]} = ${hFmt(n / back[2])}.`, hBig(back[3]));
+  }
+  // arithmetic
+  const ops = q.replace(/multiplied by|times/g, "*").replace(/divided by|÷/g, "/").replace(/plus/g, "+").replace(/minus|take away/g, "-").replace(/[×x]/g, "*");
+  if ((m = ops.match(/(-?\d+(?:\.\d+)?)\s*([+\-*/])\s*(-?\d+(?:\.\d+)?)/))) {
+    const [a, op, b] = [+m[1], m[2], +m[3]];
+    if (op === "+") return R("Adding", "➕", `${hFmt(a)} + ${hFmt(b)} = ${hFmt(a + b)}`, `Start at ${hFmt(a)} and jump forward ${hFmt(b)}.`, hNumberLine(Math.min(0, a), Math.max(a, a + b), [[a, "#8d99ae"], [a + b, "#2a9d8f"]], [[a, a + b, "+" + hFmt(b), "#e63946"]]));
+    if (op === "-") return R("Subtracting", "➖", `${hFmt(a)} − ${hFmt(b)} = ${hFmt(a - b)}`, `Start at ${hFmt(a)} and jump back ${hFmt(b)}.`, hNumberLine(Math.min(0, a - b), Math.max(a, a - b), [[a, "#8d99ae"], [a - b, "#2a9d8f"]], [[a, a - b, "−" + hFmt(b), "#e63946"]]));
+    if (op === "*") return R("Multiplying", "✖️", `${hFmt(a)} × ${hFmt(b)} = ${hFmt(a * b)}`, a > 0 && b > 0 && a <= 12 && b <= 12 ? `That's ${hFmt(a)} rows of ${hFmt(b)} dots: ${hFmt(a * b)} dots in all.` : `Break it into parts and add them up (see the area model picture).`, a > 0 && b > 0 && a <= 12 && b <= 12 && Number.isInteger(a) && Number.isInteger(b) ? hDots(a, b) : a > 0 && b > 0 && Number.isInteger(a) && Number.isInteger(b) && a < 1000 && b < 1000 ? hAreaModel(a, b) : hBig("✖️"));
+    if (op === "/") { if (b === 0) return R("Dividing", "➗", "You can't divide by 0!", "There's no way to split something into 0 groups.", hBig("🚫")); const v = a / b, r = Number.isInteger(a) && Number.isInteger(b) ? a % b : 0; return R("Dividing", "➗", Number.isInteger(v) ? `${hFmt(a)} ÷ ${hFmt(b)} = ${hFmt(v)}` : `${hFmt(a)} ÷ ${hFmt(b)} = ${hFmt(v)}${r ? ` (or ${Math.floor(a / b)} remainder ${r})` : ""}`, `Split ${hFmt(a)} into ${hFmt(b)} equal groups.`, Number.isInteger(v) && b <= 12 && v <= 12 && v > 0 ? hDots(b, v, "#ff9f1c") : hBars([[hFmt(a), a, "#cdd5e0"], ["each", v, "#ff9f1c"]])); }
+  }
+  // shapes
+  for (const [n, k] of Object.entries(HIPPO_SHAPES)) if (new RegExp(`\\b${n}s?\\b`).test(q)) return R("Shapes", "🔷", `A ${n} has ${k} sides and ${k} corners.`, k >= 3 ? `The angles inside a ${n} add up to ${(k - 2) * 180}°.` : "", hPoly(k, n));
+  // facts
+  for (const [n, row] of Object.entries(HIPPO_ANIMALS)) if (new RegExp(`\\b${n.toLowerCase()}s?\\b`).test(q)) {
+    const [kind, eats, home, fun] = row.split("|"), a = RODEO_ANIMALS.find(x => x.name === n), L = a ? RODEO_LANDS[a.land] : null;
+    const pic = `<div class="hip-pic" style="background:${L ? L.bg : "#e9f5ff"}"><span>${a ? a.emoji : "🐾"}</span><small>${esc(n)}</small></div>`;
+    const text = /eat|food/.test(q) ? `A ${n.toLowerCase()} eats ${eats}.` : /live|where|habitat|home/.test(q) ? `${n}s live in ${home}.` : /kind|type|what is a|mammal|reptile|bird|fish/.test(q) ? `A ${n.toLowerCase()} is a ${kind}.` : fun;
+    return R("Animals", "🐾", text, `${n}: a ${kind} · eats ${eats} · lives in ${home}. ${/fun|fact/.test(q) ? "" : "Fun fact: " + fun}`, pic);
+  }
+  for (const [i, [n, desc, moons]] of HIPPO_PLANETS.entries()) if (q.includes(n.toLowerCase())) return R("Space", "🪐", /moon/.test(q) ? `${n} has ${moons} moon${moons === 1 ? "" : "s"}.` : /number|order|which planet/.test(q) ? `${n} is planet number ${i + 1} from the Sun.` : `${n} is ${desc}.`, `${n} is planet #${i + 1} from the Sun and has ${moons} known moon${moons === 1 ? "" : "s"}.`, hSolar(i));
+  for (const [n, cc, cap, cont] of HIPPO_COUNTRIES) if (q.includes(n.toLowerCase())) return R("Countries", "🌍", /continent/.test(q) ? `${n} is in ${cont}.` : /flag/.test(q) ? `Here's the flag of ${n}!` : `The capital of ${n} is ${cap}.`, `${n} · capital: ${cap} · continent: ${cont}.`, hBig(flagOf(cc), "#eef3ff", n));
+  for (const [n, cap] of HIPPO_STATES) if (new RegExp(`\\b${n.toLowerCase()}\\b`).test(q)) return R("U.S. States", "🗺️", `The capital of ${n} is ${cap}.`, `${cap} is where ${n}'s state government meets.`, hBig("🏛️", "#fff3d6", `${cap}, ${n}`));
+  for (const [n, sym, z] of HIPPO_ELEMENTS) if (new RegExp(`\\b${n.toLowerCase()}\\b`).test(q)) return R("Science", "⚛️", /symbol/.test(q) ? `The symbol for ${n} is ${sym}.` : /number/.test(q) ? `${n}'s atomic number is ${z}.` : `${n} (${sym}) is element number ${z}.`, `A ${n.toLowerCase()} atom has ${z} proton${z > 1 ? "s" : ""} and ${z} electron${z > 1 ? "s" : ""}.`, hBohr(z, sym));
+  // study cards: best keyword match
+  HIPPO_BANK ||= hippoBank();
+  const words = q.replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(w => w.length > 2 && !/^(what|does|the|and|how|why|who|was|are|is|did|tell|about|mean|means|you|for|with)$/.test(w));
+  if (words.length) {
+    let best = null, bs = 0;
+    HIPPO_BANK.filter(e => !["Animals", "Space", "Countries", "U.S. States", "Shapes"].includes(e.topic) && !(e.topic === "Science" && e.icon === "⚛️")).forEach(e => { const s = words.reduce((t, w) => t + (e.q.toLowerCase().includes(w) ? 2 : e.hay.includes(w) ? 1 : 0), 0); if (s > bs) { bs = s; best = e; } });
+    if (best && bs >= Math.min(2, words.length)) return R(best.topic, best.icon, best.a.replace(/\.?$/, "."), best.why || `From the question: "${best.q}"`, hBig(best.icon, "#f1ecff", best.topic));
+  }
+  return null;
+}
+function startHippo(initial = "") {
+  stopSlope(); stopArchers(); stopMini(); closeShop();
+  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+  keyHandler = null;
+  HIPPO_BANK ||= hippoBank();
+  const total = hippoCount();
+  const topics = [...HIPPO_FAMILIES.map(f => [f[0], f[1], f[2]]), ...Object.entries(HIPPO_BANK.reduce((t, e) => { t[e.topic] = t[e.topic] || [e.icon, 0]; t[e.topic][1]++; return t; }, {})).map(([n, [i, c]]) => [n, i, c])];
+  const tries = ["What is 7 × 8?", "What is 3/4 of 20?", "What does a cheetah eat?", "How many moons does Saturn have?", "What is the capital of Japan?", "Show 3:45 on a clock", "Is 97 a prime number?", "How many inches are in 5 feet?", "What is the area of a 6 by 4 rectangle?", "How many sides does a hexagon have?", "Show me a carbon atom", "What is a surplus?"];
+  $app.innerHTML = `
+    <div class="panel hip">
+      <div class="topline"><span class="label">🦛 Ask Hippo</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
+      <div class="hip-head"><span class="hip-face">🦛</span><div><h2>Ask Hippo anything!</h2><p class="soft">Hippo knows <b>${fmt(total)}</b> questions and answers about math, animals, space, countries, science and more. Every answer comes with a picture or diagram.</p></div></div>
+      <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">Ask 🦛</button></form>
+      <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button></div>
+      <div id="hip-out"></div>
+      <h3>Try asking</h3><div class="hip-tries">${tries.map(t => `<button class="chip hip-try" type="button">${esc(t)}</button>`).join("")}</div>
+      <details class="hip-topics"><summary>📚 Everything Hippo knows (${fmt(total)} answers)</summary><div>${topics.map(([n, i, c]) => `<span><b>${i} ${esc(n)}</b> ${fmt(c)}</span>`).join("")}</div></details>
+    </div>`;
+  const box = document.getElementById("hip-q");
+  const ask = qq => {
+    const q = qq.trim(); if (!q) return;
+    box.value = q;
+    const ans = hippoAnswer(q), out = document.getElementById("hip-out");
+    if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>🦛❓</span></div><div><b>Hmm, Hippo doesn't know that one yet.</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
+    out.innerHTML = `<div class="hip-card"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? `<p>${esc(ans.why)}</p>` : ""}</div></div>`;
+    tone([523, 784], .06, "triangle", .06);
+  };
+  document.getElementById("hip-form").addEventListener("submit", e => { e.preventDefault(); ask(box.value); });
+  document.getElementById("hip-rand").addEventListener("click", () => {
+    const useBank = Math.random() < .4;
+    if (useBank) { const e = HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)]; ask(e.q); }
+    else ask(HIPPO_FAMILIES[rnd(0, HIPPO_FAMILIES.length - 1)][3]());
+  });
+  $app.querySelectorAll(".hip-try").forEach(b => b.addEventListener("click", () => ask(b.textContent)));
+  document.getElementById("hip-home").addEventListener("click", showHome);
+  box.focus();
+  if (initial) ask(initial);
+}
 
 function startStories() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
