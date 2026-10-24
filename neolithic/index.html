@@ -387,6 +387,12 @@
   .hip-topic { color: var(--gold); font-weight: 800; text-transform: uppercase; letter-spacing: .05em; font-size: .75rem; }
   .hip-pic { border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; color: #1a1240; }
   .hip-pic span { font-size: 5rem; line-height: 1.1; } .hip-pic small { font-weight: 800; font-size: .95rem; }
+  .hip-party { position: relative; height: 170px; border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, #ff4d6d, #ffd60a, #42e392, #4cc9f0, #c77dff); }
+  .hip-party i { position: absolute; top: -30px; font-size: 1.6rem; font-style: normal; animation: hipFall 2.2s linear infinite; }
+  .hip-party span { position: absolute; left: 50%; top: 50%; font-size: 4.5rem; transform: translate(-50%, -50%); animation: hipDance .5s ease-in-out 8 alternate; }
+  @keyframes hipFall { to { transform: translateY(220px) rotate(360deg); } }
+  @keyframes hipDance { from { transform: translate(-50%, -50%) rotate(-15deg) scale(1); } to { transform: translate(-50%, -62%) rotate(15deg) scale(1.15); } }
+  .hip-reveal { margin: 6px 0 10px; } .hip-reveal summary { cursor: pointer; font-weight: 800; color: var(--gold); } .hip-reveal p { font-size: 1.15rem; font-weight: 700; }
   .hip-tries { display: flex; flex-wrap: wrap; gap: 6px; } .hip-try { font-size: .85rem; padding: 6px 12px; }
   .hip-topics { margin-top: 12px; } .hip-topics summary { cursor: pointer; font-weight: 800; }
   .hip-topics > div { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; margin-top: 8px; }
@@ -6088,6 +6094,8 @@ const HIPPO_EXTINCT = [
   ["Western Black Rhino", "🦏", "black rhino", 1e6, 15, "declared extinct in 2011", "central Africa", "leaves and twigs", "about 3.5 meters (11 feet) long", "poachers hunted them for their horns", "Other kinds of black rhinos still live in Africa today.", "rhino"],
   ["Pyrenean Ibex", "🐐", "bucardo", 1e6, 26, "until 2000", "the Pyrenees mountains of Spain and France", "grass and plants", "about the size of a large goat", "hunting", "In 2003 scientists cloned one, the first extinct animal ever brought back, but it only lived a few minutes.", "wild goat"]
 ];
+// 😂 Hippo's jokes and riddles
+const HIPPO_JOKES = [["Why did the math book look sad?", "Because it had too many problems."], ["What do you call a bear with no teeth?", "A gummy bear!"], ["Why can't a bicycle stand up by itself?", "Because it's two-tired."], ["What has keys but can't open locks?", "A piano."], ["Why did the cookie go to the doctor?", "Because it felt crummy."], ["What do you call a sleeping dinosaur?", "A dino-snore!"], ["Why are fish so smart?", "Because they live in schools."], ["What did the ocean say to the beach?", "Nothing, it just waved."], ["Why did the student eat his homework?", "Because the teacher said it was a piece of cake."], ["What do you call a fish with no eyes?", "A fsh."], ["How does the moon cut its hair?", "Eclipse it."], ["What did one wall say to the other?", "I'll meet you at the corner."], ["Why did the scarecrow win an award?", "Because he was outstanding in his field."], ["What is a hippo's favorite game?", "Hippo-potamus Hide-and-Seek... it never wins."], ["Why don't skeletons fight each other?", "They don't have the guts."], ["What gets wetter the more it dries?", "A towel."], ["What has hands but can't clap?", "A clock."], ["What can you catch but not throw?", "A cold."], ["What has a neck but no head?", "A bottle."], ["What runs but never walks?", "A river."], ["Why was six afraid of seven?", "Because seven eight nine."], ["What do you call a pig that does karate?", "A pork chop."], ["What do you call a dog magician?", "A labracadabrador."], ["Why did the golfer bring two pairs of pants?", "In case he got a hole in one."], ["What did the left eye say to the right eye?", "Between you and me, something smells."], ["What kind of tree fits in your hand?", "A palm tree."], ["What do elves learn in school?", "The elf-abet."], ["Why did the teddy bear skip dessert?", "Because it was stuffed."], ["What is a snake's favorite subject?", "Hiss-tory."], ["What do you call an alligator in a vest?", "An investigator."], ["What do you call cheese that isn't yours?", "Nacho cheese."], ["Why did the banana go to the doctor?", "It wasn't peeling well."], ["What building has the most stories?", "The library."], ["What goes up but never comes down?", "Your age."], ["What has one eye but can't see?", "A needle."], ["What has many teeth but can't bite?", "A comb."], ["Why do cows wear bells?", "Because their horns don't work."], ["What do you call a train full of bubblegum?", "A chew-chew train."], ["What did the zero say to the eight?", "Nice belt!"], ["Why did the dinosaur cross the road?", "Because chickens didn't exist yet."]];
 // 🎮 games Hippo can send you to: [name, emoji, words that find it, what it is, how to start it]
 const HIPPO_GAMES = [
   ["Slope City", "🏙️", "slope city|slope", "Roll, jump and smash through a neon city, and collect crystals for new balls.", () => startSlope()],
@@ -6112,6 +6120,8 @@ const HIPPO_GAMES = [
   ["Pong", "🏓", "ping pong|ping-pong|pong", "The classic paddle game. First to 7 wins!", () => startPong()],
   ["Training Ground", "🌀", "training ground", "Practice typing with a color-coded keyboard (inside Bunny Hop Typing).", () => startBunny()]
 ];
+const HIPPO_MONTH_WORDS = HIPPO_MONTHS.map(([m]) => m.toLowerCase());
+function hMonthGrid(y, mo, d) { const first = new Date(Date.UTC(y, mo, 1)).getUTCDay(), days = new Date(Date.UTC(y, mo + 1, 0)).getUTCDate(); let s = `<rect width="320" height="180" fill="#fff"/>` + hT(160, 18, `${HIPPO_MONTHS[mo][0]} ${y}`, { b: 1, s: 14 }); ["S", "M", "T", "W", "T", "F", "S"].forEach((w, i) => s += hT(70 + i * 30, 36, w, { s: 11, b: 1, c: "#8d99ae" })); for (let k = 1; k <= days; k++) { const c = (first + k - 1) % 7, r = Math.floor((first + k - 1) / 7), x = 70 + c * 30, yy = 52 + r * 22; if (k === d) s += `<circle cx="${x}" cy="${yy - 4}" r="11" fill="#e63946"/>`; s += hT(x, yy, k, { s: 11, b: k === d, c: k === d ? "#fff" : "#1a1240" }); } return HV(s); }
 // ---- diagrams (little SVG pictures) ----
 const HV = (inner, h = 180) => `<svg class="hip-svg" viewBox="0 0 320 ${h}" role="img">${inner}</svg>`;
 const hT = (x, y, t, o = {}) => `<text x="${x}" y="${y}" font-size="${o.s || 13}" font-weight="${o.b ? 800 : 500}" fill="${o.c || "#1a1240"}" text-anchor="${o.a || "middle"}" font-family="system-ui,sans-serif">${esc(String(t))}</text>`;
@@ -6195,6 +6205,8 @@ function hippoBank() {
   HIPPO_DAYS.forEach(d => ["What day comes after DAY?", "What day comes before DAY?"].forEach(t => add("Calendar", "📅", t.replace("DAY", d), d, "")));
   HIPPO_OPPOSITES.forEach(([a, b]) => { add("Words", "🔁", `What is the opposite of ${a}?`, b, ""); add("Words", "🔁", `What is the opposite of ${b}?`, a, ""); });
   add("Typing", "⌨️", "How do I learn to type?", "Bunny Hop Typing", "");
+  HIPPO_JOKES.forEach(([jq, ja]) => add("Jokes and riddles", "😂", jq, ja, ""));
+  add("Jokes and riddles", "😂", "Tell me a joke", "", ""); add("Jokes and riddles", "😂", "Tell me a riddle", "", "");
   HIPPO_GAMES.forEach(([n]) => { add("Games", "🎮", `What is ${n}?`, n, ""); add("Games", "🎮", `How do I play ${n}?`, n, ""); });
   Object.keys(HIPPO_DEFS).forEach(t => { add("What is…?", "📖", `What ${/^(dinosaur|pharaoh|knight|viking|mummy)$/.test(t) ? "was" : "is"} ${/^[aeiou]/.test(t) ? "an" : "a"} ${t}?`, t, ""); add("What is…?", "📖", `What does ${t} mean?`, t, ""); });
   ["Give me a story idea", "How do I write a story?", "Story starter please", "What should I write a story about?"].forEach(t => add("Story Starters", "✍️", t, "Story Starters", ""));
@@ -6236,6 +6248,7 @@ const HIPPO_FAMILIES = [
   ["Mixed numbers", "🥧", 1000, () => { const d = rnd(2, 9); return `Convert ${d * rnd(1, 5) + rnd(1, d - 1)}/${d} to a mixed number`; }],
   ["Averages", "📊", 1000, () => `What is the average of ${rnd(1, 20)}, ${rnd(1, 20)} and ${rnd(1, 20)}?`],
   ["Order of operations", "🧠", 1000, () => `What is ${rnd(1, 9)} + ${rnd(1, 9)} × ${rnd(1, 9)}?`],
+  ["Time machine (what day was it?)", "🗓️", 13149, () => { const t = Date.UTC(2000, 0, 1) + rnd(0, 13148) * 864e5, dt = new Date(t); return `What day of the week was ${HIPPO_MONTHS[dt.getUTCMonth()][0]} ${dt.getUTCDate()}, ${dt.getUTCFullYear()}?`; }],
   ["Measurement", "📏", HIPPO_UNITS.length * 100, () => { const u = HIPPO_UNITS[rnd(0, HIPPO_UNITS.length - 1)]; return `How many ${u[1]} are in ${rnd(1, 12)} ${u[0]}?`; }]
 ];
 const hippoCount = () => HIPPO_FAMILIES.reduce((t, f) => t + f[2], 0) + (HIPPO_BANK ||= hippoBank()).length;
@@ -6254,6 +6267,21 @@ function hippoAnswer(qRaw) {
     const want = STARTERS.filter(x => q.includes(x.genre.toLowerCase())), pool = want.length ? want : STARTERS, st = pool[rnd(0, pool.length - 1)];
     return R("Story Starters", "✍️", /how/.test(q) ? "Start with a hook, then add a problem, a middle where things happen, and an ending!" : "Here's a story starter for you!", `${/how/.test(q) ? "Try this one: " : ""}(${st.genre}) “${st.text}” Keep the story going in Story Starters: pick a starter, write what happens next, and save your stories.`, hBig("🐶📝", "#fff3d6", st.genre + " story"), { label: "🐶 Go to Story Starters", fn: () => startStories() });
   }
+  // 🎉 secret: Hippo dance party!
+  if (/\b(dance|party|celebrate|boogie)\b/.test(q) && /hippo|party|dance/.test(q)) return R("Secret!", "🎉", "🎉 HIPPO DANCE PARTY! 🎉", "You found Hippo's secret! Hippo loves to dance when you learn something new. Keep asking questions!", `<div class="hip-party">${"🎊🎉✨🎈⭐".repeat(4).match(/(\p{Extended_Pictographic}\uFE0F?)/gu).map((c, i) => `<i style="left:${(i * 37) % 100}%;animation-delay:${(i % 7) * .25}s">${c}</i>`).join("")}<span>🦛</span></div>`, { label: "🦛 Dance again!", fn: () => { const el = document.querySelector(".hip-party span"); if (el) { el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; } sfx.buy(); } });
+  // 😂 jokes and riddles
+  { const j = HIPPO_JOKES.find(([jq]) => q.replace(/[^a-z ]/g, "") === jq.toLowerCase().replace(/[^a-z ]/g, ""));
+    if (j || /\b(joke|riddle|funny|make me laugh)\b/.test(q)) { const [jq, ja] = j || HIPPO_JOKES[rnd(0, HIPPO_JOKES.length - 1)]; return Object.assign(R("Jokes and riddles", "😂", jq, "", hBig("🦛😂", "#fff3d6", "Hippo's joke"), j ? null : { label: "😂 Another one!", fn: () => document.getElementById("hip-q") && (document.getElementById("hip-q").value = "tell me a joke", document.getElementById("hip-form").requestSubmit()) }), { reveal: ja }); } }
+  // 🗓️ time machine: what day of the week was (or will be) a date?
+  { let dm = q.match(/(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{3,4})/), y, mo, d;
+    if (dm) { mo = HIPPO_MONTH_WORDS.indexOf(dm[1]); d = +dm[2]; y = +dm[3]; }
+    else if ((dm = q.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/))) { mo = +dm[1] - 1; d = +dm[2]; y = +dm[3]; }
+    else if ((dm = q.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/))) { y = +dm[1]; mo = +dm[2] - 1; d = +dm[3]; }
+    if (dm && mo >= 0 && mo < 12) { const dt = new Date(Date.UTC(2000, mo, d)); dt.setUTCFullYear(y); if (dt.getUTCDate() === d && dt.getUTCMonth() === mo) {
+      const wd = HIPPO_DAYS[dt.getUTCDay()], today = new Date(), t0 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()), diff = Math.round((dt - t0) / 864e5);
+      return R("Time machine (what day was it?)", "🗓️", `${HIPPO_MONTHS[mo][0]} ${d}, ${y} ${diff < 0 ? "was" : diff > 0 ? "will be" : "is"} a ${wd}.`, diff === 0 ? "That's today!" : diff < 0 ? `That was ${fmt(-diff)} day${diff === -1 ? "" : "s"} ago.` : `That's ${fmt(diff)} day${diff === 1 ? "" : "s"} from today.`, hMonthGrid(y, mo, d)); }
+      const leap = new Date(Date.UTC(2000, 1, 29)); leap.setUTCFullYear(y); const febDays = leap.getUTCMonth() === 1 ? 29 : 28, real = mo === 1 ? febDays : HIPPO_MONTHS[mo][1];
+      return R("Time machine (what day was it?)", "🗓️", `Trick question! ${HIPPO_MONTHS[mo][0]} ${d} doesn't exist in ${y}.`, `${HIPPO_MONTHS[mo][0]} ${y} only has ${real} days.`, hMonthGrid(y, mo, 0)); } }
   // 🎮 games: offer to take you there
   if (/^(?:2048|what is 2048|play 2048)$/.test(q)) { const g = HIPPO_GAMES.find(x => x[0] === "2048"); return R("Games", "🎮", `2048 is a game here! ${g[3]}`, "Want to play? Tap the button.", hBig(g[1], "#e8f7e8", g[0]), { label: `${g[1]} Go to 2048`, fn: g[4] }); }
   for (const g of HIPPO_GAMES) { const [name, emo, words, what, go] = g; if (words.split("|").some(w => new RegExp(`\\b${w.replace(/[-]/g, "\\-")}\\b`).test(q))) return R("Games", "🎮", `${name} is a game you can play here!`, `${what} Want to go there now?`, hBig(emo, "#e8f7e8", name), { label: `${emo} Go to ${name}`, fn: go }); }
@@ -6369,7 +6397,7 @@ function hippoAnswer(qRaw) {
   const words = q.replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(w => w.length > 2 && !/^(what|does|the|and|how|why|who|was|are|is|did|tell|about|mean|means|you|for|with)$/.test(w));
   if (words.length) {
     let best = null, bs = 0;
-    HIPPO_BANK.filter(e => !["Games", "Animals", "Space", "Countries", "U.S. States", "Shapes", "Calendar", "Words", "Typing", "Story Starters", "Extinct animals", "What is…?"].includes(e.topic) && !(e.topic === "Science" && e.icon === "⚛️")).forEach(e => { const s = words.reduce((t, w) => t + (e.q.toLowerCase().includes(w) ? 2 : e.hay.includes(w) ? 1 : 0), 0); if (s > bs) { bs = s; best = e; } });
+    HIPPO_BANK.filter(e => !["Jokes and riddles", "Games", "Animals", "Space", "Countries", "U.S. States", "Shapes", "Calendar", "Words", "Typing", "Story Starters", "Extinct animals", "What is…?"].includes(e.topic) && !(e.topic === "Science" && e.icon === "⚛️")).forEach(e => { const s = words.reduce((t, w) => t + (e.q.toLowerCase().includes(w) ? 2 : e.hay.includes(w) ? 1 : 0), 0); if (s > bs) { bs = s; best = e; } });
     if (best && bs >= Math.min(2, words.length)) return R(best.topic, best.icon, best.a.replace(/\.?$/, "."), best.why || `From the question: "${best.q}"`, hBig(best.icon, "#f1ecff", best.topic));
   }
   return null;
@@ -6381,7 +6409,7 @@ function startHippo(initial = "") {
   HIPPO_BANK ||= hippoBank();
   const total = hippoCount();
   const topics = [...HIPPO_FAMILIES.map(f => [f[0], f[1], f[2]]), ...Object.entries(HIPPO_BANK.reduce((t, e) => { t[e.topic] = t[e.topic] || [e.icon, 0]; t[e.topic][1]++; return t; }, {})).map(([n, [i, c]]) => [n, i, c])];
-  const tries = ["What is slope?", "What games can I play?", "What is 1/2 + 1/3?", "Simplify 6/8", "What is the greatest common factor of 12 and 18?", "What was a dinosaur?", "What is a volcano?", "What is gravity?", "Give me a story idea", "Why did the dinosaurs go extinct?", "How big was a megalodon?", "When did woolly mammoths live?", "How do I learn to type?", "What is 47 in Roman numerals?", "What is the value of the 4 in 3,482?", "What is the opposite of brave?", "How many quarters are in $5?", "What is 7 × 8?", "What is 3/4 of 20?", "What does a cheetah eat?", "How many moons does Saturn have?", "What is the capital of Japan?", "Show 3:45 on a clock", "Is 97 a prime number?", "How many inches are in 5 feet?", "What is the area of a 6 by 4 rectangle?", "How many sides does a hexagon have?", "Show me a carbon atom", "What is a surplus?"];
+  const tries = ["Tell me a joke", "What day of the week was July 4, 2010?", "What is slope?", "What games can I play?", "What is 1/2 + 1/3?", "Simplify 6/8", "What is the greatest common factor of 12 and 18?", "What was a dinosaur?", "What is a volcano?", "What is gravity?", "Give me a story idea", "Why did the dinosaurs go extinct?", "How big was a megalodon?", "When did woolly mammoths live?", "How do I learn to type?", "What is 47 in Roman numerals?", "What is the value of the 4 in 3,482?", "What is the opposite of brave?", "How many quarters are in $5?", "What is 7 × 8?", "What is 3/4 of 20?", "What does a cheetah eat?", "How many moons does Saturn have?", "What is the capital of Japan?", "Show 3:45 on a clock", "Is 97 a prime number?", "How many inches are in 5 feet?", "What is the area of a 6 by 4 rectangle?", "How many sides does a hexagon have?", "Show me a carbon atom", "What is a surplus?"];
   $app.innerHTML = `
     <div class="panel hip">
       <div class="topline"><span class="label">🦛 Ask Hippo</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
@@ -6398,7 +6426,7 @@ function startHippo(initial = "") {
     box.value = q;
     const ans = hippoAnswer(q), out = document.getElementById("hip-out");
     if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>🦛❓</span></div><div><b>Hmm, Hippo doesn't know that one yet.</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
-    out.innerHTML = `<div class="hip-card"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? `<p>${esc(ans.why)}</p>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}</div></div>`;
+    out.innerHTML = `<div class="hip-card"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? `<p>${esc(ans.why)}</p>` : ""}${ans.reveal ? `<details class="hip-reveal"><summary>👀 Show the answer</summary><p>${esc(ans.reveal)}</p></details>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}</div></div>`;
     if (ans.action) document.getElementById("hip-act").addEventListener("click", ans.action.fn);
     tone([523, 784], .06, "triangle", .06);
   };
