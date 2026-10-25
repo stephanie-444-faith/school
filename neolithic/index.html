@@ -384,6 +384,7 @@
   .hip-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; background: var(--panel-2); border: 2px solid var(--gold); border-radius: 16px; padding: 14px; margin: 12px 0; align-items: center; animation: coachIn .25s ease-out; }
   @media (max-width: 640px) { .hip-card { grid-template-columns: 1fr; } }
   .hip-say { display: block; margin: 0 0 8px; }
+  .hip-voice { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); font-size: .9rem; } .hip-voice select { max-width: 190px; }
   .hip-acts-h { flex-basis: 100%; margin: 10px 0 2px; color: var(--gold); font-size: .95rem; }
   .hip-card.wide { grid-template-columns: 1fr; } .hip-card.wide .hip-diagram { max-width: 360px; justify-self: center; width: 100%; }
   .hip-card.wide .hip-text p { line-height: 1.6; margin: .7em 0; }
@@ -6326,22 +6327,72 @@ function hippoParody(q) {
 }
 // 🗣️ Hippo reads out loud (the browser's built-in voice)
 let HIPPO_VOICE = null;
-// Hippo talks like a calm, cozy grandma: a soft female voice, slow and gentle, with little pauses between sentences
-const HIPPO_GRANDMA_VOICES = /martha|serena|kate|moira|fiona|sonia|libby|maisie|hazel|susan|google uk english female|karen|tessa|victoria|samantha|aria|jenny|female/i;
-function hippoSay(text, { onEnd, rate = .8, pitch = .92 } = {}) {
+// Hippo talks like a calm, cozy grandma: the most natural-sounding gentle voice on the device, slow and warm,
+// with words like "×" and "°F" said properly and longer, restful pauses between paragraphs
+let HIPPO_SAY_ID = 0;
+const HIPPO_GRANDMA_VOICES = /martha|serena|kate|moira|fiona|sonia|libby|maisie|hazel|susan|google uk english female|karen|tessa|victoria|samantha|ava|allison|aria|jenny|emma|ava|natasha|clara|female/i;
+const HIPPO_SILLY_VOICES = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|deranged|hysterical|espeak|robot/i;
+function hippoVoiceScore(v) {
+  if (!/^en/i.test(v.lang) || HIPPO_SILLY_VOICES.test(v.name)) return -100;
+  let sc = 0;
+  if (/natural|neural|online/i.test(v.name)) sc += 50;     // Edge / Windows natural voices sound the most human
+  if (/enhanced|premium|siri/i.test(v.name)) sc += 40;     // Apple's downloaded high-quality voices
+  if (/google/i.test(v.name)) sc += 25;
+  if (HIPPO_GRANDMA_VOICES.test(v.name)) sc += 15;
+  if (/^en[-_](gb|ie|au)/i.test(v.lang)) sc += 5;
+  if (/^en[-_]us/i.test(v.lang)) sc += 3;
+  if (/male\b/i.test(v.name) && !/female/i.test(v.name)) sc -= 10;
+  return sc;
+}
+const hippoVoices = () => { try { return (window.speechSynthesis?.getVoices() || []).filter(v => hippoVoiceScore(v) > -100).sort((a, b) => hippoVoiceScore(b) - hippoVoiceScore(a)); } catch (e) { return []; } };
+function hippoPickVoice() {
+  const vs = hippoVoices(), want = store.get("hippo_voice", "");
+  return vs.find(v => v.name === want) || vs[0] || null;
+}
+// turn math signs and short forms into words, so Hippo reads them smoothly
+function hippoSpeakable(t) {
+  return String(t)
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, "")
+    .replace(/[“”"]/g, "").replace(/…/g, "... ")
+    .replace(/(\d) ?°F\b/gi, "$1 degrees Fahrenheit").replace(/(\d) ?°C\b/gi, "$1 degrees Celsius").replace(/°/g, " degrees")
+    .replace(/(\d+) R (\d+)/g, "$1, remainder $2")
+    .replace(/(\d)\/(\d)/g, "$1 over $2")
+    .replace(/(^|[\s(])[−-](?=\d)/g, "$1negative ").replace(/[()]/g, " ")
+    .replace(/×/g, " times ").replace(/÷/g, " divided by ").replace(/−|(?<=\s)-(?=\s)/g, " minus ")
+    .replace(/=/g, " equals ").replace(/\+/g, " plus ").replace(/%/g, " percent").replace(/²/g, " squared").replace(/³/g, " cubed").replace(/√/g, "the square root of ")
+    .replace(/\be\.g\./gi, "for example").replace(/&/g, " and ")
+    .replace(/[ \t]+/g, " ");
+}
+function hippoSay(text, { onEnd, rate = .82, pitch } = {}) {
+  const my = ++HIPPO_SAY_ID;
   try {
     const synth = window.speechSynthesis; if (!synth) { onEnd?.(); return false; }
     synth.cancel();
-    const vs = synth.getVoices(); HIPPO_VOICE = HIPPO_VOICE || vs.find(v => /^en/i.test(v.lang) && HIPPO_GRANDMA_VOICES.test(v.name) && /natural|neural|enhanced|premium/i.test(v.name)) || vs.find(v => /^en[-_]GB/i.test(v.lang) && HIPPO_GRANDMA_VOICES.test(v.name)) || vs.find(v => /^en/i.test(v.lang) && HIPPO_GRANDMA_VOICES.test(v.name)) || vs.find(v => /^en/i.test(v.lang)) || null;
-    const clean = String(text).replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, "").replace(/[“”]/g, "").replace(/\s+/g, " ").trim();
-    // long text is read in small pieces (some browsers stop reading long text partway)
-    const parts = clean.match(/[^.!?…]+[.!?…]*["')]*\s*/g) || [clean]; let i = 0;
-    const next = () => { if (i >= parts.length) { onEnd?.(); return; } const u = new SpeechSynthesisUtterance(parts[i++]); if (HIPPO_VOICE) u.voice = HIPPO_VOICE; u.rate = rate; u.pitch = pitch; u.volume = .9; u.onend = () => setTimeout(next, 280); u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") next(); }; synth.speak(u); };
+    const voice = HIPPO_VOICE = hippoPickVoice(), natural = voice && hippoVoiceScore(voice) >= 40;
+    pitch = pitch ?? (natural ? 1 : .95);      // natural voices sound best at their own pitch
+    // read in small pieces (some browsers stop reading long text partway), with a longer rest between paragraphs
+    const parts = [];
+    hippoSpeakable(text).split(/\n\s*\n/).forEach((para, pi) => { const sents = para.replace(/\s+/g, " ").trim().match(/(?:[^.!?]|\.(?=\d))+[.!?]*['')\]]*\s*/g) || []; sents.forEach((x, si) => { if (x.trim()) parts.push([x.trim(), si === sents.length - 1 ? 650 : 300]); }); });
+    let i = 0;
+    const next = () => {
+      if (my !== HIPPO_SAY_ID) return;
+      if (i >= parts.length) { onEnd?.(); return; }
+      const [line, rest] = parts[i++], u = new SpeechSynthesisUtterance(line);
+      if (voice) { try { u.voice = voice; } catch (e) {} u.lang = voice.lang; }
+      u.rate = /[?]$/.test(line) ? rate * .97 : rate; u.pitch = pitch; u.volume = .9;
+      u.onend = () => setTimeout(next, rest);
+      u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") setTimeout(next, rest); };
+      synth.speak(u);
+    };
     next(); return true;
   } catch (e) { onEnd?.(); return false; }
 }
-const hippoHush = () => { try { window.speechSynthesis?.cancel(); } catch (e) {} };
-try { window.speechSynthesis?.getVoices(); window.speechSynthesis?.addEventListener?.("voiceschanged", () => { HIPPO_VOICE = null; }); } catch (e) {}
+const hippoHush = () => { HIPPO_SAY_ID++; try { window.speechSynthesis?.cancel(); } catch (e) {} };
+try { window.speechSynthesis?.getVoices(); window.speechSynthesis?.addEventListener?.("voiceschanged", () => { HIPPO_VOICE = null; document.querySelectorAll("#hip-voice").forEach(fillHippoVoiceMenu); }); } catch (e) {}
+function fillHippoVoiceMenu(sel) {
+  const vs = hippoVoices().slice(0, 15), cur = hippoPickVoice();
+  sel.innerHTML = vs.length ? vs.map(v => `<option value="${esc(v.name)}" ${cur && v.name === cur.name ? "selected" : ""}>${esc(v.name.replace(/^(Microsoft|Google) /, "").replace(/ - English.*| \(.*Natural\)/g, m => /Natural/.test(m) ? " (natural)" : ""))}${hippoVoiceScore(v) >= 40 ? " ⭐" : ""}</option>`).join("") : `<option>Your device's voice</option>`;
+}
 // 📖 the book reader
 function startBook(bi, page) {
   stopMini(); keyHandler = null; hippoHush();
@@ -6895,9 +6946,9 @@ function hippoAnswer(qRaw) {
     const id = byTitle ? byTitle[0] : base && (fam.length > 1 ? fam[HIPPO_SONG_NEXT[base]] : base);
     if (!id) return Object.assign(R("Songs", "🎵", "🎵 Hippo loves to sing! Pick a style:", `Hippo knows ${Object.values(HIPPO_SONGS).filter(x => !x.real && !x.extra).length} styles, with 10 songs in each style. Tap one, or ask something like “sing me a jazz song.” Parade and Classic Songs are real old tunes with new Hippo words.`, hBig("🦛🎤", "#2e1a4a", "Hippo's music")), { actions: [...Object.entries(HIPPO_SONGS).filter(([, x]) => !x.real && !x.extra)].map(([k, sg]) => ({ label: `${sg.emoji} ${sg.name}`, fn: () => { const b = document.getElementById("hip-q"); b.value = `sing me a ${sg.name.toLowerCase()} song`; document.getElementById("hip-form").requestSubmit(); } })) });
     const sg = HIPPO_SONGS[id];
-    setTimeout(() => hippoPlaySong(id, i => { document.querySelectorAll(".hip-song li").forEach((li, k) => li.classList.toggle("on", k === i)); if (sg.lyrics[i] && !/^\(/.test(sg.lyrics[i])) hippoSay(sg.lyrics[i], { rate: .9, pitch: 1 }); }), 250);
+    setTimeout(() => hippoPlaySong(id, i => { document.querySelectorAll(".hip-song li").forEach((li, k) => li.classList.toggle("on", k === i)); if (sg.lyrics[i] && !/^\(/.test(sg.lyrics[i])) hippoSay(sg.lyrics[i], { rate: .9 }); }), 250);
     const fb = sg.of || id, fl = hippoSongFamily(fb);
-    return Object.assign(R("Songs", "🎵", sg.real ? `${sg.emoji} ${sg.name}` : `${sg.emoji} ${sg.title || sg.name}`, `${sg.real ? "A real classic tune with new Hippo words. " : `A ${HIPPO_SONGS[fb].name} song, number ${fl.indexOf(id) + 1} of ${fl.length}. ${sg.melody && fb !== "birthday" ? "A real old tune with new Hippo words. " : ""}`}Sing along! 🔊 Turn your volume up to hear the music. (On an iPhone or iPad, make sure the silent switch is off.) No sound? Tap “▶ Sing it again.”`, `<div class="hip-song hs-${sg.of || id}"><span>${sg.emoji}🦛</span><ol>${sg.lyrics.map(l => `<li>${esc(l)}</li>`).join("")}</ol></div>`), { actions: [{ label: "▶ Sing it again", fn: () => hippoPlaySong(id, i => { document.querySelectorAll(".hip-song li").forEach((li, k) => li.classList.toggle("on", k === i)); if (sg.lyrics[i] && !/^\(/.test(sg.lyrics[i])) hippoSay(sg.lyrics[i], { rate: .9, pitch: 1 }); }) }, { label: "⏹ Stop", fn: () => { HIPPO_SONG_STOP?.(); hippoHush(); document.querySelectorAll(".hip-song li").forEach(li => li.classList.remove("on")); } }, ...(sg.real ? [] : [{ label: `🎶 Next ${HIPPO_SONGS[fb].name} song`, fn: askAgain(`sing me a ${HIPPO_SONGS[fb].name.toLowerCase()} song`) }, { label: `📃 All ${fl.length} ${HIPPO_SONGS[fb].name} songs`, fn: askAgain(`list all ${HIPPO_SONGS[fb].name.toLowerCase()} songs`) }]), { label: "🎵 Pick another style", fn: () => { const b = document.getElementById("hip-q"); b.value = "sing me a song"; document.getElementById("hip-form").requestSubmit(); } }] });
+    return Object.assign(R("Songs", "🎵", sg.real ? `${sg.emoji} ${sg.name}` : `${sg.emoji} ${sg.title || sg.name}`, `${sg.real ? "A real classic tune with new Hippo words. " : `A ${HIPPO_SONGS[fb].name} song, number ${fl.indexOf(id) + 1} of ${fl.length}. ${sg.melody && fb !== "birthday" ? "A real old tune with new Hippo words. " : ""}`}Sing along! 🔊 Turn your volume up to hear the music. (On an iPhone or iPad, make sure the silent switch is off.) No sound? Tap “▶ Sing it again.”`, `<div class="hip-song hs-${sg.of || id}"><span>${sg.emoji}🦛</span><ol>${sg.lyrics.map(l => `<li>${esc(l)}</li>`).join("")}</ol></div>`), { actions: [{ label: "▶ Sing it again", fn: () => hippoPlaySong(id, i => { document.querySelectorAll(".hip-song li").forEach((li, k) => li.classList.toggle("on", k === i)); if (sg.lyrics[i] && !/^\(/.test(sg.lyrics[i])) hippoSay(sg.lyrics[i], { rate: .9 }); }) }, { label: "⏹ Stop", fn: () => { HIPPO_SONG_STOP?.(); hippoHush(); document.querySelectorAll(".hip-song li").forEach(li => li.classList.remove("on")); } }, ...(sg.real ? [] : [{ label: `🎶 Next ${HIPPO_SONGS[fb].name} song`, fn: askAgain(`sing me a ${HIPPO_SONGS[fb].name.toLowerCase()} song`) }, { label: `📃 All ${fl.length} ${HIPPO_SONGS[fb].name} songs`, fn: askAgain(`list all ${HIPPO_SONGS[fb].name.toLowerCase()} songs`) }]), { label: "🎵 Pick another style", fn: () => { const b = document.getElementById("hip-q"); b.value = "sing me a song"; document.getElementById("hip-form").requestSubmit(); } }] });
   }
   // ✍️ story questions go to Story Starters (with a story idea to get going)
   if (/\b(story starters?|write a story|writing ideas?|story ideas?|stories)\b/.test(q) || (/\bstory\b/.test(q) && /(idea|write|how|starter|give me a \w* ?story idea)/.test(q))) {
@@ -7118,7 +7169,7 @@ function startHippo(initial = "") {
       <div class="topline"><span class="label">🦛 Ask Hippo</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
       <div class="hip-head"><span class="hip-face">🦛</span><div><h2>Ask Hippo anything!</h2><p class="soft">Hippo knows <b>${fmt(total)}</b> questions and answers about math, animals, space, countries, science and more. Every answer comes with a picture or diagram.</p></div></div>
       <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">Ask 🦛</button></form>
-      <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button></div>
+      <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button><label class="hip-voice">🗣️ Hippo's voice <select id="hip-voice"></select></label><button class="btn" id="hip-voice-try" type="button">▶ Hear it</button></div>
       <div id="hip-out"></div>
       <div class="hip-calc" id="hip-calc" hidden>
         <div class="hip-calc-top"><b>🧮 Hippo's Calculator</b><button class="iconbtn" id="hip-calc-x" aria-label="Close calculator">✕ Close</button></div>
@@ -7183,6 +7234,10 @@ function startHippo(initial = "") {
   });
   $app.querySelectorAll(".hip-try").forEach(b => b.addEventListener("click", () => ask(b.textContent)));
   document.getElementById("hip-home").addEventListener("click", () => { HIPPO_SONG_STOP?.(); hippoHush(); showHome(); });
+  const vsel = document.getElementById("hip-voice"); fillHippoVoiceMenu(vsel);
+  const sample = () => hippoSay("Hello, sweetheart. It's Hippo. Come sit with me, and I'll read you a story.");
+  vsel.addEventListener("change", () => { store.set("hippo_voice", vsel.value); sample(); });
+  document.getElementById("hip-voice-try").addEventListener("click", sample);
   box.focus();
   if (initial) ask(initial);
 }
