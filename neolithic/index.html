@@ -6344,7 +6344,8 @@ function hippoVoiceScore(v) {
   if (/male\b/i.test(v.name) && !/female/i.test(v.name)) sc -= 10;
   return sc;
 }
-const hippoVoices = () => { try { return (window.speechSynthesis?.getVoices() || []).filter(v => hippoVoiceScore(v) > -100).sort((a, b) => hippoVoiceScore(b) - hippoVoiceScore(a)); } catch (e) { return []; } };
+// best voices first, except the runner-up goes to the top (the family liked it best)
+const hippoVoices = () => { try { const vs = (window.speechSynthesis?.getVoices() || []).filter(v => hippoVoiceScore(v) > -100).sort((a, b) => hippoVoiceScore(b) - hippoVoiceScore(a)); if (vs.length > 1) vs.unshift(vs.splice(1, 1)[0]); return vs; } catch (e) { return []; } };
 function hippoPickVoice() {
   const vs = hippoVoices(), want = store.get("hippo_voice", "");
   return vs.find(v => v.name === want) || vs[0] || null;
