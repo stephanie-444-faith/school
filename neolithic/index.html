@@ -1269,7 +1269,7 @@ function showHome() {
     <div class="topbar">
       <div class="emoji-row">
       <button class="bunny-btn" id="bunny" type="button" aria-label="Bunny Hop Typing" title="Bunny Hop Typing">🐰</button>
-      <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: keep the story going!">🐶</button>
+      <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: story ideas to write about, then keep the story going!">🐶</button>
       <button class="bunny-btn hippo-btn" id="hippo" type="button" aria-label="Ask Hippo" title="Ask Hippo: questions and answers with pictures">🦛</button>
         ${HIPPO_APPS.map((a, i) => `<button class="bunny-btn" data-happ="${i}" type="button" aria-label="${a[1]}" title="${a[1]}: ${a[2]}">${a[0]}</button>`).join("")}
       </div>
@@ -7072,8 +7072,7 @@ const HIPPO_APPS = [
   ["🎵", "Hippo Sings", "Songs in every style, parades too", "sing me a song"],
   ["🧮", "Calculator", "Hippo's calculator", "calc"],
   ["😂", "Jokes", "Jokes, long jokes and knock-knocks", "joke time"],
-  ["🕰️", "Time Machine", "What day was any date?", "what day of the week was july 4 1776"],
-  ["✍️", "Story Ideas", "Story starters to write", "give me a story idea"]
+  ["🕰️", "Time Machine", "What day was any date?", "what day of the week was july 4 1776"]
 ];
 function startHippo(initial = "") {
   stopSlope(); stopArchers(); stopMini(); closeShop();
