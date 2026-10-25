@@ -373,10 +373,9 @@
   .sc-ball { width: 48px; height: 48px; border-radius: 50%; display: block; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
   .steer #s-j { flex: 1.2; }
 
-  .bunny-btn { position: absolute; top: 0; left: 0; z-index: 11; width: 44px; height: 44px; border-radius: 12px; border: 0; background: var(--panel); font-size: 1.6rem; line-height: 1; cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
+  .emoji-row { display: flex; flex-wrap: wrap; gap: 8px; padding-right: 44px; }
+  .bunny-btn { position: relative; width: 44px; height: 44px; border-radius: 12px; border: 0; background: var(--panel); font-size: 1.6rem; line-height: 1; cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.3); }
   .bunny-btn:hover { transform: scale(1.08); }
-  .dog-btn { left: 52px; }
-  .hippo-btn { left: 104px; }
   .gm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-top: 10px; }
   .hip-games { grid-column: 1 / -1; }
   .hip-head { display: flex; gap: 12px; align-items: center; } .hip-head h2 { margin: 0; } .hip-face { font-size: 3.4rem; animation: skyBob 3s ease-in-out infinite; }
@@ -387,10 +386,6 @@
   .hip-say { display: block; margin: 0 0 8px; }
   .hip-card.wide { grid-template-columns: 1fr; } .hip-card.wide .hip-diagram { max-width: 360px; justify-self: center; width: 100%; }
   .hip-card.wide .hip-text p { line-height: 1.6; margin: .7em 0; }
-  .hip-apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 8px; }
-  .hip-app { display: flex; align-items: center; gap: 8px; text-align: left; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); cursor: pointer; font: inherit; }
-  .hip-app:hover { border-color: var(--gold); transform: translateY(-1px); }
-  .hip-app i { font-style: normal; font-size: 1.6rem; } .hip-app b { display: block; font-size: .95rem; } .hip-app span { display: block; font-size: .75rem; color: var(--ink-soft); }
   .book .bk-page { background: #fffaf0; color: #2b1d0e; border-radius: 16px; padding: 16px; margin: 12px 0; box-shadow: 0 6px 24px rgba(0,0,0,.3); border-left: 8px solid #c9a35a; }
   .bk-pic { border-radius: 12px; height: 150px; display: grid; place-items: center; font-size: 3.4rem; letter-spacing: 6px; margin-bottom: 10px; }
   .bk-pic span { animation: skyBob 3s ease-in-out infinite; }
@@ -665,7 +660,6 @@
     .tile { min-height: 64px; }
     .items { grid-template-columns: 1fr; }
     .invslot small { display: none; }
-    .topbar { padding-top: 40px; }
     .inv { grid-template-columns: repeat(3, 1fr); }
     .chips { grid-template-columns: repeat(2, 1fr); }
     .invslot { grid-template-columns: 24px 1fr; }
@@ -1272,14 +1266,17 @@ function showHome() {
   const bestLine = txt => txt ? `<small class="gm-best">${txt}</small>` : "";
   $app.innerHTML = `
     <div class="topbar">
+      <div class="emoji-row">
+      <button class="bunny-btn" id="bunny" type="button" aria-label="Bunny Hop Typing" title="Bunny Hop Typing">🐰</button>
+      <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: keep the story going!">🐶</button>
+      <button class="bunny-btn hippo-btn" id="hippo" type="button" aria-label="Ask Hippo" title="Ask Hippo: questions and answers with pictures">🦛</button>
+        ${HIPPO_APPS.map((a, i) => `<button class="bunny-btn" data-happ="${i}" type="button" aria-label="${a[1]}" title="${a[1]}: ${a[2]}">${a[0]}</button>`).join("")}
+      </div>
       <div class="hero">
         <span class="label">Practice, then play</span>
         <h1>Study <span>Arcade</span></h1>
         <p class="soft">Tap a subject to start studying.</p>
       </div>
-      <button class="bunny-btn" id="bunny" type="button" aria-label="Bunny Hop Typing" title="Bunny Hop Typing">🐰</button>
-      <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: keep the story going!">🐶</button>
-      <button class="bunny-btn hippo-btn" id="hippo" type="button" aria-label="Ask Hippo" title="Ask Hippo: questions and answers with pictures">🦛</button>
       <details class="gamesmenu" id="gamesmenu">
         <summary aria-label="Games menu">⋯</summary>
         <div class="gm-panel">
@@ -1297,10 +1294,6 @@ function showHome() {
           ${MORE_GAMES.map(g => `<button class="gm-item" data-more="${g.id}"><b>${g.name}</b><span>${g.desc}</span>${bestLine(moreBest(g.id, best[g.id]))}</button>`).join("")}
         </div>
       </details>
-    </div>
-    <div class="panel">
-      <span class="label">🦛 Hippo's apps</span>
-      <div class="hip-apps">${HIPPO_APPS.map((a, i) => `<button class="hip-app" data-happ="${i}"><i>${a[0]}</i><span><b>${a[1]}</b><span>${a[2]}</span></span></button>`).join("")}</div>
     </div>
     <div class="panel">
       <span class="label">Tap a subject to start studying</span>
@@ -6847,7 +6840,6 @@ function hippoCalcEval(expr) {
 }
 // the apps inside Ask Hippo, also shown on the home page: [emoji, name, what it does, question to ask]
 const HIPPO_APPS = [
-  ["🦛", "Ask Hippo", "Ask any question", ""],
   ["📖", "Library", "10 books, 100 pages each", "show me the library"],
   ["📜", "Story Time", "Classic stories, Hippo-style", "tell me a story"],
   ["📚", "Pick a Story", "All the classic stories", "list of stories"],
@@ -6858,9 +6850,7 @@ const HIPPO_APPS = [
   ["📏", "Long Jokes", "Extra-long silly jokes", "tell me a long joke"],
   ["🚪", "Knock Knock", "Knock-knock jokes", "knock knock"],
   ["🕰️", "Time Machine", "What day was any date?", "what day of the week was july 4 1776"],
-  ["✍️", "Story Ideas", "Story starters to write", "give me a story idea"],
-  ["🦖", "Extinct Animals", "Dinosaurs and more", "what was a dinosaur"],
-  ["🎮", "Find a Game", "Every game Hippo knows", "what games can i play"]
+  ["✍️", "Story Ideas", "Story starters to write", "give me a story idea"]
 ];
 function startHippo(initial = "") {
   stopSlope(); stopArchers(); stopMini(); closeShop();
