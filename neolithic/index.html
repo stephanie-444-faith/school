@@ -2960,7 +2960,7 @@ function startSnake() {
 
 /* Sky Stack */
 function startStack() {
-  const { cv, stage } = miniShell("stack", "Sky Stack", "A block slides back and forth. Tap, click, or press Space to drop it.<br>Whatever hangs over the edge gets chopped off. Line it up perfectly to keep it wide!");
+  const { cv, stage } = miniShell("stack", "Sky Stack", "A block slides back and forth. Tap, click, or press Space to drop it.<br>Whatever hangs over the edge gets chopped off. Line it up perfectly to keep it wide!<br>Tap the square in the top-left corner to <b>enlarge world</b>: more room to build a giant tower, but much harder!");
   M.rs = () => {
     const w = Math.min(stage.clientWidth, 520), h = Math.round(Math.min(620, Math.max(380, window.innerHeight * .65))), dpr = window.devicePixelRatio || 1;
     cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
@@ -2968,22 +2968,33 @@ function startStack() {
     draw();
   };
   const BH = 26, me = M;
+  // 🌍 "enlarge world": a square button in the top-left corner zooms the world out (2× wider and taller),
+  // so the tower can grow much wider, but blocks slide faster and "perfect" drops are harder to get
+  M.Z = 1;
+  const WW = () => M.W * M.Z, WH = () => M.H * M.Z;
+  const BTN = { x: 10, y: 10, s: 40 };
+  const toggleWorld = () => {
+    const oldW = WW(); M.Z = M.Z === 1 ? 2 : 1; const off = (WW() - oldW) / 2;
+    const fit = b => { b.x += off; if (b.x < 0) { b.w += b.x; b.x = 0; } if (b.x + b.w > WW()) b.w = WW() - b.x; b.w = Math.max(8, b.w); };
+    (M.blocks || []).forEach(fit); if (M.cur) { fit(M.cur); M.cur.speed = M.cur.speed * (M.Z === 2 ? 1.7 : 1 / 1.7); } M.falling = [];
+    tone(M.Z === 2 ? [392, 523, 784] : [784, 523, 392], .07, "triangle", .07); draw();
+  };
   const reset = () => {
     const w = (M.W || 400) * .5;
-    M.blocks = [{ x: ((M.W || 400) - w) / 2, w, hue: 260 }];
+    M.blocks = [{ x: ((M.W || 400) * M.Z - w) / 2, w, hue: 260 }];
     M.cur = null; M.falling = []; M.score = 0; M.camY = 0; M.perfect = 0;
     spawn();
   };
   const spawn = () => {
     const top = M.blocks.at(-1), fromLeft = M.score % 2 === 0;
-    M.cur = { x: fromLeft ? 0 : M.W - top.w, w: top.w, dir: fromLeft ? 1 : -1, speed: hard() ? Math.min(600, 240 + M.score * 15) : Math.min(420, 130 + M.score * 8), hue: (top.hue + 12) % 360 };
+    M.cur = { x: fromLeft ? 0 : WW() - top.w, w: top.w, dir: fromLeft ? 1 : -1, speed: (hard() ? Math.min(600, 240 + M.score * 15) : Math.min(420, 130 + M.score * 8)) * (M.Z === 2 ? 1.7 : 1), hue: (top.hue + 12) % 360 };
   };
   const drop = () => {
     if (!M.running || !M.cur) return;
     const top = M.blocks.at(-1), cur = M.cur;
     const l = Math.max(top.x, cur.x), r = Math.min(top.x + top.w, cur.x + cur.w);
     if (r - l <= 2) { M.falling.push({ ...cur, y: M.blocks.length, vy: 0 }); M.cur = null; sfx.wrong(); return setTimeout(() => { if (M === me) miniOver("stack", "The tower is done!", M.score, "blocks stacked").addEventListener("click", go); }, 700); }
-    if (Math.abs(cur.x - top.x) < (hard() ? 4 : 9)) { cur.x = top.x; M.perfect++; tone([660 + M.perfect * 60, 990 + M.perfect * 60], .06, "triangle", .07); if (M.perfect >= 3) cur.w = Math.min(M.W * .6, cur.w + 6); M.blocks.push({ x: cur.x, w: cur.w, hue: cur.hue }); }
+    if (Math.abs(cur.x - top.x) < (hard() ? 4 : 9) / (M.Z === 2 ? 2.5 : 1)) { cur.x = top.x; M.perfect++; tone([660 + M.perfect * 60, 990 + M.perfect * 60], .06, "triangle", .07); if (M.perfect >= 3) cur.w = Math.min(WW() * .6, cur.w + 6 * M.Z); M.blocks.push({ x: cur.x, w: cur.w, hue: cur.hue }); }
     else {
       M.perfect = 0;
       if (cur.x < l) M.falling.push({ x: cur.x, w: l - cur.x, hue: cur.hue, y: M.blocks.length, vy: 0 });
@@ -2997,7 +3008,12 @@ function startStack() {
   M.kd = e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); M.running ? drop() : go(); } };
   window.addEventListener("keydown", M.kd);
   window.addEventListener("resize", M.rs);
-  cv.addEventListener("pointerdown", e => { e.preventDefault(); drop(); });
+  cv.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    const r = cv.getBoundingClientRect(), px = (e.clientX - r.left) * M.W / r.width, py = (e.clientY - r.top) * M.H / r.height;
+    if (px >= BTN.x - 4 && px <= BTN.x + BTN.s + 50 && py >= BTN.y - 4 && py <= BTN.y + BTN.s + 18) return toggleWorld();
+    drop();
+  });
   // 🤫 secret: double-click the Sound button to jump straight to 100 blocks
   M.skip100 = () => {
     if (!M.running) go();
@@ -3011,15 +3027,28 @@ function startStack() {
     const sky = Math.min(1, M.score / 40);
     g.addColorStop(0, `hsl(${230 + sky * 40},60%,${30 - sky * 22}%)`); g.addColorStop(1, `hsl(${200 + sky * 60},60%,${55 - sky * 35}%)`);
     c.fillStyle = g; c.fillRect(0, 0, M.W, M.H);
-    const baseY = M.H - 60, yOf = i => baseY - i * BH + M.camY;
-    c.fillStyle = "#2f5a2f"; c.fillRect(0, baseY + BH + M.camY, M.W, M.H);
+    c.save(); c.scale(1 / M.Z, 1 / M.Z);
+    const baseY = WH() - 60, yOf = i => baseY - i * BH + M.camY;
+    c.fillStyle = "#2f5a2f"; c.fillRect(0, baseY + BH + M.camY, WW(), WH());
     const box = (b, y) => {
       c.fillStyle = `hsl(${b.hue},70%,55%)`; c.fillRect(b.x, y, b.w, BH - 2);
       c.fillStyle = `hsl(${b.hue},70%,68%)`; c.fillRect(b.x, y, b.w, 5);
     };
-    M.blocks.forEach((b, i) => { const y = yOf(i); if (y > -BH && y < M.H) box(b, y); });
+    M.blocks.forEach((b, i) => { const y = yOf(i); if (y > -BH && y < WH()) box(b, y); });
     M.falling.forEach(b => box(b, yOf(b.y) + b.dy || yOf(b.y)));
     if (M.cur) box(M.cur, yOf(M.blocks.length));
+    c.restore();
+    // the "enlarge world" square
+    const on = M.Z === 2;
+    c.fillStyle = on ? "#ffd700" : "rgba(255,255,255,.18)"; c.strokeStyle = "#fff"; c.lineWidth = 2;
+    c.fillRect(BTN.x, BTN.y, BTN.s, BTN.s); c.strokeRect(BTN.x, BTN.y, BTN.s, BTN.s);
+    c.strokeStyle = on ? "#1a1240" : "#fff"; c.lineWidth = 2.5; c.beginPath();
+    const m0 = BTN.x + 10, m1 = BTN.x + BTN.s - 10, n0 = BTN.y + 10, n1 = BTN.y + BTN.s - 10;
+    [[m0, n0, 1, 1], [m1, n0, -1, 1], [m0, n1, 1, -1], [m1, n1, -1, -1]].forEach(([x, y, dx, dy]) => { c.moveTo(x + dx * 7, y); c.lineTo(x, y); c.lineTo(x, y + dy * 7); });
+    c.stroke();
+    c.fillStyle = "#fff"; c.font = "700 11px system-ui, sans-serif"; c.textAlign = "left";
+    c.fillText("enlarge world", BTN.x, BTN.y + BTN.s + 13);
+    if (on) { c.fillStyle = "#ffd700"; c.fillText("BIG WORLD: harder!", BTN.x, BTN.y + BTN.s + 27); }
     c.fillStyle = "#fff"; c.font = "700 34px Rowdies, system-ui, sans-serif"; c.textAlign = "center";
     c.fillText(M.score, M.W / 2, 50); c.textAlign = "left";
     if (M.perfect >= 2) { c.fillStyle = "#ffd700"; c.font = "700 16px system-ui, sans-serif"; c.textAlign = "center"; c.fillText(`PERFECT ×${M.perfect}`, M.W / 2, 74); c.textAlign = "left"; }
@@ -3033,12 +3062,12 @@ function startStack() {
       const dt = Math.min(.05, (PAUSED ? 0 : (t - M.last) / 1000)); M.last = t;
       if (M.cur && M.running) {
         M.cur.x += M.cur.dir * M.cur.speed * dt;
-        if (M.cur.x > M.W - M.cur.w) M.cur.dir = -1;
+        if (M.cur.x > WW() - M.cur.w) M.cur.dir = -1;
         if (M.cur.x < 0) M.cur.dir = 1;
       }
       M.falling.forEach(b => { b.vy = (b.vy || 0) + 1400 * dt; b.dy = (b.dy || 0) + b.vy * dt; });
-      M.falling = M.falling.filter(b => b.dy < M.H);
-      const want = Math.max(0, (M.blocks.length - 8) * BH);
+      M.falling = M.falling.filter(b => b.dy < WH());
+      const want = Math.max(0, (M.blocks.length - 8 * M.Z) * BH);
       M.camY += (want - M.camY) * Math.min(1, dt * 6);
       draw();
       M.raf = requestAnimationFrame(loop);
