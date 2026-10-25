@@ -407,6 +407,15 @@
   .hip.hip-rainbow { background: linear-gradient(135deg, #ff4d6d55, #ffd60a55, #42e39255, #4cc9f055, #c77dff55), var(--panel); animation: hipHue 4s linear infinite; }
   @keyframes hipHue { to { filter: hue-rotate(360deg); } }
   .hip.hip-flip { transform: rotate(180deg); transition: transform .8s; } .hip { transition: transform .8s; }
+  .hip-calc { background: #1b1640; border: 3px solid var(--gold); border-radius: 18px; padding: 12px; margin: 12px auto; max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  .hip-calc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .hip-calc-screen { background: #cfe8d2; color: #0f2a14; border-radius: 10px; padding: 8px 12px; text-align: right; font-family: ui-monospace, Menlo, monospace; margin-bottom: 10px; box-shadow: inset 0 2px 6px rgba(0,0,0,.25); }
+  .hip-calc-screen small { display: block; min-height: 1.2em; opacity: .7; font-size: .9rem; word-break: break-all; } .hip-calc-screen span { font-size: 2rem; font-weight: 800; word-break: break-all; }
+  .hip-calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .hip-key { font: inherit; font-size: 1.25rem; font-weight: 800; padding: 14px 0; border-radius: 12px; border: 0; background: #3a3170; color: #fff; cursor: pointer; box-shadow: 0 4px 0 #241d4d; }
+  .hip-key:active { transform: translateY(3px); box-shadow: 0 1px 0 #241d4d; }
+  .hip-key.op { background: #ff9f1c; color: #2a1600; box-shadow: 0 4px 0 #b36b00; } .hip-key.clr { background: #e63946; box-shadow: 0 4px 0 #8a1f28; } .hip-key.fn { background: #4cc9f0; color: #06283a; box-shadow: 0 4px 0 #1f7a99; }
+  .hip-key[data-k="="] { background: #42e392; color: #06301a; box-shadow: 0 4px 0 #1f8a52; }
   .hip-reveal { margin: 6px 0 10px; } .hip-reveal summary { cursor: pointer; font-weight: 800; color: var(--gold); } .hip-reveal p { font-size: 1.15rem; font-weight: 700; }
   .hip-tries { display: flex; flex-wrap: wrap; gap: 6px; } .hip-try { font-size: .85rem; padding: 6px 12px; }
   .hip-topics { margin-top: 12px; } .hip-topics summary { cursor: pointer; font-weight: 800; }
@@ -6285,6 +6294,8 @@ function hippoAnswer(qRaw) {
     const want = STARTERS.filter(x => q.includes(x.genre.toLowerCase())), pool = want.length ? want : STARTERS, st = pool[rnd(0, pool.length - 1)];
     return R("Story Starters", "✍️", /how/.test(q) ? "Start with a hook, then add a problem, a middle where things happen, and an ending!" : "Here's a story starter for you!", `${/how/.test(q) ? "Try this one: " : ""}(${st.genre}) “${st.text}” Keep the story going in Story Starters: pick a starter, write what happens next, and save your stories.`, hBig("🐶📝", "#fff3d6", st.genre + " story"), { label: "🐶 Go to Story Starters", fn: () => startStories() });
   }
+  // 🧮 the calculator
+  if (/\bcalculators?\b/.test(q)) return R("Calculator", "🧮", "A calculator is a tool that does math for you, fast!", "Hippo has its own calculator with +, −, ×, ÷, square roots, squares and percents. Want to use it?", hBig("🧮", "#e9f5ff", "calculator"), { label: "🧮 Open Hippo's calculator", fn: () => HIPPO_OPEN_CALC && HIPPO_OPEN_CALC("") });
   // 🤫 secrets! (found ones are remembered on this device)
   const found = id => { const f = store.get("hippo_secrets", []); if (!f.includes(id)) { f.push(id); store.set("hippo_secrets", f); } return f.length; };
   const S = (id, text, why, pic, action) => { const n = found(id); return R("Secret!", "🤫", text, `${why} 🔍 You've found ${n} of ${HIPPO_SECRET_COUNT} secrets!`, pic, action); };
@@ -6452,6 +6463,25 @@ function hippoAnswer(qRaw) {
   }
   return null;
 }
+const HIPPO_MATH_TOPICS = new Set(["Adding", "Subtracting", "Multiplying", "Dividing", "Fractions", "Percents", "Area and perimeter", "Squares, cubes and square roots", "Rounding", "Comparing numbers", "Fractions and decimals", "Simplifying fractions", "Adding and subtracting fractions", "Comparing fractions", "Greatest common factor", "Least common multiple", "Factors and multiples", "Exponents", "Triangle angles", "Circles", "Mixed numbers", "Averages", "Order of operations", "Measurement", "Money", "Times tables", "Prime, even and odd", "Number patterns", "Place value"]);
+let HIPPO_OPEN_CALC = null;
+// turns "what is 3/4 of 20?" into something the calculator can show, like "3÷4×20"
+function hippoCalcPrefill(q) {
+  let t = q.toLowerCase().replace(/[?!=]/g, "").replace(/,(?=\d{3})/g, "").trim();
+  let m;
+  if ((m = t.match(/(\d+(?:\.\d+)?)\s*(?:%|percent)\s*of\s*(\d+(?:\.\d+)?)/))) return `${m[1]}%×${m[2]}`;
+  if ((m = t.match(/(\d+)\s*\/\s*(\d+)\s+of\s+(\d+(?:\.\d+)?)/))) return `${m[1]}÷${m[2]}×${m[3]}`;
+  if ((m = t.match(/square root of (\d+(?:\.\d+)?)/))) return `√${m[1]}`;
+  if ((m = t.match(/(\d+(?:\.\d+)?)\s*squared/))) return `${m[1]}²`;
+  if ((m = t.match(/(area|perimeter)[^\d]*(\d+(?:\.\d+)?)\s*(?:by|x|×|\*)\s*(\d+(?:\.\d+)?)/))) return m[1] === "area" ? `${m[2]}×${m[3]}` : `2×(${m[2]}+${m[3]})`;
+  t = t.replace(/^what is\s*/, "").replace(/multiplied by|times|\*|x/g, "×").replace(/divided by|\//g, "÷").replace(/plus/g, "+").replace(/minus|-/g, "−").replace(/\s+/g, "");
+  return /^[\d.+−×÷()²√%]+$/.test(t) ? t : "";
+}
+function hippoCalcEval(expr) {
+  let e = expr.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-").replace(/(\d+(?:\.\d+)?|\))²/g, "($1)**2").replace(/√\(?(\d+(?:\.\d+)?)\)?/g, "Math.sqrt($1)").replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+  if (!/^[\d.+\-*/() ]*(Math\.sqrt\([\d.]+\)[\d.+\-*/() ]*)*$/.test(e.replace(/Math\.sqrt\([\d.]+\)/g, "1"))) return null;
+  try { const v = Function(`"use strict";return (${e})`)(); if (!Number.isFinite(v)) return null; return Number.isInteger(v) ? fmt(v) : String(Math.round(v * 1e8) / 1e8); } catch (err) { return null; }
+}
 function startHippo(initial = "") {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
@@ -6459,7 +6489,7 @@ function startHippo(initial = "") {
   HIPPO_BANK ||= hippoBank();
   const total = hippoCount();
   const topics = [...HIPPO_FAMILIES.map(f => [f[0], f[1], f[2]]), ...Object.entries(HIPPO_BANK.reduce((t, e) => { t[e.topic] = t[e.topic] || [e.icon, 0]; t[e.topic][1]++; return t; }, {})).map(([n, [i, c]]) => [n, i, c])];
-  const tries = ["Tell me a joke", "What day of the week was July 4, 2010?", "What is slope?", "What games can I play?", "What is 1/2 + 1/3?", "Simplify 6/8", "What is the greatest common factor of 12 and 18?", "What was a dinosaur?", "What is a volcano?", "What is gravity?", "Give me a story idea", "Why did the dinosaurs go extinct?", "How big was a megalodon?", "When did woolly mammoths live?", "How do I learn to type?", "What is 47 in Roman numerals?", "What is the value of the 4 in 3,482?", "What is the opposite of brave?", "How many quarters are in $5?", "What is 7 × 8?", "What is 3/4 of 20?", "What does a cheetah eat?", "How many moons does Saturn have?", "What is the capital of Japan?", "Show 3:45 on a clock", "Is 97 a prime number?", "How many inches are in 5 feet?", "What is the area of a 6 by 4 rectangle?", "How many sides does a hexagon have?", "Show me a carbon atom", "What is a surplus?"];
+  const tries = ["What is a calculator?", "Tell me a joke", "What day of the week was July 4, 2010?", "What is slope?", "What games can I play?", "What is 1/2 + 1/3?", "Simplify 6/8", "What is the greatest common factor of 12 and 18?", "What was a dinosaur?", "What is a volcano?", "What is gravity?", "Give me a story idea", "Why did the dinosaurs go extinct?", "How big was a megalodon?", "When did woolly mammoths live?", "How do I learn to type?", "What is 47 in Roman numerals?", "What is the value of the 4 in 3,482?", "What is the opposite of brave?", "How many quarters are in $5?", "What is 7 × 8?", "What is 3/4 of 20?", "What does a cheetah eat?", "How many moons does Saturn have?", "What is the capital of Japan?", "Show 3:45 on a clock", "Is 97 a prime number?", "How many inches are in 5 feet?", "What is the area of a 6 by 4 rectangle?", "How many sides does a hexagon have?", "Show me a carbon atom", "What is a surplus?"];
   $app.innerHTML = `
     <div class="panel hip">
       <div class="topline"><span class="label">🦛 Ask Hippo</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
@@ -6467,6 +6497,11 @@ function startHippo(initial = "") {
       <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">Ask 🦛</button></form>
       <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button></div>
       <div id="hip-out"></div>
+      <div class="hip-calc" id="hip-calc" hidden>
+        <div class="hip-calc-top"><b>🧮 Hippo's Calculator</b><button class="iconbtn" id="hip-calc-x" aria-label="Close calculator">✕ Close</button></div>
+        <div class="hip-calc-screen"><small id="hip-calc-expr"> </small><span id="hip-calc-val">0</span></div>
+        <div class="hip-calc-keys">${["C", "⌫", "(", ")", "√", "x²", "%", "÷", "7", "8", "9", "×", "4", "5", "6", "−", "1", "2", "3", "+", "±", "0", ".", "="].map(k => `<button type="button" class="hip-key${/[÷×−+=]/.test(k) ? " op" : /^[C⌫]$/.test(k) ? " clr" : /[√²%()±]/.test(k) ? " fn" : ""}" data-k="${k}">${k}</button>`).join("")}</div>
+      </div>
       <h3>Try asking</h3><div class="hip-tries">${tries.map(t => `<button class="chip hip-try" type="button">${esc(t)}</button>`).join("")}</div>
       <details class="hip-topics"><summary>📚 Everything Hippo knows (${fmt(total)} answers)</summary><div>${topics.map(([n, i, c]) => `<span><b>${i} ${esc(n)}</b> ${fmt(c)}</span>`).join("")}</div></details>
     </div>`;
@@ -6478,8 +6513,32 @@ function startHippo(initial = "") {
     if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>🦛❓</span></div><div><b>Hmm, Hippo doesn't know that one yet.</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
     out.innerHTML = `<div class="hip-card"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? `<p>${esc(ans.why)}</p>` : ""}${ans.reveal ? `<details class="hip-reveal"><summary>👀 Show the answer</summary><p>${esc(ans.reveal)}</p></details>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}</div></div>`;
     if (ans.action) document.getElementById("hip-act").addEventListener("click", ans.action.fn);
+    // every math answer offers the calculator, with the problem already typed in
+    if (HIPPO_MATH_TOPICS.has(ans.topic) && !ans.action) {
+      const pre = hippoCalcPrefill(q);
+      document.querySelector("#hip-out .hip-text").insertAdjacentHTML("beforeend", `<button class="btn" id="hip-calc-go">🧮 Try it on the calculator</button>`);
+      document.getElementById("hip-calc-go").addEventListener("click", () => openCalc(pre));
+    }
     tone([523, 784], .06, "triangle", .06);
   };
+  // 🧮 the calculator
+  let calcExpr = "", calcJustDone = false;
+  const calcShow = () => { document.getElementById("hip-calc-expr").textContent = calcExpr || " "; let v = "0"; if (calcExpr) { const r = hippoCalcEval(calcExpr); v = r === null ? "…" : r; } document.getElementById("hip-calc-val").textContent = v; };
+  const openCalc = (pre = "") => { const c = document.getElementById("hip-calc"); c.hidden = false; calcExpr = pre; calcJustDone = false; calcShow(); c.scrollIntoView({ behavior: "smooth", block: "center" }); };
+  HIPPO_OPEN_CALC = openCalc;
+  document.getElementById("hip-calc-x").addEventListener("click", () => { document.getElementById("hip-calc").hidden = true; });
+  document.querySelectorAll(".hip-key").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.k; tone([600 + "0123456789".indexOf(k) * 30], .03, "triangle", .04);
+    if (k === "C") calcExpr = "";
+    else if (k === "⌫") calcExpr = calcExpr.slice(0, -1);
+    else if (k === "=") { const r = hippoCalcEval(calcExpr); if (r !== null) { document.getElementById("hip-calc-expr").textContent = calcExpr + " ="; calcExpr = String(r).replace(/,/g, ""); calcJustDone = true; document.getElementById("hip-calc-val").textContent = r; return; } }
+    else if (k === "x²") calcExpr += "²";
+    else if (k === "√") calcExpr += "√";
+    else if (k === "±") calcExpr = calcExpr.startsWith("−") ? calcExpr.slice(1) : "−" + calcExpr;
+    else { if (calcJustDone && /[0-9.]/.test(k)) calcExpr = ""; calcExpr += k; }
+    calcJustDone = false; calcShow();
+  }));
+  document.getElementById("hip-calc").addEventListener("keydown", e => { const map = { "*": "×", "/": "÷", "-": "−", "Enter": "=", "Backspace": "⌫", "Escape": "C" }, k = map[e.key] || e.key; const b = document.querySelector(`.hip-key[data-k="${CSS.escape(k)}"]`); if (b) { e.preventDefault(); b.click(); } });
   document.getElementById("hip-form").addEventListener("submit", e => { e.preventDefault(); ask(box.value); });
   document.getElementById("hip-rand").addEventListener("click", () => {
     const useBank = Math.random() < .4;
