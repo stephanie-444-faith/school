@@ -7110,8 +7110,8 @@ function startHippo(initial = "") {
   // "Try asking" is a fresh mix every time: one question from many different kinds, plus a few from Hippo's fact list
   const tries = [], seenQ = new Set(), famOrder = HIPPO_FAMILIES.map(f => [Math.random(), f]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
   const addTry = t => { t = String(t).trim(); if (t && !seenQ.has(t.toLowerCase())) { seenQ.add(t.toLowerCase()); tries.push(t); } };
-  famOrder.slice(0, 12).forEach(f => { try { addTry(f[3]()); } catch (e) {} });
-  for (let k = 0; k < 40 && tries.length < 20; k++) addTry(HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)].q);
+  famOrder.slice(0, 6).forEach(f => { try { addTry(f[3]()); } catch (e) {} });
+  for (let k = 0; k < 40 && tries.length < 10; k++) addTry(HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)].q);
   tries.sort(() => Math.random() - .5);
   $app.innerHTML = `
     <div class="panel hip">
