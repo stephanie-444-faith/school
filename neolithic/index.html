@@ -127,6 +127,9 @@
   body[data-scene="rainbow"] { background: linear-gradient(135deg, #5b2a86, #2f6fe4 25%, #14966a 50%, #c9670f 75%, #d7334a); background-attachment: fixed; }
   body[data-scene="rainbow"]::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'><text x='14' y='40' font-size='26' opacity='.22'>%F0%9F%8C%88</text><text x='120' y='70' font-size='20' opacity='.22'>%E2%AD%90</text><text x='220' y='30' font-size='30' opacity='.22'>%F0%9F%8E%89</text><text x='60' y='150' font-size='22' opacity='.22'>%E2%9C%A8</text><text x='180' y='170' font-size='26' opacity='.22'>%F0%9F%8C%88</text><text x='270' y='120' font-size='18' opacity='.22'>%E2%AD%90</text><text x='20' y='250' font-size='20' opacity='.22'>%F0%9F%8E%89</text><text x='130' y='260' font-size='28' opacity='.22'>%E2%9C%A8</text><text x='240' y='240' font-size='22' opacity='.22'>%F0%9F%8C%88</text></svg>"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
   body[data-scene="rainbow"]::after { display: none; }
+  body[data-scene="graph"] { background: linear-gradient(rgba(120,180,255,.13) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(90deg, rgba(120,180,255,.13) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(#0d2a4a, #123a63 60%, #0a2036); background-attachment: fixed; }
+  body[data-scene="graph"]::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'><text x='14' y='40' font-size='26' opacity='.22'>%E2%9A%96</text><text x='120' y='70' font-size='20' opacity='.22'>%F0%9F%8D%8B</text><text x='220' y='30' font-size='30' opacity='.22'>%F0%9F%9A%97</text><text x='60' y='150' font-size='22' opacity='.22'>%F0%9F%93%8F</text><text x='180' y='170' font-size='26' opacity='.22'>%F0%9F%A5%A4</text><text x='270' y='120' font-size='18' opacity='.22'>%F0%9F%92%B2</text><text x='20' y='250' font-size='20' opacity='.22'>%F0%9F%94%A2</text><text x='130' y='260' font-size='28' opacity='.22'>%E2%8F%B1</text><text x='240' y='240' font-size='22' opacity='.22'>%F0%9F%A7%AE</text></svg>"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
+  body[data-scene="graph"]::after { display: none; }
   body { transition: background .5s; }
   @media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none !important; } }
   .wrap { max-width: 820px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 16px; }
@@ -1121,10 +1124,104 @@ function mathQuestion(gen) {
   }
   return { kind: "mc", tag: m.tag ? "Math · " + m.tag : "Math", prompt: esc(m.p), a, w: w.slice(0, 3), why: esc(m.why) };
 }
+/* ---------- Ratios & Rates: MCPS Math 6/7 Accelerated, MP1, Unit 2 (Introducing Ratios and Rates) practice ----------
+   Built from the Illustrative Mathematics lessons this unit uses: ratio language, equivalent ratios, tables,
+   double number lines, tape diagrams (part-part-whole), unit rates ("how much for one"), constant speed,
+   converting units, and comparing situations. Every generator makes new numbers each time. */
+const RATIO_PARTS = {
+  all: { name: "Everything", desc: "The whole unit, mixed" },
+  basics: { name: "Ratio basics", desc: "Ratio language, a:b, recipes, equivalent ratios" },
+  tables: { name: "Tables & number lines", desc: "Missing values, double number lines, scaling" },
+  tape: { name: "Part-part-whole", desc: "Tape diagrams and total problems" },
+  rates: { name: "Unit rates & speed", desc: "How much for one, unit price, constant speed" },
+  compare: { name: "Compare & convert", desc: "Better deal, faster, stronger mix, unit conversions" },
+  vocab: { name: "Vocabulary", desc: "Words the test uses" }
+};
+const R_THINGS = [["cats", "dogs"], ["red marbles", "blue marbles"], ["apples", "bananas"], ["boys", "girls"], ["cups of flour", "cups of sugar"], ["trumpets", "drums"], ["pencils", "erasers"], ["soccer balls", "basketballs"], ["tulips", "roses"], ["crackers", "slices of cheese"]];
+const R_MIX = [["cups of blue paint", "cups of yellow paint", "green paint"], ["cups of lemon juice", "cups of water", "lemonade"], ["spoons of cocoa", "cups of milk", "hot chocolate"], ["cups of rice", "cups of water", "rice"], ["scoops of powder", "cups of water", "sports drink"], ["drops of red dye", "cups of frosting", "pink frosting"]];
+const R_UNITS = [["inches", "foot", 12, "feet"], ["feet", "yard", 3, "yards"], ["ounces", "pound", 16, "pounds"], ["cups", "quart", 4, "quarts"], ["centimeters", "meter", 100, "meters"], ["grams", "kilogram", 1000, "kilograms"], ["minutes", "hour", 60, "hours"], ["quarts", "gallon", 4, "gallons"], ["millimeters", "centimeter", 10, "centimeters"]];
+const rPick = a => a[rnd(0, a.length - 1)];
+const money = v => "$" + (Math.round(v * 100) / 100).toFixed(2);
+const rgcd = (a, b) => b ? rgcd(b, a % b) : a;
+const RATIO_GENS = {
+  basics: [
+    () => { const [x, y] = rPick(R_THINGS), [a, b] = rTwo(); return { tag: "Ratio language", p: `There are ${a} ${x} and ${b} ${y}. What is the ratio of ${y} to ${x}?`, a: `${b} : ${a}`, w: [`${a} : ${b}`, `${b} : ${a + b}`, `${a} : ${a + b}`].filter(v => v !== `${b} : ${a}`), why: `Order matters! "${y} to ${x}" means ${y} first: ${b} : ${a}.` }; },
+    () => { const [x, y] = rPick(R_THINGS), [a, b] = rTwo(); return { tag: "Ratio language", p: `For every ${a} ${x} there are ${b} ${y}. What is the ratio of ${x} to ALL of them together?`, a: `${a} : ${a + b}`, w: [`${a} : ${b}`, `${b} : ${a + b}`, `${a + b} : ${a}`], why: `The total is ${a} + ${b} = ${a + b}. So ${x} to total is ${a} : ${a + b}.` }; },
+    () => { const [x, y] = rPick(R_THINGS), [a, b] = rTwo(2, 7), k = rnd(2, 6); return { tag: "Ratio language", p: `A picture shows ${a * k} ${x} and ${b * k} ${y}. Which sentence is true?`, a: `There are ${a} ${x} for every ${b} ${y}.`, w: [`There are ${b} ${x} for every ${a} ${y}.`, `There are ${a + b} ${x} for every ${b} ${y}.`, `There are ${a * k} ${x} for every ${a} ${y}.`], why: `${a * k} : ${b * k} has the same value as ${a} : ${b} (divide both by ${k}). So for every ${a} ${x} there are ${b} ${y}.` }; },
+    () => { const [x, y, z] = rPick(R_MIX), a = rnd(1, 5), b = rnd(2, 7), k = rnd(2, 8); return { tag: "Recipes", p: `A recipe for ${z} uses ${a} ${x} for every ${b} ${y}. How many ${y} go with ${a * k} ${x}?`, a: b * k, x: [b + a * k - a, a * k, b * k + b, b * (k + 1)], why: `${a} × ${k} = ${a * k}, so the batch is ${k} times as big. Multiply the other amount by ${k} too: ${b} × ${k} = ${b * k}.` }; },
+    () => { const [a, b] = rTwo(), k = rnd(2, 9), ok = `${a * k} : ${b * k}`; return { tag: "Equivalent ratios", p: `Which ratio is equivalent to ${a} : ${b}?`, a: ok, w: [`${a + k} : ${b + k}`, `${a * k} : ${b + k}`, `${b * k} : ${a * k}`].filter(v => v !== ok), why: `Equivalent ratios multiply (or divide) BOTH numbers by the same number. ${a} × ${k} = ${a * k} and ${b} × ${k} = ${b * k}. Adding the same number does not make an equivalent ratio.` }; },
+    () => { const [a, b] = rTwo(), k = rnd(2, 6), j = rnd(2, 6), same = Math.random() < .5, c = a * k, d = same ? b * k : b * k + j; return { tag: "Equivalent ratios", p: `Are ${a} : ${b} and ${c} : ${d} equivalent ratios?`, a: same ? `Yes, both numbers were multiplied by ${k}` : "No, they are not equivalent", w: same ? ["No, they are not equivalent", `Yes, because ${c} − ${a} = ${d} − ${b}`, "Only if you add them"] : [`Yes, both numbers were multiplied by ${k}`, "Yes, because both numbers got bigger", "Yes, because they are both ratios"], why: same ? `${a} × ${k} = ${c} and ${b} × ${k} = ${d}. Same multiplier, so they're equivalent.` : `${a} × ${k} = ${c}, but ${b} × ${k} = ${b * k}, not ${d}. Different multipliers, so they're not equivalent.` }; },
+    () => { const a = rnd(2, 12), b = rnd(2, 12), g = rgcd(a, b) > 1 ? 1 : rnd(2, 5), A = a * g, B = b * g, G = rgcd(A, B), ans = `${A / G} : ${B / G}`; return { tag: "Simplest form", p: `Write ${A} : ${B} with the smallest whole numbers (simplest form).`, a: ans, w: [`${A / G + 1} : ${B / G}`, `${B / G} : ${A / G}`, `${A} : ${B + 1}`].filter(v => v !== ans), why: `Divide both numbers by their greatest common factor, ${G}: ${A} ÷ ${G} = ${A / G} and ${B} ÷ ${G} = ${B / G}.` }; }
+  ],
+  tables: [
+    () => { const a = rnd(2, 9), b = rnd(2, 12), k1 = rnd(2, 5), k2 = rnd(6, 12); return { tag: "Tables of equivalent ratios", p: `This table shows equivalent ratios. x: ${a}, ${a * k1}, ${a * k2}. y: ${b}, ${b * k1}, ?. What is the missing number?`, a: b * k2, x: [b + a * k2 - a, b * k2 + b, a * k2, b * (k2 - 1)], why: `${a} × ${k2} = ${a * k2}, so multiply ${b} by ${k2} too: ${b * k2}.` }; },
+    () => { const a = rnd(2, 8), b = rnd(3, 12), k = rnd(3, 10); return { tag: "Double number lines", p: `A double number line shows ${a} cups of juice lined up with ${b} cups of water. What number of cups of water lines up with ${a * k} cups of juice?`, a: b * k, x: [b + (a * k - a), b * k - b, a * k, b * (k + 1)], why: `${a * k} is ${k} jumps of ${a}. Take ${k} jumps of ${b} on the water line: ${b} × ${k} = ${b * k}.` }; },
+    () => { const a = rnd(2, 6), b = rnd(3, 9), t = rnd(3, 6); const ticks = Array.from({ length: t }, (_, i) => `${a * i}↔${b * i}`).join(", "); return { tag: "Double number lines", p: `A double number line has tick marks at ${ticks}. What pair goes on the next tick mark?`, a: `${a * t}↔${b * t}`, w: [`${a * t}↔${b * t + 1}`, `${a * t + 1}↔${b * t + 1}`, `${a * (t + 1)}↔${b * t}`], why: `Each jump adds ${a} on the top line and ${b} on the bottom line. ${a * (t - 1)} + ${a} = ${a * t}, and ${b * (t - 1)} + ${b} = ${b * t}.` }; },
+    () => { const a = rnd(2, 6), b = rnd(2, 6) * a, h = rnd(2, 5); const per = b / a; return { tag: "Tables of equivalent ratios", p: `A table: ${a} hours → ${b} dollars earned. Fill in the row for 1 hour.`, a: `1 hour → ${per} dollars`, w: [`1 hour → ${b} dollars`, `1 hour → ${b - a} dollars`, `1 hour → ${a} dollars`], why: `Divide both by ${a}: ${a} ÷ ${a} = 1 hour, and ${b} ÷ ${a} = ${per} dollars. That's the unit rate.` }; },
+    () => { const a = rnd(3, 9), b = rnd(3, 9), m = rnd(2, 4), d = a * m; return { tag: "Scaling down", p: `${d} cups of oats make ${b * m} cookies. At the same rate, how many cookies do ${a} cups of oats make?`, a: b, x: [b * m + a, b + 1, b * 2, d], why: `${d} ÷ ${m} = ${a}, so divide the cookies by ${m} too: ${b * m} ÷ ${m} = ${b}.` }; },
+    () => { const a = rnd(2, 9), b = rnd(2, 9), k = rnd(2, 9), c = rnd(2, 9); return { tag: "Tables of equivalent ratios", p: `In a table of equivalent ratios, one row is ${a} and ${b}. Another row is ${a * k} and ${b * k}. A third row has ${b * c} in the second column. What goes in the first column?`, a: a * c, x: [a + b * c - b, a * c + a, b * c, a * k], why: `${b * c} = ${b} × ${c}, so multiply ${a} by ${c}: ${a * c}.` }; }
+  ],
+  tape: [
+    () => { const [x, y] = rPick(R_THINGS), a = rnd(1, 6), b = rnd(1, 7), k = rnd(2, 9); return { tag: "Part-part-whole", p: `The ratio of ${x} to ${y} is ${a} : ${b}. There are ${(a + b) * k} in all. How many ${y} are there?`, a: b * k, x: [a * k, Math.round((a + b) * k / 2), b * k + b, (a + b) * k - b], why: `A tape diagram has ${a} + ${b} = ${a + b} equal parts. ${(a + b) * k} ÷ ${a + b} = ${k} in each part. ${y}: ${b} parts × ${k} = ${b * k}.` }; },
+    () => { const [x, y, z] = rPick(R_MIX), a = rnd(1, 5), b = rnd(2, 7), k = rnd(2, 8); return { tag: "Tape diagrams", p: `To make ${z}, mix ${x} and ${y} in a ${a} : ${b} ratio. You want ${(a + b) * k} cups in all. How much is ONE part of the tape diagram worth?`, a: k, x: [a + b, (a + b) * k / 2, k + 1, k * 2], why: `There are ${a} + ${b} = ${a + b} parts. ${(a + b) * k} ÷ ${a + b} = ${k}.` }; },
+    () => { const a = rnd(1, 6), b = rnd(1, 6), k = rnd(2, 9); return { tag: "Part-part-whole", p: `Mia and Leo share stickers in the ratio ${a} : ${b}. Leo gets ${b * k} stickers. How many stickers are there in all?`, a: (a + b) * k, x: [a * k, b * k + a, (a + b) * k + k, a + b * k], why: `Leo's ${b} parts = ${b * k}, so 1 part = ${k}. All ${a + b} parts: ${a + b} × ${k} = ${(a + b) * k}.` }; },
+    () => { const a = rnd(1, 5), b = a + rnd(1, 4), k = rnd(2, 9); return { tag: "Part-part-whole", p: `The ratio of dogs to cats at a shelter is ${a} : ${b}. There are ${(b - a) * k} more cats than dogs. How many dogs are there?`, a: a * k, x: [b * k, (b - a) * k, a * k + k, (a + b) * k], why: `Cats have ${b - a} more parts than dogs. Those ${b - a} parts = ${(b - a) * k}, so 1 part = ${k}. Dogs: ${a} × ${k} = ${a * k}.` }; }
+  ],
+  rates: [
+    () => { const n = rnd(2, 12), each = rnd(2, 20) / 2 + (Math.random() < .5 ? .25 : 0); return { tag: "Unit price", p: `${n} notebooks cost ${money(n * each)}. What is the price for 1 notebook?`, a: money(each), w: [money(each + .5), money(n * each / 2), money(each * 2)], why: `Divide the total by the number of notebooks: ${money(n * each)} ÷ ${n} = ${money(each)}.` }; },
+    () => { const h = rnd(2, 8), sp = rnd(20, 70); return { tag: "Constant speed", p: `A car travels ${h * sp} miles in ${h} hours at a constant speed. How fast is it going?`, a: `${sp} miles per hour`, w: [`${sp + h} miles per hour`, `${h * sp * h} miles per hour`, `${sp - 5} miles per hour`], why: `Speed = distance ÷ time = ${h * sp} ÷ ${h} = ${sp} miles per hour.` }; },
+    () => { const sp = rnd(2, 15), t = rnd(3, 20); return { tag: "Constant speed", p: `A runner goes ${sp} meters per second. How far does she go in ${t} seconds?`, a: sp * t, x: [sp + t, sp * t + sp, sp * (t - 1), Math.round(t / sp)], why: `Distance = speed × time = ${sp} × ${t} = ${sp * t} meters.` }; },
+    () => { const sp = rnd(3, 12), t = rnd(2, 12); return { tag: "Constant speed", p: `A bike rides at ${sp} miles per hour. How long does it take to ride ${sp * t} miles?`, a: `${t} hours`, w: [`${t + 1} hours`, `${t * 2} hours`, `${sp} hours`].filter(v => v !== `${t} hours`), why: `Time = distance ÷ speed = ${sp * t} ÷ ${sp} = ${t} hours.` }; },
+    () => { const lem = rnd(2, 8), dol = rnd(2, 5); return { tag: "Two unit rates", p: `${lem * dol} lemons cost $${dol}. Which pair of unit rates is correct?`, a: `${lem} lemons per dollar, and 1/${lem} of a dollar per lemon`, w: [`${lem * dol} lemons per dollar, and $${dol} per lemon`, `1/${lem} of a lemon per dollar, and ${lem} dollars per lemon`, `${dol} lemons per dollar, and 1/${dol} of a dollar per lemon`], why: `Every ratio has two unit rates. Lemons per dollar: ${lem * dol} ÷ ${dol} = ${lem}. Dollars per lemon: ${dol} ÷ ${lem * dol} = 1/${lem} (about ${money(1 / lem)}). The two unit rates are reciprocals.` }; },
+    () => { const per = rnd(2, 15), n = rnd(3, 12); return { tag: "How much for one", p: `A printer prints ${per * 4} pages in 4 minutes. At this rate, how many pages does it print in ${n} minutes?`, a: per * n, x: [per * 4 + n, per * n + per, per * (n + 4), n * 4], why: `First find pages per 1 minute: ${per * 4} ÷ 4 = ${per}. Then ${per} × ${n} = ${per * n}.` }; },
+    () => { const w = rnd(3, 9), p = rnd(6, 20), n = rnd(2, 6); return { tag: "How much for one", p: `It takes ${w * n} minutes to wash ${n} cars. At the same rate, how many minutes for ${n + 3} cars?`, a: w * (n + 3), x: [w * n + 3, w * (n + 2), (w + 3) * n, w * n * 3], why: `1 car takes ${w * n} ÷ ${n} = ${w} minutes. ${n + 3} cars: ${w} × ${n + 3} = ${w * (n + 3)} minutes.` }; }
+  ],
+  compare: [
+    () => { const pa = rnd(2, 5), na = rnd(3, 8), pb = pa + rnd(-1, 2) / 2, nb = na + rnd(2, 5), ua = pa / na, ub = pb * 1, A = `${na} for ${money(pa * na)}`, B = `${nb} for ${money(pb * nb)}`; if (Math.abs(pa - pb) < .01) return RATIO_GENS.compare[1](); const better = pa < pb ? A : B; return { tag: "Better deal", p: `Store A sells juice boxes ${A}. Store B sells them ${B}. Which is the better deal?`, a: better === A ? "Store A" : "Store B", w: [better === A ? "Store B" : "Store A", "They cost the same per box", "You can't tell"], why: `Find the unit price. A: ${money(pa * na)} ÷ ${na} = ${money(pa)} each. B: ${money(pb * nb)} ÷ ${nb} = ${money(pb)} each. The lower price per box is the better deal.` }; },
+    () => { const ta = rnd(10, 30), sa = rnd(3, 8), tb = rnd(10, 30), sb = rnd(3, 8); const ra = ta / sa, rb = tb / sb; if (Math.abs(ra - rb) < .05) return RATIO_GENS.compare[2](); return { tag: "Who is faster?", p: `Ana runs ${ta * 10} meters in ${sa * 10} seconds. Ben runs ${tb * 10} meters in ${sb * 10} seconds. Who is faster?`, a: ra > rb ? "Ana" : "Ben", w: [ra > rb ? "Ben" : "Ana", "They are the same speed", "The one who ran farther"], why: `Compare meters per second. Ana: ${ta * 10} ÷ ${sa * 10} ≈ ${hFmt(Math.round(ra * 100) / 100)}. Ben: ${tb * 10} ÷ ${sb * 10} ≈ ${hFmt(Math.round(rb * 100) / 100)}. More meters each second is faster.` }; },
+    () => { const a1 = rnd(2, 6), b1 = rnd(2, 8), a2 = rnd(2, 6), b2 = rnd(2, 8); const r1 = a1 / b1, r2 = a2 / b2; if (Math.abs(r1 - r2) < .01) return RATIO_GENS.compare[3](); return { tag: "Stronger mixture", p: `Mix A uses ${a1} spoons of cocoa for ${b1} cups of milk. Mix B uses ${a2} spoons of cocoa for ${b2} cups of milk. Which tastes more chocolatey?`, a: r1 > r2 ? "Mix A" : "Mix B", w: [r1 > r2 ? "Mix B" : "Mix A", "They taste the same", "The one with more milk"], why: `Compare cocoa per 1 cup of milk. A: ${a1} ÷ ${b1} ≈ ${hFmt(Math.round(r1 * 100) / 100)}. B: ${a2} ÷ ${b2} ≈ ${hFmt(Math.round(r2 * 100) / 100)}. More cocoa per cup is more chocolatey.` }; },
+    () => { const [small, big, per, bigs] = rPick(R_UNITS), n = rnd(2, 12); return { tag: "Converting units", p: `There are ${per} ${small} in 1 ${big}. How many ${small} are in ${n} ${bigs}?`, a: n * per, x: [n + per, n * per + per, Math.round(n * per / 10), per], why: `Use the ratio 1 : ${per}. Multiply both by ${n}: ${n} ${bigs} = ${n} × ${per} = ${n * per} ${small}.` }; },
+    () => { const [small, big, per, bigs] = rPick(R_UNITS), n = rnd(2, 12); return { tag: "Converting units", p: `There are ${per} ${small} in 1 ${big}. How many ${bigs} is ${n * per} ${small}?`, a: n, x: [n * per * per, n + 1, per, n * 2], why: `Divide by ${per}: ${n * per} ÷ ${per} = ${n} ${bigs}.` }; },
+    () => { const inch = rnd(2, 20); return { tag: "Converting units", p: `1 inch is 2.54 centimeters. How many centimeters is ${inch} inches?`, a: hFmt(Math.round(inch * 254) / 100), x: [hFmt(Math.round(inch / 2.54 * 100) / 100), hFmt(inch + 2.54), hFmt(Math.round(inch * 25.4 * 100) / 100)], why: `Multiply by 2.54: ${inch} × 2.54 = ${hFmt(Math.round(inch * 254) / 100)} centimeters.` }; },
+    () => { const p1 = rnd(3, 9), d1 = rnd(2, 5), k = rnd(2, 4), same = Math.random() < .5, p2 = p1 * k + (same ? 0 : rnd(1, 3)); return { tag: "Same rate?", p: `Car A uses ${d1} gallons of gas to go ${p1 * 10} miles. Car B uses ${d1 * k} gallons to go ${p2 * 10} miles. Are they going the same number of miles per gallon?`, a: same ? "Yes, the same rate" : "No, Car B gets more miles per gallon", w: same ? ["No, Car B gets more miles per gallon", "No, Car A gets more miles per gallon", "You can't tell"] : ["Yes, the same rate", "No, Car A gets more miles per gallon", "You can't tell"], why: `A: ${p1 * 10} ÷ ${d1} = ${hFmt(p1 * 10 / d1)} miles per gallon. B: ${p2 * 10} ÷ ${d1 * k} = ${hFmt(Math.round(p2 * 10 / (d1 * k) * 100) / 100)} miles per gallon.` }; }
+  ]
+};
+const RATIO_VOCAB = [
+  { q: "What is a ratio?", a: "A way to compare two or more amounts, like 3 : 2", w: ["The answer to a division problem", "A number with a decimal point", "The total of two numbers"], why: "A ratio compares amounts, like 3 red for every 2 blue, written 3 : 2 or 3 to 2." },
+  { q: "Which is NOT a way to write the ratio of 3 to 5?", a: "3 + 5", w: ["3 : 5", "3 to 5", "for every 3, there are 5"], why: "Ratios can be written a : b, a to b, or with words like \"for every\". Adding them gives a total, not a ratio." },
+  { q: "What are equivalent ratios?", a: "Ratios you get by multiplying or dividing both numbers by the same number", w: ["Ratios where you add the same number to both", "Ratios with the same first number", "Ratios that use the same units"], why: "For example 2 : 3, 4 : 6 and 10 : 15 are equivalent: each is 2 : 3 multiplied by something." },
+  { q: "What is a rate?", a: "A ratio that compares two different kinds of units, like miles and hours", w: ["A ratio where both numbers are the same", "A type of graph", "The total of a ratio"], why: "Miles per hour, dollars per pound and pages per minute are all rates." },
+  { q: "What is a unit rate?", a: "How much of one quantity there is for 1 of the other", w: ["The biggest number in a ratio", "A ratio with no units", "The total divided by 2"], why: "Unit rates answer \"how much for one?\": for example $3 per notebook or 50 miles per 1 hour." },
+  { q: "What does the word \"per\" mean in \"60 miles per hour\"?", a: "For each, or for every 1", w: ["Plus", "Minus", "Percent"], why: "\"Per\" means \"for each\": 60 miles for each 1 hour." },
+  { q: "What is a double number line?", a: "Two number lines lined up so that equivalent ratios sit on the same tick marks", w: ["A number line with negative numbers", "A number line that is twice as long", "Two number lines that never match"], why: "The top and bottom lines show the two quantities; numbers that line up form equivalent ratios." },
+  { q: "What is a tape diagram used for?", a: "Showing the parts of a ratio as equal-sized boxes to find amounts", w: ["Measuring length with tape", "Showing temperature", "Graphing points"], why: "Each box is an equal part. If you know the total or one part, you can find the value of one box." },
+  { q: "In a part-part-whole problem with the ratio 2 : 3, how many equal parts are in the whole?", a: "5", w: ["6", "2", "3"], why: "Add the parts: 2 + 3 = 5 equal parts in all." },
+  { q: "A table of equivalent ratios is useful because…", a: "each row can be found by multiplying or dividing another row by the same number", w: ["each row adds 1", "the columns are always equal", "it only works with money"], why: "Every row in a table of equivalent ratios is the same ratio scaled up or down." },
+  { q: "To find which deal is better, what should you compare?", a: "The price for 1 item (unit price)", w: ["The total price only", "The number of items only", "Which store is closer"], why: "Unit price makes the deals fair to compare: the lower price for 1 item is the better deal." },
+  { q: "Two mixtures taste the same when…", a: "their ingredients are in equivalent ratios", w: ["they have the same total amount", "they use the same cup", "one has more of everything"], why: "Same flavor means the same ratio, like 2 : 3 and 4 : 6, even if one batch is bigger." },
+  { q: "If two things move at a constant speed, what stays the same?", a: "The distance traveled for each unit of time", w: ["The total distance", "The time it takes", "Nothing"], why: "Constant speed means the same distance every second (or minute or hour)." },
+  { q: "The two unit rates for 6 dollars for 3 pounds are…", a: "2 dollars per pound and 1/2 pound per dollar", w: ["6 dollars per pound and 3 pounds per dollar", "3 dollars per pound and 2 pounds per dollar", "9 dollars per pound"], why: "6 ÷ 3 = 2 dollars per pound. 3 ÷ 6 = 1/2 pound per dollar. The two unit rates are reciprocals." },
+  { q: "Order matters in a ratio. If there are 4 boys and 7 girls, the ratio of girls to boys is…", a: "7 : 4", w: ["4 : 7", "11 : 4", "7 : 11"], why: "Girls come first because the question says \"girls to boys\"." },
+  { q: "Which word problem phrase is a clue for a unit rate?", a: "\"How much for one?\"", w: ["\"How many in all?\"", "\"What is the difference?\"", "\"What is the perimeter?\""], why: "Unit rate means the amount for 1 of something." }
+];
+// two different whole numbers with no common factor (so "3 : 4" style answers never repeat or simplify)
+const rTwo = (lo = 2, hi = 9) => { let a, b; do { a = rnd(lo, hi); b = rnd(lo, hi); } while (a === b || rgcd(a, b) > 1); return [a, b]; };
+// keep making a new problem until all 4 choices are different and none are negative
+function ratioQuestion(gen) {
+  let q;
+  for (let i = 0; i < 30; i++) {
+    q = mathQuestion(gen);
+    const all = [q.a, ...q.w];
+    if (q.w.length === 3 && new Set(all).size === 4 && !all.some(x => /^-|NaN|undefined/.test(x))) break;
+  }
+  q.tag = q.tag.replace(/^Math/, "Ratios & Rates");
+  return q;
+}
 const bankQuestion = tag => q => ({ kind: "mc", tag, prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) });
 const SUBJECTS = {
   ss: { name: "Social Studies", desc: "Early Humans test" },
   math: { name: "Math", desc: "Endless new problems" },
+  ratios: { name: "Ratios & Rates", desc: "MCPS 6/7 Accelerated · MP1 Unit 2 test practice" },
   science: { name: "Science", desc: "Cells, Earth, energy, space" },
   health: { name: "Health", desc: "Safety, body, and food" },
   ela: { name: "Reading & Writing", desc: "Grammar and story words" },
@@ -1297,12 +1394,18 @@ function sourceFor(set) {
   const health_food = HEALTH_FOOD.map(x => () => bankQuestion("Health · Food")(x));
   const ela = ELA.map(x => () => bankQuestion("Reading & Writing")(x));
   const art = ART.map(x => () => bankQuestion("Art")(x));
+  const rv = RATIO_VOCAB.map(x => () => bankQuestion("Ratios & Rates · Vocabulary")(x));
+  const rp = k => [...RATIO_GENS[k], ...RATIO_GENS[k], ...RATIO_GENS[k]].map(gen => () => ratioQuestion(gen));
+  const ratioSets = { ratios_basics: rp("basics"), ratios_tables: rp("tables"), ratios_tape: rp("tape"), ratios_rates: rp("rates"), ratios_compare: rp("compare"), ratios_vocab: rv };
+  ratioSets.ratios_all = [...ratioSets.ratios_basics, ...ratioSets.ratios_tables, ...ratioSets.ratios_tape, ...ratioSets.ratios_rates, ...ratioSets.ratios_compare, ...rv];
+  if (set.startsWith("ratios_")) return ratioSets[set] || ratioSets.ratios_all;
   return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, mathhard, science: sci, health, health_safety, health_body, health_food, ela, art,
     mix: [...v, ...q, ...g, ...math, ...mathhard, ...sci, ...health, ...ela, ...art] }[set];
 }
 const currentSet = () => choice.subject === "ss" ? choice.set
   : choice.subject === "math" && choice.mlevel === "hard" ? "mathhard"
   : choice.subject === "health" ? "health_" + choice.hpart
+  : choice.subject === "ratios" ? "ratios_" + choice.rpart
   : choice.subject;
 const HEALTH_PARTS = {
   safety: { name: "Safety", desc: "Fire, bikes, the internet, and emergencies" },
@@ -1327,6 +1430,8 @@ let choice = { subject: store.get("subject", "ss"), set: store.get("set", "all")
 if (!["easy", "hard"].includes(choice.mlevel)) choice.mlevel = "easy";
 choice.hpart = store.get("hpart", "safety");
 if (!HEALTH_PARTS[choice.hpart]) choice.hpart = "safety";
+choice.rpart = store.get("rpart", "all");
+if (!RATIO_PARTS[choice.rpart]) choice.rpart = "all";
 if (!SUBJECTS[choice.subject]) choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
@@ -1375,6 +1480,7 @@ function showHome() {
     <div class="panel">
       <span class="label">Tap a subject to start studying</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
+      <span class="label">📏 Ratios & Rates (MCPS 6/7 Accelerated Math · MP1 · Unit 2: Introducing Ratios and Rates)</span><div class="chips">${chipRow(RATIO_PARTS, "rpart")}</div>
       <span class="label">Math level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">Health topic</span><div class="chips">${chipRow(HEALTH_PARTS, "hpart")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
@@ -1397,6 +1503,10 @@ function showHome() {
   }));
   $app.querySelectorAll("[data-hpart]").forEach(b => b.addEventListener("click", () => {
     choice.subject = "health"; choice.hpart = b.dataset.hpart; store.set("subject", "health"); store.set("hpart", choice.hpart);
+    startStudy();
+  }));
+  $app.querySelectorAll("[data-rpart]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = "ratios"; choice.rpart = b.dataset.rpart; store.set("subject", "ratios"); store.set("rpart", choice.rpart);
     startStudy();
   }));
   $app.querySelectorAll("[data-mlevel]").forEach(b => b.addEventListener("click", () => {
@@ -3160,6 +3270,7 @@ const STUDY_LEN = 10;
 function studyTitle() {
   if (choice.subject === "math") return `Math · ${MATH_LEVELS[choice.mlevel].name}`;
   if (choice.subject === "health") return `Health · ${HEALTH_PARTS[choice.hpart].name}`;
+  if (choice.subject === "ratios") return `Ratios & Rates · ${RATIO_PARTS[choice.rpart].name}`;
   return choice.subject === "ss" ? `Social Studies · ${SETS[choice.set].name}` : SUBJECTS[choice.subject].name;
 }
 function startStudy() {
@@ -7666,7 +7777,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^Ratios/, "graph"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
