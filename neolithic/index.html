@@ -164,9 +164,11 @@
   .cr-world { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 8px; border-radius: 14px; border: 1px solid var(--gold); background: linear-gradient(160deg, #3a2470, #24154a); color: var(--ink); text-align: center; }
   .cr-world i { font-style: normal; font-size: 1.8rem; } .cr-world b { font-size: .88rem; } .cr-world small { color: var(--gold); font-size: .75rem; }
   .cr-world.locked { opacity: .55; border-style: dashed; filter: grayscale(.6); }
+  .cr-floorline { position: absolute; left: 0; right: 0; border-top: 3px dashed rgba(255,215,0,.65); z-index: 1; pointer-events: none; }
+  .cr-floorline span { position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; top: -12px; background: rgba(26,18,64,.85); color: var(--gold); font-weight: 800; font-size: .72rem; padding: 2px 8px; border-radius: 0 0 8px 8px; }
   .cr-room { position: relative; height: 720px; margin: 14px 0; border-radius: 18px; overflow: hidden; border: 3px solid #6b4a2b; }
-  .cr-wall { position: absolute; left: 0; right: 0; top: 0; height: 18%; background: linear-gradient(#f2e3c6, #e3cfa8); border-bottom: 6px solid #8a5a2b; }
-  .cr-floor { position: absolute; left: 0; right: 0; top: 18%; bottom: 0; background: repeating-linear-gradient(90deg, #b07a45 0 38px, #a06c3a 38px 40px), #a06c3a; }
+  .cr-wall { position: absolute; left: 0; right: 0; top: 0; height: 110px; background: linear-gradient(#f2e3c6, #e3cfa8); border-bottom: 6px solid #8a5a2b; }
+  .cr-floor { position: absolute; left: 0; right: 0; top: 110px; bottom: 0; background: repeating-linear-gradient(90deg, #b07a45 0 38px, #a06c3a 38px 40px), #a06c3a; }
   .cr-board { position: absolute; left: 30%; right: 30%; top: 12%; height: 70%; background: #1f4d36; border: 6px solid #8a5a2b; border-radius: 6px; color: #fff; font-family: "Comic Sans MS", var(--display); text-align: center; display: grid; place-items: center; font-size: 1rem; line-height: 1.2; }
   .cr-board small { font-size: .7rem; opacity: .8; }
   .cr-window { position: absolute; left: 5%; top: 16%; width: 18%; height: 60%; background: linear-gradient(#8fd3ff, #d6f0ff); border: 5px solid #fff; border-radius: 4px; display: grid; place-items: start end; font-size: 1.2rem; padding: 2px; }
@@ -180,8 +182,8 @@
   @keyframes neonFlick { 0%, 92%, 100% { opacity: 1; } 94% { opacity: .5; } 96% { opacity: 1; } 97% { opacity: .6; } }
   .cr-rug { position: absolute; left: 12%; right: 12%; top: 8%; bottom: 6%; border-radius: 40px; background: radial-gradient(ellipse, rgba(123,97,255,.45), rgba(255,60,172,.18) 60%, transparent 75%); animation: rugGlow 4s ease-in-out infinite alternate; }
   @keyframes rugGlow { to { opacity: .55; } }
-  .cr-float { position: absolute; bottom: -20px; font-style: normal; font-weight: 800; color: rgba(255,255,255,.75); text-shadow: 0 0 8px #00e5ff; animation: floatUp 9s var(--d) linear infinite; pointer-events: none; z-index: 1; }
-  @keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: .8; } 90% { opacity: .6; } 100% { transform: translateY(-700px) rotate(40deg); opacity: 0; } }
+  .cr-float { position: absolute; font-style: normal; font-weight: 800; color: rgba(255,255,255,.75); text-shadow: 0 0 8px #00e5ff; animation: floatUp 9s var(--d) linear infinite; pointer-events: none; z-index: 1; }
+  @keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: .8; } 90% { opacity: .6; } 100% { transform: translateY(-400px) rotate(40deg); opacity: 0; } }
   .cr-me { position: absolute; top: -34px; left: 50%; transform: translateX(-50%); font-size: 1.5rem; animation: skyBob 1.6s ease-in-out infinite; pointer-events: none; display: flex; flex-direction: column; align-items: center; line-height: 1; }
   .cr-me small { font-size: .55rem; font-weight: 800; background: var(--gold); color: #1a1240; border-radius: 6px; padding: 1px 4px; position: static; letter-spacing: 0; }
   .cr-lvl.done, .cr-lvl.open { box-shadow: 0 0 14px rgba(66,227,146,.6), 0 4px 10px rgba(0,0,0,.4); }
@@ -1269,8 +1271,8 @@ const RATIO_GENS = {
     () => { const a1 = rnd(2, 6), b1 = rnd(2, 8), a2 = rnd(2, 6), b2 = rnd(2, 8); const r1 = a1 / b1, r2 = a2 / b2; if (Math.abs(r1 - r2) < .01) return RATIO_GENS.compare[3](); return { tag: "Stronger mixture", p: `Mix A uses ${a1} spoons of cocoa for ${b1} cups of milk. Mix B uses ${a2} spoons of cocoa for ${b2} cups of milk. Which tastes more chocolatey?`, a: r1 > r2 ? "Mix A" : "Mix B", w: [r1 > r2 ? "Mix B" : "Mix A", "They taste the same", "The one with more milk"], why: `Compare cocoa per 1 cup of milk. A: ${a1} ÷ ${b1} ≈ ${hFmt(Math.round(r1 * 100) / 100)}. B: ${a2} ÷ ${b2} ≈ ${hFmt(Math.round(r2 * 100) / 100)}. More cocoa per cup is more chocolatey.` }; },
     () => { const [small, big, per, bigs] = rPick(R_UNITS), n = rnd(2, 12); return { tag: "Converting units", p: `There are ${per} ${small} in 1 ${big}. How many ${small} are in ${n} ${bigs}?`, a: n * per, x: [n + per, n * per + per, Math.round(n * per / 10), per], why: `Use the ratio 1 : ${per}. Multiply both by ${n}: ${n} ${bigs} = ${n} × ${per} = ${n * per} ${small}.` }; },
     () => { const [small, big, per, bigs] = rPick(R_UNITS), n = rnd(2, 12); return { tag: "Converting units", p: `There are ${per} ${small} in 1 ${big}. How many ${bigs} is ${n * per} ${small}?`, a: n, x: [n * per * per, n + 1, per, n * 2], why: `Divide by ${per}: ${n * per} ÷ ${per} = ${n} ${bigs}.` }; },
-    () => { const inch = rnd(2, 20); return { tag: "Converting units", p: `1 inch is 2.54 centimeters. How many centimeters is ${inch} inches?`, a: hFmt(Math.round(inch * 254) / 100), x: [hFmt(Math.round(inch / 2.54 * 100) / 100), hFmt(inch + 2.54), hFmt(Math.round(inch * 25.4 * 100) / 100)], why: `Multiply by 2.54: ${inch} × 2.54 = ${hFmt(Math.round(inch * 254) / 100)} centimeters.` }; },
-    () => { const p1 = rnd(3, 9), d1 = rnd(2, 5), k = rnd(2, 4), same = Math.random() < .5, p2 = p1 * k + (same ? 0 : rnd(1, 3)); return { tag: "Same rate?", p: `Car A uses ${d1} gallons of gas to go ${p1 * 10} miles. Car B uses ${d1 * k} gallons to go ${p2 * 10} miles. Are they going the same number of miles per gallon?`, a: same ? "Yes, the same rate" : "No, Car B gets more miles per gallon", w: same ? ["No, Car B gets more miles per gallon", "No, Car A gets more miles per gallon", "You can't tell"] : ["Yes, the same rate", "No, Car A gets more miles per gallon", "You can't tell"], why: `A: ${p1 * 10} ÷ ${d1} = ${hFmt(p1 * 10 / d1)} miles per gallon. B: ${p2 * 10} ÷ ${d1 * k} = ${hFmt(Math.round(p2 * 10 / (d1 * k) * 100) / 100)} miles per gallon.` }; }
+    () => { const inch = rnd(2, 20); return { tag: "Converting units", p: `1 inch is 2.54 centimeters. How many centimeters is ${inch} inches?`, a: hFmt(Math.round(inch * 254) / 100), w: [hFmt(Math.round(inch / 2.54 * 100) / 100), hFmt(inch + 2.54), hFmt(Math.round(inch * 25.4 * 100) / 100)], why: `Multiply by 2.54: ${inch} × 2.54 = ${hFmt(Math.round(inch * 254) / 100)} centimeters.` }; },
+    () => { const p1 = rnd(3, 9), d1 = rnd(2, 5), k = rnd(2, 4), same = Math.random() < .5, p2 = p1 * k + (same ? 0 : rnd(1, 3)); return { tag: "Same rate?", p: `Car A uses ${d1} gallons of gas to go ${p1 * 10} miles. Car B uses ${d1 * k} gallons to go ${p2 * 10} miles. Are they going the same number of miles per gallon?`, a: same ? "Yes, the same rate" : "No, Car B gets more miles per gallon", w: same ? ["No, Car B gets more miles per gallon", "No, Car A gets more miles per gallon", "You can't tell"] : ["Yes, the same rate", "No, Car A gets more miles per gallon", "You can't tell"], why: `A: ${p1 * 10} ÷ ${d1} = ${hFmt(Math.round(p1 * 10 / d1 * 100) / 100)} miles per gallon. B: ${p2 * 10} ÷ ${d1 * k} = ${hFmt(Math.round(p2 * 10 / (d1 * k) * 100) / 100)} miles per gallon.` }; }
   ]
 };
 const RATIO_VOCAB = [
@@ -1294,12 +1296,12 @@ const RATIO_VOCAB = [
 // two different whole numbers with no common factor (so "3 : 4" style answers never repeat or simplify)
 const rTwo = (lo = 2, hi = 9) => { let a, b; do { a = rnd(lo, hi); b = rnd(lo, hi); } while (a === b || rgcd(a, b) > 1); return [a, b]; };
 // keep making a new problem until all 4 choices are different and none are negative
-function ratioQuestion(gen) {
+function ratioQuestion(gen, allowNeg = false) {
   let q;
   for (let i = 0; i < 30; i++) {
     q = mathQuestion(gen);
     const all = [q.a, ...q.w];
-    if (q.w.length === 3 && new Set(all).size === 4 && !all.some(x => /^-|NaN|undefined/.test(x))) break;
+    if (q.w.length === 3 && new Set(all).size === 4 && !all.some(x => (!allowNeg && /^-/.test(x)) || /NaN|undefined/.test(x))) break;
   }
   q.tag = q.tag.replace(/^Math/, "Ratios & Rates");
   return q;
@@ -1358,17 +1360,82 @@ const G4_GENS = {
     () => { const x = rnd(3, 15), m = rnd(2, 6), b = rnd(2, 20); return { tag: "Mystery number", p: `I'm thinking of a number. If you multiply it by ${m} and then add ${b}, you get ${x * m + b}. What's my number?`, a: x, x: [x * m, x + 1, Math.round((x * m + b) / m)], why: `Work backwards: ${x * m + b} − ${b} = ${x * m}, then ${x * m} ÷ ${m} = ${x}.` }; },
     () => { const c = rnd(3, 9), d = rnd(2, 6), leg = c * 2 + d * 4; return { tag: "Legs puzzle", p: `A farm has ${c} chickens and ${d} cows. How many legs are there altogether?`, a: leg, x: [(c + d) * 4, (c + d) * 2, c * 4 + d * 2], why: `Chickens have 2 legs: ${c} × 2 = ${c * 2}. Cows have 4 legs: ${d} × 4 = ${d * 4}. Total: ${leg}.` }; },
     () => { const n = rnd(3, 8), m = rnd(n + 1, 12), l = n * m / rgcd(n, m); return { tag: "Common multiples", p: `One light blinks every ${n} seconds and another every ${m} seconds. They just blinked together. In how many seconds will they blink together again?`, a: l, x: [n * m === l ? l + n : n * m, n + m, l * 2], why: `Find the least common multiple of ${n} and ${m}: ${l}.` }; },
-    () => { const nm = rPick(G4_NAMES), a = rnd(3, 9), b = a * rnd(2, 4); return { tag: "Times as many", p: `${nm} has ${a} stickers. Her brother has ${b / a} times as many. How many stickers do they have TOGETHER?`, a: a + b, x: [b, a * (b / a) + b, a + b / a], why: `Brother: ${a} × ${b / a} = ${b}. Together: ${a} + ${b} = ${a + b}. ("Together" means add at the end!)` }; }
+    () => { const nm = rPick(G4_NAMES), a = rnd(3, 9), b = a * rnd(2, 4); return { tag: "Times as many", p: `${nm} has ${a} stickers. ${nm}'s big brother has ${b / a} times as many. How many stickers do they have TOGETHER?`, a: a + b, x: [b, a * (b / a) + b, a + b / a], why: `Brother: ${a} × ${b / a} = ${b}. Together: ${a} + ${b} = ${a + b}. ("Together" means add at the end!)` }; }
   ]
 };
 function g4Question(gen) { const q = ratioQuestion(gen); q.tag = q.tag.replace(/^Ratios & Rates/, "🏆 4th Grade Challenge"); return q; }
+// 🪜 The classroom climb: 100 levels on 6 floors, from 3rd grade up to middle school. Each floor gets a little harder.
+const G3A_GENS = [
+  () => { const a = rnd(120, 499), b = rnd(110, 499); return { tag: "Adding", p: `${a} + ${b} = ?`, a: a + b, x: [a + b + 10, a + b - 100, a + b + 1], why: `Add the ones, then the tens, then the hundreds. Carry when a column is 10 or more: ${a} + ${b} = ${a + b}.` }; },
+  () => { const a = rnd(300, 900), b = rnd(105, a - 100); return { tag: "Subtracting", p: `${a} − ${b} = ?`, a: a - b, x: [a - b + 10, a - b - 10, a - b + 100], why: `Subtract the ones, then the tens, then the hundreds. Regroup if the top digit is smaller: ${a} − ${b} = ${a - b}.` }; },
+  () => { const a = rnd(2, 10), b = rnd(2, 10); return { tag: "Times tables", p: `${a} × ${b} = ?`, a: a * b, x: [a * b + a, a * b - b, a + b], why: `${a} groups of ${b}: count by ${b}s ${a} times to get ${a * b}.` }; },
+  () => { const a = rnd(2, 10), b = rnd(2, 10); return { tag: "Division facts", p: `${a * b} ÷ ${a} = ?`, a: b, x: [b + 1, b - 1, a], why: `Think of the times fact: ${a} × ${b} = ${a * b}, so ${a * b} ÷ ${a} = ${b}.` }; },
+  () => { const n = rnd(101, 989), to = Math.random() < .5 ? 10 : 100, r = Math.round(n / to) * to; return { tag: "Rounding", p: `Round ${n} to the nearest ${to}.`, a: r, x: [r === Math.floor(n / to) * to ? r + to : Math.floor(n / to) * to, n, r + to * 2], why: `Look at the digit to the right of the ${to}s place. 5 or more rounds up, 4 or less rounds down. ${n} → ${r}.` }; },
+  () => { const d = [2, 3, 4, 6, 8][rnd(0, 4)], n = rnd(1, d - 1), thing = ["pizza", "pie", "chocolate bar", "sandwich"][rnd(0, 3)]; return { tag: "Fractions", p: `A ${thing} is cut into ${d} equal pieces. You eat ${n}. What fraction did you eat?`, a: `${n}/${d}`, w: [`${d}/${n}`, `${d - n}/${d}`, `${n}/${d + n}`], why: `The bottom number is how many equal pieces in all (${d}). The top number is how many you ate (${n}): ${n}/${d}.` }; },
+  () => { const r = rnd(2, 9), c = rnd(2, 9); return { tag: "Area", p: `A rectangle is covered by ${r} rows of square tiles with ${c} tiles in each row. What is its area?`, a: `${r * c} square units`, w: [`${r + c} square units`, `${2 * (r + c)} square units`, `${r * c + c} square units`], why: `Area counts the squares: ${r} rows × ${c} = ${r * c} square units.` }; },
+  () => { const l = rnd(3, 12), w = rnd(2, 9); return { tag: "Perimeter", p: `A rectangle is ${l} cm long and ${w} cm wide. What is its perimeter?`, a: `${2 * (l + w)} cm`, w: [`${l * w} cm`, `${l + w} cm`, `${2 * l + w} cm`], why: `Perimeter is the distance all the way around: ${l} + ${w} + ${l} + ${w} = ${2 * (l + w)} cm.` }; },
+  () => { const n = rnd(100, 999), pl = rnd(0, 2), names = ["ones", "tens", "hundreds"], d = Math.floor(n / 10 ** pl) % 10; if (!d) return G3A_GENS[0](); return { tag: "Place value", p: `In ${n}, what is the value of the digit in the ${names[pl]} place?`, a: d * 10 ** pl, x: [d, d * 10 ** ((pl + 1) % 3), d * 10 ** ((pl + 2) % 3)], why: `The digit ${d} is in the ${names[pl]} place, so it's worth ${d * 10 ** pl}.` }; },
+  () => { const h = rnd(1, 10), m = [0, 15, 30][rnd(0, 2)], add = [10, 15, 20, 25][rnd(0, 3)], e = m + add; return { tag: "Time", p: `Recess starts at ${h}:${String(m).padStart(2, "0")} and lasts ${add} minutes. When does it end?`, a: `${h}:${String(e).padStart(2, "0")}`, w: [`${h + 1}:${String(e).padStart(2, "0")}`, `${h}:${String(m + add + 10).padStart(2, "0")}`, `${h}:${String(add).padStart(2, "0")}`], why: `Add ${add} minutes to ${m} minutes: ${m} + ${add} = ${e}. So it ends at ${h}:${String(e).padStart(2, "0")}.` }; }
+];
+const G3B_GENS = [
+  () => { const p = rnd(3, 9), per = rnd(4, 10), give = rnd(2, p * per - 5); return { tag: "Two-step problems", p: `Ana buys ${p} packs of stickers with ${per} in each pack. She gives away ${give}. How many does she have left?`, a: p * per - give, x: [p * per, p * per + give, p + per - give > 0 ? p * per - give + per : p * per - give + 2], why: `First multiply: ${p} × ${per} = ${p * per}. Then subtract: ${p * per} − ${give} = ${p * per - give}.` }; },
+  () => { const a = rnd(3, 10), b = rnd(3, 10); return { tag: "Missing number", p: `? × ${a} = ${a * b}`, a: b, x: [b + 1, a * b - a, b - 1], why: `Which number times ${a} makes ${a * b}? Divide: ${a * b} ÷ ${a} = ${b}.` }; },
+  () => { const n = rnd(1, 4), d1 = rnd(3, 8), d2 = d1 + rnd(1, 4); if (n >= d1) return G3B_GENS[1](); return { tag: "Comparing fractions", p: `Which is bigger: ${n}/${d1} or ${n}/${d2}?`, a: `${n}/${d1}`, w: [`${n}/${d2}`, "They are equal", "You can't tell"], why: `Same top number, so compare the piece sizes. ${d1} pieces are bigger than ${d2} pieces, so ${n}/${d1} is bigger.` }; },
+  () => { const k = [2, 3, 4][rnd(0, 2)], d = [2, 3, 4][rnd(0, 2)], n = rnd(1, d - 1); return { tag: "Equivalent fractions", p: `${n}/${d} = ?/${d * k}`, a: n * k, x: [n + k, n * k + 1, d * k - n], why: `The pieces are ${k} times smaller, so you need ${k} times as many: ${n} × ${k} = ${n * k}.` }; },
+  () => { const a = rnd(2, 9), b = rnd(2, 9) * 10; return { tag: "Multiples of 10", p: `${a} × ${b} = ?`, a: a * b, x: [a * b / 10, a * b * 10, a * b + 10], why: `${a} × ${b / 10} = ${a * b / 10}, then add a zero because ${b} is ${b / 10} tens: ${a * b}.` }; },
+  () => { const w1 = rnd(3, 8), h1 = rnd(2, 6), w2 = rnd(2, 6), h2 = rnd(2, 6); return { tag: "Area of an L-shape", p: `An L-shaped garden is made of two rectangles: one is ${w1} × ${h1} meters and the other is ${w2} × ${h2} meters. What is the total area?`, a: `${w1 * h1 + w2 * h2} square meters`, w: [`${(w1 + w2) * (h1 + h2)} square meters`, `${w1 * h1} square meters`, `${2 * (w1 + h1 + w2 + h2)} square meters`], why: `Find each area and add them: ${w1 * h1} + ${w2 * h2} = ${w1 * h1 + w2 * h2} square meters.` }; },
+  () => { const h = rnd(1, 10), m = rnd(35, 55), add = rnd(15, 45), t = m + add, H = h + Math.floor(t / 60), M = t % 60; return { tag: "Elapsed time", p: `A show starts at ${h}:${String(m).padStart(2, "0")} and lasts ${add} minutes. When does it end?`, a: `${H > 12 ? H - 12 : H}:${String(M).padStart(2, "0")}`, w: [`${h}:${String((t % 60 + 10) % 60).padStart(2, "0")}`, `${h}:${t}`, `${(H > 12 ? H - 12 : H) + 1}:${String(M).padStart(2, "0")}`], why: `${m} + ${add} = ${t} minutes. That's 1 hour and ${M} minutes past ${h}:00, so it ends at ${H > 12 ? H - 12 : H}:${String(M).padStart(2, "0")}.` }; },
+  () => { const a = rnd(2, 9), st = rnd(1, 20); const seq = [st, st + a, st + 2 * a, st + 3 * a]; return { tag: "Patterns", p: `What comes next? ${seq.join(", ")}, ?`, a: st + 4 * a, x: [st + 4 * a + 1, st + 3 * a + 1, st + 5 * a], why: `Each number goes up by ${a}: ${st + 3 * a} + ${a} = ${st + 4 * a}.` }; },
+  () => { const cost = rnd(11, 89) / 10 * 100, paid = cost < 500 ? 500 : 1000; return { tag: "Making change", p: `A toy costs $${(cost / 100).toFixed(2)}. You pay with a $${paid / 100} bill. How much change do you get?`, a: `$${((paid - cost) / 100).toFixed(2)}`, w: [`$${((paid - cost + 100) / 100).toFixed(2)}`, `$${((paid - cost - 10) / 100).toFixed(2)}`, `$${(cost / 100).toFixed(2)}`], why: `Count up from $${(cost / 100).toFixed(2)} to $${paid / 100}, or subtract: ${paid / 100} − ${(cost / 100).toFixed(2)} = ${((paid - cost) / 100).toFixed(2)}.` }; }
+];
+const G4C_GENS = [
+  () => { const a = rnd(12, 99), b = rnd(3, 9); return { tag: "2-digit × 1-digit", p: `${a} × ${b} = ?`, a: a * b, x: [a * b + 10, a * b - b, Math.floor(a / 10) * b * 10 + a % 10 * b + 10], why: `Break apart ${a}: ${Math.floor(a / 10) * 10} × ${b} = ${Math.floor(a / 10) * 10 * b} and ${a % 10} × ${b} = ${a % 10 * b}. Add: ${a * b}.` }; },
+  () => { const a = rnd(102, 999), b = rnd(2, 6); return { tag: "3-digit × 1-digit", p: `${a} × ${b} = ?`, a: a * b, x: [a * b + 100, a * b - 10, a * (b + 1)], why: `Multiply each place: hundreds, tens and ones, then add. ${a} × ${b} = ${a * b}.` }; },
+  () => { const d = rnd(3, 9), q = rnd(12, 99); return { tag: "Dividing", p: `${d * q} ÷ ${d} = ?`, a: q, x: [q + 1, q - 1, q + 10], why: `Check by multiplying: ${d} × ${q} = ${d * q}.` }; },
+  () => { const n = [12, 18, 20, 24, 30, 36, 40, 48][rnd(0, 7)], fs = []; for (let i = 2; i < n; i++) if (n % i === 0) fs.push(i); const f = fs[rnd(0, fs.length - 1)], not = [5, 7, 9, 11, 13, 14].filter(x => n % x).slice(0, 3); return { tag: "Factors", p: `Which number is a factor of ${n}?`, a: f, w: not, why: `${f} × ${n / f} = ${n}, so ${f} is a factor of ${n}.` }; },
+  () => { const d = [5, 6, 8, 10, 12][rnd(0, 4)], a = rnd(1, d - 2), b = rnd(1, d - a - 1); return { tag: "Adding fractions", p: `${a}/${d} + ${b}/${d} = ?`, a: `${a + b}/${d}`, w: [`${a + b}/${d * 2}`, `${a + b + 1}/${d}`, `${a * b}/${d}`].filter(v => v !== `${a + b}/${d}`), why: `Same denominator: add the tops and keep the bottom. ${a} + ${b} = ${a + b}, so ${a + b}/${d}.` }; },
+  () => { const t = rnd(1, 9); return { tag: "Decimals", p: `Which decimal is the same as ${t}/10?`, a: `0.${t}`, w: [`0.0${t}`, `${t}.0`, `${t}.10`], why: `Tenths go in the first place after the decimal point: ${t}/10 = 0.${t}.` }; },
+  () => { const f = rnd(2, 9); return { tag: "Converting", p: `How many inches are in ${f} feet?`, a: f * 12, x: [f * 10, f * 12 + 12, f + 12], why: `1 foot = 12 inches, so ${f} × 12 = ${f * 12} inches.` }; },
+  () => { const a = rnd(10, 170); const kind = a < 90 ? "acute" : a === 90 ? "right" : "obtuse"; return { tag: "Angles", p: `An angle measures ${a}°. What kind of angle is it?`, a: kind, w: ["acute", "right", "obtuse", "straight"].filter(v => v !== kind).slice(0, 3), why: `Less than 90° is acute, exactly 90° is right, more than 90° (but less than 180°) is obtuse.` }; }
+];
+const G5_GENS = [
+  () => { const a = rnd(12, 95) / 10, b = rnd(3, 9), r = Math.round(a * b * 10) / 10; return { tag: "Decimals × whole numbers", p: `${a} × ${b} = ?`, a: hFmt(r), w: [hFmt(Math.round(r * 10 * 10) / 10), hFmt(Math.round(r / 10 * 100) / 100), hFmt(Math.round((r + 1) * 10) / 10)], why: `${Math.round(a * 10)} × ${b} = ${Math.round(a * 10) * b}. There is 1 decimal place, so the answer is ${hFmt(r)}.` }; },
+  () => { const ds = [[2, 3], [3, 4], [2, 5], [4, 6], [3, 5], [2, 7], [4, 5], [6, 8]], [d1, d2] = ds[rnd(0, ds.length - 1)], n1 = rnd(1, d1 - 1), n2 = rnd(1, d2 - 1), L = lcm(d1, d2), top = n1 * L / d1 + n2 * L / d2, ans = fracStr(top, L); return { tag: "Adding unlike fractions", p: `${n1}/${d1} + ${n2}/${d2} = ? (simplify)`, a: ans, w: [`${n1 + n2}/${d1 + d2}`, fracStr(top + 1, L), `${n1 + n2}/${L}`].filter(v => v !== ans), why: `Use the common denominator ${L}: ${n1 * L / d1}/${L} + ${n2 * L / d2}/${L} = ${top}/${L}${ans !== top + "/" + L ? " = " + ans : ""}.` }; },
+  () => { const l = rnd(2, 12), w = rnd(2, 10), h = rnd(2, 8); return { tag: "Volume", p: `A box is ${l} cm long, ${w} cm wide and ${h} cm tall. What is its volume?`, a: `${l * w * h} cubic cm`, w: [`${l + w + h} cubic cm`, `${l * w} cubic cm`, `${2 * (l * w + w * h + l * h)} cubic cm`], why: `Volume = length × width × height = ${l} × ${w} × ${h} = ${l * w * h} cubic cm.` }; },
+  () => { const a = rnd(2, 9), b = rnd(2, 9), c = rnd(2, 6), d = rnd(1, 9); return { tag: "Order of operations", p: `(${a} + ${b}) × ${c} − ${d} = ?`, a: (a + b) * c - d, x: [a + b * c - d, (a + b) * (c - d) > 0 ? (a + b) * (c - d) : (a + b) * c + d, (a + b) * c], why: `Parentheses first: ${a} + ${b} = ${a + b}. Then multiply: ${a + b} × ${c} = ${(a + b) * c}. Then subtract: ${(a + b) * c - d}.` }; },
+  () => { const n = rnd(101, 999) / 100, p = [10, 100, 1000][rnd(0, 2)], r = Math.round(n * p * 100) / 100; return { tag: "Powers of ten", p: `${n} × ${fmt(p)} = ?`, a: hFmt(r), w: [hFmt(Math.round(n * p * 10 * 100) / 100), hFmt(Math.round(n * p / 10 * 1000) / 1000), hFmt(n + p)], why: `Multiplying by ${fmt(p)} moves the decimal point ${String(p).length - 1} place${p > 10 ? "s" : ""} to the right: ${hFmt(r)}.` }; },
+  () => { const d = rnd(12, 25), q = rnd(12, 48); return { tag: "Dividing by 2 digits", p: `${fmt(d * q)} ÷ ${d} = ?`, a: q, x: [q + 1, q - 2, q + 10], why: `Estimate, then check by multiplying: ${d} × ${q} = ${fmt(d * q)}.` }; },
+  () => { const n1 = rnd(1, 5), d1 = rnd(n1 + 1, 8), n2 = rnd(1, 5), d2 = rnd(n2 + 1, 8), ans = fracStr(n1 * n2, d1 * d2); return { tag: "Multiplying fractions", p: `${n1}/${d1} × ${n2}/${d2} = ? (simplify)`, a: ans, w: [`${n1 + n2}/${d1 + d2}`, fracStr(n1 * d2, d1 * n2), fracStr(n1 * n2 + 1, d1 * d2)].filter(v => v !== ans), why: `Multiply the tops (${n1 * n2}) and the bottoms (${d1 * d2}): ${n1 * n2}/${d1 * d2}${ans !== n1 * n2 + "/" + d1 * d2 ? " = " + ans : ""}.` }; }
+];
+const G6_GENS = [
+  () => { const p = [10, 20, 25, 50, 75, 5, 30][rnd(0, 6)], n = rnd(2, 40) * 20; return { tag: "Percent of a number", p: `What is ${p}% of ${n}?`, a: hFmt(n * p / 100), w: [hFmt(n * p / 10), hFmt(n - n * p / 100), hFmt(p)], why: `${p}% means ${p} out of 100: ${n} × ${p} ÷ 100 = ${hFmt(n * p / 100)}.` }; },
+  () => { const b = rnd(2, 5), e = rnd(2, b === 2 ? 8 : 4); return { tag: "Exponents", p: `${b}${["", "", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸"][e]} = ?`, a: b ** e, x: [b * e, b ** e + b, b ** (e - 1)], why: `${b}${["", "", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸"][e]} means ${Array(e).fill(b).join(" × ")} = ${b ** e}.` }; },
+  () => { const x = rnd(2, 15), a = rnd(2, 9), b = rnd(1, 30); return { tag: "Equations", p: `Solve: ${a}x + ${b} = ${a * x + b}`, a: `x = ${x}`, w: [`x = ${x + 1}`, `x = ${a * x + b - b}`, `x = ${Math.round((a * x + b) / a)}`].filter(v => v !== `x = ${x}`), why: `Subtract ${b} from both sides: ${a}x = ${a * x}. Divide by ${a}: x = ${x}.` }; },
+  () => { const nums = Array.from({ length: 4 }, () => rnd(2, 20)), extra = (4 - nums.reduce((s, v) => s + v, 0) % 4) % 4; nums[3] += extra; const m = nums.reduce((s, v) => s + v, 0) / 4; return { tag: "Mean (average)", p: `What is the mean of ${nums.join(", ")}?`, a: m, x: [m + 1, nums.reduce((s, v) => s + v, 0), Math.max(...nums)], why: `Add them (${nums.reduce((s, v) => s + v, 0)}) and divide by how many there are (4): ${m}.` }; },
+  () => { const a = rnd(-15, -1), b = rnd(2, 20); return { tag: "Negative numbers", p: `${a} + ${b} = ?`, a: a + b, x: [a - b, -(a + b), b - a], why: `Start at ${a} on the number line and move ${b} to the right: ${a + b}.` }; }
+];
+// floors of the classroom: which problems each group of levels uses
+const CR_FLOORS = [
+  { from: 1, to: 15, name: "3rd Grade", emoji: "🏠", pools: () => [G3A_GENS] },
+  { from: 16, to: 30, name: "3rd Grade Challenge", emoji: "🎒", pools: () => [G3B_GENS, G3A_GENS] },
+  { from: 31, to: 45, name: "4th Grade", emoji: "📗", pools: () => [G4C_GENS] },
+  { from: 46, to: 70, name: "4th Grade Challenge", emoji: "🏆", pools: () => [G4_GENS.big, G4_GENS.muldiv, G4_GENS.frac, G4_GENS.geo, G4_GENS.brain] },
+  { from: 71, to: 85, name: "5th Grade", emoji: "🚀", pools: () => [G5_GENS] },
+  { from: 86, to: 100, name: "Middle School Summit", emoji: "🏔️", pools: () => [G6_GENS, ...Object.values(RATIO_GENS), G4_GENS.brain] }
+];
+const crFloor = L => CR_FLOORS.find(f => L >= f.from && L <= f.to);
+// each level: 5 problems from its floor, cycling through the floor's kinds of problems
+function crLevelQuestions(L) {
+  const f = crFloor(L), pools = f.pools(), out = [];
+  for (let i = 0; i < 5; i++) { const pool = pools[(L + i) % pools.length], gen = pool[rnd(0, pool.length - 1)], q = ratioQuestion(gen, pool === G6_GENS); q.tag = q.tag.replace(/^Ratios & Rates/, `${f.emoji} ${f.name}`); out.push(q); }
+  return out;
+}
 /* ---------- 🌀 The Challenge Classroom (through the portal in the Math Center) ----------
    30 levels on a path around a drawn classroom, done in order (pass = 4 of 5 right). Every 5 levels unlocks one of
    the world's famous unsolved problems at the top of the room, with a tool to explore it and a real record to hunt.
    Record numbers are worked out by the page itself, so they are always correct. */
-const G4_LEVEL_COUNT = 30;
-const g4LevelTopic = L => L > 25 ? "all" : ["big", "muldiv", "frac", "geo", "brain"][(L - 1) % 5];
-const g4Stars = () => store.get("g4_lv", {});
+const G4_LEVEL_COUNT = 100;
+const g4Stars = () => store.get("cr_lv", {});
 const g4Unlocked = () => { const st = g4Stars(); let u = 1; while (u <= G4_LEVEL_COUNT && st[u] > 0) u++; return u; };   // the next level to play
 const isPrimeN = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
 const collatzSteps = n => { let s = 0; while (n !== 1 && s < 10000) { n = n % 2 ? 3 * n + 1 : n / 2; s++; } return s; };
@@ -1376,27 +1443,27 @@ const goldbachPairs = n => { const r = []; for (let p = 2; p <= n / 2; p++) if (
 const divSum = n => { let s = n > 1 ? 1 : 0; for (let i = 2; i * i <= n; i++) if (n % i === 0) { s += i; if (i * i !== n) s += n / i; } return s; };
 const recordOf = (lo, hi, score) => { let best = lo, bs = -1; for (let n = lo; n <= hi; n++) { const v = score(n); if (v > bs) { bs = v; best = n; } } return [best, bs]; };
 const WORLD_PROBLEMS = [
-  { id: "collatz", unlock: 5, emoji: "🔁", name: "The Collatz Conjecture", since: "Unsolved since 1937",
+  { id: "collatz", unlock: 15, emoji: "🔁", name: "The Collatz Conjecture", since: "Unsolved since 1937",
     story: "Pick any whole number. If it's even, cut it in half. If it's odd, multiply by 3 and add 1. Keep going. Lothar Collatz guessed that EVERY number ends up at 1. Nobody in the world has been able to prove it!",
     help: "Problems like this teach mathematicians new ways to think about patterns and chaos, which helps with things like computer science and predicting complicated systems.",
     fame: "The famous mathematician Paul Erdős said math \"is not yet ready\" for this problem. Computers have checked every number up to about 295 quintillion (2⁶⁸), and they all reach 1." },
-  { id: "goldbach", unlock: 10, emoji: "➕", name: "Goldbach's Conjecture", since: "Unsolved since 1742",
+  { id: "goldbach", unlock: 30, emoji: "➕", name: "Goldbach's Conjecture", since: "Unsolved since 1742",
     story: "Christian Goldbach guessed that every even number bigger than 2 can be made by adding two prime numbers. Like 10 = 3 + 7 and 28 = 11 + 17. It has never failed, but nobody can prove it always works.",
     help: "Prime numbers are the building blocks of all numbers. Understanding them better helps keep secrets safe online, because the codes that protect your passwords are built from primes.",
     fame: "Computers have checked every even number up to 4,000,000,000,000,000,000 (4 quintillion). It works for every single one!" },
-  { id: "twin", unlock: 15, emoji: "👯", name: "The Twin Prime Conjecture", since: "Unsolved since 1849",
+  { id: "twin", unlock: 45, emoji: "👯", name: "The Twin Prime Conjecture", since: "Unsolved since 1849",
     story: "Twin primes are two prime numbers only 2 apart, like 11 and 13, or 41 and 43. Do twin primes go on forever? Everybody thinks so, but nobody can prove it.",
     help: "In 2013, a mathematician named Yitang Zhang made a huge breakthrough: he proved there are infinitely many prime pairs closer than 70 million apart. Teams around the world then shrank that gap to 246. Getting it down to 2 would solve it!",
     fame: "The biggest twin primes known have 388,342 digits each. Writing one down would fill a whole book." },
-  { id: "perfect", unlock: 20, emoji: "💎", name: "The Odd Perfect Number Mystery", since: "Unsolved for over 2,000 years",
+  { id: "perfect", unlock: 60, emoji: "💎", name: "The Odd Perfect Number Mystery", since: "Unsolved for over 2,000 years",
     story: "A perfect number equals the sum of its smaller factors. 6 is perfect: 1 + 2 + 3 = 6. 28 is perfect too: 1 + 2 + 4 + 7 + 14 = 28. Every perfect number ever found is EVEN. Is there an odd one? Nobody knows!",
     help: "The ancient Greeks studied perfect numbers. Hunting for them led to the giant prime numbers that computers search for today, which test how well computers work.",
     fame: "Only 52 perfect numbers are known (as of 2024). The biggest has more than 82 million digits. Any odd perfect number would have to be bigger than 10 with 1,500 zeros after it." },
-  { id: "riemann", unlock: 25, emoji: "🌀", name: "The Riemann Hypothesis", since: "Unsolved since 1859 · $1,000,000 prize",
+  { id: "riemann", unlock: 80, emoji: "🌀", name: "The Riemann Hypothesis", since: "Unsolved since 1859 · $1,000,000 prize",
     story: "Primes seem to pop up randomly: 2, 3, 5, 7, 11, 13… but Bernhard Riemann found a hidden pattern in how they spread out. If his guess is true, we would understand exactly how primes are scattered among all numbers.",
     help: "It's one of the 7 Millennium Prize Problems. The Clay Mathematics Institute will pay $1,000,000 to whoever solves it! It's connected to the codes that protect banks, phones and the internet.",
     fame: "Of the 7 Millennium Prize Problems chosen in 2000, only ONE has been solved (the Poincaré Conjecture, by Grigori Perelman, who turned down the million dollars!)." },
-  { id: "pnp", unlock: 30, emoji: "🧩", name: "P vs NP", since: "Unsolved since 1971 · $1,000,000 prize",
+  { id: "pnp", unlock: 100, emoji: "🧩", name: "P vs NP", since: "Unsolved since 1971 · $1,000,000 prize",
     story: "Some puzzles are easy to CHECK but super hard to SOLVE. If someone shows you the answer to a giant sudoku, checking it is quick. But finding it can take forever. P vs NP asks: is every puzzle that's easy to check also easy to solve?",
     help: "If the answer is \"yes\", computers could quickly solve problems like curing diseases by designing medicines, planning the best delivery routes, and much more. (But the codes that protect the internet could break!)",
     fame: "It's another Millennium Prize Problem worth $1,000,000. Most experts think the answer is \"no\", but nobody can prove it either way." }
@@ -1414,9 +1481,11 @@ function g4Progress() { const st = g4Stars(); return { stars: Object.values(st).
 function startClassroom() {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
   const st = g4Stars(), next = g4Unlocked(), pr = g4Progress(), found = store.get("g4_found", {});
-  // a winding path from the door (level 1, bottom) up to the top of the room (level 30)
-  const pos = L => { const row = Math.floor((L - 1) / 5), col = (L - 1) % 5, c = row % 2 ? 4 - col : col; return [10 + c * 20, 94 - row * 14.5]; };
+  // a winding path from the door (level 1, bottom) up to the top of the room, 5 levels per row
+  const ROWS = Math.ceil(G4_LEVEL_COUNT / 5), ROW_H = 92, WALL = 130, H = WALL + ROWS * ROW_H + 30;
+  const pos = L => { const row = Math.floor((L - 1) / 5), col = (L - 1) % 5, c = row % 2 ? 4 - col : col; return [10 + c * 20, WALL + (ROWS - 1 - row) * ROW_H + ROW_H / 2]; };
   const path = Array.from({ length: G4_LEVEL_COUNT }, (_, i) => pos(i + 1)).map(([x, y]) => `${x},${y}`).join(" ");
+  const PROPS = ["📚", "🧪", "🎨", "🧩", "🌍", "🔭", "🎒", "🪴", "💡", "🧑‍🏫", "🖍️", "📐", "🧮", "🪁", "🎹", "🦕", "🚀", "🪐", "🏀", "🎻"];
   $app.innerHTML = `
     <div class="panel classroom">
       <div class="topline"><span class="label">🏫 Challenge Classroom</span><button class="iconbtn" id="cr-back">Back to Math Center</button></div>
@@ -1426,30 +1495,32 @@ function startClassroom() {
         <p class="soft">Real problems that NO ONE has solved. Clear levels to unlock them and hunt for real records!</p>
         <div class="cr-worlds">${WORLD_PROBLEMS.map(w => { const open = pr.done >= w.unlock; return `<button class="cr-world${open ? "" : " locked"}" data-world="${w.id}"><i>${open ? w.emoji : "🔒"}</i><b>${w.name}</b><small>${open ? (found[w.id] ? "🏆 Record found!" : "Open: explore it") : `Clear level ${w.unlock} to unlock`}</small></button>`; }).join("")}</div>
       </div>
-      <div class="cr-room">
+      <div class="cr-room" style="height:${H}px">
         <div class="cr-wall"><div class="cr-lights">${Array.from({ length: 14 }, (_, i) => `<i style="--i:${i}"></i>`).join("")}</div><div class="cr-window">🌙</div><div class="cr-board"><span class="cr-neon">LEVEL UP!</span><small>start at the door, climb to the top ↑</small></div><div class="cr-clock">🕒</div></div>
         <div class="cr-floor"><div class="cr-rug"></div></div>
-        ${[["📚", 20, 87], ["🧪", 60, 87], ["🎨", 40, 72], ["🧩", 80, 72], ["🌍", 20, 58], ["🔭", 60, 58], ["🎒", 40, 43], ["🪴", 80, 43], ["💡", 20, 29], ["🧑‍🏫", 60, 29]].map(([e, x, y]) => `<span class="cr-prop" style="left:${x}%;top:${y}%">${e}</span>`).join("")}
+        ${Array.from({ length: ROWS - 1 }, (_, r) => `<span class="cr-prop" style="left:${[30, 70, 50, 30, 70][r % 5]}%;top:${WALL + r * ROW_H + ROW_H}px">${PROPS[r % PROPS.length]}</span>`).join("")}
+        ${CR_FLOORS.map(f => { const topRow = Math.floor((f.to - 1) / 5), y = WALL + (ROWS - 1 - topRow) * ROW_H; return `<div class="cr-floorline" style="top:${y}px"><span title="Levels ${f.from} to ${f.to}">${f.emoji} Floor ${CR_FLOORS.indexOf(f) + 1}: ${f.name}</span></div>`; }).join("")}
         <span class="cr-door">🚪<small>START</small></span>
-        ${Array.from({ length: 12 }, (_, i) => `<i class="cr-float" style="left:${(i * 37) % 95 + 2}%;--d:${(i * .9) % 8}s">${["7", "π", "÷", "∞", "3", "×", "√", "9", "%", "+", "1", "="][i]}</i>`).join("")}
-        <svg class="cr-path" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${path}" /></svg>
-        ${Array.from({ length: G4_LEVEL_COUNT }, (_, i) => { const L = i + 1, [x, y] = pos(L), s = st[L] || 0, state = s ? "done" : L === next ? "open" : L < next ? "done" : "locked", world = WORLD_PROBLEMS.find(w => w.unlock === L); return `<button class="cr-lvl ${state}${world ? " gate" : ""}" data-lvl="${L}" style="left:${x}%;top:${y}%" ${state === "locked" ? "aria-disabled=\"true\"" : ""} title="Level ${L}${world ? ": unlocks " + world.name : ""}"><b>${state === "locked" ? "🔒" : L}</b>${s ? `<small>${"⭐".repeat(s)}</small>` : ""}${world ? `<em>${world.emoji}</em>` : ""}${L === next ? `<span class="cr-me">🦛<small>you</small></span>` : ""}</button>`; }).join("")}
+        ${Array.from({ length: 12 }, (_, i) => `<i class="cr-float" style="left:${(i * 37) % 95 + 2}%;top:${(i * 397) % (H - 60) + 40}px;--d:${(i * .9) % 8}s">${["7", "π", "÷", "∞", "3", "×", "√", "9", "%", "+", "1", "="][i]}</i>`).join("")}
+        <svg class="cr-path" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><polyline points="${path}" /></svg>
+        ${Array.from({ length: G4_LEVEL_COUNT }, (_, i) => { const L = i + 1, [x, y] = pos(L), s = st[L] || 0, state = s ? "done" : L === next ? "open" : L < next ? "done" : "locked", world = WORLD_PROBLEMS.find(w => w.unlock === L); return `<button class="cr-lvl ${state}${world ? " gate" : ""}" data-lvl="${L}" style="left:${x}%;top:${y}px" ${state === "locked" ? "aria-disabled=\"true\"" : ""} title="Level ${L}${world ? ": unlocks " + world.name : ""}"><b>${state === "locked" ? "🔒" : L}</b>${s ? `<small>${"⭐".repeat(s)}</small>` : ""}${world ? `<em>${world.emoji}</em>` : ""}${L === next ? `<span class="cr-me">🦛<small>you</small></span>` : ""}</button>`; }).join("")}
       </div>
-      <h3 class="cr-h">🪑 Practice desks (everything from the 4th Grade Challenge Lounge)</h3>
+      <h3 class="cr-h">🪑 Practice desks (endless 4th Grade Challenge practice)</h3>
       <div class="chips">${Object.entries(G4_PARTS).map(([k, v]) => `<button class="chip" data-g4part="${k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("")}</div>
     </div>`;
   document.getElementById("cr-back").addEventListener("click", startMathCenter);
   $app.querySelectorAll("[data-lvl]").forEach(b => b.addEventListener("click", () => { const L = +b.dataset.lvl; if (L > next) { b.animate([{ transform: "translate(-50%,-50%) rotate(-8deg)" }, { transform: "translate(-50%,-50%) rotate(8deg)" }, { transform: "translate(-50%,-50%)" }], { duration: 300 }); return toast(`🔒 Finish level ${next} first!`); } startG4Level(L); }));
   $app.querySelectorAll("[data-world]").forEach(b => b.addEventListener("click", () => { const w = WORLD_PROBLEMS.find(x => x.id === b.dataset.world); if (pr.done < w.unlock) return toast(`🔒 Clear level ${w.unlock} to unlock ${w.name}!`); openWorldProblem(w.id); }));
+  if (next > 2) setTimeout(() => $app.querySelector(".cr-me")?.scrollIntoView({ block: "center", behavior: "smooth" }), 250);
   $app.querySelectorAll("[data-g4part]").forEach(b => b.addEventListener("click", () => { choice.subject = "g4"; choice.g4part = b.dataset.g4part; store.set("subject", "g4"); store.set("g4part", choice.g4part); startStudy(); }));
 }
 // one level: 5 problems, get 4 right to pass (5/5 = 3 stars, 4/5 = 2 stars)
 function startG4Level(L) {
-  const topic = g4LevelTopic(L), src = sourceFor("g4_" + topic), qs = Array.from({ length: 5 }, () => src[rnd(0, src.length - 1)]());
+  const fl = crFloor(L), qs = crLevelQuestions(L);
   let i = 0, right = 0; const t0 = Date.now();
   const show = () => {
     const q = qs[i], opts = shuffle([q.a, ...q.w]);
-    $app.innerHTML = `<div class="panel classroom"><div class="topline"><span class="label">🏫 Level ${L} · ${G4_PARTS[topic].name}</span><button class="iconbtn" id="cr-quit">Back to classroom</button></div>
+    $app.innerHTML = `<div class="panel classroom"><div class="topline"><span class="label">🏫 Level ${L} · ${fl.emoji} ${fl.name}</span><button class="iconbtn" id="cr-quit">Back to classroom</button></div>
       <div class="cr-dots">${qs.map((_, k) => `<i class="${k < i ? "d" : k === i ? "c" : ""}"></i>`).join("")}</div>
       <div class="qcard"><span class="tag">${q.tag}</span><p class="q">${q.prompt}</p>${hintHtml(q)}</div>
       <div class="tiles">${opts.map((o, n) => `<button class="tile c${n + 1}" data-v="${esc(o)}"><span class="k">${n + 1}</span><span>${esc(o)}</span></button>`).join("")}</div><div id="cr-why"></div></div>`;
@@ -1468,7 +1539,8 @@ function startG4Level(L) {
   const finish = () => {
     keyHandler = null;
     const stars = right === 5 ? 3 : right === 4 ? 2 : 0, all = g4Stars(), prev = all[L] || 0, secs = Math.round((Date.now() - t0) / 1000);
-    if (stars > prev) { all[L] = stars; store.set("g4_lv", all); }
+    if (stars > prev) { all[L] = stars; store.set("cr_lv", all); }
+    const newFloor = stars && !prev && L < G4_LEVEL_COUNT && crFloor(L + 1) !== fl ? crFloor(L + 1) : null;
     const recs = store.get("g4_records", {}); let newRec = "";
     if (stars === 3 && (!recs.fastest || secs < recs.fastest)) { recs.fastest = secs; recs.fastestLevel = L; newRec = `⚡ NEW RECORD: your fastest perfect level ever (${secs} seconds)!`; store.set("g4_records", recs); }
     const unlockedWorld = stars && !prev ? WORLD_PROBLEMS.find(w => w.unlock === L) : null;
@@ -1478,6 +1550,7 @@ function startG4Level(L) {
       <h2>${stars ? `Level ${L} cleared!` : "So close! Try again."}</h2>
       <p>You got <b>${right} of 5</b> right${stars ? "" : ". You need 4 to pass"}. Time: ${secs} second${secs === 1 ? "" : "s"}.</p>
       ${newRec ? `<p class="cr-rec">${newRec}</p>` : ""}
+      ${newFloor ? `<div class="cr-unlock">${newFloor.emoji} You climbed up to <b>Floor ${CR_FLOORS.indexOf(newFloor) + 1}: ${newFloor.name}</b>! The problems get tougher from here.</div>` : ""}
       ${unlockedWorld ? `<div class="cr-unlock">🌍 You unlocked <b>${unlockedWorld.name}</b>! It's waiting at the top of the classroom.</div>` : ""}
       <div class="row">${stars && L < G4_LEVEL_COUNT ? `<button class="btn go" id="cr-nextlvl">Level ${L + 1} ▶</button>` : ""}<button class="btn ${stars ? "" : "go"}" id="cr-again">${stars ? "Play again for 3 stars" : "Try again"}</button><button class="btn" id="cr-room">Back to classroom</button></div></div>`;
     document.getElementById("cr-nextlvl")?.addEventListener("click", () => startG4Level(L + 1));
