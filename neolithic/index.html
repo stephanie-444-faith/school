@@ -273,6 +273,24 @@
   .cm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; } .cm-btn { display: flex; flex-direction: column; align-items: center; padding: 10px 4px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; } .cm-btn i { font-style: normal; font-size: 2rem; }
   .ct-jar { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; padding: 12px; min-height: 80px; border-radius: 20px; border: 3px solid #cfe8ff; background: rgba(207,232,255,.08); } .ct-jar span { background: #fff7d1; color: #4a3800; border-radius: 999px; padding: 4px 10px; font-size: .9rem; }
   body { transition: background .5s; }
+  /* 🌊 Every background moves: the home stars fall, each page's pattern drifts and sways, the page glow breathes */
+  body::before { inset: -300px 0 0; animation: bgStars 18s linear infinite; }
+  @keyframes bgStars { to { transform: translateY(280px); } }
+  body[data-scene]::before { inset: -40px; animation: sceneDrift 16s linear infinite, sceneSway 3.5s ease-in-out infinite alternate; will-change: transform, background-position; }
+  @keyframes sceneDrift { to { background-position: 320px 290px; } }
+  @keyframes sceneSway { from { transform: translateX(-22px) rotate(-1deg); } to { transform: translateX(22px) rotate(1deg); } }
+  .hp-levels { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; } .hp-lv { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px; border-radius: 14px; border: 2px solid var(--line); background: rgba(255,255,255,.06); color: inherit; font: inherit; cursor: pointer; } .hp-lv span { font-size: .8rem; opacity: .8; } .hp-lv.locked { opacity: .45; cursor: not-allowed; }
+  .hp-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .95rem; margin-bottom: 8px; }
+  .hp-board { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, minmax(54px, auto)); gap: 3px; background: #0f5a3a; padding: 4px; border-radius: 12px; }
+  .hp-sq { position: relative; background: #e9f7ee; color: #123; border-radius: 6px; padding: 2px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; overflow: hidden; min-width: 0; }
+  .hp-sq i { display: block; width: 100%; height: 8px; border-radius: 3px; } .hp-sq small { font-size: .56rem; line-height: 1.05; font-weight: 700; overflow-wrap: anywhere; hyphens: auto; } .hp-sq em { font-size: .55rem; font-style: normal; }
+  .hp-sq.own0 { box-shadow: inset 0 0 0 3px #ff4fa3; } .hp-sq.own1 { box-shadow: inset 0 0 0 3px #3a7bff; }
+  .hp-go, .hp-pit, .hp-rest, .hp-gopit { background: #ffe9a8; } .hp-chance { background: #f3d6ff; } .hp-tax, .hp-bonus { background: #d6f0ff; }
+  .hp-tok { font-size: 1.1rem; line-height: 1; margin-top: auto; }
+  .hp-mid { grid-row: 2 / 7; grid-column: 2 / 7; background: rgba(0,0,0,.35); border-radius: 10px; padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; overflow: auto; }
+  .hp-dice { font-size: 2.6rem; line-height: 1; } .hp-build { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; align-items: center; }
+  .hp-log { list-style: none; padding: 0; margin: 0; font-size: .75rem; text-align: left; width: 100%; } .hp-log li { padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,.08); } .hp-log li:first-child { font-weight: 700; color: #ffe066; }
+  .hp-chip { display: inline-block; font-size: .8rem; border: 2px solid; border-radius: 8px; padding: 1px 6px; margin: 2px; }
   @media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none !important; } }
   .wrap { max-width: 820px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 16px; }
   h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
@@ -7962,6 +7980,7 @@ function hippoAnswer(qRaw) {
   if (/\b(type|typing|keyboard|touch typ\w*|wpm|words per minute)\b/.test(q) && /\b(how|learn|teach|get better|faster|practice|improve|good|help|where)\b/.test(q))
     return R("Typing", "⌨️", "Learn to type with Bunny Hop Typing!", "Bunny Hop Typing has a Training Ground with a color-coded keyboard that shows which finger presses each key. Then race across platforms by typing words, earn carrots, and try to become Speed Champion!", hBig("🐰⌨️", "#e8f7e8", "Bunny Hop Typing"), { label: "🐰 Go to Bunny Hop Typing", fn: () => startBunny() });
   // 📱 the App-App and its apps
+  if (/\b(hippopoly|monopoly|monapely|board game|property game)\b/.test(q)) return R("Hippopoly", "🎲", "🎲 Play Hippopoly!", "Buy properties, build houses and collect rent against the computer. 10 levels, and the computer gets smarter each one.", hBig("🎲🏠", "#0f5a3a", "Hippopoly"), { label: "🎲 Play Hippopoly", fn: () => startHippopoly() });
   if (/\b(app ?app|new apps?|newest apps?)\b/.test(q)) return R("App-App", "📱", "📱 The App-App has all the newest apps!", "Code Lab, AI Studio, and every new app from now on.", hBig("📱✨", "#2e1a4a", "App-App"), { label: "📱 Open the App-App", fn: () => startAppApp() });
   if (/\b(learn (to |how to )?code|coding|code lab|html|python|programming|javascript)\b/.test(q)) return R("Code Lab", "💻", "💻 Learn to code in the Code Lab!", "It has step-by-step lessons for HTML (making websites, with a live preview) and Python (real programming, even turtle drawing and games). It's in the App-App.", hBig("💻🐍", "#0b2a1a", "Code Lab"), { label: "💻 Open the Code Lab", fn: () => startCodeLab() });
   if (/\b(ai studio|use ai|using ai|prompts?|prompting|artificial intelligence|chatbot|chat ?gpt|claude)\b/.test(q)) return R("AI Studio", "🤖", "🤖 Learn to use AI in the AI Studio!", "Lessons on what AI is, staying safe, and writing great prompts, plus a Prompt Builder, a prompt challenge, and a project where AI helps you make your own game. It's in the App-App.", hBig("🤖✨", "#1a1050", "AI Studio"), { label: "🤖 Open the AI Studio", fn: () => startAIStudio() });
@@ -8817,6 +8836,104 @@ NEW_APPS.push(
   { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
   { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
 );
+// 🎲 Hippopoly: a property-trading board game, you vs. the computer, 10 levels
+const HP_GROUPS = { brown: ["#8d5a3b", 60], lblue: ["#7fd3ff", 100], pink: ["#ff6fb5", 140], orange: ["#ff8c42", 180], red: ["#e63946", 220], yellow: ["#ffd23f", 260], green: ["#3bb273", 300], blue: ["#1e4fd8", 350] };
+const HP_BOARD = [["go", "GO! Collect $200"], ["p", "Mud Lane", "brown"], ["p", "Reed Road", "brown"], ["chance", "Hippo Surprise"], ["p", "Lily Pad Lane", "lblue"], ["p", "Splash Street", "lblue"], ["pit", "Mud Pit (just visiting)"], ["p", "Flamingo Way", "pink"], ["p", "Bubble Blvd", "pink"], ["bonus", "Bonus Pond +$50"], ["p", "Mango Grove", "orange"], ["p", "Papaya Place", "orange"], ["rest", "Lily Pad Rest"], ["p", "Watermelon Ave", "red"], ["p", "Strawberry St", "red"], ["chance", "Hippo Surprise"], ["p", "Banana Bay", "yellow"], ["p", "Sunflower Sq", "yellow"], ["gopit", "Go to the Mud Pit!"], ["p", "Jungle Junction", "green"], ["p", "Fern Forest", "green"], ["tax", "Mud Tax: pay $75"], ["p", "River Palace", "blue"], ["p", "Waterfall Tower", "blue"]];
+const HP_CARDS = [["Hippo found $50 in the mud!", s => hpCash(s.turn, 50)], ["Your mud bath costs $25.", s => hpPay(s.turn, 25)], ["Advance to GO! Collect $200.", s => { s.pl[s.turn].pos = 0; hpCash(s.turn, 200); }], ["Go back 3 spaces.", s => { s.pl[s.turn].pos = (s.pl[s.turn].pos + 21) % 24; return "land"; }], ["Oops! Slipped in the mud. Go to the Mud Pit!", s => hpJail(s.turn)], ["It's your birthday! The other player gives you $40.", s => { hpPay(1 - s.turn, 40, s.turn); }], ["You won a swimming race! Collect $100.", s => hpCash(s.turn, 100)], ["Pay $15 for each house you own (pond repairs).", s => hpPay(s.turn, 15 * s.props.filter(p => p.owner === s.turn).reduce((t, p) => t + p.houses, 0))], ["Take a ride to Waterfall Tower!", s => { const p = s.pl[s.turn]; if (p.pos > 23) hpCash(s.turn, 200); p.pos = 23; return "land"; }], ["Sell your old snorkel. Collect $30.", s => hpCash(s.turn, 30)]];
+const HP_LEVELS = Array.from({ length: 10 }, (_, i) => { const L = i + 1; return { L, buy: Math.min(.98, .3 + .075 * L), reserve: Math.max(60, 420 - 38 * L), build: L >= 4, buildChance: Math.min(1, (L - 3) * .16), setSmart: L >= 6, bonus: L >= 8 ? (L - 7) * 150 : 0, desc: ["Sleepy Hippo: buys hardly anything", "Lazy Hippo: buys a few things", "Curious Hippo: buys more", "Builder Hippo: starts building houses", "Busy Hippo: builds more often", "Smart Hippo: goes after full color sets", "Clever Hippo: saves money wisely", "Rich Hippo: starts with $150 extra", "Tycoon Hippo: starts with $300 extra", "Hippo Mogul: the ultimate boss ($450 extra)"][i] }; });
+let HP = null;
+const hpRent = p => { const base = Math.round(HP_GROUPS[p.g][1] / 10 + 2), full = HP.props.filter(x => x.g === p.g).every(x => x.owner === p.owner); return p.houses ? base * [1, 5, 12, 25][p.houses] : full ? base * 2 : base; };
+const hpHouseCost = p => HP_GROUPS[p.g][1] / 2;
+function hpLog(m) { HP.log.unshift(m); HP.log = HP.log.slice(0, 7); }
+function hpCash(i, n) { HP.pl[i].cash += n; }
+function hpWorth(i) { return HP.pl[i].cash + HP.props.filter(p => p.owner === i).reduce((t, p) => t + p.price + p.houses * hpHouseCost(p), 0); }
+function hpPay(i, amt, to) {   // sells houses, then properties (half price), if needed; bankrupt if still short
+  const P = HP.pl[i];
+  while (P.cash < amt) { const h = HP.props.filter(p => p.owner === i && p.houses).sort((a, b) => hpHouseCost(b) - hpHouseCost(a))[0]; if (h) { h.houses--; P.cash += hpHouseCost(h) / 2; hpLog(`${P.e} sold a house on ${h.name}.`); continue; } const pr = HP.props.filter(p => p.owner === i).sort((a, b) => a.price - b.price)[0]; if (pr) { pr.owner = null; P.cash += pr.price / 2; hpLog(`${P.e} sold ${pr.name} back to the bank.`); continue; } break; }
+  const paid = Math.min(P.cash, amt); P.cash -= paid; if (to !== undefined) HP.pl[to].cash += paid;
+  if (paid < amt) { HP.over = 1 - i; hpLog(`${P.e} ran out of money! 💸`); }
+}
+function hpJail(i) { HP.pl[i].pos = 6; HP.pl[i].jail = 1; hpLog(`${HP.pl[i].e} is stuck in the Mud Pit for a turn! 🟤`); }
+function startHippopoly(level) {
+  const lv = store.get("hp_level", 1), wins = store.get("hp_wins", {});
+  if (!level) {
+    appScreen("🎲 Hippopoly", `<h2>🎲 Hippopoly</h2><p class="soft">Buy properties, build houses and collect rent! You 🦛 vs. the Computer 🤖. Bankrupt the computer, or be the richest after 20 rounds, to win. Beat a level to unlock the next one!</p>
+      <div class="hp-levels">${HP_LEVELS.map(l => `<button class="hp-lv${l.L > lv ? " locked" : ""}" data-l="${l.L}" ${l.L > lv ? "disabled" : ""}><b>${l.L > lv ? "🔒" : wins[l.L] ? "🏆" : "🤖"} Level ${l.L}</b><span>${l.desc}</span></button>`).join("")}</div>
+      <details class="sl-card"><summary><b>📜 How to play</b></summary><p>Roll the dice and move around the board. Land on an empty property to buy it. If you land on the computer's property, you pay rent. Own a whole color set to double the rent, then build houses 🏠 to make rent MUCH bigger. Pass GO to collect $200. Hippo Surprise cards can be good or bad! Doubles let you roll again.</p></details>`);
+    $app.querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => startHippopoly(+b.dataset.l)));
+    return;
+  }
+  const cfg = HP_LEVELS[level - 1];
+  HP = { level, cfg, turn: 0, round: 1, maxRounds: 20, over: null, busy: false, doubles: 0, log: [], pend: null,
+    pl: [{ e: "🦛", name: "You", cash: 1000, pos: 0, jail: 0 }, { e: "🤖", name: "Computer", cash: 1000 + cfg.bonus, pos: 0, jail: 0 }],
+    props: HP_BOARD.map((sq, i) => sq[0] === "p" ? { i, name: sq[1], g: sq[2], price: HP_GROUPS[sq[2]][1] + (HP_BOARD.findIndex(x => x[2] === sq[2]) === i ? 0 : 20), owner: null, houses: 0 } : null).filter(Boolean) };
+  hpLog(`Level ${level}: ${cfg.desc}. You go first!`);
+  appScreen("🎲 Hippopoly", `<div id="hp"></div>`);
+  hpDraw();
+}
+const hpProp = i => HP.props.find(p => p.i === i);
+const hpCoord = i => i <= 6 ? [7, 7 - i] : i <= 12 ? [7 - (i - 6), 1] : i <= 18 ? [1, 1 + (i - 12)] : [1 + (i - 18), 7];   // [row, col] on a 7×7 grid
+function hpDraw() {
+  const box = document.getElementById("hp"); if (!box) return;
+  const me = HP.pl[0], ai = HP.pl[1], myTurn = HP.turn === 0 && !HP.busy && HP.over === null;
+  const buildable = HP.props.filter(p => p.owner === 0 && p.houses < 3 && HP.props.filter(x => x.g === p.g).every(x => x.owner === 0));
+  box.innerHTML = `<div class="hp-top"><span>🦛 You: <b>$${me.cash}</b></span><span>Round ${Math.min(HP.round, HP.maxRounds)} / ${HP.maxRounds} · Level ${HP.level}</span><span>🤖 <b>$${ai.cash}</b></span></div>
+    <div class="hp-board">${HP_BOARD.map((sq, i) => { const [r, c] = hpCoord(i), p = hpProp(i); return `<div class="hp-sq hp-${sq[0]}${p && p.owner !== null ? " own" + p.owner : ""}" style="grid-row:${r};grid-column:${c}" title="${esc(sq[1])}${p ? ` · $${p.price}` : ""}">${p ? `<i style="background:${HP_GROUPS[p.g][0]}"></i>` : ""}<small>${p ? esc(p.name) : { go: "GO ➡️", chance: "❓ Surprise", pit: "🟤 Mud Pit", bonus: "💰 +$50", rest: "🪷 Rest", gopit: "👮 To Pit", tax: "💸 Tax" }[sq[0]]}</small>${p ? `<em>${p.houses ? "🏠".repeat(p.houses) : p.owner === null ? "$" + p.price : ""}</em>` : ""}<span class="hp-tok">${HP.pl.map((pl, k) => pl.pos === i ? pl.e : "").join("")}</span></div>`; }).join("")}
+      <div class="hp-mid"><div class="hp-dice" id="hp-dice">${HP.dice ? HP.dice.map(d => "⚀⚁⚂⚃⚄⚅"[d - 1]).join(" ") : "🎲 🎲"}</div>
+        ${HP.over !== null ? `<h3>${HP.over === 0 ? "🏆 You win!" : "🤖 The computer wins!"}</h3><button class="btn go" id="hp-menu">Levels</button><button class="btn" id="hp-again">Play again</button>`
+        : HP.pend ? `<p><b>${esc(HP.pend.name)}</b> costs <b>$${HP.pend.price}</b>. Buy it?</p><div class="row"><button class="btn go" id="hp-buy" ${me.cash < HP.pend.price ? "disabled" : ""}>Buy</button><button class="btn" id="hp-skip">No thanks</button></div>`
+        : myTurn ? `<button class="btn go" id="hp-roll">🎲 Roll!</button>${buildable.length ? `<div class="hp-build"><small>🏠 Build a house:</small>${buildable.map(p => `<button class="chip" data-b="${p.i}" ${me.cash < hpHouseCost(p) ? "disabled" : ""}>${esc(p.name)} $${hpHouseCost(p)}</button>`).join("")}</div>` : ""}` : `<p class="soft">🤖 Computer is thinking…</p>`}
+        <ul class="hp-log">${HP.log.map(m => `<li>${esc(m)}</li>`).join("")}</ul></div></div>
+    <details class="sl-card"><summary><b>📋 Properties</b></summary>${[0, 1].map(k => `<p>${HP.pl[k].e} ${k ? "Computer" : "You"} (worth $${hpWorth(k)}): ${HP.props.filter(p => p.owner === k).map(p => `<span class="hp-chip" style="border-color:${HP_GROUPS[p.g][0]}">${esc(p.name)}${p.houses ? " " + "🏠".repeat(p.houses) : ""} · rent $${hpRent(p)}</span>`).join(" ") || "none yet"}</p>`).join("")}</details>`;
+  document.getElementById("hp-roll")?.addEventListener("click", hpRoll);
+  document.getElementById("hp-buy")?.addEventListener("click", () => hpDecide(true));
+  document.getElementById("hp-skip")?.addEventListener("click", () => hpDecide(false));
+  document.getElementById("hp-menu")?.addEventListener("click", () => startHippopoly());
+  document.getElementById("hp-again")?.addEventListener("click", () => startHippopoly(HP.level));
+  box.querySelectorAll("[data-b]").forEach(b => b.addEventListener("click", () => { const p = hpProp(+b.dataset.b); if (HP.pl[0].cash >= hpHouseCost(p)) { HP.pl[0].cash -= hpHouseCost(p); p.houses++; hpLog(`🦛 built a house on ${p.name}! Rent is now $${hpRent(p)}.`); naNote(660, .15, "triangle", .1); hpDraw(); } }));
+}
+function hpRoll() {
+  if (HP.busy || HP.over !== null) return; HP.busy = true;
+  const P = HP.pl[HP.turn];
+  const d = [rnd(1, 6), rnd(1, 6)]; HP.dice = d; naNote(400, .08, "square", .05);
+  if (P.jail) { P.jail = 0; hpLog(`${P.e} climbs out of the Mud Pit.`); HP.busy = false; return hpEnd(false); }
+  const dbl = d[0] === d[1]; hpLog(`${P.e} rolled ${d[0]} + ${d[1]} = ${d[0] + d[1]}${dbl ? " (doubles!)" : ""}`);
+  let steps = d[0] + d[1];
+  const step = () => { P.pos = (P.pos + 1) % 24; if (P.pos === 0) { P.cash += 200; hpLog(`${P.e} passed GO! +$200`); } naNote(500 + steps * 20, .05, "sine", .05); hpDraw(); if (--steps > 0) naTimer(setTimeout(step, 160)); else naTimer(setTimeout(() => hpLand(dbl), 250)); };
+  step();
+}
+function hpLand(dbl) {
+  const t = HP.turn, P = HP.pl[t], sq = HP_BOARD[P.pos], p = hpProp(P.pos);
+  if (p) {
+    if (p.owner === null) { if (t === 0) { HP.pend = p; HP.pendDbl = dbl; HP.busy = false; return hpDraw(); } if (hpAiBuy(p)) { P.cash -= p.price; p.owner = 1; hpLog(`🤖 bought ${p.name} for $${p.price}.`); } else hpLog(`🤖 skipped ${p.name}.`); }
+    else if (p.owner !== t) { const r = hpRent(p); hpLog(`${P.e} pays $${r} rent to ${HP.pl[p.owner].e} for ${p.name}.`); hpPay(t, r, p.owner); }
+  } else if (sq[0] === "chance") { const [txt, fn] = rPick(HP_CARDS); hpLog(`❓ ${P.e}: ${txt}`); if (fn(HP) === "land") { hpDraw(); return naTimer(setTimeout(() => hpLand(false), 500)); } }
+  else if (sq[0] === "tax") { hpLog(`💸 ${P.e} pays $75 Mud Tax.`); hpPay(t, 75); }
+  else if (sq[0] === "bonus") { P.cash += 50; hpLog(`💰 ${P.e} found $50 in the Bonus Pond!`); }
+  else if (sq[0] === "gopit") { hpJail(t); dbl = false; }
+  HP.busy = false; hpEnd(dbl);
+}
+function hpDecide(buy) { const p = HP.pend; HP.pend = null; if (buy && HP.pl[0].cash >= p.price) { HP.pl[0].cash -= p.price; p.owner = 0; hpLog(`🦛 bought ${p.name}!`); sfx.buy(); } else hpLog(`🦛 skipped ${p.name}.`); hpEnd(HP.pendDbl); }
+function hpAiBuy(p) {
+  const c = HP.cfg, AI = HP.pl[1], set = HP.props.filter(x => x.g === p.g);
+  if (AI.cash - p.price < c.reserve * .4) return false;
+  if (c.setSmart && (set.some(x => x.owner === 1) || set.some(x => x.owner === 0))) return AI.cash - p.price >= 40;   // finish its set, or block yours
+  return Math.random() < c.buy && AI.cash - p.price >= c.reserve;
+}
+function hpAiBuild() {
+  const c = HP.cfg, AI = HP.pl[1]; if (!c.build) return;
+  for (let k = 0; k < 3; k++) { const opts = HP.props.filter(p => p.owner === 1 && p.houses < 3 && HP.props.filter(x => x.g === p.g).every(x => x.owner === 1)).sort((a, b) => a.houses - b.houses); const p = opts[0]; if (!p || AI.cash - hpHouseCost(p) < c.reserve || Math.random() > c.buildChance) break; AI.cash -= hpHouseCost(p); p.houses++; hpLog(`🤖 built a house on ${p.name}.`); }
+}
+function hpEnd(dbl) {
+  if (HP.over === null && HP.pl.some((_, i) => HP.pl[i].cash < 0)) HP.over = HP.pl[0].cash < 0 ? 1 : 0;
+  if (HP.over === null && dbl && HP.doubles < 2) { HP.doubles++; hpLog(`${HP.pl[HP.turn].e} rolls again!`); } else { HP.doubles = 0; if (HP.turn === 1) HP.round++; HP.turn = 1 - HP.turn; }
+  if (HP.over === null && HP.round > HP.maxRounds) { const a = hpWorth(0), b = hpWorth(1); HP.over = a >= b ? 0 : 1; hpLog(`⏰ 20 rounds done! You're worth $${a}, the computer $${b}.`); }
+  if (HP.over !== null) { if (HP.over === 0) { const w = store.get("hp_wins", {}); w[HP.level] = 1; store.set("hp_wins", w); if (store.get("hp_level", 1) <= HP.level && HP.level < 10) store.set("hp_level", HP.level + 1); sfx.buy(); hpLog(HP.level < 10 ? `🔓 Level ${HP.level + 1} unlocked!` : "👑 You beat the Hippo Mogul! You're the champion!"); } else sfx.wrong(); return hpDraw(); }
+  hpDraw();
+  if (HP.turn === 1) { HP.busy = true; naTimer(setTimeout(() => { HP.busy = false; hpAiBuild(); hpRoll(); }, 900)); }
+}
+NEW_APPS.push({ id: "hippopoly", emoji: "🎲", name: "Hippopoly", desc: "A property-trading board game: you vs. the computer, with 10 levels.", start: () => startHippopoly(), isNew: true });
+
 function startMathCenter() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   keyHandler = null;
@@ -9243,7 +9360,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
