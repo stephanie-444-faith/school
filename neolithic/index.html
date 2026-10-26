@@ -501,6 +501,7 @@
   @keyframes hipHue { to { filter: hue-rotate(360deg); } }
   .hip.hip-flip { transform: rotate(180deg); transition: transform .8s; } .hip { transition: transform .8s; }
   .hip-calc { background: #1b1640; border: 3px solid var(--gold); border-radius: 18px; padding: 12px; margin: 12px auto; max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  .mathc .hip-calc { margin: 14px auto; }
   .hip-calc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .hip-calc-screen { background: #cfe8d2; color: #0f2a14; border-radius: 10px; padding: 8px 12px; text-align: right; font-family: ui-monospace, Menlo, monospace; margin-bottom: 10px; box-shadow: inset 0 2px 6px rgba(0,0,0,.25); }
   .hip-calc-screen small { display: block; min-height: 1.2em; opacity: .7; font-size: .9rem; word-break: break-all; } .hip-calc-screen span { font-size: 2rem; font-weight: 800; word-break: break-all; }
@@ -1480,8 +1481,6 @@ function showHome() {
     <div class="panel">
       <span class="label">Tap a subject to start studying</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
-      <span class="label">📏 Ratios & Rates (MCPS 6/7 Accelerated Math · MP1 · Unit 2: Introducing Ratios and Rates)</span><div class="chips">${chipRow(RATIO_PARTS, "rpart")}</div>
-      <span class="label">Math level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">Health topic</span><div class="chips">${chipRow(HEALTH_PARTS, "hpart")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
@@ -1530,7 +1529,7 @@ function showHome() {
   keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
   document.getElementById("write").addEventListener("click", startStories);
   document.getElementById("hippo").addEventListener("click", () => startHippo());
-  $app.querySelectorAll("[data-happ]").forEach(b => b.addEventListener("click", () => { const a = HIPPO_APPS[+b.dataset.happ]; if (a[3] === "calc") { startHippo(); HIPPO_OPEN_CALC?.(""); } else startHippo(a[3]); }));
+  $app.querySelectorAll("[data-happ]").forEach(b => b.addEventListener("click", () => { const a = HIPPO_APPS[+b.dataset.happ]; if (a[3] === "calc") startMathCenter(); else startHippo(a[3]); }));
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
     document.getElementById("fq").addEventListener("click", startFocus);
@@ -7134,6 +7133,9 @@ function hippoAnswer(qRaw) {
   // ⌨️ typing questions go to Bunny Hop Typing
   if (/\b(type|typing|keyboard|touch typ\w*|wpm|words per minute)\b/.test(q) && /\b(how|learn|teach|get better|faster|practice|improve|good|help|where)\b/.test(q))
     return R("Typing", "⌨️", "Learn to type with Bunny Hop Typing!", "Bunny Hop Typing has a Training Ground with a color-coded keyboard that shows which finger presses each key. Then race across platforms by typing words, earn carrots, and try to become Speed Champion!", hBig("🐰⌨️", "#e8f7e8", "Bunny Hop Typing"), { label: "🐰 Go to Bunny Hop Typing", fn: () => startBunny() });
+  // 🧮 the Math Center
+  if (/^(math|maths|math center|math centre|math app|math practice|practice math|ratios?|rates?|ratios and rates|ratios & rates|unit 2|mp1|math test|accelerated math|6\/7 math)$/.test(q) || /\b(math center|math app|math practice|ratios and rates|ratios & rates|district assessment)\b/.test(q))
+    return R("Math Center", "🧮", "🧮 The Math Center has the calculator, math practice and Ratios & Rates.", "Practice Easy or Hard math, or get ready for the MCPS 6/7 Accelerated Math MP1 Unit 2 test (Introducing Ratios and Rates).", hBig("🧮📏", "#1f3d2b", "Math Center"), { label: "🧮 Open the Math Center", fn: () => startMathCenter() });
   // 🔓 the secret game room
   if (/^franklin\s+rules$/.test(q)) return Object.assign(R("Secret Game Room", "🔓", "🔓 Franklin rules! The secret game room is open.", "Every game in one place. Pick one!", hBig("🎮🔓", "#2e1a4a", "secret game room")), { games: true, wide: true });
   const askAgain = t => () => { const b = document.getElementById("hip-q"); b.value = t; document.getElementById("hip-form").requestSubmit(); };
@@ -7363,9 +7365,63 @@ function hippoCalcEval(expr) {
 const HIPPO_APPS = [
   ["📖", "Library", "Big books and classic stories", "show me the library"],
   ["🎵", "Hippo Sings", "Songs in every style, parades too", "sing me a song"],
-  ["🧮", "Calculator", "Hippo's calculator", "calc"],
+  ["🧮", "Math Center", "Calculator, math practice, Ratios & Rates", "calc"],
   ["😂", "Jokes", "Jokes, long jokes and knock-knocks", "joke time"]
 ];
+// 🧮 Hippo's calculator (used inside Ask Hippo and in the Math Center)
+function hippoCalcHTML(hidden) {
+  return `<div class="hip-calc" id="hip-calc" ${hidden ? "hidden" : ""}>
+        <div class="hip-calc-top"><b>🧮 Hippo's Calculator</b><button class="iconbtn" id="hip-calc-x" aria-label="Close calculator">✕ Close</button></div>
+        <div class="hip-calc-screen"><small id="hip-calc-expr"> </small><span id="hip-calc-val">0</span></div>
+        <div class="hip-calc-keys">${["C", "⌫", "(", ")", "√", "x²", "%", "÷", "7", "8", "9", "×", "4", "5", "6", "−", "1", "2", "3", "+", "±", "0", ".", "="].map(k => `<button type="button" class="hip-key${/[÷×−+=]/.test(k) ? " op" : /^[C⌫]$/.test(k) ? " clr" : /[√²%()±]/.test(k) ? " fn" : ""}" data-k="${k}">${k}</button>`).join("")}</div>
+      </div>`;
+}
+function bindHippoCalc() {
+  let calcExpr = "", calcJustDone = false;
+  const calcShow = () => { document.getElementById("hip-calc-expr").textContent = calcExpr || " "; let v = "0"; if (calcExpr) { const r = hippoCalcEval(calcExpr); v = r === null ? "…" : r; } document.getElementById("hip-calc-val").textContent = v; };
+  const openCalc = (pre = "") => { const c = document.getElementById("hip-calc"); c.hidden = false; calcExpr = pre; calcJustDone = false; calcShow(); c.scrollIntoView({ behavior: "smooth", block: "center" }); };
+  document.getElementById("hip-calc-x").addEventListener("click", () => { document.getElementById("hip-calc").hidden = true; });
+  document.querySelectorAll(".hip-key").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.k; tone([600 + "0123456789".indexOf(k) * 30], .03, "triangle", .04);
+    if (k === "C") calcExpr = "";
+    else if (k === "⌫") calcExpr = calcExpr.slice(0, -1);
+    else if (k === "=") { const r = hippoCalcEval(calcExpr); if (r !== null) { document.getElementById("hip-calc-expr").textContent = calcExpr + " ="; calcExpr = String(r).replace(/,/g, ""); calcJustDone = true; document.getElementById("hip-calc-val").textContent = r; return; } }
+    else if (k === "x²") calcExpr += "²";
+    else if (k === "√") calcExpr += "√";
+    else if (k === "±") calcExpr = calcExpr.startsWith("−") ? calcExpr.slice(1) : "−" + calcExpr;
+    else { if (calcJustDone && /[0-9.]/.test(k)) calcExpr = ""; calcExpr += k; }
+    calcJustDone = false; calcShow();
+  }));
+  document.getElementById("hip-calc").addEventListener("keydown", e => { const map = { "*": "×", "/": "÷", "-": "−", "Enter": "=", "Backspace": "⌫", "Escape": "C" }, k = map[e.key] || e.key; const b = document.querySelector(`.hip-key[data-k="${CSS.escape(k)}"]`); if (b) { e.preventDefault(); b.click(); } });
+  HIPPO_OPEN_CALC = openCalc;
+  return openCalc;
+}
+// 🧮 Math Center: the calculator, math practice levels and Ratios & Rates in one place
+function startMathCenter() {
+  stopSlope(); stopArchers(); stopMini(); closeShop();
+  keyHandler = null;
+  const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
+  $app.innerHTML = `
+    <div class="panel mathc">
+      <div class="topline"><span class="label">🧮 Math Center</span><button class="iconbtn" id="mc-home">Back to menu</button></div>
+      <h2>Math Center</h2>
+      <p class="soft">Use the calculator, or pick something to practice.</p>
+      ${hippoCalcHTML(false)}
+      <span class="label">Math practice level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
+      <span class="label">📏 Ratios & Rates (MCPS 6/7 Accelerated Math · MP1 · Unit 2: Introducing Ratios and Rates)</span><div class="chips">${chipRow(RATIO_PARTS, "rpart")}</div>
+    </div>`;
+  bindHippoCalc();
+  document.getElementById("hip-calc-x").hidden = true;
+  document.getElementById("mc-home").addEventListener("click", showHome);
+  $app.querySelectorAll("[data-mlevel]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = "math"; choice.mlevel = b.dataset.mlevel; store.set("subject", "math"); store.set("mlevel", choice.mlevel);
+    startStudy();
+  }));
+  $app.querySelectorAll("[data-rpart]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = "ratios"; choice.rpart = b.dataset.rpart; store.set("subject", "ratios"); store.set("rpart", choice.rpart);
+    startStudy();
+  }));
+}
 function startHippo(initial = "") {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
@@ -7386,11 +7442,7 @@ function startHippo(initial = "") {
       <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">Ask 🦛</button></form>
       <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button><label class="hip-voice">🗣️ Hippo's voice <select id="hip-voice"></select></label><button class="btn" id="hip-voice-try" type="button">▶ Hear it</button></div>
       <div id="hip-out"></div>
-      <div class="hip-calc" id="hip-calc" hidden>
-        <div class="hip-calc-top"><b>🧮 Hippo's Calculator</b><button class="iconbtn" id="hip-calc-x" aria-label="Close calculator">✕ Close</button></div>
-        <div class="hip-calc-screen"><small id="hip-calc-expr"> </small><span id="hip-calc-val">0</span></div>
-        <div class="hip-calc-keys">${["C", "⌫", "(", ")", "√", "x²", "%", "÷", "7", "8", "9", "×", "4", "5", "6", "−", "1", "2", "3", "+", "±", "0", ".", "="].map(k => `<button type="button" class="hip-key${/[÷×−+=]/.test(k) ? " op" : /^[C⌫]$/.test(k) ? " clr" : /[√²%()±]/.test(k) ? " fn" : ""}" data-k="${k}">${k}</button>`).join("")}</div>
-      </div>
+      ${hippoCalcHTML(true)}
       <h3>Try asking</h3><div class="hip-tries">${tries.map(t => `<button class="chip hip-try" type="button">${esc(t)}</button>`).join("")}</div>
       <details class="hip-topics"><summary>📚 Everything Hippo knows (${fmt(total)} answers)</summary><div>${topics.map(([n, i, c]) => `<span><b>${i} ${esc(n)}</b> ${fmt(c)}</span>`).join("")}</div></details>
     </div>`;
@@ -7423,24 +7475,7 @@ function startHippo(initial = "") {
     }
     tone([523, 784], .06, "triangle", .06);
   };
-  // 🧮 the calculator
-  let calcExpr = "", calcJustDone = false;
-  const calcShow = () => { document.getElementById("hip-calc-expr").textContent = calcExpr || " "; let v = "0"; if (calcExpr) { const r = hippoCalcEval(calcExpr); v = r === null ? "…" : r; } document.getElementById("hip-calc-val").textContent = v; };
-  const openCalc = (pre = "") => { const c = document.getElementById("hip-calc"); c.hidden = false; calcExpr = pre; calcJustDone = false; calcShow(); c.scrollIntoView({ behavior: "smooth", block: "center" }); };
-  HIPPO_OPEN_CALC = openCalc;
-  document.getElementById("hip-calc-x").addEventListener("click", () => { document.getElementById("hip-calc").hidden = true; });
-  document.querySelectorAll(".hip-key").forEach(b => b.addEventListener("click", () => {
-    const k = b.dataset.k; tone([600 + "0123456789".indexOf(k) * 30], .03, "triangle", .04);
-    if (k === "C") calcExpr = "";
-    else if (k === "⌫") calcExpr = calcExpr.slice(0, -1);
-    else if (k === "=") { const r = hippoCalcEval(calcExpr); if (r !== null) { document.getElementById("hip-calc-expr").textContent = calcExpr + " ="; calcExpr = String(r).replace(/,/g, ""); calcJustDone = true; document.getElementById("hip-calc-val").textContent = r; return; } }
-    else if (k === "x²") calcExpr += "²";
-    else if (k === "√") calcExpr += "√";
-    else if (k === "±") calcExpr = calcExpr.startsWith("−") ? calcExpr.slice(1) : "−" + calcExpr;
-    else { if (calcJustDone && /[0-9.]/.test(k)) calcExpr = ""; calcExpr += k; }
-    calcJustDone = false; calcShow();
-  }));
-  document.getElementById("hip-calc").addEventListener("keydown", e => { const map = { "*": "×", "/": "÷", "-": "−", "Enter": "=", "Backspace": "⌫", "Escape": "C" }, k = map[e.key] || e.key; const b = document.querySelector(`.hip-key[data-k="${CSS.escape(k)}"]`); if (b) { e.preventDefault(); b.click(); } });
+  const openCalc = bindHippoCalc();
   document.getElementById("hip-form").addEventListener("submit", e => { e.preventDefault(); ask(box.value); });
   document.getElementById("hip-rand").addEventListener("click", () => {
     const useBank = Math.random() < .4;
@@ -7777,7 +7812,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^Ratios/, "graph"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^Ratios/, "graph"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
