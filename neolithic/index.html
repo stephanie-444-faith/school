@@ -130,6 +130,9 @@
   body[data-scene="graph"] { background: linear-gradient(rgba(120,180,255,.13) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(90deg, rgba(120,180,255,.13) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(#0d2a4a, #123a63 60%, #0a2036); background-attachment: fixed; }
   body[data-scene="graph"]::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'><text x='14' y='40' font-size='26' opacity='.22'>%E2%9A%96</text><text x='120' y='70' font-size='20' opacity='.22'>%F0%9F%8D%8B</text><text x='220' y='30' font-size='30' opacity='.22'>%F0%9F%9A%97</text><text x='60' y='150' font-size='22' opacity='.22'>%F0%9F%93%8F</text><text x='180' y='170' font-size='26' opacity='.22'>%F0%9F%A5%A4</text><text x='270' y='120' font-size='18' opacity='.22'>%F0%9F%92%B2</text><text x='20' y='250' font-size='20' opacity='.22'>%F0%9F%94%A2</text><text x='130' y='260' font-size='28' opacity='.22'>%E2%8F%B1</text><text x='240' y='240' font-size='22' opacity='.22'>%F0%9F%A7%AE</text></svg>"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
   body[data-scene="graph"]::after { display: none; }
+  body[data-scene="lounge"] { background: radial-gradient(circle at 50% 0%, rgba(255,201,60,.35), transparent 45%), radial-gradient(circle at 15% 80%, rgba(255,80,160,.25), transparent 40%), linear-gradient(#2a0f45, #4a1660 55%, #1d0a30); background-attachment: fixed; }
+  body[data-scene="lounge"]::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'><text x='14' y='40' font-size='26' opacity='.22'>%F0%9F%8F%86</text><text x='120' y='70' font-size='20' opacity='.22'>%E2%AD%90</text><text x='220' y='30' font-size='30' opacity='.22'>%F0%9F%A7%A9</text><text x='60' y='150' font-size='22' opacity='.22'>%F0%9F%94%A5</text><text x='180' y='170' font-size='26' opacity='.22'>%F0%9F%A5%87</text><text x='270' y='120' font-size='18' opacity='.22'>%F0%9F%92%A1</text><text x='20' y='250' font-size='20' opacity='.22'>%F0%9F%8E%AF</text><text x='130' y='260' font-size='28' opacity='.22'>%F0%9F%A7%A0</text><text x='240' y='240' font-size='22' opacity='.22'>%E2%AD%90</text></svg>"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
+  body[data-scene="lounge"]::after { display: none; }
   body { transition: background .5s; }
   @media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none !important; } }
   .wrap { max-width: 820px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 16px; }
@@ -502,6 +505,8 @@
   .hip.hip-flip { transform: rotate(180deg); transition: transform .8s; } .hip { transition: transform .8s; }
   .hip-calc { background: #1b1640; border: 3px solid var(--gold); border-radius: 18px; padding: 12px; margin: 12px auto; max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
   .mathc .hip-calc { margin: 14px auto; }
+  .g4-lounge { margin-top: 18px; padding: 14px; border-radius: 18px; background: linear-gradient(135deg, #4a1d6b, #7a2a5a); border: 2px solid var(--gold); box-shadow: 0 0 24px rgba(255,201,60,.25); }
+  .g4-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; } .g4-head > span { font-size: 2.6rem; animation: skyBob 3s ease-in-out infinite; } .g4-head h3 { color: var(--gold); }
   .hip-calc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .hip-calc-screen { background: #cfe8d2; color: #0f2a14; border-radius: 10px; padding: 8px 12px; text-align: right; font-family: ui-monospace, Menlo, monospace; margin-bottom: 10px; box-shadow: inset 0 2px 6px rgba(0,0,0,.25); }
   .hip-calc-screen small { display: block; min-height: 1.2em; opacity: .7; font-size: .9rem; word-break: break-all; } .hip-calc-screen span { font-size: 2rem; font-weight: 800; word-break: break-all; }
@@ -1218,6 +1223,64 @@ function ratioQuestion(gen) {
   q.tag = q.tag.replace(/^Math/, "Ratios & Rates");
   return q;
 }
+/* ---------- 🏆 4th Grade Challenge Lounge (in the Math Center): harder 4th-grade problems for kids who love a challenge ----------
+   Covers 4th-grade math (place value to a million, multi-digit multiplying and dividing, factors and primes,
+   fractions and decimals, measurement, angles and shapes) with multi-step "think twice" twists. */
+const G4_PARTS = {
+  all: { name: "Everything", desc: "Every kind of challenge, mixed" },
+  big: { name: "Big numbers", desc: "Place value to a million, rounding, comparing" },
+  muldiv: { name: "Multiply & divide", desc: "Multi-digit problems and remainders that matter" },
+  frac: { name: "Fractions & decimals", desc: "Equivalent, compare, add, mixed numbers, tenths and hundredths" },
+  geo: { name: "Shapes & measuring", desc: "Area, perimeter, angles, unit conversions" },
+  brain: { name: "Brain busters", desc: "Multi-step word problems, patterns, factors and logic" }
+};
+const G4_NAMES = ["Maya", "Leo", "Ava", "Sam", "Zoe", "Max", "Lily", "Noah", "Ella", "Omar"];
+const G4_GENS = {
+  big: [
+    () => { const n = rnd(100000, 999999), pl = rnd(0, 5), names = ["ones", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands"], d = Math.floor(n / 10 ** pl) % 10; if (!d) return G4_GENS.big[1](); return { tag: "Place value", p: `What is the VALUE of the digit ${d} in the ${names[pl]} place of ${fmt(n)}?`, a: fmt(d * 10 ** pl), w: [d, d * 10 ** (pl + 1), d * 10 ** Math.max(0, pl - 1)].map(fmt), why: `The ${d} is in the ${names[pl]} place, so it's worth ${d} × ${fmt(10 ** pl)} = ${fmt(d * 10 ** pl)}.` }; },
+    () => { const n = rnd(10000, 999999), to = [10, 100, 1000, 10000][rnd(0, 3)], r = Math.round(n / to) * to; return { tag: "Rounding", p: `Round ${fmt(n)} to the nearest ${fmt(to)}.`, a: fmt(r), w: [Math.floor(n / to) * to === r ? r + to : Math.floor(n / to) * to, Math.round(n / (to * 10)) * to * 10, r + to * 10].map(fmt), why: `Look at the digit to the right of the ${fmt(to)}s place. 5 or more rounds up, 4 or less rounds down: ${fmt(n)} → ${fmt(r)}.` }; },
+    () => { const a = rnd(100000, 999999); let b; do { b = a + rnd(-900, 900) * [1, 10, 100][rnd(0, 2)]; } while (b === a || b < 100000 || b > 999999); return { tag: "Comparing", p: `Which is true?`, a: `${fmt(a)} ${a > b ? ">" : "<"} ${fmt(b)}`, w: [`${fmt(a)} ${a > b ? "<" : ">"} ${fmt(b)}`, `${fmt(a)} = ${fmt(b)}`, `${fmt(b)} ${a > b ? ">" : "<"} ${fmt(a)}`], why: `Compare from the left, digit by digit, until two digits are different. The bigger digit wins.` }; },
+    () => { const th = rnd(1, 9), h = rnd(0, 9), t = rnd(0, 9), o = rnd(1, 9), ht = rnd(1, 9), n = ht * 100000 + th * 1000 + h * 100 + t * 10 + o; return { tag: "Expanded form", p: `Which number is ${fmt(ht * 100000)} + ${fmt(th * 1000)} + ${h * 100} + ${t * 10} + ${o}?`, a: fmt(n), w: [ht * 10000 + th * 1000 + h * 100 + t * 10 + o, ht * 100000 + th * 100 + h * 10 + t, n + 10000].map(fmt), why: `Watch the empty place! There are 0 ten-thousands, so the number is ${fmt(n)}.` }; },
+    () => { const n = rnd(10, 99) * 1000, ten = n / 10; return { tag: "Ten times as much", p: `${fmt(n)} is ten times as much as what number?`, a: fmt(ten), w: [n * 10, n / 100, n - 10].map(fmt), why: `In 4th grade place value, each place is worth 10 times the place to its right. ${fmt(n)} ÷ 10 = ${fmt(ten)}.` }; }
+  ],
+  muldiv: [
+    () => { const a = rnd(1000, 9999), b = rnd(3, 9); return { tag: "4-digit × 1-digit", p: `${fmt(a)} × ${b} = ?`, a: fmt(a * b), w: [a * b + 1000, a * b - b * 10, a * (b + 1)].map(fmt), why: `Break it apart: ${fmt(Math.floor(a / 1000) * 1000)} × ${b} + ${a % 1000} × ${b} = ${fmt(Math.floor(a / 1000) * 1000 * b)} + ${fmt(a % 1000 * b)} = ${fmt(a * b)}.` }; },
+    () => { const a = rnd(23, 98), b = rnd(23, 98); return { tag: "2-digit × 2-digit", p: `${a} × ${b} = ?`, a: fmt(a * b), w: [a * (b % 10) + a * Math.floor(b / 10), a * b + 10, a * b - a].map(fmt), why: `Area model: ${a} × ${Math.floor(b / 10) * 10} = ${fmt(a * Math.floor(b / 10) * 10)} and ${a} × ${b % 10} = ${a * (b % 10)}. Add: ${fmt(a * b)}.` }; },
+    () => { const d = rnd(3, 9), q = rnd(120, 999), r = rnd(1, d - 1), n = d * q + r; return { tag: "Dividing with remainders", p: `${fmt(n)} ÷ ${d} = ?`, a: `${q} R${r}`, w: [`${q + 1} R${r}`, `${q} R${(r % (d - 1)) + 1 === r ? r + 1 : (r % (d - 1)) + 1}`, `${q - 10} R${r}`], why: `${d} × ${q} = ${fmt(d * q)}, and ${fmt(n)} − ${fmt(d * q)} = ${r} left over.` }; },
+    () => { const per = rnd(4, 9), kids = per * rnd(12, 40) + rnd(1, per - 1), vans = Math.ceil(kids / per); return { tag: "Remainders that matter", p: `${kids} kids are going on a trip. Each van holds ${per} kids. How many vans are needed so that EVERY kid can go?`, a: vans, x: [vans - 1, Math.floor(kids / per) * per, vans + 1], why: `${kids} ÷ ${per} = ${Math.floor(kids / per)} R${kids % per}. Those ${kids % per} kids still need a ride, so you need one more van: ${vans}.` }; },
+    () => { const per = rnd(6, 9), total = per * rnd(30, 80) + rnd(1, per - 1), full = Math.floor(total / per); return { tag: "Remainders that matter", p: `A baker has ${total} cookies and fills boxes of ${per}. How many boxes can be COMPLETELY filled?`, a: full, x: [full + 1, total % per, full - 1], why: `${total} ÷ ${per} = ${full} R${total % per}. The leftover cookies can't fill a whole box, so ${full} full boxes.` }; },
+    () => { const a = rnd(12, 40), b = rnd(3, 9), c = rnd(2, 6); return { tag: "Multi-step", p: `A school buys ${b} boxes of markers with ${a} markers in each box. They give an equal share to ${c} classes. If they share all of them they can, how many markers does each class get?`, a: Math.floor(a * b / c), x: [a * b, a * c, Math.floor(a * b / c) + 1], why: `First multiply: ${b} × ${a} = ${a * b} markers. Then divide: ${a * b} ÷ ${c} = ${Math.floor(a * b / c)}${a * b % c ? ` R${a * b % c}` : ""}. Each class gets ${Math.floor(a * b / c)}.` }; }
+  ],
+  frac: [
+    () => { const ds = [2, 3, 4, 5, 6, 8, 10, 12], d = ds[rnd(0, 7)], n = rnd(1, d - 1), k = rnd(2, 5), ok = `${n * k}/${d * k}`; return { tag: "Equivalent fractions", p: `Which fraction is equivalent to ${n}/${d}?`, a: ok, w: [`${n + k}/${d + k}`, `${n * k}/${d + k}`, `${n}/${d * k}`].filter(v => v !== ok), why: `Multiply the top AND bottom by the same number: ${n} × ${k} = ${n * k} and ${d} × ${k} = ${d * k}.` }; },
+    () => { const pairs = [[2, 3], [3, 4], [2, 5], [3, 5], [5, 6], [3, 8], [5, 8], [7, 10], [4, 5], [7, 12], [5, 12], [2, 3]]; let [a, b] = pairs[rnd(0, pairs.length - 1)], [c, d] = pairs[rnd(0, pairs.length - 1)]; if (a * d === c * b) return G4_GENS.frac[0](); const big = a * d > c * b ? `${a}/${b}` : `${c}/${d}`; return { tag: "Comparing fractions", p: `Which fraction is bigger: ${a}/${b} or ${c}/${d}?`, a: big, w: [big === `${a}/${b}` ? `${c}/${d}` : `${a}/${b}`, "They are equal", "You can't tell"], why: `Use a common denominator, ${b * d}: ${a}/${b} = ${a * d}/${b * d} and ${c}/${d} = ${c * b}/${b * d}. ${big} is bigger.` }; },
+    () => { const d = [4, 5, 6, 8, 10, 12][rnd(0, 5)], a = rnd(1, d - 1), b = rnd(1, d - 1), s = a + b, ans = s > d ? `${Math.floor(s / d)} ${s % d}/${d}`.replace(/ 0\/\d+$/, "") : s === d ? "1" : `${s}/${d}`; return { tag: "Adding fractions", p: `${a}/${d} + ${b}/${d} = ? (as a mixed number if it's more than 1)`, a: ans, w: [`${s}/${d * 2}`, `${a + b + 1}/${d}`, `${Math.abs(a - b)}/${d}`].filter(v => v !== ans), why: `Same denominators: just add the tops. ${a} + ${b} = ${s}, so ${s}/${d}${s >= d ? ` = ${ans}` : ""}.` }; },
+    () => { const d = [3, 4, 5, 6, 8][rnd(0, 4)], w1 = rnd(2, 6), n1 = rnd(1, d - 1), w2 = rnd(1, w1 - 1), n2 = rnd(1, d - 1); const t1 = w1 * d + n1, t2 = w2 * d + n2, r = t1 - t2, ans = r % d ? `${Math.floor(r / d) ? Math.floor(r / d) + " " : ""}${r % d}/${d}` : `${r / d}`; return { tag: "Mixed numbers", p: `${w1} ${n1}/${d} − ${w2} ${n2}/${d} = ?`, a: ans, w: [`${w1 - w2} ${Math.abs(n1 - n2) || 1}/${d}`, `${w1 - w2 + 1} ${r % d || 1}/${d}`, `${r}/${d * 2}`].filter(v => v !== ans), why: `Turn them into fractions: ${t1}/${d} − ${t2}/${d} = ${r}/${d} = ${ans}. (If the top fraction is smaller, you have to regroup!)` }; },
+    () => { const d = [3, 4, 5, 6, 8][rnd(0, 4)], n = rnd(1, d - 1), w = rnd(3, 12), top = n * w, ans = top % d ? (top > d ? `${Math.floor(top / d)} ${top % d}/${d}` : `${top}/${d}`) : `${top / d}`; return { tag: "Fraction × whole number", p: `${w} friends each eat ${n}/${d} of a pizza. How many pizzas do they eat altogether?`, a: ans, w: [`${n * w}/${d * w}`, `${n + w}/${d}`, `${Math.floor(top / d) + 1}`].filter(v => v !== ans), why: `${w} × ${n}/${d} = ${top}/${d} = ${ans} pizzas.` }; },
+    () => { const a = rnd(1, 99), b = rnd(1, 99); if (a === b * 10 || Math.abs(a / 100 - b / 10) < .001) return G4_GENS.frac[6](); const A = (a / 100).toFixed(2), B = (b / 10).toFixed(1), big = a / 100 > b / 10 ? A : B; return { tag: "Comparing decimals", p: `Which is greater: ${A} or ${B}?`, a: big, w: [big === A ? B : A, "They are equal", "You can't compare tenths and hundredths"], why: `Write both as hundredths: ${A} = ${a} hundredths and ${B} = ${b * 10} hundredths. ${big} is greater.` }; },
+    () => { const t = rnd(1, 9), h = rnd(1, 99); const ans = ((t * 10 + h) / 100).toFixed(2); return { tag: "Tenths + hundredths", p: `${t}/10 + ${h}/100 = ? (as a decimal)`, a: ans, w: [((t + h) / 100).toFixed(2), ((t + h) / 10).toFixed(1), (t / 10 + h / 1000).toFixed(3)].filter(v => v !== ans), why: `${t}/10 = ${t * 10}/100. ${t * 10}/100 + ${h}/100 = ${t * 10 + h}/100 = ${ans}.` }; }
+  ],
+  geo: [
+    () => { const l = rnd(6, 30), w = rnd(3, 20); return { tag: "Area", p: `A rectangle is ${l} feet long and ${w} feet wide. What is its AREA?`, a: `${l * w} square feet`, w: [`${2 * (l + w)} square feet`, `${l + w} square feet`, `${l * w + l} square feet`], why: `Area = length × width = ${l} × ${w} = ${l * w} square feet.` }; },
+    () => { const w = rnd(3, 15), l = w + rnd(2, 15), P = 2 * (l + w); return { tag: "Missing side", p: `A rectangle has a perimeter of ${P} cm. One side is ${w} cm. How long is the other side?`, a: `${l} cm`, w: [`${P - w} cm`, `${P / 2} cm`, `${P - 2 * w} cm`], why: `Half the perimeter is one length + one width: ${P} ÷ 2 = ${P / 2}. ${P / 2} − ${w} = ${l} cm.` }; },
+    () => { const A = rnd(4, 12) * rnd(4, 12), w = [3, 4, 5, 6, 8][rnd(0, 4)], area = w * Math.max(2, Math.round(A / w)), l = area / w; return { tag: "Area backwards", p: `A garden has an area of ${area} square meters. It is ${w} meters wide. What is its perimeter?`, a: `${2 * (l + w)} meters`, w: [`${l} meters`, `${area} meters`, `${l + w} meters`], why: `First find the length: ${area} ÷ ${w} = ${l}. Then perimeter = 2 × (${l} + ${w}) = ${2 * (l + w)} meters. Two steps!` }; },
+    () => { const a = rnd(15, 165), t = [90, 180][rnd(0, 1)]; if (a >= t) return G4_GENS.geo[0](); return { tag: "Angles", p: `Two angles together make a ${t === 90 ? "right angle (90°)" : "straight line (180°)"}. One angle is ${a}°. What is the other?`, a: `${t - a}°`, w: [`${t - a + 10}°`, `${t + a}°`, `${360 - a}°`], why: `${t}° − ${a}° = ${t - a}°.` }; },
+    () => { const a = rnd(1, 179), kind = a < 90 ? "acute" : a === 90 ? "right" : "obtuse"; return { tag: "Angle types", p: `What kind of angle measures ${a}°?`, a: kind, w: ["acute", "right", "obtuse", "straight"].filter(v => v !== kind).slice(0, 3), why: `Acute is less than 90°, right is exactly 90°, obtuse is between 90° and 180°, and straight is 180°.` }; },
+    () => { const c = [["feet", "inches", 12], ["yards", "feet", 3], ["pounds", "ounces", 16], ["hours", "minutes", 60], ["minutes", "seconds", 60], ["kilometers", "meters", 1000], ["meters", "centimeters", 100], ["gallons", "quarts", 4], ["liters", "milliliters", 1000]][rnd(0, 8)], n = rnd(2, 9), m = rnd(1, c[2] - 1); return { tag: "Converting", p: `How many ${c[1]} are in ${n} ${c[0]} and ${m} ${c[1]}?`, a: fmt(n * c[2] + m), w: [n * c[2], n + m, (n + 1) * c[2] + m].map(fmt), why: `${n} ${c[0]} = ${n} × ${c[2]} = ${fmt(n * c[2])} ${c[1]}. Add the extra ${m}: ${fmt(n * c[2] + m)}.` }; },
+    () => { const s = rnd(7, 11), e = rnd(15, 55), dur = rnd(75, 200), endMin = s * 60 + e + dur, h = Math.floor(endMin / 60), m = endMin % 60, t = (H, M) => `${H > 12 ? H - 12 : H}:${String(M).padStart(2, "0")}`; return { tag: "Elapsed time", p: `A movie starts at ${t(s, e)} and lasts ${dur} minutes. What time does it end?`, a: t(h, m), w: [t(h + 1, m), t(h, (m + 10) % 60), t(h - 1, m)].filter(v => v !== t(h, m)), why: `${dur} minutes = ${Math.floor(dur / 60)} hour${Math.floor(dur / 60) > 1 ? "s" : ""} and ${dur % 60} minute${dur % 60 === 1 ? "" : "s"}. ${t(s, e)} + that = ${t(h, m)}.` }; }
+  ],
+  brain: [
+    () => { const nm = rPick(G4_NAMES), save = rnd(4, 15), weeks = rnd(4, 12), cost = save * weeks + rnd(5, 40), spent = rnd(5, 20); return { tag: "Multi-step", p: `${nm} saves $${save} a week for ${weeks} weeks, then spends $${spent} on a book. How much MORE does ${nm} need to buy a $${cost} bike?`, a: `$${cost - (save * weeks - spent)}`, w: [`$${cost - save * weeks}`, `$${save * weeks - spent}`, `$${cost + spent}`], why: `Saved: ${save} × ${weeks} = $${save * weeks}. After the book: ${save * weeks} − ${spent} = $${save * weeks - spent}. Still needs: ${cost} − ${save * weeks - spent} = $${cost - (save * weeks - spent)}.` }; },
+    () => { const n = rnd(12, 60), fs = []; for (let i = 1; i <= n; i++) if (n % i === 0) fs.push(i); return { tag: "Factors", p: `How many factors does ${n} have?`, a: fs.length, x: [fs.length + 1, fs.length - 1, fs.length + 2], why: `List the factor pairs: ${fs.filter(f => f * f <= n).map(f => `${f} × ${n / f}`).join(", ")}. That's ${fs.length} factors: ${fs.join(", ")}.` }; },
+    () => { const ps = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97], p = ps[rnd(4, ps.length - 1)], comps = [21, 27, 33, 39, 49, 51, 57, 63, 69, 77, 81, 87, 91, 93].sort(() => Math.random() - .5).slice(0, 3); return { tag: "Prime or composite", p: `Which of these numbers is PRIME?`, a: p, w: comps, why: `${p} has only 2 factors: 1 and ${p}. The others are composite, for example ${comps[0]} = ${[3, 7, 9, 11, 13].find(f => comps[0] % f === 0 && f < comps[0])} × ${comps[0] / [3, 7, 9, 11, 13].find(f => comps[0] % f === 0 && f < comps[0])}.` }; },
+    () => { const a = rnd(2, 9), m = rnd(2, 3), start = rnd(1, 6), seq = [start]; for (let i = 0; i < 4; i++) seq.push(i % 2 ? seq.at(-1) * m : seq.at(-1) + a); const next = seq.length % 2 ? seq.at(-1) + a : seq.at(-1) * m; return { tag: "Tricky pattern", p: `The rule switches back and forth: add ${a}, then multiply by ${m}. What comes next? ${seq.join(", ")}, ?`, a: next, x: [seq.at(-1) + a + 1, seq.at(-1) * m + a, seq.at(-1) + m], why: `The last step was ${seq.length % 2 ? "× " + m : "+ " + a}, so now ${seq.length % 2 ? "add " + a : "multiply by " + m}: ${next}.` }; },
+    () => { const x = rnd(3, 15), m = rnd(2, 6), b = rnd(2, 20); return { tag: "Mystery number", p: `I'm thinking of a number. If you multiply it by ${m} and then add ${b}, you get ${x * m + b}. What's my number?`, a: x, x: [x * m, x + 1, Math.round((x * m + b) / m)], why: `Work backwards: ${x * m + b} − ${b} = ${x * m}, then ${x * m} ÷ ${m} = ${x}.` }; },
+    () => { const c = rnd(3, 9), d = rnd(2, 6), leg = c * 2 + d * 4; return { tag: "Legs puzzle", p: `A farm has ${c} chickens and ${d} cows. How many legs are there altogether?`, a: leg, x: [(c + d) * 4, (c + d) * 2, c * 4 + d * 2], why: `Chickens have 2 legs: ${c} × 2 = ${c * 2}. Cows have 4 legs: ${d} × 4 = ${d * 4}. Total: ${leg}.` }; },
+    () => { const n = rnd(3, 8), m = rnd(n + 1, 12), l = n * m / rgcd(n, m); return { tag: "Common multiples", p: `One light blinks every ${n} seconds and another every ${m} seconds. They just blinked together. In how many seconds will they blink together again?`, a: l, x: [n * m === l ? l + n : n * m, n + m, l * 2], why: `Find the least common multiple of ${n} and ${m}: ${l}.` }; },
+    () => { const nm = rPick(G4_NAMES), a = rnd(3, 9), b = a * rnd(2, 4); return { tag: "Times as many", p: `${nm} has ${a} stickers. Her brother has ${b / a} times as many. How many stickers do they have TOGETHER?`, a: a + b, x: [b, a * (b / a) + b, a + b / a], why: `Brother: ${a} × ${b / a} = ${b}. Together: ${a} + ${b} = ${a + b}. ("Together" means add at the end!)` }; }
+  ]
+};
+function g4Question(gen) { const q = ratioQuestion(gen); q.tag = q.tag.replace(/^Ratios & Rates/, "🏆 4th Grade Challenge"); return q; }
 const bankQuestion = tag => q => ({ kind: "mc", tag, prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) });
 const SUBJECTS = {
   ss: { name: "Social Studies", desc: "Early Humans test" },
@@ -1400,6 +1463,7 @@ function sourceFor(set) {
   const ratioSets = { ratios_basics: rp("basics"), ratios_tables: rp("tables"), ratios_tape: rp("tape"), ratios_rates: rp("rates"), ratios_compare: rp("compare"), ratios_vocab: rv };
   ratioSets.ratios_all = [...ratioSets.ratios_basics, ...ratioSets.ratios_tables, ...ratioSets.ratios_tape, ...ratioSets.ratios_rates, ...ratioSets.ratios_compare, ...rv];
   if (set.startsWith("ratios_")) return ratioSets[set] || ratioSets.ratios_all;
+  if (set.startsWith("g4_")) { const gp = k => [...G4_GENS[k], ...G4_GENS[k]].map(gen => () => g4Question(gen)), parts = Object.keys(G4_GENS); const want = set.slice(3); return want === "all" || !G4_GENS[want] ? parts.flatMap(gp) : gp(want); }
   return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, mathhard, science: sci, health, health_safety, health_body, health_food, ela, art,
     mix: [...v, ...q, ...g, ...math, ...mathhard, ...sci, ...health, ...ela, ...art] }[set];
 }
@@ -1407,6 +1471,7 @@ const currentSet = () => choice.subject === "ss" ? choice.set
   : choice.subject === "math" && choice.mlevel === "hard" ? "mathhard"
   : choice.subject === "health" ? "health_" + choice.hpart
   : choice.subject === "ratios" ? "ratios_" + choice.rpart
+  : choice.subject === "g4" ? "g4_" + choice.g4part
   : choice.subject;
 const HEALTH_PARTS = {
   safety: { name: "Safety", desc: "Fire, bikes, the internet, and emergencies" },
@@ -1433,7 +1498,9 @@ choice.hpart = store.get("hpart", "safety");
 if (!HEALTH_PARTS[choice.hpart]) choice.hpart = "safety";
 choice.rpart = store.get("rpart", "all");
 if (!RATIO_PARTS[choice.rpart]) choice.rpart = "all";
-if (!SUBJECTS[choice.subject]) choice.subject = "ss";
+choice.g4part = store.get("g4part", "all");
+if (!G4_PARTS[choice.g4part]) choice.g4part = "all";
+if (!SUBJECTS[choice.subject] && choice.subject !== "g4") choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
 
@@ -3270,6 +3337,7 @@ function studyTitle() {
   if (choice.subject === "math") return `Math · ${MATH_LEVELS[choice.mlevel].name}`;
   if (choice.subject === "health") return `Health · ${HEALTH_PARTS[choice.hpart].name}`;
   if (choice.subject === "ratios") return `Ratios & Rates · ${RATIO_PARTS[choice.rpart].name}`;
+  if (choice.subject === "g4") return `🏆 4th Grade Challenge · ${G4_PARTS[choice.g4part].name}`;
   return choice.subject === "ss" ? `Social Studies · ${SETS[choice.set].name}` : SUBJECTS[choice.subject].name;
 }
 function startStudy() {
@@ -3283,13 +3351,13 @@ function showStudyQuestion(st) {
   q.maker = maker;
   $app.innerHTML = `
     <div class="panel">
-      <div class="topline"><span class="label">${studyTitle()}</span><button class="iconbtn" id="st-home">Back to subjects</button></div>
+      <div class="topline"><span class="label">${studyTitle()}</span><button class="iconbtn" id="st-home">${["g4", "ratios"].includes(choice.subject) ? "Back to Math Center" : "Back to subjects"}</button></div>
       <div class="topline"><span>Question ${st.i + 1} of ${STUDY_LEN}</span><span>${st.right} right</span></div>
       <div class="progress"><div style="width:${st.i / STUDY_LEN * 100}%"></div></div>
       ${questionHtml(q)}
       <div id="st-fb"></div>
     </div>`;
-  document.getElementById("st-home").addEventListener("click", showHome);
+  document.getElementById("st-home").addEventListener("click", () => ["g4", "ratios"].includes(choice.subject) ? startMathCenter() : showHome());
   const tiles = [...$app.querySelectorAll(".tile")];
   const answer = (picked, btn) => {
     const ok = picked === q.a;
@@ -3332,7 +3400,7 @@ function studyResults(st) {
       <div class="row"><button class="btn go" id="st-again">Study 10 more</button><button class="btn" id="st-home">Pick another subject</button></div>
     </div>`;
   document.getElementById("st-again").addEventListener("click", startStudy);
-  document.getElementById("st-home").addEventListener("click", showHome);
+  document.getElementById("st-home").addEventListener("click", () => ["g4", "ratios"].includes(choice.subject) ? startMathCenter() : showHome());
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -7409,6 +7477,10 @@ function startMathCenter() {
       ${hippoCalcHTML(false)}
       <span class="label">Math practice level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">📏 Ratios & Rates (MCPS 6/7 Accelerated Math · MP1 · Unit 2: Introducing Ratios and Rates)</span><div class="chips">${chipRow(RATIO_PARTS, "rpart")}</div>
+      <div class="g4-lounge">
+        <div class="g4-head"><span>🏆</span><div><h3>4th Grade Challenge Lounge</h3><p class="soft">For kids who LOVE a challenge: tougher 4th-grade problems with twists, multi-step puzzles and brain busters.</p></div></div>
+        <div class="chips">${chipRow(G4_PARTS, "g4part")}</div>
+      </div>
     </div>`;
   bindHippoCalc();
   document.getElementById("hip-calc-x").hidden = true;
@@ -7419,6 +7491,10 @@ function startMathCenter() {
   }));
   $app.querySelectorAll("[data-rpart]").forEach(b => b.addEventListener("click", () => {
     choice.subject = "ratios"; choice.rpart = b.dataset.rpart; store.set("subject", "ratios"); store.set("rpart", choice.rpart);
+    startStudy();
+  }));
+  $app.querySelectorAll("[data-g4part]").forEach(b => b.addEventListener("click", () => {
+    choice.subject = "g4"; choice.g4part = b.dataset.g4part; store.set("subject", "g4"); store.set("g4part", choice.g4part);
     startStudy();
   }));
 }
@@ -7812,7 +7888,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^Ratios/, "graph"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
