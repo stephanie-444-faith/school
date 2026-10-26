@@ -274,8 +274,6 @@
   .ct-jar { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; padding: 12px; min-height: 80px; border-radius: 20px; border: 3px solid #cfe8ff; background: rgba(207,232,255,.08); } .ct-jar span { background: #fff7d1; color: #4a3800; border-radius: 999px; padding: 4px 10px; font-size: .9rem; }
   body { transition: background .5s; }
   /* 🌊 Every background moves: the home stars fall, each page's pattern drifts and sways, the page glow breathes */
-  body::before { inset: -300px 0 0; animation: bgStars 18s linear infinite; }
-  @keyframes bgStars { to { transform: translateY(280px); } }
   body[data-scene]::before { inset: -40px; animation: sceneDrift 16s linear infinite, sceneSway 3.5s ease-in-out infinite alternate; will-change: transform, background-position; }
   @keyframes sceneDrift { to { background-position: 320px 290px; } }
   @keyframes sceneSway { from { transform: translateX(-22px) rotate(-1deg); } to { transform: translateX(22px) rotate(1deg); } }
