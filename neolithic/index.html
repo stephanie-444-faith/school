@@ -211,6 +211,37 @@
   .wp-nums { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .wp-nums .chip[aria-pressed="true"] { background: var(--gold); color: #1a1240; }
   .wp-note { margin-top: 12px; font-style: italic; }
 
+
+  body[data-scene="apps"] { background: radial-gradient(circle at 20% 20%, rgba(255,60,172,.35), transparent 40%), radial-gradient(circle at 80% 70%, rgba(0,229,255,.3), transparent 40%), linear-gradient(#1a0b3a, #2a1060); background-attachment: fixed; }
+  body[data-scene="apps"]::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'><text x='14' y='40' font-size='26' opacity='.2'>%F0%9F%93%B1</text><text x='120' y='70' font-size='20' opacity='.2'>%E2%9C%A8</text><text x='220' y='30' font-size='30' opacity='.2'>%F0%9F%92%BB</text><text x='60' y='150' font-size='22' opacity='.2'>%F0%9F%A4%96</text><text x='180' y='170' font-size='26' opacity='.2'>%E2%AD%90</text><text x='270' y='120' font-size='18' opacity='.2'>%F0%9F%8E%AE</text><text x='20' y='250' font-size='20' opacity='.2'>%F0%9F%A7%A9</text><text x='130' y='260' font-size='28' opacity='.2'>%F0%9F%9A%80</text><text x='240' y='240' font-size='22' opacity='.2'>%F0%9F%92%A1</text></svg>"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
+  body[data-scene="code"] { background: radial-gradient(ellipse at 50% 0%, rgba(57,255,136,.18), transparent 55%), linear-gradient(#04110a, #0a2416); background-attachment: fixed; }
+  body[data-scene="code"]::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'><text x='14' y='40' font-size='26' opacity='.2'></></text><text x='120' y='70' font-size='20' opacity='.2'>%7B %7D</text><text x='220' y='30' font-size='30' opacity='.2'>%F0%9F%90%8D</text><text x='60' y='150' font-size='22' opacity='.2'>01</text><text x='180' y='170' font-size='26' opacity='.2'>%28%29%3B</text><text x='270' y='120' font-size='18' opacity='.2'>%F0%9F%8C%90</text><text x='20' y='250' font-size='20' opacity='.2'>%23</text><text x='130' y='260' font-size='28' opacity='.2'>=</text><text x='240' y='240' font-size='22' opacity='.2'>%F0%9F%90%A2</text></svg>"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
+  body[data-scene="ai"] { background: radial-gradient(circle at 30% 30%, rgba(123,97,255,.45), transparent 45%), radial-gradient(circle at 75% 75%, rgba(0,229,255,.3), transparent 45%), linear-gradient(#0a0626, #1a1050); background-attachment: fixed; }
+  body[data-scene="ai"]::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'><text x='14' y='40' font-size='26' opacity='.2'>%F0%9F%A4%96</text><text x='120' y='70' font-size='20' opacity='.2'>%E2%9C%A8</text><text x='220' y='30' font-size='30' opacity='.2'>%F0%9F%A7%A0</text><text x='60' y='150' font-size='22' opacity='.2'>%F0%9F%92%AC</text><text x='180' y='170' font-size='26' opacity='.2'>%E2%9A%A1</text><text x='270' y='120' font-size='18' opacity='.2'>%F0%9F%8E%A8</text><text x='20' y='250' font-size='20' opacity='.2'>%F0%9F%94%AE</text><text x='130' y='260' font-size='28' opacity='.2'>%F0%9F%92%A1</text><text x='240' y='240' font-size='22' opacity='.2'>%F0%9F%8C%9F</text></svg>"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
+  body[data-scene="apps"]::after, body[data-scene="code"]::after, body[data-scene="ai"]::after { display: none; }
+  .aa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 10px 0 16px; }
+  .aa-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel-2), var(--panel)); color: var(--ink); cursor: pointer; }
+  .aa-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .aa-card i { font-style: normal; font-size: 2.2rem; } .aa-card b { font-size: 1.05rem; } .aa-card span { color: var(--ink-soft); font-size: .88rem; } .aa-card small { color: var(--money); font-weight: 700; }
+  .aa-card em { position: absolute; top: 10px; right: 10px; font-style: normal; font-size: .7rem; font-weight: 800; background: var(--bad); color: #fff; border-radius: 999px; padding: 2px 8px; }
+  .aa-card.small { flex-direction: row; align-items: center; } .aa-card.small i { font-size: 1.6rem; }
+  .cl-steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .cl-step { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font-weight: 800; }
+  .cl-step.done { background: #14966a; border-color: #14966a; } .cl-step.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,201,60,.35); }
+  .cl-learn { margin: 8px 0; line-height: 1.55; } .cl-learn code, .cl-goal code { background: #1b1640; border-radius: 6px; padding: 1px 6px; font-family: ui-monospace, monospace; color: #9ff5c0; }
+  .cl-goal { padding: 10px 12px; border-radius: 12px; background: rgba(255,201,60,.12); border: 1px solid var(--gold); margin: 8px 0; }
+  .cl-work { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; } @media (max-width: 700px) { .cl-work { grid-template-columns: 1fr; } }
+  .cl-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #0d0a24; border-radius: 12px 12px 0 0; font-size: .85rem; color: var(--ink-soft); } .btn.mini { padding: 4px 10px; font-size: .85rem; min-height: 0; }
+  #cl-ed { width: 100%; min-height: 240px; resize: vertical; font: 15px/1.5 ui-monospace, Menlo, Consolas, monospace; background: #0b1020; color: #d6f7e2; border: 0; border-radius: 0 0 12px 12px; padding: 10px; tab-size: 4; }
+  .cl-view { width: 100%; min-height: 240px; border: 0; border-radius: 0 0 12px 12px; background: #fff; }
+  .cl-out { margin: 0; min-height: 120px; max-height: 260px; overflow: auto; white-space: pre-wrap; background: #000; color: #7CFC9A; font: 14px/1.45 ui-monospace, monospace; padding: 10px; border-radius: 0 0 12px 12px; }
+  .cl-turtle { margin-top: 8px; background: #fff; border-radius: 12px; overflow: hidden; } .cl-turtle canvas { max-width: 100%; }
+  .cl-win, .cl-try { margin: 10px 0; padding: 10px 12px; border-radius: 12px; font-weight: 700; } .cl-win { background: rgba(66,227,146,.18); border: 1px solid var(--money); } .cl-try { background: rgba(255,96,112,.15); border: 1px solid var(--bad); }
+  .ai-lesson { padding: 14px; border-radius: 16px; background: var(--panel-2); margin: 10px 0; } .ai-lesson > span { font-size: 2.6rem; } .ai-lesson p { margin: .6em 0; line-height: 1.55; }
+  .ai-opt { display: block; width: 100%; text-align: left; margin: 8px 0; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; } .ai-opt.right { border-color: var(--money); } .ai-opt.dim { opacity: .55; }
+  .ai-form { display: grid; gap: 8px; margin: 10px 0; } .ai-form label, .ai-plabel { display: flex; flex-direction: column; gap: 4px; font-weight: 700; }
+  .ai-form input, .ai-form select, #ai-prompt { font: inherit; font-weight: 400; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: #1b1640; color: var(--ink); } #ai-prompt { resize: vertical; }
+  .ai-score { display: flex; align-items: center; gap: 10px; margin: 8px 0; flex-wrap: wrap; } .ai-meter { flex: 1 1 140px; height: 14px; border-radius: 999px; background: var(--panel-2); overflow: hidden; } .ai-meter i { display: block; height: 100%; width: 0; transition: width .3s, background .3s; } .ai-score b { font-size: 1.3rem; } .ai-score span { flex-basis: 100%; color: var(--ink-soft); }
+  .ai-ans { white-space: pre-wrap; margin: 10px 0; padding: 12px; border-radius: 14px; background: #f7f4ff; color: #1a1240; line-height: 1.5; }
   body { transition: background .5s; }
   @media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none !important; } }
   .wrap { max-width: 820px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 16px; }
@@ -2173,6 +2204,7 @@ function showHome() {
       <button class="bunny-btn" id="bunny" type="button" aria-label="Bunny Hop Typing" title="Bunny Hop Typing">🐰</button>
       <button class="bunny-btn dog-btn" id="write" type="button" aria-label="Story Starters" title="Story Starters: story ideas to write about, then keep the story going!">🐶</button>
       <button class="bunny-btn hippo-btn" id="hippo" type="button" aria-label="Ask Hippo" title="Ask Hippo: questions and answers with pictures">🦛</button>
+      <button class="bunny-btn" id="appapp" type="button" aria-label="App-App" title="App-App: all the newest apps (Code Lab, AI Studio and more)">📱</button>
         ${HIPPO_APPS.map((a, i) => `<button class="bunny-btn" data-happ="${i}" type="button" aria-label="${a[1]}" title="${a[1]}: ${a[2]}">${a[0]}</button>`).join("")}
       </div>
       <div class="hero">
@@ -2249,6 +2281,7 @@ function showHome() {
   keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
   document.getElementById("write").addEventListener("click", startStories);
   document.getElementById("hippo").addEventListener("click", () => startHippo());
+  document.getElementById("appapp").addEventListener("click", startAppApp);
   $app.querySelectorAll("[data-happ]").forEach(b => b.addEventListener("click", () => { const a = HIPPO_APPS[+b.dataset.happ]; if (a[3] === "calc") startMathCenter(); else startHippo(a[3]); }));
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
@@ -7897,6 +7930,10 @@ function hippoAnswer(qRaw) {
   // ⌨️ typing questions go to Bunny Hop Typing
   if (/\b(type|typing|keyboard|touch typ\w*|wpm|words per minute)\b/.test(q) && /\b(how|learn|teach|get better|faster|practice|improve|good|help|where)\b/.test(q))
     return R("Typing", "⌨️", "Learn to type with Bunny Hop Typing!", "Bunny Hop Typing has a Training Ground with a color-coded keyboard that shows which finger presses each key. Then race across platforms by typing words, earn carrots, and try to become Speed Champion!", hBig("🐰⌨️", "#e8f7e8", "Bunny Hop Typing"), { label: "🐰 Go to Bunny Hop Typing", fn: () => startBunny() });
+  // 📱 the App-App and its apps
+  if (/\b(app ?app|new apps?|newest apps?)\b/.test(q)) return R("App-App", "📱", "📱 The App-App has all the newest apps!", "Code Lab, AI Studio, and every new app from now on.", hBig("📱✨", "#2e1a4a", "App-App"), { label: "📱 Open the App-App", fn: () => startAppApp() });
+  if (/\b(learn (to |how to )?code|coding|code lab|html|python|programming|javascript)\b/.test(q)) return R("Code Lab", "💻", "💻 Learn to code in the Code Lab!", "It has step-by-step lessons for HTML (making websites, with a live preview) and Python (real programming, even turtle drawing and games). It's in the App-App.", hBig("💻🐍", "#0b2a1a", "Code Lab"), { label: "💻 Open the Code Lab", fn: () => startCodeLab() });
+  if (/\b(ai studio|use ai|using ai|prompts?|prompting|artificial intelligence|chatbot|chat ?gpt|claude)\b/.test(q)) return R("AI Studio", "🤖", "🤖 Learn to use AI in the AI Studio!", "Lessons on what AI is, staying safe, and writing great prompts, plus a Prompt Builder, a prompt challenge, and a project where AI helps you make your own game. It's in the App-App.", hBig("🤖✨", "#1a1050", "AI Studio"), { label: "🤖 Open the AI Studio", fn: () => startAIStudio() });
   // 🧮 the Math Center
   if (/^(math|maths|math center|math centre|math app|math practice|practice math|ratios?|rates?|ratios and rates|ratios & rates|unit 2|mp1|math test|accelerated math|6\/7 math)$/.test(q) || /\b(math center|math app|math practice|ratios and rates|ratios & rates|district assessment)\b/.test(q))
     return R("Math Center", "🧮", "🧮 The Math Center has the calculator, math practice and Ratios & Rates.", "Practice Easy or Hard math, or get ready for the MCPS 6/7 Accelerated Math MP1 Unit 2 test (Introducing Ratios and Rates).", hBig("🧮📏", "#1f3d2b", "Math Center"), { label: "🧮 Open the Math Center", fn: () => startMathCenter() });
@@ -8170,6 +8207,236 @@ function bindHippoCalc() {
   return openCalc;
 }
 // 🧮 Math Center: the calculator, math practice levels and Ratios & Rates in one place
+/* ---------- 📱 The App-App: every newer app lives here ---------- */
+const NEW_APPS = [
+  { id: "code", emoji: "💻", name: "Code Lab", desc: "Learn to code websites (HTML) and real Python, step by step.", start: () => startCodeLab() },
+  { id: "ai", emoji: "🤖", name: "AI Studio", desc: "Learn how to use AI to make cool things, and try your prompts for real.", start: () => startAIStudio() }
+];
+function startAppApp() {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
+  $app.innerHTML = `<div class="panel appapp">
+    <div class="topline"><span class="label">📱 App-App</span><button class="iconbtn" id="aa-home">Back to menu</button></div>
+    <h2>📱 The App-App</h2><p class="soft">All the newest apps live here. New ones show up here first!</p>
+    <div class="aa-grid">${NEW_APPS.map((a, i) => `<button class="aa-card" data-app="${i}"><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${i >= NEW_APPS.length - 2 ? `<em>NEW</em>` : ""}</button>`).join("")}</div>
+  </div>`;
+  document.getElementById("aa-home").addEventListener("click", showHome);
+  $app.querySelectorAll("[data-app]").forEach(b => b.addEventListener("click", () => NEW_APPS[+b.dataset.app].start()));
+}
+
+/* ---------- 💻 Code Lab: HTML (live preview) and Python (runs in the page with Skulpt) ---------- */
+const HTML_LESSONS = [
+  { t: "Your first heading", learn: "HTML is the language of websites. You write <b>tags</b> in angle brackets. <code>&lt;h1&gt;</code> makes a big heading, and <code>&lt;/h1&gt;</code> closes it.", code: "<h1>Hello, world!</h1>", goal: "Change the heading so it says your name.", check: (d, src) => { const h = d.querySelector("h1"); return h && h.textContent.trim() && !/^hello, world!?$/i.test(h.textContent.trim()) ? "" : "Put your name inside the <h1> tags."; } },
+  { t: "Paragraphs", learn: "<code>&lt;p&gt;</code> makes a paragraph of normal text. Websites are mostly headings and paragraphs!", code: "<h1>All About Me</h1>\n<p>I like hippos.</p>", goal: "Add two more paragraphs about things you like.", check: d => d.querySelectorAll("p").length >= 3 ? "" : "You need at least 3 <p> paragraphs." },
+  { t: "Bold and italic", learn: "<code>&lt;b&gt;</code> makes text <b>bold</b>. <code>&lt;i&gt;</code> makes it <i>italic</i>. Tags can go INSIDE other tags.", code: "<p>Hippos are <b>huge</b> and <i>fast</i>!</p>", goal: "Write a sentence with one bold word AND one italic word.", check: d => d.querySelector("b,strong") && d.querySelector("i,em") ? "" : "Use both <b> and <i>." },
+  { t: "Lists", learn: "<code>&lt;ul&gt;</code> starts a list with dots. Each item goes in <code>&lt;li&gt;</code>. (Use <code>&lt;ol&gt;</code> for a numbered list!)", code: "<h2>My favorite snacks</h2>\n<ul>\n  <li>Watermelon</li>\n</ul>", goal: "Make a list with at least 4 items.", check: d => d.querySelectorAll("li").length >= 4 ? "" : "Add more <li> items (4 or more)." },
+  { t: "Colors", learn: "The <code>style</code> attribute changes how things look. <code>style=\"color: purple\"</code> colors text. <code>background</code> colors behind it.", code: "<h1 style=\"color: purple\">Purple Hippo</h1>\n<p style=\"background: yellow\">Highlighted!</p>", goal: "Give something a color AND something a background.", check: (d, src) => /color\s*:/i.test(src) && /background/i.test(src) ? "" : "Use both color: and background: in a style." },
+  { t: "Big and small", learn: "<code>font-size</code> changes how big text is. Try <code>50px</code> for huge, <code>12px</code> for tiny. Emoji work too!", code: "<p style=\"font-size: 80px\">🦛</p>\n<p style=\"font-size: 14px\">tiny hippo fact</p>", goal: "Make one thing HUGE (60px or more) and one thing tiny.", check: (d, src) => { const sizes = [...src.matchAll(/font-size\s*:\s*(\d+)px/gi)].map(m => +m[1]); return sizes.some(x => x >= 60) && sizes.some(x => x <= 16) ? "" : "Use one font-size of 60px or more, and one of 16px or less."; } },
+  { t: "Links", learn: "<code>&lt;a href=\"...\"&gt;</code> makes a link. The <code>href</code> says where it goes.", code: "<a href=\"https://www.example.com\">Click me!</a>", goal: "Make a link with your own words.", check: d => { const a = d.querySelector("a[href]"); return a && a.textContent.trim() && a.textContent.trim() !== "Click me!" ? "" : "Make an <a href=...> link with your own text."; } },
+  { t: "Buttons that do things", learn: "<code>onclick</code> runs JavaScript when you click. <code>this.textContent = '...'</code> changes the button's own words!", code: "<button onclick=\"this.textContent = 'You clicked me! 🎉'\">Click me</button>", goal: "Make a button that changes to a different message when clicked.", check: d => d.querySelector("button[onclick]") ? "" : "Add a <button> with an onclick." },
+  { t: "Tables", learn: "<code>&lt;table&gt;</code> makes a grid. <code>&lt;tr&gt;</code> is a row, <code>&lt;td&gt;</code> is a box in the row.", code: "<table border=\"1\">\n  <tr><td>Hippo</td><td>4,000 lbs</td></tr>\n</table>", goal: "Make a table with at least 3 rows.", check: d => d.querySelectorAll("tr").length >= 3 ? "" : "Add more <tr> rows (3 or more)." },
+  { t: "Build your own page!", learn: "Put it all together! Use headings, paragraphs, lists, colors, buttons, anything you learned.", code: "<h1 style=\"color: teal\">My Awesome Page</h1>\n<p>Write something here!</p>", goal: "Use at least 5 different kinds of tags and some style.", check: (d, src) => { const kinds = new Set([...d.body.querySelectorAll("*")].map(e => e.tagName)); return kinds.size >= 5 && /style=/i.test(src) ? "" : `You've used ${kinds.size} kinds of tags. Use 5 or more, plus a style.`; } }
+];
+const PY_LESSONS = [
+  { t: "Say hello", learn: "<code>print()</code> shows words on the screen. Words go inside quotes.", code: "print(\"Hello, World!\")", goal: "Make Python print your name.", check: (out, src) => /print/.test(src) && out.trim() && !/^hello, world!?$/i.test(out.trim()) ? "" : "Print something other than Hello, World!" },
+  { t: "Python is a calculator", learn: "Python does math! <code>+</code> add, <code>-</code> subtract, <code>*</code> times, <code>/</code> divide, <code>**</code> power.", code: "print(7 * 8)\nprint(100 - 1)", goal: "Print the answer to 123 + 456 (let Python do the work!).", check: (out, src) => /123\s*\+\s*456/.test(src) && out.includes("579") ? "" : "Write print(123 + 456)." },
+  { t: "Variables", learn: "A <b>variable</b> is a box with a name that holds something. <code>name = \"Pip\"</code> puts \"Pip\" in a box called name.", code: "name = \"Pip\"\nprint(\"Hi, \" + name + \"!\")", goal: "Make a variable called pet and print a sentence using it.", check: (out, src) => /\bpet\s*=/.test(src) && /print\([^)]*pet/.test(src) ? "" : "Make pet = \"...\" and use pet inside print()." },
+  { t: "Repeating words", learn: "You can multiply words! <code>\"ha\" * 3</code> makes <code>hahaha</code>.", code: "print(\"hippo \" * 3)", goal: "Print a word 10 times using *.", check: (out, src) => /\*\s*10|10\s*\*/.test(src) ? "" : "Use * 10." },
+  { t: "If and else", learn: "<code>if</code> makes choices. If the test is true, the indented lines run. Otherwise, <code>else</code> runs. (Indent with spaces!)", code: "age = 10\nif age >= 10:\n    print(\"Double digits!\")\nelse:\n    print(\"Single digits!\")", goal: "Change age and see the other message. Then use if/else for your own idea.", check: (out, src) => /\bif\b/.test(src) && /\belse\b/.test(src) && out.trim() ? "" : "Use both if and else." },
+  { t: "Loops", learn: "<code>for i in range(1, 6):</code> repeats the indented lines with i = 1, 2, 3, 4, 5.", code: "for i in range(1, 6):\n    print(i)", goal: "Count from 1 to 20.", check: out => { const lines = out.trim().split("\n").map(s => s.trim()); return lines[0] === "1" && lines.at(-1) === "20" && lines.length === 20 ? "" : "Print 1, 2, 3 … 20, each on its own line."; } },
+  { t: "Lists", learn: "A list holds many things: <code>[\"cat\", \"dog\"]</code>. A for loop can go through every item!", code: "pets = [\"cat\", \"dog\", \"hippo\"]\nfor pet in pets:\n    print(\"I love my \" + pet)", goal: "Make a list of 5 foods and print each one.", check: (out, src) => /\[/.test(src) && /\bfor\b/.test(src) && out.trim().split("\n").length >= 5 ? "" : "Make a list of 5 things and loop through it." },
+  { t: "Functions", learn: "A <b>function</b> is a mini program with a name. <code>def</code> makes one, then you can call it again and again.", code: "def cheer(name):\n    print(\"Go, \" + name + \"!\")\n\ncheer(\"Pip\")\ncheer(\"Zoe\")", goal: "Make your own function and call it 3 times.", check: (out, src) => /\bdef\b/.test(src) && out.trim().split("\n").length >= 3 ? "" : "Use def, then call your function 3 times." },
+  { t: "Random dice", learn: "<code>import random</code> lets Python pick random numbers. <code>random.randint(1, 6)</code> rolls a die!", code: "import random\nroll = random.randint(1, 6)\nprint(\"You rolled a \" + str(roll))", goal: "Roll TWO dice and print the total.", check: (out, src) => (src.match(/randint/g) || []).length >= 2 || /for\b[\s\S]*randint/.test(src) ? "" : "Use random.randint for two dice and add them." },
+  { t: "Asking questions", learn: "<code>input()</code> asks the person a question and saves their answer.", code: "name = input(\"What is your name? \")\nprint(\"Nice to meet you, \" + name)", goal: "Ask for a favorite animal and print something about it.", check: (out, src) => /input\(/.test(src) && out.trim() ? "" : "Use input() to ask a question." },
+  { t: "Turtle drawing", learn: "The <b>turtle</b> draws as it moves! <code>forward(100)</code> moves, <code>right(90)</code> turns.", code: "from turtle import *\nfor i in range(4):\n    forward(100)\n    right(90)", goal: "Draw a triangle (hint: turn 120 each time) or a star (try 144!).", check: (out, src) => /turtle/.test(src) && /(120|144)/.test(src) ? "" : "Try right(120) for a triangle or right(144) for a star." },
+  { t: "Make a guessing game!", learn: "Put it all together: random numbers, input, if/else and loops.", code: "import random\nsecret = random.randint(1, 10)\nguess = int(input(\"Guess 1 to 10: \"))\nif guess == secret:\n    print(\"You got it!\")\nelse:\n    print(\"Nope, it was \" + str(secret))", goal: "Make it give 3 tries using a for loop.", check: (out, src) => /\bfor\b/.test(src) && /input\(/.test(src) && /randint/.test(src) ? "" : "Add a for loop so you get 3 guesses." }
+];
+let SKULPT = null;
+function loadSkulpt() {
+  if (SKULPT) return SKULPT;
+  const add = src => new Promise((ok, bad) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => bad(new Error("load")); document.head.appendChild(s); });
+  SKULPT = add("https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js").then(() => add("https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js")).catch(e => { SKULPT = null; throw e; });
+  return SKULPT;
+}
+async function runPython(code, onOut, turtleId) {
+  await loadSkulpt();
+  let out = "";
+  Sk.configure({ output: t => { out += t; onOut(out); }, read: x => { if (!Sk.builtinFiles || !Sk.builtinFiles.files[x]) throw "File not found: '" + x + "'"; return Sk.builtinFiles.files[x]; }, __future__: Sk.python3, inputfunTakesPrompt: true, inputfun: p => { const a = window.prompt(p || "Your answer:"); out += (p || "") + (a ?? "") + "\n"; onOut(out); return a ?? ""; }, execLimit: 8000, yieldLimit: 100 });
+  (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = turtleId; Sk.TurtleGraphics.width = 320; Sk.TurtleGraphics.height = 260;
+  await Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code, true));
+  return out;
+}
+function startCodeLab(track, lesson) {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
+  if (!track) {
+    const h = store.get("code_html", []), py = store.get("code_py", []);
+    $app.innerHTML = `<div class="panel codelab">
+      <div class="topline"><span class="label">💻 Code Lab</span><button class="iconbtn" id="cl-back">Back to App-App</button></div>
+      <h2>💻 Code Lab</h2><p class="soft">Real coders start exactly like this. Pick a language!</p>
+      <div class="aa-grid">
+        <button class="aa-card" id="cl-html"><i>🌐</i><b>HTML: build websites</b><span>Make real web pages with headings, colors, lists, links and buttons. See your page change as you type!</span><small>✅ ${h.length} / ${HTML_LESSONS.length} lessons</small></button>
+        <button class="aa-card" id="cl-py"><i>🐍</i><b>Python: real programming</b><span>The language scientists and game makers use. Math, variables, loops, turtle drawing and your own games!</span><small>✅ ${py.length} / ${PY_LESSONS.length} lessons</small></button>
+        <button class="aa-card" id="cl-play"><i>🛝</i><b>HTML playground</b><span>A blank page to build anything you want (or paste code an AI made for you).</span></button>
+      </div></div>`;
+    document.getElementById("cl-back").addEventListener("click", startAppApp);
+    document.getElementById("cl-html").addEventListener("click", () => startCodeLab("html"));
+    document.getElementById("cl-py").addEventListener("click", () => startCodeLab("py"));
+    document.getElementById("cl-play").addEventListener("click", () => startCodeLab("play"));
+    return;
+  }
+  const isPy = track === "py", L = track === "play" ? null : (isPy ? PY_LESSONS : HTML_LESSONS), doneKey = isPy ? "code_py" : "code_html", done = store.get(doneKey, []);
+  const idx = L ? (lesson ?? Math.min(done.length, L.length - 1)) : 0, les = L ? L[idx] : { t: "HTML playground", learn: "Build anything! Your work is saved on this device.", code: store.get("code_play", "<h1>My page</h1>\n<p>Build anything here!</p>"), goal: "" };
+  $app.innerHTML = `<div class="panel codelab">
+    <div class="topline"><span class="label">💻 Code Lab · ${isPy ? "Python" : "HTML"}</span><button class="iconbtn" id="cl-up">All lessons</button></div>
+    ${L ? `<div class="cl-steps">${L.map((x, i) => `<button class="cl-step${done.includes(i) ? " done" : ""}${i === idx ? " on" : ""}" data-i="${i}" title="${esc(x.t)}">${done.includes(i) ? "✓" : i + 1}</button>`).join("")}</div>` : ""}
+    <h2>${L ? `Lesson ${idx + 1}: ` : ""}${esc(les.t)}</h2>
+    <p class="cl-learn">${les.learn}</p>
+    ${les.goal ? `<div class="cl-goal">🎯 <b>Your challenge:</b> ${esc(les.goal)}</div>` : ""}
+    <div class="cl-work">
+      <div class="cl-edwrap"><div class="cl-bar"><span>${isPy ? "🐍 your_code.py" : "🌐 index.html"}</span><button class="btn mini" id="cl-reset">↺ Reset</button></div><textarea id="cl-ed" spellcheck="false" autocapitalize="off" autocomplete="off">${esc(les.code)}</textarea></div>
+      <div class="cl-outwrap">${isPy ? `<div class="cl-bar"><span>▶ Output</span><button class="btn go mini" id="cl-run">▶ Run</button></div><pre id="cl-out" class="cl-out">Press ▶ Run to start your program.</pre><div id="cl-turtle" class="cl-turtle"></div>` : `<div class="cl-bar"><span>👀 Live preview</span></div><iframe id="cl-view" class="cl-view" sandbox="allow-scripts" title="Your page"></iframe>`}</div>
+    </div>
+    ${L ? `<div class="row cl-actions"><button class="btn gold" id="cl-check">✅ Check my challenge</button>${idx < L.length - 1 ? `<button class="btn" id="cl-next">Next lesson ▶</button>` : ""}</div><div id="cl-msg"></div>` : ""}
+  </div>`;
+  const ed = document.getElementById("cl-ed");
+  ed.addEventListener("keydown", e => { if (e.key === "Tab") { e.preventDefault(); const s = ed.selectionStart; ed.setRangeText("    ", s, ed.selectionEnd, "end"); ed.dispatchEvent(new Event("input")); } });
+  document.getElementById("cl-up").addEventListener("click", () => startCodeLab());
+  document.getElementById("cl-reset").addEventListener("click", () => { ed.value = L ? les.code : "<h1>My page</h1>\n<p>Build anything here!</p>"; ed.dispatchEvent(new Event("input")); });
+  $app.querySelectorAll(".cl-step").forEach(b => b.addEventListener("click", () => startCodeLab(track, +b.dataset.i)));
+  document.getElementById("cl-next")?.addEventListener("click", () => startCodeLab(track, idx + 1));
+  let lastOut = "";
+  const win = () => { if (!done.includes(idx)) { done.push(idx); store.set(doneKey, done); } sfx.buy(); document.getElementById("cl-msg").innerHTML = `<div class="cl-win">🎉 Challenge complete! ${idx < L.length - 1 ? "On to the next lesson!" : "You finished every lesson. You're a real coder now!"}</div>`; $app.querySelector(`.cl-step[data-i="${idx}"]`)?.classList.add("done"); };
+  if (!isPy) {
+    const view = document.getElementById("cl-view");
+    const show = () => { view.srcdoc = `<!doctype html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;margin:12px;color:#222;background:#fff}</style>${ed.value}`; if (!L) store.set("code_play", ed.value); };
+    ed.addEventListener("input", show); show();
+    document.getElementById("cl-check")?.addEventListener("click", () => { const d = new DOMParser().parseFromString(ed.value, "text/html"), why = ed.value.trim() === les.code.trim() ? "Change the example to make it your own!" : les.check(d, ed.value); if (why) { sfx.wrong(); document.getElementById("cl-msg").innerHTML = `<div class="cl-try">🤔 Almost! ${esc(why)}</div>`; } else win(); });
+  } else {
+    const out = document.getElementById("cl-out"), run = document.getElementById("cl-run");
+    const go = async () => { run.disabled = true; out.textContent = "Starting Python…"; document.getElementById("cl-turtle").innerHTML = ""; document.getElementById("cl-turtle").hidden = !/turtle/.test(ed.value); try { lastOut = await runPython(ed.value, t => { out.textContent = t; }, "cl-turtle"); if (!lastOut) out.textContent = /turtle/.test(ed.value) ? "🐢 Drawing finished!" : "(Your program ran but didn't print anything.)"; } catch (e) { const msg = e && e.message === "load" ? "Python couldn't load. Check your internet connection and try again." : String(e && e.toString ? e.toString() : e); out.textContent = (lastOut || "") + "\n❌ " + msg.replace(/on line (\d+)/, "on line $1") + "\n\n💡 Check your spelling, quotes, colons ( : ) and spaces at the start of lines."; } finally { run.disabled = false; } return lastOut; };
+    run.addEventListener("click", go);
+    document.getElementById("cl-check").addEventListener("click", async () => { const o = await go(); const why = ed.value.trim() === les.code.trim() ? "Change the example to make it your own!" : les.check(o || "", ed.value); if (why) { sfx.wrong(); document.getElementById("cl-msg").innerHTML = `<div class="cl-try">🤔 Almost! ${esc(why)}</div>`; } else win(); });
+    document.getElementById("cl-turtle").hidden = true;
+  }
+}
+
+/* ---------- 🤖 AI Studio: how to use AI to make cool things ---------- */
+const AI_LESSONS = [
+  { e: "🧠", t: "What is AI?", p: ["AI (artificial intelligence) is a computer program that learned patterns from a HUGE amount of writing, pictures or sounds.", "A chat AI like Claude works by predicting good words to say next, based on everything it learned. That's how it can write stories, explain math, or help with code.", "AI is NOT a person, and it isn't magic. It can be super helpful, but it can also make mistakes, so you're still the boss!"] },
+  { e: "🛡️", t: "The safety rules", p: ["1. Never share private info with an AI: your full name, address, school, phone number or passwords.", "2. AI can be wrong. Check important facts in a book, a trusted website, or with a grown-up.", "3. Use AI to help you learn and create, not to cheat. Your teacher wants YOUR thinking!", "4. Be kind, and ask a grown-up if anything seems weird or upsetting."] },
+  { e: "🧾", t: "The Prompt Recipe", p: ["A prompt is what you tell the AI. Better prompts get better results! Use the recipe:", "🎯 WHAT to make (a story, a poem, a quiz, a game, a plan…)", "📌 ABOUT what (a dragon who's afraid of the dark)", "👥 FOR who (for a 10-year-old, for my little sister)", "🎨 STYLE (funny, spooky, exciting, like a pirate)", "📏 SIZE and FORMAT (5 sentences, 10 questions, a list, a table)", "Example: \"Write a funny 6-sentence story for a 10-year-old about a hippo who wants to be an astronaut.\""] },
+  { e: "🔁", t: "Make it better: talk back!", p: ["The first answer is just a start. Great AI users keep improving it by asking for changes:", "\"Make it funnier.\" \"Make it shorter.\" \"Add a plot twist.\" \"Explain it like I'm 8.\" \"Give me 3 other ideas.\"", "This is called iterating, and it's what pros do!"] },
+  { e: "🎮", t: "Make a game with AI", p: ["AI can write code! Ask for a game as ONE HTML file, then paste it into the Code Lab playground to play it.", "Good game prompt: \"Make a simple HTML game in one file where you click a hippo to score points before a 30-second timer runs out. Use big colorful buttons.\"", "Then improve it: \"Add a high score.\" \"Make the hippo move faster each time.\" You're the game designer; AI is your helper. Try it in the Make a game project below!"] },
+  { e: "📚", t: "AI as your study buddy", p: ["AI is great at explaining things. Try:", "\"Explain fractions to me using pizza.\"", "\"Quiz me with 5 questions about the water cycle, one at a time.\"", "\"I think the answer is 42 because…, is my thinking right?\"", "Asking AI to EXPLAIN (not just give answers) helps you actually learn."] },
+  { e: "🎨", t: "Art and music ideas", p: ["Some AIs make pictures or music from words. The same recipe works:", "\"A cute cartoon hippo astronaut floating near Saturn, bright colors, children's book style.\"", "Even with a chat AI you can ask for ideas: \"Give me 5 ideas for a comic about a superhero cat.\" Then YOU draw it!"] }
+];
+const AI_QUIZ = [
+  { a: "Write a 5-sentence funny story for kids about a cat who becomes a chef.", b: "write story", why: "It says what, about what, for who, the style AND the size." },
+  { a: "Explain how volcanoes work for a 4th grader, using 3 short paragraphs and one fun fact.", b: "volcanoes", why: "One word doesn't tell the AI what you want to know or how to explain it." },
+  { a: "Make 10 multiplication questions about the 7 times table, with the answers listed at the end.", b: "math questions", why: "It says which math, how many, and where to put the answers." },
+  { a: "Give me 5 names for a pet hippo that are silly and easy to say.", b: "names", why: "Names for what? The better prompt says what, how many and what kind." },
+  { a: "Make a simple HTML game in one file where you catch falling apples with the arrow keys.", b: "make a game", why: "It says the kind of code, the goal of the game and the controls." },
+  { a: "I'm stuck on 3/4 + 1/8. Don't tell me the answer; give me a hint for the first step.", b: "what is 3/4 + 1/8", why: "Asking for a hint helps you LEARN instead of just copying the answer." }
+];
+function promptScore(p) {
+  const t = p.toLowerCase(), words = t.split(/\s+/).filter(Boolean).length, tips = []; let s = 0;
+  if (words >= 8) s += 15; else tips.push("Add more details (at least 8 words).");
+  if (/\b(story|poem|song|game|list|quiz|questions?|plan|joke|riddle|explain|code|html|names?|ideas?|recipe|comic|letter|summary|rap|picture|drawing)\b/.test(t)) s += 20; else tips.push("Say WHAT to make (a story, a quiz, a game, a list…).");
+  if (/\b(about|on|where|who|with a|featuring)\b/.test(t)) s += 15; else tips.push("Say what it's ABOUT.");
+  if (/\b(for (a|my|kids|me|\d)|year[- ]old|grade|kids?|beginner|little (sister|brother))\b/.test(t)) s += 15; else tips.push("Say who it's FOR (like \"for a 10-year-old\").");
+  if (/\b(funny|silly|spooky|exciting|calm|cute|cool|epic|scary|serious|happy|like a|style|rhyming|simple)\b/.test(t)) s += 15; else tips.push("Pick a STYLE (funny, spooky, exciting…).");
+  if (/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s*(sentences?|words?|lines?|questions?|steps?|paragraphs?|ideas?|items?|names?|minutes?)\b|\b(short|long|bullet|table|list)\b/.test(t)) s += 20; else tips.push("Say the SIZE or FORMAT (5 sentences, a list, 10 questions…).");
+  return { s: Math.min(100, s), tips };
+}
+let AI_SAMPLE = undefined;
+async function aiSample() { if (AI_SAMPLE !== undefined) return AI_SAMPLE; try { AI_SAMPLE = window.claude ? await claude.use("sample") : null; } catch (e) { AI_SAMPLE = null; } return AI_SAMPLE; }
+const AI_KID_FRAME = p => `You are a friendly helper on a website where kids learn how to use AI well. Reply to the kid's prompt below in a kid-friendly, safe, encouraging way. Keep it under 250 words unless they asked for code. If the prompt isn't appropriate for kids, kindly suggest a fun alternative instead. If they share private information (address, phone, passwords), remind them not to. End with one short tip to make their prompt even better next time, starting with "💡 Prompt tip:".\n\nThe kid's prompt:\n${p}`;
+function aiErrText(e) { const c = e && e.code; return c === "not_granted" ? "AI isn't turned on for this page. (A grown-up can allow it when asked.)" : c === "rate_limited" ? "Too many questions at once! Wait a minute and try again." : c === "cancelled" ? "Stopped." : "The AI couldn't answer right now. Try again in a bit."; }
+function startAIStudio(view) {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
+  const seen = store.get("ai_seen", []);
+  if (!view) {
+    $app.innerHTML = `<div class="panel aistudio">
+      <div class="topline"><span class="label">🤖 AI Studio</span><button class="iconbtn" id="ai-back">Back to App-App</button></div>
+      <h2>🤖 AI Studio</h2><p class="soft">Learn to use AI like a pro: to learn, create and build cool things, safely.</p>
+      <h3>📘 Lessons</h3><div class="aa-grid">${AI_LESSONS.map((l, i) => `<button class="aa-card small" data-l="${i}"><i>${l.e}</i><b>${seen.includes(i) ? "✅ " : ""}${l.t}</b></button>`).join("")}</div>
+      <h3>🛠️ Projects</h3><div class="aa-grid">
+        <button class="aa-card" id="ai-build"><i>🧪</i><b>Prompt Builder</b><span>Build a great prompt step by step, see its score, and try it on a real AI.</span></button>
+        <button class="aa-card" id="ai-quiz"><i>🏅</i><b>Better Prompt Challenge</b><span>Can you spot the better prompt? 6 rounds.</span></button>
+        <button class="aa-card" id="ai-game"><i>🎮</i><b>Make a game with AI</b><span>Describe a game, let AI write the code, then play it in the Code Lab!</span></button>
+      </div></div>`;
+    document.getElementById("ai-back").addEventListener("click", startAppApp);
+    $app.querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => startAIStudio("l" + b.dataset.l)));
+    document.getElementById("ai-build").addEventListener("click", () => startAIStudio("build"));
+    document.getElementById("ai-quiz").addEventListener("click", () => startAIStudio("quiz"));
+    document.getElementById("ai-game").addEventListener("click", () => startAIStudio("game"));
+    return;
+  }
+  const back = `<button class="iconbtn" id="ai-up">AI Studio home</button>`;
+  if (view[0] === "l") {
+    const i = +view.slice(1), l = AI_LESSONS[i]; if (!seen.includes(i)) { seen.push(i); store.set("ai_seen", seen); }
+    $app.innerHTML = `<div class="panel aistudio"><div class="topline"><span class="label">🤖 AI Studio · Lesson ${i + 1}</span>${back}</div>
+      <div class="ai-lesson"><span>${l.e}</span><h2>${l.t}</h2>${l.p.map(x => `<p>${esc(x)}</p>`).join("")}</div>
+      <div class="row"><button class="btn gold" id="ai-say">🔊 Read it to me</button>${i < AI_LESSONS.length - 1 ? `<button class="btn go" id="ai-next">Next lesson ▶</button>` : `<button class="btn go" id="ai-next">Try the Prompt Builder ▶</button>`}</div></div>`;
+    document.getElementById("ai-say").addEventListener("click", () => hippoSay(l.t + ". " + l.p.join(" ")));
+    document.getElementById("ai-next").addEventListener("click", () => { hippoHush(); startAIStudio(i < AI_LESSONS.length - 1 ? "l" + (i + 1) : "build"); });
+  } else if (view === "quiz") {
+    let r = 0, score = 0;
+    const round = () => {
+      if (r >= AI_QUIZ.length) { $app.querySelector(".ai-q").innerHTML = `<h2>${score === AI_QUIZ.length ? "🏆 Perfect!" : "Nice work!"}</h2><p>You spotted ${score} of ${AI_QUIZ.length} better prompts.</p><button class="btn go" id="ai-again">Play again</button>`; document.getElementById("ai-again").addEventListener("click", () => startAIStudio("quiz")); return; }
+      const it = AI_QUIZ[r], flip = Math.random() < .5, opts = flip ? [it.b, it.a] : [it.a, it.b];
+      $app.querySelector(".ai-q").innerHTML = `<p class="soft">Round ${r + 1} of ${AI_QUIZ.length}</p><h3>Which prompt is better?</h3>${opts.map((o, k) => `<button class="ai-opt" data-k="${k}">“${esc(o)}”</button>`).join("")}<div id="ai-why"></div>`;
+      $app.querySelectorAll(".ai-opt").forEach(b => b.addEventListener("click", () => { const ok = opts[+b.dataset.k] === it.a; if (ok) { score++; sfx.right(); } else sfx.wrong(); $app.querySelectorAll(".ai-opt").forEach(x => { x.disabled = true; x.classList.add(opts[+x.dataset.k] === it.a ? "right" : "dim"); }); document.getElementById("ai-why").innerHTML = `<div class="cl-${ok ? "win" : "try"}">${ok ? "✅ Yes!" : "❌ The other one is better."} ${esc(it.why)}</div><button class="btn go" id="ai-nx">Next ▶</button>`; document.getElementById("ai-nx").addEventListener("click", () => { r++; round(); }); }));
+    };
+    $app.innerHTML = `<div class="panel aistudio"><div class="topline"><span class="label">🤖 AI Studio · Better Prompt Challenge</span>${back}</div><div class="ai-q"></div></div>`;
+    round();
+  } else {
+    const isGame = view === "game";
+    $app.innerHTML = `<div class="panel aistudio"><div class="topline"><span class="label">🤖 AI Studio · ${isGame ? "Make a game with AI" : "Prompt Builder"}</span>${back}</div>
+      <h2>${isGame ? "🎮 Make a game with AI" : "🧪 Prompt Builder"}</h2>
+      <p class="soft">${isGame ? "Describe your game. AI writes the code, and you play it in the Code Lab!" : "Fill in the recipe, or type your own prompt. Watch your score go up!"}</p>
+      ${isGame ? `<div class="ai-form">
+        <label>🎮 What kind of game?<select id="g-kind"><option>a clicking game</option><option>a catching game where things fall from the sky</option><option>a dodging game with the arrow keys</option><option>a memory matching game</option><option>a quiz game</option><option>a maze game</option></select></label>
+        <label>🦸 Who is the hero? <input id="g-hero" value="a hippo"></label>
+        <label>🎯 How do you win or score? <input id="g-goal" value="score 20 points before the timer runs out"></label>
+        <label>🎨 What should it look like? <input id="g-look" value="bright colors and big buttons"></label></div>` : `<div class="ai-form">
+        <label>🎯 Make a… <select id="b-what"><option>story</option><option>poem</option><option>quiz with 5 questions</option><option>list of 5 ideas</option><option>joke</option><option>song</option><option>plan</option><option>explanation</option></select></label>
+        <label>📌 About… <input id="b-about" value="a hippo who wants to be an astronaut"></label>
+        <label>👥 For… <input id="b-for" value="a 10-year-old"></label>
+        <label>🎨 Style… <select id="b-style"><option>funny</option><option>spooky (not too scary)</option><option>exciting</option><option>calm and cozy</option><option>like a pirate</option><option>rhyming</option></select></label>
+        <label>📏 Size… <select id="b-size"><option>in 6 sentences</option><option>in 3 short paragraphs</option><option>as a numbered list</option><option>in under 100 words</option></select></label></div>`}
+      <label class="ai-plabel">✏️ Your prompt (you can edit it!)<textarea id="ai-prompt" rows="4"></textarea></label>
+      <div class="ai-score"><div class="ai-meter"><i id="ai-bar"></i></div><b id="ai-num">0</b><span id="ai-tips"></span></div>
+      <div class="row"><button class="btn go" id="ai-ask" hidden>✨ ${isGame ? "Make my game!" : "Try it on a real AI"}</button><button class="btn" id="ai-stop" hidden>⏹ Stop</button><button class="btn" id="ai-copy">📋 Copy prompt</button></div>
+      <p class="soft" id="ai-note">Checking if AI is available here…</p>
+      <div id="ai-ans" class="ai-ans" hidden></div>
+      ${isGame ? `<div class="row"><button class="btn gold" id="ai-play" hidden>▶ Play it in the Code Lab</button></div>` : ""}</div>`;
+    const P = document.getElementById("ai-prompt"), val = id => document.getElementById(id)?.value || "";
+    const build = () => { P.value = isGame ? `Make ${val("g-kind")} as ONE complete HTML file (with the CSS and JavaScript inside it, no outside files or images). The hero is ${val("g-hero")}. To win you ${val("g-goal")}. Make it look like this: ${val("g-look")}. Keep it under 150 lines and make it work on a phone too.` : `Write a ${val("b-style")} ${val("b-what")} about ${val("b-about")} for ${val("b-for")}, ${val("b-size")}.`; grade(); };
+    const grade = () => { const { s, tips } = promptScore(P.value); document.getElementById("ai-bar").style.width = s + "%"; document.getElementById("ai-bar").style.background = s >= 80 ? "var(--money)" : s >= 50 ? "var(--gold)" : "var(--bad)"; document.getElementById("ai-num").textContent = s; document.getElementById("ai-tips").textContent = s >= 80 ? "🌟 Great prompt!" : "💡 " + tips[0]; };
+    $app.querySelectorAll(".ai-form input, .ai-form select").forEach(x => x.addEventListener("input", build));
+    P.addEventListener("input", grade); build();
+    document.getElementById("ai-copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(P.value); toast("📋 Copied!"); } catch (e) { P.select(); toast("Select the text and copy it."); } });
+    const ask = document.getElementById("ai-ask"), stop = document.getElementById("ai-stop"), ans = document.getElementById("ai-ans"), note = document.getElementById("ai-note");
+    let ctl, gameCode = "";
+    aiSample().then(sample => {
+      if (!sample) { note.textContent = "Real AI isn't available on this page right now, but you can copy your prompt and try it with a grown-up on an AI app."; return; }
+      ask.hidden = false; note.textContent = isGame ? "AI will write the code. It can take up to a minute. The first time, you'll be asked to allow AI." : "The first time, you'll be asked to allow AI on this page.";
+      ask.addEventListener("click", async () => {
+        ctl = new AbortController(); ask.disabled = true; stop.hidden = false; ans.hidden = false; ans.textContent = "🤔 Thinking…";
+        const input = isGame ? `${AI_KID_FRAME("(This is a game request. Reply with ONLY the complete HTML file, starting with <!doctype html>. No explanation before or after.)\n" + P.value)}` : AI_KID_FRAME(P.value);
+        try {
+          const { text } = await sample(input, { signal: ctl.signal, modelTier: isGame ? "default" : "quick", cache: false, onText: ({ text }) => { ans.textContent = isGame ? `✍️ Writing your game… (${text.split("\n").length} lines so far)` : text; } });
+          if (isGame) { const m = text.match(/<!doctype html[\s\S]*<\/html>/i) || text.match(/```html\s*([\s\S]*?)```/i); gameCode = m ? (m[1] || m[0]) : text; ans.textContent = `✅ Your game is ready (${gameCode.split("\n").length} lines of code)! Press Play.`; document.getElementById("ai-play").hidden = false; sfx.buy(); }
+          else ans.textContent = text;
+        } catch (e) { ans.textContent = (e && e.text ? e.text + "\n\n" : "") + aiErrText(e); if (e && e.code === "not_granted") { ask.hidden = true; } }
+        finally { ask.disabled = false; stop.hidden = true; }
+      });
+      stop.addEventListener("click", () => ctl?.abort());
+    });
+    document.getElementById("ai-play")?.addEventListener("click", () => { store.set("code_play", gameCode); startCodeLab("play"); });
+  }
+  document.getElementById("ai-up")?.addEventListener("click", () => { hippoHush(); startAIStudio(); });
+}
 function startMathCenter() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   keyHandler = null;
@@ -8596,7 +8863,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
