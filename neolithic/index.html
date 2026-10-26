@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Study Arcade</title>
 <meta name="description" content="Study games: Dig It Up, Cash Race, Slope City, Ragdoll Archers, and two mystery games, with Social Studies, Math, Science, Health, Reading and Writing, and Art questions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -586,6 +587,9 @@
   .hip.hip-flip { transform: rotate(180deg); transition: transform .8s; } .hip { transition: transform .8s; }
   .hip-calc { background: #1b1640; border: 3px solid var(--gold); border-radius: 18px; padding: 12px; margin: 12px auto; max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
   .mathc .hip-calc { margin: 14px auto; }
+  .mc-top { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; margin: 14px 0; }
+  .mc-top .hip-calc { flex: 0 0 300px; margin: 0 auto; }
+  .mc-top .g4-lounge { flex: 1 1 320px; margin-top: 0; }
   .g4-lounge { position: relative; overflow: hidden; margin-top: 18px; padding: 14px; border-radius: 18px; background: radial-gradient(circle at 50% 70%, rgba(0,229,255,.25), transparent 55%), linear-gradient(135deg, #2a0f5a, #5a1a6b 55%, #7a2a5a); border: 2px solid #ff3cac; animation: loungeGlow 2.4s ease-in-out infinite alternate; }
   .g4-lounge::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(2px 2px at 12% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 80% 15%, #ffd700, transparent), radial-gradient(2px 2px at 25% 85%, #00e5ff, transparent), radial-gradient(1.5px 1.5px at 90% 70%, #fff, transparent), radial-gradient(2px 2px at 60% 40%, #ff3cac, transparent); animation: twinkle 1.8s ease-in-out infinite alternate; }
   @keyframes loungeGlow { from { box-shadow: 0 0 18px rgba(255,60,172,.5), inset 0 0 20px rgba(123,97,255,.3); border-color: #ff3cac; } to { box-shadow: 0 0 34px rgba(0,229,255,.6), inset 0 0 30px rgba(0,229,255,.25); border-color: #00e5ff; } }
@@ -8055,126 +8059,129 @@ function startMathCenter() {
       <div class="topline"><span class="label">🧮 Math Center</span><button class="iconbtn" id="mc-home">Back to menu</button></div>
       <h2>Math Center</h2>
       <p class="soft">Use the calculator, or pick something to practice.</p>
-      ${hippoCalcHTML(false)}
+      <div class="mc-top">
+        ${hippoCalcHTML(false)}
+      <div class="g4-lounge">
+          <div class="g4-head"><span>🏆</span><div><h3>Challenge Lounges</h3><p class="soft">For kids who LOVE a challenge! Pick your grade and step through the portal. Each classroom has 100 levels that climb from one grade below to two grades above.</p></div></div>
+          <div class="portal-hall">${Object.entries(CR_ROOMS).map(([id, r], i) => { const st = store.get(r.key, {}), done = Object.values(st).filter(v => v > 0).length; return `<button class="portal mini" data-room="${id}" style="--h:${i * 40}deg" aria-label="Enter the ${r.title}"><span class="portal-swirl"></span><span class="portal-core">${r.short}</span>${Array.from({ length: 8 }, (_, k) => `<i class="pn ${k % 2 ? "out" : "in"}" style="--a:${k * 45}deg;--d:${(k * .41 + i * .2) % 3}s">${["7", "π", "+", "9", "÷", "3", "×", "∞"][(k + i) % 8]}</i>`).join("")}<b class="portal-name">${r.grade}</b><small class="portal-prog">${done ? `✅ ${done}/100` : "New!"}</small></button>`; }).join("")}</div>
+        </div>
+      </div>`;
+    bindHippoCalc();
+    document.getElementById("hip-calc-x").hidden = true;
+    document.getElementById("mc-home").addEventListener("click", showHome);
+    $app.querySelectorAll("[data-mlevel]").forEach(b => b.addEventListener("click", () => {
+      choice.subject = "math"; choice.mlevel = b.dataset.mlevel; store.set("subject", "math"); store.set("mlevel", choice.mlevel);
+      startStudy();
+    }));
+    $app.querySelectorAll("[data-rpart]").forEach(b => b.addEventListener("click", () => {
+      choice.subject = "ratios"; choice.rpart = b.dataset.rpart; store.set("subject", "ratios"); store.set("rpart", choice.rpart);
+      startStudy();
+    }));
+    $app.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { tone([392, 523, 659, 784, 1047], .06, "sine", .06); b.classList.add("warp"); setTimeout(() => startClassroom(b.dataset.room), 450); }));
+  }
+  function startHippo(initial = "") {
+    stopSlope(); stopArchers(); stopMini(); closeShop();
+    if (D && !D.over) { D.over = true; clearInterval(D.timer); }
+    keyHandler = null;
+    HIPPO_BANK ||= hippoBank();
+    const total = hippoCount();
+    const topics = [...HIPPO_FAMILIES.map(f => [f[0], f[1], f[2]]), ...Object.entries(HIPPO_BANK.reduce((t, e) => { t[e.topic] = t[e.topic] || [e.icon, 0]; t[e.topic][1]++; return t; }, {})).map(([n, [i, c]]) => [n, i, c])];
+    // "Try asking" is a fresh mix every time: one question from many different kinds, plus a few from Hippo's fact list
+    const tries = [], seenQ = new Set(), famOrder = HIPPO_FAMILIES.filter(f => !/^Time machine/.test(f[0])).map(f => [Math.random(), f]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+    const addTry = t => { t = String(t).trim(); if (t && !seenQ.has(t.toLowerCase())) { seenQ.add(t.toLowerCase()); tries.push(t); } };
+    famOrder.slice(0, 6).forEach(f => { try { addTry(f[3]()); } catch (e) {} });
+    for (let k = 0; k < 40 && tries.length < 10; k++) addTry(HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)].q);
+    tries.sort(() => Math.random() - .5);
+    $app.innerHTML = `
+      <div class="panel hip">
+        <div class="topline"><span class="label">🦛 Ask Hippo</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
+        <div class="hip-head"><span class="hip-face">🦛</span><div><h2>Ask Hippo anything!</h2><p class="soft">Hippo knows <b>${fmt(total)}</b> questions and answers about math, animals, space, countries, science and more. Every answer comes with a picture or diagram.</p></div></div>
+        <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">Ask 🦛</button></form>
+        <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button><label class="hip-voice">🗣️ Hippo's voice <select id="hip-voice"></select></label><button class="btn" id="hip-voice-try" type="button">▶ Hear it</button></div>
+        <div id="hip-out"></div>
+        ${hippoCalcHTML(true)}
+        <h3>Try asking</h3><div class="hip-tries">${tries.map(t => `<button class="chip hip-try" type="button">${esc(t)}</button>`).join("")}</div>
+        <details class="hip-topics"><summary>📚 Everything Hippo knows (${fmt(total)} answers)</summary><div>${topics.map(([n, i, c]) => `<span><b>${i} ${esc(n)}</b> ${fmt(c)}</span>`).join("")}</div></details>
+      </div>`;
+    const box = document.getElementById("hip-q");
+    const ask = qq => {
+      const q = qq.trim(); if (!q) return;
+      HIPPO_SONG_STOP?.(); hippoHush();
+      try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state !== "running") actx.resume?.(); } catch (e) {}   // wake up sound during the tap so songs can play
+      box.value = q;
+      const ans = hippoAnswer(q), out = document.getElementById("hip-out");
+      if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>🦛❓</span></div><div><b>Hmm, Hippo doesn't know that one yet.</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
+      out.innerHTML = `<div class="hip-card${ans.wide ? " wide" : ""}"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? esc(ans.why).split("\n\n").map(x => `<p>${x.replace(/\n/g, "<br>")}</p>`).join("") : ""}${ans.reveal ? `<details class="hip-reveal"><summary>👀 Show the answer</summary><p>${esc(ans.reveal)}</p></details>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}${ans.actions ? `<div class="hip-acts">${ans.actions.map((a, i) => a.heading ? `<h4 class="hip-acts-h">${esc(a.heading)}</h4>` : `<button class="btn${i && !a.go ? "" : " go"}" data-hact="${i}">${esc(a.label)}</button>`).join("")}</div>` : ""}</div></div>`;
+      if (ans.action) document.getElementById("hip-act").addEventListener("click", ans.action.fn);
+      if (ans.games) { out.querySelector(".hip-card").insertAdjacentHTML("beforeend", `<div class="hip-games">${gamesMenuHTML()}</div>`); bindGamesMenu(); }
+      // 🗣️ Hippo reads every answer out loud (stories start reading by themselves)
+      if (!ans.noRead && !ans.games && ans.topic !== "Songs") {
+        const words = [ans.text, ans.why, ans.reveal ? "" : ""].filter(Boolean).join(". ");
+        const rb = document.createElement("button"); rb.className = "btn gold hip-say"; rb.type = "button";
+        let on = false; const set = v => { on = v; rb.textContent = on ? "⏹ Stop reading" : "🔊 Hippo, read it to me"; };
+        rb.addEventListener("click", () => { if (on) { hippoHush(); set(false); } else { set(true); hippoSay(words, { onEnd: () => set(false) }); } });
+        set(false); out.querySelector(".hip-text").prepend(rb);
+        if (ans.autoRead) { set(true); hippoSay(words, { onEnd: () => set(false) }); }
+      }
+      if (ans.actions) out.querySelectorAll("[data-hact]").forEach(b => b.addEventListener("click", () => ans.actions[+b.dataset.hact].fn()));
+      // every math answer offers the calculator, with the problem already typed in
+      if (HIPPO_MATH_TOPICS.has(ans.topic) && !ans.action) {
+        const pre = hippoCalcPrefill(q);
+        document.querySelector("#hip-out .hip-text").insertAdjacentHTML("beforeend", `<button class="btn" id="hip-calc-go">🧮 Try it on the calculator</button>`);
+        document.getElementById("hip-calc-go").addEventListener("click", () => openCalc(pre));
+      }
+      tone([523, 784], .06, "triangle", .06);
+    };
+    const openCalc = bindHippoCalc();
+    document.getElementById("hip-form").addEventListener("submit", e => { e.preventDefault(); ask(box.value); });
+    document.getElementById("hip-rand").addEventListener("click", () => {
+      const useBank = Math.random() < .4;
+      if (useBank) { const e = HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)]; ask(e.q); }
+      else ask(HIPPO_FAMILIES[rnd(0, HIPPO_FAMILIES.length - 1)][3]());
+    });
+    $app.querySelectorAll(".hip-try").forEach(b => b.addEventListener("click", () => ask(b.textContent)));
+    document.getElementById("hip-home").addEventListener("click", () => { HIPPO_SONG_STOP?.(); hippoHush(); showHome(); });
+    const vsel = document.getElementById("hip-voice"); fillHippoVoiceMenu(vsel);
+    const sample = () => hippoSay("Hello, sweetheart. It's Hippo. Come sit with me, and I'll read you a story.");
+    vsel.addEventListener("change", () => { store.set("hippo_voice", vsel.value); sample(); });
+    document.getElementById("hip-voice-try").addEventListener("click", sample);
+    box.focus();
+    if (initial) ask(initial);
+  }
+  
+  function startStories() {
+    stopSlope(); stopArchers(); stopMini(); closeShop();
+    keyHandler = null;
+    const d = store.get("story_draft", null);
+    STORY = { len: store.get("story_len", "any"), goal: store.get("story_goal", 100), starter: d?.starter ?? null, name: d?.name || "" };
+    if (STORY.starter == null) STORY.starter = pickStarter();
+    renderStoryDesk(d?.text || "");
+  }
+  function pickStarter() {
+    const pool = STARTERS.map((s, i) => i).filter(i => STORY.len === "any" || STARTERS[i].len === STORY.len);
+    const choices = pool.filter(i => i !== STORY?.starter);
+    return (choices.length ? choices : pool)[rnd(0, (choices.length ? choices : pool).length - 1)];
+  }
+  function saveDraft() {
+    const text = document.getElementById("st-text")?.value ?? "";
+    store.set("story_draft", { starter: STORY.starter, text, name: STORY.name });
+  }
+  function renderStoryDesk(text) {
+    const st = STARTERS[STORY.starter];
+    const shelf = store.get("stories", []);
+    $app.innerHTML = `
+      <div class="panel story-wrap">
+        <div class="topline"><span class="label">Story Starters</span><button class="iconbtn" id="st-shelf">My stories (${shelf.length})</button></div>
+        <h2>Keep the story going!</h2>
+        <p class="soft">Read the beginning, then write what happens next. There's no wrong answer. Make it yours!</p>
+        <div class="story-opts">
+          <span class="label">Story beginning length</span>
+          <div class="row">${Object.entries(STORY_LENS).map(([k, v]) => `<button class="chip mini" data-len="${k}" aria-pressed="${STORY.len === k}">${v}</button>`).join("")}</div>
+        </div>
+      </div>
       <span class="label">Math practice level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">📏 Ratios & Rates (MCPS 6/7 Accelerated Math · MP1 · Unit 2: Introducing Ratios and Rates)</span><div class="chips">${chipRow(RATIO_PARTS, "rpart")}</div>
-      <div class="g4-lounge">
-        <div class="g4-head"><span>🏆</span><div><h3>Challenge Lounges</h3><p class="soft">For kids who LOVE a challenge! Pick your grade and step through the portal. Each classroom has 100 levels that climb from one grade below to two grades above.</p></div></div>
-        <div class="portal-hall">${Object.entries(CR_ROOMS).map(([id, r], i) => { const st = store.get(r.key, {}), done = Object.values(st).filter(v => v > 0).length; return `<button class="portal mini" data-room="${id}" style="--h:${i * 40}deg" aria-label="Enter the ${r.title}"><span class="portal-swirl"></span><span class="portal-core">${r.short}</span>${Array.from({ length: 8 }, (_, k) => `<i class="pn ${k % 2 ? "out" : "in"}" style="--a:${k * 45}deg;--d:${(k * .41 + i * .2) % 3}s">${["7", "π", "+", "9", "÷", "3", "×", "∞"][(k + i) % 8]}</i>`).join("")}<b class="portal-name">${r.grade}</b><small class="portal-prog">${done ? `✅ ${done}/100` : "New!"}</small></button>`; }).join("")}</div>
-      </div>
-    </div>`;
-  bindHippoCalc();
-  document.getElementById("hip-calc-x").hidden = true;
-  document.getElementById("mc-home").addEventListener("click", showHome);
-  $app.querySelectorAll("[data-mlevel]").forEach(b => b.addEventListener("click", () => {
-    choice.subject = "math"; choice.mlevel = b.dataset.mlevel; store.set("subject", "math"); store.set("mlevel", choice.mlevel);
-    startStudy();
-  }));
-  $app.querySelectorAll("[data-rpart]").forEach(b => b.addEventListener("click", () => {
-    choice.subject = "ratios"; choice.rpart = b.dataset.rpart; store.set("subject", "ratios"); store.set("rpart", choice.rpart);
-    startStudy();
-  }));
-  $app.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { tone([392, 523, 659, 784, 1047], .06, "sine", .06); b.classList.add("warp"); setTimeout(() => startClassroom(b.dataset.room), 450); }));
-}
-function startHippo(initial = "") {
-  stopSlope(); stopArchers(); stopMini(); closeShop();
-  if (D && !D.over) { D.over = true; clearInterval(D.timer); }
-  keyHandler = null;
-  HIPPO_BANK ||= hippoBank();
-  const total = hippoCount();
-  const topics = [...HIPPO_FAMILIES.map(f => [f[0], f[1], f[2]]), ...Object.entries(HIPPO_BANK.reduce((t, e) => { t[e.topic] = t[e.topic] || [e.icon, 0]; t[e.topic][1]++; return t; }, {})).map(([n, [i, c]]) => [n, i, c])];
-  // "Try asking" is a fresh mix every time: one question from many different kinds, plus a few from Hippo's fact list
-  const tries = [], seenQ = new Set(), famOrder = HIPPO_FAMILIES.filter(f => !/^Time machine/.test(f[0])).map(f => [Math.random(), f]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
-  const addTry = t => { t = String(t).trim(); if (t && !seenQ.has(t.toLowerCase())) { seenQ.add(t.toLowerCase()); tries.push(t); } };
-  famOrder.slice(0, 6).forEach(f => { try { addTry(f[3]()); } catch (e) {} });
-  for (let k = 0; k < 40 && tries.length < 10; k++) addTry(HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)].q);
-  tries.sort(() => Math.random() - .5);
-  $app.innerHTML = `
-    <div class="panel hip">
-      <div class="topline"><span class="label">🦛 Ask Hippo</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
-      <div class="hip-head"><span class="hip-face">🦛</span><div><h2>Ask Hippo anything!</h2><p class="soft">Hippo knows <b>${fmt(total)}</b> questions and answers about math, animals, space, countries, science and more. Every answer comes with a picture or diagram.</p></div></div>
-      <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">Ask 🦛</button></form>
-      <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button><label class="hip-voice">🗣️ Hippo's voice <select id="hip-voice"></select></label><button class="btn" id="hip-voice-try" type="button">▶ Hear it</button></div>
-      <div id="hip-out"></div>
-      ${hippoCalcHTML(true)}
-      <h3>Try asking</h3><div class="hip-tries">${tries.map(t => `<button class="chip hip-try" type="button">${esc(t)}</button>`).join("")}</div>
-      <details class="hip-topics"><summary>📚 Everything Hippo knows (${fmt(total)} answers)</summary><div>${topics.map(([n, i, c]) => `<span><b>${i} ${esc(n)}</b> ${fmt(c)}</span>`).join("")}</div></details>
-    </div>`;
-  const box = document.getElementById("hip-q");
-  const ask = qq => {
-    const q = qq.trim(); if (!q) return;
-    HIPPO_SONG_STOP?.(); hippoHush();
-    try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state !== "running") actx.resume?.(); } catch (e) {}   // wake up sound during the tap so songs can play
-    box.value = q;
-    const ans = hippoAnswer(q), out = document.getElementById("hip-out");
-    if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>🦛❓</span></div><div><b>Hmm, Hippo doesn't know that one yet.</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
-    out.innerHTML = `<div class="hip-card${ans.wide ? " wide" : ""}"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? esc(ans.why).split("\n\n").map(x => `<p>${x.replace(/\n/g, "<br>")}</p>`).join("") : ""}${ans.reveal ? `<details class="hip-reveal"><summary>👀 Show the answer</summary><p>${esc(ans.reveal)}</p></details>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}${ans.actions ? `<div class="hip-acts">${ans.actions.map((a, i) => a.heading ? `<h4 class="hip-acts-h">${esc(a.heading)}</h4>` : `<button class="btn${i && !a.go ? "" : " go"}" data-hact="${i}">${esc(a.label)}</button>`).join("")}</div>` : ""}</div></div>`;
-    if (ans.action) document.getElementById("hip-act").addEventListener("click", ans.action.fn);
-    if (ans.games) { out.querySelector(".hip-card").insertAdjacentHTML("beforeend", `<div class="hip-games">${gamesMenuHTML()}</div>`); bindGamesMenu(); }
-    // 🗣️ Hippo reads every answer out loud (stories start reading by themselves)
-    if (!ans.noRead && !ans.games && ans.topic !== "Songs") {
-      const words = [ans.text, ans.why, ans.reveal ? "" : ""].filter(Boolean).join(". ");
-      const rb = document.createElement("button"); rb.className = "btn gold hip-say"; rb.type = "button";
-      let on = false; const set = v => { on = v; rb.textContent = on ? "⏹ Stop reading" : "🔊 Hippo, read it to me"; };
-      rb.addEventListener("click", () => { if (on) { hippoHush(); set(false); } else { set(true); hippoSay(words, { onEnd: () => set(false) }); } });
-      set(false); out.querySelector(".hip-text").prepend(rb);
-      if (ans.autoRead) { set(true); hippoSay(words, { onEnd: () => set(false) }); }
-    }
-    if (ans.actions) out.querySelectorAll("[data-hact]").forEach(b => b.addEventListener("click", () => ans.actions[+b.dataset.hact].fn()));
-    // every math answer offers the calculator, with the problem already typed in
-    if (HIPPO_MATH_TOPICS.has(ans.topic) && !ans.action) {
-      const pre = hippoCalcPrefill(q);
-      document.querySelector("#hip-out .hip-text").insertAdjacentHTML("beforeend", `<button class="btn" id="hip-calc-go">🧮 Try it on the calculator</button>`);
-      document.getElementById("hip-calc-go").addEventListener("click", () => openCalc(pre));
-    }
-    tone([523, 784], .06, "triangle", .06);
-  };
-  const openCalc = bindHippoCalc();
-  document.getElementById("hip-form").addEventListener("submit", e => { e.preventDefault(); ask(box.value); });
-  document.getElementById("hip-rand").addEventListener("click", () => {
-    const useBank = Math.random() < .4;
-    if (useBank) { const e = HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)]; ask(e.q); }
-    else ask(HIPPO_FAMILIES[rnd(0, HIPPO_FAMILIES.length - 1)][3]());
-  });
-  $app.querySelectorAll(".hip-try").forEach(b => b.addEventListener("click", () => ask(b.textContent)));
-  document.getElementById("hip-home").addEventListener("click", () => { HIPPO_SONG_STOP?.(); hippoHush(); showHome(); });
-  const vsel = document.getElementById("hip-voice"); fillHippoVoiceMenu(vsel);
-  const sample = () => hippoSay("Hello, sweetheart. It's Hippo. Come sit with me, and I'll read you a story.");
-  vsel.addEventListener("change", () => { store.set("hippo_voice", vsel.value); sample(); });
-  document.getElementById("hip-voice-try").addEventListener("click", sample);
-  box.focus();
-  if (initial) ask(initial);
-}
 
-function startStories() {
-  stopSlope(); stopArchers(); stopMini(); closeShop();
-  keyHandler = null;
-  const d = store.get("story_draft", null);
-  STORY = { len: store.get("story_len", "any"), goal: store.get("story_goal", 100), starter: d?.starter ?? null, name: d?.name || "" };
-  if (STORY.starter == null) STORY.starter = pickStarter();
-  renderStoryDesk(d?.text || "");
-}
-function pickStarter() {
-  const pool = STARTERS.map((s, i) => i).filter(i => STORY.len === "any" || STARTERS[i].len === STORY.len);
-  const choices = pool.filter(i => i !== STORY?.starter);
-  return (choices.length ? choices : pool)[rnd(0, (choices.length ? choices : pool).length - 1)];
-}
-function saveDraft() {
-  const text = document.getElementById("st-text")?.value ?? "";
-  store.set("story_draft", { starter: STORY.starter, text, name: STORY.name });
-}
-function renderStoryDesk(text) {
-  const st = STARTERS[STORY.starter];
-  const shelf = store.get("stories", []);
-  $app.innerHTML = `
-    <div class="panel story-wrap">
-      <div class="topline"><span class="label">Story Starters</span><button class="iconbtn" id="st-shelf">My stories (${shelf.length})</button></div>
-      <h2>Keep the story going!</h2>
-      <p class="soft">Read the beginning, then write what happens next. There's no wrong answer. Make it yours!</p>
-      <div class="story-opts">
-        <span class="label">Story beginning length</span>
-        <div class="row">${Object.entries(STORY_LENS).map(([k, v]) => `<button class="chip mini" data-len="${k}" aria-pressed="${STORY.len === k}">${v}</button>`).join("")}</div>
-      </div>
       <div class="story-start">
         <div class="topline"><span class="pill">${st.genre} · ${STORY_LENS[st.len]}</span><button class="btn" id="st-new">New story beginning</button></div>
         <p>${esc(st.text)}</p>
