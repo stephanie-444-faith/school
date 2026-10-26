@@ -438,6 +438,7 @@
   .gm-mystery b { color: var(--gold); }
 
   .hint-btn { margin-top: 10px; border: 0; border-radius: 999px; padding: 5px 14px; background: #ffe58a; color: #3a2a00; font-weight: 800; font-size: .9rem; box-shadow: 0 3px 0 #c9a23a; }
+  .cr-say { margin-left: 6px; background: #c9f0ff; color: #0b3a4a; box-shadow: 0 3px 0 #6fb8d6; }
   .hint-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
   .hint-txt { margin-top: 10px; padding: 8px 12px; border-radius: 10px; background: #fff7d1; color: #4a3800; font-size: .95rem; text-align: left; animation: coachIn .25s ease-out; }
   .tile.right { outline: 4px solid var(--money); outline-offset: 2px; }
@@ -588,6 +589,17 @@
   .g4-lounge { position: relative; overflow: hidden; margin-top: 18px; padding: 14px; border-radius: 18px; background: radial-gradient(circle at 50% 70%, rgba(0,229,255,.25), transparent 55%), linear-gradient(135deg, #2a0f5a, #5a1a6b 55%, #7a2a5a); border: 2px solid #ff3cac; animation: loungeGlow 2.4s ease-in-out infinite alternate; }
   .g4-lounge::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(2px 2px at 12% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 80% 15%, #ffd700, transparent), radial-gradient(2px 2px at 25% 85%, #00e5ff, transparent), radial-gradient(1.5px 1.5px at 90% 70%, #fff, transparent), radial-gradient(2px 2px at 60% 40%, #ff3cac, transparent); animation: twinkle 1.8s ease-in-out infinite alternate; }
   @keyframes loungeGlow { from { box-shadow: 0 0 18px rgba(255,60,172,.5), inset 0 0 20px rgba(123,97,255,.3); border-color: #ff3cac; } to { box-shadow: 0 0 34px rgba(0,229,255,.6), inset 0 0 30px rgba(0,229,255,.25); border-color: #00e5ff; } }
+  .portal-hall { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 14px 8px; margin-top: 8px; }
+  .portal.mini { width: 120px; height: 150px; margin: 0 auto; }
+  .portal.mini .portal-swirl { inset: 10px 10px 40px; filter: blur(1.5px) hue-rotate(var(--h)); }
+  .portal.mini .portal-core { inset: 0 0 30px; font-family: var(--display); font-size: 1.5rem; color: #fff; text-shadow: 0 0 10px #00e5ff; animation: none; }
+  .portal.mini .pn { top: 40%; font-size: .85rem; }
+  .portal-name { position: absolute; left: 0; right: 0; bottom: 14px; color: var(--gold); font-size: .85rem; text-align: center; }
+  .portal-prog { position: absolute; left: 0; right: 0; bottom: 0; font-size: .7rem; color: var(--ink-soft); text-align: center; }
+  .g6-lounge { background: radial-gradient(circle at 50% 70%, rgba(66,227,146,.25), transparent 55%), linear-gradient(135deg, #0b3a4a, #124a6b 55%, #2a1a6b); animation-name: loungeGlow6; }
+  @keyframes loungeGlow6 { from { box-shadow: 0 0 18px rgba(66,227,146,.5), inset 0 0 20px rgba(0,229,255,.3); border-color: #42e392; } to { box-shadow: 0 0 34px rgba(255,201,60,.55), inset 0 0 30px rgba(66,227,146,.25); border-color: #ffc93c; } }
+  .portal6 .portal-swirl { background: conic-gradient(from 0deg, #42e392, #00e5ff, #ffc93c, #7b61ff, #42e392); box-shadow: 0 0 40px #42e392, 0 0 80px rgba(255,201,60,.45); }
+  .wp-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; } .wp-row input { width: 80px; } .wp-hit { background: var(--gold); color: #1a1240; border-radius: 4px; padding: 0 2px; }
   .g4-head h3 { text-shadow: 0 0 10px rgba(255,201,60,.7); }
   .g4-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; } .g4-head > span { font-size: 2.6rem; animation: skyBob 3s ease-in-out infinite; } .g4-head h3 { color: var(--gold); }
   .hip-calc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -1415,7 +1427,7 @@ const G6_GENS = [
   () => { const a = rnd(-15, -1), b = rnd(2, 20); return { tag: "Negative numbers", p: `${a} + ${b} = ?`, a: a + b, x: [a - b, -(a + b), b - a], why: `Start at ${a} on the number line and move ${b} to the right: ${a + b}.` }; }
 ];
 // floors of the classroom: which problems each group of levels uses
-const CR_FLOORS = [
+const CR_FLOORS_G4 = [
   { from: 1, to: 15, name: "3rd Grade", emoji: "🏠", pools: () => [G3A_GENS] },
   { from: 16, to: 30, name: "3rd Grade Challenge", emoji: "🎒", pools: () => [G3B_GENS, G3A_GENS] },
   { from: 31, to: 45, name: "4th Grade", emoji: "📗", pools: () => [G4C_GENS] },
@@ -1427,7 +1439,7 @@ const crFloor = L => CR_FLOORS.find(f => L >= f.from && L <= f.to);
 // each level: 5 problems from its floor, cycling through the floor's kinds of problems
 function crLevelQuestions(L) {
   const f = crFloor(L), pools = f.pools(), out = [];
-  for (let i = 0; i < 5; i++) { const pool = pools[(L + i) % pools.length], gen = pool[rnd(0, pool.length - 1)], q = ratioQuestion(gen, pool === G6_GENS); q.tag = q.tag.replace(/^Ratios & Rates/, `${f.emoji} ${f.name}`); out.push(q); }
+  for (let i = 0; i < 5; i++) { const pool = pools[(L + i) % pools.length], gen = pool[rnd(0, pool.length - 1)], q = ratioQuestion(gen, NEG_POOLS().includes(pool)); q.tag = q.tag.replace(/^Ratios & Rates/, `${f.emoji} ${f.name}`); out.push(q); }
   return out;
 }
 /* ---------- 🌀 The Challenge Classroom (through the portal in the Math Center) ----------
@@ -1435,14 +1447,14 @@ function crLevelQuestions(L) {
    the world's famous unsolved problems at the top of the room, with a tool to explore it and a real record to hunt.
    Record numbers are worked out by the page itself, so they are always correct. */
 const G4_LEVEL_COUNT = 100;
-const g4Stars = () => store.get("cr_lv", {});
+const g4Stars = () => store.get(CR_ROOMS[CR_ROOM].key, {});
 const g4Unlocked = () => { const st = g4Stars(); let u = 1; while (u <= G4_LEVEL_COUNT && st[u] > 0) u++; return u; };   // the next level to play
 const isPrimeN = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
 const collatzSteps = n => { let s = 0; while (n !== 1 && s < 10000) { n = n % 2 ? 3 * n + 1 : n / 2; s++; } return s; };
 const goldbachPairs = n => { const r = []; for (let p = 2; p <= n / 2; p++) if (isPrimeN(p) && isPrimeN(n - p)) r.push([p, n - p]); return r; };
 const divSum = n => { let s = n > 1 ? 1 : 0; for (let i = 2; i * i <= n; i++) if (n % i === 0) { s += i; if (i * i !== n) s += n / i; } return s; };
 const recordOf = (lo, hi, score) => { let best = lo, bs = -1; for (let n = lo; n <= hi; n++) { const v = score(n); if (v > bs) { bs = v; best = n; } } return [best, bs]; };
-const WORLD_PROBLEMS = [
+const WORLD_PROBLEMS_G4 = [
   { id: "collatz", unlock: 15, emoji: "🔁", name: "The Collatz Conjecture", since: "Unsolved since 1937",
     story: "Pick any whole number. If it's even, cut it in half. If it's odd, multiply by 3 and add 1. Keep going. Lothar Collatz guessed that EVERY number ends up at 1. Nobody in the world has been able to prove it!",
     help: "Problems like this teach mathematicians new ways to think about patterns and chaos, which helps with things like computer science and predicting complicated systems.",
@@ -1477,8 +1489,224 @@ const WORLD_RECORDS = {
   riemann: () => { const cnt = N => { let c = 0; for (let i = 2; i <= N; i++) if (isPrimeN(i)) c++; return c; }; return ["Count the primes! How many primes are there up to 100? Up to 1,000? Up to 10,000?", "", { c100: cnt(100), c1000: cnt(1000), c10000: cnt(10000) }]; },
   pnp: () => ["Solve 3 \"easy to check, hard to find\" puzzles. Beat your fastest time!", "", {}]
 };
+// 🎓 The 6th Grade classroom climb: 5th grade up to 8th grade / Algebra
+const G5B_GENS = [
+  () => { const p = rnd(12, 48) / 4, n = rnd(3, 8), paid = Math.ceil(p * n / 10) * 10 + 10; return { tag: "Decimal word problems", p: `Notebooks cost $${p.toFixed(2)} each. You buy ${n} and pay with $${paid}. How much change do you get?`, a: money(paid - p * n), w: [money(p * n), money(paid - p * n + 1), money(paid - p * (n - 1))], why: `Cost: ${n} × $${p.toFixed(2)} = ${money(p * n)}. Change: $${paid} − ${money(p * n)} = ${money(paid - p * n)}.` }; },
+  () => { const d = [3, 4, 5, 6, 8][rnd(0, 4)], n = rnd(1, d - 1), total = d * rnd(3, 12); return { tag: "Fraction of a number", p: `A class has ${total} students. ${n}/${d} of them walk to school. How many walk?`, a: total / d * n, x: [total / d, total - total / d * n, total / n], why: `Find 1/${d}: ${total} ÷ ${d} = ${total / d}. Then ${n} of those: ${total / d} × ${n} = ${total / d * n}.` }; },
+  () => { const a = rnd(2, 8), b = rnd(2, 6), c = rnd(2, 6), d = rnd(2, 5), e = rnd(2, 5); return { tag: "Volume of two boxes", p: `A shape is made of two boxes: one is ${a} × ${b} × ${c} and the other is ${a} × ${d} × ${e}. What is the total volume?`, a: `${a * b * c + a * d * e} cubic units`, w: [`${a * b * c} cubic units`, `${a * (b + d) * (c + e)} cubic units`, `${a * b * c * 2} cubic units`], why: `Find each volume and add: ${a * b * c} + ${a * d * e} = ${a * b * c + a * d * e} cubic units.` }; },
+  () => { const x = rnd(1, 9), y = rnd(1, 9), dx = rnd(1, 5), dy = rnd(1, 5); return { tag: "Coordinate plane", p: `Start at the point (${x}, ${y}). Move ${dx} right and ${dy} up. Where are you now?`, a: `(${x + dx}, ${y + dy})`, w: [`(${x + dy}, ${y + dx})`, `(${x - dx}, ${y + dy})`, `(${y + dy}, ${x + dx})`], why: `Right adds to the first number (x): ${x} + ${dx} = ${x + dx}. Up adds to the second number (y): ${y} + ${dy} = ${y + dy}.` }; },
+  () => { const a = rnd(2, 5), b = rnd(3, 7); const A = [0, 1, 2, 3, 4].map(i => i * a), B = [0, 1, 2, 3, 4].map(i => i * b); return { tag: "Two patterns", p: `Pattern A starts at 0 and adds ${a}. Pattern B starts at 0 and adds ${b}. When A is ${A[4]}, what is B?`, a: B[4], x: [B[3], A[4] + b, B[4] + b], why: `Both patterns took 4 steps. B after 4 steps of ${b}: 4 × ${b} = ${B[4]}. Notice B is always ${hFmt(Math.round(b / a * 100) / 100)} times A!` }; },
+  () => { const w = rnd(2, 5), n = rnd(1, 3), d = [2, 3, 4][rnd(0, 2)], k = rnd(2, 4); const top = (w * d + n) * k, ans = top % d ? `${Math.floor(top / d)} ${top % d}/${d}` : `${top / d}`; return { tag: "Mixed number × whole", p: `${w} ${n}/${d} × ${k} = ?`, a: ans, w: [`${w * k} ${n}/${d}`, `${w * k} ${n * k}/${d * k}`, `${Math.floor(top / d) + 1}`].filter(v => v !== ans), why: `${w} ${n}/${d} = ${w * d + n}/${d}. Times ${k}: ${top}/${d} = ${ans}.` }; }
+];
+const G6A_GENS = [
+  () => { const a = rnd(2, 9) * rnd(2, 5), b = rnd(2, 9) * rnd(2, 5), g = rgcd(a, b); return { tag: "Greatest common factor", p: `What is the greatest common factor of ${a} and ${b}?`, a: g, x: [g * 2, a * b / g, 1 === g ? 2 : 1], why: `List the factors of each and find the biggest one they share: ${g}.` }; },
+  () => { const a = rnd(2, 12), b = rnd(2, 12), l = a * b / rgcd(a, b); if (a === b) return G6A_GENS[0](); return { tag: "Least common multiple", p: `What is the least common multiple of ${a} and ${b}?`, a: l, x: [a * b === l ? l + a : a * b, a + b, l * 2], why: `List multiples of ${Math.max(a, b)} until you find one that ${Math.min(a, b)} also divides: ${l}.` }; },
+  () => { const n1 = rnd(1, 5), d1 = rnd(n1 + 1, 8), n2 = rnd(1, 5), d2 = rnd(n2 + 1, 8), ans = fracStr(n1 * d2, d1 * n2); return { tag: "Dividing fractions", p: `${n1}/${d1} ÷ ${n2}/${d2} = ? (simplify)`, a: ans, w: [fracStr(n1 * n2, d1 * d2), fracStr(d1 * n2, n1 * d2), `${n1 + n2}/${d1 + d2}`].filter(v => v !== ans), why: `Keep, change, flip: ${n1}/${d1} × ${d2}/${n2} = ${n1 * d2}/${d1 * n2}${ans !== `${n1 * d2}/${d1 * n2}` ? " = " + ans : ""}.` }; },
+  () => { const b = rnd(2, 9), e = rnd(2, 4); return { tag: "Exponents", p: `${b}${["", "", "²", "³", "⁴"][e]} = ?`, a: b ** e, x: [b * e, b ** e + b, b ** (e - 1)], why: `${b}${["", "", "²", "³", "⁴"][e]} = ${Array(e).fill(b).join(" × ")} = ${b ** e}.` }; },
+  () => { const x = rnd(2, 9), a = rnd(2, 6), b = rnd(1, 15); return { tag: "Evaluating expressions", p: `What is ${a}x + ${b} when x = ${x}?`, a: a * x + b, x: [a + x + b, a * (x + b), a * x], why: `Replace x with ${x}: ${a} × ${x} + ${b} = ${a * x} + ${b} = ${a * x + b}.` }; },
+  () => { const a = rnd(-12, 12), b = rnd(-12, 12); if (!a || !b) return G6A_GENS[4](); return { tag: "Integers", p: `${a} + (${b}) = ?`, a: a + b, x: [a - b, -(a + b) || 1, Math.abs(a) + Math.abs(b)], why: `${b < 0 ? `Adding a negative means moving left ${-b}` : `Adding a positive means moving right ${b}`} from ${a}: ${a + b}.`, neg: true }; },
+  () => { const n = rnd(-20, 20) || 7; return { tag: "Absolute value", p: `What is |${n}|?`, a: Math.abs(n), x: [-Math.abs(n), Math.abs(n) + 1, 0], why: `Absolute value is the distance from 0 on the number line, so it's never negative: |${n}| = ${Math.abs(n)}.`, neg: true }; }
+];
+const G6B_GENS = [
+  () => { const x = rnd(2, 20), a = rnd(2, 9); return { tag: "One-step equations", p: `Solve: ${a}x = ${a * x}`, a: `x = ${x}`, w: [`x = ${a * x - a}`, `x = ${x + a}`, `x = ${a * x}`].filter(v => v !== `x = ${x}`), why: `Divide both sides by ${a}: x = ${a * x} ÷ ${a} = ${x}.` }; },
+  () => { const b = rnd(3, 20), h = rnd(2, 14) * 2; return { tag: "Area of a triangle", p: `A triangle has a base of ${b} cm and a height of ${h} cm. What is its area?`, a: `${b * h / 2} square cm`, w: [`${b * h} square cm`, `${b + h} square cm`, `${b * h / 4} square cm`], why: `Area of a triangle = ½ × base × height = ½ × ${b} × ${h} = ${b * h / 2} square cm.` }; },
+  () => { const l = rnd(2, 9), w = rnd(2, 9), h = rnd(2, 9), sa = 2 * (l * w + w * h + l * h); return { tag: "Surface area", p: `What is the surface area of a box that is ${l} × ${w} × ${h}?`, a: `${sa} square units`, w: [`${l * w * h} square units`, `${sa / 2} square units`, `${sa + 2 * l * w} square units`], why: `A box has 6 faces in 3 matching pairs: 2 × (${l * w} + ${w * h} + ${l * h}) = ${sa} square units.` }; },
+  () => { const nums = Array.from({ length: 5 }, () => rnd(1, 20)).sort((a, b) => a - b), med = nums[2]; return { tag: "Median", p: `What is the median of ${shuffle(nums).join(", ")}?`, a: med, x: [nums[0], nums[4], Math.round(nums.reduce((s, v) => s + v, 0) / 5) === med ? med + 1 : Math.round(nums.reduce((s, v) => s + v, 0) / 5)], why: `Put them in order: ${nums.join(", ")}. The middle number is ${med}.` }; },
+  () => { const price = rnd(4, 40) * 5, off = [10, 20, 25, 30, 40, 50][rnd(0, 5)], tax = 0; return { tag: "Discounts", p: `A $${price} jacket is ${off}% off. What is the sale price?`, a: money(price * (100 - off) / 100), w: [money(price * off / 100), money(price - off), money(price * (100 + off) / 100)], why: `${off}% of $${price} is ${money(price * off / 100)}. Subtract: $${price} − ${money(price * off / 100)} = ${money(price * (100 - off) / 100)}.` }; },
+  () => { const a = rnd(2, 9), b = rnd(10, 40); return { tag: "Inequalities", p: `Which value of x makes x + ${a} > ${b} true?`, a: b - a + rnd(1, 5), w: [b - a, b - a - rnd(1, 4), b - a - 6], why: `Subtract ${a} from both sides: x > ${b - a}. Only numbers bigger than ${b - a} work.` }; },
+  () => { const x1 = rnd(-6, 6), y = rnd(-6, 6), x2 = x1 + rnd(2, 9); return { tag: "Distance on a grid", p: `How far apart are the points (${x1}, ${y}) and (${x2}, ${y})?`, a: `${x2 - x1} units`, w: [`${x2 + x1} units`, `${x2 - x1 + 1} units`, `${Math.abs(y) + x2 - x1} units`].filter(v => v !== `${x2 - x1} units`), why: `They're on the same horizontal line, so subtract the x-values: ${x2} − (${x1}) = ${x2 - x1} units.` }; },
+];
+G6B_GENS.push( () => { const each = [2, 3, 4][rnd(0, 2)], n1 = rnd(1, each - 1), cups = n1 * rnd(2, 8); return { tag: "Fraction division word problems", p: `You have ${cups} cups of flour. Each batch of muffins needs ${n1}/${each} cup. How many batches can you make?`, a: cups * each / n1, x: [cups * n1 / each, cups * each, cups + each], why: `Divide: ${cups} ÷ ${n1}/${each} = ${cups} × ${each}/${n1} = ${cups * each / n1} batches.` }; });
+const G7_GENS = [
+  () => { const k = rnd(2, 12), x = rnd(2, 12), y = rnd(2, 12); return { tag: "Proportional relationships", p: `y is proportional to x. When x = ${x}, y = ${k * x}. What is y when x = ${y}?`, a: k * y, x: [k * x + y, k * y + k, y * x], why: `The constant of proportionality is ${k * x} ÷ ${x} = ${k}. So y = ${k} × ${y} = ${k * y}.` }; },
+  () => { const a = rnd(-9, 9) || 4, b = rnd(-9, 9) || -3; return { tag: "Multiplying integers", p: `(${a}) × (${b}) = ?`, a: a * b, x: [-a * b, a + b, a * b + (a * b > 0 ? 1 : -1)], why: `${(a < 0) === (b < 0) ? "Same signs give a positive" : "Different signs give a negative"}: ${Math.abs(a)} × ${Math.abs(b)} = ${Math.abs(a * b)}, so ${a * b}.`, neg: true }; },
+  () => { const x = rnd(-8, 12) || 5, a = rnd(2, 7), b = rnd(-15, 15) || 4, c = a * x + b; return { tag: "Two-step equations", p: `Solve: ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${c}`, a: `x = ${x}`, w: [`x = ${x + 1}`, `x = ${-x}`, `x = ${c - b}`].filter(v => v !== `x = ${x}`), why: `${b < 0 ? "Add " + -b : "Subtract " + b} on both sides: ${a}x = ${c - b}. Divide by ${a}: x = ${x}.`, neg: true }; },
+  () => { const r = rnd(2, 15), what = Math.random() < .5 ? "area" : "circumference", v = what === "area" ? 3.14 * r * r : 2 * 3.14 * r; return { tag: "Circles", p: `A circle has a radius of ${r} cm. Using π ≈ 3.14, what is its ${what}?`, a: `${hFmt(Math.round(v * 100) / 100)} ${what === "area" ? "square cm" : "cm"}`, w: what === "area" ? [`${hFmt(Math.round(2 * 3.14 * r * 100) / 100)} square cm`, `${hFmt(Math.round(3.14 * r * 2 * r * 100) / 100)} square cm`, `${hFmt(Math.round(3.14 * r * 100) / 100)} square cm`] : [`${hFmt(Math.round(3.14 * r * r * 100) / 100)} cm`, `${hFmt(Math.round(3.14 * r * 100) / 100)} cm`, `${hFmt(Math.round(4 * 3.14 * r * 100) / 100)} cm`], why: what === "area" ? `Area = π × r × r = 3.14 × ${r} × ${r} = ${hFmt(Math.round(v * 100) / 100)} square cm.` : `Circumference = 2 × π × r = 2 × 3.14 × ${r} = ${hFmt(Math.round(v * 100) / 100)} cm.` }; },
+  () => { const red = rnd(1, 9), blue = rnd(1, 9), green = rnd(1, 9), t = red + blue + green, ans = fracStr(red, t); return { tag: "Probability", p: `A bag has ${red} red, ${blue} blue and ${green} green marbles. What is the probability of picking red?`, a: ans, w: [fracStr(red, blue + green), `${red}/${t + 1}`, fracStr(blue + green, t)].filter(v => v !== ans), why: `Favorable ÷ total: ${red} red out of ${t} marbles = ${red}/${t}${ans !== `${red}/${t}` ? " = " + ans : ""}.` }; },
+  () => { const old = rnd(4, 40) * 5, pc = [10, 20, 25, 50][rnd(0, 3)], up = Math.random() < .5, nw = old * (up ? 100 + pc : 100 - pc) / 100; return { tag: "Percent change", p: `A price changes from $${old} to ${money(nw)}. What is the percent ${up ? "increase" : "decrease"}?`, a: `${pc}%`, w: [`${pc + 5}%`, `${Math.round(Math.abs(nw - old))}%`, `${100 - pc}%`].filter(v => v !== `${pc}%`), why: `Change: ${money(Math.abs(nw - old))}. Divide by the ORIGINAL price: ${hFmt(Math.abs(nw - old))} ÷ ${old} = ${pc / 100} = ${pc}%.` }; },
+  () => { const sc = rnd(2, 9), cm = rnd(2, 15); return { tag: "Scale drawings", p: `On a map, 1 cm stands for ${sc} km. Two towns are ${cm} cm apart on the map. How far apart are they really?`, a: `${sc * cm} km`, w: [`${sc + cm} km`, `${cm} km`, `${sc * cm * 10} km`], why: `Multiply by the scale: ${cm} × ${sc} = ${sc * cm} km.` }; }
+];
+const G8_GENS = [
+  () => { const pairs = [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [9, 12, 15], [7, 24, 25], [12, 16, 20], [20, 21, 29]], [a, b, c] = pairs[rnd(0, pairs.length - 1)]; return { tag: "Pythagorean theorem", p: `A right triangle has legs of ${a} and ${b}. How long is the hypotenuse?`, a: c, x: [a + b, c + 1, c - 1], why: `a² + b² = c²: ${a * a} + ${b * b} = ${c * c}, and √${c * c} = ${c}.` }; },
+  () => { const x1 = rnd(-5, 5), y1 = rnd(-5, 5), dx = rnd(1, 6), m = rnd(-4, 4) || 2, x2 = x1 + dx, y2 = y1 + m * dx; return { tag: "Slope", p: `What is the slope of the line through (${x1}, ${y1}) and (${x2}, ${y2})?`, a: m, x: [-m, dx, m * dx === m ? m + 1 : m * dx], why: `Slope = rise ÷ run = (${y2} − ${y1}) ÷ (${x2} − ${x1}) = ${y2 - y1} ÷ ${dx} = ${m}.`, neg: true }; },
+  () => { const m = rnd(1, 9), e = rnd(3, 8), n = m * 10 ** e; return { tag: "Scientific notation", p: `Write ${n.toLocaleString("en-US")} in scientific notation.`, a: `${m} × 10${["", "", "", "³", "⁴", "⁵", "⁶", "⁷", "⁸"][e]}`, w: [`${m} × 10${["", "", "", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"][e + 1]}`, `${m * 10} × 10${["", "", "", "³", "⁴", "⁵", "⁶", "⁷", "⁸"][e]}`, `${m} × ${e}`], why: `Move the decimal point ${e} places to make a number between 1 and 10: ${m} × 10 to the ${e}th power.` }; },
+  () => { const b = rnd(2, 6), p = rnd(2, 5), q = rnd(2, 4); const sup = n => String(n).split("").map(d => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]).join(""); return { tag: "Exponent rules", p: `Simplify: ${b}${sup(p)} × ${b}${sup(q)}`, a: `${b}${sup(p + q)}`, w: [`${b}${sup(p * q)}`, `${b * b}${sup(p + q)}`, `${b}${sup(Math.abs(p - q) || 1)}`].filter(v => v !== `${b}${sup(p + q)}`), why: `Same base: add the exponents. ${p} + ${q} = ${p + q}, so ${b}${sup(p + q)}.` }; },
+  () => { const n = rnd(2, 15); return { tag: "Square roots", p: `√${n * n} = ?`, a: n, x: [n * n / 2, n + 1, n * 2], why: `${n} × ${n} = ${n * n}, so √${n * n} = ${n}.` }; },
+  () => { const x = rnd(1, 9), y = rnd(1, 9); return { tag: "Systems of equations", p: `x + y = ${x + y} and x − y = ${x - y}. What is x?`, a: x, x: [y, x + y, x + 1], why: `Add the two equations: 2x = ${x + y + x - y}, so x = ${x}. (And y = ${y}.)`, neg: true }; },
+  () => { const m = rnd(-5, 5) || 3, b = rnd(-9, 9), x = rnd(-5, 5); return { tag: "Linear functions", p: `For y = ${m}x ${b < 0 ? "−" : "+"} ${Math.abs(b)}, what is y when x = ${x}?`, a: m * x + b, x: [m + x + b, m * (x + b), m * x - b], why: `Replace x with ${x}: ${m} × ${x} ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${m * x + b}.`, neg: true }; }
+];
+const CR_FLOORS_G6 = [
+  { from: 1, to: 15, name: "5th Grade", emoji: "🚀", pools: () => [G5_GENS] },
+  { from: 16, to: 30, name: "5th Grade Challenge", emoji: "🛸", pools: () => [G5B_GENS, G5_GENS] },
+  { from: 31, to: 45, name: "6th Grade", emoji: "📘", pools: () => [G6A_GENS, ...Object.values(RATIO_GENS).slice(0, 2)] },
+  { from: 46, to: 70, name: "6th Grade Challenge", emoji: "🏆", pools: () => [G6B_GENS, G6A_GENS, ...Object.values(RATIO_GENS).slice(2)] },
+  { from: 71, to: 85, name: "7th Grade", emoji: "⚡", pools: () => [G7_GENS] },
+  { from: 86, to: 100, name: "8th Grade & Algebra Summit", emoji: "🏔️", pools: () => [G8_GENS, G7_GENS] }
+];
+// the famous unsolved problems at the top of the 6th grade classroom
+const WORLD_PROBLEMS_G6 = [
+  { id: "cubes", room: "g6", unlock: 15, emoji: "🧊", name: "The Sum of Three Cubes", since: "Open question since 1954",
+    story: "Can every whole number be made by adding three cubes (numbers times themselves three times, and negatives are allowed)? 29 = 3³ + 1³ + 1³. 3 = 1³ + 1³ + 1³. But some numbers are SUPER hard. Numbers like 4 and 5 are impossible (they leave a remainder of 4 or 5 when divided by 9), but for the rest nobody knows if it always works!",
+    help: "Hunting for these answers pushed people to invent clever computer search tricks that are now used in other areas of science.",
+    fame: "In 2019, mathematicians found 42 = (−80,538,738,812,075,974)³ + 80,435,758,145,817,515³ + 12,602,123,297,335,631³ using a planet-wide network of computers. Under 100, it was the last number left!" },
+  { id: "mersenne", room: "g6", unlock: 30, emoji: "🔢", name: "Mersenne Primes", since: "Unsolved for over 380 years",
+    story: "A Mersenne number is 2 multiplied by itself p times, minus 1. Sometimes it's prime: 2³ − 1 = 7 is prime! Are there infinitely many Mersenne primes? Nobody knows.",
+    help: "Searching for giant primes tests whether computers work correctly, and primes keep our online information safe.",
+    fame: "The biggest prime number ever found (in 2024) is the Mersenne prime 2¹³⁶²⁷⁹⁸⁴¹ − 1. It has 41,024,320 digits!" },
+  { id: "brick", room: "g6", unlock: 45, emoji: "🧱", name: "The Perfect Cuboid", since: "Unsolved for about 300 years",
+    story: "An Euler brick is a box where the edges AND the diagonals on each face are all whole numbers. A \"perfect cuboid\" would also have a whole-number diagonal going through the inside of the box. Does a perfect cuboid exist? Nobody has ever found one, and nobody can prove it's impossible!",
+    help: "It mixes geometry and number puzzles, and tools invented for problems like this help with coding and computer graphics.",
+    fame: "The smallest Euler brick (44 × 117 × 240) was found in 1719 by Paul Halcke. Computers have searched for perfect cuboids with edges up to the trillions and found none." },
+  { id: "pi", room: "g6", unlock: 60, emoji: "🥧", name: "Is π Normal?", since: "Unsolved question about π",
+    story: "π = 3.14159265… goes on forever and never repeats. But does every digit (0 to 9) show up equally often, and does every pattern, like your birthday, show up somewhere? If so, π is called \"normal\". It looks normal, but nobody can prove it!",
+    help: "Understanding π better helps scientists who use it for circles, waves, space travel and more.",
+    fame: "Computers have calculated π to over 200 trillion digits (in 2024). At decimal place 762 there are six 9s in a row, called the Feynman point." },
+  { id: "lychrel", room: "g6", unlock: 80, emoji: "🔄", name: "The 196 Mystery", since: "Unsolved since the 1980s",
+    story: "Take a number, reverse its digits, and add: 57 + 75 = 132, then 132 + 231 = 363, a palindrome (it reads the same both ways)! Almost every number becomes a palindrome this way. But 196 has never become one, even after BILLIONS of steps. Does it ever? Nobody knows!",
+    help: "Problems like this teach people how to make computers work with gigantic numbers.",
+    fame: "People have run the 196 process for over a billion steps, making numbers with hundreds of millions of digits, and still no palindrome." },
+  { id: "congruent", room: "g6", unlock: 100, emoji: "📐", name: "Congruent Numbers ($1,000,000)", since: "A puzzle over 1,000 years old",
+    story: "A congruent number is the AREA of a right triangle whose sides are all fractions or whole numbers. 6 is congruent (the 3-4-5 triangle has area 6). Is there an easy way to tell which numbers are congruent? It depends on the Birch and Swinnerton-Dyer Conjecture, one of the Millennium Prize Problems!",
+    help: "Solving it would win $1,000,000 from the Clay Mathematics Institute and unlock deep secrets about equations used in modern cryptography.",
+    fame: "157 is congruent, but its simplest triangle has fractions with dozens of digits on the top and bottom!" }
+];
+const piDigits = (() => { let cache = null; return () => { if (cache) return cache; let q = 1n, r = 0n, t = 1n, k = 1n, n = 3n, l = 3n, out = ""; while (out.length < 1001) { if (4n * q + r - t < n * t) { out += n; const nr = 10n * (r - n * t); n = (10n * (3n * q + r)) / t - 10n * n; q *= 10n; r = nr; } else { const nr = (2n * q + r) * l; const nn = (q * (7n * k) + 2n + r * l) / (t * l); q *= k; t *= l; l += 2n; k += 1n; n = nn; r = nr; } } return cache = out; }; })();
+const lychrelSteps = n => { let x = BigInt(n), s = 0; const pal = v => { const t = v.toString(); return t === [...t].reverse().join(""); }; while (s < 60) { if (s > 0 && pal(x)) return [s, x]; x += BigInt([...x.toString()].reverse().join("")); s++; if (pal(x)) return [s, x]; } return [Infinity, x]; };
+Object.assign(WORLD_RECORDS, {
+  cubes: () => ["Make 3 in TWO different ways using three cubes (hint: try some negative numbers between −5 and 5).", "", {}],
+  mersenne: () => { const list = []; for (let p = 2; p <= 31; p++) { const m = 2 ** p - 1; if (isPrimeN(m)) list.push(p); } return [`There are ${list.length} Mersenne primes with p from 2 to 31. Find them all!`, "", { list }]; },
+  brick: () => ["Find the smallest Euler brick: all three edges under 250 and all face diagonals whole numbers.", "", {}],
+  pi: () => { const d = piDigits().slice(1), pos = d.indexOf("999999") + 1; return [`Find where six 9s in a row first appear in π (the Feynman point).`, "", { pos }]; },
+  lychrel: () => { let best = 0, bn = 0; for (let n = 10; n < 100; n++) { const [s] = lychrelSteps(n); if (s !== Infinity && s > best) { best = s; bn = n; } } return [`Under 100, one number takes ${best} reverse-and-add steps to become a palindrome. That's the record. Find it!`, "", { best, bn }]; },
+  congruent: () => ["Find right triangles with whole-number sides whose areas are 6, 30 and 210.", "", {}]
+});
+
+// 🧸 Problem sets for every grade, Pre-K up to Geometry (used by all the Challenge Classrooms)
+const EMO = ["🍎", "⭐", "🐶", "🎈", "🐟", "🌸", "🚗", "🍪", "🐸", "⚽"];
+const many = (e, n) => e.repeat(n);
+const GP_GENS = [
+  () => { const e = rPick(EMO), n = rnd(1, 5); return { tag: "Counting", p: `How many? ${many(e, n)}`, a: n, x: [n + 1, n - 1 || 6, n + 2], why: `Touch each one and count: ${Array.from({ length: n }, (_, i) => i + 1).join(", ")}. There are ${n}!` }; },
+  () => { const n = rnd(1, 8); return { tag: "What comes next?", p: `What number comes after ${n}?`, a: n + 1, x: [n - 1 || 10, n + 2, n], why: `Count: ${n}, ${n + 1}! ${n + 1} comes right after ${n}.` }; },
+  () => { const sh = [["circle", "⚪"], ["square", "🟥"], ["triangle", "🔺"], ["star", "⭐"], ["heart", "❤️"]], [nm, em] = rPick(sh); return { tag: "Shapes", p: `What shape is this? ${em}`, a: nm, w: sh.map(x => x[0]).filter(x => x !== nm).slice(0, 3), why: `${em} is a ${nm}!` }; },
+  () => { const a = rnd(1, 5), b = rnd(1, 5); if (a === b) return GP_GENS[0](); const e = rPick(EMO); return { tag: "More or less", p: `Which has MORE? A: ${many(e, a)}   B: ${many(e, b)}`, a: a > b ? "A" : "B", w: [a > b ? "B" : "A", "They are the same", "Neither"], why: `A has ${a} and B has ${b}. ${Math.max(a, b)} is more than ${Math.min(a, b)}.` }; }
+];
+const GPC_GENS = [
+  () => { const e = rPick(EMO), n = rnd(5, 10); return { tag: "Counting", p: `How many? ${many(e, n)}`, a: n, x: [n + 1, n - 1, n + 2], why: `Count each one, one at a time. There are ${n}.` }; },
+  () => { const e = rPick(EMO), n = rnd(1, 5); return { tag: "One more", p: `${many(e, n)} and 1 more ${e}. How many now?`, a: n + 1, x: [n, n + 2, n - 1 || 7], why: `One more than ${n} is ${n + 1}.` }; },
+  () => { const e = rPick(EMO), n = rnd(2, 6); return { tag: "One less", p: `${many(e, n)} One ${e} goes away. How many are left?`, a: n - 1, x: [n, n + 1, n - 2 || 8], why: `One less than ${n} is ${n - 1}.` }; },
+  () => { const ns = shuffle([rnd(1, 3), rnd(4, 6), rnd(7, 10)]); return { tag: "Biggest number", p: `Which number is the BIGGEST? ${ns.join(", ")}`, a: Math.max(...ns), w: ns.filter(n => n !== Math.max(...ns)).concat([0]), why: `When you count, ${Math.max(...ns)} comes last, so it's the biggest.` }; }
+];
+const GK_GENS = [
+  () => { const e = rPick(EMO), a = rnd(1, 5), b = rnd(1, 5); return { tag: "Adding", p: `${many(e, a)} + ${many(e, b)} = ? (${a} + ${b})`, a: a + b, x: [a + b + 1, a + b - 1, a], why: `Count them all together: ${a} + ${b} = ${a + b}.` }; },
+  () => { const a = rnd(3, 10), b = rnd(1, a - 1); return { tag: "Taking away", p: `${a} − ${b} = ?`, a: a - b, x: [a - b + 1, a + b, a - b - 1 < 0 ? a : a - b - 1], why: `Start with ${a} and take away ${b}. ${a - b} are left.` }; },
+  () => { const n = rnd(9, 19); return { tag: "Counting to 20", p: `What number comes after ${n}?`, a: n + 1, x: [n - 1, n + 2, n + 10], why: `${n}, ${n + 1}! ${n + 1} comes next.` }; },
+  () => { const sh = [["triangle", 3], ["square", 4], ["rectangle", 4], ["hexagon", 6], ["pentagon", 5]], [nm, s] = rPick(sh); return { tag: "Shapes", p: `How many sides does a ${nm} have?`, a: s, x: [s + 1, s - 1, s + 2], why: `Count the straight sides of a ${nm}: ${s}.` }; },
+  () => { const a = rnd(1, 9); return { tag: "Make 10", p: `${a} and how many more make 10?`, a: 10 - a, x: [10 - a + 1, a, 10 - a - 1 < 0 ? 11 - a : 10 - a - 1], why: `Count up from ${a} to 10: that's ${10 - a} more. ${a} + ${10 - a} = 10.` }; }
+];
+const GKC_GENS = [
+  () => { const k = rnd(1, 7); return { tag: "Counting by 10s", p: `${[k, k + 1, k + 2].map(x => x * 10).join(", ")}, ?`, a: (k + 3) * 10, x: [(k + 3) * 10 + 1, (k + 2) * 10 + 1, (k + 4) * 10], why: `Counting by tens: each number is 10 more. ${(k + 2) * 10} + 10 = ${(k + 3) * 10}.` }; },
+  () => { const o = rnd(1, 9); return { tag: "Teen numbers", p: `10 and ${o} more make what number?`, a: 10 + o, x: [o, 10 + o + 1, o * 10 > 99 ? 20 : o * 10 === 10 + o ? 20 : o * 10], why: `1 ten and ${o} ones is ${10 + o}.` }; },
+  () => { const nm = rPick(G4_NAMES), a = rnd(2, 6), b = rnd(1, 4); return { tag: "Story problems", p: `${nm} has ${a} balloons 🎈. A friend gives ${nm} ${b} more. How many balloons now?`, a: a + b, x: [a - b || a + b + 1, a + b + 1, a], why: `Put them together: ${a} + ${b} = ${a + b} balloons.` }; },
+  () => { const pats = [["🔴", "🔵"], ["🐶", "🐱"], ["⭐", "🌙"], ["🍎", "🍌", "🍇"]], pat = rPick(pats), len = pat.length * 2 + 1, seq = Array.from({ length: len }, (_, i) => pat[i % pat.length]); return { tag: "Patterns", p: `What comes next? ${seq.join(" ")} ?`, a: pat[len % pat.length], w: [...pat.filter(x => x !== pat[len % pat.length]), "🟩", "🟨"].slice(0, 3), why: `The pattern repeats ${pat.join(" ")}. Next is ${pat[len % pat.length]}.` }; },
+  () => { const a = rnd(5, 10), b = rnd(1, 4); return { tag: "Story problems", p: `There are ${a} birds 🐦 on a tree. ${b} ${b === 1 ? "flies" : "fly"} away. How many are still on the tree?`, a: a - b, x: [a + b, a - b + 1, b], why: `Take away: ${a} − ${b} = ${a - b} birds.` }; }
+];
+const G1_GENS = [
+  () => { const a = rnd(3, 12), b = rnd(2, 8); return { tag: "Adding to 20", p: `${a} + ${b} = ?`, a: a + b, x: [a + b + 1, a + b - 1, a + b + 10], why: `Start at ${a} and count up ${b}: ${a + b}.` }; },
+  () => { const a = rnd(10, 20), b = rnd(2, 9); return { tag: "Subtracting", p: `${a} − ${b} = ?`, a: a - b, x: [a - b + 1, a - b - 1, a + b], why: `Think: ${b} + ? = ${a}. The answer is ${a - b}.` }; },
+  () => { const t = rnd(1, 9), o = rnd(0, 9); return { tag: "Tens and ones", p: `${t} ten${t === 1 ? "" : "s"} and ${o} one${o === 1 ? "" : "s"} make what number?`, a: t * 10 + o, x: [o * 10 + t, t + o, t * 10 + o + 10], why: `${t} tens = ${t * 10}, plus ${o} ones = ${t * 10 + o}.` }; },
+  () => { const a = rnd(10, 99), b = rnd(10, 99); if (a === b) return G1_GENS[0](); return { tag: "Comparing", p: `Which is bigger: ${a} or ${b}?`, a: Math.max(a, b), w: [Math.min(a, b), "They are equal", Math.max(a, b) + 1], why: `Compare the tens first: ${Math.max(a, b)} is bigger.` }; },
+  () => { const h = rnd(1, 12), half = Math.random() < .5; return { tag: "Telling time", p: `The short hand points to ${h} and the long hand points to ${half ? 6 : 12}. What time is it?`, a: `${h}:${half ? "30" : "00"}`, w: [`${h}:${half ? "00" : "30"}`, `${half ? 6 : 12}:${String(h * 5 % 60).padStart(2, "0")}`, `${h % 12 + 1}:${half ? "30" : "00"}`], why: `The short hand shows the hour (${h}). The long hand on ${half ? "6 means 30 minutes (half past)" : "12 means o'clock"}.` }; },
+  () => { const n = rnd(11, 89), more = Math.random() < .5; return { tag: "10 more, 10 less", p: `What is 10 ${more ? "more" : "less"} than ${n}?`, a: more ? n + 10 : n - 10, x: [more ? n + 1 : n - 1, more ? n - 10 : n + 10, more ? n + 100 : n - 9], why: `10 ${more ? "more" : "less"} changes the tens digit by 1: ${more ? n + 10 : n - 10}.` }; }
+];
+const G1C_GENS = [
+  () => { const a = rnd(3, 10), b = rnd(3, 10); return { tag: "Missing number", p: `${a} + ? = ${a + b}`, a: b, x: [a + b, b + 1, a], why: `Count up from ${a} to ${a + b}: that's ${b}.` }; },
+  () => { const a = rnd(11, 89), b = rnd(1, 9); return { tag: "2-digit + 1-digit", p: `${a} + ${b} = ?`, a: a + b, x: [a + b + 10, a + b - 1, a + b * 10], why: `Add the ones: ${a % 10} + ${b} = ${a % 10 + b}. ${a + b}.` }; },
+  () => { const a = rnd(11, 59), t = rnd(1, 4) * 10; return { tag: "Adding tens", p: `${a} + ${t} = ?`, a: a + t, x: [a + t / 10, a + t + 1, a + t + 10], why: `${t} is ${t / 10} tens, so the tens digit goes up by ${t / 10}: ${a + t}.` }; },
+  () => { const a = rnd(2, 7), b = rnd(2, 7), c = rnd(1, 6); return { tag: "Three numbers", p: `${a} + ${b} + ${c} = ?`, a: a + b + c, x: [a + b + c + 1, a + b, a + b + c - 2], why: `Add two first: ${a} + ${b} = ${a + b}. Then add ${c}: ${a + b + c}.` }; },
+  () => { const parts = [[2, "halves", "a half"], [4, "fourths", "a fourth (a quarter)"]], [n, pl, one] = rPick(parts); return { tag: "Halves and fourths", p: `A pizza 🍕 is cut into ${n} equal parts. What is each part called?`, a: one, w: parts.filter(x => x[0] !== n).map(x => x[2]).concat(["a third", "a whole"]).slice(0, 3), why: `${n} equal parts are called ${pl}, so each part is ${one}.` }; }
+];
+const G2_GENS = [
+  () => { const a = rnd(15, 65), b = rnd(15, 34); return { tag: "Adding with regrouping", p: `${a} + ${b} = ?`, a: a + b, x: [a + b - 10, a + b + 10, a + b + 1], why: `Ones: ${a % 10} + ${b % 10} = ${a % 10 + b % 10}${a % 10 + b % 10 > 9 ? " (regroup 1 ten!)" : ""}. Then add the tens. ${a + b}.` }; },
+  () => { const a = rnd(40, 99), b = rnd(12, a - 10); return { tag: "Subtracting", p: `${a} − ${b} = ?`, a: a - b, x: [a - b + 10, a - b - 10, a - b + 1], why: `Subtract the ones, then the tens (regroup if you need to): ${a - b}.` }; },
+  () => { const by = [5, 10, 100][rnd(0, 2)], st = by * rnd(1, 5); return { tag: "Skip counting", p: `${st}, ${st + by}, ${st + 2 * by}, ?`, a: st + 3 * by, x: [st + 3 * by + 1, st + 2 * by + 1, st + 4 * by], why: `Counting by ${by}s: ${st + 2 * by} + ${by} = ${st + 3 * by}.` }; },
+  () => { const n = rnd(1, 99); return { tag: "Even or odd", p: `Is ${n} even or odd?`, a: n % 2 ? "odd" : "even", w: [n % 2 ? "even" : "odd", "both", "neither"], why: `Look at the ones digit (${n % 10}). ${n % 2 ? "1, 3, 5, 7, 9 are odd" : "0, 2, 4, 6, 8 are even"}.` }; },
+  () => { const q = rnd(0, 3), d = rnd(0, 4), nk = rnd(0, 3), p = rnd(0, 4), t = q * 25 + d * 10 + nk * 5 + p; if (!t) return G2_GENS[0](); return { tag: "Coins", p: `${q} quarter${q === 1 ? "" : "s"}, ${d} dime${d === 1 ? "" : "s"}, ${nk} nickel${nk === 1 ? "" : "s"} and ${p} penn${p === 1 ? "y" : "ies"} make how many cents?`, a: `${t}¢`, w: [`${q + d + nk + p}¢`, `${t + 5}¢`, `${t - 1 > 0 ? t - 1 : t + 10}¢`], why: `Quarters ${q * 25}¢ + dimes ${d * 10}¢ + nickels ${nk * 5}¢ + pennies ${p}¢ = ${t}¢.` }; },
+  () => { const h = rnd(1, 12), m5 = rnd(1, 11); return { tag: "Time to 5 minutes", p: `The short hand is just past ${h}. The long hand points to ${m5}. What time is it?`, a: `${h}:${String(m5 * 5).padStart(2, "0")}`, w: [`${h}:${String(m5).padStart(2, "0")}`, `${m5}:${String(h * 5 % 60).padStart(2, "0")}`, `${h}:${String((m5 * 5 + 5) % 60).padStart(2, "0")}`], why: `Count by 5s to the long hand: ${m5} × 5 = ${m5 * 5} minutes. It's ${h}:${String(m5 * 5).padStart(2, "0")}.` }; },
+  () => { const r = rnd(2, 5), c = rnd(2, 5); return { tag: "Arrays", p: `${r} rows of ${c} 🌷. How many flowers in all?`, a: r * c, x: [r + c, r * c + c, r * c - 1], why: `Add the rows: ${Array(r).fill(c).join(" + ")} = ${r * c}.` }; }
+];
+const G2C_GENS = [
+  () => { const a = rnd(100, 600), b = rnd(100, 300); return { tag: "3-digit adding", p: `${a} + ${b} = ?`, a: a + b, x: [a + b + 100, a + b - 10, a + b + 1], why: `Add hundreds, tens and ones: ${a + b}.` }; },
+  () => { const h = rnd(1, 9), t = rnd(0, 9), o = rnd(0, 9); return { tag: "Place value", p: `${h} hundreds, ${t} tens and ${o} ones make?`, a: h * 100 + t * 10 + o, x: [h * 10 + t * 100 + o, h + t + o, h * 100 + o * 10 + t], why: `${h * 100} + ${t * 10} + ${o} = ${h * 100 + t * 10 + o}.` }; },
+  () => { const nm = rPick(G4_NAMES), has = rnd(30, 90), toy = rnd(15, has - 5); return { tag: "Money problems", p: `${nm} has ${has}¢ and buys a toy for ${toy}¢. How much is left?`, a: `${has - toy}¢`, w: [`${has + toy}¢`, `${has - toy + 10}¢`, `${toy}¢`], why: `${has} − ${toy} = ${has - toy}¢.` }; },
+  () => { const a = rnd(20, 50), b = rnd(10, 30), c = rnd(5, 20); return { tag: "Two-step problems", p: `A bus has ${a} people. ${b} more get on, then ${c} get off. How many are on the bus?`, a: a + b - c, x: [a + b + c, a - b + c > 0 ? a - b + c : a + b, a + b], why: `${a} + ${b} = ${a + b}. Then ${a + b} − ${c} = ${a + b - c}.` }; },
+  () => { const p = rnd(12, 20), c = rnd(5, p - 2); return { tag: "Measuring", p: `A pencil is ${p} cm long. A crayon is ${c} cm long. How much longer is the pencil?`, a: `${p - c} cm`, w: [`${p + c} cm`, `${p - c + 1} cm`, `${c} cm`], why: `Compare by subtracting: ${p} − ${c} = ${p - c} cm.` }; }
+];
+const G7B_GENS = [
+  () => { const price = rnd(10, 80), tax = [5, 6, 8, 10][rnd(0, 3)]; return { tag: "Sales tax", p: `A game costs $${price}. Sales tax is ${tax}%. What is the total cost?`, a: money(price * (100 + tax) / 100), w: [money(price * tax / 100), money(price + tax), money(price * (100 - tax) / 100)], why: `Tax: ${tax}% of $${price} = ${money(price * tax / 100)}. Total: $${price} + ${money(price * tax / 100)} = ${money(price * (100 + tax) / 100)}.` }; },
+  () => { const P = rnd(2, 20) * 100, r = rnd(2, 8), t = rnd(2, 5); return { tag: "Simple interest", p: `You save $${fmt(P)} at ${r}% simple interest per year. How much interest do you earn in ${t} years?`, a: money(P * r / 100 * t), w: [money(P * r / 100), money(P * r * t), money(P + P * r / 100 * t)], why: `Interest = principal × rate × time = ${fmt(P)} × ${r / 100} × ${t} = ${money(P * r / 100 * t)}.` }; },
+  () => { const a = rnd(2, 6), b = rnd(1, 9), x = rnd(1, 10); return { tag: "Distributive property", p: `Solve: ${a}(x + ${b}) = ${a * (x + b)}`, a: `x = ${x}`, w: [`x = ${x + b}`, `x = ${a * (x + b) - b}`, `x = ${x + 1}`].filter(v => v !== `x = ${x}`), why: `Divide both sides by ${a}: x + ${b} = ${x + b}. Subtract ${b}: x = ${x}.` }; },
+  () => { const ang = rnd(20, 160), kind = rPick(["supplementary", "complementary", "vertical"]); if (kind === "complementary" && ang >= 90) return G7B_GENS[0](); const ans = kind === "supplementary" ? 180 - ang : kind === "complementary" ? 90 - ang : ang; return { tag: "Angle pairs", p: `Two angles are ${kind}. One is ${ang}°. What is the other?`, a: `${ans}°`, w: [`${kind === "vertical" ? 180 - ang : ang}°`, `${(ans + 10) % 180 || 15}°`, `${360 - ang}°`].filter(v => v !== `${ans}°`), why: kind === "supplementary" ? `Supplementary angles add to 180°: 180 − ${ang} = ${ans}°.` : kind === "complementary" ? `Complementary angles add to 90°: 90 − ${ang} = ${ans}°.` : `Vertical angles are always equal: ${ang}°.` }; },
+  () => { const want = rnd(1, 6); return { tag: "Compound probability", p: `You flip a coin and roll a 6-sided die. What is the probability of getting heads AND a ${want}?`, a: "1/12", w: ["1/6", "1/2", "1/8"], why: `Multiply the chances: 1/2 × 1/6 = 1/12.` }; },
+  () => { const b = rnd(2, 10), h = rnd(2, 8) * 2, L = rnd(3, 12); return { tag: "Volume of a prism", p: `A triangular prism has a triangle base with base ${b} and height ${h}, and is ${L} long. What is its volume?`, a: `${b * h / 2 * L} cubic units`, w: [`${b * h * L} cubic units`, `${b * h / 2} cubic units`, `${b + h + L} cubic units`], why: `Area of the triangle: ½ × ${b} × ${h} = ${b * h / 2}. Times the length: ${b * h / 2} × ${L} = ${b * h / 2 * L}.` }; }
+];
+const G8B_GENS = [
+  () => { const [a, b, c] = rPick([[6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [12, 16, 20]]); return { tag: "Pythagorean word problems", p: `A ${c}-foot ladder leans on a wall. Its bottom is ${a} feet from the wall. How high up the wall does it reach?`, a: `${b} feet`, w: [`${c - a} feet`, `${c + a} feet`, `${b + 1} feet`], why: `a² + b² = c²: ${a}² + b² = ${c}², so b² = ${c * c} − ${a * a} = ${b * b}, and b = ${b}.` }; },
+  () => { const r = rnd(1, 6), h = rnd(2, 10), v = Math.round(3.14 * r * r * h * 100) / 100; return { tag: "Volume of a cylinder", p: `A cylinder has radius ${r} and height ${h}. Using π ≈ 3.14, what is its volume?`, a: `${hFmt(v)} cubic units`, w: [`${hFmt(Math.round(2 * 3.14 * r * h * 100) / 100)} cubic units`, `${hFmt(Math.round(3.14 * r * h * 100) / 100)} cubic units`, `${hFmt(Math.round(3.14 * r * r * 100) / 100)} cubic units`], why: `V = π × r² × h = 3.14 × ${r * r} × ${h} = ${hFmt(v)}.` }; },
+  () => { const m = rnd(-4, 5) || 2, b = rnd(-8, 8), x1 = rnd(0, 4); return { tag: "Finding the y-intercept", p: `A line has slope ${m} and goes through (${x1}, ${m * x1 + b}). What is its y-intercept b?`, a: b, x: [b + m, m * x1, -b || 1], why: `y = mx + b: ${m * x1 + b} = ${m} × ${x1} + b, so b = ${m * x1 + b} − ${m * x1} = ${b}.` }; },
+  () => { const x = rnd(-6, 9), a = rnd(3, 8), c = rnd(1, a - 1), b = rnd(-10, 10), d = (a - c) * x + b; return { tag: "Variables on both sides", p: `Solve: ${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${c}x ${d < 0 ? "−" : "+"} ${Math.abs(d)}`, a: `x = ${x}`, w: [`x = ${-x || 1}`, `x = ${x + 1}`, `x = ${d - b}`].filter(v => v !== `x = ${x}`), why: `Subtract ${c}x from both sides: ${a - c}x ${b < 0 ? "−" : "+"} ${Math.abs(b)} = ${d}. Then ${a - c}x = ${d - b}, so x = ${x}.` }; },
+  () => { const a = rnd(2, 9), b = rnd(2, 4), p = rnd(2, 5), q = rnd(2, 5), m = a * b, e = p + q, sup = n => String(n).split("").map(d => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]).join(""), ans = m >= 10 ? `${m / 10} × 10${sup(e + 1)}` : `${m} × 10${sup(e)}`; return { tag: "Scientific notation", p: `(${a} × 10${sup(p)}) × (${b} × 10${sup(q)}) = ?`, a: ans, w: [`${m} × 10${sup(p * q)}`, `${a + b} × 10${sup(e)}`, m >= 10 ? `${m} × 10${sup(e + 1)}` : `${m} × 10${sup(e + 1)}`].filter(v => v !== ans), why: `Multiply the numbers (${a} × ${b} = ${m}) and add the exponents (${p} + ${q} = ${e})${m >= 10 ? `, then fix it so the front number is under 10: ${ans}` : ""}.` }; },
+  () => { const m = rnd(2, 6), b = rnd(-5, 9), xs = [1, 2, 3]; return { tag: "Function rules", p: `A table: x = 1, 2, 3 gives y = ${xs.map(x => m * x + b).join(", ")}. What is the rule?`, a: `y = ${m}x ${b < 0 ? "−" : "+"} ${Math.abs(b)}`, w: [`y = ${m + b}x`, `y = x + ${m}`, `y = ${b}x ${m < 0 ? "−" : "+"} ${m}`].filter(v => v !== `y = ${m}x ${b < 0 ? "−" : "+"} ${Math.abs(b)}`), why: `y goes up by ${m} each time, so it's ${m}x. When x = 1, ${m} × 1 = ${m}, and y is ${m + b}, so add ${b}.` }; }
+];
+const G9_GENS = [
+  () => { const a = rnd(1, 9), b = rnd(1, 9); return { tag: "Multiplying binomials", p: `(x + ${a})(x + ${b}) = ?`, a: `x² + ${a + b}x + ${a * b}`, w: [`x² + ${a * b}x + ${a + b}`, `x² + ${a * b}`, `2x + ${a + b}`], why: `FOIL: x·x + ${b}x + ${a}x + ${a}·${b} = x² + ${a + b}x + ${a * b}.` }; },
+  () => { const r1 = rnd(1, 9), r2 = rnd(1, 9); return { tag: "Factoring", p: `Factor: x² + ${r1 + r2}x + ${r1 * r2}`, a: `(x + ${Math.min(r1, r2)})(x + ${Math.max(r1, r2)})`, w: [`(x + ${r1 + r2})(x + 1)`, `(x − ${Math.min(r1, r2)})(x − ${Math.max(r1, r2)})`, `(x + ${r1 * r2})(x + ${r1 + r2})`], why: `Find two numbers that multiply to ${r1 * r2} and add to ${r1 + r2}: ${r1} and ${r2}.` }; },
+  () => { const n = rnd(2, 12); return { tag: "Solving x²", p: `Solve: x² = ${n * n}`, a: `x = ${n} or x = −${n}`, w: [`x = ${n} only`, `x = ${n * n / 2}`, `x = ${n * 2}`], why: `Both ${n} × ${n} and (−${n}) × (−${n}) equal ${n * n}, so x = ±${n}.` }; },
+  () => { const b = rnd(2, 9), e = [0, -1, -2][rnd(0, 2)]; const ans = e === 0 ? "1" : e === -1 ? `1/${b}` : `1/${b * b}`; return { tag: "Zero and negative exponents", p: `${b}${e === 0 ? "⁰" : e === -1 ? "⁻¹" : "⁻²"} = ?`, a: ans, w: [String(e === 0 ? 0 : -b), String(b), `−${b * (e === -2 ? b : 1)}`].filter(v => v !== ans), why: e === 0 ? "Any nonzero number to the 0 power is 1." : `A negative exponent means \"1 over\": ${b}${e === -1 ? "⁻¹" : "⁻²"} = 1/${e === -1 ? b : b * b}.` }; },
+  () => { const x = rnd(1, 6), a = rnd(1, 4); const f = x * x + a * x; return { tag: "Functions", p: `If f(x) = x² + ${a}x, what is f(${x})?`, a: f, x: [x * 2 + a * x, f + 1, x * x], why: `f(${x}) = ${x}² + ${a}·${x} = ${x * x} + ${a * x} = ${f}.` }; },
+  () => { const m = rnd(-5, 5) || 3, b1 = rnd(-5, 5), b2 = b1 + rnd(1, 5); return { tag: "Parallel lines", p: `Which line is parallel to y = ${m}x ${b1 < 0 ? "−" : "+"} ${Math.abs(b1)}?`, a: `y = ${m}x ${b2 < 0 ? "−" : "+"} ${Math.abs(b2)}`, w: [`y = ${-m}x ${b2 < 0 ? "−" : "+"} ${Math.abs(b2)}`, `y = ${-m}x ${b1 < 0 ? "−" : "+"} ${Math.abs(b1)}`, `y = ${m + 1}x ${b1 < 0 ? "−" : "+"} ${Math.abs(b1)}`].filter(v => v !== `y = ${m}x ${b2 < 0 ? "−" : "+"} ${Math.abs(b2)}`), why: `Parallel lines have the SAME slope (${m}) but a different y-intercept.` }; }
+];
+const G10_GENS = [
+  () => { const a = rnd(30, 80), b = rnd(20, 150 - a); return { tag: "Triangle angles", p: `A triangle has angles of ${a}° and ${b}°. What is the third angle?`, a: `${180 - a - b}°`, w: [`${360 - a - b}°`, `${a + b}°`, `${180 - a - b + 10}°`], why: `The angles of a triangle add to 180°: 180 − ${a} − ${b} = ${180 - a - b}°.` }; },
+  () => { const n = rnd(5, 12), names = { 5: "pentagon", 6: "hexagon", 7: "heptagon", 8: "octagon", 9: "nonagon", 10: "decagon", 11: "hendecagon", 12: "dodecagon" }; return { tag: "Polygon angles", p: `What do the interior angles of a ${names[n]} (${n} sides) add up to?`, a: `${(n - 2) * 180}°`, w: [`${n * 180}°`, `360°`, `${(n - 1) * 180}°`], why: `Sum = (n − 2) × 180 = (${n} − 2) × 180 = ${(n - 2) * 180}°.` }; },
+  () => { const k = rnd(2, 5), a = rnd(2, 9), b = rnd(2, 9); return { tag: "Similar triangles", p: `Two triangles are similar. A side of ${a} in the small one matches ${a * k} in the big one. What matches a side of ${b}?`, a: b * k, x: [b + a * k - a, b * a, b * k + k], why: `The scale factor is ${a * k} ÷ ${a} = ${k}. So ${b} × ${k} = ${b * k}.` }; },
+  () => { const x1 = rnd(-8, 8), y1 = rnd(-8, 8), x2 = x1 + rnd(1, 6) * 2 * (Math.random() < .5 ? -1 : 1), y2 = y1 + rnd(1, 6) * 2; return { tag: "Midpoint", p: `What is the midpoint of (${x1}, ${y1}) and (${x2}, ${y2})?`, a: `(${(x1 + x2) / 2}, ${(y1 + y2) / 2})`, w: [`(${x1 + x2}, ${y1 + y2})`, `(${(x2 - x1) / 2}, ${(y2 - y1) / 2})`, `(${(x1 + x2) / 2 + 1}, ${(y1 + y2) / 2})`], why: `Average the x's and the y's: ((${x1} + ${x2}) ÷ 2, (${y1} + ${y2}) ÷ 2) = (${(x1 + x2) / 2}, ${(y1 + y2) / 2}).` }; },
+  () => { const [a, b, c] = rPick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]), x1 = rnd(-5, 5), y1 = rnd(-5, 5); return { tag: "Distance formula", p: `How far apart are (${x1}, ${y1}) and (${x1 + a}, ${y1 + b})?`, a: c, x: [a + b, c + 1, a * b], why: `d = √(${a}² + ${b}²) = √${a * a + b * b} = ${c}.` }; },
+  () => { const n = [3, 4, 5, 6, 8, 9, 10, 12][rnd(0, 7)]; return { tag: "Exterior angles", p: `Each exterior angle of a regular polygon with ${n} sides measures?`, a: `${hFmt(360 / n)}°`, w: [`${hFmt((n - 2) * 180 / n)}°`, `${hFmt(180 / n)}°`, `${n * 10}°`].filter(v => v !== `${hFmt(360 / n)}°`), why: `Exterior angles of any polygon add to 360°: 360 ÷ ${n} = ${hFmt(360 / n)}°.` }; }
+];
+// grade bands: names, emojis and problem pools
+const GRADE_BANDS = {
+  P: ["Pre-K", "🧸", () => [GP_GENS]], Pch: ["Pre-K Challenge", "🧩", () => [GPC_GENS, GP_GENS]],
+  K: ["Kindergarten", "🍎", () => [GK_GENS]], Kch: ["Kindergarten Challenge", "🎈", () => [GKC_GENS, GK_GENS]],
+  1: ["1st Grade", "✏️", () => [G1_GENS]], "1ch": ["1st Grade Challenge", "🖍️", () => [G1C_GENS, G1_GENS]],
+  2: ["2nd Grade", "📏", () => [G2_GENS]], "2ch": ["2nd Grade Challenge", "🪁", () => [G2C_GENS, G2_GENS]],
+  3: ["3rd Grade", "🏠", () => [G3A_GENS]], "3ch": ["3rd Grade Challenge", "🎒", () => [G3B_GENS, G3A_GENS]],
+  4: ["4th Grade", "📗", () => [G4C_GENS]], "4ch": ["4th Grade Challenge", "🏆", () => [G4_GENS.big, G4_GENS.muldiv, G4_GENS.frac, G4_GENS.geo, G4_GENS.brain]],
+  5: ["5th Grade", "🚀", () => [G5_GENS]], "5ch": ["5th Grade Challenge", "🛸", () => [G5B_GENS, G5_GENS]],
+  6: ["6th Grade", "📘", () => [G6A_GENS, ...Object.values(RATIO_GENS).slice(0, 2)]], "6ch": ["6th Grade Challenge", "🏆", () => [G6B_GENS, G6A_GENS, ...Object.values(RATIO_GENS).slice(2)]],
+  7: ["7th Grade", "⚡", () => [G7_GENS]], "7ch": ["7th Grade Challenge", "🌩️", () => [G7B_GENS, G7_GENS]],
+  8: ["8th Grade", "🧠", () => [G8_GENS]], "8ch": ["8th Grade Challenge", "🔥", () => [G8B_GENS, G8_GENS]],
+  9: ["Algebra 1", "🧮", () => [G9_GENS]], 10: ["Geometry", "📐", () => [G10_GENS]]
+};
+const NEG_POOLS = () => [G6_GENS, G6A_GENS, G7_GENS, G7B_GENS, G8_GENS, G8B_GENS, G9_GENS, G10_GENS];
+const makeFloors = codes => [[1, 15], [16, 30], [31, 45], [46, 70], [71, 85], [86, 100]].map(([from, to], i) => { const [name, emoji, pools] = GRADE_BANDS[codes[i]]; return { from, to, name, emoji, pools }; });
+// one Challenge Classroom per grade: each climbs from one grade below to two grades above
+const CR_ROOMS = {
+  k: { grade: "Kindergarten", short: "K", title: "Kindergarten Challenge Classroom", key: "cr_k_lv", floors: () => makeFloors(["P", "Pch", "K", "Kch", 1, 2]), worlds: "g4" },
+  g1: { grade: "1st Grade", short: "1st", title: "1st Grade Challenge Classroom", key: "cr_g1_lv", floors: () => makeFloors(["K", "Kch", 1, "1ch", 2, 3]), worlds: "g4" },
+  g2: { grade: "2nd Grade", short: "2nd", title: "2nd Grade Challenge Classroom", key: "cr_g2_lv", floors: () => makeFloors([1, "1ch", 2, "2ch", 3, 4]), worlds: "g4" },
+  g3: { grade: "3rd Grade", short: "3rd", title: "3rd Grade Challenge Classroom", key: "cr_g3_lv", floors: () => makeFloors([2, "2ch", 3, "3ch", 4, 5]), worlds: "g4" },
+  g4: { grade: "4th Grade", short: "4th", title: "4th Grade Challenge Classroom", key: "cr_lv", floors: () => CR_FLOORS_G4, worlds: "g4" },
+  g5: { grade: "5th Grade", short: "5th", title: "5th Grade Challenge Classroom", key: "cr_g5_lv", floors: () => makeFloors([4, "4ch", 5, "5ch", 6, 7]), worlds: "g4" },
+  g6: { grade: "6th Grade", short: "6th", title: "6th Grade Challenge Classroom", key: "cr6_lv", floors: () => CR_FLOORS_G6, worlds: "g6" },
+  g7: { grade: "7th Grade", short: "7th", title: "7th Grade Challenge Classroom", key: "cr_g7_lv", floors: () => makeFloors([6, "6ch", 7, "7ch", 8, 9]), worlds: "g6" },
+  g8: { grade: "8th Grade", short: "8th", title: "8th Grade Challenge Classroom", key: "cr_g8_lv", floors: () => makeFloors([7, "7ch", 8, "8ch", 9, 10]), worlds: "g6" }
+};
+let CR_ROOM = "g4", CR_FLOORS = null, WORLD_PROBLEMS = null;
+function crSetRoom(r) { if (typeof r === "string" && CR_ROOMS[r]) CR_ROOM = r; CR_FLOORS = CR_ROOMS[CR_ROOM].floors(); WORLD_PROBLEMS = CR_ROOMS[CR_ROOM].worlds === "g6" ? WORLD_PROBLEMS_G6 : WORLD_PROBLEMS_G4; }
+crSetRoom("g4");
 function g4Progress() { const st = g4Stars(); return { stars: Object.values(st).reduce((a, b) => a + b, 0), done: Object.keys(st).filter(k => st[k] > 0).length }; }
-function startClassroom() {
+function startClassroom(room) {
+  crSetRoom(room);
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
   const st = g4Stars(), next = g4Unlocked(), pr = g4Progress(), found = store.get("g4_found", {});
   // a winding path from the door (level 1, bottom) up to the top of the room, 5 levels per row
@@ -1488,7 +1716,7 @@ function startClassroom() {
   const PROPS = ["📚", "🧪", "🎨", "🧩", "🌍", "🔭", "🎒", "🪴", "💡", "🧑‍🏫", "🖍️", "📐", "🧮", "🪁", "🎹", "🦕", "🚀", "🪐", "🏀", "🎻"];
   $app.innerHTML = `
     <div class="panel classroom">
-      <div class="topline"><span class="label">🏫 Challenge Classroom</span><button class="iconbtn" id="cr-back">Back to Math Center</button></div>
+      <div class="topline"><span class="label">🏫 ${CR_ROOMS[CR_ROOM].title}</span><button class="iconbtn" id="cr-back">Back to Math Center</button></div>
       <div class="cr-score"><span>⭐ ${pr.stars} / ${G4_LEVEL_COUNT * 3} stars</span><span>✅ ${pr.done} / ${G4_LEVEL_COUNT} levels</span><span>🌍 ${WORLD_PROBLEMS.filter(w => pr.done >= w.unlock).length} / 6 world problems</span></div>
       <div class="cr-hall">
         <h3>🌍 The World's Hardest Problems</h3>
@@ -1505,13 +1733,14 @@ function startClassroom() {
         <svg class="cr-path" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><polyline points="${path}" /></svg>
         ${Array.from({ length: G4_LEVEL_COUNT }, (_, i) => { const L = i + 1, [x, y] = pos(L), s = st[L] || 0, state = s ? "done" : L === next ? "open" : L < next ? "done" : "locked", world = WORLD_PROBLEMS.find(w => w.unlock === L); return `<button class="cr-lvl ${state}${world ? " gate" : ""}" data-lvl="${L}" style="left:${x}%;top:${y}px" ${state === "locked" ? "aria-disabled=\"true\"" : ""} title="Level ${L}${world ? ": unlocks " + world.name : ""}"><b>${state === "locked" ? "🔒" : L}</b>${s ? `<small>${"⭐".repeat(s)}</small>` : ""}${world ? `<em>${world.emoji}</em>` : ""}${L === next ? `<span class="cr-me">🦛<small>you</small></span>` : ""}</button>`; }).join("")}
       </div>
-      <h3 class="cr-h">🪑 Practice desks (endless 4th Grade Challenge practice)</h3>
-      <div class="chips">${Object.entries(G4_PARTS).map(([k, v]) => `<button class="chip" data-g4part="${k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("")}</div>
+      ${`<h3 class="cr-h">🪑 Practice desks (endless practice for every floor)</h3>
+      <div class="chips">${CR_FLOORS.map((f, i) => `<button class="chip" data-crf="${i}"><b>${f.emoji} ${f.name}</b><span>Floor ${i + 1} problems, as many as you want</span></button>`).join("")}</div>`}
     </div>`;
   document.getElementById("cr-back").addEventListener("click", startMathCenter);
   $app.querySelectorAll("[data-lvl]").forEach(b => b.addEventListener("click", () => { const L = +b.dataset.lvl; if (L > next) { b.animate([{ transform: "translate(-50%,-50%) rotate(-8deg)" }, { transform: "translate(-50%,-50%) rotate(8deg)" }, { transform: "translate(-50%,-50%)" }], { duration: 300 }); return toast(`🔒 Finish level ${next} first!`); } startG4Level(L); }));
   $app.querySelectorAll("[data-world]").forEach(b => b.addEventListener("click", () => { const w = WORLD_PROBLEMS.find(x => x.id === b.dataset.world); if (pr.done < w.unlock) return toast(`🔒 Clear level ${w.unlock} to unlock ${w.name}!`); openWorldProblem(w.id); }));
   if (next > 2) setTimeout(() => $app.querySelector(".cr-me")?.scrollIntoView({ block: "center", behavior: "smooth" }), 250);
+  $app.querySelectorAll("[data-crf]").forEach(b => b.addEventListener("click", () => { choice.subject = "crf"; choice.crf = `${CR_ROOM}_${b.dataset.crf}`; startStudy(); }));
   $app.querySelectorAll("[data-g4part]").forEach(b => b.addEventListener("click", () => { choice.subject = "g4"; choice.g4part = b.dataset.g4part; store.set("subject", "g4"); store.set("g4part", choice.g4part); startStudy(); }));
 }
 // one level: 5 problems, get 4 right to pass (5/5 = 3 stars, 4/5 = 2 stars)
@@ -1522,9 +1751,10 @@ function startG4Level(L) {
     const q = qs[i], opts = shuffle([q.a, ...q.w]);
     $app.innerHTML = `<div class="panel classroom"><div class="topline"><span class="label">🏫 Level ${L} · ${fl.emoji} ${fl.name}</span><button class="iconbtn" id="cr-quit">Back to classroom</button></div>
       <div class="cr-dots">${qs.map((_, k) => `<i class="${k < i ? "d" : k === i ? "c" : ""}"></i>`).join("")}</div>
-      <div class="qcard"><span class="tag">${q.tag}</span><p class="q">${q.prompt}</p>${hintHtml(q)}</div>
+      <div class="qcard"><span class="tag">${q.tag}</span><p class="q">${q.prompt}</p>${hintHtml(q)}<button type="button" class="hint-btn cr-say">🔊 Read it to me</button></div>
       <div class="tiles">${opts.map((o, n) => `<button class="tile c${n + 1}" data-v="${esc(o)}"><span class="k">${n + 1}</span><span>${esc(o)}</span></button>`).join("")}</div><div id="cr-why"></div></div>`;
     document.getElementById("cr-quit").addEventListener("click", startClassroom);
+    $app.querySelector(".cr-say").addEventListener("click", e => { e.stopPropagation(); const tmp = document.createElement("div"); tmp.innerHTML = q.prompt; hippoSay(`${tmp.textContent}. Is it ${opts.map((o, n) => `${n + 1}: ${o}`).join(", or ")}?`, { rate: .85 }); });
     const tiles = [...$app.querySelectorAll(".tile")];
     tiles.forEach(b => b.addEventListener("click", () => {
       if (tiles[0].disabled) return; tiles.forEach(x => x.disabled = true);
@@ -1539,7 +1769,7 @@ function startG4Level(L) {
   const finish = () => {
     keyHandler = null;
     const stars = right === 5 ? 3 : right === 4 ? 2 : 0, all = g4Stars(), prev = all[L] || 0, secs = Math.round((Date.now() - t0) / 1000);
-    if (stars > prev) { all[L] = stars; store.set("cr_lv", all); }
+    if (stars > prev) { all[L] = stars; store.set(CR_ROOMS[CR_ROOM].key, all); }
     const newFloor = stars && !prev && L < G4_LEVEL_COUNT && crFloor(L + 1) !== fl ? crFloor(L + 1) : null;
     const recs = store.get("g4_records", {}); let newRec = "";
     if (stars === 3 && (!recs.fastest || secs < recs.fastest)) { recs.fastest = secs; recs.fastestLevel = L; newRec = `⚡ NEW RECORD: your fastest perfect level ever (${secs} seconds)!`; store.set("g4_records", recs); }
@@ -1569,15 +1799,22 @@ function openWorldProblem(id) {
   if (id === "twin") tool = `<label>Is this a twin prime pair? Type the smaller number: <input id="wp-in" type="number" min="2" max="100000" value="41"></label> <button class="btn go" id="wp-go">Check</button><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} ${rec2}</p>`;
   if (id === "perfect") tool = `<label>Is this number perfect? <input id="wp-in" type="number" min="1" max="1000000" value="28"></label> <button class="btn go" id="wp-go">Check</button><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} Found so far: <b id="wp-list">${(store.get("g4_perfect_found", [])).join(", ") || "none yet"}</b></p>`;
   if (id === "riemann") tool = `<label>Count the primes up to: <input id="wp-in" type="number" min="2" max="100000" value="100"></label> <button class="btn go" id="wp-go">Count</button><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} Count all three to win.</p>`;
+  if (id === "cubes") { const got = store.get("g6_cubes", []); tool = `<p>Pick three whole numbers from −20 to 20:</p><div class="wp-row"><input id="wp-a" type="number" min="-20" max="20" value="3"><input id="wp-b" type="number" min="-20" max="20" value="1"><input id="wp-c" type="number" min="-20" max="20" value="1"><button class="btn go" id="wp-go">Add the cubes</button></div><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} Ways you've found to make 3: <b id="wp-list">${got.join(" · ") || "none yet"}</b></p>`; }
+  if (id === "mersenne") tool = `<label>Pick p (from 2 to 31): <input id="wp-in" type="number" min="2" max="31" value="5"></label> <button class="btn go" id="wp-go">Check 2ᵖ − 1</button><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} Found: <b id="wp-list">${store.get("g6_mers", []).join(", ") || "none yet"}</b></p>`;
+  if (id === "brick") tool = `<p>Type the three edges of a box:</p><div class="wp-row"><input id="wp-a" type="number" min="1" max="999" value="3"><input id="wp-b" type="number" min="1" max="999" value="4"><input id="wp-c" type="number" min="1" max="999" value="12"><button class="btn go" id="wp-go">Check the diagonals</button></div><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1}</p>`;
+  if (id === "pi") tool = `<label>Search the first 1,000 digits of π for: <input id="wp-in" type="text" inputmode="numeric" maxlength="8" value="2026"></label> <button class="btn go" id="wp-go">Search π</button><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1}</p><details><summary>See the first 1,000 digits</summary><div class="wp-path">${piDigits().slice(0, 1).concat(".") + piDigits().slice(1)}</div></details>`;
+  if (id === "lychrel") tool = `<label>Pick a number: <input id="wp-in" type="number" min="1" max="100000" value="57"></label> <button class="btn go" id="wp-go">Reverse and add!</button><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} Try 196 too!</p>`;
+  if (id === "congruent") { const got = store.get("g6_cong", []); tool = `<p>Type the sides of a right triangle (two legs and the long side):</p><div class="wp-row"><input id="wp-a" type="number" min="1" max="999" value="3"><input id="wp-b" type="number" min="1" max="999" value="4"><input id="wp-c" type="number" min="1" max="999" value="5"><button class="btn go" id="wp-go">Check it</button></div><div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} Areas found: <b id="wp-list">${got.join(", ") || "none yet"}</b></p>`; }
   if (id === "pnp") tool = `<div id="wp-out"></div><p class="soft">🎯 Record hunt: ${rec1} Your fastest: <b>${store.get("g4_pnp_best") ? store.get("g4_pnp_best") + " seconds" : "no time yet"}</b></p>`;
   $app.innerHTML = `<div class="panel classroom wp">
     <div class="topline"><span class="label">🌍 ${w.name}</span><button class="iconbtn" id="wp-back">Back to classroom</button></div>
     <div class="wp-head"><span>${w.emoji}</span><div><h2>${w.name}</h2><p class="wp-since">${w.since}</p></div></div>
     <p>${w.story}</p><h3>🌱 Why it could help the world</h3><p>${w.help}</p><h3>📰 Real-world record</h3><p>${w.fame}</p>
     <div class="wp-tool"><h3>🔬 Explore it yourself</h3>${tool}<div id="wp-win">${found[id] ? `<div class="cr-unlock">🏆 You already found this record!</div>` : ""}</div></div>
-    <p class="soft wp-note">Nobody knows how to solve this problem yet. Maybe one day someone who loves math challenges, like you, will!</p></div>`;
-  document.getElementById("wp-back").addEventListener("click", startClassroom);
+    <p class="soft wp-note">${id === "cubes" ? "Nobody knows yet if every possible number can be made from three cubes." : "Nobody knows how to solve this problem yet."} Maybe one day someone who loves math challenges, like you, will!</p></div>`;
+  document.getElementById("wp-back").addEventListener("click", () => startClassroom());
   const inp = document.getElementById("wp-in"), out = document.getElementById("wp-out"), go = document.getElementById("wp-go");
+  $app.querySelectorAll(".wp-row input").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); }));
   const val = () => Math.floor(+inp.value || 0);
   if (inp) inp.addEventListener("keydown", e => { if (e.key === "Enter") go.click(); });
   if (id === "collatz") go.addEventListener("click", () => { let n = val(); if (n < 1 || n > 100000) return out.textContent = "Pick a number from 1 to 100,000."; const path = [n]; while (n !== 1 && path.length < 1000) { n = n % 2 ? 3 * n + 1 : n / 2; path.push(n); } const steps = path.length - 1, start = path[0]; out.innerHTML = `<p><b>${fmt(start)}</b> reached 1 in <b>${steps}</b> steps! Highest point: ${fmt(Math.max(...path))}.</p><div class="wp-path">${path.slice(0, 200).map(fmt).join(" → ")}${path.length > 200 ? " → …" : ""}</div>`; if (start < 100) { const best = Math.max(store.get("g4_collatz_best", 0), steps); store.set("g4_collatz_best", best); document.getElementById("wp-best").textContent = best; if (steps === R.s1) markFound(`YOU FOUND IT! ${start} takes ${steps} steps, the record for numbers under 100!`); } else if (start < 1000 && steps === R.s2) markFound(`AMAZING! ${start} takes ${steps} steps, the record for numbers under 1,000!`); });
@@ -1585,6 +1822,13 @@ function openWorldProblem(id) {
   if (id === "twin") go.addEventListener("click", () => { const p = val(); const a = isPrimeN(p), b = isPrimeN(p + 2); out.innerHTML = `<p>${fmt(p)} is ${a ? "prime ✅" : "not prime ❌"}. ${fmt(p + 2)} is ${b ? "prime ✅" : "not prime ❌"}.</p><p><b>${a && b ? `🎉 ${fmt(p)} and ${fmt(p + 2)} are twin primes!` : "Not a twin prime pair. Keep hunting!"}</b></p>`; if (a && b && p === R.big[0]) markFound(`RECORD! ${R.big[0]} and ${R.big[1]} are the biggest twin primes under 1,000!`); });
   if (id === "perfect") go.addEventListener("click", () => { const n = val(); if (n < 1 || n > 1000000) return out.textContent = "Pick a number from 1 to 1,000,000."; const s = divSum(n), list = store.get("g4_perfect_found", []); out.innerHTML = `<p>The smaller factors of ${fmt(n)} add up to <b>${fmt(s)}</b>. ${s === n ? `<b>🎉 ${fmt(n)} is PERFECT!</b>` : s > n ? "That's more than the number (an \"abundant\" number)." : "That's less than the number (a \"deficient\" number)."}</p>`; if (s === n && n <= 10000 && !list.includes(n)) { list.push(n); list.sort((a, b) => a - b); store.set("g4_perfect_found", list); document.getElementById("wp-list").textContent = list.join(", "); } if (R.list.every(x => list.includes(x))) markFound(`RECORD! You found all ${R.list.length} perfect numbers under 10,000: ${R.list.join(", ")}.`); });
   if (id === "riemann") { const got = new Set(store.get("g4_riemann", [])); go.addEventListener("click", () => { const n = val(); if (n < 2 || n > 100000) return out.textContent = "Pick a number from 2 to 100,000."; let c = 0; for (let i = 2; i <= n; i++) if (isPrimeN(i)) c++; out.innerHTML = `<p>There are <b>${fmt(c)}</b> primes up to ${fmt(n)}. That's about 1 in every ${hFmt(Math.round(n / c * 10) / 10)} numbers.</p><p class="soft">Notice: the bigger the numbers, the more spread out the primes get. Riemann's idea predicts exactly how!</p>`; if ([100, 1000, 10000].includes(n)) { got.add(n); store.set("g4_riemann", [...got]); } if (got.size === 3) markFound(`RECORD! Up to 100: ${R.c100} primes. Up to 1,000: ${R.c1000}. Up to 10,000: ${fmt(R.c10000)}. You counted like Riemann!`); }); }
+  const num = id => Math.floor(+document.getElementById(id).value || 0);
+  if (id === "cubes") go.addEventListener("click", () => { const a = num("wp-a"), b = num("wp-b"), c = num("wp-c"); if ([a, b, c].some(v => v < -20 || v > 20)) return out.textContent = "Use numbers from −20 to 20."; const sum = a ** 3 + b ** 3 + c ** 3, cube = v => v < 0 ? `(${v})³` : `${v}³`; out.innerHTML = `<p>${cube(a)} + ${cube(b)} + ${cube(c)} = ${a ** 3} + ${b ** 3} + ${c ** 3} = <b>${fmt(sum)}</b></p>`; if (sum === 3) { const key = [a, b, c].sort((x, y) => x - y).join(", "), got = store.get("g6_cubes", []); if (!got.includes(key)) { got.push(key); store.set("g6_cubes", got); } document.getElementById("wp-list").textContent = got.join(" · "); if (got.length >= 2) markFound(`You made 3 in two different ways: ${got.join(" and ")}! The third way wasn't found until 2019, and it uses numbers with 16 digits!`); } });
+  if (id === "mersenne") go.addEventListener("click", () => { const pp = val(); if (pp < 2 || pp > 31) return out.textContent = "Pick p from 2 to 31."; const m = 2 ** pp - 1, pr = isPrimeN(m); out.innerHTML = `<p>2${String(pp).split("").map(d => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]).join("")} − 1 = <b>${m.toLocaleString("en-US")}</b>. ${pr ? "🎉 It's a Mersenne PRIME!" : "Not prime."}${!isPrimeN(pp) ? " (Tip: if p isn't prime, 2ᵖ − 1 is never prime.)" : ""}</p>`; if (pr) { const got = store.get("g6_mers", []); if (!got.includes(pp)) { got.push(pp); got.sort((a, b) => a - b); store.set("g6_mers", got); } document.getElementById("wp-list").textContent = got.join(", "); if (R.list.every(x => got.includes(x))) markFound(`You found all ${R.list.length} Mersenne primes up to p = 31: p = ${R.list.join(", ")}. The biggest is ${(2 ** 31 - 1).toLocaleString("en-US")}!`); } });
+  if (id === "brick") go.addEventListener("click", () => { const a = num("wp-a"), b = num("wp-b"), c = num("wp-c"); if ([a, b, c].some(v => v < 1 || v > 999)) return out.textContent = "Use edges from 1 to 999."; const dg = (x, y) => Math.sqrt(x * x + y * y), show = (x, y) => { const d = dg(x, y); return `${x}–${y} face: ${Number.isInteger(d) ? `<b>${d}</b> ✅` : `${hFmt(Math.round(d * 100) / 100)} ❌`}`; }, ok = [[a, b], [b, c], [a, c]].every(([x, y]) => Number.isInteger(dg(x, y))), sp = Math.sqrt(a * a + b * b + c * c); out.innerHTML = `<p>${show(a, b)} · ${show(b, c)} · ${show(a, c)}</p><p>${ok ? `🎉 That's an EULER BRICK! Inside diagonal: ${Number.isInteger(sp) ? `<b>${sp}</b>, a PERFECT CUBOID?! Tell a mathematician!` : `${hFmt(Math.round(sp * 100) / 100)}, not whole, so it's not a perfect cuboid (nobody has ever found one!).`}` : "Not an Euler brick. All three face diagonals need to be whole numbers."}</p>`; if (ok && Math.max(a, b, c) < 250) markFound(`You found the smallest Euler brick: ${[a, b, c].sort((x, y) => x - y).join(" × ")}, first discovered in 1719!`); });
+  if (id === "pi") go.addEventListener("click", () => { const t = String(inp.value).replace(/\D/g, ""); if (!t) return out.textContent = "Type some digits to search for."; const d = piDigits().slice(1), at = d.indexOf(t); out.innerHTML = at < 0 ? `<p>“${t}” isn't in the first 1,000 digits. If π is normal, it's out there somewhere further on!</p>` : `<p>Found “${t}” starting at decimal place <b>${at + 1}</b>!</p><div class="wp-path">…${d.slice(Math.max(0, at - 12), at)}<b class="wp-hit">${t}</b>${d.slice(at + t.length, at + t.length + 12)}…</div>`; if (t === "999999" && at + 1 === R.pos) markFound(`You found the Feynman point! Six 9s in a row start at decimal place ${R.pos} of π.`); });
+  if (id === "lychrel") go.addEventListener("click", () => { const n = val(); if (n < 1 || n > 100000) return out.textContent = "Pick a number from 1 to 100,000."; const [steps, x] = lychrelSteps(n); out.innerHTML = steps === Infinity ? `<p><b>${fmt(n)}</b> did NOT become a palindrome in 60 steps. It's now ${x.toString().length} digits long. ${n === 196 ? "196 is the most famous one: nobody knows if it EVER becomes a palindrome!" : "It might be a \"Lychrel number\" like 196!"}</p>` : steps === 0 ? `<p>${fmt(n)} is already a palindrome!</p>` : `<p><b>${fmt(n)}</b> became the palindrome <b>${x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</b> in <b>${steps}</b> step${steps === 1 ? "" : "s"}.</p>`; if (n < 100 && steps === R.best) markFound(`RECORD! ${n} takes ${steps} steps, the most of any number under 100. Its palindrome is ${x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}!`); });
+  if (id === "congruent") go.addEventListener("click", () => { const a = num("wp-a"), b = num("wp-b"), c = num("wp-c"); if (a * a + b * b !== c * c) return out.innerHTML = `<p>${a}² + ${b}² = ${a * a + b * b}, but ${c}² = ${c * c}. That's not a right triangle. (The long side goes last!)</p>`; const area = a * b / 2; out.innerHTML = `<p>✅ It's a right triangle! Its area is ½ × ${a} × ${b} = <b>${hFmt(area)}</b>, so ${hFmt(area)} is a congruent number.</p>`; if ([6, 30, 210].includes(area)) { const got = store.get("g6_cong", []); if (!got.includes(area)) { got.push(area); got.sort((x, y) => x - y); store.set("g6_cong", got); } document.getElementById("wp-list").textContent = got.join(", "); if (got.length === 3) markFound("You found right triangles with areas 6, 30 and 210. You're a congruent number hunter!"); } });
   if (id === "pnp") {
     let round = 0, t0 = Date.now();
     const puzzle = () => { const nums = Array.from({ length: 6 + round * 2 }, () => rnd(2, 30)), pickN = 3 + round, pick = shuffle(nums.map((_, i) => i)).slice(0, pickN), target = pick.reduce((s, i) => s + nums[i], 0); const sel = new Set();
@@ -1775,6 +2019,7 @@ function sourceFor(set) {
   const ratioSets = { ratios_basics: rp("basics"), ratios_tables: rp("tables"), ratios_tape: rp("tape"), ratios_rates: rp("rates"), ratios_compare: rp("compare"), ratios_vocab: rv };
   ratioSets.ratios_all = [...ratioSets.ratios_basics, ...ratioSets.ratios_tables, ...ratioSets.ratios_tape, ...ratioSets.ratios_rates, ...ratioSets.ratios_compare, ...rv];
   if (set.startsWith("ratios_")) return ratioSets[set] || ratioSets.ratios_all;
+  if (set.startsWith("crf_")) { const [, room, fi] = set.split("_"), f = (CR_ROOMS[room] || CR_ROOMS.g6).floors()[+fi] || CR_FLOORS_G6[0]; return f.pools().flatMap(pool => pool.map(gen => () => { const q = ratioQuestion(gen, NEG_POOLS().includes(pool)); q.tag = q.tag.replace(/^Ratios & Rates/, `${f.emoji} ${f.name}`); return q; })); }
   if (set.startsWith("g4_")) { const gp = k => [...G4_GENS[k], ...G4_GENS[k]].map(gen => () => g4Question(gen)), parts = Object.keys(G4_GENS); const want = set.slice(3); return want === "all" || !G4_GENS[want] ? parts.flatMap(gp) : gp(want); }
   return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, mathhard, science: sci, health, health_safety, health_body, health_food, ela, art,
     mix: [...v, ...q, ...g, ...math, ...mathhard, ...sci, ...health, ...ela, ...art] }[set];
@@ -1784,6 +2029,7 @@ const currentSet = () => choice.subject === "ss" ? choice.set
   : choice.subject === "health" ? "health_" + choice.hpart
   : choice.subject === "ratios" ? "ratios_" + choice.rpart
   : choice.subject === "g4" ? "g4_" + choice.g4part
+  : choice.subject === "crf" ? "crf_" + choice.crf
   : choice.subject;
 const HEALTH_PARTS = {
   safety: { name: "Safety", desc: "Fire, bikes, the internet, and emergencies" },
@@ -1812,7 +2058,7 @@ choice.rpart = store.get("rpart", "all");
 if (!RATIO_PARTS[choice.rpart]) choice.rpart = "all";
 choice.g4part = store.get("g4part", "all");
 if (!G4_PARTS[choice.g4part]) choice.g4part = "all";
-if (!SUBJECTS[choice.subject] && choice.subject !== "g4") choice.subject = "ss";
+if (!SUBJECTS[choice.subject] && !["g4", "crf"].includes(choice.subject)) choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
 
@@ -3668,6 +3914,7 @@ function studyTitle() {
   if (choice.subject === "health") return `Health · ${HEALTH_PARTS[choice.hpart].name}`;
   if (choice.subject === "ratios") return `Ratios & Rates · ${RATIO_PARTS[choice.rpart].name}`;
   if (choice.subject === "g4") return `🏆 4th Grade Challenge · ${G4_PARTS[choice.g4part].name}`;
+  if (choice.subject === "crf") { const [room, fi] = String(choice.crf || "g6_0").split("_"), f = (CR_ROOMS[room] || CR_ROOMS.g6).floors()[+fi] || CR_FLOORS_G6[0]; return `${f.emoji} ${f.name} practice`; }
   return choice.subject === "ss" ? `Social Studies · ${SETS[choice.set].name}` : SUBJECTS[choice.subject].name;
 }
 function startStudy() {
@@ -3681,13 +3928,13 @@ function showStudyQuestion(st) {
   q.maker = maker;
   $app.innerHTML = `
     <div class="panel">
-      <div class="topline"><span class="label">${studyTitle()}</span><button class="iconbtn" id="st-home">${choice.subject === "g4" ? "Back to classroom" : choice.subject === "ratios" ? "Back to Math Center" : "Back to subjects"}</button></div>
+      <div class="topline"><span class="label">${studyTitle()}</span><button class="iconbtn" id="st-home">${["g4", "crf"].includes(choice.subject) ? "Back to classroom" : choice.subject === "ratios" ? "Back to Math Center" : "Back to subjects"}</button></div>
       <div class="topline"><span>Question ${st.i + 1} of ${STUDY_LEN}</span><span>${st.right} right</span></div>
       <div class="progress"><div style="width:${st.i / STUDY_LEN * 100}%"></div></div>
       ${questionHtml(q)}
       <div id="st-fb"></div>
     </div>`;
-  document.getElementById("st-home").addEventListener("click", () => choice.subject === "g4" ? startClassroom() : choice.subject === "ratios" ? startMathCenter() : showHome());
+  document.getElementById("st-home").addEventListener("click", () => choice.subject === "g4" ? startClassroom("g4") : choice.subject === "crf" ? startClassroom(String(choice.crf).split("_")[0]) : choice.subject === "ratios" ? startMathCenter() : showHome());
   const tiles = [...$app.querySelectorAll(".tile")];
   const answer = (picked, btn) => {
     const ok = picked === q.a;
@@ -3730,7 +3977,7 @@ function studyResults(st) {
       <div class="row"><button class="btn go" id="st-again">Study 10 more</button><button class="btn" id="st-home">Pick another subject</button></div>
     </div>`;
   document.getElementById("st-again").addEventListener("click", startStudy);
-  document.getElementById("st-home").addEventListener("click", () => choice.subject === "g4" ? startClassroom() : choice.subject === "ratios" ? startMathCenter() : showHome());
+  document.getElementById("st-home").addEventListener("click", () => choice.subject === "g4" ? startClassroom("g4") : choice.subject === "crf" ? startClassroom(String(choice.crf).split("_")[0]) : choice.subject === "ratios" ? startMathCenter() : showHome());
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -7534,8 +7781,10 @@ function hippoAnswer(qRaw) {
   // 🧮 the Math Center
   if (/^(math|maths|math center|math centre|math app|math practice|practice math|ratios?|rates?|ratios and rates|ratios & rates|unit 2|mp1|math test|accelerated math|6\/7 math)$/.test(q) || /\b(math center|math app|math practice|ratios and rates|ratios & rates|district assessment)\b/.test(q))
     return R("Math Center", "🧮", "🧮 The Math Center has the calculator, math practice and Ratios & Rates.", "Practice Easy or Hard math, or get ready for the MCPS 6/7 Accelerated Math MP1 Unit 2 test (Introducing Ratios and Rates).", hBig("🧮📏", "#1f3d2b", "Math Center"), { label: "🧮 Open the Math Center", fn: () => startMathCenter() });
+  if (/\b(6th grade (challenge|lounge|classroom)|sixth grade (challenge|lounge|classroom)|sum of three cubes|mersenne|euler brick|perfect cuboid|is pi normal|feynman point|196 problem|lychrel|congruent numbers?|birch)\b/.test(q))
+    return R("Challenge Classroom", "🎓", "🎓 Find that in the 6th Grade Challenge Classroom!", "Step through the green portal in the Math Center. Climb from 5th grade to Algebra and unlock famous unsolved problems like the Sum of Three Cubes and Mersenne primes.", hBig("🌌🎓", "#0b3a4a", "6th Grade Classroom"), { label: "🎓 Go to the 6th Grade Challenge Classroom", fn: () => startClassroom("g6") });
   if (/\b(challenge classroom|portal|collatz|goldbach|twin primes?|perfect numbers?|riemann|p vs np|millennium prize|unsolved (math )?problems?|hardest (math )?problems?)\b/.test(q))
-    return R("Challenge Classroom", "🌀", "🌀 Find that in the Challenge Classroom!", "Step through the portal in the Math Center. Clear levels in order to unlock the world's hardest unsolved math problems, like the Collatz Conjecture and the Riemann Hypothesis, and hunt for real records.", hBig("🌀🏫", "#2e1a4a", "Challenge Classroom"), { label: "🌀 Go to the Challenge Classroom", fn: () => startClassroom() });
+    return R("Challenge Classroom", "🌀", "🌀 Find that in the Challenge Classroom!", "Step through the portal in the Math Center. Clear levels in order to unlock the world's hardest unsolved math problems, like the Collatz Conjecture and the Riemann Hypothesis, and hunt for real records.", hBig("🌀🏫", "#2e1a4a", "Challenge Classroom"), { label: "🌀 Go to the Challenge Classroom", fn: () => startClassroom("g4") });
   // 🔓 the secret game room
   if (/^franklin\s+rules$/.test(q)) return Object.assign(R("Secret Game Room", "🔓", "🔓 Franklin rules! The secret game room is open.", "Every game in one place. Pick one!", hBig("🎮🔓", "#2e1a4a", "secret game room")), { games: true, wide: true });
   const askAgain = t => () => { const b = document.getElementById("hip-q"); b.value = t; document.getElementById("hip-form").requestSubmit(); };
@@ -7810,12 +8059,8 @@ function startMathCenter() {
       <span class="label">Math practice level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">📏 Ratios & Rates (MCPS 6/7 Accelerated Math · MP1 · Unit 2: Introducing Ratios and Rates)</span><div class="chips">${chipRow(RATIO_PARTS, "rpart")}</div>
       <div class="g4-lounge">
-        <div class="g4-head"><span>🏆</span><div><h3>4th Grade Challenge Lounge</h3><p class="soft">For kids who LOVE a challenge. Step through the portal!</p></div></div>
-        <button class="portal" id="mc-portal" aria-label="Enter the portal to the Challenge Classroom">
-          <span class="portal-swirl"></span><span class="portal-core">🌀</span>
-          ${Array.from({ length: 16 }, (_, i) => `<i class="pn ${i % 2 ? "out" : "in"}" style="--a:${i * 22.5}deg;--d:${(i * .37) % 3}s">${["7", "3", "π", "9", "÷", "42", "×", "1", "∞", "5", "+", "0", "8", "√", "2", "%"][i]}</i>`).join("")}
-        </button>
-        <p class="portal-cap">Tap the portal to enter the Challenge Classroom</p>
+        <div class="g4-head"><span>🏆</span><div><h3>Challenge Lounges</h3><p class="soft">For kids who LOVE a challenge! Pick your grade and step through the portal. Each classroom has 100 levels that climb from one grade below to two grades above.</p></div></div>
+        <div class="portal-hall">${Object.entries(CR_ROOMS).map(([id, r], i) => { const st = store.get(r.key, {}), done = Object.values(st).filter(v => v > 0).length; return `<button class="portal mini" data-room="${id}" style="--h:${i * 40}deg" aria-label="Enter the ${r.title}"><span class="portal-swirl"></span><span class="portal-core">${r.short}</span>${Array.from({ length: 8 }, (_, k) => `<i class="pn ${k % 2 ? "out" : "in"}" style="--a:${k * 45}deg;--d:${(k * .41 + i * .2) % 3}s">${["7", "π", "+", "9", "÷", "3", "×", "∞"][(k + i) % 8]}</i>`).join("")}<b class="portal-name">${r.grade}</b><small class="portal-prog">${done ? `✅ ${done}/100` : "New!"}</small></button>`; }).join("")}</div>
       </div>
     </div>`;
   bindHippoCalc();
@@ -7829,7 +8074,7 @@ function startMathCenter() {
     choice.subject = "ratios"; choice.rpart = b.dataset.rpart; store.set("subject", "ratios"); store.set("rpart", choice.rpart);
     startStudy();
   }));
-  document.getElementById("mc-portal").addEventListener("click", () => { tone([392, 523, 659, 784, 1047], .06, "sine", .06); document.getElementById("mc-portal").classList.add("warp"); setTimeout(startClassroom, 450); });
+  $app.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { tone([392, 523, 659, 784, 1047], .06, "sine", .06); b.classList.add("warp"); setTimeout(() => startClassroom(b.dataset.room), 450); }));
 }
 function startHippo(initial = "") {
   stopSlope(); stopArchers(); stopMini(); closeShop();
