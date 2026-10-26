@@ -242,6 +242,36 @@
   .ai-form input, .ai-form select, #ai-prompt { font: inherit; font-weight: 400; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: #1b1640; color: var(--ink); } #ai-prompt { resize: vertical; }
   .ai-score { display: flex; align-items: center; gap: 10px; margin: 8px 0; flex-wrap: wrap; } .ai-meter { flex: 1 1 140px; height: 14px; border-radius: 999px; background: var(--panel-2); overflow: hidden; } .ai-meter i { display: block; height: 100%; width: 0; transition: width .3s, background .3s; } .ai-score b { font-size: 1.3rem; } .ai-score span { flex-basis: 100%; color: var(--ink-soft); }
   .ai-ans { white-space: pre-wrap; margin: 10px 0; padding: 12px; border-radius: 14px; background: #f7f4ff; color: #1a1240; line-height: 1.5; }
+
+  .na-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; } .na-tab { border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 700; cursor: pointer; } .na-tab.on { background: var(--gold); color: #1a1240; border-color: var(--gold); }
+  .na-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .na-chips .chip.on, .na-chips .chip[aria-pressed="true"] { background: var(--gold); color: #1a1240; }
+  .sl-card { background: var(--panel-2); border-radius: 16px; padding: 14px; margin: 10px 0; } .sl-card h3 { margin: 6px 0; }
+  .sl-sl { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 8px 0; font-weight: 700; } .sl-sl input[type=number], .sl-sl input:not([type]), .sl-sl select { font: inherit; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--line); background: #1b1640; color: var(--ink); max-width: 200px; }
+  .mm-piano { display: flex; position: relative; height: 170px; margin: 12px 0; user-select: none; touch-action: none; } .mm-key { flex: 1; position: relative; border: 1px solid #333; border-radius: 0 0 8px 8px; background: #fff; color: #333; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; font: inherit; cursor: pointer; min-width: 0; }
+  .mm-key.black { flex: .001; margin: 0 -2.4%; z-index: 2; width: 5%; min-width: 5%; height: 60%; background: #1a1a1a; color: #ccc; } .mm-key small { font-size: .7rem; font-weight: 800; } .mm-key kbd { font-size: .6rem; opacity: .5; } .mm-key.down { background: var(--gold); } .mm-key.black.down { background: #b8860b; } .mm-key.next { box-shadow: inset 0 -40px 30px -10px #42e392; animation: lvlPulse 1s infinite; }
+  .mm-prog, .mm-last { font-weight: 800; text-align: center; min-height: 1.2em; } .mm-grid { display: grid; grid-template-columns: 90px repeat(8, 1fr); gap: 5px; align-items: center; margin: 10px 0; } .mm-lab { font-size: .8rem; font-weight: 700; } .mm-cell { aspect-ratio: 1; border-radius: 8px; border: 2px solid var(--line); background: var(--panel-2); cursor: pointer; } .mm-cell.on { background: var(--t5); border-color: #c9a0ff; } .mm-cell.now { outline: 3px solid var(--gold); } .mm-bpm { display: flex; align-items: center; gap: 6px; }
+  .sl-tank { position: relative; height: 140px; border-radius: 12px; background: #dff3ff; overflow: hidden; margin: 8px 0; } .sl-water { position: absolute; left: 0; right: 0; bottom: 0; height: 60%; background: rgba(30,144,255,.55); } .sl-tank span { position: absolute; left: 50%; top: 4px; transform: translateX(-50%); font-size: 2.6rem; transition: top 1s ease-in; z-index: 2; } .sl-tank span.float { top: 34px; } .sl-tank span.sink { top: 92px; }
+  .sl-mix { font-size: 2.2rem; text-align: center; margin: 6px 0; } .sl-swatch { height: 70px; border-radius: 12px; border: 3px solid #fff; margin: 8px 0; }
+  .sl-volcano { position: relative; height: 220px; display: flex; align-items: flex-end; justify-content: center; } .sl-cone { font-size: 5rem; line-height: 1; position: relative; z-index: 2; } .sl-lava { position: absolute; bottom: 70px; width: 40px; height: 0; border-radius: 20px 20px 4px 4px; background: linear-gradient(#ff6a00, #ffd23f); box-shadow: 0 0 20px #ff6a00; }
+  .sl-pot { position: relative; height: 230px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; } .sl-stem { width: 10px; background: linear-gradient(#3bb273, #1f7a45); border-radius: 6px; transition: height .6s; } .sl-flower { position: absolute; font-size: 3rem; transition: opacity .6s; top: 0; } .sl-soil { font-size: 3rem; line-height: 1; } .sl-log { font-size: .9rem; color: var(--ink-soft); }
+  .sp-svg { width: 100%; max-width: 420px; display: block; margin: 0 auto; } .sp-p { cursor: pointer; } .sp-row { display: grid; grid-template-columns: 80px 1fr 70px; gap: 8px; align-items: center; margin: 4px 0; } .sp-bar { height: 12px; background: var(--panel); border-radius: 999px; overflow: hidden; } .sp-bar i { display: block; height: 100%; background: linear-gradient(90deg, #7b61ff, #00e5ff); }
+  .ms-jar { position: relative; width: 120px; height: 160px; margin: 10px auto; border: 4px solid #cfe8ff; border-top: 0; border-radius: 0 0 30px 30px; overflow: hidden; } .ms-fill { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(#ffd23f, #e6a700); transition: height .5s; } .ms-jar span { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; font-size: 1.3rem; }
+  .ms-shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin: 10px 0; } .ms-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 6px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; cursor: pointer; } .ms-item i { font-style: normal; font-size: 1.8rem; } .ms-item.on { border-color: var(--money); background: rgba(66,227,146,.15); } .ms-tot { font-size: 1.1rem; }
+  .ms-chart { display: flex; align-items: flex-end; gap: 2px; height: 140px; margin: 10px 0; padding: 4px; background: var(--panel); border-radius: 12px; } .ms-chart i { flex: 1; background: linear-gradient(#42e392, #14966a); border-radius: 3px 3px 0 0; }
+  .px-wrap { display: flex; flex-wrap: wrap; gap: 14px; } .px-grid { display: grid; width: min(100%, 420px); aspect-ratio: 1; background-color: #fff; background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%), linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%); background-size: 20px 20px; background-position: 0 0, 10px 10px; border: 3px solid #fff; border-radius: 8px; touch-action: none; user-select: none; } .px-grid i { border: 1px solid rgba(0,0,0,.06); }
+  .px-side { flex: 1 1 220px; } .px-pal { display: flex; flex-wrap: wrap; gap: 6px; } .px-col { width: 34px; height: 34px; border-radius: 50%; border: 3px solid rgba(255,255,255,.3); cursor: pointer; } .px-col.on { border-color: var(--gold); transform: scale(1.15); } #px-any { width: 40px; height: 36px; border: 0; background: none; }
+  .px-gal { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .px-thumb { display: grid; grid-template-columns: repeat(16, 1fr); width: 64px; height: 64px; padding: 0; border: 2px solid var(--line); background: #fff; cursor: pointer; } .px-thumb i { display: block; }
+  .sd-grid { display: grid; gap: 2px; width: min(100%, 420px); margin: 10px auto; background: #1a1240; padding: 3px; border-radius: 8px; } .sd-c { aspect-ratio: 1; width: 100%; text-align: center; font: 800 1.3rem var(--body); border: 0; border-radius: 3px; background: #fff; color: #1e3a8a; padding: 0; min-width: 0; } .sd-c[readonly] { background: #e8e4ff; color: #1a1240; } .sd-c.br { margin-right: 3px; } .sd-c.bb { margin-bottom: 3px; } .sd-c.bad { background: #ffd6da; color: #c1121f; }
+  .hn { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; } .hn-peg { position: relative; height: 170px; border: 2px solid var(--line); border-radius: 12px; background: var(--panel-2); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; padding-bottom: 6px; cursor: pointer; } .hn-peg.sel { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,201,60,.35); } .hn-pole { position: absolute; top: 14px; bottom: 6px; left: 50%; width: 6px; margin-left: -3px; background: #8a5a2b; border-radius: 3px; } .hn-peg i { position: relative; height: 18px; border-radius: 8px; z-index: 1; }
+  .lo { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: min(100%, 320px); margin: 12px auto; } .lo-c { aspect-ratio: 1; border-radius: 10px; border: 2px solid var(--line); background: #2a2440; cursor: pointer; } .lo-c.on { background: #ffe066; box-shadow: 0 0 16px #ffd23f; }
+  .ll-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 170px; margin: 12px 0; border-radius: 20px; border: 3px solid var(--gold); background: linear-gradient(135deg, #3a2470, #24154a); color: var(--ink); font: inherit; cursor: pointer; transition: transform .3s; } .ll-card.flip { background: linear-gradient(135deg, #14966a, #0b5e42); } .ll-card span { font-family: var(--display); font-size: 2rem; } .ll-card small { color: var(--ink-soft); }
+  .we-flag { font-size: 5rem; line-height: 1.1; text-align: center; } .we-cont summary { cursor: pointer; font-weight: 800; padding: 6px 0; } .we-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px; font-size: .9rem; }
+  .cc-title { font: inherit; font-size: 1.2rem; font-weight: 800; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: #1b1640; color: var(--ink); width: 100%; } .cc-idea { color: var(--gold); font-weight: 700; min-height: 1em; }
+  .cc-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; padding: 6px; background: #fff; border-radius: 10px; } .cc-panel { position: relative; aspect-ratio: 3 / 4; border: 3px solid #111; border-radius: 4px; overflow: hidden; } .cc-ch { position: absolute; bottom: 4%; width: 36%; display: flex; flex-direction: column; align-items: center; } .cc-ch i { font-style: normal; font-size: clamp(1.6rem, 7vw, 3.2rem); line-height: 1; } .cc-bub { position: relative; background: #fff; color: #111; border: 2px solid #111; border-radius: 12px; padding: 3px 5px; font-size: clamp(.5rem, 2vw, .8rem); font-weight: 700; margin-bottom: 6px; line-height: 1.15; max-width: 140%; text-align: center; }
+  .cc-row { display: flex; gap: 6px; margin: 6px 0; } .cc-row select { font-size: 1.3rem; border-radius: 8px; } .cc-row input { flex: 1; font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: #1b1640; color: var(--ink); } .cc-edit { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+  .cb-wrap { height: 240px; display: grid; place-items: center; } .cb-ball { width: 90px; height: 90px; border-radius: 50%; display: grid; place-items: center; font-size: 2.6rem; background: radial-gradient(circle, #bde0fe, #7b61ff); box-shadow: 0 0 40px rgba(123,97,255,.7); } .cb-say { text-align: center; font-size: 1.3rem; font-weight: 800; min-height: 1.5em; }
+  .cm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; } .cm-btn { display: flex; flex-direction: column; align-items: center; padding: 10px 4px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; } .cm-btn i { font-style: normal; font-size: 2rem; }
+  .ct-jar { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; padding: 12px; min-height: 80px; border-radius: 20px; border: 3px solid #cfe8ff; background: rgba(207,232,255,.08); } .ct-jar span { background: #fff7d1; color: #4a3800; border-radius: 999px; padding: 4px 10px; font-size: .9rem; }
   body { transition: background .5s; }
   @media (prefers-reduced-motion: reduce) { body::before, body::after { animation: none !important; } }
   .wrap { max-width: 820px; margin: 0 auto; padding-inline: 16px; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 16px; }
@@ -3796,6 +3826,7 @@ function archersOver() {
 /* ---------- Mystery games ---------- */
 let M = null;
 function stopMini() {
+  naCleanup();
   if (!M) return;
   cancelAnimationFrame(M.raf);
   clearInterval(M.timer);
@@ -8217,7 +8248,7 @@ function startAppApp() {
   $app.innerHTML = `<div class="panel appapp">
     <div class="topline"><span class="label">📱 App-App</span><button class="iconbtn" id="aa-home">Back to menu</button></div>
     <h2>📱 The App-App</h2><p class="soft">All the newest apps live here. New ones show up here first!</p>
-    <div class="aa-grid">${NEW_APPS.map((a, i) => `<button class="aa-card" data-app="${i}"><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${i >= NEW_APPS.length - 2 ? `<em>NEW</em>` : ""}</button>`).join("")}</div>
+    <div class="aa-grid">${NEW_APPS.map((a, i) => `<button class="aa-card" data-app="${i}"><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${a.isNew ? `<em>NEW</em>` : ""}</button>`).join("")}</div>
   </div>`;
   document.getElementById("aa-home").addEventListener("click", showHome);
   $app.querySelectorAll("[data-app]").forEach(b => b.addEventListener("click", () => NEW_APPS[+b.dataset.app].start()));
@@ -8437,6 +8468,355 @@ function startAIStudio(view) {
   }
   document.getElementById("ai-up")?.addEventListener("click", () => { hippoHush(); startAIStudio(); });
 }
+/* ---------- 10 more App-App apps ---------- */
+let NA_TIMERS = [];
+function naCleanup() { NA_TIMERS.forEach(t => { clearInterval(t); clearTimeout(t); cancelAnimationFrame(t); }); NA_TIMERS = []; }
+const naTimer = t => (NA_TIMERS.push(t), t);
+function appScreen(label, inner) {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush();
+  $app.innerHTML = `<div class="panel newapp"><div class="topline"><span class="label">${label}</span><button class="iconbtn" id="na-back">Back to App-App</button></div>${inner}</div>`;
+  document.getElementById("na-back").addEventListener("click", () => { naCleanup(); startAppApp(); });
+}
+const naTabs = (tabs, cur) => `<div class="na-tabs">${tabs.map(([id, lab]) => `<button class="na-tab${id === cur ? " on" : ""}" data-tab="${id}">${lab}</button>`).join("")}</div>`;
+const bindTabs = fn => $app.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => fn(b.dataset.tab)));
+function naAudio() { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state !== "running") actx.resume?.(); return actx; } catch (e) { return null; } }
+function naNote(f, dur = .5, type = "triangle", vol = .22, when = 0) { const a = naAudio(); if (!a) return; const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(.0005, t + dur); o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + .05); }
+let NA_NOISE = null;
+function naDrum(kind, when = 0) {
+  const a = naAudio(); if (!a) return; const t = a.currentTime + when;
+  if (kind === "kick") { const o = a.createOscillator(), g = a.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(40, t + .15); g.gain.setValueAtTime(.9, t); g.gain.exponentialRampToValueAtTime(.001, t + .3); o.connect(g).connect(a.destination); o.start(t); o.stop(t + .32); return; }
+  if (!NA_NOISE) { NA_NOISE = a.createBuffer(1, a.sampleRate * .5, a.sampleRate); const d = NA_NOISE.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(); src.buffer = NA_NOISE;
+  const cfg = { snare: ["bandpass", 1800, .5, .18], hat: ["highpass", 7000, .25, .05], clap: ["bandpass", 1200, .45, .12] }[kind];
+  f.type = cfg[0]; f.frequency.value = cfg[1]; g.gain.setValueAtTime(cfg[2], t); g.gain.exponentialRampToValueAtTime(.001, t + cfg[3]); src.connect(f).connect(g).connect(a.destination); src.start(t); src.stop(t + cfg[3] + .02);
+  if (kind === "snare") naNote(190, .1, "triangle", .2, when);
+}
+
+// 🎹 Music Maker
+const NOTE_NAMES = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+const noteFreq = n => 261.63 * Math.pow(2, n / 12);   // n = semitones from middle C
+const MM_SONGS = [
+  ["Twinkle, Twinkle", [0, 0, 7, 7, 9, 9, 7, 5, 5, 4, 4, 2, 2, 0]],
+  ["Mary Had a Little Lamb", [4, 2, 0, 2, 4, 4, 4, 2, 2, 2, 4, 7, 7]],
+  ["Ode to Joy", [4, 4, 5, 7, 7, 5, 4, 2, 0, 0, 2, 4, 4, 2, 2]],
+  ["Jingle Bells", [4, 4, 4, 4, 4, 4, 4, 7, 0, 2, 4]],
+  ["Hot Cross Buns", [4, 2, 0, 4, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 4, 2, 0]],
+  ["Happy Birthday", [0, 0, 2, 0, 5, 4, 0, 0, 2, 0, 7, 5]]
+];
+const MM_KEYS = "awsedftgyhujkolp;'";   // keyboard letters for the keys
+function startMusicMaker(tab = "piano") {
+  appScreen("🎹 Music Maker", `<h2>🎹 Music Maker</h2>${naTabs([["piano", "🎹 Piano"], ["songs", "🎵 Learn a song"], ["beats", "🥁 Beat maker"]], tab)}<div id="mm"></div>`);
+  bindTabs(startMusicMaker);
+  const box = document.getElementById("mm");
+  const piano = (onKey) => { const keys = []; for (let n = 0; n < 17; n++) keys.push(n); return `<div class="mm-piano">${keys.map(n => { const black = [1, 3, 6, 8, 10].includes(n % 12); return `<button class="mm-key${black ? " black" : ""}" data-n="${n}"><small>${NOTE_NAMES[n % 12]}</small><kbd>${MM_KEYS[n] || ""}</kbd></button>`; }).join("")}</div>`; };
+  const press = n => { naNote(noteFreq(n), .7, "triangle", .25); const k = box.querySelector(`.mm-key[data-n="${n}"]`); if (k) { k.classList.add("down"); setTimeout(() => k.classList.remove("down"), 180); } };
+  if (tab === "piano" || tab === "songs") {
+    let song = null, at = 0;
+    box.innerHTML = (tab === "songs" ? `<p class="soft">Pick a song. The glowing key is the next note: press it to play the song!</p><div class="na-chips">${MM_SONGS.map((s, i) => `<button class="chip" data-song="${i}">${s[0]}</button>`).join("")}</div><p id="mm-prog" class="mm-prog"></p>` : `<p class="soft">Tap the keys or use your keyboard (A, W, S, E, D…). White keys are C D E F G A B. Black keys are sharps (♯).</p>`) + piano() + `<p id="mm-last" class="mm-last"></p>`;
+    const glow = () => { box.querySelectorAll(".mm-key").forEach(k => k.classList.toggle("next", song && +k.dataset.n === song[1][at])); const pr = document.getElementById("mm-prog"); if (pr && song) pr.textContent = at >= song[1].length ? `🎉 You played "${song[0]}"! Pick another song.` : `${song[0]}: note ${at + 1} of ${song[1].length} (${NOTE_NAMES[song[1][at] % 12]})`; };
+    const hit = n => { press(n); document.getElementById("mm-last").textContent = `${NOTE_NAMES[n % 12]}${n >= 12 ? " (high)" : ""}`; if (song && at < song[1].length) { if (n === song[1][at]) { at++; if (at === song[1].length) sfx.buy(); } glow(); } };
+    box.querySelectorAll(".mm-key").forEach(k => k.addEventListener("pointerdown", e => { e.preventDefault(); hit(+k.dataset.n); }));
+    box.querySelectorAll("[data-song]").forEach(b => b.addEventListener("click", () => { song = MM_SONGS[+b.dataset.song]; at = 0; glow(); song[1].forEach((n, i) => naNote(noteFreq(n), .35, "sine", .12, i * .38)); }));
+    keyHandler = e => { const n = MM_KEYS.indexOf(e.key.toLowerCase()); if (n >= 0 && !e.repeat) hit(n); };
+  } else {
+    const rows = [["kick", "🥁 Kick"], ["snare", "🪘 Snare"], ["hat", "🔔 Hi-hat"], ["clap", "👏 Clap"]];
+    let grid = store.get("mm_beat", null) || rows.map((_, r) => Array.from({ length: 8 }, (_, c) => (r === 0 && c % 4 === 0) || (r === 1 && c % 4 === 2) || (r === 2 && c % 2 === 0)));
+    let playing = false, step = 0, bpm = 110;
+    box.innerHTML = `<p class="soft">Tap boxes to turn sounds on. Press play to hear your beat loop!</p><div class="mm-grid">${rows.map(([k, lab], r) => `<span class="mm-lab">${lab}</span>${grid[r].map((on, c) => `<button class="mm-cell${on ? " on" : ""}" data-r="${r}" data-c="${c}" aria-label="${lab} step ${c + 1}"></button>`).join("")}`).join("")}</div>
+      <div class="row"><button class="btn go" id="mm-play">▶ Play</button><label class="mm-bpm">Speed <input type="range" id="mm-tempo" min="70" max="170" value="${bpm}"> <b id="mm-bpmv">${bpm}</b></label><button class="btn" id="mm-clear">🧹 Clear</button></div>`;
+    box.querySelectorAll(".mm-cell").forEach(b => b.addEventListener("click", () => { const r = +b.dataset.r, c = +b.dataset.c; grid[r][c] = !grid[r][c]; b.classList.toggle("on", grid[r][c]); store.set("mm_beat", grid); if (grid[r][c]) naDrum(rows[r][0]); }));
+    const tick = () => { box.querySelectorAll(".mm-cell").forEach(b => b.classList.toggle("now", +b.dataset.c === step)); rows.forEach(([k], r) => { if (grid[r][step]) naDrum(k); }); step = (step + 1) % 8; };
+    let timer = null; const restart = () => { if (timer) clearInterval(timer); if (playing) timer = naTimer(setInterval(tick, 60000 / bpm / 2)); };
+    document.getElementById("mm-play").addEventListener("click", e => { playing = !playing; e.target.textContent = playing ? "⏹ Stop" : "▶ Play"; step = 0; restart(); if (!playing) box.querySelectorAll(".mm-cell").forEach(b => b.classList.remove("now")); });
+    document.getElementById("mm-tempo").addEventListener("input", e => { bpm = +e.target.value; document.getElementById("mm-bpmv").textContent = bpm; restart(); });
+    document.getElementById("mm-clear").addEventListener("click", () => { grid = rows.map(() => Array(8).fill(false)); store.set("mm_beat", grid); box.querySelectorAll(".mm-cell").forEach(b => b.classList.remove("on")); });
+  }
+}
+
+// 🔬 Science Lab
+const SL_FLOAT = [["🍎", "Apple", true, "Apples are about 25% air, so they're less dense than water."], ["🪨", "Rock", false, "Rock is about 2.5 times denser than water."], ["🧊", "Ice cube", true, "Ice is a little less dense than water, so it floats with most of it underwater."], ["🪙", "Coin", false, "Metal is much denser than water."], ["🪵", "Wood block", true, "Wood has tiny air pockets inside, so it's less dense than water."], ["🥚", "Raw egg", false, "A fresh egg is slightly denser than water. (In very salty water it floats!)"], ["🍊", "Orange with peel", true, "The peel is full of tiny air pockets, like a life jacket! Peel it and it sinks."], ["🦆", "Rubber duck", true, "It's hollow and full of air."], ["🔑", "Key", false, "Keys are solid metal."], ["🧽", "Dry sponge", true, "A dry sponge is mostly air."], ["⚓", "Anchor", false, "Anchors are made heavy on purpose so they sink!"], ["🏀", "Basketball", true, "It's filled with air, so it's very light for its size."]];
+const SL_PAINT = [["🔴", "🔵", "Purple"], ["🔴", "🟡", "Orange"], ["🔵", "🟡", "Green"], ["🔴", "⚪", "Pink"], ["⚫", "⚪", "Gray"], ["🔴", "🟢", "Brown"]];
+function startScienceLab(tab = "float") {
+  appScreen("🔬 Science Lab", `<h2>🔬 Science Lab</h2>${naTabs([["float", "🛁 Sink or float?"], ["color", "🎨 Color mixing"], ["volcano", "🌋 Volcano"], ["plant", "🌱 Plant grower"]], tab)}<div id="sl"></div>`);
+  bindTabs(startScienceLab);
+  const box = document.getElementById("sl");
+  if (tab === "float") {
+    let i = 0, score = 0; const items = shuffle(SL_FLOAT.slice());
+    const show = () => { if (i >= items.length) { box.innerHTML = `<div class="sl-card"><h3>🏁 Experiment done!</h3><p>You predicted ${score} of ${items.length} correctly.</p><p class="soft">The big idea: things <b>float</b> when they're less <b>dense</b> than water (lots of stuff packed in a small space = dense).</p><button class="btn go" id="sl-again">Try again</button></div>`; document.getElementById("sl-again").addEventListener("click", () => startScienceLab("float")); return; }
+      const [e, n] = items[i]; box.innerHTML = `<div class="sl-card"><p class="soft">Object ${i + 1} of ${items.length}</p><div class="sl-tank"><span id="sl-obj">${e}</span><i class="sl-water"></i></div><h3>${n}: will it sink or float?</h3><div class="row"><button class="btn" data-g="1">🛟 Float</button><button class="btn" data-g="0">⬇️ Sink</button></div><div id="sl-why"></div></div>`;
+      box.querySelectorAll("[data-g]").forEach(b => b.addEventListener("click", () => { const fl = items[i][2], ok = (b.dataset.g === "1") === fl; if (ok) { score++; sfx.right(); } else sfx.wrong(); box.querySelectorAll("[data-g]").forEach(x => x.disabled = true); document.getElementById("sl-obj").classList.add(fl ? "float" : "sink"); document.getElementById("sl-why").innerHTML = `<p><b>${ok ? "✅ Correct!" : "❌ Not quite!"}</b> It ${fl ? "floats" : "sinks"}. ${items[i][3]}</p><button class="btn go" id="sl-nx">Next ▶</button>`; document.getElementById("sl-nx").addEventListener("click", () => { i++; show(); }); })); };
+    show();
+  } else if (tab === "color") {
+    box.innerHTML = `<div class="sl-card"><h3>🎨 Paint mixing</h3><p class="soft">What color do you get when you mix these paints?</p><div id="sl-paint"></div></div>
+      <div class="sl-card"><h3>💡 Mixing LIGHT (like a screen)</h3><p class="soft">Screens mix red, green and blue light. Red + green light makes YELLOW! Slide to experiment.</p>
+      ${["r", "g", "b"].map((c, k) => `<label class="sl-sl">${["🔴 Red", "🟢 Green", "🔵 Blue"][k]} <input type="range" id="sl-${c}" min="0" max="255" value="${[255, 120, 0][k]}"></label>`).join("")}<div class="sl-swatch" id="sl-sw"></div><p id="sl-rgb" class="soft"></p></div>`;
+    const sw = () => { const [r, g, b] = ["r", "g", "b"].map(c => +document.getElementById("sl-" + c).value); document.getElementById("sl-sw").style.background = `rgb(${r},${g},${b})`; document.getElementById("sl-rgb").textContent = `rgb(${r}, ${g}, ${b})${r > 200 && g > 200 && b < 80 ? " · that's YELLOW!" : r > 200 && g > 200 && b > 200 ? " · all three make WHITE light!" : r < 40 && g < 40 && b < 40 ? " · no light is black!" : ""}`; };
+    ["r", "g", "b"].forEach(c => document.getElementById("sl-" + c).addEventListener("input", sw)); sw();
+    let pi = 0; const paint = () => { const [a, b, ans] = SL_PAINT[pi % SL_PAINT.length], opts = shuffle([ans, ...shuffle(["Purple", "Orange", "Green", "Pink", "Gray", "Brown", "Blue"].filter(x => x !== ans)).slice(0, 3)]); document.getElementById("sl-paint").innerHTML = `<div class="sl-mix">${a} + ${b} = ?</div><div class="na-chips">${opts.map(o => `<button class="chip" data-o="${o}">${o}</button>`).join("")}</div><p id="sl-pr"></p>`; document.querySelectorAll("#sl-paint [data-o]").forEach(x => x.addEventListener("click", () => { const ok = x.dataset.o === ans; ok ? sfx.right() : sfx.wrong(); document.getElementById("sl-pr").innerHTML = `${ok ? "✅" : "❌"} ${a} + ${b} makes <b>${ans}</b>! <button class="btn mini" id="sl-pn">Next</button>`; document.getElementById("sl-pn").addEventListener("click", () => { pi++; paint(); }); })); };
+    paint();
+  } else if (tab === "volcano") {
+    box.innerHTML = `<div class="sl-card"><p class="soft">Baking soda + vinegar makes carbon dioxide gas. The bubbles push the foam up and out!</p>
+      <label class="sl-sl">🧂 Baking soda (spoons) <input type="range" id="v-soda" min="0" max="5" value="2"> <b id="v-sv">2</b></label>
+      <label class="sl-sl">🧴 Vinegar (cups) <input type="range" id="v-vin" min="0" max="5" value="2"> <b id="v-vv">2</b></label>
+      <div class="sl-volcano"><div class="sl-lava" id="v-lava"></div><div class="sl-cone">🌋</div></div><button class="btn go" id="v-go">💥 Erupt!</button><p id="v-msg"></p></div>`;
+    ["soda", "vin"].forEach(k => document.getElementById("v-" + k).addEventListener("input", e => document.getElementById(k === "soda" ? "v-sv" : "v-vv").textContent = e.target.value));
+    document.getElementById("v-go").addEventListener("click", () => { const s = +document.getElementById("v-soda").value, v = +document.getElementById("v-vin").value, power = Math.min(s, v), lava = document.getElementById("v-lava"); lava.style.transition = "none"; lava.style.height = "0"; void lava.offsetWidth; lava.style.transition = "height 1.2s ease-out"; lava.style.height = power * 34 + "px"; if (power) naNote(80 + power * 20, .8, "sawtooth", .08); document.getElementById("v-msg").innerHTML = !power ? "Nothing happens. You need BOTH baking soda and vinegar to make the reaction!" : `${"💥".repeat(power)} ${power >= 4 ? "HUGE eruption!" : power >= 2 ? "Nice eruption!" : "A little fizz."} ${s !== v ? `The eruption only used ${power} of each, because the ${s < v ? "baking soda" : "vinegar"} ran out first. Scientists call it the <b>limiting reactant</b>.` : "Perfectly balanced!"}`; });
+  } else {
+    let day = 0, height = 2, health = 100; const log = [];
+    const draw = () => { box.innerHTML = `<div class="sl-card"><p class="soft">Grow a sunflower in 7 days! Each day, choose how much water and sunlight to give. Plants make food from sunlight, water and air (that's <b>photosynthesis</b>).</p>
+      <div class="sl-pot"><div class="sl-stem" style="height:${height}px;filter:saturate(${health / 100})"></div><span class="sl-flower" style="opacity:${height > 120 && health > 50 ? 1 : 0}">🌻</span><div class="sl-soil">🪴</div></div>
+      <p><b>Day ${day} of 7</b> · Height: ${Math.round(height / 4)} cm · Health: ${health}%</p>
+      ${day < 7 ? `<label class="sl-sl">💧 Water <select id="p-w"><option value="0">None</option><option value="1" selected>A little</option><option value="2">A lot</option></select></label><label class="sl-sl">☀️ Sunlight <select id="p-s"><option value="0">Dark closet</option><option value="1">Shady</option><option value="2" selected>Sunny window</option></select></label><button class="btn go" id="p-next">Next day ▶</button>` : `<h3>${health > 70 && height > 120 ? "🌻 Your sunflower bloomed! Great gardening!" : "🥀 Your plant didn't do so well. Try a balance of water and sun!"}</h3><button class="btn go" id="p-again">Grow another</button>`}
+      <ul class="sl-log">${log.map(x => `<li>${x}</li>`).join("")}</ul></div>`;
+      document.getElementById("p-next")?.addEventListener("click", () => { const w = +document.getElementById("p-w").value, s = +document.getElementById("p-s").value; day++; let note; if (w === 0) { health -= 25; note = "Too dry! Leaves are drooping."; } else if (w === 2 && day % 2) { health -= 10; note = "Too much water can rot the roots."; } else note = "Good watering."; if (s === 0) { health -= 15; note += " No light means no food (no photosynthesis)."; } else { height += s * 14 * (health / 100); note += s === 2 ? " Lots of sunshine: it grew a lot!" : " It grew a little in the shade."; } health = Math.max(0, Math.min(100, health + (w === 1 && s === 2 ? 5 : 0))); log.unshift(`Day ${day}: ${note}`); draw(); });
+      document.getElementById("p-again")?.addEventListener("click", () => startScienceLab("plant")); };
+    draw();
+  }
+}
+
+// 🌌 Space Explorer
+const SP_GRAV = { Mercury: .38, Venus: .9, Earth: 1, Moon: .17, Mars: .38, Jupiter: 2.53, Saturn: 1.07, Uranus: .89, Neptune: 1.14 };
+const SP_YEAR = { Mercury: "88 Earth days", Venus: "225 Earth days", Earth: "365 days", Mars: "687 Earth days", Jupiter: "12 Earth years", Saturn: "29 Earth years", Uranus: "84 Earth years", Neptune: "165 Earth years" };
+function startSpaceExplorer(tab = "system") {
+  appScreen("🌌 Space Explorer", `<h2>🌌 Space Explorer</h2>${naTabs([["system", "🪐 Solar system"], ["weigh", "⚖️ Your weight in space"], ["quiz", "🚀 Space quiz"]], tab)}<div id="sp"></div>`);
+  bindTabs(startSpaceExplorer);
+  const box = document.getElementById("sp");
+  if (tab === "system") {
+    box.innerHTML = `<p class="soft">Tap a planet to learn about it. (Sizes and distances aren't to scale. Space is WAY too big to fit!)</p><svg class="sp-svg" viewBox="-160 -160 320 320"><circle r="16" fill="#ffb703"/><text y="4" text-anchor="middle" font-size="10">☀️</text>${HIPPO_PLANETS.map(([n, , , col, r], i) => `<circle r="${22 + i * 17}" fill="none" stroke="rgba(255,255,255,.15)"/><g class="sp-p" data-p="${i}" id="sp-${i}"><circle r="${Math.max(3, r / 2.2)}" fill="${col}"/></g>`).join("")}</svg><div id="sp-info" class="sl-card"><p>👆 Tap a planet!</p></div>`;
+    const ang = HIPPO_PLANETS.map((_, i) => i * 1.3); let last = performance.now();
+    const step = t => { const dt = Math.min(.05, (t - last) / 1000); last = t; HIPPO_PLANETS.forEach((_, i) => { ang[i] += dt * 1.4 / Math.pow(i + 1, 1.5); const R = 22 + i * 17; document.getElementById("sp-" + i)?.setAttribute("transform", `translate(${Math.cos(ang[i]) * R},${Math.sin(ang[i]) * R})`); }); NA_TIMERS.push(requestAnimationFrame(step)); };
+    NA_TIMERS.push(requestAnimationFrame(step));
+    box.querySelectorAll(".sp-p").forEach(g => g.addEventListener("click", () => { const [n, d, moons, col] = HIPPO_PLANETS[+g.dataset.p]; document.getElementById("sp-info").innerHTML = `<h3 style="color:${col}">${n}</h3><p>${n} is ${d}.</p><p>🌙 Moons: <b>${moons}</b> · 🗓️ One year: <b>${SP_YEAR[n]}</b> · ⚖️ Gravity: <b>${SP_GRAV[n]}×</b> Earth's</p><p>It's planet number ${+g.dataset.p + 1} from the Sun.</p>`; naNote(330 + +g.dataset.p * 40, .3, "sine", .12); }));
+  } else if (tab === "weigh") {
+    box.innerHTML = `<div class="sl-card"><label class="sl-sl">⚖️ How much do you weigh on Earth? <input type="number" id="sp-w" value="80" min="1" max="500"> pounds</label><div id="sp-tbl"></div><p class="soft">Your MASS (how much stuff you're made of) stays the same everywhere. Your WEIGHT changes because each planet's gravity pulls differently!</p></div>`;
+    const draw = () => { const w = Math.max(0, +document.getElementById("sp-w").value || 0); document.getElementById("sp-tbl").innerHTML = Object.entries(SP_GRAV).map(([n, g]) => `<div class="sp-row"><b>${n}</b><span class="sp-bar"><i style="width:${Math.min(100, g / 2.6 * 100)}%"></i></span><span>${Math.round(w * g)} lb</span></div>`).join(""); };
+    document.getElementById("sp-w").addEventListener("input", draw); draw();
+  } else {
+    const Q = [["Which planet is the biggest?", "Jupiter", ["Saturn", "Earth", "Neptune"]], ["Which planet is closest to the Sun?", "Mercury", ["Venus", "Mars", "Earth"]], ["Which planet is called the Red Planet?", "Mars", ["Venus", "Jupiter", "Mercury"]], ["Which planet has the most famous rings?", "Saturn", ["Uranus", "Neptune", "Mars"]], ["Which planet is the hottest?", "Venus", ["Mercury", "Mars", "Jupiter"]], ["What is the Sun?", "A star", ["A planet", "A moon", "A comet"]], ["Which planet spins on its side?", "Uranus", ["Neptune", "Saturn", "Earth"]], ["How many planets are in our solar system?", "8", ["9", "7", "10"]], ["What do we call a space rock that burns up in our sky?", "A meteor", ["A comet", "A planet", "A star"]], ["Which planet do we live on?", "Earth", ["Mars", "Venus", "Moon"]]];
+    let i = 0, sc = 0; const qs = shuffle(Q.slice());
+    const show = () => { if (i >= qs.length) { box.innerHTML = `<div class="sl-card"><h3>🚀 Mission complete!</h3><p>You got ${sc} of ${qs.length}.</p><button class="btn go" id="sp-again">Fly again</button></div>`; document.getElementById("sp-again").addEventListener("click", () => startSpaceExplorer("quiz")); return; }
+      const [q, a, w] = qs[i], opts = shuffle([a, ...w]); box.innerHTML = `<div class="sl-card"><p class="soft">Question ${i + 1} of ${qs.length}</p><h3>${q}</h3><div class="na-chips">${opts.map(o => `<button class="chip" data-o="${o}">${o}</button>`).join("")}</div><p id="sp-r"></p></div>`;
+      box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { const ok = b.dataset.o === a; if (ok) { sc++; sfx.right(); } else sfx.wrong(); box.querySelectorAll("[data-o]").forEach(x => x.disabled = true); document.getElementById("sp-r").innerHTML = `${ok ? "✅ Correct!" : `❌ It's ${a}.`} <button class="btn mini" id="sp-n">Next</button>`; document.getElementById("sp-n").addEventListener("click", () => { i++; show(); }); })); };
+    show();
+  }
+}
+
+// 💰 Money Smart
+function startMoneySmart(tab = "goal") {
+  appScreen("💰 Money Smart", `<h2>💰 Money Smart</h2>${naTabs([["goal", "🐷 Savings goal"], ["needs", "🛒 Needs vs. wants"], ["budget", "📋 Budget game"], ["grow", "🌱 Watch money grow"]], tab)}<div id="ms"></div>`);
+  bindTabs(startMoneySmart);
+  const box = document.getElementById("ms");
+  if (tab === "goal") {
+    const g = store.get("ms_goal", { item: "a new video game", cost: 60, weekly: 5, saved: 10 });
+    box.innerHTML = `<div class="sl-card"><label class="sl-sl">🎯 I'm saving for <input id="g-item" value="${esc(g.item)}"></label><label class="sl-sl">💲 It costs $<input type="number" id="g-cost" value="${g.cost}" min="1"></label><label class="sl-sl">🐷 I already have $<input type="number" id="g-saved" value="${g.saved}" min="0"></label><label class="sl-sl">📅 I can save $<input type="number" id="g-week" value="${g.weekly}" min="0"> each week</label><div class="ms-jar"><div class="ms-fill" id="g-fill"></div><span id="g-pct"></span></div><p id="g-msg"></p></div>`;
+    const draw = () => { const v = id => +document.getElementById(id).value || 0, cost = v("g-cost"), saved = v("g-saved"), wk = v("g-week"), left = Math.max(0, cost - saved), weeks = wk ? Math.ceil(left / wk) : Infinity, pct = Math.min(100, Math.round(saved / Math.max(1, cost) * 100)); store.set("ms_goal", { item: document.getElementById("g-item").value, cost, saved, weekly: wk }); document.getElementById("g-fill").style.height = pct + "%"; document.getElementById("g-pct").textContent = pct + "%"; document.getElementById("g-msg").innerHTML = left === 0 ? `🎉 You have enough for ${esc(document.getElementById("g-item").value)}!` : weeks === Infinity ? "Try saving a little each week, even $1 adds up!" : `You need <b>$${left}</b> more. Saving $${wk} a week, you'll get there in <b>${weeks} week${weeks === 1 ? "" : "s"}</b> (about ${Math.max(1, Math.round(weeks / 4.3))} month${Math.round(weeks / 4.3) > 1 ? "s" : ""}).`; };
+    box.querySelectorAll("input").forEach(x => x.addEventListener("input", draw)); draw();
+  } else if (tab === "needs") {
+    const items = shuffle([["🍎", "Healthy food", 1], ["🎮", "A new video game", 0], ["🏠", "A place to live", 1], ["🍬", "Candy", 0], ["🧥", "A winter coat", 1], ["🧸", "Another stuffed animal", 0], ["💧", "Clean water", 1], ["📱", "The newest phone", 0], ["👟", "Shoes that fit", 1], ["🎢", "Theme park tickets", 0], ["💊", "Medicine when you're sick", 1], ["🍕", "Pizza delivery", 0]]);
+    let i = 0, sc = 0;
+    const show = () => { if (i >= items.length) { box.innerHTML = `<div class="sl-card"><h3>🛒 Done!</h3><p>You sorted ${sc} of ${items.length} correctly.</p><p class="soft"><b>Needs</b> are things you must have to live and be safe. <b>Wants</b> are nice extras. Smart savers pay for needs first!</p><button class="btn go" id="ms-a">Play again</button></div>`; document.getElementById("ms-a").addEventListener("click", () => startMoneySmart("needs")); return; }
+      const [e, n] = items[i]; box.innerHTML = `<div class="sl-card"><p class="soft">${i + 1} of ${items.length}</p><div class="sl-mix">${e}</div><h3>${n}</h3><div class="row"><button class="btn" data-n="1">✅ Need</button><button class="btn" data-n="0">💭 Want</button></div><p id="ms-r"></p></div>`;
+      box.querySelectorAll("[data-n]").forEach(b => b.addEventListener("click", () => { const ok = +b.dataset.n === items[i][2]; if (ok) { sc++; sfx.right(); } else sfx.wrong(); box.querySelectorAll("[data-n]").forEach(x => x.disabled = true); document.getElementById("ms-r").innerHTML = `${ok ? "✅" : "❌"} That's a <b>${items[i][2] ? "need" : "want"}</b>. <button class="btn mini" id="ms-n">Next</button>`; document.getElementById("ms-n").addEventListener("click", () => { i++; show(); }); })); };
+    show();
+  } else if (tab === "budget") {
+    const shop = [["🍦", "Ice cream", 4], ["🎟️", "Movie ticket", 9], ["📚", "Comic book", 5], ["🎨", "Art supplies", 7], ["🎁", "Gift for a friend", 6], ["🧃", "Juice box", 2], ["⚽", "Soccer ball", 12], ["🎮", "Game app", 3]];
+    const cart = new Set(); const allowance = 20, mustSave = 5;
+    const draw = () => { const spent = [...cart].reduce((s, k) => s + shop[k][2], 0), left = allowance - spent; box.innerHTML = `<div class="sl-card"><p>You get <b>$${allowance}</b> allowance. Rule: <b>save at least $${mustSave}</b>! Pick what to buy.</p><div class="ms-shop">${shop.map(([e, n, c], k) => `<button class="ms-item${cart.has(k) ? " on" : ""}" data-k="${k}"><i>${e}</i><b>${n}</b><span>$${c}</span></button>`).join("")}</div><p class="ms-tot">Spent: <b>$${spent}</b> · Saved: <b style="color:${left >= mustSave ? "var(--money)" : "var(--bad)"}">$${left}</b></p><p>${left < 0 ? "❌ You spent more than you have! Put something back." : left < mustSave ? `⚠️ You need to save $${mustSave - left} more. Put something back.` : spent === 0 ? "💡 Pick some things!" : `✅ Great budget! You saved $${left}${left >= 10 ? ", that's half your allowance. Super saver! 🐷" : "."}`}</p></div>`; box.querySelectorAll("[data-k]").forEach(b => b.addEventListener("click", () => { const k = +b.dataset.k; cart.has(k) ? cart.delete(k) : cart.add(k); draw(); })); };
+    draw();
+  } else {
+    box.innerHTML = `<div class="sl-card"><label class="sl-sl">🐷 Start with $<input type="number" id="w-p" value="100" min="1"></label><label class="sl-sl">📈 Interest per year <input type="number" id="w-r" value="5" min="0" max="20">%</label><label class="sl-sl">⏳ Years <input type="range" id="w-y" min="1" max="40" value="20"> <b id="w-yv">20</b></label><div id="w-chart" class="ms-chart"></div><p id="w-msg"></p><p class="soft"><b>Compound interest</b> means you earn interest on your interest too. That's why starting to save early is a superpower!</p></div>`;
+    const draw = () => { const P = +document.getElementById("w-p").value || 0, r = (+document.getElementById("w-r").value || 0) / 100, Y = +document.getElementById("w-y").value; document.getElementById("w-yv").textContent = Y; const vals = Array.from({ length: Y + 1 }, (_, y) => P * Math.pow(1 + r, y)), mx = vals[Y] || 1; document.getElementById("w-chart").innerHTML = vals.map((v, y) => `<i style="height:${Math.max(2, v / mx * 100)}%" title="Year ${y}: $${v.toFixed(2)}"></i>`).join(""); document.getElementById("w-msg").innerHTML = `After <b>${Y} years</b>, $${P} becomes <b>${money(vals[Y])}</b>. That's <b>${money(vals[Y] - P)}</b> of free money from interest!`; };
+    box.querySelectorAll("input").forEach(x => x.addEventListener("input", draw)); draw();
+  }
+}
+// 🎨 Pixel Art Studio
+const PX_COLORS = ["#000000", "#ffffff", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#9aa5b1", "#00c2c7"];
+const PX_TEMPLATES = { heart: ["..........", ".XX....XX.", "XXXX..XXXX", "XXXXXXXXXX", "XXXXXXXXXX", ".XXXXXXXX.", "..XXXXXX..", "...XXXX...", "....XX....", ".........."], smile: ["..XXXXXX..", ".X......X.", "X..X..X..X", "X........X", "X.X....X.X", "X..XXXX..X", ".X......X.", "..XXXXXX..", "..........", ".........."] };
+function startPixelArt() {
+  const N = 16; let grid = store.get("px_cur", null) || Array(N * N).fill(""), color = PX_COLORS[2], tool = "pen", down = false;
+  appScreen("🎨 Pixel Art Studio", `<h2>🎨 Pixel Art Studio</h2><p class="soft">Tap or drag to paint pixels. Video game characters used to be made exactly like this!</p>
+    <div class="px-wrap"><div class="px-grid" id="px" style="grid-template-columns:repeat(${N},1fr)">${grid.map((c, i) => `<i data-i="${i}" style="background:${c || "transparent"}"></i>`).join("")}</div>
+    <div class="px-side"><div class="px-pal">${PX_COLORS.map(c => `<button class="px-col${c === color ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="color ${c}"></button>`).join("")}<input type="color" id="px-any" value="#ff6fb5" aria-label="Any color"></div>
+    <div class="na-chips"><button class="chip on" data-t="pen">✏️ Pen</button><button class="chip" data-t="erase">🧽 Eraser</button><button class="chip" data-t="fill">🪣 Fill</button></div>
+    <div class="na-chips"><button class="chip" id="px-clear">🗑️ Clear</button><button class="chip" id="px-heart">❤️ Heart</button><button class="chip" id="px-smile">🙂 Smiley</button><button class="chip" id="px-mirror">🪞 Mirror</button></div>
+    <h3>🖼️ Gallery</h3><div class="px-gal" id="px-gal"></div><button class="btn gold" id="px-save">💾 Save to gallery</button></div></div>`);
+  const cells = [...document.querySelectorAll("#px i")], save = () => store.set("px_cur", grid), paintAll = () => cells.forEach((c, i) => c.style.background = grid[i] || "transparent");
+  const fill = (i, from, to) => { if (from === to) return; const st = [i]; while (st.length) { const k = st.pop(); if (k < 0 || k >= N * N || grid[k] !== from) continue; grid[k] = to; const x = k % N; if (x > 0) st.push(k - 1); if (x < N - 1) st.push(k + 1); st.push(k - N, k + N); } };
+  const act = i => { if (tool === "fill") fill(i, grid[i], color); else grid[i] = tool === "erase" ? "" : color; paintAll(); save(); };
+  const px = document.getElementById("px");
+  px.addEventListener("pointerdown", e => { const c = e.target.closest("i"); if (!c) return; e.preventDefault(); down = true; act(+c.dataset.i); });
+  px.addEventListener("pointermove", e => { if (!down || tool === "fill") return; const el = document.elementFromPoint(e.clientX, e.clientY); if (el && el.parentNode === px) act(+el.dataset.i); });
+  window.addEventListener("pointerup", () => down = false);
+  $app.querySelectorAll(".px-col").forEach(b => b.addEventListener("click", () => { color = b.dataset.c; $app.querySelectorAll(".px-col").forEach(x => x.classList.toggle("on", x === b)); if (tool === "erase") tool = "pen"; }));
+  document.getElementById("px-any").addEventListener("input", e => { color = e.target.value; });
+  $app.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => { tool = b.dataset.t; $app.querySelectorAll("[data-t]").forEach(x => x.classList.toggle("on", x === b)); }));
+  document.getElementById("px-clear").addEventListener("click", () => { grid = Array(N * N).fill(""); paintAll(); save(); });
+  const tpl = (name, col) => { grid = Array(N * N).fill(""); PX_TEMPLATES[name].forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "X") grid[(y + 3) * N + x + 3] = col; })); paintAll(); save(); };
+  document.getElementById("px-heart").addEventListener("click", () => tpl("heart", "#e63946"));
+  document.getElementById("px-smile").addEventListener("click", () => tpl("smile", "#ffd23f"));
+  document.getElementById("px-mirror").addEventListener("click", () => { for (let y = 0; y < N; y++) for (let x = 0; x < N / 2; x++) grid[y * N + (N - 1 - x)] = grid[y * N + x]; paintAll(); save(); });
+  const gal = () => { const g = store.get("px_gal", []); document.getElementById("px-gal").innerHTML = g.length ? g.map((art, k) => `<button class="px-thumb" data-k="${k}" title="Open">${art.map(c => `<i style="background:${c || "transparent"}"></i>`).join("")}</button>`).join("") : `<p class="soft">Saved pictures show up here.</p>`; $app.querySelectorAll(".px-thumb").forEach(b => b.addEventListener("click", () => { grid = store.get("px_gal", [])[+b.dataset.k].slice(); paintAll(); save(); })); };
+  document.getElementById("px-save").addEventListener("click", () => { const g = store.get("px_gal", []); g.unshift(grid.slice()); store.set("px_gal", g.slice(0, 8)); gal(); sfx.buy(); });
+  gal();
+}
+
+// 🧩 Puzzle Room
+function sudokuMake(n, holes) {   // n = 4 or 9: a valid filled grid, then holes cut out
+  const b = n === 4 ? 2 : 3, base = (r, c) => (b * (r % b) + Math.floor(r / b) + c) % n;
+  const rows = shuffle(Array.from({ length: b }, (_, g) => g)).flatMap(g => shuffle(Array.from({ length: b }, (_, r) => g * b + r)));
+  const cols = shuffle(Array.from({ length: b }, (_, g) => g)).flatMap(g => shuffle(Array.from({ length: b }, (_, c) => g * b + c)));
+  const nums = shuffle(Array.from({ length: n }, (_, i) => i + 1));
+  const sol = rows.map(r => cols.map(c => nums[base(r, c)]));
+  const puz = sol.map(r => r.slice()); shuffle(Array.from({ length: n * n }, (_, i) => i)).slice(0, holes).forEach(i => puz[Math.floor(i / n)][i % n] = 0);
+  return { sol, puz };
+}
+function startPuzzleRoom(tab = "sudoku", opt) {
+  appScreen("🧩 Puzzle Room", `<h2>🧩 Puzzle Room</h2>${naTabs([["sudoku", "🔢 Sudoku"], ["hanoi", "🗼 Tower of Hanoi"], ["lights", "💡 Lights Out"]], tab)}<div id="pz"></div>`);
+  bindTabs(t => startPuzzleRoom(t));
+  const box = document.getElementById("pz");
+  if (tab === "sudoku") {
+    const n = opt || 4, { sol, puz } = sudokuMake(n, n === 4 ? 7 : 40), b = n === 4 ? 2 : 3;
+    box.innerHTML = `<p class="soft">Fill the grid so every row, column and ${b}×${b} box has the numbers 1 to ${n} exactly once.</p><div class="na-chips"><button class="chip${n === 4 ? " on" : ""}" data-n="4">Easy 4×4</button><button class="chip${n === 9 ? " on" : ""}" data-n="9">Classic 9×9</button></div>
+      <div class="sd-grid" style="grid-template-columns:repeat(${n},1fr)">${puz.flatMap((r, y) => r.map((v, x) => `<input class="sd-c${x % b === b - 1 && x < n - 1 ? " br" : ""}${y % b === b - 1 && y < n - 1 ? " bb" : ""}" data-x="${x}" data-y="${y}" inputmode="numeric" maxlength="1" ${v ? `value="${v}" readonly` : ""}>`)).join("")}</div>
+      <div class="row"><button class="btn go" id="sd-check">✅ Check</button><button class="btn" id="sd-new">🔄 New puzzle</button></div><p id="sd-msg"></p>`;
+    box.querySelectorAll("[data-n]").forEach(b2 => b2.addEventListener("click", () => startPuzzleRoom("sudoku", +b2.dataset.n)));
+    document.getElementById("sd-new").addEventListener("click", () => startPuzzleRoom("sudoku", n));
+    box.querySelectorAll(".sd-c:not([readonly])").forEach(c => c.addEventListener("input", () => { c.value = c.value.replace(new RegExp(`[^1-${n}]`, "g"), "").slice(-1); c.classList.remove("bad"); }));
+    document.getElementById("sd-check").addEventListener("click", () => { let empty = 0, wrong = 0; box.querySelectorAll(".sd-c").forEach(c => { const v = +c.value; if (!v) empty++; else if (v !== sol[+c.dataset.y][+c.dataset.x]) { wrong++; c.classList.add("bad"); } }); const m = document.getElementById("sd-msg"); if (!wrong && !empty) { m.textContent = "🎉 Solved! Brilliant thinking!"; sfx.buy(); } else m.textContent = wrong ? `❌ ${wrong} square${wrong > 1 ? "s are" : " is"} wrong (in red). Keep going!` : `So far so good! ${empty} left to fill.`; });
+  } else if (tab === "hanoi") {
+    const n = opt || 3; const pegs = [Array.from({ length: n }, (_, i) => n - i), [], []]; let sel = null, moves = 0;
+    const draw = () => { box.innerHTML = `<p class="soft">Move the whole tower to the right peg. Move one disc at a time, and never put a bigger disc on a smaller one!</p><div class="na-chips">${[3, 4, 5].map(k => `<button class="chip${k === n ? " on" : ""}" data-n="${k}">${k} discs</button>`).join("")}</div>
+      <div class="hn">${pegs.map((p, i) => `<button class="hn-peg${sel === i ? " sel" : ""}" data-p="${i}"><span class="hn-pole"></span>${p.map(d => `<i style="width:${20 + d * 14}%;background:hsl(${d * 50},70%,55%)"></i>`).reverse().join("")}</button>`).join("")}</div>
+      <p>Moves: <b>${moves}</b> · Fewest possible: <b>${2 ** n - 1}</b></p><p id="hn-msg">${pegs[2].length === n ? `🎉 You did it in ${moves} moves!${moves === 2 ** n - 1 ? " That's PERFECT! 🏆" : ""}` : ""}</p>`;
+      box.querySelectorAll("[data-n]").forEach(b2 => b2.addEventListener("click", () => startPuzzleRoom("hanoi", +b2.dataset.n)));
+      box.querySelectorAll("[data-p]").forEach(b2 => b2.addEventListener("click", () => { const i = +b2.dataset.p; if (pegs[2].length === n) return; if (sel === null) { if (pegs[i].length) sel = i; } else if (sel === i) sel = null; else { const d = pegs[sel].at(-1); if (!pegs[i].length || pegs[i].at(-1) > d) { pegs[i].push(pegs[sel].pop()); moves++; naNote(300 + d * 60, .15, "sine", .12); if (pegs[2].length === n) sfx.buy(); } else sfx.wrong(); sel = null; } draw(); })); };
+    draw();
+  } else {
+    const N = 5; let on = Array(N * N).fill(false), moves = 0;
+    const toggle = i => { const x = i % N, y = Math.floor(i / N); [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { const X = x + dx, Y = y + dy; if (X >= 0 && X < N && Y >= 0 && Y < N) on[Y * N + X] = !on[Y * N + X]; }); };
+    for (let k = 0; k < 6 + (opt || 0); k++) toggle(rnd(0, N * N - 1));
+    if (!on.some(Boolean)) toggle(12);
+    const draw = () => { box.innerHTML = `<p class="soft">Tap a light to flip it AND its neighbors. Turn ALL the lights off!</p><div class="lo">${on.map((v, i) => `<button class="lo-c${v ? " on" : ""}" data-i="${i}" aria-label="light ${i + 1}"></button>`).join("")}</div><p>Moves: <b>${moves}</b></p><p>${on.some(Boolean) ? "" : "🎉 All lights out! You're a puzzle master!"}</p><button class="btn" id="lo-new">🔄 New puzzle</button>`; box.querySelectorAll("[data-i]").forEach(b2 => b2.addEventListener("click", () => { if (!on.some(Boolean)) return; toggle(+b2.dataset.i); moves++; naNote(500, .06, "square", .05); if (!on.some(Boolean)) sfx.buy(); draw(); })); document.getElementById("lo-new").addEventListener("click", () => startPuzzleRoom("lights", rnd(0, 6))); };
+    draw();
+  }
+}
+
+// 🗣️ Language Lab: Spanish and French
+const LL_WORDS = {
+  es: { name: "Spanish", flag: "🇪🇸", lang: "es-ES", cats: { "👋 Greetings": [["hola", "hello"], ["adiós", "goodbye"], ["por favor", "please"], ["gracias", "thank you"], ["buenos días", "good morning"], ["buenas noches", "good night"], ["¿cómo estás?", "how are you?"], ["me llamo…", "my name is…"]], "🔢 Numbers": [["uno", "one"], ["dos", "two"], ["tres", "three"], ["cuatro", "four"], ["cinco", "five"], ["seis", "six"], ["siete", "seven"], ["ocho", "eight"], ["nueve", "nine"], ["diez", "ten"]], "🎨 Colors": [["rojo", "red"], ["azul", "blue"], ["verde", "green"], ["amarillo", "yellow"], ["negro", "black"], ["blanco", "white"], ["morado", "purple"], ["anaranjado", "orange"]], "🐶 Animals": [["el perro", "the dog"], ["el gato", "the cat"], ["el pájaro", "the bird"], ["el pez", "the fish"], ["el caballo", "the horse"], ["la vaca", "the cow"], ["el hipopótamo", "the hippo"], ["el león", "the lion"]], "🍎 Food": [["la manzana", "the apple"], ["el pan", "the bread"], ["el agua", "the water"], ["la leche", "the milk"], ["el queso", "the cheese"], ["el helado", "the ice cream"], ["la pizza", "the pizza"], ["el huevo", "the egg"]], "👨‍👩‍👧 Family": [["la madre", "the mother"], ["el padre", "the father"], ["el hermano", "the brother"], ["la hermana", "the sister"], ["la abuela", "the grandmother"], ["el abuelo", "the grandfather"], ["el amigo", "the friend (boy)"], ["la amiga", "the friend (girl)"]] } },
+  fr: { name: "French", flag: "🇫🇷", lang: "fr-FR", cats: { "👋 Greetings": [["bonjour", "hello"], ["au revoir", "goodbye"], ["s'il vous plaît", "please"], ["merci", "thank you"], ["bonsoir", "good evening"], ["bonne nuit", "good night"], ["comment ça va ?", "how are you?"], ["je m'appelle…", "my name is…"]], "🔢 Numbers": [["un", "one"], ["deux", "two"], ["trois", "three"], ["quatre", "four"], ["cinq", "five"], ["six", "six"], ["sept", "seven"], ["huit", "eight"], ["neuf", "nine"], ["dix", "ten"]], "🎨 Colors": [["rouge", "red"], ["bleu", "blue"], ["vert", "green"], ["jaune", "yellow"], ["noir", "black"], ["blanc", "white"], ["violet", "purple"], ["orange", "orange"]], "🐶 Animals": [["le chien", "the dog"], ["le chat", "the cat"], ["l'oiseau", "the bird"], ["le poisson", "the fish"], ["le cheval", "the horse"], ["la vache", "the cow"], ["l'hippopotame", "the hippo"], ["le lion", "the lion"]], "🍎 Food": [["la pomme", "the apple"], ["le pain", "the bread"], ["l'eau", "the water"], ["le lait", "the milk"], ["le fromage", "the cheese"], ["la glace", "the ice cream"], ["la pizza", "the pizza"], ["l'œuf", "the egg"]], "👨‍👩‍👧 Family": [["la mère", "the mother"], ["le père", "the father"], ["le frère", "the brother"], ["la sœur", "the sister"], ["la grand-mère", "the grandmother"], ["le grand-père", "the grandfather"], ["l'ami", "the friend (boy)"], ["l'amie", "the friend (girl)"]] } }
+};
+function llSay(word, lang) { try { const s = window.speechSynthesis; if (!s) return; s.cancel(); const u = new SpeechSynthesisUtterance(word.replace(/…/g, "")); u.lang = lang; const v = s.getVoices().find(v => v.lang.replace("_", "-").startsWith(lang.slice(0, 2))); if (v) u.voice = v; u.rate = .8; s.speak(u); } catch (e) {} }
+function startLanguageLab(lc = "es", cat, mode = "cards") {
+  const L = LL_WORDS[lc], cats = Object.keys(L.cats); cat = cat || cats[0];
+  const words = L.cats[cat];
+  appScreen("🗣️ Language Lab", `<h2>🗣️ Language Lab</h2><div class="na-chips">${Object.entries(LL_WORDS).map(([k, v]) => `<button class="chip${k === lc ? " on" : ""}" data-lc="${k}">${v.flag} ${v.name}</button>`).join("")}</div><div class="na-chips">${cats.map(c => `<button class="chip${c === cat ? " on" : ""}" data-cat="${c}">${c}</button>`).join("")}</div>${naTabs([["cards", "🃏 Flashcards"], ["quiz", "✅ Quiz"]], mode)}<div id="ll"></div>`);
+  $app.querySelectorAll("[data-lc]").forEach(b => b.addEventListener("click", () => startLanguageLab(b.dataset.lc, null, mode)));
+  $app.querySelectorAll("[data-cat]").forEach(b => b.addEventListener("click", () => startLanguageLab(lc, b.dataset.cat, mode)));
+  bindTabs(m => startLanguageLab(lc, cat, m));
+  const box = document.getElementById("ll");
+  if (mode === "cards") {
+    let i = 0, flip = false;
+    const draw = () => { const [w, en] = words[i]; box.innerHTML = `<button class="ll-card${flip ? " flip" : ""}" id="ll-card"><span>${flip ? en : w}</span><small>${flip ? "English" : L.name} · tap to flip</small></button><div class="row"><button class="btn" id="ll-prev">◀</button><button class="btn gold" id="ll-say">🔊 Hear it</button><button class="btn" id="ll-next">▶</button></div><p class="soft">Card ${i + 1} of ${words.length}. (The voice comes from your device, and some devices may not have a ${L.name} voice.)</p>`;
+      document.getElementById("ll-card").addEventListener("click", () => { flip = !flip; draw(); });
+      document.getElementById("ll-say").addEventListener("click", () => llSay(w, L.lang));
+      document.getElementById("ll-prev").addEventListener("click", () => { i = (i - 1 + words.length) % words.length; flip = false; draw(); });
+      document.getElementById("ll-next").addEventListener("click", () => { i = (i + 1) % words.length; flip = false; draw(); }); };
+    draw();
+  } else {
+    let i = 0, sc = 0; const qs = shuffle(words.slice());
+    const show = () => { if (i >= qs.length) { box.innerHTML = `<div class="sl-card"><h3>${sc === qs.length ? "🏆 ¡Perfecto!" : "🎉 Great job!"}</h3><p>You got ${sc} of ${qs.length}.</p><button class="btn go" id="ll-a">Again</button></div>`; document.getElementById("ll-a").addEventListener("click", () => startLanguageLab(lc, cat, "quiz")); return; }
+      const [w, en] = qs[i], opts = shuffle([en, ...shuffle(words.filter(x => x[1] !== en)).slice(0, 3).map(x => x[1])]);
+      box.innerHTML = `<div class="sl-card"><p class="soft">${i + 1} of ${qs.length}</p><h3>What does <b>“${w}”</b> mean? <button class="btn mini" id="ll-say">🔊</button></h3><div class="na-chips">${opts.map(o => `<button class="chip" data-o="${esc(o)}">${o}</button>`).join("")}</div><p id="ll-r"></p></div>`;
+      llSay(w, L.lang); document.getElementById("ll-say").addEventListener("click", () => llSay(w, L.lang));
+      box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { const ok = b.dataset.o === en; if (ok) { sc++; sfx.right(); } else sfx.wrong(); box.querySelectorAll("[data-o]").forEach(x => x.disabled = true); document.getElementById("ll-r").innerHTML = `${ok ? "✅" : "❌"} “${w}” means <b>${en}</b>. <button class="btn mini" id="ll-n">Next</button>`; document.getElementById("ll-n").addEventListener("click", () => { i++; show(); }); })); };
+    show();
+  }
+}
+
+// 🌍 World Explorer
+function startWorldExplorer(tab = "flags") {
+  appScreen("🌍 World Explorer", `<h2>🌍 World Explorer</h2>${naTabs([["flags", "🏳️ Flag quiz"], ["capitals", "🏛️ Capitals quiz"], ["cont", "🗺️ Which continent?"], ["atlas", "📖 Atlas"]], tab)}<div id="we"></div>`);
+  bindTabs(startWorldExplorer);
+  const box = document.getElementById("we"), C = HIPPO_COUNTRIES;
+  if (tab === "atlas") {
+    const conts = [...new Set(C.map(c => c[3]))];
+    box.innerHTML = conts.map(ct => `<details class="we-cont"><summary>${ct} (${C.filter(c => c[3] === ct).length})</summary><div class="we-list">${C.filter(c => c[3] === ct).map(([n, cc, cap]) => `<span>${flagOf(cc)} <b>${n}</b> · ${cap}</span>`).join("")}</div></details>`).join("");
+    return;
+  }
+  let i = 0, sc = 0, streak = 0, best = store.get("we_best_" + tab, 0); const qs = shuffle(C.slice()).slice(0, 10);
+  const show = () => { if (i >= qs.length) { if (sc > best) store.set("we_best_" + tab, sc); box.innerHTML = `<div class="sl-card"><h3>🌍 Trip complete!</h3><p>You got <b>${sc} of 10</b>.${sc > best ? " 🏆 New best!" : ` Best: ${best}.`}</p><button class="btn go" id="we-a">Travel again</button></div>`; document.getElementById("we-a").addEventListener("click", () => startWorldExplorer(tab)); return; }
+    const [n, cc, cap, ct] = qs[i]; let q, a, opts;
+    if (tab === "flags") { q = `<div class="we-flag">${flagOf(cc)}</div>Which country's flag is this?`; a = n; opts = shuffle([n, ...shuffle(C.filter(c => c[0] !== n)).slice(0, 3).map(c => c[0])]); }
+    else if (tab === "capitals") { q = `What is the capital of <b>${flagOf(cc)} ${n}</b>?`; a = cap; opts = shuffle([cap, ...shuffle(C.filter(c => c[2] !== cap)).slice(0, 3).map(c => c[2])]); }
+    else { q = `Which continent is <b>${flagOf(cc)} ${n}</b> in?`; a = ct; opts = shuffle([...new Set(C.map(c => c[3]))]).filter(x => x !== ct).slice(0, 3); opts = shuffle([ct, ...opts]); }
+    box.innerHTML = `<div class="sl-card"><p class="soft">${i + 1} of 10 · Score ${sc} · 🔥 Streak ${streak}</p><h3>${q}</h3><div class="na-chips">${opts.map(o => `<button class="chip" data-o="${esc(o)}">${o}</button>`).join("")}</div><p id="we-r"></p></div>`;
+    box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { const ok = b.dataset.o === a; if (ok) { sc++; streak++; sfx.right(); } else { streak = 0; sfx.wrong(); } box.querySelectorAll("[data-o]").forEach(x => x.disabled = true); document.getElementById("we-r").innerHTML = `${ok ? "✅" : "❌"} ${flagOf(cc)} <b>${n}</b>: capital ${cap}, in ${ct}. <button class="btn mini" id="we-n">Next</button>`; document.getElementById("we-n").addEventListener("click", () => { i++; show(); }); })); };
+  show();
+}
+
+// 💬 Comic Creator
+const CC_CHARS = ["🦛", "🐶", "🐱", "🦊", "🐸", "🐼", "🦁", "🐧", "🤖", "👽", "🧙", "🦸", "👻", "🐉", "🧑", "👧"];
+const CC_BGS = [["🌳 Park", "linear-gradient(#8fd3ff,#c8f0ff 60%,#7ccf6b 61%)"], ["🏫 School", "linear-gradient(#f2e3c6,#e3cfa8 70%,#a06c3a 71%)"], ["🌌 Space", "radial-gradient(circle at 30% 30%,#3a2a7a,#0a0626)"], ["🌊 Beach", "linear-gradient(#8fd3ff,#ffe8a8 70%,#f2c46d 71%)"], ["🏰 Castle", "linear-gradient(#ff9e6d,#c5609a 60%,#5a3a6a 61%)"], ["🌙 Night", "linear-gradient(#0b1033,#2a1d5c)"]];
+const CC_IDEAS = ["A hippo opens a bakery, but every cake comes out bouncy.", "A robot tries to learn how to tell a joke.", "A dragon is scared of a tiny mouse.", "Two aliens visit Earth and think a car wash is a spa.", "A ghost just wants someone to play board games with.", "A penguin moves to the beach.", "A cat becomes the mayor of the town."];
+function startComicCreator() {
+  let c = store.get("cc_cur", null) || { title: "My Comic", panels: [0, 1, 2].map(i => ({ bg: i % CC_BGS.length, chars: [["🦛", i === 0 ? "Hi! I'm Hippo!" : ""], ["🐶", i === 1 ? "Want to go on an adventure?" : ""]] })) };
+  const save = () => store.set("cc_cur", c);
+  const draw = () => {
+    appScreen("💬 Comic Creator", `<h2>💬 Comic Creator</h2><p class="soft">Make a 3-panel comic! Pick a background, characters and what they say. <button class="btn mini" id="cc-idea">💡 Give me an idea</button></p><p id="cc-ideatext" class="cc-idea"></p>
+      <input class="cc-title" id="cc-title" value="${esc(c.title)}" aria-label="Comic title">
+      <div class="cc-strip" id="cc-strip"></div>
+      <div class="cc-edit">${c.panels.map((p, i) => `<div class="sl-card"><h3>Panel ${i + 1}</h3><label class="sl-sl">Background <select data-bg="${i}">${CC_BGS.map((b, k) => `<option value="${k}" ${k === p.bg ? "selected" : ""}>${b[0]}</option>`).join("")}</select></label>${p.chars.map(([e, t], k) => `<div class="cc-row"><select data-ch="${i}-${k}">${CC_CHARS.map(x => `<option ${x === e ? "selected" : ""}>${x}</option>`).join("")}</select><input data-tx="${i}-${k}" value="${esc(t)}" maxlength="60" placeholder="What do they say?"></div>`).join("")}</div>`).join("")}</div>
+      <button class="btn gold" id="cc-new">📄 New blank comic</button>`);
+    const strip = () => { document.getElementById("cc-strip").innerHTML = c.panels.map(p => `<div class="cc-panel" style="background:${CC_BGS[p.bg][1]}">${p.chars.map(([e, t], k) => `<div class="cc-ch" style="left:${k ? 58 : 8}%">${t ? `<span class="cc-bub">${esc(t)}</span>` : ""}<i>${e}</i></div>`).join("")}</div>`).join(""); };
+    strip();
+    document.getElementById("cc-idea").addEventListener("click", () => { document.getElementById("cc-ideatext").textContent = "💡 " + rPick(CC_IDEAS); });
+    document.getElementById("cc-title").addEventListener("input", e => { c.title = e.target.value; save(); });
+    $app.querySelectorAll("[data-bg]").forEach(s => s.addEventListener("change", () => { c.panels[+s.dataset.bg].bg = +s.value; save(); strip(); }));
+    $app.querySelectorAll("[data-ch]").forEach(s => s.addEventListener("change", () => { const [i, k] = s.dataset.ch.split("-").map(Number); c.panels[i].chars[k][0] = s.value; save(); strip(); }));
+    $app.querySelectorAll("[data-tx]").forEach(s => s.addEventListener("input", () => { const [i, k] = s.dataset.tx.split("-").map(Number); c.panels[i].chars[k][1] = s.value; save(); strip(); }));
+    document.getElementById("cc-new").addEventListener("click", () => { c = { title: "My Comic", panels: [0, 1, 2].map(i => ({ bg: i, chars: [["🦛", ""], ["🐱", ""]] })) }; save(); draw(); });
+  };
+  draw();
+}
+
+// 🧘 Calm Corner
+function startCalmCorner(tab = "breathe") {
+  appScreen("🧘 Calm Corner", `<h2>🧘 Calm Corner</h2>${naTabs([["breathe", "🫧 Breathe"], ["mood", "😊 How do I feel?"], ["thanks", "🙏 Thankful jar"]], tab)}<div id="cc"></div>`);
+  bindTabs(startCalmCorner);
+  const box = document.getElementById("cc");
+  if (tab === "breathe") {
+    const kinds = { box: ["Box breathing", [["Breathe in", 4], ["Hold", 4], ["Breathe out", 4], ["Hold", 4]]], hippo: ["Hippo breaths", [["Big breath in", 4], ["Slow breath out", 6]]], balloon: ["Balloon belly", [["Fill your belly like a balloon", 5], ["Let the air out slowly", 5]]] };
+    let k = "hippo", running = false;
+    const draw = () => { box.innerHTML = `<p class="soft">Find a comfy spot. Follow the circle as it grows and shrinks.</p><div class="na-chips">${Object.entries(kinds).map(([id, v]) => `<button class="chip${id === k ? " on" : ""}" data-k="${id}">${v[0]}</button>`).join("")}</div><div class="cb-wrap"><div class="cb-ball" id="cb-ball">🦛</div></div><p class="cb-say" id="cb-say">Press start when you're ready.</p><button class="btn go" id="cb-go">${running ? "⏹ Stop" : "▶ Start"}</button>`;
+      box.querySelectorAll("[data-k]").forEach(b => b.addEventListener("click", () => { k = b.dataset.k; naCleanup(); running = false; draw(); }));
+      document.getElementById("cb-go").addEventListener("click", () => { running = !running; naCleanup(); draw(); if (running) run(); }); };
+    const run = () => { const steps = kinds[k][1]; let s = 0, rounds = 0; const go = () => { const [txt, sec] = steps[s], ball = document.getElementById("cb-ball"), say = document.getElementById("cb-say"); if (!ball) return; const grow = /in|Fill/i.test(txt), hold = /Hold/.test(txt); ball.style.transition = `transform ${sec}s ease-in-out`; if (!hold) ball.style.transform = `scale(${grow ? 1.8 : 1})`; say.textContent = `${txt}… ${sec}`; let left = sec; naTimer(setInterval(() => { left--; if (left > 0 && document.getElementById("cb-say")) document.getElementById("cb-say").textContent = `${txt}… ${left}`; }, 1000)); naNote(grow ? 392 : 262, sec * .9, "sine", .05); s = (s + 1) % steps.length; if (!s) rounds++; if (rounds < 5) naTimer(setTimeout(go, sec * 1000)); else naTimer(setTimeout(() => { if (document.getElementById("cb-say")) document.getElementById("cb-say").textContent = "🌟 Nice job. How do you feel now?"; }, sec * 1000)); }; go(); };
+    draw();
+  } else if (tab === "mood") {
+    const moods = [["😊", "Happy", "Awesome! Share your good mood: give someone a compliment today!"], ["😢", "Sad", "It's okay to feel sad. Try talking to someone you trust, or draw how you feel. Hugs help too."], ["😠", "Angry", "Try 5 slow Hippo breaths. Squeeze a pillow, then let go. Angry feelings pass, like clouds."], ["😟", "Worried", "Name 5 things you can see, 4 you can touch, 3 you can hear. Then tell a grown-up what's on your mind."], ["😴", "Tired", "Your brain might need rest! A glass of water, a stretch, or an early bedtime can help."], ["🤩", "Excited", "Woohoo! Channel that energy: dance to a song in Music Maker!"], ["😐", "Bored", "Try something new: make a comic, a pixel picture, or a Sudoku!"], ["😌", "Calm", "Lovely. Notice how calm feels, so you can find it again later."]];
+    const log = store.get("cc_moods", []);
+    box.innerHTML = `<h3>How are you feeling right now?</h3><div class="cm-grid">${moods.map(([e, n], i) => `<button class="cm-btn" data-m="${i}"><i>${e}</i>${n}</button>`).join("")}</div><div id="cm-tip"></div><h3>📅 My recent feelings</h3><p class="soft">${log.length ? log.slice(0, 10).map(x => x.e).join(" ") : "Nothing yet."}</p><p class="soft">All feelings are okay! If you ever feel unsafe or very sad, talk to a grown-up you trust.</p>`;
+    box.querySelectorAll("[data-m]").forEach(b => b.addEventListener("click", () => { const [e, n, tip] = moods[+b.dataset.m]; log.unshift({ e, t: Date.now() }); store.set("cc_moods", log.slice(0, 30)); document.getElementById("cm-tip").innerHTML = `<div class="sl-card"><p><b>${e} ${n}.</b> ${tip}</p></div>`; }));
+  } else {
+    const jar = store.get("cc_thanks", []);
+    box.innerHTML = `<p class="soft">Write one thing you're thankful for. Thinking about good things helps your brain feel happier!</p><div class="row"><input id="ct-in" class="cc-title" maxlength="80" placeholder="I'm thankful for…"><button class="btn go" id="ct-add">🫙 Add</button></div><div class="ct-jar">${jar.map(x => `<span>💛 ${esc(x)}</span>`).join("") || `<p class="soft">Your jar is empty. Add something!</p>`}</div>${jar.length ? `<button class="btn" id="ct-pick">🎲 Pull one out</button><p id="ct-p"></p>` : ""}`;
+    document.getElementById("ct-add").addEventListener("click", () => { const v = document.getElementById("ct-in").value.trim(); if (!v) return; jar.unshift(v); store.set("cc_thanks", jar.slice(0, 50)); sfx.right(); startCalmCorner("thanks"); });
+    document.getElementById("ct-pick")?.addEventListener("click", () => { document.getElementById("ct-p").textContent = "💛 " + rPick(jar); });
+  }
+}
+NEW_APPS.push(
+  { id: "music", emoji: "🎹", name: "Music Maker", desc: "Play piano, learn songs note by note, and make your own beats.", start: () => startMusicMaker(), isNew: true },
+  { id: "science", emoji: "🔬", name: "Science Lab", desc: "Sink or float, color mixing, a volcano and a plant you grow.", start: () => startScienceLab(), isNew: true },
+  { id: "space", emoji: "🌌", name: "Space Explorer", desc: "Watch the planets orbit, find your weight on Mars, and take a space quiz.", start: () => startSpaceExplorer(), isNew: true },
+  { id: "money", emoji: "💰", name: "Money Smart", desc: "Savings goals, needs vs. wants, a budget game and growing money.", start: () => startMoneySmart(), isNew: true },
+  { id: "pixel", emoji: "🎨", name: "Pixel Art Studio", desc: "Paint pixel pictures like old video games, and save a gallery.", start: () => startPixelArt(), isNew: true },
+  { id: "puzzle", emoji: "🧩", name: "Puzzle Room", desc: "Sudoku, Tower of Hanoi and Lights Out brain puzzles.", start: () => startPuzzleRoom(), isNew: true },
+  { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab(), isNew: true },
+  { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer(), isNew: true },
+  { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
+  { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
+);
 function startMathCenter() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   keyHandler = null;
@@ -8863,7 +9243,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
