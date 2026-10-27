@@ -277,6 +277,45 @@
   body[data-scene]::before { inset: -40px; animation: sceneDrift 16s linear infinite, sceneSway 3.5s ease-in-out infinite alternate; will-change: transform, background-position; }
   @keyframes sceneDrift { to { background-position: 320px 290px; } }
   @keyframes sceneSway { from { transform: translateX(-22px) rotate(-1deg); } to { transform: translateX(22px) rotate(1deg); } }
+  .hp-lv.next { border-color: #ffe066; box-shadow: 0 0 0 2px rgba(255,224,102,.4); }
+  .cg-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; margin: 6px 0; } .cg-lv { display: flex; gap: 4px; } .cg-bar .chip.on { background: #ffe066; color: #222; }
+  .un-opp { text-align: center; font-size: .95rem; } .un-opp em { color: #ffe066; font-weight: 800; font-style: normal; } .un-backs i { display: inline-block; width: 10px; height: 16px; margin-left: -3px; border-radius: 2px; background: #3a0f6a; border: 1px solid #fff; vertical-align: middle; }
+  .un-mid { display: flex; gap: 16px; align-items: center; justify-content: center; margin: 10px 0; } .un-now { font-size: .9rem; text-align: center; } .un-log { text-align: center; min-height: 1.4em; }
+  .un-card { position: relative; width: 50px; height: 74px; border-radius: 10px; border: 3px solid #fff; background: var(--c, #3a0f6a); color: #fff; font: 800 1.35rem/1 system-ui, sans-serif; text-shadow: 0 1px 2px #000; display: inline-grid; place-items: center; cursor: pointer; padding: 0; transition: transform .12s; }
+  .un-card small { position: absolute; bottom: 4px; font-size: .55rem; } .un-card.big { width: 64px; height: 94px; font-size: 1.8rem; cursor: default; } .un-card.back { background: repeating-linear-gradient(45deg, #3a0f6a 0 6px, #5a1f9a 6px 12px); }
+  .un-card.ok { transform: translateY(-8px); box-shadow: 0 0 0 3px #ffe066, 0 6px 12px rgba(0,0,0,.4); } .un-card:disabled { cursor: default; opacity: .9; }
+  .un-hand { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding-top: 10px; } .un-pick { display: flex; gap: 10px; justify-content: center; align-items: center; margin: 8px 0; } .un-dot { width: 42px; height: 42px; border-radius: 50%; border: 3px solid #fff; cursor: pointer; }
+  .bs-wrap { display: grid; gap: 12px; } @media (min-width: 640px) { .bs-wrap { grid-template-columns: 1fr 1fr; } } .bs-wrap h3 { margin: 4px 0; font-size: 1rem; }
+  .bs-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #0b3d6b; padding: 3px; border-radius: 8px; } .bs-c { aspect-ratio: 1; border: 0; border-radius: 3px; background: #1f6fb2; color: #fff; font-size: 1rem; padding: 0; display: grid; place-items: center; }
+  .bs-grid.enemy .bs-c:not(:disabled) { cursor: crosshair; } .bs-grid.enemy .bs-c:not(:disabled):hover { background: #3d8fd6; } .bs-c.ship { background: #8a9bb0; } .bs-c.hit { background: #e63946; } .bs-c.miss { background: #5aa0d8; } .bs-c.sunk { background: #5a1018; }
+  .hc-q { min-width: 0; } .hc-opts .btn { min-width: 0; overflow-wrap: anywhere; } .hc-q h3 { overflow-wrap: anywhere; }
+  .hc-wrap { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 10px; align-items: start; } .hc-ladder { display: flex; flex-direction: column; gap: 2px; } .hc-rung { display: flex; justify-content: space-between; align-items: center; padding: 1px 6px; border-radius: 6px; background: rgba(255,255,255,.08); font-size: .75rem; min-height: 22px; } .hc-rung.grad { background: #ffe066; color: #222; font-weight: 800; } .hc-rung b { font-size: .95rem; }
+  .hc-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .hc-opts .btn { white-space: normal; } .btn.bad { background: #e63946; color: #fff; }
+  .rk-table { display: flex; flex-wrap: wrap; gap: 8px; min-height: 60px; padding: 8px; border-radius: 12px; background: #1d5c3c; margin: 8px 0; } .rk-set { display: flex; gap: 2px; padding: 4px; border-radius: 8px; border: 2px dashed rgba(255,255,255,.4); background: rgba(0,0,0,.15); cursor: pointer; }
+  .rk-t { display: inline-grid; place-items: center; width: 30px; height: 40px; border-radius: 6px; background: #fff8e7; border: 1px solid #c9b88f; font: 800 1.05rem system-ui, sans-serif; padding: 0; box-shadow: 0 2px 0 #b9a77a; } button.rk-t { cursor: pointer; } .rk-t.sel { transform: translateY(-6px); box-shadow: 0 0 0 3px #ffe066; }
+  .rk-rack { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; padding: 8px; border-radius: 10px; background: #6b4423; } .rk-btns { flex-wrap: wrap; justify-content: center; }
+  .ck-board { display: grid; grid-template-columns: repeat(8, 1fr); max-width: 420px; margin: 0 auto; border: 6px solid #5a3418; border-radius: 6px; } .ck-c { aspect-ratio: 1; border: 0; padding: 0; background: #f0d9b5; display: grid; place-items: center; } .ck-c.dark { background: #8b5a2b; }
+  .ck-c.sel { box-shadow: inset 0 0 0 3px #ffe066; } .ck-c.dest { background: #3bb273; cursor: pointer; } .ck-c.can { cursor: pointer; } .ck-c.can .ck-p { box-shadow: 0 0 0 3px #ffe066; }
+  .ck-p { width: 78%; height: 78%; border-radius: 50%; display: grid; place-items: center; font-size: .9rem; } .ck-p.red { background: radial-gradient(circle at 35% 35%, #ff7b7b, #c1121f); border: 2px solid #7a0a12; } .ck-p.blk { background: radial-gradient(circle at 35% 35%, #666, #111); border: 2px solid #000; }
+  .yz-dice { display: flex; gap: 8px; justify-content: center; margin: 8px 0; } .yz-d { display: flex; flex-direction: column; align-items: center; font-size: 3rem; line-height: 1; background: none; border: 0; color: #fff; padding: 0; cursor: pointer; } .yz-d small { font-size: .6rem; height: 1em; color: #ffe066; } .yz-d.held { color: #ffe066; }
+  .yz-card { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: .9rem; } .yz-card td, .yz-card th { padding: 3px 6px; border-bottom: 1px solid rgba(255,255,255,.12); text-align: center; } .yz-card td:first-child { text-align: left; } .yz-sub td { background: rgba(255,255,255,.07); }
+  .mc-board { display: flex; gap: 6px; align-items: stretch; padding: 10px; border-radius: 40px; background: linear-gradient(#a0612d, #6b3d16); } .mc-store { width: 52px; border-radius: 26px; background: rgba(0,0,0,.3); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1.2rem; }
+  .mc-rows { flex: 1; display: flex; flex-direction: column; gap: 6px; } .mc-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; } .mc-pit { aspect-ratio: 1; border-radius: 50%; border: 0; background: rgba(0,0,0,.3); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px; }
+  .mc-pit span { font-size: .45rem; line-height: 1; color: #ffd6a5; word-break: break-all; } .mc-pit:not(:disabled) { cursor: pointer; box-shadow: 0 0 0 2px #ffe066; }
+  .gf-card { width: 44px; height: 62px; border-radius: 8px; border: 2px solid #ccc; background: #fff; color: #111; font: 800 1.1rem system-ui, sans-serif; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; } .gf-card.red { color: #d00; } .gf-book { display: inline-block; padding: 1px 6px; margin: 1px; border-radius: 6px; background: #ffe066; color: #222; font-weight: 800; }
+  .db-grid { display: grid; max-width: 340px; aspect-ratio: 1; margin: 8px auto; } .db-dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; } .db-box { display: grid; place-items: center; font-size: 1.3rem; border-radius: 4px; } .db-box.me { background: rgba(255,79,163,.35); } .db-box.ai { background: rgba(58,123,255,.35); }
+  .db-l { border: 0; padding: 0; background: transparent; cursor: pointer; position: relative; } .db-l::after { content: ""; position: absolute; background: rgba(255,255,255,.15); border-radius: 3px; } .db-l.h::after { left: 0; right: 0; top: 4px; height: 6px; } .db-l.v::after { top: 0; bottom: 0; left: 4px; width: 6px; }
+  .db-l:not(:disabled):hover::after { background: #ffe066; } .db-l.me::after { background: #ff4fa3; } .db-l.ai::after { background: #3a7bff; } .db-l:disabled { cursor: default; }
+  .ch-board { display: grid; grid-template-columns: repeat(8, 1fr); max-width: 440px; margin: 0 auto; border: 6px solid #4a2c14; border-radius: 6px; } .ch-c { aspect-ratio: 1; border: 0; padding: 0; background: #f0d9b5; display: grid; place-items: center; position: relative; cursor: pointer; } .ch-c.dark { background: #b58863; } .ch-c:disabled { cursor: default; }
+  .ch-c.last { background: #e8d36a; } .ch-c.dark.last { background: #c9ad44; } .ch-c.sel { box-shadow: inset 0 0 0 3px #3a7bff; } .ch-c.check { background: radial-gradient(circle, #ff3b3b, #b00 70%); }
+  .ch-c.dest::after { content: ""; width: 28%; height: 28%; border-radius: 50%; background: rgba(30,120,40,.6); } .ch-c.take { box-shadow: inset 0 0 0 4px rgba(30,150,40,.8); }
+  .ch-p { font-size: clamp(1.4rem, 8vw, 2.4rem); line-height: 1; } .ch-p.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 2px #000, 0 1px 0 #000; } .ch-p.b { color: #111; text-shadow: 0 0 2px #fff8; }
+  .ch-cap { min-height: 1.4em; text-align: center; font-size: 1.1rem; letter-spacing: 1px; } .ch-cap.blk { color: #111; text-shadow: 0 0 2px #fff; } .ch-cap.wht { color: #fff; text-shadow: 0 0 2px #000; }
+  .mc-pit { aspect-ratio: auto !important; height: 54px; border-radius: 45% !important; overflow: hidden; } .mc-pit b { font-size: 1rem; }
+  .bs-grid, .ck-board, .ch-board { grid-template-columns: repeat(8, minmax(0, 1fr)) !important; } .mc-row { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; } .bs-wrap > div, .mc-rows { min-width: 0; }
+  .bs-c, .mc-pit, .ck-c, .ch-c, .db-l, .un-card, .gf-card, .rk-t, .yz-d { min-width: 0; min-height: 0; box-sizing: border-box; } .mc-store { flex: 0 0 44px; width: 44px; } .mc-board { padding: 8px 6px; gap: 4px; }
+  .cg-bar .chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; font-size: .85rem; min-height: 0; width: auto; border-radius: 999px; } .cg-bar .cg-lv .chip { flex-direction: row; }
+  .cg-pl select { font: inherit; padding: 3px 6px; border-radius: 8px; background: #1b1640; color: #fff; border: 1px solid var(--line); max-width: 170px; }
   .hp-levels { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; } .hp-lv { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px; border-radius: 14px; border: 2px solid var(--line); background: rgba(255,255,255,.06); color: inherit; font: inherit; cursor: pointer; } .hp-lv span { font-size: .8rem; opacity: .8; } .hp-lv.locked { opacity: .45; cursor: not-allowed; }
   .hp-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .95rem; margin-bottom: 8px; }
   .hp-board { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, minmax(54px, auto)); gap: 3px; background: #0f5a3a; padding: 4px; border-radius: 12px; }
@@ -7962,6 +8001,7 @@ function hippoAnswer(qRaw) {
   const q = qRaw.toLowerCase().replace(/[?!]/g, "").replace(/,(?=\d{3})/g, "").trim();
   let m;
   const R = (topic, icon, text, why, pic, action) => ({ topic, icon, text, why, pic, action });
+  { const app = q.length < 60 && !/^(what|why|how|who|when|where) (is|are|was|do|does|did)\b/.test(q) && appSearch(q); if (app) return R(app.name, app.emoji, `${app.emoji} ${app.name} is in the 📱 App-App!`, app.desc, hBig(app.emoji, "#2e1a4a", app.name), { label: `${app.emoji} Open ${app.name}`, fn: () => app.start() }); }
   // ➗ newer math and facts (checked first so the general patterns don't grab them)
   if ((m = q.match(/^(?:what is )?(\d+) ?(?:÷|\/|divided by) ?(\d+),? with (?:a )?remainders?$/))) { const a = +m[1], b = +m[2]; if (b > 0) { const qt = Math.floor(a / b), r = a % b; return R("Remainders", "➗", `${fmt(a)} ÷ ${b} = ${fmt(qt)} R ${r}`, `${b} fits into ${fmt(a)} ${fmt(qt)} whole times (${b} × ${fmt(qt)} = ${fmt(b * qt)}), with ${r} left over. The leftover is called the remainder.`, a <= 60 && b <= 12 ? HV(`<rect width="320" height="180" fill="#fff"/>` + Array.from({ length: a }, (_, k) => { const g = Math.floor(k / b), left = g >= qt, x = 18 + (g % 8) * 37 + (k % b % 3) * 10, y = 30 + Math.floor(g / 8) * 60 + Math.floor(k % b / 3) * 10; return `<circle cx="${x}" cy="${y}" r="4" fill="${left ? "#e63946" : "#2a9d8f"}"/>`; }).join("") + hT(160, 170, `${qt} groups of ${b}, ${r} left over (red)`, { s: 12, b: 1 })) : hCard(`${fmt(a)} ÷ ${b} = ${fmt(qt)} R ${r}`, [`${b} × ${fmt(qt)} = ${fmt(b * qt)}`, `${fmt(a)} − ${fmt(b * qt)} = ${r} left over`])); } }
   if ((m = q.match(/^(?:what is )?(-?\d+) ?([+\-−]) ?(-?\d+)$/)) && /-/.test(m[1] + m[3])) { const a = +m[1], b = (m[2] === "+" ? 1 : -1) * +m[3], r = a + b; return R("Negative numbers", "➖", `${m[1]} ${m[2] === "+" ? "+" : "−"} ${m[3].replace("-", "(−") + (m[3].startsWith("-") ? ")" : "")} = ${r}`.replace(/-/g, "−"), b < 0 ? `Adding a negative (or taking away) means moving LEFT on the number line ${Math.abs(b)} steps, from ${a} to ${r}.` : `Adding a positive means moving RIGHT on the number line ${b} steps, from ${a} to ${r}.`, hNumberLine(Math.min(a, r, 0) - 2, Math.max(a, r, 0) + 2, [[a, "#4361ee"], [r, "#e63946"]], [[a, r, (b < 0 ? "" : "+") + b, "#e63946"]])); }
@@ -8853,17 +8893,18 @@ function hpPay(i, amt, to) {   // sells houses, then properties (half price), if
 }
 function hpJail(i) { HP.pl[i].pos = 6; HP.pl[i].jail = 1; hpLog(`${HP.pl[i].e} is stuck in the Mud Pit for a turn! 🟤`); }
 function startHippopoly(level) {
-  const lv = store.get("hp_level", 1), wins = store.get("hp_wins", {});
+  const lv = store.get("hp_level_" + cgPlayer(), 1), wins = store.get("hp_wins_" + cgPlayer(), {});
   if (!level) {
-    appScreen("🎲 Hippopoly", `<h2>🎲 Hippopoly</h2><p class="soft">Buy properties, build houses and collect rent! You 🦛 vs. the Computer 🤖. Bankrupt the computer, or be the richest after 20 rounds, to win. Beat a level to unlock the next one!</p>
-      <div class="hp-levels">${HP_LEVELS.map(l => `<button class="hp-lv${l.L > lv ? " locked" : ""}" data-l="${l.L}" ${l.L > lv ? "disabled" : ""}><b>${l.L > lv ? "🔒" : wins[l.L] ? "🏆" : "🤖"} Level ${l.L}</b><span>${l.desc}</span></button>`).join("")}</div>
+    appScreen("🎲 Hippopoly", `<h2>🎲 Hippopoly</h2><div class="cg-bar">${cgPick()}</div><p class="soft">Buy properties, build houses and collect rent! You 🦛 vs. the Computer 🤖. Bankrupt the computer, or be the richest after 20 rounds, to win. Pick any level you like, or skip ahead to a harder one!</p>
+      <div class="hp-levels">${HP_LEVELS.map(l => `<button class="hp-lv${l.L === lv ? " next" : ""}" data-l="${l.L}"><b>${wins[l.L] ? "🏆" : "🤖"} Level ${l.L}</b><span>${l.desc}</span></button>`).join("")}</div>
       <details class="sl-card"><summary><b>📜 How to play</b></summary><p>Roll the dice and move around the board. Land on an empty property to buy it. If you land on the computer's property, you pay rent. Own a whole color set to double the rent, then build houses 🏠 to make rent MUCH bigger. Pass GO to collect $200. Hippo Surprise cards can be good or bad! Doubles let you roll again.</p></details>`);
     $app.querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => startHippopoly(+b.dataset.l)));
+    cgBindPick(() => startHippopoly());
     return;
   }
   const cfg = HP_LEVELS[level - 1];
   HP = { level, cfg, turn: 0, round: 1, maxRounds: 20, over: null, busy: false, doubles: 0, log: [], pend: null,
-    pl: [{ e: "🦛", name: "You", cash: 1000, pos: 0, jail: 0 }, { e: "🤖", name: "Computer", cash: 1000 + cfg.bonus, pos: 0, jail: 0 }],
+    pl: [{ e: "🦛", name: cgName(), cash: 1000, pos: 0, jail: 0 }, { e: "🤖", name: "Computer", cash: 1000 + cfg.bonus, pos: 0, jail: 0 }],
     props: HP_BOARD.map((sq, i) => sq[0] === "p" ? { i, name: sq[1], g: sq[2], price: HP_GROUPS[sq[2]][1] + (HP_BOARD.findIndex(x => x[2] === sq[2]) === i ? 0 : 20), owner: null, houses: 0 } : null).filter(Boolean) };
   hpLog(`Level ${level}: ${cfg.desc}. You go first!`);
   appScreen("🎲 Hippopoly", `<div id="hp"></div>`);
@@ -8875,7 +8916,7 @@ function hpDraw() {
   const box = document.getElementById("hp"); if (!box) return;
   const me = HP.pl[0], ai = HP.pl[1], myTurn = HP.turn === 0 && !HP.busy && HP.over === null;
   const buildable = HP.props.filter(p => p.owner === 0 && p.houses < 3 && HP.props.filter(x => x.g === p.g).every(x => x.owner === 0));
-  box.innerHTML = `<div class="hp-top"><span>🦛 You: <b>$${me.cash}</b></span><span>Round ${Math.min(HP.round, HP.maxRounds)} / ${HP.maxRounds} · Level ${HP.level}</span><span>🤖 <b>$${ai.cash}</b></span></div>
+  box.innerHTML = `<div class="hp-top"><span>🦛 ${esc(cgName())}: <b>$${me.cash}</b></span><span>Round ${Math.min(HP.round, HP.maxRounds)} / ${HP.maxRounds} · Level ${HP.level}</span><span>🤖 <b>$${ai.cash}</b></span></div>
     <div class="hp-board">${HP_BOARD.map((sq, i) => { const [r, c] = hpCoord(i), p = hpProp(i); return `<div class="hp-sq hp-${sq[0]}${p && p.owner !== null ? " own" + p.owner : ""}" style="grid-row:${r};grid-column:${c}" title="${esc(sq[1])}${p ? ` · $${p.price}` : ""}">${p ? `<i style="background:${HP_GROUPS[p.g][0]}"></i>` : ""}<small>${p ? esc(p.name) : { go: "GO ➡️", chance: "❓ Surprise", pit: "🟤 Mud Pit", bonus: "💰 +$50", rest: "🪷 Rest", gopit: "👮 To Pit", tax: "💸 Tax" }[sq[0]]}</small>${p ? `<em>${p.houses ? "🏠".repeat(p.houses) : p.owner === null ? "$" + p.price : ""}</em>` : ""}<span class="hp-tok">${HP.pl.map((pl, k) => pl.pos === i ? pl.e : "").join("")}</span></div>`; }).join("")}
       <div class="hp-mid"><div class="hp-dice" id="hp-dice">${HP.dice ? HP.dice.map(d => "⚀⚁⚂⚃⚄⚅"[d - 1]).join(" ") : "🎲 🎲"}</div>
         ${HP.over !== null ? `<h3>${HP.over === 0 ? "🏆 You win!" : "🤖 The computer wins!"}</h3><button class="btn go" id="hp-menu">Levels</button><button class="btn" id="hp-again">Play again</button>`
@@ -8926,11 +8967,685 @@ function hpEnd(dbl) {
   if (HP.over === null && HP.pl.some((_, i) => HP.pl[i].cash < 0)) HP.over = HP.pl[0].cash < 0 ? 1 : 0;
   if (HP.over === null && dbl && HP.doubles < 2) { HP.doubles++; hpLog(`${HP.pl[HP.turn].e} rolls again!`); } else { HP.doubles = 0; if (HP.turn === 1) HP.round++; HP.turn = 1 - HP.turn; }
   if (HP.over === null && HP.round > HP.maxRounds) { const a = hpWorth(0), b = hpWorth(1); HP.over = a >= b ? 0 : 1; hpLog(`⏰ 20 rounds done! You're worth $${a}, the computer $${b}.`); }
-  if (HP.over !== null) { if (HP.over === 0) { const w = store.get("hp_wins", {}); w[HP.level] = 1; store.set("hp_wins", w); if (store.get("hp_level", 1) <= HP.level && HP.level < 10) store.set("hp_level", HP.level + 1); sfx.buy(); hpLog(HP.level < 10 ? `🔓 Level ${HP.level + 1} unlocked!` : "👑 You beat the Hippo Mogul! You're the champion!"); } else sfx.wrong(); return hpDraw(); }
+  if (HP.over !== null) { if (HP.over === 0) { const pk = cgPlayer(), w = store.get("hp_wins_" + pk, {}); w[HP.level] = 1; store.set("hp_wins_" + pk, w); if (store.get("hp_level_" + pk, 1) <= HP.level && HP.level < 10) store.set("hp_level_" + pk, HP.level + 1); sfx.buy(); hpLog(HP.level < 10 ? `🏆 ${cgName()} beat level ${HP.level}! Try level ${HP.level + 1}!` : "👑 You beat the Hippo Mogul! You're the champion!"); } else sfx.wrong(); return hpDraw(); }
   hpDraw();
   if (HP.turn === 1) { HP.busy = true; naTimer(setTimeout(() => { HP.busy = false; hpAiBuild(); hpRoll(); }, 900)); }
 }
 NEW_APPS.push({ id: "hippopoly", emoji: "🎲", name: "Hippopoly", desc: "A property-trading board game: you vs. the computer, with 10 levels.", start: () => startHippopoly(), isNew: true });
+
+// 🎲 Classic games vs. the computer (shared bits: difficulty, win counts)
+const CG_LVLS = [["easy", "😊 Easy"], ["medium", "🙂 Medium"], ["hard", "😈 Hard"]];
+const cgLvl = () => store.get("cg_lvl", "medium");
+const cgSmart = () => ({ easy: .35, medium: .7, hard: 1 })[cgLvl()] || .7;   // chance the computer makes its best move
+// The player picker uses the same players as Bunny Hop Typing, and each player keeps their own wins.
+const cgPlayer = () => { const id = store.get("cg_player", "emmett"); return TY_ACCOUNTS.some(a => a.id === id) ? id : "emmett"; };
+const cgName = () => TY_ACCOUNTS.find(a => a.id === cgPlayer()).name;
+const cgPick = () => `<label class="cg-pl">🙋 Player: <select class="cg-player" aria-label="Who is playing">${TY_ACCOUNTS.map(a => `<option value="${a.id}"${a.id === cgPlayer() ? " selected" : ""}>${esc(a.name)}</option>`).join("")}</select></label>`;
+const cgBindPick = after => $app.querySelectorAll(".cg-player").forEach(sel => sel.addEventListener("change", () => { store.set("cg_player", sel.value); toast(`🙋 Now playing: ${cgName()}`); after(); }));
+const cgScore = id => { const w = (store.get("cg_wins_" + cgPlayer(), {})[id]) || [0, 0, 0]; return `🦛 ${cgName()} ${w[0]} · 🤖 ${w[1]}${w[2] ? ` · 🤝 ${w[2]}` : ""}`; };
+function cgWin(id, who) {   // who: 0 you, 1 computer, 2 tie
+  const key = "cg_wins_" + cgPlayer(), w = store.get(key, {}); w[id] = w[id] || [0, 0, 0]; w[id][who]++; store.set(key, w);
+  if (who === 0) sfx.buy(); else if (who === 1) sfx.wrong();
+  const el = document.getElementById("cg-score"); if (el) el.textContent = cgScore(id);
+}
+function cgScreen(id, label, rules, restart) {
+  appScreen(label, `<h2>${label}</h2><div class="cg-bar">${cgPick()}<span id="cg-score">${cgScore(id)}</span><span class="cg-lv">${CG_LVLS.map(([k, l]) => `<button class="chip${k === cgLvl() ? " on" : ""}" data-cglv="${k}">${l}</button>`).join("")}</span><button class="chip" id="cg-new">🔄 New game</button></div><details class="sl-card"><summary><b>📜 How to play</b></summary><p>${rules}</p></details><div id="cg"></div>`);
+  $app.querySelectorAll("[data-cglv]").forEach(b => b.addEventListener("click", () => { store.set("cg_lvl", b.dataset.cglv); restart(); }));
+  document.getElementById("cg-new").addEventListener("click", restart);
+  cgBindPick(() => { const el = document.getElementById("cg-score"); if (el) el.textContent = cgScore(id); });
+  return document.getElementById("cg");
+}
+
+// 🃏 Uno
+let UN = null;
+const UN_COL = { r: "#e63946", y: "#f4b400", g: "#2e9e5b", b: "#1e6fd8", w: "#222" }, UN_NAME = { r: "red", y: "yellow", g: "green", b: "blue" };
+const unLab = v => ({ S: "⊘", R: "⇄", W: "🌈" })[v] || v;
+const unTop = () => UN.pile[UN.pile.length - 1];
+const unOk = c => c.c === "w" || c.c === UN.color || c.v === unTop().v;
+function unDeck() { const d = []; for (const c of "rygb") { d.push({ c, v: "0" }); for (const v of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "S", "R", "+2"]) d.push({ c, v }, { c, v }); } for (let i = 0; i < 4; i++) d.push({ c: "w", v: "W" }, { c: "w", v: "+4" }); return shuffle(d); }
+function unDraw(who, n = 1) { for (let i = 0; i < n; i++) { if (!UN.deck.length) { const top = UN.pile.pop(); UN.deck = shuffle(UN.pile); UN.pile = [top]; } if (!UN.deck.length) return; UN.hands[who].push(UN.deck.pop()); } }
+function startUno() {
+  cgScreen("uno", "🃏 Uno", "Match the top card by color or by number/symbol. ⊘ Skip and ⇄ Reverse make the computer miss a turn. +2 makes it draw 2. 🌈 Wild lets you pick the color, and Wild +4 also makes it draw 4. Can't play? Tap the deck to draw. First to play all their cards wins!", startUno);
+  UN = { deck: unDeck(), pile: [], hands: [[], []], turn: 0, over: null, pick: null, drew: false, log: "Your turn! Tap a card that matches." };
+  unDraw(0, 7); unDraw(1, 7);
+  let i = UN.deck.findIndex(c => /^\d$/.test(c.v)); UN.pile.push(UN.deck.splice(i, 1)[0]); UN.color = unTop().c;
+  unRender();
+}
+function unRender() {
+  const box = document.getElementById("cg"); if (!box || !UN) return;
+  const ord = "rygbw"; UN.hands[0].sort((a, b) => ord.indexOf(a.c) - ord.indexOf(b.c) || a.v.localeCompare(b.v));
+  const top = unTop(), my = UN.turn === 0 && UN.over === null && !UN.pick, n1 = UN.hands[1].length;
+  box.innerHTML = `<div class="un-opp">🤖 Computer: <span class="un-backs">${"<i></i>".repeat(Math.min(n1, 16))}</span> <b>${n1}</b> card${n1 === 1 ? "" : "s"}${n1 === 1 ? " <em>UNO!</em>" : ""}</div>
+    <div class="un-mid"><button class="un-card back" id="un-deck" ${my && !UN.drew ? "" : "disabled"}>🦛<small>Draw</small></button><div class="un-card big" style="--c:${UN_COL[top.c === "w" ? UN.color : top.c]}">${unLab(top.v)}</div><span class="un-now">Color:<br><b style="color:${UN_COL[UN.color]}">${UN_NAME[UN.color]}</b></span></div>
+    <p class="un-log">${esc(UN.log)}${UN.over === null ? (UN.turn === 0 ? (UN.pick ? "" : " <b>Your turn!</b>") : " 🤖 is thinking…") : ""}</p>
+    ${UN.pick ? `<div class="un-pick">Pick a color: ${[..."rygb"].map(c => `<button class="un-dot" data-col="${c}" style="background:${UN_COL[c]}" aria-label="${UN_NAME[c]}"></button>`).join("")}</div>` : ""}
+    ${UN.over !== null ? `<h3>${UN.over === 0 ? "🏆 You win! UNO-believable!" : "🤖 The computer wins this time."}</h3><button class="btn go" id="un-again">Play again</button>` : ""}
+    ${my && UN.drew ? `<button class="btn" id="un-pass">Keep it & pass</button>` : ""}
+    <div class="un-hand">${UN.hands[0].map((c, i) => `<button class="un-card${my && unOk(c) ? " ok" : ""}" style="--c:${UN_COL[c.c]}" data-i="${i}" ${my ? "" : "disabled"}>${unLab(c.v)}</button>`).join("")}</div>`;
+  box.querySelectorAll("[data-i]").forEach(b => b.addEventListener("click", () => { const c = UN.hands[0][+b.dataset.i]; if (!unOk(c)) { UN.log = "That card doesn't match. Try a glowing card, or draw!"; sfx.wrong(); return unRender(); } unPlay(0, +b.dataset.i); }));
+  document.getElementById("un-deck")?.addEventListener("click", () => { unDraw(0, 1); UN.drew = true; naNote(300, .08, "sine", .08); UN.log = UN.hands[0].some(unOk) ? "You drew a card. Play a glowing card, or keep it & pass." : "You drew a card. No match, so tap Keep it & pass."; unRender(); });
+  document.getElementById("un-pass")?.addEventListener("click", () => { UN.drew = false; UN.log = "You passed."; unNext(0, false); });
+  box.querySelectorAll("[data-col]").forEach(b => b.addEventListener("click", () => { UN.color = b.dataset.col; const a = UN.pick.again; UN.pick = null; UN.log += ` Color is now ${UN_NAME[UN.color]}.`; unNext(0, a); }));
+  document.getElementById("un-again")?.addEventListener("click", startUno);
+}
+const unAiColor = () => { const n = { r: 0, y: 0, g: 0, b: 0 }; UN.hands[1].forEach(c => { if (c.c !== "w") n[c.c]++; }); return Object.keys(n).sort((a, b) => n[b] - n[a] || Math.random() - .5)[0]; };
+function unPlay(who, i) {
+  const c = UN.hands[who].splice(i, 1)[0]; UN.pile.push(c); UN.drew = false;
+  if (c.c !== "w") UN.color = c.c;
+  naNote(who ? 330 : 520, .1, "triangle", .1);
+  const nm = who ? "🤖" : "🦛 You", them = who ? "You" : "The computer";
+  let again = false, msg = `${nm} played ${c.c === "w" ? "" : UN_NAME[c.c] + " "}${({ S: "Skip", R: "Reverse", W: "Wild", "+4": "Wild +4", "+2": "+2" })[c.v] || c.v}.`;
+  if (c.v === "S" || c.v === "R") { again = true; msg += ` ${them} miss${who ? "" : "es"} a turn!`; }
+  if (c.v === "+2" || c.v === "+4") { const k = +c.v.slice(1); unDraw(1 - who, k); again = true; msg += ` ${them} draw${who ? "" : "s"} ${k}!`; }
+  if (UN.hands[who].length === 1) msg += ` ${who ? "🤖 shouts" : "You shout"} UNO!`;
+  UN.log = msg;
+  if (!UN.hands[who].length) { UN.over = who; cgWin("uno", who); return unRender(); }
+  if (c.c === "w") { if (who === 0) { UN.pick = { again }; return unRender(); } UN.color = unAiColor(); UN.log += ` Color is now ${UN_NAME[UN.color]}.`; }
+  unNext(who, again);
+}
+function unNext(who, again) { UN.turn = again ? who : 1 - who; unRender(); if (UN.turn === 1 && UN.over === null) naTimer(setTimeout(unAi, 1000)); }
+function unAi() {
+  if (!UN || UN.over !== null || UN.turn !== 1 || !document.getElementById("cg")) return;
+  const h = UN.hands[1], ok = h.map((c, i) => [c, i]).filter(([c]) => unOk(c));
+  if (!ok.length) { unDraw(1, 1); if (unOk(h[h.length - 1])) return unPlay(1, h.length - 1); UN.log = "🤖 drew a card and passed."; return unNext(1, false); }
+  let pick;
+  if (Math.random() < cgSmart()) {   // smart: save wilds, attack when you're low on cards, play its most common color
+    const best = unAiColor(), sc = ([c]) => (c.c === "w" ? -10 : 0) + (UN.hands[0].length <= 2 && /^(S|R|\+2|\+4)$/.test(c.v) ? 20 : 0) + (c.c === best ? 3 : 0) + (/^(S|R|\+2)$/.test(c.v) ? 2 : 0);
+    pick = ok.sort((a, b) => sc(b) - sc(a))[0];
+  } else pick = rPick(ok);
+  unPlay(1, pick[1]);
+}
+
+// 🚢 Battleship
+let BS = null;
+const BS_SHIPS = [["Carrier", 4], ["Cruiser", 3], ["Submarine", 3], ["Destroyer", 2], ["Patrol boat", 2]];
+function bsPlace() { const g = Array(64).fill(-1); BS_SHIPS.forEach(([, len], k) => { for (;;) { const h = Math.random() < .5, r = rnd(0, h ? 7 : 8 - len), c = rnd(0, h ? 8 - len : 7), cells = Array.from({ length: len }, (_, j) => (r + (h ? 0 : j)) * 8 + c + (h ? j : 0)); if (cells.every(i => g[i] < 0)) { cells.forEach(i => g[i] = k); break; } } }); return g; }
+const bsSunk = (g, shots, k) => g.every((v, i) => v !== k || shots[i]);
+const bsLeft = (g, shots) => BS_SHIPS.filter((_, k) => !bsSunk(g, shots, k)).length;
+function startBattleship() {
+  cgScreen("bship", "🚢 Battleship", "Your ships are hidden from the computer, and its ships are hidden from you. Take turns firing at squares on the enemy's waters. 💥 means hit, 🌊 means miss. Sink all 5 enemy ships before the computer sinks yours!", startBattleship);
+  BS = { mine: bsPlace(), theirs: bsPlace(), atThem: Array(64).fill(0), atMe: Array(64).fill(0), placing: true, turn: 0, over: null, queue: [], log: "Shuffle your ships until you like them, then start the battle!" };
+  bsRender();
+}
+function bsGrid(g, shots, enemy) {
+  return `<div class="bs-grid${enemy ? " enemy" : ""}">${g.map((v, i) => { const s = shots[i], sunk = v >= 0 && s && bsSunk(g, shots, v); const cls = s ? (v >= 0 ? (sunk ? "sunk" : "hit") : "miss") : (!enemy && v >= 0 ? "ship" : ""); return `<button class="bs-c ${cls}" ${enemy ? `data-f="${i}"` : ""} ${enemy && (s || BS.placing || BS.turn || BS.over !== null) ? "disabled" : ""} aria-label="${"ABCDEFGH"[i >> 3]}${(i & 7) + 1}">${s ? (v >= 0 ? (sunk ? "🔥" : "💥") : "🌊") : !enemy && v >= 0 ? "🚢" : ""}</button>`; }).join("")}</div>`;
+}
+function bsRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  box.innerHTML = `<p class="un-log">${esc(BS.log)}</p>
+    ${BS.over !== null ? `<h3>${BS.over === 0 ? "🏆 You sank the whole fleet! Admiral Hippo!" : "🤖 The computer sank your fleet!"}</h3><button class="btn go" id="bs-again">Play again</button>` : ""}
+    ${BS.placing ? `<div class="row"><button class="btn" id="bs-shuf">🔀 Shuffle my ships</button><button class="btn go" id="bs-go">⚓ Start the battle!</button></div>` : ""}
+    <div class="bs-wrap">${BS.placing ? "" : `<div><h3>🎯 Enemy waters <small>(${bsLeft(BS.theirs, BS.atThem)} ships left)</small></h3>${bsGrid(BS.theirs, BS.atThem, true)}</div>`}
+      <div><h3>🛳️ Your fleet <small>(${bsLeft(BS.mine, BS.atMe)} ships left)</small></h3>${bsGrid(BS.mine, BS.atMe, false)}</div></div>`;
+  document.getElementById("bs-shuf")?.addEventListener("click", () => { BS.mine = bsPlace(); bsRender(); });
+  document.getElementById("bs-go")?.addEventListener("click", () => { BS.placing = false; BS.log = "Fire! Tap a square in enemy waters."; bsRender(); });
+  document.getElementById("bs-again")?.addEventListener("click", startBattleship);
+  box.querySelectorAll("[data-f]").forEach(b => b.addEventListener("click", () => bsFire(+b.dataset.f)));
+}
+function bsShot(g, shots, i, who) {
+  shots[i] = 1; const v = g[i], nm = who ? "🤖" : "You";
+  if (v < 0) { naNote(220, .15, "sine", .08); return `${nm} missed. 🌊`; }
+  naDrum("kick");
+  return bsSunk(g, shots, v) ? `${nm} sank ${who ? "your" : "the enemy"} ${BS_SHIPS[v][0]}! 🔥` : `${nm} hit something! 💥`;
+}
+function bsFire(i) {
+  if (BS.turn || BS.over !== null || BS.atThem[i]) return;
+  BS.log = bsShot(BS.theirs, BS.atThem, i, 0);
+  if (!bsLeft(BS.theirs, BS.atThem)) { BS.over = 0; cgWin("bship", 0); return bsRender(); }
+  BS.turn = 1; bsRender(); naTimer(setTimeout(bsAi, 800));
+}
+function bsAi() {
+  if (!BS || BS.over !== null || !document.getElementById("cg")) return;
+  const open = i => i >= 0 && i < 64 && !BS.atMe[i];
+  BS.queue = BS.queue.filter(open);
+  let i;
+  if (BS.queue.length && Math.random() < cgSmart() + .2) i = BS.queue.shift();
+  else { const all = [...Array(64).keys()].filter(open), par = all.filter(k => ((k >> 3) + (k & 7)) % 2 === 0); i = rPick(Math.random() < cgSmart() && par.length ? par : all); }
+  const msg = bsShot(BS.mine, BS.atMe, i, 1);
+  if (BS.mine[i] >= 0) { const r = i >> 3, c = i & 7; [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]].forEach(([a, b]) => { if (a >= 0 && a < 8 && b >= 0 && b < 8 && open(a * 8 + b)) BS.queue.unshift(a * 8 + b); }); }
+  BS.log += " " + msg;
+  if (!bsLeft(BS.mine, BS.atMe)) { BS.over = 1; cgWin("bship", 1); return bsRender(); }
+  BS.turn = 0; bsRender();
+}
+
+// 🎓 Head of the Class: race the computer from Kindergarten to College
+const HC_GRADES = ["K", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "College"];
+const hcNear = (n, s = 1) => { const out = []; for (const d of shuffle([1, -1, 2, -2, 3, -3, 10, -10, 5])) { const v = +(n + d * s).toFixed(2); if (v >= 0 && v !== n && !out.includes(v) && out.length < 3) out.push(v); } return out; };
+const HC_MATH = [
+  () => { const a = rnd(1, 5), b = rnd(0, 4); return [`${a} + ${b} = ?`, a + b]; },
+  () => { const a = rnd(5, 12), b = rnd(1, 8); return Math.random() < .5 ? [`${a} + ${b} = ?`, a + b] : [`${a + b} − ${b} = ?`, a]; },
+  () => { const a = rnd(25, 80), b = rnd(11, 19); return Math.random() < .5 ? [`${a} + ${b} = ?`, a + b] : [`${a} − ${b} = ?`, a - b]; },
+  () => { const a = rnd(2, 9), b = rnd(2, 9); return [`${a} × ${b} = ?`, a * b]; },
+  () => { const b = rnd(3, 9), q = rnd(4, 12); return Math.random() < .5 ? [`${b * q} ÷ ${b} = ?`, q] : [`${q + 10} × ${b} = ?`, (q + 10) * b]; },
+  () => { if (Math.random() < .5) { const x = rnd(11, 59), y = rnd(11, 39); return [`${x / 10} + ${y / 10} = ?`, (x + y) / 10, .1]; } const d = rPick([2, 3, 4, 5]), n = d * rnd(3, 12); return [`1/${d} of ${n} = ?`, n / d]; },
+  () => { if (Math.random() < .5) { const p = rPick([10, 20, 25, 50, 75]), n = rPick([40, 60, 80, 120, 200]); return [`${p}% of ${n} = ?`, p * n / 100]; } const a = rnd(2, 5), b = rnd(3, 7), k = rnd(2, 5); return [`${a} : ${b} = ${a * k} : ?`, b * k]; },
+  () => { const a = rnd(3, 12), b = rnd(2, 9); return rPick([[`−${a} + ${a + b} = ?`, b], [`−${b} × −${a} = ?`, a * b], [`${a + b} − (−${b}) = ?`, a + 2 * b]]); },
+  () => { if (Math.random() < .5) { const b = rnd(2, 3), e = rnd(3, 5); return [`${b}^${e} = ?`, b ** e]; } const a = rnd(2, 6), x = rnd(2, 9), c = rnd(1, 15); return [`${a}x + ${c} = ${a * x + c}. x = ?`, x]; },
+  () => { const a = rnd(3, 8), x = rnd(2, 9), c = rnd(2, 12); return Math.random() < .5 ? [`${a}x − ${c} = ${a * x - c}. x = ?`, x] : [`What is the slope of y = ${a}x − ${c}?`, a]; },
+  () => { const [p, q, h] = rPick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15]]); return Math.random() < .6 ? [`A right triangle has legs ${p} and ${q}. The hypotenuse = ?`, h] : (() => { const a = rnd(30, 80), b = rnd(20, 70); return [`A triangle has angles ${a}° and ${b}°. The third angle = ?`, 180 - a - b]; })(); },
+  () => { if (Math.random() < .5) { const r1 = rnd(1, 6), r2 = r1 + rnd(1, 5); return [`x² − ${r1 + r2}x + ${r1 * r2} = 0. The larger root x = ?`, r2]; } const e = rnd(3, 7); return [`log₂ ${2 ** e} = ?`, e]; },
+  () => { if (Math.random() < .5) { const n = rnd(2, 4), a = rnd(2, 3); return [`f(x) = x^${n}. f′(${a}) = ?`, n * a ** (n - 1)]; } const e = rnd(2, 5); return [`log₁₀ ${10 ** e} = ?`, e]; },
+  () => rPick([() => { const a = rnd(2, 9); return [`∫₀^${a} 2x dx = ?`, a * a]; }, () => { const n = rnd(10, 40); return [`1 + 2 + 3 + … + ${n} = ?`, n * (n + 1) / 2]; }, () => { const n = rnd(9, 30); return [`${n.toString(2)} in binary = ? in base ten`, n]; }, () => { const c = rnd(2, 6), x = rnd(2, 5); return [`d/dx of ${c}x² at x = ${x} is ?`, 2 * c * x]; }])(),
+];
+const HC_FACTS = [
+  [["How many legs does a spider have?", "8", ["6", "4", "10"]], ["What color do you get mixing blue and yellow?", "Green", ["Purple", "Orange", "Pink"]], ["What is a baby frog called?", "Tadpole", ["Kitten", "Calf", "Cub"]], ["How many days are in a week?", "7", ["5", "10", "12"]], ["Which word rhymes with cat?", "Hat", ["Dog", "Sun", "Cup"]], ["What season comes after winter?", "Spring", ["Summer", "Fall", "Autumn"]], ["Which animal says 'moo'?", "Cow", ["Duck", "Pig", "Horse"]], ["What shape has 3 sides?", "Triangle", ["Square", "Circle", "Hexagon"]]],
+  [["What planet is closest to the Sun?", "Mercury", ["Venus", "Mars", "Earth"]], ["What gas do we need to breathe?", "Oxygen", ["Carbon dioxide", "Helium", "Neon"]], ["Who was the first U.S. president?", "George Washington", ["Abraham Lincoln", "Thomas Jefferson", "John Adams"]], ["Which word is a noun?", "Mountain", ["Quickly", "Jump", "Happy"]], ["How many continents are there?", "7", ["5", "6", "9"]], ["What is the largest ocean?", "Pacific", ["Atlantic", "Indian", "Arctic"]], ["What do caterpillars turn into?", "Butterflies", ["Bees", "Beetles", "Spiders"]], ["What is frozen water called?", "Ice", ["Steam", "Fog", "Dew"]]],
+  [["What part of a cell holds its DNA?", "Nucleus", ["Cell wall", "Ribosome", "Vacuole"]], ["What is the chemical formula for water?", "H₂O", ["CO₂", "O₂", "NaCl"]], ["Who built the pyramids at Giza?", "Ancient Egyptians", ["Romans", "Vikings", "Aztecs"]], ["What force pulls things toward Earth?", "Gravity", ["Friction", "Magnetism", "Wind"]], ["Which document begins 'We the People'?", "The U.S. Constitution", ["The Declaration of Independence", "The Magna Carta", "The Gettysburg Address"]], ["What is a simile?", "A comparison using 'like' or 'as'", ["A word that sounds like its meaning", "A story about gods", "A huge exaggeration"]], ["What do plants make in photosynthesis?", "Sugar and oxygen", ["Salt and water", "Protein and fat", "Iron and carbon"]], ["Which layer of Earth do we live on?", "Crust", ["Mantle", "Outer core", "Inner core"]]],
+  [["What is called the powerhouse of the cell?", "Mitochondria", ["Nucleus", "Golgi body", "Chloroplast"]], ["Newton's 2nd law: force equals…", "Mass × acceleration", ["Mass × speed", "Weight ÷ time", "Energy × distance"]], ["Who wrote 'Romeo and Juliet'?", "William Shakespeare", ["Charles Dickens", "Mark Twain", "Jane Austen"]], ["Which American war ended in 1865?", "The Civil War", ["The Revolutionary War", "World War I", "The War of 1812"]], ["What is the atomic number of carbon?", "6", ["12", "8", "14"]], ["What shape is DNA?", "Double helix", ["Single loop", "Triple spiral", "Flat sheet"]], ["Which branch of U.S. government makes laws?", "Congress", ["The President", "The Supreme Court", "The Cabinet"]], ["About how fast is light?", "300,000 km per second", ["300 km per second", "3,000 km per hour", "30 km per second"]]],
+  [["Who came up with general relativity?", "Albert Einstein", ["Isaac Newton", "Marie Curie", "Niels Bohr"]], ["What does GDP measure?", "A country's total economic output", ["Population growth", "Government debt", "Only inflation"]], ["Which search runs in O(log n) time?", "Binary search", ["Bubble sort", "Checking every item", "Random guessing"]], ["What is the most common element in the universe?", "Hydrogen", ["Oxygen", "Carbon", "Iron"]], ["Who wrote 'The Republic'?", "Plato", ["Aristotle", "Homer", "Cicero"]], ["What are proteins built from?", "Amino acids", ["Fatty acids", "Sugars", "Minerals"]], ["What does a psychologist study?", "The mind and behavior", ["Rocks and minerals", "Ancient languages", "Stars"]], ["What is the derivative of sin x?", "cos x", ["−sin x", "tan x", "−cos x"]]],
+];
+let HC = null;
+function hcQuestion(g) {
+  const band = g <= 2 ? 0 : g <= 5 ? 1 : g <= 8 ? 2 : g <= 12 ? 3 : 4;
+  if (Math.random() < .4) { const [q, a, w] = rPick(HC_FACTS[band]); return { q, a, opts: shuffle([a, ...w]) }; }
+  const [q, a, s] = HC_MATH[g](); return { q, a: String(a), opts: shuffle([a, ...hcNear(a, s || 1)]).map(String) };
+}
+function startHeadClass() {
+  cgScreen("hclass", "🎓 Head of the Class", "Race the computer from Kindergarten all the way through College! Each turn you get a question at your grade. Get it right and you move up a grade. The computer answers its own questions too. The first one to graduate from College is Head of the Class!", startHeadClass);
+  HC = { pos: [0, 0], q: hcQuestion(0), answered: null, over: null, log: "Kindergarten, here we go!" };
+  hcRender();
+}
+function hcRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const ladder = [...HC_GRADES, "🎓 Grad"].map((g, i) => `<div class="hc-rung${i === 14 ? " grad" : ""}"><span>${g}</span><b>${HC.pos[0] === i ? "🦛" : ""}${HC.pos[1] === i ? "🤖" : ""}</b></div>`).reverse().join("");
+  const Q = HC.q;
+  box.innerHTML = `<div class="hc-wrap"><div class="hc-ladder">${ladder}</div><div class="hc-q">
+    <p class="un-log">${esc(HC.log)}</p>
+    ${HC.over !== null ? `<h3>${HC.over === 0 ? "🏆 You graduated first! You're Head of the Class!" : "🤖 The computer graduated first!"}</h3><button class="btn go" id="hc-again">Play again</button>` : `
+    <div class="sl-card"><small>${HC_GRADES[HC.pos[0]]} grade question</small><h3>${esc(Q.q)}</h3><div class="hc-opts">${Q.opts.map(o => `<button class="btn${HC.answered ? (o === Q.a ? " go" : o === HC.answered ? " bad" : "") : ""}" data-o="${esc(o)}" ${HC.answered ? "disabled" : ""}>${esc(o)}</button>`).join("")}</div>
+    ${HC.answered ? `<button class="btn go" id="hc-next">🤖 Computer's turn ➜</button>` : ""}</div>`}</div></div>`;
+  box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { HC.answered = b.dataset.o; const ok = HC.answered === Q.a; if (ok) { HC.pos[0]++; sfx.right(); HC.log = HC.pos[0] === 14 ? "🎓 You graduated!" : `✅ Correct! You move up to ${HC_GRADES[HC.pos[0]]}.`; } else { sfx.wrong(); HC.log = `❌ Not quite. The answer was ${Q.a}. You stay in ${HC_GRADES[HC.pos[0]]}.`; } if (HC.pos[0] === 14) { HC.over = 0; cgWin("hclass", 0); } hcRender(); }));
+  document.getElementById("hc-next")?.addEventListener("click", hcAi);
+  document.getElementById("hc-again")?.addEventListener("click", startHeadClass);
+}
+function hcAi() {
+  const g = HC.pos[1], p = ({ easy: .45, medium: .62, hard: .8 })[cgLvl()] - g * .012;
+  if (Math.random() < p) { HC.pos[1]++; HC.log = HC.pos[1] === 14 ? "🤖 graduated!" : `🤖 answered right and moved up to ${HC_GRADES[HC.pos[1]]}.`; } else HC.log = `🤖 got its ${HC_GRADES[g]} question wrong!`;
+  if (HC.pos[1] === 14) { HC.over = 1; cgWin("hclass", 1); }
+  else HC.log += " Your turn!";
+  HC.answered = null; HC.q = hcQuestion(Math.min(13, HC.pos[0])); hcRender();
+}
+
+// 🀄 Rummikub
+let RK = null;
+const RK_COL = ["#e63946", "#1e6fd8", "#e08a00", "#222"], RK_CN = ["red", "blue", "orange", "black"];
+const rkSum = s => s.reduce((t, x) => t + x.n, 0);
+const rkSort = s => s.slice().sort((a, b) => a.n - b.n || a.c - b.c);
+function rkValid(s) {
+  if (s.length < 3) return false;
+  if (s.every(t => t.n === s[0].n)) return s.length <= 4 && new Set(s.map(t => t.c)).size === s.length;
+  if (s.every(t => t.c === s[0].c)) { const n = s.map(t => t.n).sort((a, b) => a - b); return n.every((v, i) => !i || v === n[i - 1] + 1); }
+  return false;
+}
+function rkFind(rack, runsFirst) {   // greedy sets from a rack
+  const used = new Set(), sets = [];
+  const runs = () => { for (let c = 0; c < 4; c++) { const by = {}; rack.forEach(t => { if (t.c === c && !used.has(t.id) && !by[t.n]) by[t.n] = t; }); let run = []; for (let n = 1; n <= 14; n++) { if (by[n]) run.push(by[n]); else { if (run.length >= 3) { sets.push(run); run.forEach(t => used.add(t.id)); } run = []; } } } };
+  const groups = () => { for (let n = 13; n >= 1; n--) { const g = [], seen = new Set(); rack.forEach(t => { if (t.n === n && !used.has(t.id) && !seen.has(t.c)) { seen.add(t.c); g.push(t); } }); if (g.length >= 3) { sets.push(g); g.forEach(t => used.add(t.id)); } } };
+  if (runsFirst) { runs(); groups(); } else { groups(); runs(); }
+  return sets;
+}
+function startRummikub() {
+  cgScreen("rummi", "🀄 Rummikub", "Make sets from your tiles. A <b>run</b> is 3 or more numbers in a row, all the same color (like red 4-5-6). A <b>group</b> is 3 or 4 of the same number in different colors (like 7 red, 7 blue, 7 black). Your first turn on the table must add up to 30 points or more. After that you can also add tiles to sets already on the table. Tap tiles to pick them, then tap New set, or tap a set on the table to add to it. Can't play? Draw a tile. First to use all their tiles wins!", startRummikub);
+  const pool = []; let id = 0; for (let k = 0; k < 2; k++) for (let c = 0; c < 4; c++) for (let n = 1; n <= 13; n++) pool.push({ n, c, id: id++ });
+  RK = { pool: shuffle(pool), racks: [[], []], table: [], opened: [false, false], sel: new Set(), over: null, turn: 0, passes: 0, log: "Your turn! Make a set worth 30+ points, or draw.", byColor: false };
+  for (let i = 0; i < 14; i++) RK.racks.forEach(r => r.push(RK.pool.pop()));
+  rkSnap(); rkRender();
+}
+function rkSnap() { RK.snap = { rack: RK.racks[0].slice(), table: RK.table.map(s => s.slice()) }; RK.played = 0; }
+const rkTile = (t, attrs = "", cls = "") => `<button class="rk-t ${cls}" style="color:${RK_COL[t.c]}" ${attrs} aria-label="${RK_CN[t.c]} ${t.n}">${t.n}</button>`;
+function rkRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const my = RK.turn === 0 && RK.over === null;
+  const rack = RK.racks[0].slice().sort(RK.byColor ? (a, b) => a.c - b.c || a.n - b.n : (a, b) => a.n - b.n || a.c - b.c);
+  box.innerHTML = `<div class="un-opp">🤖 Computer has <b>${RK.racks[1].length}</b> tiles${RK.opened[1] ? "" : " (not on the table yet)"} · Pool: ${RK.pool.length}</div>
+    <p class="un-log">${esc(RK.log)}</p>
+    ${RK.over !== null ? `<h3>${RK.over === 0 ? "🏆 You win! Rummi-KING!" : RK.over === 2 ? "🤝 It's a tie!" : "🤖 The computer wins!"}</h3><button class="btn go" id="rk-again">Play again</button>` : ""}
+    <div class="rk-table">${RK.table.length ? RK.table.map((s, i) => `<button class="rk-set" data-s="${i}" ${my ? "" : "disabled"}>${s.map(t => `<span class="rk-t" style="color:${RK_COL[t.c]}">${t.n}</span>`).join("")}</button>`).join("") : `<p class="soft">The table is empty.</p>`}</div>
+    <div class="rk-rack">${rack.map(t => rkTile(t, `data-t="${t.id}" ${my ? "" : "disabled"}`, RK.sel.has(t.id) ? "sel" : "")).join("")}</div>
+    ${my ? `<div class="row rk-btns"><button class="btn go" id="rk-new">➕ New set</button><button class="btn" id="rk-done">✅ Done</button><button class="btn" id="rk-draw">🎴 Draw &amp; pass</button><button class="btn" id="rk-undo">↩️ Undo</button><button class="chip" id="rk-sort">Sort by ${RK.byColor ? "number" : "color"}</button></div><p class="soft">${RK.opened[0] ? "" : `First play needs 30+ points. This turn: ${RK.played}`}</p>` : ""}`;
+  box.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => { const id = +b.dataset.t; RK.sel.has(id) ? RK.sel.delete(id) : RK.sel.add(id); rkRender(); }));
+  const picked = () => RK.racks[0].filter(t => RK.sel.has(t.id));
+  const take = ts => { RK.racks[0] = RK.racks[0].filter(t => !ts.includes(t)); RK.sel.clear(); RK.played += rkSum(ts); naNote(600, .08, "triangle", .08); };
+  document.getElementById("rk-new")?.addEventListener("click", () => { const ts = picked(); if (!rkValid(ts)) { RK.log = ts.length < 3 ? "Pick at least 3 tiles for a set." : "Those tiles aren't a run or a group. Try again!"; sfx.wrong(); return rkRender(); } RK.table.push(rkSort(ts)); take(ts); RK.log = "Nice set! Play more, or tap Done."; rkRender(); });
+  box.querySelectorAll("[data-s]").forEach(b => b.addEventListener("click", () => { const ts = picked(); if (!ts.length) { RK.log = "Pick tiles from your rack first, then tap a set to add them."; return rkRender(); } if (!RK.opened[0]) { RK.log = "Make your first 30 points with new sets before adding to the table."; sfx.wrong(); return rkRender(); } const s = [...RK.table[+b.dataset.s], ...ts]; if (!rkValid(s)) { RK.log = "That doesn't fit in this set."; sfx.wrong(); return rkRender(); } RK.table[+b.dataset.s] = rkSort(s); take(ts); RK.log = "Added! Play more, or tap Done."; rkRender(); }));
+  document.getElementById("rk-done")?.addEventListener("click", () => { if (!RK.played) { RK.log = "You haven't played anything. Make a set, or Draw & pass."; return rkRender(); } if (!RK.opened[0] && RK.played < 30) { RK.log = `Your first play must be 30+ points. You have ${RK.played}. Add more, or Undo.`; sfx.wrong(); return rkRender(); } RK.opened[0] = true; RK.passes = 0; RK.log = "Great turn!"; rkEnd(); });
+  document.getElementById("rk-undo")?.addEventListener("click", () => { RK.racks[0] = RK.snap.rack.slice(); RK.table = RK.snap.table.map(s => s.slice()); RK.sel.clear(); RK.played = 0; RK.log = "Undone. Try again!"; rkRender(); });
+  document.getElementById("rk-draw")?.addEventListener("click", () => { RK.racks[0] = RK.snap.rack.slice(); RK.table = RK.snap.table.map(s => s.slice()); RK.sel.clear(); if (RK.pool.length) { RK.racks[0].push(RK.pool.pop()); RK.passes = 0; RK.log = "You drew a tile."; } else { RK.passes++; RK.log = "The pool is empty, so you pass."; } rkEnd(); });
+  document.getElementById("rk-sort")?.addEventListener("click", () => { RK.byColor = !RK.byColor; rkRender(); });
+  document.getElementById("rk-again")?.addEventListener("click", startRummikub);
+}
+function rkCheckEnd() {
+  for (const w of [0, 1]) if (!RK.racks[w].length) { RK.over = w; cgWin("rummi", w); return true; }
+  if (RK.passes >= 2) { const a = rkSum(RK.racks[0]), b = rkSum(RK.racks[1]); RK.over = a < b ? 0 : a > b ? 1 : 2; RK.log = `Nobody can play! Your tiles add to ${a}, the computer's to ${b}. Lowest wins.`; cgWin("rummi", RK.over); return true; }
+  return false;
+}
+function rkEnd() { if (rkCheckEnd()) return rkRender(); RK.turn = 1; rkRender(); naTimer(setTimeout(rkAi, 900)); }
+function rkAi() {
+  if (!RK || RK.over !== null || !document.getElementById("cg")) return;
+  const rack = RK.racks[1], a = rkFind(rack, true), b = rkFind(rack, false), sets = rkSum(a.flat()) >= rkSum(b.flat()) ? a : b;
+  let played = 0;
+  const tryIt = Math.random() < cgSmart() + .25;
+  if (tryIt && sets.length && (RK.opened[1] || rkSum(sets.flat()) >= 30)) { sets.forEach(s => { RK.table.push(rkSort(s)); RK.racks[1] = RK.racks[1].filter(t => !s.includes(t)); played += s.length; }); RK.opened[1] = true; }
+  if (tryIt && RK.opened[1]) { let moved = true; while (moved) { moved = false; for (const t of RK.racks[1].slice()) for (let i = 0; i < RK.table.length; i++) { const s = [...RK.table[i], t]; if (rkValid(s)) { RK.table[i] = rkSort(s); RK.racks[1] = RK.racks[1].filter(x => x !== t); played++; moved = true; break; } } } }
+  if (played) { RK.passes = 0; RK.log = `🤖 played ${played} tile${played > 1 ? "s" : ""}. Your turn!`; naNote(330, .1, "triangle", .08); }
+  else if (RK.pool.length) { RK.racks[1].push(RK.pool.pop()); RK.passes = 0; RK.log = "🤖 drew a tile. Your turn!"; }
+  else { RK.passes++; RK.log = "🤖 passed. Your turn!"; }
+  if (rkCheckEnd()) return rkRender();
+  RK.turn = 0; rkSnap(); rkRender();
+}
+
+// ⛀ Checkers (you are red at the bottom, moving up)
+let CK = null;
+function ckMoves(b, s) {
+  const caps = [], steps = [];
+  for (let i = 0; i < 64; i++) {
+    const p = b[i]; if (!p || Math.sign(p) !== s) continue;
+    const king = Math.abs(p) === 2, fwd = s === 1 ? -1 : 1;
+    const dfs = (bb, pos, path, caped) => {
+      const r = pos >> 3, c = pos & 7; let ext = false;
+      for (const dr of (king ? [-1, 1] : [fwd])) for (const dc of [-1, 1]) {
+        const tr = r + 2 * dr, tc = c + 2 * dc; if (tr < 0 || tr > 7 || tc < 0 || tc > 7) continue;
+        const m = (r + dr) * 8 + c + dc, t = tr * 8 + tc;
+        if (bb[m] && Math.sign(bb[m]) === -s && !bb[t] && !caped.includes(m)) {
+          ext = true; const nb = bb.slice(); nb[t] = nb[pos]; nb[pos] = 0; nb[m] = 0;
+          if (!king && tr === (s === 1 ? 0 : 7)) caps.push({ from: i, path: [...path, t], caps: [...caped, m] });   // crowning ends the turn
+          else dfs(nb, t, [...path, t], [...caped, m]);
+        }
+      }
+      if (!ext && path.length) caps.push({ from: i, path, caps: caped });
+    };
+    dfs(b, i, [], []);
+    const r = i >> 3, c = i & 7;
+    for (const dr of (king ? [-1, 1] : [fwd])) for (const dc of [-1, 1]) { const tr = r + dr, tc = c + dc; if (tr >= 0 && tr < 8 && tc >= 0 && tc < 8 && !b[tr * 8 + tc]) steps.push({ from: i, path: [tr * 8 + tc], caps: [] }); }
+  }
+  return caps.length ? caps : steps;
+}
+function ckApply(b, m) { const nb = b.slice(), p = nb[m.from]; nb[m.from] = 0; m.caps.forEach(x => nb[x] = 0); const to = m.path[m.path.length - 1], r = to >> 3; nb[to] = Math.abs(p) === 1 && ((p > 0 && r === 0) || (p < 0 && r === 7)) ? p * 2 : p; return nb; }
+const ckEval = b => b.reduce((s, p, i) => !p ? s : s + (p === 2 ? 1.7 : p === -2 ? -1.7 : p > 0 ? 1 + (7 - (i >> 3)) * .04 : -1 - (i >> 3) * .04), 0);   // + is good for you
+function ckSearch(b, side, d, al, be) {
+  const ms = ckMoves(b, side); if (!ms.length) return side === 1 ? -100 - d : 100 + d; if (!d) return ckEval(b);
+  if (side === 1) { let v = -1e9; for (const m of ms) { v = Math.max(v, ckSearch(ckApply(b, m), -1, d - 1, al, be)); al = Math.max(al, v); if (al >= be) break; } return v; }
+  let v = 1e9; for (const m of ms) { v = Math.min(v, ckSearch(ckApply(b, m), 1, d - 1, al, be)); be = Math.min(be, v); if (al >= be) break; } return v;
+}
+function startCheckers() {
+  cgScreen("check", "⛀ Checkers", "You are 🔴 red at the bottom. Tap one of your pieces, then tap a glowing square to move. Pieces move diagonally forward. Jump over the computer's pieces to capture them. If you can jump, you must! Reach the far side to become a 👑 king, which can move backward too. Capture all the computer's pieces, or leave it with no moves, to win.", startCheckers);
+  const b = Array(64).fill(0); for (let i = 0; i < 64; i++) { const r = i >> 3, c = i & 7; if ((r + c) % 2) { if (r < 3) b[i] = -1; if (r > 4) b[i] = 1; } }
+  CK = { b, sel: null, turn: 1, over: null, quiet: 0, log: "Your move! Tap a red piece." };
+  ckRender();
+}
+function ckRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const my = CK.turn === 1 && CK.over === null, ms = my ? ckMoves(CK.b, 1) : [], mine = CK.sel !== null ? ms.filter(m => m.from === CK.sel) : [], dests = new Set(mine.map(m => m.path[m.path.length - 1])), movable = new Set(ms.map(m => m.from));
+  box.innerHTML = `<p class="un-log">${esc(CK.log)}</p>${CK.over !== null ? `<h3>${CK.over === 0 ? "🏆 You win! King of checkers!" : CK.over === 2 ? "🤝 It's a draw!" : "🤖 The computer wins!"}</h3><button class="btn go" id="ck-again">Play again</button>` : ""}
+    <div class="ck-board">${CK.b.map((p, i) => { const dark = ((i >> 3) + (i & 7)) % 2; return `<button class="ck-c${dark ? " dark" : ""}${i === CK.sel ? " sel" : ""}${dests.has(i) ? " dest" : ""}${my && movable.has(i) && CK.sel === null ? " can" : ""}" data-c="${i}" ${dark && my ? "" : "disabled"}>${p ? `<span class="ck-p ${p > 0 ? "red" : "blk"}">${Math.abs(p) === 2 ? "👑" : ""}</span>` : ""}</button>`; }).join("")}</div>`;
+  box.querySelectorAll("[data-c]").forEach(el => el.addEventListener("click", () => {
+    const i = +el.dataset.c;
+    if (dests.has(i)) return ckDo(mine.find(m => m.path[m.path.length - 1] === i), 1);
+    if (movable.has(i)) { CK.sel = i; CK.log = "Now tap a glowing square."; }
+    else if (CK.b[i] > 0) { CK.sel = null; CK.log = ms[0]?.caps.length ? "You have a jump! You must take it." : "That piece can't move right now."; }
+    ckRender();
+  }));
+  document.getElementById("ck-again")?.addEventListener("click", startCheckers);
+}
+function ckDo(m, side) {
+  CK.b = ckApply(CK.b, m); CK.sel = null; CK.quiet = m.caps.length ? 0 : CK.quiet + 1;
+  m.caps.length ? naDrum("snare") : naNote(side > 0 ? 520 : 330, .06, "triangle", .08);
+  CK.log = m.caps.length ? `${side > 0 ? "You" : "🤖"} jumped ${m.caps.length} piece${m.caps.length > 1 ? "s" : ""}!` : side > 0 ? "Nice move." : "🤖 moved.";
+  CK.turn = -side;
+  if (!ckMoves(CK.b, CK.turn).length) { CK.over = side > 0 ? 0 : 1; cgWin("check", CK.over); }
+  else if (CK.quiet >= 80) { CK.over = 2; CK.log = "80 moves without a capture. It's a draw!"; cgWin("check", 2); }
+  ckRender();
+  if (CK.over === null && CK.turn === -1) naTimer(setTimeout(ckAi, 600));
+}
+function ckAi() {
+  if (!CK || CK.over !== null || !document.getElementById("cg")) return;
+  const ms = ckMoves(CK.b, -1), depth = ({ easy: 1, medium: 3, hard: 6 })[cgLvl()];
+  let pick = rPick(ms);
+  if (Math.random() < cgSmart()) { let best = 1e9; for (const m of shuffle(ms)) { const v = ckSearch(ckApply(CK.b, m), 1, depth, -1e9, 1e9); if (v < best) { best = v; pick = m; } } }
+  ckDo(pick, -1); if (CK.over === null) CK.log += " Your move!"; ckRender();
+}
+
+// 🎲 Yahtzee
+let YZ = null;
+const YZ_CATS = [["ones", "Ones"], ["twos", "Twos"], ["threes", "Threes"], ["fours", "Fours"], ["fives", "Fives"], ["sixes", "Sixes"], ["k3", "3 of a kind"], ["k4", "4 of a kind"], ["fh", "Full house"], ["ss", "Small straight"], ["ls", "Large straight"], ["yz", "Yahtzee!"], ["ch", "Chance"]];
+function yzScore(cat, d) {
+  const cnt = [0, 0, 0, 0, 0, 0, 0]; d.forEach(v => cnt[v]++); const sum = d.reduce((a, b) => a + b, 0), mx = Math.max(...cnt), has = s => s.every(v => cnt[v]);
+  const up = ["ones", "twos", "threes", "fours", "fives", "sixes"].indexOf(cat); if (up >= 0) return cnt[up + 1] * (up + 1);
+  return { k3: mx >= 3 ? sum : 0, k4: mx >= 4 ? sum : 0, fh: cnt.includes(3) && cnt.includes(2) ? 25 : 0, ss: has([1, 2, 3, 4]) || has([2, 3, 4, 5]) || has([3, 4, 5, 6]) ? 30 : 0, ls: has([1, 2, 3, 4, 5]) || has([2, 3, 4, 5, 6]) ? 40 : 0, yz: mx === 5 ? 50 : 0, ch: sum }[cat];
+}
+function yzTotal(card) { const up = YZ_CATS.slice(0, 6).reduce((t, [k]) => t + (card[k] || 0), 0); return { up, bonus: up >= 63 ? 35 : 0, total: YZ_CATS.reduce((t, [k]) => t + (card[k] || 0), 0) + (up >= 63 ? 35 : 0) }; }
+function startYahtzee() {
+  cgScreen("yahtzee", "🎲 Yahtzee", "Roll 5 dice up to 3 times. Tap dice to hold them between rolls. Then pick a box on the score card to score your dice. Every box can be used only once, and there are 13 rounds. Get 63+ in the top section for a 35 point bonus. Highest total wins!", startYahtzee);
+  YZ = { dice: [1, 1, 1, 1, 1], held: [0, 0, 0, 0, 0], rolls: 0, cards: [{}, {}], turn: 0, over: null, log: "Roll the dice!" };
+  yzRender();
+}
+const YZ_FACE = "⚀⚁⚂⚃⚄⚅";
+function yzRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const my = YZ.turn === 0 && YZ.over === null, t0 = yzTotal(YZ.cards[0]), t1 = yzTotal(YZ.cards[1]);
+  box.innerHTML = `<p class="un-log">${esc(YZ.log)}</p>${YZ.over !== null ? `<h3>${YZ.over === 0 ? "🏆 You win!" : YZ.over === 2 ? "🤝 A tie!" : "🤖 The computer wins!"}</h3><button class="btn go" id="yz-again">Play again</button>` : ""}
+    <div class="yz-dice">${YZ.dice.map((v, i) => `<button class="yz-d${YZ.held[i] ? " held" : ""}" data-d="${i}" ${my && YZ.rolls && YZ.rolls < 3 ? "" : "disabled"}>${YZ_FACE[v - 1]}<small>${YZ.held[i] ? "HELD" : ""}</small></button>`).join("")}</div>
+    ${my ? `<button class="btn go" id="yz-roll" ${YZ.rolls >= 3 ? "disabled" : ""}>🎲 Roll (${3 - YZ.rolls} left)</button>` : ""}
+    <table class="yz-card"><tr><th>Box</th><th>🦛 You</th><th>🤖</th></tr>${YZ_CATS.map(([k, n], i) => `${i === 6 ? `<tr class="yz-sub"><td>Bonus (63+)</td><td>${t0.bonus || `${t0.up}/63`}</td><td>${t1.bonus || `${t1.up}/63`}</td></tr>` : ""}<tr><td>${n}</td><td>${k in YZ.cards[0] ? YZ.cards[0][k] : my && YZ.rolls ? `<button class="chip" data-k="${k}">${yzScore(k, YZ.dice)}</button>` : ""}</td><td>${k in YZ.cards[1] ? YZ.cards[1][k] : ""}</td></tr>`).join("")}<tr class="yz-sub"><td><b>Total</b></td><td><b>${t0.total}</b></td><td><b>${t1.total}</b></td></tr></table>`;
+  box.querySelectorAll("[data-d]").forEach(b => b.addEventListener("click", () => { YZ.held[+b.dataset.d] ^= 1; yzRender(); }));
+  document.getElementById("yz-roll")?.addEventListener("click", () => { yzRoll(); YZ.log = YZ.rolls < 3 ? "Tap dice to hold, roll again, or pick a box." : "Pick a box to score."; yzRender(); });
+  box.querySelectorAll("[data-k]").forEach(b => b.addEventListener("click", () => { const k = b.dataset.k, sc = yzScore(k, YZ.dice); YZ.cards[0][k] = sc; YZ.log = `You scored ${sc} in ${YZ_CATS.find(c => c[0] === k)[1]}.`; sc ? sfx.right() : 0; yzNext(); }));
+  document.getElementById("yz-again")?.addEventListener("click", startYahtzee);
+}
+function yzRoll() { YZ.dice = YZ.dice.map((v, i) => YZ.held[i] ? v : rnd(1, 6)); YZ.rolls++; naNote(420, .06, "square", .05); naNote(560, .06, "square", .05, .07); }
+function yzNext() {
+  YZ.rolls = 0; YZ.held = [0, 0, 0, 0, 0];
+  if (Object.keys(YZ.cards[1]).length === 13) { const a = yzTotal(YZ.cards[0]).total, b = yzTotal(YZ.cards[1]).total; YZ.over = a > b ? 0 : a < b ? 1 : 2; cgWin("yahtzee", YZ.over); return yzRender(); }
+  YZ.turn = 1 - YZ.turn; yzRender();
+  if (YZ.turn === 1) naTimer(setTimeout(yzAi, 700));
+}
+function yzAi() {
+  if (!YZ || YZ.over !== null || !document.getElementById("cg")) return;
+  const card = YZ.cards[1], open = YZ_CATS.map(c => c[0]).filter(k => !(k in card)), smart = Math.random() < cgSmart();
+  const step = () => {
+    yzRoll();
+    if (YZ.rolls < 3) {
+      const cnt = [0, 0, 0, 0, 0, 0, 0]; YZ.dice.forEach(v => cnt[v]++);
+      const want = (open.includes("ls") || open.includes("ss")) && new Set(YZ.dice).size >= 4 && !cnt.some(c => c >= 3);
+      if (!smart) YZ.held = YZ.dice.map(() => Math.random() < .3 ? 1 : 0);
+      else if (want) { const seen = new Set(); YZ.held = YZ.dice.map(v => { const k = !seen.has(v) && (v >= 2 && v <= 5 || new Set(YZ.dice).has(v === 1 ? 2 : 5)); seen.add(v); return k ? 1 : 0; }); }
+      else { const best = [6, 5, 4, 3, 2, 1].sort((a, b) => cnt[b] - cnt[a] || b - a)[0]; YZ.held = YZ.dice.map(v => v === best ? 1 : 0); }
+      yzRender();
+      if (yzScore("yz", YZ.dice) && open.includes("yz") || (yzScore("ls", YZ.dice) && open.includes("ls"))) return naTimer(setTimeout(finish, 700));
+      return naTimer(setTimeout(step, 700));
+    }
+    finish();
+  };
+  const finish = () => {
+    const val = k => { const s = yzScore(k, YZ.dice), up = ["ones", "twos", "threes", "fours", "fives", "sixes"].indexOf(k); return s + (up >= 0 && s >= 3 * (up + 1) ? 6 : 0) - (k === "ch" ? 8 : 0) - (k === "yz" && !s ? 5 : 0); };
+    const k = smart ? open.sort((a, b) => val(b) - val(a))[0] : rPick(open);
+    const sc = yzScore(k, YZ.dice); card[k] = sc; YZ.log = `🤖 scored ${sc} in ${YZ_CATS.find(c => c[0] === k)[1]}. Your turn!`; yzNext();
+  };
+  YZ.held = [0, 0, 0, 0, 0]; step();
+}
+
+// 🥣 Mancala: pits 0-5 are yours, 6 is your store; 7-12 are the computer's, 13 its store
+let MC = null;
+function mcMove(b, i, who) {
+  b = b.slice(); let s = b[i], k = i; b[i] = 0;
+  while (s) { k = (k + 1) % 14; if (k === (who ? 6 : 13)) continue; b[k]++; s--; }
+  const again = k === (who ? 13 : 6), own = who ? k >= 7 && k <= 12 : k >= 0 && k <= 5;
+  if (!again && own && b[k] === 1 && b[12 - k] > 0) { b[who ? 13 : 6] += b[k] + b[12 - k]; b[k] = 0; b[12 - k] = 0; }
+  let over = false;
+  if (b.slice(0, 6).every(x => !x) || b.slice(7, 13).every(x => !x)) { for (let j = 0; j < 6; j++) { b[6] += b[j]; b[j] = 0; } for (let j = 7; j < 13; j++) { b[13] += b[j]; b[j] = 0; } over = true; }
+  return { b, again: again && !over, over };
+}
+function mcSearch(b, who, d) {
+  const moves = (who ? [7, 8, 9, 10, 11, 12] : [0, 1, 2, 3, 4, 5]).filter(i => b[i]);
+  if (!d || !moves.length) return b[13] - b[6];
+  let best = who ? -1e9 : 1e9;
+  for (const i of moves) { const r = mcMove(b, i, who), v = r.over ? (r.b[13] - r.b[6]) * 10 : mcSearch(r.b, r.again ? who : 1 - who, d - 1); best = who ? Math.max(best, v) : Math.min(best, v); }
+  return best;
+}
+function startMancala() {
+  cgScreen("mancala", "🥣 Mancala", "Your pits are on the bottom row and your store is on the right. Tap one of your pits to pick up all its stones and drop them one by one, going to the right and around. If your last stone lands in your store, you go again! If it lands in an empty pit on your side, you capture it plus all the stones across from it. When one side runs out, the game ends. Most stones in your store wins!", startMancala);
+  MC = { b: [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0], turn: 0, over: null, log: "Your turn! Tap a pit on the bottom row." };
+  mcRender();
+}
+function mcRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const b = MC.b, my = MC.turn === 0 && MC.over === null;
+  const pit = (i, click) => `<button class="mc-pit" ${click ? `data-p="${i}"` : ""} ${click && my && b[i] ? "" : "disabled"}><b>${b[i]}</b><span>${"●".repeat(Math.min(b[i], 12))}</span></button>`;
+  box.innerHTML = `<p class="un-log">${esc(MC.log)}</p>${MC.over !== null ? `<h3>${MC.over === 0 ? "🏆 You win!" : MC.over === 2 ? "🤝 A tie!" : "🤖 The computer wins!"} (${b[6]} to ${b[13]})</h3><button class="btn go" id="mc-again">Play again</button>` : ""}
+    <div class="mc-board"><div class="mc-store">🤖<b>${b[13]}</b></div><div class="mc-rows"><div class="mc-row">${[12, 11, 10, 9, 8, 7].map(i => pit(i, false)).join("")}</div><div class="mc-row">${[0, 1, 2, 3, 4, 5].map(i => pit(i, true)).join("")}</div></div><div class="mc-store">🦛<b>${b[6]}</b></div></div>`;
+  box.querySelectorAll("[data-p]").forEach(el => el.addEventListener("click", () => mcDo(+el.dataset.p, 0)));
+  document.getElementById("mc-again")?.addEventListener("click", startMancala);
+}
+function mcDo(i, who) {
+  const before = MC.b[who ? 13 : 6], r = mcMove(MC.b, i, who); MC.b = r.b; naNote(who ? 330 : 520, .08, "sine", .1);
+  const got = MC.b[who ? 13 : 6] - before;
+  MC.log = `${who ? "🤖" : "You"} ${got ? `got ${got} stone${got > 1 ? "s" : ""}` : "moved"}${r.again ? " and goes again!" : "."}`;
+  if (r.over) { MC.over = MC.b[6] > MC.b[13] ? 0 : MC.b[6] < MC.b[13] ? 1 : 2; cgWin("mancala", MC.over); return mcRender(); }
+  if (!r.again) MC.turn = 1 - who;
+  if (MC.turn === 0) MC.log += " Your turn!";
+  mcRender();
+  if (MC.turn === 1) naTimer(setTimeout(mcAi, 900));
+}
+function mcAi() {
+  if (!MC || MC.over !== null || !document.getElementById("cg")) return;
+  const moves = [7, 8, 9, 10, 11, 12].filter(i => MC.b[i]), d = ({ easy: 1, medium: 4, hard: 7 })[cgLvl()];
+  let pick = rPick(moves);
+  if (Math.random() < cgSmart()) { let best = -1e9; for (const i of moves) { const r = mcMove(MC.b, i, 1), v = r.over ? (r.b[13] - r.b[6]) * 10 : mcSearch(r.b, r.again ? 1 : 0, d); if (v > best) { best = v; pick = i; } } }
+  mcDo(pick, 1);
+}
+
+// 🐟 Go Fish
+let GF = null;
+const GF_R = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+function startGoFish() {
+  cgScreen("gofish", "🐟 Go Fish", "Tap a card in your hand to ask the computer for that rank. If it has any, it must give you all of them, and you go again! If not, you Go Fish and draw a card. Get all 4 cards of a rank to make a book. When all 13 books are made, whoever has the most wins!", startGoFish);
+  const deck = []; GF_R.forEach(r => ["♠", "♥", "♦", "♣"].forEach(s => deck.push({ r, s })));
+  GF = { deck: shuffle(deck), hands: [[], []], books: [[], []], turn: 0, over: null, mem: new Set(), log: "Your turn! Tap a card to ask for that rank." };
+  for (let i = 0; i < 7; i++) GF.hands.forEach(h => h.push(GF.deck.pop()));
+  [0, 1].forEach(gfBooks); gfRender();
+}
+function gfBooks(w) { GF_R.forEach(r => { if (GF.hands[w].filter(c => c.r === r).length === 4) { GF.hands[w] = GF.hands[w].filter(c => c.r !== r); GF.books[w].push(r); if (w === 1) GF.mem.delete(r); GF.log += ` ${w ? "🤖" : "You"} made a book of ${r}s! 📚`; } }); }
+function gfFill(w) { if (!GF.hands[w].length && GF.deck.length) GF.hands[w].push(GF.deck.pop()); }
+function gfRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const my = GF.turn === 0 && GF.over === null; GF.hands[0].sort((a, b) => GF_R.indexOf(a.r) - GF_R.indexOf(b.r));
+  box.innerHTML = `<div class="un-opp">🤖 Computer: <b>${GF.hands[1].length}</b> cards · Books: ${GF.books[1].map(r => `<span class="gf-book">${r}</span>`).join("") || "none"}</div>
+    <div class="un-mid"><div class="un-card back">🐟<small>${GF.deck.length}</small></div></div>
+    <p class="un-log">${esc(GF.log)}</p>${GF.over !== null ? `<h3>${GF.over === 0 ? "🏆 You win!" : GF.over === 2 ? "🤝 A tie!" : "🤖 The computer wins!"} (${GF.books[0].length} books to ${GF.books[1].length})</h3><button class="btn go" id="gf-again">Play again</button>` : ""}
+    <div class="un-hand">${GF.hands[0].map(c => `<button class="gf-card${/[♥♦]/.test(c.s) ? " red" : ""}" data-r="${c.r}" ${my ? "" : "disabled"}>${c.r}<small>${c.s}</small></button>`).join("")}</div>
+    <p>📚 Your books: ${GF.books[0].map(r => `<span class="gf-book">${r}</span>`).join("") || "none yet"}</p>`;
+  box.querySelectorAll("[data-r]").forEach(b => b.addEventListener("click", () => gfAsk(0, b.dataset.r)));
+  document.getElementById("gf-again")?.addEventListener("click", startGoFish);
+}
+function gfAsk(w, r) {
+  if (GF.over !== null) return;
+  const o = 1 - w, give = GF.hands[o].filter(c => c.r === r), me = w ? "🤖" : "You";
+  if (w === 0) GF.mem.add(r);
+  GF.log = `${me} asked for ${r}s. `;
+  let again = false;
+  if (give.length) { GF.hands[o] = GF.hands[o].filter(c => c.r !== r); GF.hands[w].push(...give); GF.log += `${w ? "You" : "🤖"} handed over ${give.length}!`; sfx.right(); again = true; }
+  else { GF.log += "Go Fish! 🐟"; if (GF.deck.length) { const c = GF.deck.pop(); GF.hands[w].push(c); if (c.r === r) { GF.log += ` ${me} fished up a ${r}! Go again!`; again = true; } } naNote(300, .1, "sine", .08); }
+  gfBooks(w); gfFill(0); gfFill(1);
+  if (GF.books[0].length + GF.books[1].length === 13 || (!GF.hands[0].length && !GF.hands[1].length)) { const a = GF.books[0].length, b = GF.books[1].length; GF.over = a > b ? 0 : a < b ? 1 : 2; cgWin("gofish", GF.over); return gfRender(); }
+  if (!again || !GF.hands[w].length) GF.turn = o;
+  if (!GF.hands[GF.turn].length) GF.turn = 1 - GF.turn;
+  if (GF.turn === 0) GF.log += " Your turn!";
+  gfRender();
+  if (GF.turn === 1) naTimer(setTimeout(gfAi, 1100));
+}
+function gfAi() {
+  if (!GF || GF.over !== null || !document.getElementById("cg")) return;
+  const h = GF.hands[1], ranks = [...new Set(h.map(c => c.r))];
+  const remembered = ranks.filter(r => GF.mem.has(r));
+  let r = rPick(ranks);
+  if (Math.random() < cgSmart()) r = remembered.length ? rPick(remembered) : ranks.sort((a, b) => h.filter(c => c.r === b).length - h.filter(c => c.r === a).length)[0];
+  gfAsk(1, r);
+}
+
+// ⬜ Dots and Boxes (4×4 boxes)
+let DB = null;
+const DB_N = 4;
+const dbSides = (r, c) => [`h${r},${c}`, `h${r + 1},${c}`, `v${r},${c}`, `v${r},${c + 1}`];
+const dbCount = (lines, r, c) => dbSides(r, c).filter(k => lines.has(k)).length;
+const dbBoxesOf = k => { const t = k[0], [r, c] = k.slice(1).split(",").map(Number), out = []; if (t === "h") { if (r > 0) out.push([r - 1, c]); if (r < DB_N) out.push([r, c]); } else { if (c > 0) out.push([r, c - 1]); if (c < DB_N) out.push([r, c]); } return out; };
+function startDots() {
+  cgScreen("dots", "⬜ Dots and Boxes", "Take turns drawing one line between two dots. If you draw the 4th side of a box, you win that box and go again! Be careful not to draw the 3rd side of a box, or the computer will grab it. Most boxes wins!", startDots);
+  const all = []; for (let r = 0; r <= DB_N; r++) for (let c = 0; c < DB_N; c++) all.push(`h${r},${c}`); for (let r = 0; r < DB_N; r++) for (let c = 0; c <= DB_N; c++) all.push(`v${r},${c}`);
+  DB = { all, lines: new Map(), owner: {}, turn: 0, over: null, log: "Your turn! Tap a gap between two dots." };
+  dbRender();
+}
+function dbRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const my = DB.turn === 0 && DB.over === null, n = 2 * DB_N + 1, sc = [0, 1].map(w => Object.values(DB.owner).filter(v => v === w).length);
+  let cells = "";
+  for (let R = 0; R < n; R++) for (let C = 0; C < n; C++) {
+    if (R % 2 === 0 && C % 2 === 0) cells += `<i class="db-dot"></i>`;
+    else if (R % 2 === 1 && C % 2 === 1) { const o = DB.owner[`${(R - 1) / 2},${(C - 1) / 2}`]; cells += `<span class="db-box${o === undefined ? "" : o ? " ai" : " me"}">${o === undefined ? "" : o ? "🤖" : "🦛"}</span>`; }
+    else { const k = R % 2 === 0 ? `h${R / 2},${(C - 1) / 2}` : `v${(R - 1) / 2},${C / 2}`, w = DB.lines.get(k); cells += `<button class="db-l ${R % 2 === 0 ? "h" : "v"}${w === undefined ? "" : w ? " ai" : " me"}" data-l="${k}" ${w === undefined && my ? "" : "disabled"} aria-label="line"></button>`; }
+  }
+  box.innerHTML = `<p class="un-log">${esc(DB.log)}</p><p><b>🦛 ${sc[0]}</b> boxes · <b>🤖 ${sc[1]}</b> boxes</p>${DB.over !== null ? `<h3>${DB.over === 0 ? "🏆 You win!" : DB.over === 2 ? "🤝 A tie!" : "🤖 The computer wins!"}</h3><button class="btn go" id="db-again">Play again</button>` : ""}
+    <div class="db-grid" style="grid-template-columns:repeat(${DB_N}, 14px 1fr) 14px;grid-template-rows:repeat(${DB_N}, 14px 1fr) 14px">${cells}</div>`;
+  box.querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => dbDo(b.dataset.l, 0)));
+  document.getElementById("db-again")?.addEventListener("click", startDots);
+}
+function dbDo(k, who) {
+  DB.lines.set(k, who); let got = 0;
+  dbBoxesOf(k).forEach(([r, c]) => { if (dbCount(DB.lines, r, c) === 4) { DB.owner[`${r},${c}`] = who; got++; } });
+  naNote(got ? 780 : who ? 330 : 520, .08, "triangle", .08);
+  DB.log = got ? `${who ? "🤖" : "You"} took ${got} box${got > 1 ? "es" : ""} and go${who ? "es" : ""} again!` : who ? "🤖 drew a line. Your turn!" : "Line drawn.";
+  if (DB.lines.size === DB.all.length) { const a = Object.values(DB.owner).filter(v => v === 0).length, b = DB_N * DB_N - a; DB.over = a > b ? 0 : a < b ? 1 : 2; cgWin("dots", DB.over); return dbRender(); }
+  if (!got) DB.turn = 1 - who;
+  dbRender();
+  if (DB.turn === 1) naTimer(setTimeout(dbAi, got ? 500 : 700));
+}
+function dbAi() {
+  if (!DB || DB.over !== null || !document.getElementById("cg")) return;
+  const free = DB.all.filter(k => !DB.lines.has(k)), smart = Math.random() < cgSmart();
+  const completes = k => dbBoxesOf(k).some(([r, c]) => dbCount(DB.lines, r, c) === 3);
+  const gives = k => dbBoxesOf(k).filter(([r, c]) => dbCount(DB.lines, r, c) === 2).length;
+  let pick = free.find(completes);
+  if (!pick || !smart && Math.random() < .5) { const safe = free.filter(k => !gives(k)); pick = smart && safe.length ? rPick(safe) : smart ? free.sort((a, b) => gives(a) - gives(b))[0] : rPick(free); }
+  dbDo(pick, 1);
+}
+
+NEW_APPS.push(
+  { id: "uno", emoji: "🃏", name: "Uno", desc: "Match colors and numbers, and zap the computer with +4s!", start: () => startUno(), isNew: true, kw: "uno" },
+  { id: "bship", emoji: "🚢", name: "Battleship", desc: "Hunt down and sink the computer's hidden fleet.", start: () => startBattleship(), isNew: true, kw: "battle ?ships?" },
+  { id: "hclass", emoji: "🎓", name: "Head of the Class", desc: "Race the computer from Kindergarten to College with trivia.", start: () => startHeadClass(), isNew: true, kw: "head of (the )?class|trivia" },
+  { id: "rummi", emoji: "🀄", name: "Rummikub", desc: "Make runs and groups of number tiles before the computer.", start: () => startRummikub(), isNew: true, kw: "rummikub|rummy|rummicube" },
+  { id: "check", emoji: "⛀", name: "Checkers", desc: "Jump, capture and crown kings against the computer.", start: () => startCheckers(), isNew: true, kw: "checkers|draughts" },
+  { id: "yahtzee", emoji: "🎲", name: "Yahtzee", desc: "Roll five dice, fill your score card, and shout Yahtzee!", start: () => startYahtzee(), isNew: true, kw: "yahtzee|yatzy|dice game" },
+  { id: "mancala", emoji: "🥣", name: "Mancala", desc: "The ancient stone-sowing game. Capture the most stones!", start: () => startMancala(), isNew: true, kw: "mancala|kalah" },
+  { id: "gofish", emoji: "🐟", name: "Go Fish", desc: "Ask for cards, go fishing, and collect the most books.", start: () => startGoFish(), isNew: true, kw: "go ?fish" },
+  { id: "dots", emoji: "⬜", name: "Dots and Boxes", desc: "Draw lines, close boxes, and outsmart the computer.", start: () => startDots(), isNew: true, kw: "dots (and|&) boxes|dots game" },
+);
+
+// ♟️ Chess: you are white (bottom). Board squares 0-63, row 0 is the top (black's side).
+let CH = null;
+const CH_V = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 0 };
+const CH_GLYPH = { k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟︎" };
+const chWhite = p => p === p.toUpperCase();
+const chSide = p => !p ? null : chWhite(p) ? "w" : "b";
+const chKing = (b, side) => b.indexOf(side === "w" ? "K" : "k");
+const CH_KN = [[1, 2], [2, 1], [-1, 2], [-2, 1], [1, -2], [2, -1], [-1, -2], [-2, -1]], CH_ST = [[1, 0], [-1, 0], [0, 1], [0, -1]], CH_DG = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+function chAttacked(b, sq, by) {   // is square sq attacked by side `by`?
+  const r = sq >> 3, c = sq & 7, at = (rr, cc) => rr >= 0 && rr < 8 && cc >= 0 && cc < 8 ? b[rr * 8 + cc] : "";
+  const is = (p, t) => p && chSide(p) === by && p.toLowerCase() === t, pr = by === "w" ? r + 1 : r - 1;
+  if (is(at(pr, c - 1), "p") || is(at(pr, c + 1), "p")) return true;
+  for (const [dr, dc] of CH_KN) if (is(at(r + dr, c + dc), "n")) return true;
+  for (const [dr, dc] of [...CH_ST, ...CH_DG]) if (is(at(r + dr, c + dc), "k")) return true;
+  for (const [ds, ts] of [[CH_ST, "rq"], [CH_DG, "bq"]]) for (const [dr, dc] of ds) { let rr = r + dr, cc = c + dc; while (rr >= 0 && rr < 8 && cc >= 0 && cc < 8) { const p = b[rr * 8 + cc]; if (p) { if (chSide(p) === by && ts.includes(p.toLowerCase())) return true; break; } rr += dr; cc += dc; } }
+  return false;
+}
+function chPseudo(s) {
+  const { b, turn } = s, out = [], en = turn === "w" ? "b" : "w", add = (f, t, x = {}) => out.push({ f, t, ...x });
+  for (let i = 0; i < 64; i++) {
+    const p = b[i]; if (!p || chSide(p) !== turn) continue;
+    const r = i >> 3, c = i & 7, t = p.toLowerCase(), free = j => !b[j] || chSide(b[j]) !== turn;
+    if (t === "p") {
+      const d = turn === "w" ? -1 : 1, start = turn === "w" ? 6 : 1, last = turn === "w" ? 0 : 7, one = i + 8 * d, pro = r + d === last ? { promo: true } : {};
+      if (!b[one]) { add(i, one, pro); if (r === start && !b[one + 8 * d]) add(i, one + 8 * d, { dbl: true }); }
+      for (const dc of [-1, 1]) { const cc = c + dc; if (cc < 0 || cc > 7) continue; const j = (r + d) * 8 + cc; if (b[j] && chSide(b[j]) !== turn) add(i, j, pro); else if (j === s.ep) add(i, j, { epCap: r * 8 + cc }); }
+    } else if (t === "n" || t === "k") {
+      for (const [dr, dc] of t === "n" ? CH_KN : [...CH_ST, ...CH_DG]) { const rr = r + dr, cc = c + dc; if (rr >= 0 && rr < 8 && cc >= 0 && cc < 8 && free(rr * 8 + cc)) add(i, rr * 8 + cc); }
+      if (t === "k" && i === (turn === "w" ? 60 : 4) && !chAttacked(b, i, en)) {
+        const K = turn === "w" ? "K" : "k", Q = turn === "w" ? "Q" : "q", rook = turn === "w" ? "R" : "r";
+        if (s.cas.includes(K) && !b[i + 1] && !b[i + 2] && b[i + 3] === rook && !chAttacked(b, i + 1, en) && !chAttacked(b, i + 2, en)) add(i, i + 2, { castle: [i + 3, i + 1] });
+        if (s.cas.includes(Q) && !b[i - 1] && !b[i - 2] && !b[i - 3] && b[i - 4] === rook && !chAttacked(b, i - 1, en) && !chAttacked(b, i - 2, en)) add(i, i - 2, { castle: [i - 4, i - 1] });
+      }
+    } else {
+      for (const [dr, dc] of t === "b" ? CH_DG : t === "r" ? CH_ST : [...CH_ST, ...CH_DG]) { let rr = r + dr, cc = c + dc; while (rr >= 0 && rr < 8 && cc >= 0 && cc < 8) { const j = rr * 8 + cc; if (!b[j]) add(i, j); else { if (chSide(b[j]) !== turn) add(i, j); break; } rr += dr; cc += dc; } }
+    }
+  }
+  return out;
+}
+function chApply(s, m) {
+  const b = s.b.slice(), p = b[m.f]; let cas = s.cas;
+  b[m.t] = m.promo ? (chWhite(p) ? "Q" : "q") : p; b[m.f] = "";
+  if (m.epCap !== undefined) b[m.epCap] = "";
+  if (m.castle) { b[m.castle[1]] = b[m.castle[0]]; b[m.castle[0]] = ""; }
+  if (p === "K") cas = cas.replace(/[KQ]/g, ""); else if (p === "k") cas = cas.replace(/[kq]/g, "");
+  for (const [sq, ch] of [[63, "K"], [56, "Q"], [7, "k"], [0, "q"]]) if (m.f === sq || m.t === sq) cas = cas.replace(ch, "");
+  return { b, turn: s.turn === "w" ? "b" : "w", cas, ep: m.dbl ? (m.f + m.t) / 2 : -1, quiet: s.b[m.t] || p.toLowerCase() === "p" ? 0 : (s.quiet || 0) + 1 };
+}
+const chLegal = s => chPseudo(s).filter(m => { const n = chApply(s, m); return !chAttacked(n.b, chKing(n.b, s.turn), n.turn); });
+const chInCheck = s => chAttacked(s.b, chKing(s.b, s.turn), s.turn === "w" ? "b" : "w");
+function chEval(b) {   // + is good for white
+  let v = 0;
+  for (let i = 0; i < 64; i++) {
+    const p = b[i]; if (!p) continue;
+    const t = p.toLowerCase(), w = chWhite(p), r = i >> 3, c = i & 7, cen = 3.5 - Math.max(Math.abs(r - 3.5), Math.abs(c - 3.5));
+    let x = CH_V[t];
+    if (t === "n" || t === "b") x += cen * 9; else if (t === "q") x += cen * 3;
+    else if (t === "p") x += (w ? 6 - r : r - 1) * 7 + (c >= 2 && c <= 5 ? cen * 4 : 0);
+    else if (t === "k") x += (w ? r === 7 : r === 0) ? 15 : -10;
+    v += w ? x : -x;
+  }
+  return v;
+}
+function chSearch(s, d, al, be) {
+  const ms = chLegal(s);
+  if (!ms.length) return chInCheck(s) ? -100000 - d : 0;
+  if (!d) return (s.turn === "w" ? 1 : -1) * chEval(s.b);
+  ms.sort((a, b) => CH_V[(s.b[b.t] || "k").toLowerCase()] - CH_V[(s.b[a.t] || "k").toLowerCase()]);
+  let best = -1e9;
+  for (const m of ms) { const v = -chSearch(chApply(s, m), d - 1, -be, -al); if (v > best) best = v; if (v > al) al = v; if (al >= be) break; }
+  return best;
+}
+function startChess() {
+  cgScreen("chess", "♟️ Chess", "You play white ⚪ at the bottom. Tap a piece, then tap a glowing square to move it. Put the computer's king in <b>checkmate</b> (in check with no way out) to win! Pawns reach the far side and become queens. Castling and en passant work too. Made a mistake? Tap Take back.", startChess);
+  const row = "rnbqkbnr";
+  const b = [...row, ..."pppppppp", ...Array(32).fill(""), ..."PPPPPPPP", ...row.toUpperCase()];
+  CH = { s: { b, turn: "w", cas: "KQkq", ep: -1, quiet: 0 }, sel: null, last: null, over: null, hist: [], log: "Your move! Tap a white piece." };
+  chRender();
+}
+function chRender() {
+  const box = document.getElementById("cg"); if (!box) return;
+  const s = CH.s, my = s.turn === "w" && CH.over === null, legal = my ? chLegal(s) : [], dests = new Set(legal.filter(m => m.f === CH.sel).map(m => m.t)), check = chInCheck(s) ? chKing(s.b, s.turn) : -1;
+  const lost = side => { const start = { p: 8, n: 2, b: 2, r: 2, q: 1 }; let out = ""; for (const t of "qrbnp") { const have = s.b.filter(p => p === (side === "w" ? t.toUpperCase() : t)).length; out += CH_GLYPH[t].repeat(Math.max(0, start[t] - have)); } return out; };
+  box.innerHTML = `<p class="un-log">${esc(CH.log)}${CH.over === null && s.turn === "b" ? " 🤖 is thinking…" : ""}</p>
+    ${CH.over !== null ? `<h3>${CH.over === 0 ? "🏆 Checkmate! You win!" : CH.over === 2 ? "🤝 It's a draw!" : "🤖 Checkmate. The computer wins!"}</h3><button class="btn go" id="ch-again">Play again</button>` : ""}
+    <div class="ch-cap blk">${lost("b")}</div>
+    <div class="ch-board">${s.b.map((p, i) => { const dark = ((i >> 3) + (i & 7)) % 2; return `<button class="ch-c${dark ? " dark" : ""}${i === CH.sel ? " sel" : ""}${dests.has(i) ? (p ? " take" : " dest") : ""}${CH.last && (i === CH.last.f || i === CH.last.t) ? " last" : ""}${i === check ? " check" : ""}" data-c="${i}" ${my ? "" : "disabled"} aria-label="${"abcdefgh"[i & 7]}${8 - (i >> 3)}">${p ? `<span class="ch-p ${chWhite(p) ? "w" : "b"}">${CH_GLYPH[p.toLowerCase()]}</span>` : ""}</button>`; }).join("")}</div>
+    <div class="ch-cap wht">${lost("w")}</div>
+    <div class="row"><button class="btn" id="ch-back" ${CH.hist.length && s.turn === "w" ? "" : "disabled"}>↩️ Take back</button></div>`;
+  box.querySelectorAll("[data-c]").forEach(el => el.addEventListener("click", () => {
+    const i = +el.dataset.c;
+    if (dests.has(i)) { CH.hist.push({ s: CH.s, last: CH.last, over: CH.over }); return chDo(legal.find(m => m.f === CH.sel && m.t === i)); }
+    if (s.b[i] && chWhite(s.b[i])) { CH.sel = i; CH.log = legal.some(m => m.f === i) ? "Now tap a glowing square." : "That piece can't move right now."; } else CH.sel = null;
+    chRender();
+  }));
+  document.getElementById("ch-back")?.addEventListener("click", () => { const h = CH.hist.pop(); if (!h) return; CH.s = h.s; CH.last = h.last; CH.over = null; CH.sel = null; CH.log = "Took it back. Try a different move!"; chRender(); });
+  document.getElementById("ch-again")?.addEventListener("click", startChess);
+}
+function chDo(m) {
+  const who = CH.s.turn, cap = CH.s.b[m.t] || (m.epCap !== undefined ? "p" : "");
+  CH.s = chApply(CH.s, m); CH.last = m; CH.sel = null;
+  cap ? naDrum("snare") : naNote(who === "w" ? 520 : 330, .06, "triangle", .08);
+  const nm = who === "w" ? "You" : "🤖";
+  CH.log = `${nm} ${m.castle ? "castled" : cap ? `captured a ${({ p: "pawn", n: "knight", b: "bishop", r: "rook", q: "queen" })[cap.toLowerCase()]}` : "moved"}${m.promo ? " and made a new queen 👑" : ""}.`;
+  const next = chLegal(CH.s), pieces = CH.s.b.filter(Boolean);
+  if (!next.length) { if (chInCheck(CH.s)) { CH.over = who === "w" ? 0 : 1; } else { CH.over = 2; CH.log += " Stalemate! No legal moves, so it's a draw."; } cgWin("chess", CH.over); }
+  else if (pieces.length === 2 || CH.s.quiet >= 100) { CH.over = 2; CH.log += pieces.length === 2 ? " Only kings left, so it's a draw." : " 50 moves with no capture: draw."; cgWin("chess", 2); }
+  else if (chInCheck(CH.s)) CH.log += who === "w" ? " Check! ⚠️" : " You're in check! Protect your king! ⚠️";
+  chRender();
+  if (CH.over === null && CH.s.turn === "b") naTimer(setTimeout(chAi, 350));
+}
+function chAi() {
+  if (!CH || CH.over !== null || CH.s.turn !== "b" || !document.getElementById("cg")) return;
+  const ms = shuffle(chLegal(CH.s)), d = ({ easy: 1, medium: 2, hard: 4 })[cgLvl()];
+  let pick = rPick(ms);
+  if (Math.random() < cgSmart() + .15) { let best = -1e9; for (const m of ms) { const v = -chSearch(chApply(CH.s, m), d - 1, -1e9, -best); if (v > best) { best = v; pick = m; } } }
+  chDo(pick);
+}
+NEW_APPS.push({ id: "chess", emoji: "♟️", name: "Chess", desc: "Real chess against the computer, with take-backs for practice.", start: () => startChess(), isNew: true, kw: "chess" });
+
+// 🔎 Every App-App app can be found with Hippo search (by its name, or by these extra words)
+const APP_KW = { code: "code lab|learn to code", ai: "ai studio", music: "piano|beat maker", science: "volcano experiment", space: "solar system", money: "piggy bank|budget", pixel: "pixel art", puzzle: "sudoku|tower of hanoi|lights out", lang: "learn spanish|learn french", world: "flag quiz", comic: "comics?|comic strip", calm: "breathing|calm down", hippopoly: "monopoly|monapely|property game" };
+function appSearch(q) {
+  const rx = s => new RegExp("(^|[^a-z])(" + s + ")($|[^a-z])");
+  return NEW_APPS.find(a => rx(a.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).test(q) || (a.kw && rx(a.kw).test(q)) || (APP_KW[a.id] && rx(APP_KW[a.id]).test(q)));
+}
 
 function startMathCenter() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
@@ -9358,7 +10073,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
