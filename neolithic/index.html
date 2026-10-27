@@ -315,6 +315,7 @@
   .bs-grid, .ck-board, .ch-board { grid-template-columns: repeat(8, minmax(0, 1fr)) !important; } .mc-row { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; } .bs-wrap > div, .mc-rows { min-width: 0; }
   .bs-c, .mc-pit, .ck-c, .ch-c, .db-l, .un-card, .gf-card, .rk-t, .yz-d { min-width: 0; min-height: 0; box-sizing: border-box; } .mc-store { flex: 0 0 44px; width: 44px; } .mc-board { padding: 8px 6px; gap: 4px; }
   .cg-bar .chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; font-size: .85rem; min-height: 0; width: auto; border-radius: 999px; } .cg-bar .cg-lv .chip { flex-direction: row; }
+  .hip-fixed { margin: 0 0 6px; font-size: .9rem; color: #ffe066; font-weight: 700; }
   .cg-pl select { font: inherit; padding: 3px 6px; border-radius: 8px; background: #1b1640; color: #fff; border: 1px solid var(--line); max-width: 170px; }
   .hp-levels { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; } .hp-lv { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px; border-radius: 14px; border: 2px solid var(--line); background: rgba(255,255,255,.06); color: inherit; font: inherit; cursor: pointer; } .hp-lv span { font-size: .8rem; opacity: .8; } .hp-lv.locked { opacity: .45; cursor: not-allowed; }
   .hp-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .95rem; margin-bottom: 8px; }
@@ -7997,6 +7998,74 @@ const hippoCount = () => HIPPO_FAMILIES.reduce((t, f) => t + f[2], 0) + (HIPPO_B
 let HIPPO_BANK = null, HIPPO_SONG_NEXT = {};
 // ---- answering ----
 const hFmt = n => Number.isInteger(n) ? fmt(n) : String(Math.round(n * 1000) / 1000);
+// 🔤 Spelling helper: Hippo understands misspelled words. Every word used anywhere on this site (questions, stories,
+// animals, countries, apps…) is Hippo's dictionary. A word that isn't in it is swapped for the closest word that is.
+let HIPPO_VOCAB = null;
+function hippoVocab() {
+  if (HIPPO_VOCAB) return HIPPO_VOCAB;
+  const known = new Set(), count = new Map(), src = [...document.scripts].map(s => s.textContent).join(" ") + " " + document.body.innerText;
+  const bump = (w, n) => { if (w.length >= 3 && w.length <= 20) count.set(w, (count.get(w) || 0) + n); };
+  for (const w of src.match(/[A-Z]?[a-z]+|[A-Z]+(?![a-z])/g) || []) { const k = w.toLowerCase(); known.add(k); bump(k, 1); }   // any word on the site is left alone
+  // words in real sentences (3+ words in a row) count extra, so everyday words beat bits of computer code
+  for (const run of src.match(/[A-Za-z']+(?:,? [A-Za-z']+){2,}/g) || []) for (const w of run.toLowerCase().match(/[a-z]+/g)) bump(w, 5);
+  const byLen = [];
+  for (const [w, n] of count) (byLen[w.length] ||= []).push([w, n]);
+  return HIPPO_VOCAB = { known, count, byLen };
+}
+function hippoDist(a, b, max) {   // Damerau-Levenshtein distance (swapped letters count as 1), gives up past max
+  const m = a.length, n = b.length; if (Math.abs(m - n) > max) return max + 1;
+  let pp = null, p = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const c = [i]; let low = i;
+    for (let j = 1; j <= n; j++) {
+      let v = Math.min(p[j] + 1, c[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (pp && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, pp[j - 2] + 1);
+      c.push(v); if (v < low) low = v;
+    }
+    if (low > max) return max + 1;
+    pp = p; p = c;
+  }
+  return p[n];
+}
+const HIPPO_SPELL_FIX = { wat: "what", wut: "what", whats: "what is", hw: "how", hou: "how", meny: "many", menny: "many", wher: "where", wen: "when", hoo: "who", y: "why", r: "are", u: "you", ur: "your", plz: "please", pls: "please", teh: "the", da: "the", wich: "which", becuz: "because", cuz: "because", nite: "night", thru: "through", tel: "tell", hed: "head", tims: "times", tmes: "times", timez: "times", dose: "does", doz: "does", wats: "what is", wuts: "what is", jok: "joke", jokse: "jokes", storie: "story", storys: "stories", boxs: "boxes", nock: "knock", nown: "noun", helo: "hello", hellow: "hello", lerning: "learning", lern: "learn", kindergarden: "kindergarten", skystak: "sky stack", skystack: "sky stack", dinosour: "dinosaur", dinosours: "dinosaurs", dinasaur: "dinosaur", dinasour: "dinosaur", nok: "knock", reed: "read", foxs: "foxes", mutch: "much", alot: "a lot", eat: "eat", definately: "definitely", wierd: "weird" };
+function hippoSpellAlts(w) {   // up to 3 best fixes for one word, best first
+  const V = hippoVocab();
+  if (HIPPO_SPELL_FIX[w]) return [HIPPO_SPELL_FIX[w]];
+  if (w.length < 3 || /\d/.test(w) || V.known.has(w)) return [w];
+  const max = w.length <= 4 ? 1 : w.length <= 8 ? 2 : 3, all = [];
+  const pre = c => { let k = 0, e = 0; while (k < c.length && c[k] === w[k]) k++; while (e < c.length - k && c[c.length - 1 - e] === w[w.length - 1 - e]) e++; return k + e; };
+  for (let L = w.length - max; L <= w.length + max; L++) for (const [c, n] of V.byLen[L] || []) { const d = hippoDist(w, c, max); if (d <= max) all.push([c, d, pre(c), n]); }
+  all.sort((a, b) => a[1] - b[1] || b[2] - a[2] || b[3] - a[3]);
+  return all.length ? all.slice(0, 3).map(x => x[0]) : [w];
+}
+function hippoSpell(q) {
+  const V = hippoVocab();
+  const fix = w => {
+    if (HIPPO_SPELL_FIX[w]) return HIPPO_SPELL_FIX[w];
+    if (w.length < 3 || /\d/.test(w) || V.known.has(w)) return w;
+    const max = w.length <= 4 ? 1 : w.length <= 8 ? 2 : 3;
+    // closest word wins; on a tie, the word that starts and ends the same way, then the more common word
+    const pre = c => { let k = 0, e = 0; while (k < c.length && c[k] === w[k]) k++; while (e < c.length - k && c[c.length - 1 - e] === w[w.length - 1 - e]) e++; return k + e; };
+    let best = w, bd = max + 1, bp = -1, bn = 0;
+    for (let L = w.length - max; L <= w.length + max; L++) for (const [c, n] of V.byLen[L] || []) {
+      const d = hippoDist(w, c, Math.min(max, bd)); if (d > max || d > bd) continue;
+      const pf = pre(c);
+      if (d < bd || pf > bp || (pf === bp && n > bn)) { best = c; bd = d; bp = pf; bn = n; }
+    }
+    return best;
+  };
+  return q.toLowerCase().replace(/[a-z]+/g, fix);
+}
+function hippoAsk(q) {   // answers the question, fixing misspellings first
+  const base = q.toLowerCase().replace(/[?!.,]+$/, ""), parts = base.split(/([a-z]+)/), alts = parts.map((p, i) => i % 2 ? hippoSpellAlts(p) : [p]);
+  if (alts.every((a, i) => a.length === 1 && a[0] === parts[i])) return hippoAnswer(q);
+  // try the best fix first, then swap in 2nd/3rd choices one word at a time; keep the first strong answer
+  const tries = [alts.map(a => a[0])];
+  alts.forEach((a, i) => a.slice(1).forEach(alt => { const t = alts.map(x => x[0]); t[i] = alt; tries.push(t); }));
+  let loose = null;
+  for (const t of tries.slice(0, 12)) { const fq = t.join(""), a = hippoAnswer(fq); if (!a) continue; a.fixedQ = fq; if (!a.loose) return a; loose ||= a; }
+  return hippoAnswer(q) || loose;
+}
 function hippoAnswer(qRaw) {
   const q = qRaw.toLowerCase().replace(/[?!]/g, "").replace(/,(?=\d{3})/g, "").trim();
   let m;
@@ -8020,7 +8089,7 @@ function hippoAnswer(qRaw) {
   // 📱 the App-App and its apps
   if (/\b(hippopoly|monopoly|monapely|board game|property game)\b/.test(q)) return R("Hippopoly", "🎲", "🎲 Play Hippopoly!", "Buy properties, build houses and collect rent against the computer. 10 levels, and the computer gets smarter each one.", hBig("🎲🏠", "#0f5a3a", "Hippopoly"), { label: "🎲 Play Hippopoly", fn: () => startHippopoly() });
   if (/\b(app ?app|new apps?|newest apps?)\b/.test(q)) return R("App-App", "📱", "📱 The App-App has all the newest apps!", "Code Lab, AI Studio, and every new app from now on.", hBig("📱✨", "#2e1a4a", "App-App"), { label: "📱 Open the App-App", fn: () => startAppApp() });
-  if (/\b(learn (to |how to )?code|coding|code lab|html|python|programming|javascript)\b/.test(q)) return R("Code Lab", "💻", "💻 Learn to code in the Code Lab!", "It has step-by-step lessons for HTML (making websites, with a live preview) and Python (real programming, even turtle drawing and games). It's in the App-App.", hBig("💻🐍", "#0b2a1a", "Code Lab"), { label: "💻 Open the Code Lab", fn: () => startCodeLab() });
+  if (/\b(learn(ing)? (to |how to )?code|coding|code lab|html|python|programming|javascript)\b/.test(q)) return R("Code Lab", "💻", "💻 Learn to code in the Code Lab!", "It has step-by-step lessons for HTML (making websites, with a live preview) and Python (real programming, even turtle drawing and games). It's in the App-App.", hBig("💻🐍", "#0b2a1a", "Code Lab"), { label: "💻 Open the Code Lab", fn: () => startCodeLab() });
   if (/\b(ai studio|use ai|using ai|prompts?|prompting|artificial intelligence|chatbot|chat ?gpt|claude)\b/.test(q)) return R("AI Studio", "🤖", "🤖 Learn to use AI in the AI Studio!", "Lessons on what AI is, staying safe, and writing great prompts, plus a Prompt Builder, a prompt challenge, and a project where AI helps you make your own game. It's in the App-App.", hBig("🤖✨", "#1a1050", "AI Studio"), { label: "🤖 Open the AI Studio", fn: () => startAIStudio() });
   // 🧮 the Math Center
   if (/^(math|maths|math center|math centre|math app|math practice|practice math|ratios?|rates?|ratios and rates|ratios & rates|unit 2|mp1|math test|accelerated math|6\/7 math)$/.test(q) || /\b(math center|math app|math practice|ratios and rates|ratios & rates|district assessment)\b/.test(q))
@@ -8107,6 +8176,11 @@ function hippoAnswer(qRaw) {
   if (/^(?:2048|what is 2048|play 2048)$/.test(q)) { const g = HIPPO_GAMES.find(x => x[0] === "2048"); return R("Games", "🎮", `2048 is a game here! ${g[3]}`, "Want to play? Tap the button.", hBig(g[1], "#e8f7e8", g[0]), { label: `${g[1]} Go to 2048`, fn: g[4] }); }
   for (const g of HIPPO_GAMES) { const [name, emo, words, what, go] = g; if (words.split("|").some(w => new RegExp(`\\b${w.replace(/[-]/g, "\\-")}\\b`).test(q))) return R("Games", "🎮", `${name} is a game you can play here!`, `${what} Want to go there now?`, hBig(emo, "#e8f7e8", name), { label: `${emo} Go to ${name}`, fn: go }); }
   if (/\b(games?|play)\b/.test(q) && /(what|which|list|any|can i|fun|find|where|show)/.test(q)) return R("Games", "🎮", `There are ${HIPPO_GAMES.length - 1} games to play!`, HIPPO_GAMES.filter(g => g[0] !== "Training Ground").map(g => `${g[1]} ${g[0]}`).join(" · ") + ". Ask Hippo about any of them, like “what is slope?”, and Hippo will take you there.", hBig("🎮🕹️", "#e8f7e8", "games"), { label: "🎲 Take me to a random game", fn: () => HIPPO_GAMES[rnd(0, HIPPO_GAMES.length - 2)][4]() });
+  // 🦖 "What is a dinosaur?"
+  if (/\bdino(saur)?s?\b/.test(q) && !/(why|how did|what happened|die|extinct|disappear|asteroid|fossil|bring back|come back|clone)/.test(q) && !HIPPO_EXTINCT.some(e => q.includes(e[0].toLowerCase()) || (e[2] && new RegExp(`\\b(${e[2]})\\b`).test(q))))
+    return Object.assign(R("Dinosaurs", "🦖", "A dinosaur was a kind of reptile that lived on Earth for about 165 million years, from about 230 to 66 million years ago.",
+      "Dinosaurs walked with their legs straight under their bodies, not sprawled out to the side like lizards. That helped many of them run fast and grow huge.\n\nSome were giants: Argentinosaurus was about 35 meters (115 feet) long, as long as 3 school buses! Others, like Compsognathus, were the size of a chicken. Some ate plants (like Triceratops and Brachiosaurus) and some ate meat (like Tyrannosaurus rex).\n\nThe word dinosaur means \"terrible lizard.\" We know about them from fossils: bones, teeth, eggs and footprints turned to stone. Scientists who study them are called paleontologists.\n\nMost dinosaurs died out 66 million years ago when a giant asteroid hit Earth. But not all of them! Birds are living dinosaurs, so a chicken is a tiny cousin of T. rex. 🐔",
+      hTimeline(2.3e8, 6.6e7, "the age of dinosaurs", "🦖")), { actions: [{ heading: "🦴 Ask Hippo about a dinosaur" }, ...HIPPO_EXTINCT.filter(e => /saur|rex|tops|raptor|odon/i.test(e[0])).slice(0, 8).map(e => ({ label: `${e[1]} ${e[0]}`, fn: askAgain(`Tell me about ${e[0]}`) })), { label: "☄️ Why did dinosaurs go extinct?", fn: askAgain("Why did the dinosaurs go extinct?") }, { label: "🦴 What is a fossil?", fn: askAgain("What is a fossil?") }] });
   // 📖 "What is a …?" meanings
   if ((m = q.match(/^(?:what|who)\s*(?:is|was|are|were|'s)\s+(?:a |an |the )?(.+?)\s*$/)) || (m = q.match(/^(?:define|meaning of)\s+(?:a |an |the )?(.+?)\s*$/)) || (m = q.match(/^what does (?:a |an |the )?(.+?) mean\s*$/))) {
     const t0 = m[1].replace(/\.$/, ""), t = HIPPO_DEFS[t0] ? t0 : HIPPO_DEFS[t0.replace(/ies$/, "y")] ? t0.replace(/ies$/, "y") : HIPPO_DEFS[t0.replace(/e?s$/, "")] ? t0.replace(/e?s$/, "") : HIPPO_DEFS[t0.replace(/s$/, "")] ? t0.replace(/s$/, "") : null;
@@ -8116,6 +8190,7 @@ function hippoAnswer(qRaw) {
       return R("What is…?", "📖", def, `Hippo's meaning of “${t}.” Want to know more? Try asking another question about it!`, pic ? pic() : hBig(emo, "#f1ecff", t));
     }
   }
+  if (/^(hi|hello|hey|hiya|howdy|yo|good (morning|afternoon|evening))\b/.test(q) && q.split(/\s+/).length <= 4) return R("Hello!", "👋", "Hi there! I'm Hippo! 🦛 It's so nice to see you!", "Ask me anything: math like \"What is 12 × 7?\", animals, planets, countries, dinosaurs, jokes, songs or stories. You can even spell things wrong and I'll figure it out!", hBig("🦛👋", "#e9f5ff", "Hi!"));
   // 🦴 extinct things
   if (/\bextinct\w*\b/.test(q) && /what (does|is)|mean|meaning/.test(q) && !HIPPO_EXTINCT.some(e => q.includes(e[0].toLowerCase())))
     return R("Extinct animals", "🦴", "Extinct means a kind of living thing is gone forever: not one is left alive anywhere on Earth.", "Dinosaurs, dodos and woolly mammoths are extinct. We know about them from fossils, bones and old drawings.", hTimeline(2.3e8, 1, "gone forever", "🦴"));
@@ -8236,7 +8311,7 @@ function hippoAnswer(qRaw) {
   if (words.length) {
     let best = null, bs = 0;
     HIPPO_BANK.filter(e => !["Songs", "Jokes and riddles", "Games", "Animals", "Space", "Countries", "U.S. States", "Shapes", "Calendar", "Words", "Typing", "Story Starters", "Extinct animals", "What is…?"].includes(e.topic) && !(e.topic === "Science" && e.icon === "⚛️")).forEach(e => { const s = words.reduce((t, w) => t + (e.q.toLowerCase().includes(w) ? 2 : e.hay.includes(w) ? 1 : 0), 0); if (s > bs) { bs = s; best = e; } });
-    if (best && bs >= Math.min(2, words.length)) return R(best.topic, best.icon, best.a.replace(/\.?$/, "."), best.why || `From the question: "${best.q}"`, hBig(best.icon, "#f1ecff", best.topic));
+    if (best && bs >= Math.min(2, words.length)) return Object.assign(R(best.topic, best.icon, best.a.replace(/\.?$/, "."), best.why || `From the question: "${best.q}"`, hBig(best.icon, "#f1ecff", best.topic)), { loose: true });
   }
   return null;
 }
@@ -9517,7 +9592,7 @@ NEW_APPS.push(
   { id: "yahtzee", emoji: "🎲", name: "Yahtzee", desc: "Roll five dice, fill your score card, and shout Yahtzee!", start: () => startYahtzee(), isNew: true, kw: "yahtzee|yatzy|dice game" },
   { id: "mancala", emoji: "🥣", name: "Mancala", desc: "The ancient stone-sowing game. Capture the most stones!", start: () => startMancala(), isNew: true, kw: "mancala|kalah" },
   { id: "gofish", emoji: "🐟", name: "Go Fish", desc: "Ask for cards, go fishing, and collect the most books.", start: () => startGoFish(), isNew: true, kw: "go ?fish" },
-  { id: "dots", emoji: "⬜", name: "Dots and Boxes", desc: "Draw lines, close boxes, and outsmart the computer.", start: () => startDots(), isNew: true, kw: "dots (and|&) boxes|dots game" },
+  { id: "dots", emoji: "⬜", name: "Dots and Boxes", desc: "Draw lines, close boxes, and outsmart the computer.", start: () => startDots(), isNew: true, kw: "dots (and|&) box(es)?|dots game" },
 );
 
 // ♟️ Chess: you are white (bottom). Board squares 0-63, row 0 is the top (black's side).
@@ -9713,10 +9788,11 @@ function startHippo(initial = "") {
     HIPPO_SONG_STOP?.(); hippoHush();
     try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state !== "running") actx.resume?.(); } catch (e) {}   // wake up sound during the tap so songs can play
     box.value = q;
-    const ans = hippoAnswer(q), out = document.getElementById("hip-out");
+    const ans = hippoAsk(q), out = document.getElementById("hip-out");
     if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>🦛❓</span></div><div><b>Hmm, Hippo doesn't know that one yet.</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
     out.innerHTML = `<div class="hip-card${ans.wide ? " wide" : ""}"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? esc(ans.why).split("\n\n").map(x => `<p>${x.replace(/\n/g, "<br>")}</p>`).join("") : ""}${ans.reveal ? `<details class="hip-reveal"><summary>👀 Show the answer</summary><p>${esc(ans.reveal)}</p></details>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}${ans.actions ? `<div class="hip-acts">${ans.actions.map((a, i) => a.heading ? `<h4 class="hip-acts-h">${esc(a.heading)}</h4>` : `<button class="btn${i && !a.go ? "" : " go"}" data-hact="${i}">${esc(a.label)}</button>`).join("")}</div>` : ""}</div></div>`;
     if (ans.action) document.getElementById("hip-act").addEventListener("click", ans.action.fn);
+    if (ans.fixedQ) out.querySelector(".hip-text").insertAdjacentHTML("afterbegin", `<p class="hip-fixed">🔤 Hippo fixed the spelling: “${esc(ans.fixedQ)}”</p>`);
     if (ans.games) { out.querySelector(".hip-card").insertAdjacentHTML("beforeend", `<div class="hip-games">${gamesMenuHTML()}</div>`); bindGamesMenu(); }
     // 🗣️ Hippo reads every answer out loud (stories start reading by themselves)
     if (!ans.noRead && !ans.games && ans.topic !== "Songs") {
