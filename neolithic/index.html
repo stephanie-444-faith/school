@@ -1361,7 +1361,8 @@ const RATIO_PARTS = {
   tape: { name: "Part-part-whole", desc: "Tape diagrams and total problems" },
   rates: { name: "Unit rates & speed", desc: "How much for one, unit price, constant speed" },
   compare: { name: "Compare & convert", desc: "Better deal, faster, stronger mix, unit conversions" },
-  vocab: { name: "Vocabulary", desc: "Words the test uses" }
+  vocab: { name: "Vocabulary", desc: "Words the test uses" },
+  test: { name: "📝 100 Test Questions", desc: "100 hand-written test-style questions from the whole unit" }
 };
 const R_THINGS = [["cats", "dogs"], ["red marbles", "blue marbles"], ["apples", "bananas"], ["boys", "girls"], ["cups of flour", "cups of sugar"], ["trumpets", "drums"], ["pencils", "erasers"], ["soccer balls", "basketballs"], ["tulips", "roses"], ["crackers", "slices of cheese"]];
 const R_MIX = [["cups of blue paint", "cups of yellow paint", "green paint"], ["cups of lemon juice", "cups of water", "lemonade"], ["spoons of cocoa", "cups of milk", "hot chocolate"], ["cups of rice", "cups of water", "rice"], ["scoops of powder", "cups of water", "sports drink"], ["drops of red dye", "cups of frosting", "pink frosting"]];
@@ -1433,6 +1434,115 @@ const RATIO_VOCAB = [
 // two different whole numbers with no common factor (so "3 : 4" style answers never repeat or simplify)
 const rTwo = (lo = 2, hi = 9) => { let a, b; do { a = rnd(lo, hi); b = rnd(lo, hi); } while (a === b || rgcd(a, b) > 1); return [a, b]; };
 // keep making a new problem until all 4 choices are different and none are negative
+// 📝 100 hand-written test-style questions for Ratios & Rates. [part, question, answer, [3 wrong answers], why]
+const RATIO_BANK = [
+  // Ratio basics
+  ["basics", "A class has 12 boys and 15 girls. What is the ratio of girls to boys in simplest form?", "5 : 4", ["4 : 5", "15 : 27", "4 : 9"], "Girls come first: 15 : 12. Divide both by 3 to get 5 : 4."],
+  ["basics", "A bag has 8 red apples and 6 green apples. What is the ratio of green apples to ALL the apples?", "3 : 7", ["3 : 4", "4 : 3", "6 : 8"], "There are 8 + 6 = 14 apples. Green to all is 6 : 14, and dividing both by 2 gives 3 : 7."],
+  ["basics", "Which ratio is equivalent to 6 : 9?", "10 : 15", ["9 : 6", "8 : 11", "12 : 15"], "6 : 9 simplifies to 2 : 3. 10 : 15 also simplifies to 2 : 3 (divide both by 5)."],
+  ["basics", "A recipe uses 2 cups of flour for every 3 eggs. How many eggs are needed for 10 cups of flour?", "15", ["13", "6", "20"], "10 cups is 5 times as much flour (2 × 5 = 10), so use 5 times as many eggs: 3 × 5 = 15."],
+  ["basics", "The ratio of cats to dogs at a shelter is 4 : 7. There are 28 dogs. How many cats are there?", "16", ["25", "49", "11"], "28 dogs ÷ 7 = 4, so the ratio was multiplied by 4. Cats: 4 × 4 = 16."],
+  ["basics", "Which ratio is NOT equivalent to 4 : 10?", "6 : 12", ["2 : 5", "8 : 20", "10 : 25"], "4 : 10 simplifies to 2 : 5. 6 : 12 simplifies to 1 : 2, which is different."],
+  ["basics", "A parking lot has 3 trucks for every 8 cars. Which statement is true?", "For every 8 cars, there are 3 trucks.", ["There are 3 more trucks than cars.", "For every 3 cars, there are 8 trucks.", "There are exactly 11 trucks."], "\"3 trucks for every 8 cars\" means the same thing as \"for every 8 cars, there are 3 trucks.\""],
+  ["basics", "Lena mixes 5 cups of blue paint with 2 cups of white paint. Which mix makes the SAME shade?", "15 cups blue and 6 cups white", ["7 cups blue and 4 cups white", "10 cups blue and 2 cups white", "5 cups blue and 5 cups white"], "The same shade needs an equivalent ratio. 5 × 3 = 15 and 2 × 3 = 6. Adding 2 to each (7 and 4) does NOT keep the ratio."],
+  ["basics", "Write 18 : 24 in simplest form.", "3 : 4", ["6 : 8", "9 : 12", "4 : 3"], "The greatest common factor of 18 and 24 is 6. 18 ÷ 6 = 3 and 24 ÷ 6 = 4."],
+  ["basics", "A team won 15 games and lost 10. What is the ratio of wins to TOTAL games played?", "3 : 5", ["3 : 2", "2 : 3", "2 : 5"], "Total games: 15 + 10 = 25. Wins to total is 15 : 25 = 3 : 5."],
+  ["basics", "In a class of 24, 9 students bring lunch and the rest buy lunch. What is the ratio of students who BUY lunch to students who BRING lunch?", "5 : 3", ["3 : 5", "5 : 8", "3 : 8"], "24 − 9 = 15 buy lunch. Buy to bring is 15 : 9, which simplifies to 5 : 3."],
+  ["basics", "A smoothie uses 3 bananas for every 2 cups of yogurt. Sam uses 4 cups of yogurt. How many bananas does he need?", "6", ["5", "8", "12"], "4 cups is double 2 cups, so double the bananas: 3 × 2 = 6."],
+  ["basics", "Red beads to blue beads are in a ratio of 7 : 3. There are 21 red beads. How many beads are there in all?", "30", ["9", "24", "10"], "21 ÷ 7 = 3, so there are 3 × 3 = 9 blue beads. 21 + 9 = 30 beads in all."],
+  ["basics", "Jay reads for 5 minutes for every 2 minutes he draws. What is the ratio of reading time to drawing time?", "5 : 2", ["2 : 5", "5 : 7", "7 : 2"], "Reading comes first in the question, so the ratio is 5 : 2."],
+  ["basics", "Are 3 : 5 and 12 : 20 equivalent ratios?", "Yes, both numbers were multiplied by 4", ["No, because 12 − 3 and 20 − 5 are different", "Yes, because both are less than 25", "No, because 20 is bigger than 12"], "3 × 4 = 12 and 5 × 4 = 20. Multiplying both parts by the same number makes an equivalent ratio."],
+  ["basics", "A garden has tomato plants and pepper plants in a ratio of 2 : 5. Which could be the actual numbers of plants?", "8 tomato and 20 pepper", ["5 tomato and 8 pepper", "7 tomato and 10 pepper", "20 tomato and 8 pepper"], "8 : 20 divided by 4 is 2 : 5. The others don't simplify to 2 : 5."],
+  ["basics", "What is the ratio of 45 minutes to 1 hour in simplest form?", "3 : 4", ["45 : 1", "4 : 3", "3 : 5"], "Use the same units: 1 hour = 60 minutes. 45 : 60 divided by 15 is 3 : 4."],
+  // Tables & number lines
+  ["tables", "A table of equivalent ratios shows 2 → 7, 4 → 14, 6 → ?, 10 → 35. What is the missing value?", "21", ["18", "28", "16"], "Each output is 3.5 times the input (or: 2 → 7, so 6 = 2 × 3 → 7 × 3 = 21)."],
+  ["tables", "A double number line lines up 3 pounds with $12. What lines up with 7 pounds?", "$28", ["$16", "$21", "$36"], "$12 ÷ 3 = $4 per pound. 7 × $4 = $28."],
+  ["tables", "A table shows hours worked 2, 5, 8 and dollars earned $24, $60, ?. What is the missing value?", "$96", ["$84", "$90", "$72"], "$24 ÷ 2 = $12 per hour. 8 × $12 = $96."],
+  ["tables", "A double number line shows 0 ↔ 0, 5 ↔ 8, 10 ↔ 16. What lines up with 25?", "40", ["28", "35", "48"], "25 is 5 × 5, so multiply 8 by 5 too: 40."],
+  ["tables", "A table of equivalent ratios has the row 6 : 15. Which row could ALSO be in the table?", "4 : 10", ["8 : 17", "10 : 30", "15 : 6"], "6 : 15 simplifies to 2 : 5, and 4 : 10 also simplifies to 2 : 5."],
+  ["tables", "A table shows 4 cups of water for every 1 cup of rice. How much water is needed for 3.5 cups of rice?", "14 cups", ["7.5 cups", "12 cups", "16 cups"], "Multiply by 4: 3.5 × 4 = 14 cups of water."],
+  ["tables", "12 muffins use 3 eggs. How many muffins can you make with 1 egg?", "4", ["3", "9", "36"], "Scale down: divide both by 3. 12 ÷ 3 = 4 muffins per egg."],
+  ["tables", "3 tickets cost $18 and 5 tickets cost $30. How much do 12 tickets cost?", "$72", ["$60", "$48", "$90"], "$18 ÷ 3 = $6 per ticket. 12 × $6 = $72."],
+  ["tables", "A recipe table shows flour 2, 3, 5 cups and sugar 3, 4.5, ? cups. What is the missing amount of sugar?", "7.5 cups", ["6 cups", "7 cups", "8 cups"], "Sugar is always 1.5 times the flour: 5 × 1.5 = 7.5 cups."],
+  ["tables", "On a double number line, 4 laps line up with 1 mile. How many laps are in 2.5 miles?", "10 laps", ["6.5 laps", "8 laps", "12 laps"], "4 laps per mile × 2.5 miles = 10 laps."],
+  ["tables", "Which table shows equivalent ratios?", "1 → 3, 2 → 6, 5 → 15", ["1 → 3, 2 → 5, 3 → 7", "2 → 4, 3 → 5, 4 → 6", "1 → 2, 3 → 4, 5 → 6"], "In equivalent ratios you MULTIPLY by the same number every time. Here every output is 3 times the input."],
+  ["tables", "In a table, x : y is always 3 : 8. If y = 56, what is x?", "21", ["18", "24", "51"], "56 ÷ 8 = 7, so multiply 3 by 7 too: 21."],
+  ["tables", "A paint table has 2 parts blue to 5 parts yellow. The next row has 10 parts blue. How many parts yellow?", "25", ["13", "20", "50"], "2 × 5 = 10, so 5 × 5 = 25."],
+  ["tables", "A hiker walks 3 km every hour. On a double number line, what lines up with 4.5 hours?", "13.5 km", ["7.5 km", "12 km", "15 km"], "3 km × 4.5 hours = 13.5 km."],
+  ["tables", "A table shows minutes 10, 20, 30 and pages read 4, 8, 12. At this rate, how many pages in 45 minutes?", "18", ["16", "20", "15"], "4 pages ÷ 10 minutes = 0.4 pages per minute. 45 × 0.4 = 18 pages."],
+  ["tables", "20 stickers cost $5. At the same rate, how much do 8 stickers cost?", "$2.00", ["$1.60", "$4.00", "$2.50"], "$5 ÷ 20 = $0.25 per sticker. 8 × $0.25 = $2.00."],
+  ["tables", "A table of equivalent ratios reads 5 : 2, 10 : 4, 15 : 6. What is the next row?", "20 : 8", ["20 : 7", "25 : 8", "16 : 7"], "Each row adds another 5 : 2. 15 + 5 = 20 and 6 + 2 = 8."],
+  // Part-part-whole
+  ["tape", "The ratio of boys to girls in a club is 2 : 3. There are 40 students in all. How many are girls?", "24", ["16", "20", "27"], "2 + 3 = 5 parts. 40 ÷ 5 = 8 per part. Girls: 3 × 8 = 24."],
+  ["tape", "Juice is 1 part concentrate to 4 parts water. To make 20 cups of juice, how much concentrate do you need?", "4 cups", ["5 cups", "16 cups", "2 cups"], "1 + 4 = 5 parts. 20 ÷ 5 = 4 cups per part, and concentrate is 1 part."],
+  ["tape", "Ana and Ben share $45 in a ratio of 4 : 5. How much does Ben get?", "$25", ["$20", "$9", "$36"], "4 + 5 = 9 parts. $45 ÷ 9 = $5 per part. Ben gets 5 × $5 = $25."],
+  ["tape", "A tape diagram has 3 boxes for red and 5 boxes for blue. Each box is worth 6. How many more blue than red?", "12", ["6", "18", "48"], "Blue has 2 more boxes than red. 2 × 6 = 12."],
+  ["tape", "Fiction to nonfiction books is 5 : 2. There are 21 more fiction books than nonfiction. How many books in all?", "49", ["35", "42", "28"], "The difference is 5 − 2 = 3 parts = 21, so 1 part = 7. Total: 7 parts × 7 = 49."],
+  ["tape", "Trail mix has raisins and nuts in a ratio of 3 : 7. A batch has 50 cups. How many cups are nuts?", "35", ["15", "21", "43"], "3 + 7 = 10 parts. 50 ÷ 10 = 5 per part. Nuts: 7 × 5 = 35."],
+  ["tape", "A class has 28 students. The ratio of students with pets to students without pets is 4 : 3. How many have pets?", "16", ["12", "21", "4"], "4 + 3 = 7 parts. 28 ÷ 7 = 4 per part. With pets: 4 × 4 = 16."],
+  ["tape", "Green paint is blue and yellow in a 2 : 3 ratio. You have 9 cups of yellow. How many cups of green paint can you make?", "15 cups", ["6 cups", "11 cups", "18 cups"], "9 ÷ 3 = 3 per part. Blue: 2 × 3 = 6. Green: 6 + 9 = 15 cups."],
+  ["tape", "A 36-foot rope is cut into two pieces in a ratio of 1 : 5. How long is the shorter piece?", "6 feet", ["7.2 feet", "30 feet", "5 feet"], "1 + 5 = 6 parts. 36 ÷ 6 = 6 feet per part. The short piece is 1 part."],
+  ["tape", "Dogs to cats at a vet are in a ratio of 5 : 3. There are 12 cats. How many animals in all?", "32", ["20", "24", "40"], "12 ÷ 3 = 4 per part. Dogs: 5 × 4 = 20. Total: 20 + 12 = 32."],
+  ["tape", "Mia's age and Leo's age are in a ratio of 3 : 4. Their ages add up to 35. How old is Leo?", "20", ["15", "16", "28"], "3 + 4 = 7 parts. 35 ÷ 7 = 5. Leo: 4 × 5 = 20."],
+  ["tape", "A tape diagram shows Sand ▢▢ and Gravel ▢▢▢▢▢. The total is 84 pounds. How much gravel is there?", "60 pounds", ["24 pounds", "42 pounds", "12 pounds"], "7 boxes in all. 84 ÷ 7 = 12 pounds per box. Gravel: 5 × 12 = 60."],
+  ["tape", "A team's wins to losses are in a ratio of 7 : 2. The team lost 6 games. How many games did it play?", "27", ["21", "18", "15"], "6 ÷ 2 = 3 per part. Wins: 7 × 3 = 21. Total: 21 + 6 = 27."],
+  ["tape", "Pink paint is 1 part red to 3 parts white. To make 2 gallons of pink paint, how much white paint do you need?", "1.5 gallons", ["0.5 gallons", "1 gallon", "6 gallons"], "4 parts in all. 2 ÷ 4 = 0.5 gallon per part. White: 3 × 0.5 = 1.5 gallons."],
+  ["tape", "Sara and Tom split 60 marbles in a ratio of 7 : 5. How many MORE marbles does Sara get than Tom?", "10", ["2", "35", "25"], "12 parts in all. 60 ÷ 12 = 5. Sara has 2 more parts: 2 × 5 = 10."],
+  ["tape", "A fruit bowl has apples and oranges in a ratio of 5 : 4. Which could be the total number of fruit?", "27", ["20", "24", "30"], "Each \"batch\" has 5 + 4 = 9 fruit, so the total must be a multiple of 9. 27 = 3 × 9."],
+  // Unit rates & speed
+  ["rates", "6 pencils cost $1.50. What is the unit price?", "$0.25 per pencil", ["$4.00 per pencil", "$0.20 per pencil", "$0.30 per pencil"], "Unit price = cost ÷ number of items: $1.50 ÷ 6 = $0.25."],
+  ["rates", "A car goes 150 miles on 5 gallons of gas. How many miles per gallon is that?", "30", ["25", "750", "35"], "150 ÷ 5 = 30 miles per gallon."],
+  ["rates", "Maya types 240 words in 4 minutes. What is her typing rate?", "60 words per minute", ["40 words per minute", "80 words per minute", "960 words per minute"], "240 ÷ 4 = 60 words per minute."],
+  ["rates", "A plane flies at 450 miles per hour. How far does it fly in 3.5 hours?", "1,575 miles", ["1,350 miles", "1,800 miles", "1,525 miles"], "Distance = speed × time: 450 × 3.5 = 1,575 miles."],
+  ["rates", "A faucet fills a 12-gallon tub in 4 minutes. At the same rate, how long to fill 30 gallons?", "10 minutes", ["8 minutes", "12 minutes", "7.5 minutes"], "12 ÷ 4 = 3 gallons per minute. 30 ÷ 3 = 10 minutes."],
+  ["rates", "8 bracelets cost $36. What is the unit price?", "$4.50", ["$4.00", "$4.25", "$5.00"], "$36 ÷ 8 = $4.50 per bracelet."],
+  ["rates", "18 apples cost $6. Which pair of unit rates is correct?", "3 apples per dollar, and $1/3 per apple", ["2 apples per dollar, and $0.50 per apple", "3 dollars per apple, and 1/3 apple per dollar", "6 apples per dollar, and $1/6 per apple"], "18 ÷ 6 = 3 apples per dollar. 6 ÷ 18 = 1/3 dollar per apple (about 33 cents). Every rate has two unit rates."],
+  ["rates", "A cheetah runs 105 meters in 3 seconds. At the same speed, how far does it run in 10 seconds?", "350 meters", ["315 meters", "300 meters", "1,050 meters"], "105 ÷ 3 = 35 meters per second. 35 × 10 = 350 meters."],
+  ["rates", "A printer prints 45 pages in 3 minutes. How long does it take to print 120 pages?", "8 minutes", ["6 minutes", "9 minutes", "40 minutes"], "45 ÷ 3 = 15 pages per minute. 120 ÷ 15 = 8 minutes."],
+  ["rates", "Jake earns $63 for 7 hours of work. How much will he earn for 12 hours?", "$108", ["$84", "$96", "$117"], "$63 ÷ 7 = $9 per hour. 12 × $9 = $108."],
+  ["rates", "A snail moves 2 feet in 8 minutes. What is its speed?", "0.25 feet per minute", ["4 feet per minute", "0.5 feet per minute", "16 feet per minute"], "2 ÷ 8 = 0.25 feet per minute. (Dividing 8 ÷ 2 = 4 would be minutes per foot.)"],
+  ["rates", "A recipe uses 2.5 cups of milk for 5 servings. How much milk is that per serving?", "0.5 cup", ["2 cups", "1.5 cups", "0.25 cup"], "2.5 ÷ 5 = 0.5 cup per serving."],
+  ["rates", "A train travels 280 km in 4 hours. At this speed, how long will it take to travel 490 km?", "7 hours", ["6 hours", "8 hours", "5.5 hours"], "280 ÷ 4 = 70 km per hour. 490 ÷ 70 = 7 hours."],
+  ["rates", "Which of these is a unit rate?", "55 miles per 1 hour", ["110 miles per 2 hours", "3 apples for $2", "10 laps in 4 minutes"], "A unit rate compares to ONE of something, like \"per 1 hour.\""],
+  ["rates", "A heart beats 72 times in 1 minute. How many times does it beat in 15 seconds?", "18", ["24", "36", "12"], "15 seconds is 1/4 of a minute. 72 ÷ 4 = 18."],
+  ["rates", "5 pounds of grapes cost $8.75. How much do 3 pounds cost?", "$5.25", ["$4.75", "$5.75", "$6.25"], "$8.75 ÷ 5 = $1.75 per pound. 3 × $1.75 = $5.25."],
+  ["rates", "Ella reads 3 chapters every 2 days. How many chapters does she read in 2 weeks?", "21", ["14", "28", "42"], "2 weeks = 14 days = 7 groups of 2 days. 7 × 3 = 21 chapters."],
+  ["rates", "A pump moves 1,200 liters in 1 hour. How many liters is that per minute?", "20 liters", ["12 liters", "60 liters", "200 liters"], "1 hour = 60 minutes. 1,200 ÷ 60 = 20 liters per minute."],
+  // Compare & convert
+  ["compare", "Which is the best deal?", "12 ounces for $3.00", ["8 ounces for $2.40", "10 ounces for $2.80", "6 ounces for $1.62"], "Find the price per ounce: $0.25, $0.30, $0.28 and $0.27. The lowest is $0.25 for the 12-ounce one."],
+  ["compare", "Ava ran 400 meters in 80 seconds. Ben ran 300 meters in 50 seconds. Who ran faster?", "Ben, at 6 meters per second", ["Ava, at 5 meters per second", "They ran at the same speed", "Ava, because she ran farther"], "Ava: 400 ÷ 80 = 5 m/s. Ben: 300 ÷ 50 = 6 m/s. Ben is faster even though he ran less."],
+  ["compare", "Mix A has 2 cups lemon juice to 5 cups water. Mix B has 3 cups lemon juice to 8 cups water. Which tastes more lemony?", "Mix A", ["Mix B", "They taste the same", "You can't tell"], "Lemon per cup of water: A is 2 ÷ 5 = 0.4, B is 3 ÷ 8 = 0.375. A has more lemon for each cup of water."],
+  ["compare", "How many inches are in 4.5 feet?", "54 inches", ["45 inches", "48 inches", "60 inches"], "1 foot = 12 inches. 4.5 × 12 = 54 inches."],
+  ["compare", "How many feet are in 7 yards?", "21 feet", ["84 feet", "10 feet", "28 feet"], "1 yard = 3 feet. 7 × 3 = 21 feet."],
+  ["compare", "Convert 3,500 grams to kilograms.", "3.5 kilograms", ["35 kilograms", "350 kilograms", "0.35 kilograms"], "1 kilogram = 1,000 grams. 3,500 ÷ 1,000 = 3.5 kg."],
+  ["compare", "Convert 48 ounces to pounds.", "3 pounds", ["4 pounds", "2.5 pounds", "6 pounds"], "1 pound = 16 ounces. 48 ÷ 16 = 3 pounds."],
+  ["compare", "How many minutes are in 2.25 hours?", "135 minutes", ["125 minutes", "225 minutes", "150 minutes"], "1 hour = 60 minutes. 2.25 × 60 = 135 minutes."],
+  ["compare", "A 1-meter ribbon is cut into 25-centimeter pieces. How many pieces are there?", "4", ["25", "40", "2.5"], "1 meter = 100 centimeters. 100 ÷ 25 = 4 pieces."],
+  ["compare", "Store A sells 4 cans for $3. Store B sells 6 cans for $4.80. Which is cheaper per can?", "Store A, at $0.75 per can", ["Store B, at $0.80 per can", "They cost the same", "Store B, because you get more cans"], "A: $3 ÷ 4 = $0.75. B: $4.80 ÷ 6 = $0.80. Store A is cheaper per can."],
+  ["compare", "Car A goes 180 miles on 6 gallons. Car B goes 220 miles on 8 gallons. Which gets better gas mileage?", "Car A, 30 miles per gallon", ["Car B, 27.5 miles per gallon", "Car B, because it went farther", "They are the same"], "A: 180 ÷ 6 = 30 mpg. B: 220 ÷ 8 = 27.5 mpg. More miles per gallon is better."],
+  ["compare", "4 quarts = 1 gallon. How many gallons are in 12 quarts?", "3 gallons", ["48 gallons", "4 gallons", "8 gallons"], "12 ÷ 4 = 3 gallons. (Going to a bigger unit means a smaller number, so divide.)"],
+  ["compare", "Is 5 kilometers more or less than 5,200 meters?", "Less, because 5 km = 5,000 m", ["More, because kilometers are bigger", "They are the same", "Less, because 5 km = 500 m"], "1 km = 1,000 m, so 5 km = 5,000 m, which is less than 5,200 m."],
+  ["compare", "Which is faster: 30 miles per hour or 0.6 miles per minute?", "0.6 miles per minute (that's 36 mph)", ["30 miles per hour", "They are the same speed", "You can't compare different units"], "Convert to the same unit: 0.6 miles per minute × 60 minutes = 36 miles per hour, which is faster than 30."],
+  ["compare", "A 2-liter bottle costs $1.80. A 500-milliliter bottle costs $0.60. Which costs less per liter?", "The 2-liter bottle ($0.90 per liter)", ["The 500-milliliter bottle ($1.20 per liter)", "They cost the same per liter", "The 500-milliliter bottle, because it costs less"], "2-liter: $1.80 ÷ 2 = $0.90 per liter. 500 mL is 0.5 liter: $0.60 ÷ 0.5 = $1.20 per liter."],
+  ["compare", "Recipe A uses 3 cups of oats for every 2 cups of raisins. Recipe B uses 5 cups of oats for every 3 cups of raisins. Which has more raisins per cup of oats?", "Recipe A", ["Recipe B", "They are the same", "You can't tell without more information"], "Raisins per cup of oats: A is 2 ÷ 3 ≈ 0.67, B is 3 ÷ 5 = 0.6. Recipe A has more."],
+  // Test-style multi-step word problems
+  ["test", "A soup recipe for 4 people uses 6 cups of broth. How much broth is needed for 10 people?", "15 cups", ["12 cups", "24 cups", "10 cups"], "6 ÷ 4 = 1.5 cups per person. 10 × 1.5 = 15 cups."],
+  ["test", "A runner keeps a pace of 8 minutes per mile. How long does it take to run 3.5 miles?", "28 minutes", ["24 minutes", "32 minutes", "26 minutes"], "8 × 3.5 = 28 minutes."],
+  ["test", "A faucet drips 3 cups of water every 10 minutes. How many cups drip in 2 hours?", "36 cups", ["6 cups", "20 cups", "60 cups"], "2 hours = 120 minutes = 12 groups of 10 minutes. 12 × 3 = 36 cups."],
+  ["test", "A map scale says 2 inches = 15 miles. Two towns are 7 inches apart on the map. How far apart are they really?", "52.5 miles", ["105 miles", "45 miles", "30 miles"], "15 ÷ 2 = 7.5 miles per inch. 7 × 7.5 = 52.5 miles."],
+  ["test", "Gas costs $3.60 per gallon. Kim's car gets 30 miles per gallon. How much does gas cost for a 150-mile trip?", "$18.00", ["$15.00", "$54.00", "$30.00"], "150 ÷ 30 = 5 gallons. 5 × $3.60 = $18.00."],
+  ["test", "Sam saves $5 for every $8 he earns. He earned $72. How much did he save?", "$45", ["$27", "$40", "$115.20"], "$72 ÷ 8 = 9 groups. 9 × $5 = $45 saved."],
+  ["test", "Red, blue and green marbles are in a ratio of 2 : 3 : 5. There are 60 marbles. How many are green?", "30", ["12", "18", "20"], "2 + 3 + 5 = 10 parts. 60 ÷ 10 = 6 per part. Green: 5 × 6 = 30."],
+  ["test", "A class of 30 has a 2 : 3 ratio of boys to girls. Then 5 new girls join. What is the new ratio of boys to girls?", "12 : 23", ["2 : 3", "12 : 18", "17 : 23"], "Before: 30 ÷ 5 = 6, so 12 boys and 18 girls. After: 18 + 5 = 23 girls. The ratio is 12 : 23."],
+  ["test", "Punch uses 3 cups of juice for every 2 cups of soda. Tia has 12 cups of juice and 6 cups of soda. Which will she run out of first?", "The soda", ["The juice", "They run out at the same time", "Neither one"], "12 cups of juice would need 8 cups of soda (12 ÷ 3 × 2), but she only has 6. So the soda runs out first."],
+  ["test", "Lily walks at 3 miles per hour for 2 hours, then bikes at 12 miles per hour for 1.5 hours. How far does she go in all?", "24 miles", ["22.5 miles", "15 miles", "30 miles"], "Walking: 3 × 2 = 6 miles. Biking: 12 × 1.5 = 18 miles. 6 + 18 = 24 miles."],
+  ["test", "Pens are sold at 3 for $2. How many pens can you buy with $14?", "21", ["7", "28", "18"], "$14 ÷ $2 = 7 groups. 7 × 3 = 21 pens."],
+  ["test", "A 64-ounce jug of juice costs $4.48. What is the price per ounce?", "$0.07", ["$0.70", "$0.14", "$0.08"], "$4.48 ÷ 64 = $0.07 per ounce."],
+  ["test", "Tom's heart beats 15 times in 12 seconds. At this rate, how many times does it beat in 1 minute?", "75", ["60", "90", "180"], "1 minute = 60 seconds = 5 groups of 12 seconds. 5 × 15 = 75 beats."],
+  ["test", "A pool holds 1,200 gallons and already has 400 gallons. Water flows in at 8 gallons per minute. How many more minutes until it's full?", "100 minutes", ["150 minutes", "50 minutes", "200 minutes"], "It still needs 1,200 − 400 = 800 gallons. 800 ÷ 8 = 100 minutes."],
+  ["test", "The length and width of a flag are in a ratio of 5 : 3. The flag is 4.5 feet wide. How long is it?", "7.5 feet", ["6.5 feet", "2.7 feet", "9 feet"], "4.5 ÷ 3 = 1.5 feet per part. Length: 5 × 1.5 = 7.5 feet."],
+  ["test", "Two cars leave the same place at the same time going the same direction. Car A drives 60 mph and Car B drives 50 mph. How far apart are they after 3 hours?", "30 miles", ["330 miles", "10 miles", "180 miles"], "Car A goes 180 miles and Car B goes 150 miles. 180 − 150 = 30 miles apart."],
+];
 function ratioQuestion(gen, allowNeg = false) {
   let q;
   for (let i = 0; i < 30; i++) {
@@ -2228,8 +2338,9 @@ function sourceFor(set) {
   const art = ART.map(x => () => bankQuestion("Art")(x));
   const rv = RATIO_VOCAB.map(x => () => bankQuestion("Ratios & Rates · Vocabulary")(x));
   const rp = k => [...RATIO_GENS[k], ...RATIO_GENS[k], ...RATIO_GENS[k]].map(gen => () => ratioQuestion(gen));
-  const ratioSets = { ratios_basics: rp("basics"), ratios_tables: rp("tables"), ratios_tape: rp("tape"), ratios_rates: rp("rates"), ratios_compare: rp("compare"), ratios_vocab: rv };
-  ratioSets.ratios_all = [...ratioSets.ratios_basics, ...ratioSets.ratios_tables, ...ratioSets.ratios_tape, ...ratioSets.ratios_rates, ...ratioSets.ratios_compare, ...rv];
+  const rb = k => RATIO_BANK.filter(x => !k || x[0] === k).map(([, q, a, w, why]) => () => bankQuestion("Ratios & Rates · Test question")({ q, a, w, why }));
+  const ratioSets = { ratios_basics: [...rp("basics"), ...rb("basics")], ratios_tables: [...rp("tables"), ...rb("tables")], ratios_tape: [...rp("tape"), ...rb("tape")], ratios_rates: [...rp("rates"), ...rb("rates")], ratios_compare: [...rp("compare"), ...rb("compare")], ratios_vocab: rv, ratios_test: rb() };
+  ratioSets.ratios_all = [...ratioSets.ratios_basics, ...ratioSets.ratios_tables, ...ratioSets.ratios_tape, ...ratioSets.ratios_rates, ...ratioSets.ratios_compare, ...rv, ...rb("test")];
   if (set.startsWith("ratios_")) return ratioSets[set] || ratioSets.ratios_all;
   if (set.startsWith("crf_")) { const [, room, fi] = set.split("_"), f = (CR_ROOMS[room] || CR_ROOMS.g6).floors()[+fi] || CR_FLOORS_G6[0]; return f.pools().flatMap(pool => pool.map(gen => () => { const q = ratioQuestion(gen, NEG_POOLS().includes(pool)); q.tag = q.tag.replace(/^Ratios & Rates/, `${f.emoji} ${f.name}`); return q; })); }
   if (set.startsWith("g4_")) { const gp = k => [...G4_GENS[k], ...G4_GENS[k]].map(gen => () => g4Question(gen)), parts = Object.keys(G4_GENS); const want = set.slice(3); return want === "all" || !G4_GENS[want] ? parts.flatMap(gp) : gp(want); }
