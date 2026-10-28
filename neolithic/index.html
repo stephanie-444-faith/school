@@ -317,6 +317,14 @@
   .cg-bar .chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; font-size: .85rem; min-height: 0; width: auto; border-radius: 999px; } .cg-bar .cg-lv .chip { flex-direction: row; }
   .hip-fixed { margin: 0 0 6px; font-size: .9rem; color: #ffe066; font-weight: 700; }
   .cg-pl select { font: inherit; padding: 3px 6px; border-radius: 8px; background: #1b1640; color: #fff; border: 1px solid var(--line); max-width: 170px; }
+  .mz-in, .mz-area { width: 100%; box-sizing: border-box; font: inherit; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line); background: #fffdf5; color: #222; margin: 6px 0; } .mz-area { resize: vertical; line-height: 1.5; }
+  .mz-list { display: flex; flex-direction: column; gap: 6px; } .mz-row { display: flex; gap: 6px; align-items: stretch; } .mz-open { flex: 1; text-align: left; display: flex; flex-direction: column; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: rgba(255,255,255,.06); color: inherit; font: inherit; cursor: pointer; } .mz-open small { opacity: .75; }
+  .mz-show { background: #fffdf5; color: #222; border-radius: 10px; padding: 12px 14px; line-height: 2; font-size: 1.05rem; margin: 8px 0; }
+  .mz-diff { background: #fffdf5; color: #222; border-radius: 10px; padding: 10px 12px; line-height: 2; } .mz-w.mz-ok { color: #12813a; } .mz-w.mz-miss, .mz-k.mz-miss { color: #d62839; font-weight: 800; text-decoration: underline wavy; } .mz-w.mz-extra, .mz-k.mz-extra { color: #d97400; text-decoration: line-through; }
+  .mz-tips { padding-left: 20px; } .mz-tips li { margin: 6px 0; } .mz-blank { min-width: 0; min-height: 0; height: 1.7em; padding: 0 3px !important; margin: 2px 0; font: inherit; border: 0; border-bottom: 2px solid #7b61ff; background: #efeaff; border-radius: 4px; padding: 0 3px; text-align: center; color: #222; max-width: 40vw; } .mz-blank.ok { background: #d8f5df; border-color: #12813a; } .mz-blank.bad { background: #ffe0e3; border-color: #d62839; }
+  .mz-line { display: block; width: 100%; text-align: left; padding: 8px 12px; margin: 4px 0; border-radius: 10px; border: 2px solid var(--line); background: #fffdf5; color: #222; font: inherit; font-size: 1.1rem; letter-spacing: 1px; cursor: pointer; } .mz-acr { letter-spacing: 3px; color: #ffe066; }
+  .mz-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 180px; border-radius: 18px; border: 3px solid #7b61ff; background: #fffdf5; color: #222; font: inherit; font-size: 1.3rem; padding: 16px; cursor: pointer; margin: 8px 0; } .mz-card.flip { background: #efeaff; } .mz-card small { font-size: .8rem; opacity: .6; }
+  .mz-ai { white-space: pre-wrap; background: #efeaff; color: #222; border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
   .hp-levels { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; } .hp-lv { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px; border-radius: 14px; border: 2px solid var(--line); background: rgba(255,255,255,.06); color: inherit; font: inherit; cursor: pointer; } .hp-lv span { font-size: .8rem; opacity: .8; } .hp-lv.locked { opacity: .45; cursor: not-allowed; }
   .hp-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .95rem; margin-bottom: 8px; }
   .hp-board { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, minmax(54px, auto)); gap: 3px; background: #0f5a3a; padding: 4px; border-radius: 12px; }
@@ -9858,6 +9866,181 @@ function chAi() {
 }
 NEW_APPS.push({ id: "chess", emoji: "♟️", name: "Chess", desc: "Real chess against the computer, with take-backs for practice.", start: () => startChess(), isNew: true, kw: "chess" });
 
+// 🧠 The Memorizer: give it something to memorize, then type it from memory in a new box and get suggestions
+const MZ_SAMPLES = [
+  { title: "The 8 planets in order", text: "Mercury\nVenus\nEarth\nMars\nJupiter\nSaturn\nUranus\nNeptune" },
+  { title: "Twinkle, Twinkle, Little Star", text: "Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky." },
+  { title: "The Pledge of Allegiance", text: "I pledge allegiance to the Flag of the United States of America, and to the Republic for which it stands, one Nation under God, indivisible, with liberty and justice for all." },
+  { title: "Ratio words (flashcards)", text: "Ratio - a comparison of two amounts, like 3 : 2\nRate - a ratio of two different units, like miles per hour\nUnit rate - a rate for just 1 of something\nEquivalent ratios - ratios that simplify to the same thing" },
+];
+const mzKey = () => "mz_items";
+const mzLoad = () => store.get(mzKey(), []);
+const mzSave = items => store.set(mzKey(), items);
+const mzWords = t => (t.match(/[A-Za-z0-9À-ɏ']+(?:[-'][A-Za-z0-9À-ɏ]+)*/g) || []);
+const mzNorm = w => w.toLowerCase().replace(/[’']/g, "'");
+const mzPairs = t => t.split(/\n+/).map(l => l.match(/^\s*(.+?)\s+[-–—=:]\s+(.+?)\s*$/)).filter(Boolean).map(m => [m[1], m[2]]);
+function mzDiff(target, typed) {   // word-by-word match (longest common subsequence)
+  const A = target.map(mzNorm), B = typed.map(mzNorm), n = A.length, m = B.length, L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const ops = []; let i = 0, j = 0;
+  while (i < n || j < m) {
+    if (i < n && j < m && A[i] === B[j]) { ops.push({ t: "ok", w: target[i], i }); i++; j++; }
+    else if (j < m && (i === n || L[i][j + 1] >= L[i + 1][j])) { ops.push({ t: "extra", w: typed[j] }); j++; }
+    else { ops.push({ t: "miss", w: target[i], i }); i++; }
+  }
+  return ops;
+}
+function mzSuggest(item, ops, target) {
+  const tips = [], ok = ops.filter(o => o.t === "ok").length, pct = Math.round(ok / Math.max(1, target.length) * 100);
+  // group the mistakes that sit between two matching words: they're swaps, misspellings or missing parts
+  const groups = []; let g = null;
+  ops.forEach((o, k) => { if (o.t === "ok") { if (g) { groups.push(g); g = null; } } else { g ||= { miss: [], extra: [], before: ops.slice(0, k).reverse().find(x => x.t === "ok")?.w }; g[o.t === "miss" ? "miss" : "extra"].push(o.w); } });
+  if (g) groups.push(g);
+  const spell = [], swaps = [], missing = [], extraOnly = [];
+  const allExtra = new Set(groups.flatMap(x => x.extra.map(mzNorm)));
+  groups.forEach(x => {
+    x.miss.forEach((w, k) => { const e = x.extra[k]; if (e && hippoDist(mzNorm(e), mzNorm(w), 2) <= 2 && mzNorm(e) !== mzNorm(w)) spell.push([e, w]); else if (allExtra.has(mzNorm(w))) swaps.push(w); });
+    const left = x.miss.filter((w, k) => !(x.extra[k] && hippoDist(mzNorm(x.extra[k]), mzNorm(w), 2) <= 2) && !allExtra.has(mzNorm(w)));
+    if (left.length) missing.push([left, x.before]);
+    if (!x.miss.length && x.extra.length) extraOnly.push(x.extra);
+  });
+  if (pct === 100) tips.push("🎉 Perfect! Every word is right. Practice it again tomorrow to lock it into your long-term memory.");
+  spell.slice(0, 4).forEach(([e, w]) => tips.push(`🔤 Check the spelling: you wrote “${e}” but it's “${w}”.`));
+  missing.slice(0, 4).forEach(([ws, b]) => tips.push(`🕳️ You left out “${ws.slice(0, 8).join(" ")}${ws.length > 8 ? " …" : ""}”${b ? ` after “${b}”` : " at the very start"}.`));
+  if (swaps.length) tips.push(`🔀 These words are in the wrong spot: “${[...new Set(swaps)].slice(0, 5).join("”, “")}”. Say it out loud to hear the right order.`);
+  const swapSet = new Set(swaps.map(mzNorm)), added = extraOnly.flat().filter(w => !swapSet.has(mzNorm(w)));
+  if (added.length) tips.push(`➕ You added words that aren't there: “${added.slice(0, 5).join(" ")}”.`);
+  // which line needs the most work?
+  const lines = item.text.split(/\n+/).filter(l => mzWords(l).length);
+  if (lines.length > 1 && pct < 100) {
+    let at = 0; const per = lines.map(l => { const n = mzWords(l).length, s = at; at += n; return { l, n, s }; });
+    const missIdx = new Set(ops.filter(o => o.t === "miss").map(o => o.i));
+    const worst = per.map((p, k) => ({ k, bad: [...Array(p.n).keys()].filter(x => missIdx.has(p.s + x)).length / p.n })).sort((a, b) => b.bad - a.bad)[0];
+    if (worst.bad > 0) { const ln = lines[worst.k].trim().replace(/[.,;:!?]+$/, ""); tips.push(`🎯 Line ${worst.k + 1} needs the most practice: “${ln.slice(0, 60)}${ln.length > 60 ? "…" : ""}”. Try it in 🔤 First Letters.`); }
+  }
+  if (pct < 50) tips.push("🫥 Tip: try Disappearing Words. It hides a few words at a time so you learn it bit by bit.");
+  else if (pct < 90) tips.push("💪 So close! Read it out loud 3 times, then try again. Focus on the red parts.");
+  else if (pct < 100) tips.push("⭐ Almost perfect! Just fix the red words and try once more.");
+  if (target.length > 25 && pct < 80) tips.push("✂️ It's long! Learn one line at a time, then add the next line (that's called chunking).");
+  return { pct, tips };
+}
+function mzNextReview(item) { const s = item.perfects || 0, days = [0, 1, 3, 7, 14, 30][Math.min(s, 5)]; return days ? `Practice again in ${days} day${days > 1 ? "s" : ""} to keep it in your memory.` : "Practice once more today."; }
+function startMemorizer(id, tab = "type") {
+  const items = mzLoad();
+  if (id === undefined) {
+    appScreen("🧠 The Memorizer", `<h2>🧠 The Memorizer</h2><p class="soft">Give it anything you want to memorize: a poem, a speech, a spelling list, vocabulary words, a song… Then type it from memory in a new box, and The Memorizer gives you suggestions!</p>
+      <div class="sl-card"><h3>➕ What do you want to memorize?</h3><input id="mz-title" class="mz-in" placeholder="Give it a name (like “My poem”)" maxlength="60"><textarea id="mz-text" class="mz-area" rows="6" placeholder="Type or paste it here. Tip: for flashcards, write one per line like: word - meaning"></textarea><button class="btn go" id="mz-add">🧠 Start memorizing</button>
+        <p class="soft">Or try one: ${MZ_SAMPLES.map((x, i) => `<button class="chip" data-sample="${i}">${esc(x.title)}</button>`).join(" ")}</p></div>
+      ${items.length ? `<h3>📚 Your things to memorize</h3><div class="mz-list">${items.map(x => `<div class="mz-row"><button class="mz-open" data-id="${x.id}"><b>${esc(x.title)}</b><small>${mzWords(x.text).length} words · best ${x.best || 0}%${x.best === 100 ? " ⭐" : ""}</small></button><button class="iconbtn" data-del="${x.id}" aria-label="Delete ${esc(x.title)}">🗑️</button></div>`).join("")}</div>` : ""}`);
+    const add = (title, text) => { text = text.trim(); if (!mzWords(text).length) { toast("Type something to memorize first!"); return; } const it = { id: Date.now().toString(36), title: (title.trim() || text.split(/\n/)[0].slice(0, 40)), text, best: 0, perfects: 0 }; mzSave([it, ...mzLoad()]); startMemorizer(it.id); };
+    document.getElementById("mz-add").addEventListener("click", () => add(document.getElementById("mz-title").value, document.getElementById("mz-text").value));
+    $app.querySelectorAll("[data-sample]").forEach(b => b.addEventListener("click", () => { const x = MZ_SAMPLES[+b.dataset.sample]; add(x.title, x.text); }));
+    $app.querySelectorAll("[data-id]").forEach(b => b.addEventListener("click", () => startMemorizer(b.dataset.id)));
+    $app.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => { if (confirm("Delete this from The Memorizer?")) { mzSave(mzLoad().filter(x => x.id !== b.dataset.del)); startMemorizer(); } }));
+    return;
+  }
+  const item = items.find(x => x.id === id); if (!item) return startMemorizer();
+  const pairs = mzPairs(item.text), tabs = [["type", "✍️ Type it"], ["fade", "🫥 Disappearing"], ["letters", "🔤 First letters"], ...(pairs.length >= 2 ? [["cards", "🃏 Flashcards"]] : []), ["tips", "💡 Memory tips"]];
+  appScreen("🧠 The Memorizer", `<div class="row"><button class="chip" id="mz-back">⬅ All my things</button></div><h2>🧠 ${esc(item.title)}</h2><p class="soft">Best: <b>${item.best || 0}%</b>${item.best === 100 ? " ⭐" : ""} · ${mzWords(item.text).length} words</p>${naTabs(tabs, tab)}<div id="mz"></div>`);
+  bindTabs(t => startMemorizer(id, t));
+  document.getElementById("mz-back").addEventListener("click", () => startMemorizer());
+  const box = document.getElementById("mz"), target = mzWords(item.text);
+  const update = f => { const all = mzLoad(), it = all.find(x => x.id === id); if (it) { f(it); Object.assign(item, it); mzSave(all); } };
+  if (tab === "type") {
+    let peeks = 0;
+    box.innerHTML = `<div class="sl-card"><p><b>Step 1:</b> Read it. <b>Step 2:</b> Hide it. <b>Step 3:</b> Type it from memory in the new box!</p>
+      <div class="mz-show" id="mz-show">${esc(item.text).replace(/\n/g, "<br>")}</div>
+      <div class="row"><button class="btn" id="mz-hide">🙈 Hide it and start typing</button><button class="btn" id="mz-peek" hidden>👀 Peek (2 seconds)</button><button class="btn" id="mz-say">🔊 Read it to me</button></div>
+      <textarea id="mz-try" class="mz-area" rows="6" placeholder="Hide it first, then type it here from memory…" hidden spellcheck="false" autocomplete="off"></textarea>
+      <button class="btn go" id="mz-check" hidden>✅ Check it</button></div><div id="mz-out"></div>`;
+    const show = document.getElementById("mz-show"), ta = document.getElementById("mz-try");
+    document.getElementById("mz-say").addEventListener("click", () => hippoSay(item.text));
+    document.getElementById("mz-hide").addEventListener("click", e => { show.hidden = true; e.target.hidden = true; ta.hidden = false; document.getElementById("mz-check").hidden = false; document.getElementById("mz-peek").hidden = false; ta.focus(); });
+    document.getElementById("mz-peek").addEventListener("click", () => { peeks++; show.hidden = false; naTimer(setTimeout(() => { show.hidden = true; }, 2000)); });
+    document.getElementById("mz-check").addEventListener("click", () => {
+      const typed = mzWords(ta.value); if (!typed.length) { toast("Type what you remember first!"); return; }
+      const ops = mzDiff(target, typed), { pct, tips } = mzSuggest(item, ops, target);
+      update(it => { it.best = Math.max(it.best || 0, pct); it.perfects = pct === 100 && !peeks ? (it.perfects || 0) + 1 : pct === 100 ? it.perfects || 0 : 0; it.last = Date.now(); });
+      pct === 100 ? sfx.buy() : pct >= 70 ? sfx.right() : 0;
+      document.getElementById("mz-out").innerHTML = `<div class="sl-card"><h3>${pct === 100 ? "🏆" : pct >= 80 ? "⭐" : pct >= 50 ? "👍" : "🌱"} You got ${pct}% of the words${peeks ? ` (with ${peeks} peek${peeks > 1 ? "s" : ""})` : ""}!</h3>
+        <p class="soft">🟢 right · <span class="mz-k mz-miss">red</span> = missed · <span class="mz-k mz-extra">orange</span> = what you typed that doesn't match</p>
+        <div class="mz-diff">${ops.map(o => `<span class="mz-w mz-${o.t}">${esc(o.w)}</span>`).join(" ")}</div>
+        <h3>💡 Suggestions</h3><ul class="mz-tips">${tips.map(t => `<li>${esc(t)}</li>`).join("")}</ul><p class="soft">📅 ${mzNextReview(item)}</p>
+        <div class="row"><button class="btn go" id="mz-again">🔁 Try again</button><button class="btn" id="mz-fix">✏️ Keep my typing and fix it</button></div></div>`;
+      document.getElementById("mz-again").addEventListener("click", () => startMemorizer(id, "type"));
+      document.getElementById("mz-fix").addEventListener("click", () => { document.getElementById("mz-out").innerHTML = ""; ta.focus(); });
+      document.getElementById("mz-out").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  } else if (tab === "fade") {
+    const order = shuffle([...target.keys()]); let level = 1, hidden;
+    const draw = () => {
+      hidden = new Set(order.slice(0, Math.ceil(target.length * Math.min(1, level * .2))));
+      let k = 0;
+      const html = item.text.split(/([A-Za-z0-9À-ɏ']+(?:[-'][A-Za-z0-9À-ɏ]+)*)/).map((part, j) => { if (j % 2 === 0) return esc(part).replace(/\n/g, "<br>"); const i = k++; return hidden.has(i) ? `<input class="mz-blank" data-i="${i}" style="width:${Math.max(2, part.length) + 1.5}ch" autocomplete="off" spellcheck="false" aria-label="missing word ${i + 1}">` : esc(part); }).join("");
+      box.innerHTML = `<div class="sl-card"><p><b>Level ${level} of 5:</b> ${hidden.size} of ${target.length} words have disappeared! Fill in the blanks.</p><div class="mz-show">${html}</div>
+        <div class="row"><button class="btn go" id="mz-fcheck">✅ Check</button><button class="btn" id="mz-more" ${level >= 5 ? "disabled" : ""}>🫥 Hide more words</button><button class="btn" id="mz-less" ${level <= 1 ? "disabled" : ""}>Bring some back</button></div><p id="mz-fmsg"></p></div>`;
+      box.querySelector(".mz-blank")?.focus();
+      document.getElementById("mz-more").addEventListener("click", () => { level++; draw(); });
+      document.getElementById("mz-less").addEventListener("click", () => { level--; draw(); });
+      document.getElementById("mz-fcheck").addEventListener("click", () => {
+        let right = 0; const wrong = [];
+        box.querySelectorAll(".mz-blank").forEach(inp => { const w = target[+inp.dataset.i], good = mzNorm(inp.value.trim()) === mzNorm(w); inp.classList.toggle("ok", good); inp.classList.toggle("bad", !good); if (good) right++; else wrong.push(w); });
+        const all = right === hidden.size;
+        document.getElementById("mz-fmsg").innerHTML = all ? `🎉 All ${right} right! ${level < 5 ? "Tap <b>Hide more words</b> to make it harder." : "You can do the whole thing! Try ✍️ Type it."}` : `You got ${right} of ${hidden.size}. 💡 Suggestion: the missing ones were “${esc(wrong.slice(0, 6).join("”, “"))}”${wrong.length > 6 ? "…" : ""}. Say the sentence out loud and listen for them.`;
+        all ? sfx.right() : sfx.wrong();
+      });
+    };
+    draw();
+  } else if (tab === "letters") {
+    const lines = item.text.split(/\n+/).filter(l => l.trim());
+    box.innerHTML = `<div class="sl-card"><p>Only the <b>first letter</b> of each word is shown. Say the whole thing using the letters as clues! Tap a line to peek at it.</p>
+      ${lines.map((l, i) => `<button class="mz-line" data-l="${i}"><span class="mz-fl">${esc(l.replace(/([A-Za-z0-9À-ɏ])[A-Za-z0-9À-ɏ'’-]*/g, "$1"))}</span><span class="mz-full" hidden>${esc(l)}</span></button>`).join("")}
+      ${lines.length >= 3 && lines.every(l => mzWords(l).length <= 4) ? `<p>🔤 <b>Memory trick:</b> the first letters spell <b class="mz-acr">${esc(lines.map(l => mzWords(l)[0]?.[0]?.toUpperCase() || "").join(" "))}</b>. Make up a silly sentence with words that start with those letters!</p>` : ""}</div>`;
+    box.querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => { const f = b.querySelector(".mz-full"), s = b.querySelector(".mz-fl"); f.hidden = !f.hidden; s.hidden = !f.hidden; }));
+  } else if (tab === "cards") {
+    let deck = shuffle(pairs.map((p, i) => i)), flipped = false, known = 0;
+    const draw = () => {
+      if (!deck.length) { box.innerHTML = `<div class="sl-card"><h3>🎉 You know all ${pairs.length} cards!</h3><button class="btn go" id="mz-cagain">Shuffle and go again</button></div>`; document.getElementById("mz-cagain").addEventListener("click", () => startMemorizer(id, "cards")); sfx.buy(); return; }
+      const [front, back] = pairs[deck[0]];
+      box.innerHTML = `<p class="soft">${known} known · ${deck.length} left</p><button class="mz-card${flipped ? " flip" : ""}" id="mz-card"><small>${flipped ? "Answer" : "Tap to flip"}</small><b>${esc(flipped ? back : front)}</b></button>
+        ${flipped ? `<div class="row"><button class="btn go" id="mz-knew">✅ I knew it</button><button class="btn" id="mz-not">🔁 Not yet</button></div>` : ""}`;
+      document.getElementById("mz-card").addEventListener("click", () => { flipped = !flipped; draw(); });
+      document.getElementById("mz-knew")?.addEventListener("click", () => { deck.shift(); known++; flipped = false; sfx.right(); draw(); });
+      document.getElementById("mz-not")?.addEventListener("click", () => { deck.push(deck.shift()); flipped = false; draw(); });
+    };
+    draw();
+  } else {
+    const lines = item.text.split(/\n+/).filter(l => l.trim()), n = target.length, chunks = [];
+    for (let i = 0; i < n; i += 7) chunks.push(target.slice(i, i + 7).join(" "));
+    const nums = item.text.match(/\d{4,}/g);
+    const tips = [
+      n > 14 ? `✂️ <b>Chunk it.</b> ${n} words is a lot at once. Learn it in ${chunks.length} small pieces:<ol>${chunks.map(c => `<li>${esc(c)}</li>`).join("")}</ol>Learn piece 1, then 1 + 2, then 1 + 2 + 3…` : `✂️ <b>It's short!</b> Say it 3 times out loud, then hide it and say it again.`,
+      lines.length >= 3 && lines.every(l => mzWords(l).length <= 4) ? `🔤 <b>Make an acronym.</b> The first letters are <b>${esc(lines.map(l => mzWords(l)[0]?.[0]?.toUpperCase() || "").join(" "))}</b>. Make a silly sentence from them (like “My Very Educated Mother Just Served Us Nachos” for the planets).` : "",
+      nums ? `🔢 <b>Big numbers?</b> Break them into groups of 3 or 4, like a phone number: ${esc(nums[0].replace(/(\d{3})(?=\d)/g, "$1 "))}.` : "",
+      pairs.length >= 2 ? "🃏 <b>Use the flashcards.</b> Say the answer before you flip. Put the ones you miss back in the pile." : "",
+      "🗣️ <b>Say it out loud.</b> Your ears help your brain remember. Try a funny voice or sing it to a tune you know!",
+      "🖼️ <b>Picture it.</b> Make a silly movie in your head for each part. The sillier, the better you'll remember it.",
+      "👩‍🏫 <b>Teach it.</b> Explain it to someone (or a stuffed animal). Teaching is one of the best ways to remember.",
+      "😴 <b>Sleep on it.</b> Practice before bed, then again in the morning. Your brain saves memories while you sleep.",
+      `📅 <b>Space it out.</b> Practice a little each day instead of all at once. ${mzNextReview(item)}`,
+    ].filter(Boolean);
+    box.innerHTML = `<div class="sl-card"><h3>💡 Suggestions for memorizing “${esc(item.title)}”</h3><ul class="mz-tips">${tips.map(t => `<li>${t}</li>`).join("")}</ul>
+      <h3>🤖 Ask AI for a memory trick</h3><p class="soft" id="mz-ainote">Checking if AI is available…</p><button class="btn gold" id="mz-ai" hidden>✨ Make me a memory trick</button><div class="mz-ai" id="mz-aiout" hidden></div></div>`;
+    aiSample().then(sample => {
+      const note = document.getElementById("mz-ainote"), btn = document.getElementById("mz-ai"), out = document.getElementById("mz-aiout"); if (!note) return;
+      if (!sample) { note.textContent = "AI isn't available here right now, but the tips above work great!"; return; }
+      note.textContent = "AI can invent a rhyme, story or silly sentence to help you remember. The first time, you'll be asked to allow AI."; btn.hidden = false;
+      btn.addEventListener("click", async () => {
+        btn.disabled = true; out.hidden = false; out.textContent = "🤔 Thinking up a memory trick…";
+        try { const { text } = await sample(AI_KID_FRAME(`Help me memorize this. Give me 2 or 3 fun memory tricks (like an acronym, a rhyme, a silly story, or picture ideas) that fit it exactly. Keep it short.\n\n"""${item.text.slice(0, 1500)}"""`), { modelTier: "quick", cache: false, onText: ({ text }) => { out.textContent = text; } }); out.textContent = text; }
+        catch (e) { out.textContent = aiErrText(e); }
+        finally { btn.disabled = false; }
+      });
+    });
+  }
+}
+NEW_APPS.push({ id: "memorizer", emoji: "🧠", name: "The Memorizer", desc: "Paste anything to memorize, type it from memory, and get suggestions.", start: () => startMemorizer(), isNew: true, kw: "memori[sz]e[rs]?|memori[sz]or|memori[sz]ing|memory app|memorise|memorize" });
+
 // 🔎 Every App-App app can be found with Hippo search (by its name, or by these extra words)
 const APP_KW = { code: "code lab|learn to code", ai: "ai studio", music: "piano|beat maker", science: "volcano experiment", space: "solar system", money: "piggy bank|budget", pixel: "pixel art", puzzle: "sudoku|tower of hanoi|lights out", lang: "learn spanish|learn french", world: "flag quiz", comic: "comics?|comic strip", calm: "breathing|calm down", hippopoly: "monopoly|monapely|property game" };
 function appSearch(q) {
@@ -10292,7 +10475,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
