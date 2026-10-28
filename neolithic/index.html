@@ -557,7 +557,8 @@
 
   .hint-btn { margin-top: 10px; border: 0; border-radius: 999px; padding: 5px 14px; background: #ffe58a; color: #3a2a00; font-weight: 800; font-size: .9rem; box-shadow: 0 3px 0 #c9a23a; }
   .cr-say { margin-left: 6px; background: #c9f0ff; color: #0b3a4a; box-shadow: 0 3px 0 #6fb8d6; }
-  .hint-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+  .hint-btn:hover { filter: brightness(1.05); transform: translateY(-1px); } .hint-btn { touch-action: manipulation; }
+  .sol-txt { margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: #e3fbe9; color: #0f3d1f; font-size: .95rem; text-align: left; animation: coachIn .25s ease-out; } .sol-txt b { font-size: 1.05rem; } .sol-txt p { margin: 6px 0 2px; } .sol-txt ol { margin: 4px 0 0; padding-left: 22px; } .sol-txt li { margin: 3px 0; }
   .hint-txt { margin-top: 10px; padding: 8px 12px; border-radius: 10px; background: #fff7d1; color: #4a3800; font-size: .95rem; text-align: left; animation: coachIn .25s ease-out; }
   .tile.right { outline: 4px solid var(--money); outline-offset: 2px; }
   .tile.wrong { outline: 4px solid var(--bad); outline-offset: 2px; }
@@ -3137,8 +3138,36 @@ function hintFor(q) {
   if (h.length < 8) h = "Read the question twice. Which choices can't possibly be right? Cross those out first.";
   return h;
 }
-const hintHtml = q => `<button type="button" class="hint-btn">💡 Hint</button><p class="hint-txt" hidden>💡 ${esc(hintFor(q))}</p>`;
-document.addEventListener("click", e => { const b = e.target.closest?.(".hint-btn"); if (!b) return; const t = b.nextElementSibling; if (t) { t.hidden = false; b.hidden = true; tone([700, 900], .05, "sine", .04); } });
+// 🔑 Double-click the Hint button: the answer, with exactly how to solve it, step by step
+function solutionSteps(q) {
+  const txt = String(q.why || "").replace(/<[^>]+>/g, "").replace(/&quot;/g, "\"").replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  // break the explanation into small steps: each sentence, then each "so …", "then …", ";" and "…: 3 × 5 = 15" part
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  let steps = (txt.match(/(?:[^.!?]|\.(?=\d))+[.!?]*["')]*\s*/g) || []).map(t => t.trim()).filter(t => t.length > 1)
+    .flatMap(t => t.split(/,\s+(?=(?:so|then|and then)\s)|;\s+/i))
+    // "Multiply by 4: 3 × 4 = 12" becomes 2 steps, but a short label like "Green: 5 × 6 = 30" stays together
+    .flatMap(t => { const m = t.match(/^(.{15,}?[^\s\d]):\s+([$−-]?\d.*)$/); return m ? [m[1], m[2]] : [t]; })
+    .map(t => cap(t.trim().replace(/[,:]$/, ""))).filter(t => t.length > 1)
+    .map(t => /[.!?)"]$/.test(t) ? t : t + ".");
+  if (!steps.length) steps = ["Read the question carefully and find what it is asking for.", "Go through the choices one at a time and cross out the ones that can't be right."];
+  if (steps.length < 3) steps.unshift("Read the question and find the numbers and words you need.");
+  const ans = String(q.a).replace(/<[^>]+>/g, "").replace(/&quot;/g, "\"").replace(/&amp;/g, "&");
+  return { ans, steps: [...steps, `✅ So the answer is ${ans.replace(/[.!?]$/, "")}.`, "Check it: put your answer back into the question. Does it make sense?"] };
+}
+const solutionHtml = q => { const { ans, steps } = solutionSteps(q); return `<div class="sol-txt" hidden><b>🔑 The answer is: ${esc(ans)}</b><p>Here's exactly how to do it:</p><ol>${steps.map(t => `<li>${esc(t)}</li>`).join("")}</ol></div>`; };
+const hintHtml = q => `<button type="button" class="hint-btn" title="Tap for a hint. Double-tap to see the answer and every step.">💡 Hint</button><p class="hint-txt" hidden>💡 ${esc(hintFor(q))}<br><small>Still stuck? Double-tap 💡 Hint to see the answer, step by step.</small></p>${solutionHtml(q)}`;
+let HINT_LAST = { b: null, t: 0 };
+document.addEventListener("click", e => {
+  const b = e.target.closest?.(".hint-btn"); if (!b || b.classList.contains("cr-say")) return;
+  const t = b.nextElementSibling, sol = t?.nextElementSibling?.classList.contains("sol-txt") ? t.nextElementSibling : null, now = performance.now();
+  if (HINT_LAST.b === b && now - HINT_LAST.t < 450 && sol) {   // second tap right away = double-click
+    sol.hidden = false; if (t) t.hidden = true; b.hidden = true; tone([600, 800, 1000], .06, "sine", .05);
+    b.closest(".qcard")?.classList.add("solved-shown");
+    HINT_LAST = { b: null, t: 0 }; return;
+  }
+  HINT_LAST = { b, t: now };
+  if (t && t.classList.contains("hint-txt") && t.hidden) { t.hidden = false; b.textContent = "💡 Double-tap for the answer"; tone([700, 900], .05, "sine", .04); }
+});
 window.addEventListener("keydown", e => { if ((e.key === "h" || e.key === "H") && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) document.querySelector(".hint-btn:not([hidden])")?.click(); });
 function questionHtml(q) {
   let tiles;
