@@ -559,6 +559,7 @@
   .cr-say { margin-left: 6px; background: #c9f0ff; color: #0b3a4a; box-shadow: 0 3px 0 #6fb8d6; }
   .hint-btn:hover { filter: brightness(1.05); transform: translateY(-1px); } .hint-btn { touch-action: manipulation; } .hint-btn.ghost, .hint-btn.ghost:hover { opacity: 0; cursor: default; transform: none; filter: none; }
   .sol-txt { margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: #e3fbe9; color: #0f3d1f; font-size: .95rem; text-align: left; animation: coachIn .25s ease-out; } .sol-txt b { font-size: 1.05rem; } .sol-txt p { margin: 6px 0 2px; } .sol-txt ol { margin: 4px 0 0; padding-left: 22px; } .sol-txt li { margin: 3px 0; }
+  .st-stop { align-self: flex-start; padding: 6px 16px; font-size: .95rem; background: #ff5a6e; color: #fff; border-color: #ff5a6e; }
   .hint-txt { margin-top: 10px; padding: 8px 12px; border-radius: 10px; background: #fff7d1; color: #4a3800; font-size: .95rem; text-align: left; animation: coachIn .25s ease-out; }
   .tile.right { outline: 4px solid var(--money); outline-offset: 2px; }
   .tile.wrong { outline: 4px solid var(--bad); outline-offset: 2px; }
@@ -4263,8 +4264,7 @@ function startStack() {
   document.getElementById("m-go").addEventListener("click", go);
 }
 
-/* ---------- Study mode: a plain 10-question practice round ---------- */
-const STUDY_LEN = 10;
+/* ---------- Study mode: practice questions that go on forever, until you tap Stop ---------- */
 function studyTitle() {
   if (choice.subject === "math") return `Math · ${MATH_LEVELS[choice.mlevel].name}`;
   if (choice.subject === "health") return `Health · ${HEALTH_PARTS[choice.hpart].name}`;
@@ -4276,7 +4276,7 @@ function studyTitle() {
 function startStudy() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
-  const st = { deck: makeDeck(currentSet()), i: 0, right: 0, missed: [] };
+  const st = { deck: makeDeck(currentSet()), i: 0, right: 0, done: 0, streak: 0, best: 0, missed: [] };
   showStudyQuestion(st);
 }
 function showStudyQuestion(st) {
@@ -4285,29 +4285,30 @@ function showStudyQuestion(st) {
   $app.innerHTML = `
     <div class="panel">
       <div class="topline"><span class="label">${studyTitle()}</span><button class="iconbtn" id="st-home">${["g4", "crf"].includes(choice.subject) ? "Back to classroom" : choice.subject === "ratios" ? "Back to Math Center" : "Back to subjects"}</button></div>
-      <div class="topline"><span>Question ${st.i + 1} of ${STUDY_LEN}</span><span>${st.right} right</span></div>
-      <div class="progress"><div style="width:${st.i / STUDY_LEN * 100}%"></div></div>
+      <div class="topline"><span>Question ${st.i + 1}</span><span>${st.right} right${st.streak >= 3 ? ` · 🔥 ${st.streak} in a row` : ""}</span></div>
+      <button class="btn st-stop" id="st-stop" type="button">⏹ Stop</button>
       ${questionHtml(q)}
       <div id="st-fb"></div>
     </div>`;
   document.getElementById("st-home").addEventListener("click", () => choice.subject === "g4" ? startClassroom("g4") : choice.subject === "crf" ? startClassroom(String(choice.crf).split("_")[0]) : choice.subject === "ratios" ? startMathCenter() : showHome());
+  document.getElementById("st-stop").addEventListener("click", () => studyResults(st));
   const tiles = [...$app.querySelectorAll(".tile")];
   const answer = (picked, btn) => {
     const ok = picked === q.a;
-    if (ok) { st.right++; sfx.right(); } else { st.missed.push(q); sfx.wrong(); }
+    st.done++;
+    if (ok) { st.right++; st.streak++; st.best = Math.max(st.best, st.streak); sfx.right(); } else { st.missed.push(q); st.streak = 0; sfx.wrong(); }
     tiles.forEach(t => { t.disabled = true; t.classList.add(t.dataset.v === q.a ? "right" : t === btn ? "wrong" : "dim"); });
     const answerText = q.kind === "grapes" ? `${q.a} = ${GRAPES_CATS[q.a].name}` : esc(q.a);
-    const last = st.i === STUDY_LEN - 1;
     document.getElementById("st-fb").innerHTML = `
       <div class="feedback ${ok ? "good" : "bad"}">
         <strong>${ok ? pick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>
         ${ok ? "" : `<p>The answer is <b>${answerText}</b>.</p>`}
         <p>${q.why}</p>
       </div>
-      <div class="row" style="margin-top:12px"><button class="btn go" id="st-next">${last ? "See results" : "Next question"}</button></div>`;
+      <div class="row" style="margin-top:12px"><button class="btn go" id="st-next">Next question</button></div>`;
     const next = document.getElementById("st-next");
     next.focus();
-    next.addEventListener("click", () => { st.i++; st.i < STUDY_LEN ? showStudyQuestion(st) : studyResults(st); });
+    next.addEventListener("click", () => { st.i++; showStudyQuestion(st); });
     keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); next.click(); } };
   };
   tiles.forEach(t => t.addEventListener("click", () => answer(t.dataset.v, t)));
@@ -4319,18 +4320,19 @@ function showStudyQuestion(st) {
 }
 function studyResults(st) {
   keyHandler = null;
-  const pct = Math.round(st.right / STUDY_LEN * 100);
-  const msg = pct >= 90 ? "Excellent! You really know this." : pct >= 70 ? "Good work. Look over the ones you missed." : "Keep going. Read the missed answers below, then try another round.";
+  const pct = st.done ? Math.round(st.right / st.done * 100) : 0;
+  const msg = !st.done ? "You stopped before answering any questions. Come back any time!" : pct >= 90 ? "Excellent! You really know this." : pct >= 70 ? "Good work. Look over the ones you missed." : "Keep going. Read the missed answers below, then try another round.";
   const missed = st.missed.map(q => `<div class="miss"><b>${q.kind === "grapes" ? q.prompt : q.prompt.replace(/<br>/g, " ")}</b>Answer: ${q.kind === "grapes" ? `${q.a} = ${GRAPES_CATS[q.a].name}` : esc(q.a)}</div>`).join("");
   $app.innerHTML = `
     <div class="panel" style="text-align:center;align-items:center">
       <span class="label">${studyTitle()}</span>
-      <div class="big money">${st.right} / ${STUDY_LEN}</div>
+      <div class="big money">${st.right} / ${st.done}</div>
+      <p>${st.done ? `You answered ${st.done} question${st.done === 1 ? "" : "s"} and got ${pct}% right.${st.best >= 3 ? ` Best streak: 🔥 ${st.best} in a row!` : ""}` : ""}</p>
       <p>${msg}</p>
     </div>
     <div class="panel">
-      ${missed ? `<h3>Study these again</h3><div class="missed">${missed}</div>` : `<h3>Perfect round!</h3>`}
-      <div class="row"><button class="btn go" id="st-again">Study 10 more</button><button class="btn" id="st-home">Pick another subject</button></div>
+      ${missed ? `<h3>Study these again</h3><div class="missed">${missed}</div>` : st.done ? `<h3>Perfect round!</h3>` : ""}
+      <div class="row"><button class="btn go" id="st-again">Keep practicing</button><button class="btn" id="st-home">Pick another subject</button></div>
     </div>`;
   document.getElementById("st-again").addEventListener("click", startStudy);
   document.getElementById("st-home").addEventListener("click", () => choice.subject === "g4" ? startClassroom("g4") : choice.subject === "crf" ? startClassroom(String(choice.crf).split("_")[0]) : choice.subject === "ratios" ? startMathCenter() : showHome());
