@@ -325,6 +325,13 @@
   .mz-line { display: block; width: 100%; text-align: left; padding: 8px 12px; margin: 4px 0; border-radius: 10px; border: 2px solid var(--line); background: #fffdf5; color: #222; font: inherit; font-size: 1.1rem; letter-spacing: 1px; cursor: pointer; } .mz-acr { letter-spacing: 3px; color: #ffe066; }
   .mz-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 180px; border-radius: 18px; border: 3px solid #7b61ff; background: #fffdf5; color: #222; font: inherit; font-size: 1.3rem; padding: 16px; cursor: pointer; margin: 8px 0; } .mz-card.flip { background: #efeaff; } .mz-card small { font-size: .8rem; opacity: .6; }
   .mz-ai { white-space: pre-wrap; background: #efeaff; color: #222; border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
+  .gl-learn h3 { margin: 0 0 6px; } .gl-learn p { line-height: 1.55; } .gl-ex { background: rgba(255,224,102,.12); border-radius: 8px; padding: 6px 10px; }
+  .gl-cheat ul { padding-left: 20px; } .gl-cheat li { margin: 5px 0; line-height: 1.5; } .gl-cheat h3 { margin: 12px 0 4px; }
+  .gl-words { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: #fffdf5; border-radius: 12px; padding: 12px; margin: 8px 0; } .gl-p { color: #222; font-size: 1.3rem; font-weight: 700; margin-left: -4px; }
+  .gl-word { font: inherit; font-size: 1.15rem; padding: 6px 10px; border-radius: 10px; border: 2px solid #c9bfff; background: #fff; color: #222; cursor: pointer; min-width: 0; } .gl-word:hover:not(:disabled) { background: #efeaff; }
+  .gl-word.hit { background: #3bb273; border-color: #3bb273; color: #fff; } .gl-word.gl-bad { background: #e63946; border-color: #e63946; color: #fff; } .gl-word.gl-art { background: #eee; color: #777; } .gl-word:disabled { cursor: default; opacity: 1; }
+  .gl-want { color: #ffe066; } .gl-big { display: inline-block; margin: 6px 0; font-size: 1.15rem; font-weight: 700; color: #ffe9a8; line-height: 1.5; }
+  .gl-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; margin: 8px 0; } .gl-opt { white-space: normal; min-width: 0; }
   .hp-levels { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; } .hp-lv { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px; border-radius: 14px; border: 2px solid var(--line); background: rgba(255,255,255,.06); color: inherit; font: inherit; cursor: pointer; } .hp-lv span { font-size: .8rem; opacity: .8; } .hp-lv.locked { opacity: .45; cursor: not-allowed; }
   .hp-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .95rem; margin-bottom: 8px; }
   .hp-board { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, minmax(54px, auto)); gap: 3px; background: #0f5a3a; padding: 4px; border-radius: 12px; }
@@ -10041,6 +10048,373 @@ function startMemorizer(id, tab = "type") {
 }
 NEW_APPS.push({ id: "memorizer", emoji: "🧠", name: "The Memorizer", desc: "Paste anything to memorize, type it from memory, and get suggestions.", start: () => startMemorizer(), isNew: true, kw: "memori[sz]e[rs]?|memori[sz]or|memori[sz]ing|memory app|memorise|memorize" });
 
+// 📝 Grammar & Reading Lab: the 8 parts of speech, sentences, text structures and text features
+const GL_UNITS = {
+  pos: { e: "🧩", name: "8 Parts of Speech", game: "🔍 Word Hunt" },
+  sent: { e: "✍️", name: "Sentences", game: "🧺 Sentence Sorter" },
+  struct: { e: "🏗️", name: "Text Structures", game: "🕵️ Signal Word Detective" },
+  feat: { e: "🗂️", name: "Tricky Text Features", game: "🧭 Where Would You Look?" },
+};
+// 📖 Lessons: [emoji, title, explanation, examples]
+const GL_LEARN = {
+  pos: [
+    ["🏠", "Noun", "A noun names a person, place, thing, or idea.\n• Common noun: a general name, like dog or city.\n• Proper noun: a specific name that starts with a capital letter, like Leo or Ms. Lee.\n• Concrete noun: something you can sense with your 5 senses (see, hear, smell, taste, touch), like a cheeseburger.\n• Abstract noun: an idea or feeling you can't touch, like hope or power.", "The dog (common) chased Leo (proper). The cheeseburger (concrete) gave me hope (abstract)."],
+    ["🙋", "Pronoun", "A pronoun replaces a noun so you don't have to keep repeating it: he, she, it, they (and I, we, you, them…).", "Leo was hungry, so he ate lunch. (He replaces Leo.)"],
+    ["🏃", "Verb", "A verb is either:\n• an ACTION word, like walked or dreamt (dreaming is an action, even in your head!), or\n• a LINKING (state of being) verb that links the subject to more information: am, is, are, was, become, seem.", "Mia walked home. (action) Mia is happy. (linking) The sky seems gray. (linking)"],
+    ["🎨", "Adjective", "An adjective describes a noun. It tells what kind, which one, or how many.", "The tall man has an old car. The rich king smiled."],
+    ["⚡", "Adverb", "An adverb describes a verb, an adjective, or another adverb. It tells HOW, WHEN, WHERE, or HOW OFTEN. Many adverbs end in -ly (quickly, softly), but not all do (very, soon, often, here).", "She ran quickly. (how) We left yesterday. (when) Play outside. (where) I often read. (how often) It is very cold. (very describes the adjective cold)"],
+    ["📦", "Preposition", "A preposition shows location, time, or a relationship between words: on, near, under, between, after, with.\nTrick: think of anywhere a cat could go with a box: on the box, under the box, near the box, between the boxes!", "The cat hid under the bed. We ate after the game."],
+    ["🔗", "Conjunction", "A conjunction is a connector.\n• Coordinating conjunctions = FANBOYS: for, and, nor, but, or, yet, so.\n• Correlative conjunctions come in pairs: either/or, not only/but also.\n• Subordinating conjunctions start a dependent clause: because, although, when, if, while, until.", "I like cats, but my sister likes dogs. Either Sam or Ava will win. We stayed inside because it rained."],
+    ["😮", "Interjection", "An interjection shows strong feeling. It's often followed by an exclamation point.", "Ouch! Wow! Oops! Hooray!"],
+  ],
+  sent: [
+    ["🧱", "What is a sentence?", "A sentence = subject + predicate + a complete thought.\n• Subject: who or what the sentence is about.\n• Predicate: what the subject does or is (it has the verb).", "The puppy (subject) wagged its tail (predicate)."],
+    ["🔓", "Independent vs. dependent clauses", "A clause has a subject and a verb.\n• An independent clause CAN stand alone as a sentence.\n• A dependent clause CAN'T stand alone. It usually starts with a subordinating conjunction like because, when, or although.", "Independent: The bell rang.  Dependent: when the bell rang…"],
+    ["1️⃣", "Simple sentence", "A simple sentence has 1 independent clause.", "The dog barked."],
+    ["2️⃣", "Compound sentence", "A compound sentence has 2 independent clauses joined by a comma + a FANBOYS word, OR by a semicolon (;).", "I wanted pizza, but Mom made tacos.  It was raining; we stayed inside."],
+    ["🧩", "Complex sentence", "A complex sentence has 1 independent clause + 1 dependent clause.\n• Dependent clause FIRST → use a comma.\n• Independent clause FIRST → no comma.", "Because it rained, we stayed inside.  We stayed inside because it rained."],
+    ["🧩➕", "Compound-complex sentence", "A compound-complex sentence has 2 or more independent clauses + 1 or more dependent clauses.", "When the storm ended, we went outside, and the kids splashed in puddles."],
+    ["🚫", "Comma splice (wrong!)", "A comma splice joins two independent clauses with ONLY a comma. That's a mistake! Fix it with a comma + FANBOYS, a semicolon, or a period.", "Wrong: I love pizza, it is my favorite.  Right: I love pizza; it is my favorite."],
+    ["🌉", "Conjunctive adverbs", "Words like however, therefore and consequently can join two independent clauses. Put a semicolon BEFORE and a comma AFTER: ; however,", "I was tired; however, I finished my homework."],
+  ],
+  struct: [
+    ["🔎", "Description", "Describes a topic by telling its details and characteristics.\nSignal words: for instance, such as, an example, characteristics.", "The blue whale is huge. For instance, its tongue weighs as much as an elephant."],
+    ["🔢", "Sequence / Chronological", "Tells events or steps in order.\nSignal words: first, next, then, finally, before, after.", "First, crack the eggs. Next, stir them. Finally, cook them."],
+    ["⚖️", "Compare & Contrast", "Tells how things are alike (compare) and different (contrast).\nSignal words: same as, similar, both, on the other hand, different from.", "Frogs and toads are both amphibians. On the other hand, toads have bumpy skin."],
+    ["💥", "Cause & Effect", "Tells why something happened (the CAUSE) and what happened (the EFFECT).\nSignal words: because, so, therefore, as a result, consequently.", "It rained for days (cause). As a result, the river flooded (effect)."],
+    ["🧩", "Problem & Solution", "Tells about a problem and one or more ways to solve it.\nSignal words: the dilemma is, the puzzle is, to solve this, one answer is.", "The dilemma is that the garden is too dry. To solve this, we built a rain barrel."],
+  ],
+  feat: [
+    ["📑", "Table of contents, index, and glossary", "• Table of contents (FRONT of the book): lists the chapters and their page numbers.\n• Index (BACK): an alphabetical list of topics with their page numbers.\n• Glossary (BACK): definitions of important words.", "Want the chapter list? Table of contents. Want the page about volcanoes? Index. Want to know what 'magma' means? Glossary."],
+    ["📸", "Photograph, illustration, and caption", "• Photograph: a picture taken with a camera.\n• Illustration: a drawing.\n• Caption: the words under a picture that tell about it.", "A photo of a real tiger with the caption “Tigers can swim.”"],
+    ["🔧", "Diagram and cross section", "• Diagram: a labeled picture that shows how something works or its parts.\n• Cross section: a picture of something cut open so you can see inside.", "A diagram of a bicycle's parts. A cross section of the Earth's layers."],
+    ["📊", "Table, graph/chart, and timeline", "• Table: facts organized in rows and columns.\n• Graph or chart: a picture that compares data (like a bar graph).\n• Timeline: shows events in the order they happened over time.", "A table of planet sizes. A bar graph of favorite snacks. A timeline of a president's life."],
+    ["📦", "Sidebar and guide words", "• Sidebar: a box on the side with extra fun facts.\n• Guide words: the two words at the TOP of a dictionary page. They show the first and last words on that page.", "Guide words apple – arrow: “apron” is on that page because it comes between them in ABC order."],
+  ],
+};
+// The notes, word for word, for the cheat sheet
+const GL_CHEAT = `<h3>🧩 8 Parts of Speech</h3><ul>
+<li><b>Noun</b> – person, place, thing, idea. Common (dog), proper (Leo, Ms. Lee), concrete (5 senses: cheeseburger), abstract (ideas: hope, power).</li>
+<li><b>Pronoun</b> – replaces a noun (he, she, it, they).</li>
+<li><b>Verb</b> – action (walked, dreamt) or linking/state of being (am, is, are, was, become, seem).</li>
+<li><b>Adjective</b> – describes a noun (tall, old, rich).</li>
+<li><b>Adverb</b> – describes verbs, adjectives, other adverbs; how/when/where/how often; often ends in -ly.</li>
+<li><b>Preposition</b> – shows location/time/relationship (on, near, under, between).</li>
+<li><b>Conjunction</b> – connector. Coordinating = FANBOYS (for, and, nor, but, or, yet, so). Correlative = pairs (either/or, not only/but also). Subordinating = because, although, when, if, while, until.</li>
+<li><b>Interjection</b> – strong feeling: Ouch! Wow! Oops!</li></ul>
+<h3>✍️ Sentences</h3><ul>
+<li>Sentence = subject + predicate + complete thought.</li>
+<li>Independent clause can stand alone. Dependent clause can't.</li>
+<li><b>Simple</b> = 1 independent clause.</li>
+<li><b>Compound</b> = 2 independent, joined by , + FANBOYS or ;</li>
+<li><b>Complex</b> = 1 independent + 1 dependent. Dependent first → comma. Independent first → no comma.</li>
+<li><b>Compound-complex</b> = 2+ independent + 1+ dependent.</li>
+<li><b>Comma splice</b> = two independent clauses with only a comma (wrong!).</li>
+<li><b>Conjunctive adverb</b>: ; however, (semicolon before, comma after).</li></ul>
+<h3>🏗️ Text Structures</h3><ul>
+<li><b>Description</b> – for instance, such as, an example, characteristics.</li>
+<li><b>Sequence/Chronological</b> – first, next, then, finally, before, after.</li>
+<li><b>Compare &amp; Contrast</b> – same as, similar, both, on the other hand, different from.</li>
+<li><b>Cause &amp; Effect</b> – because, so, therefore, as a result, consequently. Cause = why. Effect = what happened.</li>
+<li><b>Problem &amp; Solution</b> – the dilemma is, the puzzle is, to solve this, one answer is.</li></ul>
+<h3>🗂️ Tricky Text Features</h3><ul>
+<li><b>Table of contents</b> (front) = chapters &amp; pages. <b>Index</b> (back) = alphabetical topic list with pages. <b>Glossary</b> (back) = definitions.</li>
+<li><b>Photograph</b> = camera. <b>Illustration</b> = drawing. <b>Caption</b> = words under a picture.</li>
+<li><b>Diagram</b> = labeled picture of how something works. <b>Cross section</b> = cut open to see inside.</li>
+<li><b>Table</b> = rows/columns of facts. <b>Graph/chart</b> = visual to compare data. <b>Timeline</b> = events over time.</li>
+<li><b>Sidebar</b> = extra fun facts in a box. <b>Guide words</b> = top of a dictionary page.</li></ul>`;
+// 🔍 Sentences with every word's part of speech (art = a/an/the, p = punctuation)
+const GL_POS = { n: "noun", pro: "pronoun", v: "verb", adj: "adjective", adv: "adverb", prep: "preposition", conj: "conjunction", int: "interjection" };
+const GL_TAGGED = [
+  "Wow|int !|p The|art tiny|adj puppy|n barked|v loudly|adv .|p",
+  "Leo|n and|conj Ms.|n Lee|n walked|v quickly|adv to|prep the|art park|n .|p",
+  "She|pro hid|v the|art gift|n under|prep the|art old|adj bed|n .|p",
+  "Ouch|int !|p I|pro bumped|v the|art hard|adj table|n .|p",
+  "They|pro were|v very|adv happy|adj after|prep the|art game|n .|p",
+  "The|art rich|adj king|n always|adv shared|v gold|n with|prep everyone|pro .|p",
+  "We|pro can|v swim|v ,|p or|conj we|pro can|v hike|v .|p",
+  "Mia|n was|v tired|adj ,|p but|conj she|pro finished|v the|art race|n .|p",
+  "The|art tall|adj giraffe|n ate|v leaves|n slowly|adv .|p",
+  "Hope|n is|v a|art powerful|adj idea|n .|p",
+  "Oops|int !|p He|pro dropped|v the|art cheeseburger|n .|p",
+  "Either|conj Sam|n or|conj Ava|n will|v win|v .|p",
+  "Because|conj it|pro rained|v ,|p we|pro stayed|v inside|adv .|p",
+  "The|art cat|n sat|v between|prep the|art boxes|n .|p",
+  "Yesterday|adv ,|p Grandma|n baked|v delicious|adj cookies|n .|p",
+  "The|art bird|n flew|v over|prep the|art river|n .|p",
+  "Dad|n seems|v sleepy|adj today|adv .|p",
+  "Wow|int ,|p that|pro is|v amazing|adj !|p",
+  "Max|n ran|v fast|adv ,|p yet|conj he|pro lost|v .|p",
+  "The|art old|adj ship|n sailed|v near|prep the|art rocky|adj island|n .|p",
+  "I|pro will|v read|v until|conj the|art sun|n sets|v .|p",
+  "Paris|n is|v a|art beautiful|adj city|n .|p",
+  "We|pro often|adv eat|v pizza|n on|prep Fridays|n .|p",
+  "Both|conj Lily|n and|conj Ben|n sang|v .|p",
+  "The|art clever|adj fox|n quietly|adv crept|v behind|prep the|art barn|n .|p",
+  "Hooray|int !|p The|art team|n won|v easily|adv !|p",
+  "Although|conj he|pro was|v nervous|adj ,|p Jay|n gave|v a|art speech|n .|p",
+  "It|pro is|v extremely|adv cold|adj outside|adv .|p",
+  "Friendship|n makes|v people|n strong|adj .|p",
+  "Ms.|n Lee|n smiled|v and|conj waved|v .|p",
+  "The|art brave|adj firefighter|n became|v a|art hero|n .|p",
+  "If|conj you|pro study|v ,|p you|pro will|v pass|v the|art test|n .|p",
+];
+const glParse = s => s.split(" ").map(t => { const k = t.lastIndexOf("|"); return { w: t.slice(0, k), t: t.slice(k + 1) }; });
+const glSentText = toks => toks.map((x, i) => (i && x.t !== "p" ? " " : "") + x.w).join("");
+// 🧺 Sentence types
+const GL_TYPES = { simple: "Simple", compound: "Compound", complex: "Complex", cc: "Compound-complex", splice: "Comma splice", fragment: "Fragment (not a sentence)" };
+const GL_SORT = [
+  ["The dog barked at the mail carrier.", "simple", "One independent clause: the subject is “dog” and the predicate is “barked at the mail carrier.”"],
+  ["Leo and Mia played soccer after school.", "simple", "Two subjects doing one action is still just ONE independent clause."],
+  ["My sister ran and jumped in the park.", "simple", "One subject with two verbs is still just ONE independent clause."],
+  ["The tall tree swayed in the strong wind.", "simple", "One subject (tree) and one predicate: 1 independent clause."],
+  ["On Saturday, we went to the zoo.", "simple", "“On Saturday” is a phrase, not a clause (it has no subject or verb). There's only 1 independent clause."],
+  ["I wanted pizza, but Mom made tacos.", "compound", "Two independent clauses joined by a comma + a FANBOYS word (but)."],
+  ["The sun set, and the stars came out.", "compound", "Two independent clauses joined by a comma + a FANBOYS word (and)."],
+  ["We could go to the beach, or we could stay home.", "compound", "Two independent clauses joined by a comma + a FANBOYS word (or)."],
+  ["It was raining; we stayed inside.", "compound", "Two independent clauses joined by a semicolon."],
+  ["Sam studied hard, so he passed the test.", "compound", "Two independent clauses joined by a comma + a FANBOYS word (so)."],
+  ["I like math; however, science is my favorite.", "compound", "Two independent clauses joined with a conjunctive adverb: ; however,"],
+  ["Because it was raining, we stayed inside.", "complex", "A dependent clause (Because it was raining) + an independent clause. The dependent clause comes first, so it uses a comma."],
+  ["We stayed inside because it was raining.", "complex", "An independent clause + a dependent clause. The independent clause comes first, so there's no comma."],
+  ["When the bell rang, the students lined up.", "complex", "A dependent clause (When the bell rang) + an independent clause (the students lined up)."],
+  ["I will call you after I finish my homework.", "complex", "An independent clause + a dependent clause (after I finish my homework). Independent first, so no comma."],
+  ["Although she was tired, Ava finished the race.", "complex", "A dependent clause (Although she was tired) + an independent clause (Ava finished the race)."],
+  ["If you water the plant, it will grow.", "complex", "A dependent clause (If you water the plant) + an independent clause (it will grow)."],
+  ["When the storm ended, we went outside, and the kids splashed in puddles.", "cc", "1 dependent clause (When the storm ended) + 2 independent clauses (we went outside / the kids splashed in puddles)."],
+  ["I wanted to play, but I stayed home because I was sick.", "cc", "2 independent clauses (I wanted to play / I stayed home) + 1 dependent clause (because I was sick)."],
+  ["Although the test was hard, Leo studied, so he did well.", "cc", "1 dependent clause (Although the test was hard) + 2 independent clauses (Leo studied / he did well)."],
+  ["While Dad cooked dinner, I set the table, and my sister fed the cat.", "cc", "1 dependent clause (While Dad cooked dinner) + 2 independent clauses (I set the table / my sister fed the cat)."],
+  ["I love pizza, it is my favorite food.", "splice", "Two independent clauses with ONLY a comma. Fix it: I love pizza; it is my favorite food."],
+  ["The game was fun, we played until dark.", "splice", "Two independent clauses with ONLY a comma. Fix it: The game was fun, so we played until dark."],
+  ["She ran fast, she won the race.", "splice", "Two independent clauses with ONLY a comma. Fix it: She ran fast, and she won the race."],
+  ["It is cold outside, wear your coat.", "splice", "Two independent clauses with ONLY a comma. Fix it: It is cold outside; wear your coat."],
+  ["Because the dog was hungry.", "fragment", "This is only a dependent clause. It isn't a complete thought: because the dog was hungry… what happened?"],
+  ["Until the movie ends.", "fragment", "This is only a dependent clause. It can't stand alone: until the movie ends… then what?"],
+  ["When we got home.", "fragment", "This is only a dependent clause, not a complete thought."],
+  ["Running down the street.", "fragment", "There's no subject and no complete thought. Who was running? What happened?"],
+];
+// 🏗️ Text structures
+const GL_STRUCTS = { desc: "Description", seq: "Sequence / Chronological", cmp: "Compare & Contrast", cause: "Cause & Effect", prob: "Problem & Solution" };
+const GL_SIGNALS = { desc: ["for instance", "such as", "an example", "characteristics"], seq: ["first", "next", "then", "finally", "before", "after"], cmp: ["same as", "similar", "both", "on the other hand", "different from"], cause: ["because", "so", "therefore", "as a result", "consequently"], prob: ["the dilemma is", "the puzzle is", "to solve this", "one answer is"] };
+const GL_PASSAGES = [
+  ["desc", "The blue whale is the largest animal on Earth. It can grow to 100 feet long. For instance, its tongue alone weighs as much as an elephant. Characteristics such as its huge size and blue-gray color make it easy to spot."],
+  ["desc", "A cactus has thick, waxy skin and sharp spines. An example is the saguaro cactus, which can grow 40 feet tall. Characteristics such as storing water in its stem help it live in the desert."],
+  ["seq", "First, crack two eggs into a bowl. Next, whisk them with a fork. Then, pour them into a hot pan. Finally, stir until they are cooked."],
+  ["seq", "Before the race, Mia stretched her legs. Then she lined up at the starting line. After the whistle blew, she sprinted all the way to the finish."],
+  ["cmp", "Frogs and toads are both amphibians. Frogs have smooth, wet skin. On the other hand, toads have dry, bumpy skin. Both lay their eggs in water."],
+  ["cmp", "Summer and winter are both seasons. Summer is hot, but winter is cold. Winter is different from summer because its days are shorter. Spring is similar to fall because both have mild weather."],
+  ["cause", "Heavy rain fell for three days. As a result, the river overflowed its banks. Consequently, many roads were closed."],
+  ["cause", "Leo forgot to water his plant for two weeks. Therefore, the leaves turned brown. Because the soil was so dry, the plant drooped."],
+  ["prob", "The dilemma is that our school garden keeps drying out. To solve this, the students built a rain barrel. One answer is to water the plants early in the morning."],
+  ["prob", "The puzzle is how to stop students from being late to class. To solve this, the school added a warning bell. One answer is to give every student a schedule."],
+];
+// 🗂️ Text features
+const GL_FEATS = ["Table of contents", "Index", "Glossary", "Photograph", "Illustration", "Caption", "Diagram", "Cross section", "Table", "Graph / chart", "Timeline", "Sidebar", "Guide words"];
+const GL_LOOK = [
+  ["You want to see a list of the book's chapters and the page each one starts on.", "Table of contents", "The table of contents is at the FRONT and lists the chapters and their pages."],
+  ["You want to find which page talks about volcanoes.", "Index", "The index is at the BACK. It lists topics in ABC order with their page numbers."],
+  ["You want to know what the bold word “magma” means.", "Glossary", "The glossary is at the BACK and gives definitions of important words."],
+  ["The book shows a real picture of a lion taken with a camera.", "Photograph", "A photograph is taken with a camera."],
+  ["The book shows a drawing of a dragon.", "Illustration", "An illustration is a drawing."],
+  ["There are words under a picture that tell what's happening in it.", "Caption", "A caption is the words under a picture."],
+  ["You want a labeled picture that shows how a bicycle's parts work together.", "Diagram", "A diagram is a labeled picture of how something works."],
+  ["You want to see the layers INSIDE the Earth, as if it were cut open.", "Cross section", "A cross section shows something cut open so you can see inside."],
+  ["You want facts about the planets organized in rows and columns.", "Table", "A table puts facts in rows and columns."],
+  ["You want to compare how many kids like each snack using bars.", "Graph / chart", "A graph or chart is a visual that compares data."],
+  ["You want to see the events of a president's life in the order they happened.", "Timeline", "A timeline shows events over time, in order."],
+  ["A box on the side of the page has extra fun facts about sharks.", "Sidebar", "A sidebar is a box with extra fun facts."],
+  ["At the top of a dictionary page, you see the words “apple” and “arrow.”", "Guide words", "Guide words are at the top of a dictionary page. They show the first and last words on that page."],
+  ["You want to know which chapter is about the ocean before you start reading.", "Table of contents", "The table of contents at the front lists the chapters."],
+  ["You want to know what “photosynthesis” means without leaving the book.", "Glossary", "The glossary gives definitions of important words."],
+  ["You need every page that mentions “sharks,” listed in ABC order.", "Index", "The index lists topics alphabetically with all their page numbers."],
+  ["You want to see what the inside of a volcano looks like, sliced in half.", "Cross section", "A cross section is cut open to show the inside."],
+  ["You want to see when each of the 13 colonies was founded, in order.", "Timeline", "A timeline shows events in time order."],
+];
+// 🎯 Quiz questions: [unit, question, answer, [3 wrong answers], why]
+const GL_BANK = [
+  ["pos", "What is a noun?", "A person, place, thing, or idea", ["An action word", "A word that describes a noun", "A word that connects ideas"], "A noun names a person, place, thing, or idea."],
+  ["pos", "Which word is a PROPER noun?", "Ms. Lee", ["teacher", "city", "dog"], "A proper noun names a specific person, place or thing and starts with a capital letter."],
+  ["pos", "Which word is a COMMON noun?", "dog", ["Leo", "Texas", "Ms. Lee"], "A common noun is a general name, not a specific one, so it doesn't need a capital letter."],
+  ["pos", "Which noun is CONCRETE (you can sense it with your 5 senses)?", "cheeseburger", ["hope", "power", "friendship"], "You can see, smell, touch and taste a cheeseburger, so it's concrete."],
+  ["pos", "Which noun is ABSTRACT (an idea you can't touch)?", "hope", ["cheeseburger", "pillow", "drum"], "Hope is an idea or feeling. You can't see or touch it, so it's abstract."],
+  ["pos", "What does a pronoun do?", "It replaces a noun", ["It shows strong feeling", "It describes a verb", "It connects two sentences"], "A pronoun (he, she, it, they) takes the place of a noun."],
+  ["pos", "In “Leo lost the hat, so he looked everywhere,” which word is a pronoun?", "he", ["hat", "looked", "so"], "“He” replaces the noun Leo."],
+  ["pos", "Which is a LINKING (state of being) verb?", "seem", ["jump", "throw", "dreamt"], "Linking verbs are am, is, are, was, become, seem. They link the subject to more information."],
+  ["pos", "Which is an ACTION verb?", "walked", ["is", "seem", "become"], "Walked is an action. Is, seem and become are linking verbs."],
+  ["pos", "In “Mia is happy,” what kind of verb is “is”?", "A linking verb", ["An action verb", "An adverb", "A preposition"], "“Is” links Mia to the word that describes her (happy). It's a state of being, not an action."],
+  ["pos", "Which word is an adjective?", "tall", ["quickly", "under", "they"], "Tall describes a noun (a tall tree), so it's an adjective."],
+  ["pos", "What does an adjective describe?", "A noun", ["A verb", "A preposition", "An interjection"], "Adjectives describe nouns: tall, old, rich."],
+  ["pos", "Which questions does an adverb answer?", "How, when, where, how often", ["What kind? Which one?", "Who? Whom?", "What is it called?"], "Adverbs tell how, when, where or how often. (“What kind?” and “which one?” are adjective questions.)"],
+  ["pos", "Which word is an adverb?", "happily", ["happy", "happiness", "happen"], "Happily tells HOW something is done, and it ends in -ly."],
+  ["pos", "In “She ran very fast,” which word describes the adverb “fast”?", "very", ["She", "ran", "None of them"], "“Very” tells how fast. Adverbs can describe other adverbs."],
+  ["pos", "Which adverb does NOT end in -ly?", "often", ["quickly", "sadly", "loudly"], "Many adverbs end in -ly, but not all of them. Often tells how often."],
+  ["pos", "What does a preposition show?", "Location, time, or relationship", ["Strong feeling", "An action", "Who did it"], "Prepositions like on, near, under and between show location, time or relationship."],
+  ["pos", "Which word is a preposition?", "between", ["because", "beautiful", "bounce"], "Between shows location: the cat sat between the boxes."],
+  ["pos", "What does FANBOYS stand for?", "for, and, nor, but, or, yet, so", ["four, and, not, but, or, yes, so", "for, also, nor, because, or, yet, since", "few, any, no, both, one, you, some"], "FANBOYS are the 7 coordinating conjunctions: for, and, nor, but, or, yet, so."],
+  ["pos", "Which is a CORRELATIVE conjunction pair?", "either / or", ["because / although", "on / under", "wow / ouch"], "Correlative conjunctions come in pairs: either/or, not only/but also."],
+  ["pos", "Which word is a SUBORDINATING conjunction?", "although", ["and", "but", "or"], "Subordinating conjunctions start dependent clauses: because, although, when, if, while, until."],
+  ["pos", "Which word is a COORDINATING conjunction?", "yet", ["until", "while", "because"], "Yet is one of the FANBOYS (for, and, nor, but, or, yet, so)."],
+  ["pos", "Which word is an interjection?", "Oops!", ["Under", "Slowly", "Tall"], "Interjections show strong feeling: Ouch! Wow! Oops!"],
+  ["pos", "What does an interjection show?", "Strong feeling", ["Location", "Time", "A connection"], "Interjections like Wow! and Ouch! show strong feeling."],
+  ["sent", "What does every complete sentence need?", "A subject, a predicate, and a complete thought", ["Only a subject", "A comma and a conjunction", "At least two clauses"], "Sentence = subject + predicate + complete thought."],
+  ["sent", "What is the SUBJECT of a sentence?", "Who or what the sentence is about", ["What the subject does", "The last word", "The punctuation mark"], "The subject is who or what the sentence is about. The predicate tells what it does or is."],
+  ["sent", "Which is an INDEPENDENT clause?", "The cat slept.", ["because the cat slept", "when the cat slept", "although the cat slept"], "An independent clause can stand alone as a complete sentence."],
+  ["sent", "Which is a DEPENDENT clause?", "until the rain stops", ["The rain stopped.", "We went outside.", "The sun came out."], "“until the rain stops” can't stand alone. It's not a complete thought."],
+  ["sent", "How can you correctly join two independent clauses?", "With a comma + a FANBOYS word, or with a semicolon", ["With only a comma", "With no punctuation at all", "With a colon and the word because"], "Compound = 2 independent clauses joined by , + FANBOYS or ;"],
+  ["sent", "Which sentence uses a conjunctive adverb correctly?", "I was tired; however, I finished my homework.", ["I was tired, however I finished my homework.", "I was tired however; I finished my homework.", "I was tired; however I finished my homework."], "Use a semicolon BEFORE and a comma AFTER: ; however,"],
+  ["sent", "Which one FIXES the comma splice “The movie ended, we went home”?", "The movie ended, so we went home.", ["The movie ended, we, went home.", "The movie, ended we went home.", "The movie ended we went home."], "Add a FANBOYS word after the comma (or use a semicolon) to join two independent clauses."],
+  ["sent", "Which complex sentence is punctuated correctly?", "When the bell rang, we ran outside.", ["When the bell rang we ran outside.", "We ran outside, when the bell rang.", "When, the bell rang we ran outside."], "The dependent clause comes first, so put a comma after it."],
+  ["sent", "Which complex sentence is punctuated correctly?", "We ran outside when the bell rang.", ["We ran outside, when the bell rang.", "We ran, outside when the bell rang.", "We ran outside when, the bell rang."], "The independent clause comes first, so there's no comma."],
+  ["sent", "A COMPOUND sentence has…", "2 independent clauses", ["1 independent clause", "1 independent + 1 dependent clause", "Only dependent clauses"], "Compound = 2 independent clauses joined by , + FANBOYS or ;"],
+  ["sent", "A COMPLEX sentence has…", "1 independent + 1 dependent clause", ["2 independent clauses", "Only 1 dependent clause", "2 dependent clauses and no independent clause"], "Complex = 1 independent clause + 1 dependent clause."],
+  ["sent", "A COMPOUND-COMPLEX sentence has…", "2+ independent clauses and 1+ dependent clauses", ["Exactly 1 independent clause", "Only dependent clauses", "2 independent clauses joined by only a comma"], "Compound-complex = 2 or more independent + 1 or more dependent clauses."],
+  ["sent", "What is a comma splice?", "Two independent clauses joined with only a comma", ["A sentence with too many adjectives", "A dependent clause by itself", "A sentence that uses a semicolon"], "A comma splice is a mistake: two independent clauses with only a comma between them."],
+  ["struct", "In “Because it snowed, school was closed,” what is the CAUSE?", "It snowed", ["School was closed", "Because", "There is no cause"], "The cause tells WHY something happened: it snowed."],
+  ["struct", "In “Because it snowed, school was closed,” what is the EFFECT?", "School was closed", ["It snowed", "Because", "There is no effect"], "The effect tells WHAT happened: school was closed."],
+  ["struct", "In “The dog ate my sandwich, so I was hungry at lunch,” what is the EFFECT?", "I was hungry at lunch", ["The dog ate my sandwich", "so", "lunch"], "The effect is what happened because of the cause."],
+  ["struct", "In “Our team practiced every day. As a result, we won the championship,” what is the CAUSE?", "Our team practiced every day", ["We won the championship", "As a result", "The championship"], "The cause is why it happened: they practiced every day."],
+  ["struct", "The CAUSE tells…", "Why something happened", ["What happened", "When it happened", "Where it happened"], "Cause = why. Effect = what happened."],
+  ["struct", "The EFFECT tells…", "What happened", ["Why it happened", "Who wrote it", "How two things compare"], "Cause = why. Effect = what happened."],
+  ["struct", "A text explains how a caterpillar becomes a butterfly, step by step. Which structure is it?", "Sequence / Chronological", ["Compare & Contrast", "Problem & Solution", "Description"], "Steps in order = sequence."],
+  ["struct", "An article tells how cats and dogs are alike and different. Which structure is it?", "Compare & Contrast", ["Sequence / Chronological", "Cause & Effect", "Description"], "Alike and different = compare & contrast."],
+  ["struct", "An article says plastic is polluting the ocean, then gives ways to fix it. Which structure is it?", "Problem & Solution", ["Description", "Compare & Contrast", "Sequence / Chronological"], "A problem plus ways to fix it = problem & solution."],
+  ["struct", "A text tells what a cheetah looks like: its spots, long legs and amazing speed. Which structure is it?", "Description", ["Cause & Effect", "Problem & Solution", "Sequence / Chronological"], "Details and characteristics = description."],
+  ["struct", "A text explains why volcanoes erupt and what happens after they do. Which structure is it?", "Cause & Effect", ["Compare & Contrast", "Description", "Sequence / Chronological"], "Why it happens (cause) and what happens (effect) = cause & effect."],
+  ["feat", "Where is the table of contents?", "At the front of the book", ["At the back of the book", "In the middle of every chapter", "Under each picture"], "The table of contents is at the front. The index and glossary are at the back."],
+  ["feat", "Where are the index and the glossary?", "At the back of the book", ["At the front of the book", "On the cover", "At the top of each page"], "The index and glossary are both at the back."],
+  ["feat", "What's the difference between an index and a glossary?", "An index lists topics and pages; a glossary gives definitions", ["They are exactly the same", "A glossary lists chapters; an index gives definitions", "An index is at the front; a glossary is in the middle"], "Index (back) = alphabetical topics with pages. Glossary (back) = definitions."],
+  ["feat", "What's the difference between a photograph and an illustration?", "A photograph is taken with a camera; an illustration is a drawing", ["A photograph is a drawing; an illustration uses a camera", "They are the same thing", "An illustration always has a caption"], "Photograph = camera. Illustration = drawing."],
+  ["feat", "Guide words on a dictionary page are “apple” and “arrow.” Which word is on that page?", "apron", ["anchor", "ask", "bat"], "In ABC order, apron comes after apple and before arrow."],
+  ["feat", "Guide words on a dictionary page are “dog” and “drum.” Which word is on that page?", "dragon", ["dance", "duck", "eagle"], "In ABC order, dragon comes after dog (do-) and before drum (dru-)."],
+  ["feat", "Which feature shows events over time, in order?", "Timeline", ["Glossary", "Caption", "Cross section"], "A timeline shows events over time."],
+  ["feat", "Which feature organizes facts in rows and columns?", "Table", ["Timeline", "Sidebar", "Illustration"], "A table has rows and columns of facts."],
+];
+function glMakeQuestion(unit) {
+  const u = unit === "mix" ? rPick(Object.keys(GL_UNITS)) : unit, roll = Math.random();
+  const mc = (tag, prompt, a, w, why) => ({ kind: "mc", tag, prompt: esc(prompt), a, w, why: esc(why) });
+  if (u === "pos" && roll < .55) {   // a word in a real sentence
+    const toks = glParse(rPick(GL_TAGGED)), pick = rPick(toks.filter(x => GL_POS[x.t])), ans = GL_POS[pick.t];
+    return mc("8 Parts of Speech", `In “${glSentText(toks)}”, what part of speech is “${pick.w}”?`, cap1(ans), shuffle(Object.values(GL_POS).filter(x => x !== ans)).slice(0, 3).map(cap1), glWhy(pick, toks));
+  }
+  if (u === "sent" && roll < .5) {
+    const [s, t, why] = rPick(GL_SORT);
+    return mc("Sentences", `What kind of sentence is this? “${s}”`, GL_TYPES[t], shuffle(Object.keys(GL_TYPES).filter(k => k !== t)).slice(0, 3).map(k => GL_TYPES[k]), why);
+  }
+  if (u === "struct" && roll < .55) {
+    if (Math.random() < .5) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return mc("Text Structures", `Which text structure uses the signal words “${w}”?`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `“${w}” is a signal word for ${GL_STRUCTS[k]}. Its signal words are: ${GL_SIGNALS[k].join(", ")}.`); }
+    const [k, text] = rPick(GL_PASSAGES); return mc("Text Structures", `Which text structure is this? “${text}”`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `Look for the signal words. ${GL_STRUCTS[k]} uses words like: ${GL_SIGNALS[k].join(", ")}.`);
+  }
+  if (u === "feat" && roll < .6) {
+    const [s, a, why] = rPick(GL_LOOK); return mc("Tricky Text Features", `${s} Which text feature is it?`, a, shuffle(GL_FEATS.filter(x => x !== a)).slice(0, 3), why);
+  }
+  const [, q, a, w, why] = rPick(GL_BANK.filter(x => x[0] === u)); return mc(GL_UNITS[u].name, q, a, w, why);
+}
+const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
+function glWhy(pick, toks) {
+  const w = pick.w, t = pick.t;
+  return {
+    n: `“${w}” names a person, place, thing, or idea, so it's a noun.`,
+    pro: `“${w}” takes the place of a noun, so it's a pronoun.`,
+    v: ["is", "are", "was", "were", "am", "seems", "became", "become"].includes(w.toLowerCase()) ? `“${w}” is a linking (state of being) verb.` : ["can", "will"].includes(w.toLowerCase()) ? `“${w}” is a helping verb that works with the main verb, so it's a verb.` : `“${w}” is an action, so it's a verb.`,
+    adj: `“${w}” describes a noun, so it's an adjective.`,
+    adv: `“${w}” tells how, when, where, how often, or how much, so it's an adverb.`,
+    prep: `“${w}” shows location, time, or relationship, so it's a preposition.`,
+    conj: `“${w}” is a connector, so it's a conjunction.`,
+    int: `“${w}” shows strong feeling, so it's an interjection.`,
+  }[t];
+}
+let GL_STATE = null;
+function startGrammarLab(unit, tab = "learn") {
+  if (!unit) {
+    appScreen("📝 Grammar & Reading Lab", `<h2>📝 Grammar &amp; Reading Lab</h2><p class="soft">Learn the 8 parts of speech, sentence types, text structures and text features. Then practice and play!</p>
+      <div class="aa-grid">${Object.entries(GL_UNITS).map(([k, u]) => `<button class="aa-card" data-u="${k}"><i>${u.e}</i><b>${u.name}</b><span>📖 Learn · 🎯 Quiz · ${u.game}</span></button>`).join("")}
+      <button class="aa-card" data-u="mix"><i>🔀</i><b>Mix it all up</b><span>Endless quiz with questions from every topic</span></button>
+      <button class="aa-card" data-u="cheat"><i>📋</i><b>Cheat sheet</b><span>All the notes on one page</span></button></div>`);
+    $app.querySelectorAll("[data-u]").forEach(b => b.addEventListener("click", () => startGrammarLab(b.dataset.u, b.dataset.u === "mix" ? "quiz" : "learn")));
+    return;
+  }
+  const head = `<div class="row"><button class="chip" id="gl-back">⬅ All topics</button></div>`;
+  if (unit === "cheat") {
+    appScreen("📝 Grammar & Reading Lab", `${head}<h2>📋 Cheat sheet</h2><div class="sl-card gl-cheat">${GL_CHEAT}</div><div class="row"><button class="btn" id="gl-say">🔊 Read it to me</button></div>`);
+    document.getElementById("gl-say").addEventListener("click", () => { const t = document.createElement("div"); t.innerHTML = GL_CHEAT; hippoSay(t.innerText.replace(/–/g, ", ").replace(/→/g, " then ").replace(/;/g, ",")); });
+    document.getElementById("gl-back").addEventListener("click", () => startGrammarLab());
+    return;
+  }
+  const U = GL_UNITS[unit] || { e: "🔀", name: "Mix it all up" };
+  const tabs = unit === "mix" ? [["quiz", "🎯 Quiz"]] : [["learn", "📖 Learn"], ["quiz", "🎯 Quiz"], ["game", U.game]];
+  appScreen("📝 Grammar & Reading Lab", `${head}<h2>${U.e} ${U.name}</h2>${naTabs(tabs, tab)}<div id="gl"></div>`);
+  bindTabs(t => startGrammarLab(unit, t));
+  document.getElementById("gl-back").addEventListener("click", () => startGrammarLab());
+  const box = document.getElementById("gl");
+  if (tab === "learn") {
+    box.innerHTML = GL_LEARN[unit].map(([e, t, body, ex], i) => `<div class="sl-card gl-learn"><h3>${e} ${esc(t)}</h3><p>${esc(body).replace(/\n/g, "<br>")}</p><p class="gl-ex">✏️ <b>Example:</b> ${esc(ex)}</p><button class="chip" data-say="${i}">🔊 Read it</button></div>`).join("") + `<div class="row"><button class="btn go" id="gl-go">🎯 Quiz me on this!</button></div>`;
+    box.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => { const [, t, body, ex] = GL_LEARN[unit][+b.dataset.say]; hippoSay(`${t}. ${body.replace(/•/g, "").replace(/→/g, ", then")}. Example: ${ex}`); }));
+    document.getElementById("gl-go").addEventListener("click", () => startGrammarLab(unit, "quiz"));
+  } else if (tab === "quiz") glQuiz(unit, box, { done: 0, right: 0, streak: 0, best: 0, missed: [] });
+  else glGame(unit, box);
+}
+function glQuiz(unit, box, st) {
+  const q = glMakeQuestion(unit);
+  box.innerHTML = `<div class="topline"><span>Question ${st.done + 1}</span><span>${st.right} right${st.streak >= 3 ? ` · 🔥 ${st.streak} in a row` : ""}</span></div><button class="btn st-stop" id="gl-stop" type="button">⏹ Stop</button>${questionHtml(q)}<div id="gl-fb"></div>`;
+  document.getElementById("gl-stop").addEventListener("click", () => glResults(unit, box, st));
+  const tiles = [...box.querySelectorAll(".tile")];
+  tiles.forEach(t => t.addEventListener("click", () => {
+    const ok = t.dataset.v === q.a; st.done++;
+    if (ok) { st.right++; st.streak++; st.best = Math.max(st.best, st.streak); sfx.right(); } else { st.streak = 0; st.missed.push(q); sfx.wrong(); }
+    tiles.forEach(x => { x.disabled = true; x.classList.add(x.dataset.v === q.a ? "right" : x === t ? "wrong" : "dim"); });
+    document.getElementById("gl-fb").innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? rPick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>${ok ? "" : `<p>The answer is <b>${esc(q.a)}</b>.</p>`}<p>${q.why}</p></div><div class="row" style="margin-top:12px"><button class="btn go" id="gl-next">Next question</button></div>`;
+    const nx = document.getElementById("gl-next"); nx.focus(); nx.addEventListener("click", () => glQuiz(unit, box, st));
+    keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); nx.click(); } };
+  }));
+  keyHandler = e => { if (/^[1-4]$/.test(e.key) && tiles[+e.key - 1] && !tiles[0].disabled) tiles[+e.key - 1].click(); };
+}
+function glResults(unit, box, st) {
+  keyHandler = null;
+  const pct = st.done ? Math.round(st.right / st.done * 100) : 0;
+  box.innerHTML = `<div class="sl-card" style="text-align:center"><div class="big money">${st.right} / ${st.done}</div><p>${st.done ? `${pct}% right.${st.best >= 3 ? ` Best streak: 🔥 ${st.best}!` : ""} ${pct >= 90 ? "Excellent! You really know this." : pct >= 70 ? "Good work! Look over the ones you missed." : "Keep going! Read the lesson again, then try another round."}` : "You stopped before answering any questions."}</p></div>
+    ${st.missed.length ? `<div class="sl-card"><h3>Study these again</h3><div class="missed">${st.missed.map(q => `<div class="miss"><b>${q.prompt}</b>Answer: ${esc(q.a)}</div>`).join("")}</div></div>` : ""}
+    <div class="row"><button class="btn go" id="gl-again">Keep practicing</button>${unit !== "mix" ? `<button class="btn" id="gl-learn">📖 Back to the lesson</button>` : ""}</div>`;
+  document.getElementById("gl-again").addEventListener("click", () => glQuiz(unit, box, { done: 0, right: 0, streak: 0, best: 0, missed: [] }));
+  document.getElementById("gl-learn")?.addEventListener("click", () => startGrammarLab(unit, "learn"));
+}
+function glGame(unit, box) {
+  const bestKey = "gl_best_" + unit, best = () => store.get(bestKey, 0);
+  let score = 0, lives = 3;
+  const hud = () => `<div class="topline"><span>⭐ Score: <b>${score}</b> · ${"❤️".repeat(lives)}${"🤍".repeat(3 - lives)}</span><span>Best: ${best()}</span></div>`;
+  const over = () => { if (score > best()) store.set(bestKey, score); box.innerHTML = `<div class="sl-card" style="text-align:center"><h3>${score > 0 && score >= best() ? "🏆 New best score!" : "Game over!"}</h3><div class="big money">${score}</div><button class="btn go" id="gl-replay">Play again</button></div>`; document.getElementById("gl-replay").addEventListener("click", () => glGame(unit, box)); score >= best() && score ? sfx.buy() : 0; };
+  const after = (ok, why, next) => { if (ok) { score++; sfx.right(); } else { lives--; sfx.wrong(); } const fb = box.querySelector(".gl-fb"); fb.innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? "✅ Yes!" : "❌ Not quite."}</strong><p>${why}</p></div><button class="btn go" id="gl-gnext">${lives ? "Next ➜" : "See my score"}</button>`; document.getElementById("gl-gnext").addEventListener("click", () => lives ? next() : over()); };
+  if (unit === "pos") {   // 🔍 Word Hunt: tap every word of one part of speech
+    const round = () => {
+      const toks = glParse(rPick(GL_TAGGED)), tags = [...new Set(toks.map(x => x.t).filter(t => GL_POS[t]))], want = rPick(tags), need = toks.filter(x => x.t === want).length;
+      let found = 0, done = false;
+      box.innerHTML = `${hud()}<div class="sl-card"><p>${need > 1 ? "Tap ALL the" : "Tap the"} <b class="gl-want">${GL_POS[want].toUpperCase()}${need > 1 ? "S" : ""}</b> in this sentence${need > 1 ? ` (${need} to find)` : ""}:</p><div class="gl-words">${toks.map((x, i) => x.t === "p" ? `<span class="gl-p">${esc(x.w)}</span>` : `<button class="gl-word" data-i="${i}">${esc(x.w)}</button>`).join("")}</div><div class="gl-fb"></div></div>`;
+      box.querySelectorAll(".gl-word").forEach(b => b.addEventListener("click", () => {
+        if (done || b.disabled) return; const x = toks[+b.dataset.i];
+        if (x.t === want) { b.classList.add("hit"); b.disabled = true; found++; naNote(700 + found * 80, .08, "triangle", .08); if (found === need) { done = true; after(true, `You found ${need === 1 ? "it" : `all ${need}`}! ${toks.filter(y => y.t === want).map(y => `“${y.w}”`).join(", ")}: ${GL_POS[want]}${need > 1 ? "s" : ""}.`, round); } }
+        else if (x.t === "art") { b.classList.add("gl-art"); b.title = "article"; toast(`“${x.w}” is an article (a, an, the). Keep looking!`); }
+        else { done = true; b.classList.add("gl-bad"); box.querySelectorAll(".gl-word").forEach(y => { if (toks[+y.dataset.i].t === want) y.classList.add("hit"); y.disabled = true; }); after(false, `“${x.w}” is a${/^[aeiou]/.test(GL_POS[x.t]) ? "n" : ""} ${GL_POS[x.t]}. ${glWhy(x, toks)} The ${GL_POS[want]}${need > 1 ? "s are" : " is"} highlighted.`, round); }
+      }));
+    };
+    return round();
+  }
+  // the other games: pick the right button
+  const items = unit === "sent" ? () => { const [s, t, why] = rPick(GL_SORT); return { prompt: `What kind of sentence is this?<br><span class="gl-big">“${esc(s)}”</span>`, a: GL_TYPES[t], opts: Object.values(GL_TYPES), why: esc(why) }; }
+    : unit === "struct" ? () => { if (Math.random() < .6) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return { prompt: `🕵️ Signal word:<br><span class="gl-big">“${esc(w)}”</span><br>Which text structure is it a clue for?`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`“${w}” signals ${GL_STRUCTS[k]}. Other clues: ${GL_SIGNALS[k].filter(x => x !== w).join(", ")}.`) }; } const [k, text] = rPick(GL_PASSAGES); return { prompt: `🕵️ Read the clues:<br><span class="gl-big">“${esc(text)}”</span>`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`The signal words give it away: ${GL_SIGNALS[k].filter(x => new RegExp(`\\b${x}\\b`, "i").test(text)).join(", ")}.`) }; }
+    : () => { const [s, a, why] = rPick(GL_LOOK); return { prompt: `🧭 ${esc(s)}<br>Which text feature is it?`, a, opts: shuffle([a, ...shuffle(GL_FEATS.filter(x => x !== a)).slice(0, 5)]), why: esc(why) }; };
+  const round = () => {
+    const it = items();
+    box.innerHTML = `${hud()}<div class="sl-card"><p>${it.prompt}</p><div class="gl-opts">${it.opts.map(o => `<button class="btn gl-opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div><div class="gl-fb"></div></div>`;
+    box.querySelectorAll(".gl-opt").forEach(b => b.addEventListener("click", () => {
+      const ok = b.dataset.o === it.a;
+      box.querySelectorAll(".gl-opt").forEach(x => { x.disabled = true; if (x.dataset.o === it.a) x.classList.add("go"); else if (x === b) x.classList.add("bad"); });
+      after(ok, it.why, round);
+    }));
+  };
+  round();
+}
+NEW_APPS.push({ id: "grammar", emoji: "📝", name: "Grammar & Reading Lab", desc: "The 8 parts of speech, sentence types, text structures and text features: learn, quiz and play.", start: () => startGrammarLab(), isNew: true, kw: "grammar( lab)?|parts? of speech|text structures?|text features?|comma splices?|fanboys|sentence types?|compound sentences?|complex sentences?|compound-complex|conjunctive adverbs?|reading lab" });
+
 // 🔎 Every App-App app can be found with Hippo search (by its name, or by these extra words)
 const APP_KW = { code: "code lab|learn to code", ai: "ai studio", music: "piano|beat maker", science: "volcano experiment", space: "solar system", money: "piggy bank|budget", pixel: "pixel art", puzzle: "sudoku|tower of hanoi|lights out", lang: "learn spanish|learn french", world: "flag quiz", comic: "comics?|comic strip", calm: "breathing|calm down", hippopoly: "monopoly|monapely|property game" };
 function appSearch(q) {
@@ -10475,7 +10849,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
