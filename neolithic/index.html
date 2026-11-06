@@ -10570,15 +10570,18 @@ function startGrammarLab(unit, tab = "learn") {
   } else if (tab === "quiz") glQuiz(unit, box, { done: 0, right: 0, streak: 0, best: 0, missed: [] });
   else glGame(unit, box);
 }
+// Real grammar practice counts for today (they start over each day)
+function glToday() { const d = new Date().toLocaleDateString("en-CA"), t = store.get("gl_day", null); return t && t.date === d ? t : { date: d, done: 0, right: 0 }; }
 function glQuiz(unit, box, st) {
   const q = glMakeQuestion(unit);
-  const tot = store.get("gl_total", { done: 0, right: 0 });
-  box.innerHTML = `<div class="topline"><span>Question ${st.done + 1}</span><span>${st.right} right${st.streak >= 3 ? ` · 🔥 ${st.streak} in a row` : ""}</span></div>${tot.done ? `<p class="soft gl-tot">📚 ${fmt(tot.done)} grammar questions answered in all · ${fmt(tot.right)} right</p>` : ""}<button class="btn st-stop" id="gl-stop" type="button">⏹ Stop</button>${questionHtml(q)}<div id="gl-fb"></div>`;
+  const tot = store.get("gl_total", { done: 0, right: 0 }), day = glToday();
+  box.innerHTML = `<div class="topline"><span>Question ${day.done + 1} today</span><span>${day.right} right today${st.streak >= 3 ? ` · 🔥 ${st.streak} in a row` : ""}</span></div>${tot.done ? `<p class="soft gl-tot">📚 ${fmt(tot.done)} grammar questions answered in all · ${fmt(tot.right)} right</p>` : ""}<button class="btn st-stop" id="gl-stop" type="button">⏹ Stop</button>${questionHtml(q)}<div id="gl-fb"></div>`;
   document.getElementById("gl-stop").addEventListener("click", () => glResults(unit, box, st));
   const tiles = [...box.querySelectorAll(".tile")];
   tiles.forEach(t => t.addEventListener("click", () => {
     const ok = t.dataset.v === q.a; st.done++;
     const tot = store.get("gl_total", { done: 0, right: 0 }); tot.done++; if (ok) tot.right++; store.set("gl_total", tot);
+    const day = glToday(); day.done++; if (ok) day.right++; store.set("gl_day", day);
     if (ok) { st.right++; st.streak++; st.best = Math.max(st.best, st.streak); sfx.right(); } else { st.streak = 0; st.missed.push(q); sfx.wrong(); }
     tiles.forEach(x => { x.disabled = true; x.classList.add(x.dataset.v === q.a ? "right" : x === t ? "wrong" : "dim"); });
     document.getElementById("gl-fb").innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? rPick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>${ok ? "" : `<p>The answer is <b>${esc(q.a)}</b>.</p>`}<p>${q.why}</p></div><div class="row" style="margin-top:12px"><button class="btn go" id="gl-next">Next question</button></div>`;
