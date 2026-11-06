@@ -618,6 +618,8 @@
   .mcell.boom { background: var(--bad); color: #fff; }
   .mcell.flag { color: var(--gold); }
 
+  .emerg-btn { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); right: 12px; z-index: 50; border: 0; border-radius: 99px; padding: 8px 14px; font-weight: 800; font-size: .9rem; background: #ffb703; color: #3a1d00; box-shadow: 0 4px 14px rgba(0,0,0,.35); cursor: pointer; } .emerg-btn[hidden] { display: none; }
+  .gl-tot { margin: 0; font-size: .85rem; }
   .exit-all { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 12px; z-index: 50; border: 0; border-radius: 99px; padding: 8px 16px; font-weight: 700; font-size: .9rem; background: var(--bad); color: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.45); cursor: pointer; }
   .exit-all:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   body.has-exit .wrap { padding-block-start: 60px; }
@@ -994,6 +996,7 @@
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
+<button class="emerg-btn" id="emerg" type="button" hidden title="Jump to grammar practice">🚨 Emergency</button>
 <button class="pause-all" id="pause-all" type="button" hidden aria-pressed="false">Pause</button>
 <div class="wrap" id="app"></div>
 <footer><span class="save-state saving" id="save-state" role="status">Connecting save…</span> · <button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
@@ -10569,11 +10572,13 @@ function startGrammarLab(unit, tab = "learn") {
 }
 function glQuiz(unit, box, st) {
   const q = glMakeQuestion(unit);
-  box.innerHTML = `<div class="topline"><span>Question ${st.done + 1}</span><span>${st.right} right${st.streak >= 3 ? ` · 🔥 ${st.streak} in a row` : ""}</span></div><button class="btn st-stop" id="gl-stop" type="button">⏹ Stop</button>${questionHtml(q)}<div id="gl-fb"></div>`;
+  const tot = store.get("gl_total", { done: 0, right: 0 });
+  box.innerHTML = `<div class="topline"><span>Question ${st.done + 1}</span><span>${st.right} right${st.streak >= 3 ? ` · 🔥 ${st.streak} in a row` : ""}</span></div>${tot.done ? `<p class="soft gl-tot">📚 ${fmt(tot.done)} grammar questions answered in all · ${fmt(tot.right)} right</p>` : ""}<button class="btn st-stop" id="gl-stop" type="button">⏹ Stop</button>${questionHtml(q)}<div id="gl-fb"></div>`;
   document.getElementById("gl-stop").addEventListener("click", () => glResults(unit, box, st));
   const tiles = [...box.querySelectorAll(".tile")];
   tiles.forEach(t => t.addEventListener("click", () => {
     const ok = t.dataset.v === q.a; st.done++;
+    const tot = store.get("gl_total", { done: 0, right: 0 }); tot.done++; if (ok) tot.right++; store.set("gl_total", tot);
     if (ok) { st.right++; st.streak++; st.best = Math.max(st.best, st.streak); sfx.right(); } else { st.streak = 0; st.missed.push(q); sfx.wrong(); }
     tiles.forEach(x => { x.disabled = true; x.classList.add(x.dataset.v === q.a ? "right" : x === t ? "wrong" : "dim"); });
     document.getElementById("gl-fb").innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? rPick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>${ok ? "" : `<p>The answer is <b>${esc(q.a)}</b>.</p>`}<p>${q.why}</p></div><div class="row" style="margin-top:12px"><button class="btn go" id="gl-next">Next question</button></div>`;
@@ -11060,6 +11065,19 @@ function exitAll() {
   window.scrollTo({ top: 0 });
 }
 exitBtn.addEventListener("click", exitAll);
+// 🚨 Emergency button: only in the games under the 3 dots. One tap stops the game and jumps straight into grammar practice.
+const emergBtn = document.getElementById("emerg");
+const MENU_GAME_RX = /^(🐰 )?(Bunny Hop|Dig It Up|Cash Race|Slope City|Drawing Studio|Ragdoll Archers|Neon Snake|Sky Stack|2048|Memory Match|Minesweeper|Brick Breaker|Sky Hopper|Galaxy Defender|Whack-a-Mole|Connect Four|Simon Says|Pong|Rodeo Stampede)\b/;
+let IN_MENU_GAME = false;   // set when a game is opened from a games menu (Cash Race and Dig It Up play screens have no title)
+document.addEventListener("click", e => { if (e.target.closest?.(".gm-item, [data-more]")) IN_MENU_GAME = true; }, true);
+function emergencyGrammar() {
+  HIPPO_SONG_STOP?.(); hippoHush();
+  exitAll();
+  IN_MENU_GAME = false;
+  startGrammarLab("pos", "quiz");
+  window.scrollTo({ top: 0 });
+}
+emergBtn.addEventListener("click", emergencyGrammar);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
 const SCENES = [[/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
@@ -11079,6 +11097,9 @@ new MutationObserver(() => {
   const home = !!document.getElementById("gamesmenu");
   exitBtn.hidden = home;
   document.body.classList.toggle("has-exit", !home);
+  const lab = home ? "" : ($app.querySelector(".label")?.textContent || "").trim();
+  if (home || (lab && !MENU_GAME_RX.test(lab))) IN_MENU_GAME = false;
+  emergBtn.hidden = home || !(MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab));
 }).observe($app, { childList: true });
 
 showHome();
