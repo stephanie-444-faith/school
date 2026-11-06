@@ -10464,7 +10464,7 @@ GL_SORT.push(   // 🧺 25 more sentences to sort
   ["The lights went out, everyone screamed.", "splice", "Two independent clauses with ONLY a comma. Fix it: The lights went out, and everyone screamed."],
   ["My bike has a flat tire, I walked to school.", "splice", "Two independent clauses with ONLY a comma. Fix it: My bike has a flat tire, so I walked to school."],
   ["Leo loves dogs, he has three of them.", "splice", "Two independent clauses with ONLY a comma. Fix it: Leo loves dogs; he has three of them."],
-  ["The pizza is hot, be careful.", "splice", "Two independent clauses with ONLY a comma. Fix it: The pizza is hot; be careful."],
+  ["The pizza is hot, it just came out of the oven.", "splice", "Two independent clauses with ONLY a comma. Fix it: The pizza is hot; it just came out of the oven."],
   ["If you finish your homework.", "fragment", "This is only a dependent clause. If you finish your homework… then what?"],
   ["Although the test was easy.", "fragment", "This is only a dependent clause. It isn't a complete thought."],
   ["The girl with the red backpack.", "fragment", "There's a subject (the girl) but no predicate. What did the girl do?"],
@@ -10485,7 +10485,7 @@ GL_LOOK.push(   // 🧭 20 more "where would you look?"
   ["You want to know what page chapter 3 starts on.", "Table of contents", "The table of contents lists the chapters and the page each one starts on."],
   ["You see a word in bold print and want to know what it means.", "Glossary", "The glossary gives definitions of important (often bold) words."],
   ["You want the page that talks about “earthquakes,” but it isn't a chapter title.", "Index", "The index lists every topic in ABC order with its page numbers."],
-  ["A picture shows a real astronaut floating in space, taken with a camera.", "Photograph", "Photograph = camera."],
+  ["A picture taken with a camera shows a real astronaut floating in space.", "Photograph", "Photograph = camera."],
   ["A colorful drawing shows what a T. rex might have looked like.", "Illustration", "Illustration = drawing."],
   ["Under a picture of a tiger, it says “Tigers are the largest cats.”", "Caption", "A caption is the words under a picture."],
   ["A picture with labels shows the parts of an insect: head, thorax and abdomen.", "Diagram", "A diagram is a labeled picture."],
@@ -10501,7 +10501,7 @@ GL_LOOK.push(   // 🧭 20 more "where would you look?"
   ["You want to see the layers of the ocean, as if it were sliced open.", "Cross section", "A cross section shows the inside as if it were cut open."],
   ["You want to see Abraham Lincoln's life events in order, from birth to death.", "Timeline", "A timeline shows events in time order."],
   ["You want to compare how many students chose each favorite fruit, using a picture of the data.", "Graph / chart", "A graph or chart is a visual that compares data."],
-  ["A tourist's real picture of the Grand Canyon is printed in the book.", "Photograph", "A real picture taken with a camera is a photograph."],
+  ["A tourist took a picture of the Grand Canyon with a camera, and it is printed in the book.", "Photograph", "A picture taken with a camera is a photograph."],
 );
 function glMakeQuestion(unit) {
   const u = unit === "mix" ? rPick(Object.keys(GL_UNITS)) : unit, roll = Math.random();
