@@ -342,6 +342,12 @@
   .gl-sq.good { box-shadow: 0 0 0 4px #3bb273; } .gl-sq.bad { box-shadow: 0 0 0 4px #ff4d6d; background: rgba(214,40,57,.18); }
   .gl-wrongbox { margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: #fff1f2; color: #3a0610; border: 3px solid #e63946; } .gl-wrongbox p { margin: 6px 0; } .gl-wrongbox .soft { color: #7a4a52; }
   .gl-pz { color: #ffe066; font-size: .9rem; }
+  .gl-explain { margin-top: 10px; padding: 12px 14px; border-radius: 14px; background: #fffdf5; color: #2a2340; border: 2px solid #c9bfff; text-align: left; line-height: 1.5; } .gl-explain h4 { margin: 0 0 6px; color: #5a3fd1; } .gl-explain p { margin: 6px 0; }
+  .gl-ex-sent { background: #efeaff; border-radius: 8px; padding: 6px 10px; font-weight: 600; } .gl-hl { background: #ffe066; color: #222; border-radius: 4px; padding: 0 2px; }
+  .gl-diff { background: #fff; border: 2px dashed #c9bfff; border-radius: 8px; padding: 6px 10px; margin: 6px 0; } .gl-diff p { margin: 4px 0; } .gl-dno { background: #ffc9cf; color: #8a0016; border-radius: 4px; font-weight: 800; } .gl-dyes { background: #c8f5d4; color: #0d5c2e; border-radius: 4px; font-weight: 800; }
+  .gl-ex-no { color: #8a0016; } .gl-ex-yes { color: #0d5c2e; } .gl-ex-how { background: #e8f4ff; color: #12324a; border-radius: 8px; padding: 6px 10px; margin-top: 6px; } .gl-ex-how ol { margin: 4px 0 0; padding-left: 20px; } .gl-ex-how li { margin: 3px 0; } .gl-ex-how p { margin: 4px 0 0; }
+  .gl-explain .chip { background: #5a3fd1; color: #fff; border-color: #5a3fd1; } .gl-more summary { cursor: pointer; font-weight: 700; margin-top: 4px; }
+  .gl-learn.gl-flash { animation: glFlash 2s ease-out; } @keyframes glFlash { 0%, 40% { box-shadow: 0 0 0 4px #ffe066; } 100% { box-shadow: none; } }
   .gl-x { font-size: 1.6rem; font-weight: 900; color: #d62839; letter-spacing: 1px; } .gl-why { background: #fff7d1; color: #4a3800; border-radius: 8px; padding: 6px 10px; } .gl-sopt:disabled { cursor: default; }
   .gl-mini summary { cursor: pointer; } .gl-mini { font-size: .9rem; }
   .gl-sheet { display: grid; gap: 8px; } @media (min-width: 700px) { .gl-sheet { grid-template-columns: 1fr 1fr; } }
@@ -10693,25 +10699,124 @@ GL_LOOK.push(
   ["You want to see how many times your heart beats in a minute, a day, a month and a year, in rows and columns.", "Table", "A table organizes facts and numbers so they're easy to read."],
   ["A pie chart shows how many kinds of frogs are in danger.", "Graph / chart", "A graph or chart organizes or compares data."],
 );
+// 🔍 Big explanations for wrong answers: why your pick isn't right, why the answer is, how to figure it out, and a link to the lesson
+const GL_POS_DEF = {
+  n: ["names a person, place, thing, or idea", "Can you put “the” or “a” in front of it? (the dog, a hope)"],
+  pro: ["takes the place of a noun (he, she, it, they, I, we, you, them, everyone, that…)", "Does it stand in for a name you already know? (Leo → he)"],
+  v: ["shows an action (walked, dreamt) or a state of being (am, is, are, was, were, become, seem)", "Can you change its time? (walk → walked, is → was). If you can, it's a verb."],
+  adj: ["describes a noun: what kind, which one, or how many (size, shape, age, color, origin, material)", "Does it fit in “the ___ thing”? (the tall thing, the old thing)"],
+  adv: ["describes a verb, an adjective, or another adverb: how, when, where, how often, or how much (often ends in -ly)", "Ask how? when? where? or how often? about the verb. The word that answers is the adverb."],
+  prep: ["shows the relationship of a noun or pronoun to another word: time, place, or relationship (on, under, near, between, after, to, with)", "The cat-and-box test: can a cat be ___ the box? (on, under, near, behind). A preposition is always followed by a noun or pronoun."],
+  conj: ["is a connector: FANBOYS (for, and, nor, but, or, yet, so), pairs like either/or, or subordinating words like because, although, when, if, while, until", "Does it join two words, ideas, or clauses together?"],
+  int: ["shows strong feeling or emotion (Wow! Ouch! Oops! Eww!)", "Could it stand alone with an exclamation point? (Ouch!)"],
+};
+const GL_TYPE_DEF = { simple: "1 independent clause", compound: "2 independent clauses joined by a comma + FANBOYS, or by a semicolon", complex: "1 independent clause + 1 dependent clause (a part that starts with because, when, if, although…)", cc: "2 or more independent clauses + 1 or more dependent clauses", splice: "2 independent clauses joined with ONLY a comma (that's a mistake!)", fragment: "not a complete sentence: it's missing a subject, a predicate, or a complete thought" };
+const GL_TYPE_CARD = { simple: "Simple sentence", compound: "Compound sentence", complex: "Complex sentence", cc: "Compound-complex sentence", splice: "Comma splice (wrong!)", fragment: "Clauses: independent and dependent" };
+const GL_STRUCT_DEF = { desc: "describes a topic by listing its features, characteristics, or examples", seq: "tells events or steps in order", cmp: "shows how two or more things are alike and/or different", cause: "tells why something happened (cause) and what happened (effect)", prob: "tells about a problem and one or more ways to solve it" };
+const GL_STRUCT_Q = { desc: "What is being described, and what is it like?", seq: "Do these things have to happen in this order?", cmp: "How are these things alike or different?", cause: "What happened, and why did it happen?", prob: "What is the problem, and how can it be solved?" };
+const GL_FEAT_DEF = { "Title": "identifies the topic and tells what the text is about", "Subtitle": "gives more information about the topic, right under the title", "Title page": "a page at the beginning with the title and author (sometimes the illustrator and publisher)", "Table of contents": "at the beginning: lists the chapters or sections and their page numbers", "Heading": "the title at the top of a page or section; it tells that section's main idea", "Subheading": "a smaller heading that breaks a section up even more", "Index": "at the back: an alphabetical list of topics with the pages where you can find them", "Glossary": "at the back: definitions of key words in the text", "Photograph": "a picture taken with a camera", "Illustration": "a drawing", "Caption": "the words under or around a picture that explain it", "Close up": "part of an image zoomed in so you can look more closely", "Diagram": "a picture with labels that explains information or shows how something works", "Cross section": "a kind of diagram cut open to show what's inside", "Map": "shows where places or events are located", "Table": "organizes facts and numbers in rows and columns", "Graph / chart": "a visual (like bars or a pie) that organizes or compares data", "Timeline": "shows events in order over time", "Keywords (bold & italics)": "important words that stand out in bold or italics (most are defined in the glossary)", "Bullet points": "a list of important facts or ideas in short phrases", "Sidebar": "a box with extra fun facts or information", "Guide words": "the two words at the top of a dictionary or glossary page that show the first and last words on it", "Hyperlink": "words you can click to go to another webpage or document (often underlined and colored)", "Icons": "small pictures or symbols that stand for something" };
+const glKeyOf = (map, label) => Object.keys(map).find(k => map[k].toLowerCase() === String(label).toLowerCase());
+const glMark = (text, words, cls = "gl-hl") => { let out = esc(text); words.filter(Boolean).sort((a, b) => b.length - a.length).forEach(w => { out = out.replace(new RegExp(`(^|[^A-Za-z<])(${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/…/g, "[^.]*?")})(?![A-Za-z])`, "gi"), `$1<mark class="${cls}">$2</mark>`); }); return out; };
+const glLessonBtn = (unit, title) => { const i = (GL_LEARN[unit] || []).findIndex(c => c[1] === title); return i < 0 ? "" : `<button class="chip gl-lesson" data-lu="${unit}" data-lc="${i}">📖 Read the lesson: ${esc(title)}</button>`; };
+function glBestCard(unit, text) {   // the lesson card that best matches a question
+  const words = (text.toLowerCase().match(/[a-z]{4,}/g) || []);
+  let best = null, bs = 0;
+  (GL_LEARN[unit] || []).forEach(c => { const hay = (c[1] + " " + c[2] + " " + c[3]).toLowerCase(), sc = words.filter(w => hay.includes(w)).length + (text.toLowerCase().includes(c[1].toLowerCase()) ? 5 : 0); if (sc > bs) { bs = sc; best = c; } });
+  return best;
+}
+// 👀 Spot the difference between two answers (great for punctuation questions): words and marks that differ get highlighted
+function glDiffHtml(a, b) {
+  const tok = t => t.match(/[A-Za-z0-9'’]+|[^\sA-Za-z0-9]/g) || [], A = tok(a), B = tok(b);
+  if (A.length > 40 || B.length > 40) return "";
+  const n = A.length, m = B.length, L = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i].toLowerCase() === B[j].toLowerCase() ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const keepA = new Set(), keepB = new Set(); let i = 0, j = 0;
+  while (i < n && j < m) { if (A[i].toLowerCase() === B[j].toLowerCase()) { keepA.add(i++); keepB.add(j++); } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
+  const show = (T, keep, cls) => T.map((t, k) => (k && /^[A-Za-z0-9'’]/.test(t) ? " " : "") + (keep.has(k) ? esc(t) : `<mark class="${cls}">${t === "," ? "&nbsp;,&nbsp;" : t === ";" ? "&nbsp;;&nbsp;" : esc(t)}</mark>`)).join("");
+  if (keepA.size === n && keepB.size === m) return "";
+  return `<div class="gl-diff">👀 <b>Spot the difference:</b><p>Yours: ${show(A, keepA, "gl-dno")}</p><p>Right: ${show(B, keepB, "gl-dyes")}</p></div>`;
+}
+function glExplainWrong(q, picked) {
+  const P = esc(picked), A = esc(q.a), parts = [];
+  const pickPart = (html) => { if (picked != null) parts.push(`<p class="gl-ex-no">❌ <b>Why not “${P}”?</b> ${html}</p>`); };
+  const rightPart = (html) => parts.push(`<p class="gl-ex-yes">✅ <b>Why “${A}”?</b> ${html}</p>`);
+  const how = (steps) => parts.push(`<div class="gl-ex-how">🧠 <b>How to figure it out next time:</b><ol>${steps.map(s => `<li>${s}</li>`).join("")}</ol></div>`);
+  let lesson = "";
+  if (q.gen === "pos") {
+    const pk = glKeyOf(GL_POS, picked), ck = q.ptag;
+    parts.push(`<p class="gl-ex-sent">${glMark(q.sentence, [q.word])}</p>`);
+    if (pk) pickPart(`A${/^[aeiou]/.test(GL_POS[pk]) ? "n" : ""} ${GL_POS[pk]} ${GL_POS_DEF[pk][0]}. In this sentence, “${esc(q.word)}” doesn't do that job.`);
+    rightPart(`${q.why} (${cap1(GL_POS[ck])}s ${GL_POS_DEF[ck][0].replace(/^(names|takes|shows|describes|is)\b/, m => ({ names: "name", takes: "take", shows: "show", describes: "describe", is: "are" })[m])}.)`);
+    how([`Find “${esc(q.word)}” in the sentence and ask: what job is it doing <i>here</i>? (The same word can be a different part of speech in another sentence!)`, "Names something → noun. Replaces a noun → pronoun. Action or being → verb. Describes a noun → adjective. Tells how/when/where → adverb. Shows where/when compared to something → preposition. Connects → conjunction. Strong feeling → interjection.", `Trick for ${GL_POS[ck]}s: ${GL_POS_DEF[ck][1]}`]);
+    lesson = glLessonBtn("pos", cap1(GL_POS[ck]));
+  } else if (q.gen === "sent") {
+    const pk = glKeyOf(GL_TYPES, picked), ck = q.stype;
+    const subs = ["because", "although", "when", "if", "while", "until", "after", "before", "since", "as", "unless"], fan = ["and", "but", "or", "so", "yet", "nor", "for"];
+    const found = [...subs.filter(w => new RegExp(`\\b${w}\\b`, "i").test(q.sentence)).map(w => `“${w}” starts a dependent clause`), ...fan.filter(w => new RegExp(`,\\s*${w}\\b`, "i").test(q.sentence)).map(w => `“, ${w}” joins two independent clauses`), ...(q.sentence.includes(";") ? ["the semicolon (;) joins two independent clauses"] : []), ...(/\bhowever,|\btherefore,|\bno doubt,/i.test(q.sentence) ? ["“; however,” / “; therefore,” is a conjunctive adverb"] : [])];
+    parts.push(`<p class="gl-ex-sent">${glMark(q.sentence, [...subs, ...fan.map(w => w)].filter(w => new RegExp(`\\b${w}\\b`, "i").test(q.sentence)))}</p>`);
+    if (pk) pickPart(`${esc(GL_TYPES[pk])} means ${GL_TYPE_DEF[pk]}. This sentence doesn't fit that pattern.`);
+    rightPart(`${q.why} ${esc(GL_TYPES[ck])} = ${GL_TYPE_DEF[ck]}.`);
+    if (found.length) parts.push(`<p>🔎 <b>Clues in this sentence:</b> ${found.join("; ")}.</p>`);
+    how(["Find every subject + verb pair. Each one is a clause.", "Does a clause start with because, when, if, although, while or until? Then it's dependent (it can't stand alone). Otherwise it's independent.", "Count them: 1 independent = simple. 2 independent = compound. 1 independent + 1 dependent = complex. 2+ independent + 1+ dependent = compound-complex.", "Check the punctuation: two independent clauses with only a comma = comma splice. No complete thought = fragment."]);
+    lesson = glLessonBtn("sent", GL_TYPE_CARD[ck]);
+  } else if (q.gen === "signal") {
+    const pk = glKeyOf(GL_STRUCTS, picked), ck = q.skey;
+    if (pk) pickPart(`${esc(GL_STRUCTS[pk])} ${GL_STRUCT_DEF[pk]}. Its signal words are: ${GL_SIGNALS[pk].join(", ")}. “${esc(q.signal)}” isn't on that list.`);
+    rightPart(`“${esc(q.signal)}” is on the ${esc(GL_STRUCTS[ck])} list. ${esc(GL_STRUCTS[ck])} ${GL_STRUCT_DEF[ck]}. All its signal words: ${GL_SIGNALS[ck].join(", ")}.`);
+    how([`Ask the signal question: “${GL_STRUCT_Q[ck]}”`, "Think about what the word does: puts things in order (sequence), compares (compare & contrast), tells why (cause & effect), describes (description), or solves (problem & solution)."]);
+    lesson = glLessonBtn("struct", GL_LEARN.struct[Object.keys(GL_STRUCTS).indexOf(ck)][1]);
+  } else if (q.gen === "passage") {
+    const pk = glKeyOf(GL_STRUCTS, picked), ck = q.skey, inText = k => GL_SIGNALS[k].filter(x => new RegExp(`\\b${x.replace(/…/g, "[^.]*?")}\\b`, "i").test(q.text));
+    parts.push(`<p class="gl-ex-sent">${glMark(q.text, inText(ck))}</p>`);
+    if (pk) { const theirs = inText(pk); pickPart(`If it were ${esc(GL_STRUCTS[pk])}, you'd see clues like: ${GL_SIGNALS[pk].slice(0, 6).join(", ")}. ${theirs.length ? `There is “${theirs.join("”, “")}”, but the main idea of the passage is different.` : "None of those are in this passage."}`); }
+    rightPart(`The highlighted words are ${esc(GL_STRUCTS[ck])} signal words: ${inText(ck).map(x => `“${x}”`).join(", ") || "(look at what the whole passage does)"}. ${esc(GL_STRUCTS[ck])} ${GL_STRUCT_DEF[ck]}.`);
+    how(["Read the passage and hunt for signal words (they're like clues).", `Then ask the signal questions. For this one: “${GL_STRUCT_Q[ck]}”`, "Describing → description. Steps in order → sequence. Alike/different → compare & contrast. Why it happened → cause & effect. A problem + fixes → problem & solution."]);
+    lesson = glLessonBtn("struct", GL_LEARN.struct[Object.keys(GL_STRUCTS).indexOf(ck)][1]);
+  } else if (q.gen === "feat") {
+    if (GL_FEAT_DEF[picked]) pickPart(`<b>${P}</b> = ${GL_FEAT_DEF[picked]}. That's not what this is describing.`);
+    rightPart(`${q.why} <b>${A}</b> = ${GL_FEAT_DEF[q.a] || ""}.`);
+    how(["Ask yourself: what do I need, or what am I looking at?", "Need a definition → glossary. A topic's page → index. The chapters → table of contents. A real picture → photograph. A drawing → illustration. Words under a picture → caption. Labels showing how it works → diagram. Cut open → cross section. Rows and columns → table. Comparing data → graph/chart. Events in order → timeline. Where places are → map."]);
+    const card = GL_LEARN.feat.find(c => c[2].includes(q.a.split(" ")[0])); lesson = card ? glLessonBtn("feat", card[1]) : "";
+  } else {
+    // a written question: explain the words in the answers, and point to the best lesson card
+    const defOf = label => { const p = glKeyOf(Object.fromEntries(Object.entries(GL_POS).map(([k, v]) => [k, cap1(v)])), label.replace(/ \(.*/, "")); if (p) return `${cap1(GL_POS[p])}: ${GL_POS_DEF[p][0]}.`; const t = glKeyOf(GL_TYPES, label); if (t) return `${GL_TYPES[t]}: ${GL_TYPE_DEF[t]}.`; const s = glKeyOf(GL_STRUCTS, label); if (s) return `${GL_STRUCTS[s]}: ${GL_STRUCT_DEF[s]}.`; return GL_FEAT_DEF[label] ? `${label}: ${GL_FEAT_DEF[label]}.` : ""; };
+    const dp = picked == null ? "" : defOf(String(picked)), da = defOf(String(q.a));
+    const diff = picked != null && /\s/.test(picked) && /\s/.test(q.a) ? glDiffHtml(String(picked), String(q.a)) : "";
+    pickPart(dp ? esc(dp) + " That doesn't answer this question." : diff ? "Look closely: your answer and the right one are almost the same, but something important is different. Spot the difference below!" : `Read the question again carefully: “${q.prompt}” Your answer doesn't fit what it's asking.`);
+    if (diff) parts.push(diff);
+    rightPart(`${q.why}${da ? " " + esc(da) : ""}`);
+    const card = glBestCard(q.unit, (q.rawQ || "") + " " + q.a);
+    if (card) { parts.push(`<div class="gl-ex-how">🧠 <b>Remember (${esc(card[1])}):</b><p>${esc(card[2]).replace(/\n/g, "<br>")}</p></div>`); lesson = glLessonBtn(q.unit, card[1]); }
+  }
+  return `<div class="gl-explain"><h4>🔍 Let's figure it out together</h4>${parts.join("")}${lesson ? `<div class="row">${lesson}</div>` : ""}</div>`;
+}
+// 📖 "Read the lesson" buttons open that lesson card and highlight it
+document.addEventListener("click", e => {
+  const b = e.target.closest?.(".gl-lesson"); if (!b) return;
+  const u = b.dataset.lu, i = +b.dataset.lc;
+  startGrammarLab(u, "learn");
+  const card = document.querySelectorAll(".gl-learn")[i];
+  if (card) { card.classList.add("gl-flash"); card.scrollIntoView({ behavior: "smooth", block: "start" }); }
+});
 function glMakeQuestion(unit) {
   const u = unit === "mix" ? rPick(Object.keys(GL_UNITS)) : unit, roll = Math.random();
   const mc = (tag, prompt, a, w, why) => ({ kind: "mc", tag, prompt: esc(prompt), a, w, why: esc(why) });
   if (u === "pos" && roll < .55) {   // a word in a real sentence
     const toks = glParse(rPick(GL_TAGGED)), pick = rPick(toks.filter(x => GL_POS[x.t])), ans = GL_POS[pick.t];
-    return mc("8 Parts of Speech", `In “${glSentText(toks)}”, what part of speech is “${pick.w}”?`, cap1(ans), shuffle(Object.values(GL_POS).filter(x => x !== ans)).slice(0, 3).map(cap1), glWhy(pick, toks));
+    return Object.assign(mc("8 Parts of Speech", `In “${glSentText(toks)}”, what part of speech is “${pick.w}”?`, cap1(ans), shuffle(Object.values(GL_POS).filter(x => x !== ans)).slice(0, 3).map(cap1), glWhy(pick, toks)), { gen: "pos", unit: "pos", word: pick.w, ptag: pick.t, sentence: glSentText(toks) });
   }
   if (u === "sent" && roll < .5) {
     const [s, t, why] = rPick(GL_SORT);
-    return mc("Sentences", `What kind of sentence is this? “${s}”`, GL_TYPES[t], shuffle(Object.keys(GL_TYPES).filter(k => k !== t)).slice(0, 3).map(k => GL_TYPES[k]), why);
+    return Object.assign(mc("Sentences", `What kind of sentence is this? “${s}”`, GL_TYPES[t], shuffle(Object.keys(GL_TYPES).filter(k => k !== t)).slice(0, 3).map(k => GL_TYPES[k]), why), { gen: "sent", unit: "sent", sentence: s, stype: t });
   }
   if (u === "struct" && roll < .55) {
-    if (Math.random() < .5) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return mc("Text Structures", `Which text structure uses the signal word${w.includes(" ") ? "s" : ""} “${w}”?`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `“${w}” is a signal word for ${GL_STRUCTS[k]}. Its signal words are: ${GL_SIGNALS[k].join(", ")}.`); }
-    const [k, text] = rPick(GL_PASSAGES); return mc("Text Structures", `Which text structure is this? “${text}”`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `Look for the signal words. ${GL_STRUCTS[k]} uses words like: ${GL_SIGNALS[k].join(", ")}.`);
+    if (Math.random() < .5) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return Object.assign(mc("Text Structures", `Which text structure uses the signal word${w.includes(" ") ? "s" : ""} “${w}”?`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `“${w}” is a signal word for ${GL_STRUCTS[k]}. Its signal words are: ${GL_SIGNALS[k].join(", ")}.`), { gen: "signal", unit: "struct", signal: w, skey: k }); }
+    const [k, text] = rPick(GL_PASSAGES); return Object.assign(mc("Text Structures", `Which text structure is this? “${text}”`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `Look for the signal words. ${GL_STRUCTS[k]} uses words like: ${GL_SIGNALS[k].join(", ")}.`), { gen: "passage", unit: "struct", text, skey: k });
   }
   if (u === "feat" && roll < .6) {
-    const [s, a, why] = rPick(GL_LOOK); return mc("Tricky Text Features", `${s} Which text feature is it?`, a, glFeatWrong(a, s, 3), why);
+    const [s, a, why] = rPick(GL_LOOK); return Object.assign(mc("Tricky Text Features", `${s} Which text feature is it?`, a, glFeatWrong(a, s, 3), why), { gen: "feat", unit: "feat", scenario: s });
   }
-  const [, q, a, w, why] = rPick(GL_BANK.filter(x => x[0] === u)); return mc(GL_UNITS[u].name, q, a, w, why);
+  const [, q, a, w, why] = rPick(GL_BANK.filter(x => x[0] === u)); return Object.assign(mc(GL_UNITS[u].name, q, a, w, why), { gen: "bank", unit: u, rawQ: q });
 }
 const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
 function glWhy(pick, toks) {
@@ -10774,7 +10879,7 @@ function glQuiz(unit, box, st) {
     glCount(ok);
     if (ok) { st.right++; st.streak++; st.best = Math.max(st.best, st.streak); sfx.right(); } else { st.streak = 0; st.missed.push(q); sfx.wrong(); }
     tiles.forEach(x => { x.disabled = true; x.classList.add(x.dataset.v === q.a ? "right" : x === t ? "wrong" : "dim"); });
-    document.getElementById("gl-fb").innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? rPick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>${ok ? "" : `<p>The answer is <b>${esc(q.a)}</b>.</p>`}<p>${q.why}</p></div><div class="row" style="margin-top:12px"><button class="btn go" id="gl-next">Next question</button></div>`;
+    document.getElementById("gl-fb").innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? rPick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>${ok ? `<p>${q.why}</p>` : `<p>The answer is <b>${esc(q.a)}</b>.</p>`}</div>${ok ? "" : glExplainWrong(q, t.dataset.v)}<div class="row" style="margin-top:12px"><button class="btn go" id="gl-next">Next question</button></div>`;
     const nx = document.getElementById("gl-next"); nx.focus(); nx.addEventListener("click", () => glQuiz(unit, box, st));
     keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); nx.click(); } };
   }));
@@ -10825,7 +10930,7 @@ function glSpeed(topic) {
         st.missed.push(q); tick(); st.paused = true; sfx.wrong();
         document.getElementById("gl-sq").classList.add("bad");
         const pz = document.getElementById("gl-pz"); if (pz) pz.textContent = "⏸ paused";
-        document.getElementById("gl-review").innerHTML = `<div class="gl-wrongbox" role="alert"><div class="gl-x">❌ WRONG</div><p>You picked: <s>${esc(b.dataset.o)}</s></p><p>✅ The right answer is: <b>${esc(q.a)}</b></p><p class="gl-why">💡 ${q.why}</p><p class="soft">⏸️ The clock is stopped. Take your time to read this!</p><button class="btn go" id="gl-snext">Got it! Keep going ➜</button></div>`;
+        document.getElementById("gl-review").innerHTML = `<div class="gl-wrongbox" role="alert"><div class="gl-x">❌ WRONG</div><p>You picked: <s>${esc(b.dataset.o)}</s></p><p>✅ The right answer is: <b>${esc(q.a)}</b></p>${glExplainWrong(q, b.dataset.o)}<p class="soft">⏸️ The clock is stopped. Take your time to read this!</p><button class="btn go" id="gl-snext">Got it! Keep going ➜</button></div>`;
         const go = () => { if (!st.paused) return; st.paused = false; end = Date.now() + left; next(); };
         document.getElementById("gl-snext").addEventListener("click", go);
         document.getElementById("gl-snext").focus({ preventScroll: true });
@@ -10867,7 +10972,7 @@ function glCompact(topic) {
         if (ok) right++;
         card.classList.add(ok ? "ok" : "bad");
         card.querySelectorAll(".gl-cop").forEach(x => { x.disabled = true; if (x.dataset.o === q.a) x.classList.add("right"); else if (x.dataset.o === picked[i]) x.classList.add("wrong"); });
-        if (!ok) { const w = card.querySelector(".gl-cwhy"); w.hidden = false; w.innerHTML = `${picked[i] === null ? "Not answered. " : ""}✅ ${esc(q.a)}. ${q.why}`; }
+        if (!ok) { const w = card.querySelector(".gl-cwhy"); w.hidden = false; w.innerHTML = `${picked[i] === null ? "Not answered. " : ""}✅ ${esc(q.a)}. ${q.why}<details class="gl-more"><summary>🔍 Explain more</summary>${glExplainWrong(q, picked[i])}</details>`; }
       });
       const pct = Math.round(right / qs.length * 100);
       right === qs.length ? sfx.buy() : sfx.right();
@@ -10888,12 +10993,20 @@ function glResults(unit, box, st) {
   document.getElementById("gl-again").addEventListener("click", () => glQuiz(unit, box, { done: 0, right: 0, streak: 0, best: 0, missed: [] }));
   document.getElementById("gl-learn")?.addEventListener("click", () => startGrammarLab(unit, "learn"));
 }
+function glExplainHunt(x, want, toks) {   // you tapped the wrong word in Word Hunt
+  const sent = glSentText(toks), wanted = toks.filter(y => y.t === want).map(y => y.w), an = k => /^[aeiou]/.test(GL_POS[k]) ? "an" : "a";
+  return `<div class="gl-explain"><h4>🔍 Let's figure it out together</h4><p class="gl-ex-sent">${glMark(sent, wanted)}</p>
+    <p class="gl-ex-no">❌ <b>You tapped “${esc(x.w)}”.</b> ${x.t === "art" ? "That's an article (a, an, the)." : `It's ${an(x.t)} ${GL_POS[x.t]}: ${an(x.t) === "an" ? "an" : "a"} ${GL_POS[x.t]} ${GL_POS_DEF[x.t][0]}. ${glWhy(x, toks)}`}</p>
+    <p class="gl-ex-yes">✅ <b>You were looking for ${GL_POS[want]}s.</b> ${cap1(an(want))} ${GL_POS[want]} ${GL_POS_DEF[want][0]}. In this sentence: ${wanted.map(w => `“${esc(w)}”`).join(", ")} (highlighted).</p>
+    <div class="gl-ex-how">🧠 <b>Trick for ${GL_POS[want]}s:</b> ${GL_POS_DEF[want][1]}</div>
+    <div class="row">${glLessonBtn("pos", cap1(GL_POS[want]))}</div></div>`;
+}
 function glGame(unit, box) {
   const bestKey = "gl_best_" + unit, best = () => store.get(bestKey, 0);
   let score = 0, lives = 3;
   const hud = () => `<div class="topline"><span>⭐ Score: <b>${score}</b> · ${"❤️".repeat(lives)}${"🤍".repeat(3 - lives)}</span><span>Best: ${best()}</span></div>`;
   const over = () => { if (score > best()) store.set(bestKey, score); box.innerHTML = `<div class="sl-card" style="text-align:center"><h3>${score > 0 && score >= best() ? "🏆 New best score!" : "Game over!"}</h3><div class="big money">${score}</div><button class="btn go" id="gl-replay">Play again</button></div>`; document.getElementById("gl-replay").addEventListener("click", () => glGame(unit, box)); score >= best() && score ? sfx.buy() : 0; };
-  const after = (ok, why, next) => { if (ok) { score++; sfx.right(); } else { lives--; sfx.wrong(); } const fb = box.querySelector(".gl-fb"); fb.innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? "✅ Yes!" : "❌ Not quite."}</strong><p>${why}</p></div><button class="btn go" id="gl-gnext">${lives ? "Next ➜" : "See my score"}</button>`; document.getElementById("gl-gnext").addEventListener("click", () => lives ? next() : over()); };
+  const after = (ok, why, next) => { if (ok) { score++; sfx.right(); } else { lives--; sfx.wrong(); } const fb = box.querySelector(".gl-fb"); fb.innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? "✅ Yes!" : "❌ Not quite."}</strong>${/^<div/.test(why) ? "" : `<p>${why}</p>`}</div>${/^<div/.test(why) ? why : ""}<button class="btn go" id="gl-gnext">${lives ? "Next ➜" : "See my score"}</button>`; document.getElementById("gl-gnext").addEventListener("click", () => lives ? next() : over()); };
   if (unit === "pos") {   // 🔍 Word Hunt: tap every word of one part of speech
     const round = () => {
       const toks = glParse(rPick(GL_TAGGED)), tags = [...new Set(toks.map(x => x.t).filter(t => GL_POS[t]))], want = rPick(tags), need = toks.filter(x => x.t === want).length;
@@ -10903,22 +11016,22 @@ function glGame(unit, box) {
         if (done || b.disabled) return; const x = toks[+b.dataset.i];
         if (x.t === want) { b.classList.add("hit"); b.disabled = true; found++; naNote(700 + found * 80, .08, "triangle", .08); if (found === need) { done = true; after(true, `You found ${need === 1 ? "it" : `all ${need}`}! ${toks.filter(y => y.t === want).map(y => `“${y.w}”`).join(", ")}: ${GL_POS[want]}${need > 1 ? "s" : ""}.`, round); } }
         else if (x.t === "art") { b.classList.add("gl-art"); b.title = "article"; toast(`“${x.w}” is an article (a, an, the). Keep looking!`); }
-        else { done = true; b.classList.add("gl-bad"); box.querySelectorAll(".gl-word").forEach(y => { if (toks[+y.dataset.i].t === want) y.classList.add("hit"); y.disabled = true; }); after(false, `“${x.w}” is a${/^[aeiou]/.test(GL_POS[x.t]) ? "n" : ""} ${GL_POS[x.t]}. ${glWhy(x, toks)} The ${GL_POS[want]}${need > 1 ? "s are" : " is"} highlighted.`, round); }
+        else { done = true; b.classList.add("gl-bad"); box.querySelectorAll(".gl-word").forEach(y => { if (toks[+y.dataset.i].t === want) y.classList.add("hit"); y.disabled = true; }); after(false, glExplainHunt(x, want, toks), round); }
       }));
     };
     return round();
   }
   // the other games: pick the right button
-  const items = unit === "sent" ? () => { const [s, t, why] = rPick(GL_SORT); return { prompt: `What kind of sentence is this?<br><span class="gl-big">“${esc(s)}”</span>`, a: GL_TYPES[t], opts: Object.values(GL_TYPES), why: esc(why) }; }
-    : unit === "struct" ? () => { if (Math.random() < .6) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return { prompt: `🕵️ Signal word:<br><span class="gl-big">“${esc(w)}”</span><br>Which text structure is it a clue for?`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`“${w}” signals ${GL_STRUCTS[k]}. Other clues: ${GL_SIGNALS[k].filter(x => x !== w).join(", ")}.`) }; } const [k, text] = rPick(GL_PASSAGES); return { prompt: `🕵️ Read the clues:<br><span class="gl-big">“${esc(text)}”</span>`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`The signal words give it away: ${GL_SIGNALS[k].filter(x => new RegExp(`\\b${x}\\b`, "i").test(text)).join(", ")}.`) }; }
-    : () => { const [s, a, why] = rPick(GL_LOOK); return { prompt: `🧭 ${esc(s)}<br>Which text feature is it?`, a, opts: shuffle([a, ...glFeatWrong(a, s, 5)]), why: esc(why) }; };
+  const items = unit === "sent" ? () => { const [s, t, why] = rPick(GL_SORT); return { prompt: `What kind of sentence is this?<br><span class="gl-big">“${esc(s)}”</span>`, a: GL_TYPES[t], opts: Object.values(GL_TYPES), why: esc(why), meta: { gen: "sent", sentence: s, stype: t } }; }
+    : unit === "struct" ? () => { if (Math.random() < .6) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return { prompt: `🕵️ Signal word:<br><span class="gl-big">“${esc(w)}”</span><br>Which text structure is it a clue for?`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`“${w}” signals ${GL_STRUCTS[k]}. Other clues: ${GL_SIGNALS[k].filter(x => x !== w).join(", ")}.`), meta: { gen: "signal", signal: w, skey: k } }; } const [k, text] = rPick(GL_PASSAGES); return { prompt: `🕵️ Read the clues:<br><span class="gl-big">“${esc(text)}”</span>`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`The signal words give it away: ${GL_SIGNALS[k].filter(x => new RegExp(`\\b${x}\\b`, "i").test(text)).join(", ")}.`), meta: { gen: "passage", text, skey: k } }; }
+    : () => { const [s, a, why] = rPick(GL_LOOK); return { prompt: `🧭 ${esc(s)}<br>Which text feature is it?`, a, opts: shuffle([a, ...glFeatWrong(a, s, 5)]), why: esc(why), meta: { gen: "feat", scenario: s } }; };
   const round = () => {
     const it = items();
     box.innerHTML = `${hud()}<div class="sl-card"><p>${it.prompt}</p><div class="gl-opts">${it.opts.map(o => `<button class="btn gl-opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div><div class="gl-fb"></div></div>`;
     box.querySelectorAll(".gl-opt").forEach(b => b.addEventListener("click", () => {
       const ok = b.dataset.o === it.a;
       box.querySelectorAll(".gl-opt").forEach(x => { x.disabled = true; if (x.dataset.o === it.a) x.classList.add("go"); else if (x === b) x.classList.add("bad"); });
-      after(ok, it.why, round);
+      after(ok, ok ? it.why : glExplainWrong({ ...it.meta, a: it.a, why: it.why }, b.dataset.o), round);
     }));
   };
   round();
