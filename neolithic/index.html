@@ -332,6 +332,18 @@
   .gl-word.hit { background: #3bb273; border-color: #3bb273; color: #fff; } .gl-word.gl-bad { background: #e63946; border-color: #e63946; color: #fff; } .gl-word.gl-art { background: #eee; color: #777; } .gl-word:disabled { cursor: default; opacity: 1; }
   .gl-want { color: #ffe066; } .gl-big { display: inline-block; margin: 6px 0; font-size: 1.15rem; font-weight: 700; color: #ffe9a8; line-height: 1.5; }
   .gl-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; margin: 8px 0; } .gl-opt { white-space: normal; min-width: 0; }
+  .gl-topics { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; } .gl-topics .chip.on { background: #ffe066; color: #222; }
+  .gl-big-go { font-size: 1.4rem; padding: 14px 40px; }
+  .gl-speedhud { display: flex; justify-content: space-between; font-size: 1.15rem; margin-bottom: 6px; } .gl-timebar { height: 10px; border-radius: 99px; background: rgba(255,255,255,.12); overflow: hidden; margin-bottom: 10px; } .gl-timebar div { height: 100%; width: 100%; background: linear-gradient(90deg, #3bb273, #ffe066); transition: width .2s linear; } .gl-timebar div.low { background: #e63946; }
+  .gl-sq p { font-size: 1.1rem; line-height: 1.45; margin-top: 0; } .gl-sopts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gl-sopt { display: flex; align-items: center; gap: 8px; text-align: left; min-height: 56px; padding: 8px 10px; border: 0; border-radius: 14px; color: #fff; font: inherit; font-weight: 700; cursor: pointer; min-width: 0; overflow-wrap: anywhere; } .gl-sopt .k { flex: none; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: rgba(255,255,255,.25); font-size: .85rem; }
+  .gl-sopt.c1 { background: #d62839; } .gl-sopt.c2 { background: #1e6fd8; } .gl-sopt.c3 { background: #12814a; } .gl-sopt.c4 { background: #d97400; } .gl-sopt.right { outline: 4px solid #7dffb2; } .gl-sopt.wrong { opacity: .45; } .gl-sopt:disabled { cursor: default; }
+  .gl-mini summary { cursor: pointer; } .gl-mini { font-size: .9rem; }
+  .gl-sheet { display: grid; gap: 8px; } @media (min-width: 700px) { .gl-sheet { grid-template-columns: 1fr 1fr; } }
+  .gl-cq { background: rgba(255,255,255,.06); border: 2px solid var(--line); border-radius: 12px; padding: 8px 10px; } .gl-cq p { margin: 0 0 6px; font-size: .92rem; line-height: 1.4; } .gl-cq.ok { border-color: #3bb273; } .gl-cq.bad { border-color: #e63946; }
+  .gl-cops { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; } .gl-cop { font: inherit; font-size: .82rem; padding: 6px 8px; border-radius: 8px; border: 2px solid #c9bfff; background: #fffdf5; color: #222; cursor: pointer; text-align: left; min-width: 0; overflow-wrap: anywhere; }
+  .gl-cop.sel { background: #7b61ff; border-color: #7b61ff; color: #fff; } .gl-cop.right { background: #3bb273; border-color: #3bb273; color: #fff; } .gl-cop.wrong { background: #e63946; border-color: #e63946; color: #fff; } .gl-cop:disabled { cursor: default; }
+  .gl-cwhy { margin-top: 6px; font-size: .82rem; background: rgba(255,224,102,.12); border-radius: 8px; padding: 6px 8px; }
   .hp-levels { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; } .hp-lv { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 10px; border-radius: 14px; border: 2px solid var(--line); background: rgba(255,255,255,.06); color: inherit; font: inherit; cursor: pointer; } .hp-lv span { font-size: .8rem; opacity: .8; } .hp-lv.locked { opacity: .45; cursor: not-allowed; }
   .hp-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .95rem; margin-bottom: 8px; }
   .hp-board { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, minmax(54px, auto)); gap: 3px; background: #0f5a3a; padding: 4px; border-radius: 12px; }
@@ -10518,7 +10530,7 @@ function glMakeQuestion(unit) {
     return mc("Sentences", `What kind of sentence is this? “${s}”`, GL_TYPES[t], shuffle(Object.keys(GL_TYPES).filter(k => k !== t)).slice(0, 3).map(k => GL_TYPES[k]), why);
   }
   if (u === "struct" && roll < .55) {
-    if (Math.random() < .5) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return mc("Text Structures", `Which text structure uses the signal words “${w}”?`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `“${w}” is a signal word for ${GL_STRUCTS[k]}. Its signal words are: ${GL_SIGNALS[k].join(", ")}.`); }
+    if (Math.random() < .5) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return mc("Text Structures", `Which text structure uses the signal word${w.includes(" ") ? "s" : ""} “${w}”?`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `“${w}” is a signal word for ${GL_STRUCTS[k]}. Its signal words are: ${GL_SIGNALS[k].join(", ")}.`); }
     const [k, text] = rPick(GL_PASSAGES); return mc("Text Structures", `Which text structure is this? “${text}”`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `Look for the signal words. ${GL_STRUCTS[k]} uses words like: ${GL_SIGNALS[k].join(", ")}.`);
   }
   if (u === "feat" && roll < .6) {
@@ -10546,11 +10558,15 @@ function startGrammarLab(unit, tab = "learn") {
     appScreen("📝 Grammar & Reading Lab", `<h2>📝 Grammar &amp; Reading Lab</h2><p class="soft">Learn the 8 parts of speech, sentence types, text structures and text features. Then practice and play!</p>
       <div class="aa-grid">${Object.entries(GL_UNITS).map(([k, u]) => `<button class="aa-card" data-u="${k}"><i>${u.e}</i><b>${u.name}</b><span>📖 Learn · 🎯 Quiz · ${u.game}</span></button>`).join("")}
       <button class="aa-card" data-u="mix"><i>🔀</i><b>Mix it all up</b><span>Endless quiz with questions from every topic</span></button>
+      <button class="aa-card" data-u="speed"><i>⚡</i><b>Speed Round</b><span>Go fast! As many as you can in 90 seconds</span></button>
+      <button class="aa-card" data-u="compact"><i>🧾</i><b>Compact</b><span>Everything at once: the notes plus a worksheet from every topic</span></button>
       <button class="aa-card" data-u="cheat"><i>📋</i><b>Cheat sheet</b><span>All the notes on one page</span></button></div>`);
     $app.querySelectorAll("[data-u]").forEach(b => b.addEventListener("click", () => startGrammarLab(b.dataset.u, b.dataset.u === "mix" ? "quiz" : "learn")));
     return;
   }
   const head = `<div class="row"><button class="chip" id="gl-back">⬅ All topics</button></div>`;
+  if (unit === "speed") return glSpeed();
+  if (unit === "compact") return glCompact();
   if (unit === "cheat") {
     appScreen("📝 Grammar & Reading Lab", `${head}<h2>📋 Cheat sheet</h2><div class="sl-card gl-cheat">${GL_CHEAT}</div><div class="row"><button class="btn" id="gl-say">🔊 Read it to me</button></div>`);
     document.getElementById("gl-say").addEventListener("click", () => { const t = document.createElement("div"); t.innerHTML = GL_CHEAT; hippoSay(t.innerText.replace(/–/g, ", ").replace(/→/g, " then ").replace(/;/g, ",")); });
@@ -10580,8 +10596,7 @@ function glQuiz(unit, box, st) {
   const tiles = [...box.querySelectorAll(".tile")];
   tiles.forEach(t => t.addEventListener("click", () => {
     const ok = t.dataset.v === q.a; st.done++;
-    const tot = store.get("gl_total", { done: 0, right: 0 }); tot.done++; if (ok) tot.right++; store.set("gl_total", tot);
-    const day = glToday(); day.done++; if (ok) day.right++; store.set("gl_day", day);
+    glCount(ok);
     if (ok) { st.right++; st.streak++; st.best = Math.max(st.best, st.streak); sfx.right(); } else { st.streak = 0; st.missed.push(q); sfx.wrong(); }
     tiles.forEach(x => { x.disabled = true; x.classList.add(x.dataset.v === q.a ? "right" : x === t ? "wrong" : "dim"); });
     document.getElementById("gl-fb").innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? rPick(["Correct!", "Nice work!", "You got it!", "Exactly right!"]) : "Not quite."}</strong>${ok ? "" : `<p>The answer is <b>${esc(q.a)}</b>.</p>`}<p>${q.why}</p></div><div class="row" style="margin-top:12px"><button class="btn go" id="gl-next">Next question</button></div>`;
@@ -10589,6 +10604,95 @@ function glQuiz(unit, box, st) {
     keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); nx.click(); } };
   }));
   keyHandler = e => { if (/^[1-4]$/.test(e.key) && tiles[+e.key - 1] && !tiles[0].disabled) tiles[+e.key - 1].click(); };
+}
+// ⚡ Speed Round (90 seconds) and 🧾 Compact sheet (everything on one page)
+function glCount(ok) {   // real practice counts (all-time and today)
+  const tot = store.get("gl_total", { done: 0, right: 0 }); tot.done++; if (ok) tot.right++; store.set("gl_total", tot);
+  const day = glToday(); day.done++; if (ok) day.right++; store.set("gl_day", day);
+}
+const GL_TOPIC_CHIPS = [["mix", "🔀 Everything"], ...Object.entries(GL_UNITS).map(([k, u]) => [k, `${u.e} ${u.name}`])];
+const glTopicRow = (key, cur) => `<div class="gl-topics">${GL_TOPIC_CHIPS.map(([k, l]) => `<button class="chip${k === cur ? " on" : ""}" data-topic="${k}">${l}</button>`).join("")}</div>`;
+function glSpeed(topic) {
+  topic ||= store.get("gl_speed_topic", "mix");
+  const bestKey = "gl_speed_best_" + topic, best = store.get(bestKey, 0);
+  appScreen("📝 Grammar & Reading Lab", `<div class="row"><button class="chip" id="gl-back">⬅ All topics</button></div><h2>⚡ Speed Round</h2><p class="soft">Answer as many questions as you can in <b>90 seconds</b>! Right answers zoom to the next question. Use the 1-4 keys to go even faster.</p>${glTopicRow("speed", topic)}<div id="gl"><div class="sl-card" style="text-align:center"><p>🏆 Best score${topic === "mix" ? "" : " for this topic"}: <b>${best}</b></p><button class="btn go gl-big-go" id="gl-go">⚡ Go!</button></div></div>`);
+  document.getElementById("gl-back").addEventListener("click", () => startGrammarLab());
+  $app.querySelectorAll("[data-topic]").forEach(b => b.addEventListener("click", () => { store.set("gl_speed_topic", b.dataset.topic); glSpeed(b.dataset.topic); }));
+  document.getElementById("gl-go").addEventListener("click", () => {
+    const box = document.getElementById("gl"), end = Date.now() + 90000, st = { right: 0, done: 0, missed: [], over: false };
+    $app.querySelector(".gl-topics").hidden = true;
+    let q, locked = false;
+    const finish = () => {
+      if (st.over) return; st.over = true; naCleanup(); keyHandler = null;
+      const newBest = st.right > best; if (newBest) store.set(bestKey, st.right);
+      newBest ? sfx.buy() : naNote(440, .3, "triangle", .1);
+      box.innerHTML = `<div class="sl-card" style="text-align:center"><h3>⏰ Time's up!</h3><div class="big money">${st.right}</div><p>right in 90 seconds (${st.done} answered${st.done ? `, ${Math.round(st.right / st.done * 100)}% right` : ""})</p><p>${newBest ? "🏆 <b>New best score!</b>" : `Best: ${best}`}</p><button class="btn go" id="gl-again">⚡ Play again</button></div>
+        ${st.missed.length ? `<div class="sl-card"><h3>Study these again</h3><div class="missed">${st.missed.slice(0, 12).map(m => `<div class="miss"><b>${m.prompt}</b>Answer: ${esc(m.a)}</div>`).join("")}</div></div>` : ""}`;
+      document.getElementById("gl-again").addEventListener("click", () => glSpeed(topic));
+      $app.querySelector(".gl-topics").hidden = false;
+    };
+    const tick = () => { const left = Math.max(0, end - Date.now()), el = document.getElementById("gl-time"), bar = document.getElementById("gl-bar"); if (el) el.textContent = Math.ceil(left / 1000); if (bar) { bar.style.width = (left / 900) + "%"; bar.classList.toggle("low", left < 10000); } if (!left) finish(); };
+    const next = () => {
+      if (st.over) return;
+      q = glMakeQuestion(topic); locked = false;
+      const opts = shuffle([q.a, ...q.w]);
+      box.innerHTML = `<div class="gl-speedhud"><span>⏱️ <b id="gl-time">90</b>s</span><span>✅ <b>${st.right}</b> right</span></div><div class="gl-timebar"><div id="gl-bar"></div></div>
+        <div class="sl-card gl-sq"><p>${q.prompt}</p><div class="gl-sopts">${opts.map((o, i) => `<button class="gl-sopt c${i + 1}" data-o="${esc(o)}"><span class="k">${i + 1}</span>${esc(o)}</button>`).join("")}</div></div>`;
+      tick();
+      const btns = [...box.querySelectorAll(".gl-sopt")];
+      const pick = b => {
+        if (locked || st.over) return; locked = true;
+        const ok = b.dataset.o === q.a; st.done++; glCount(ok);
+        btns.forEach(x => { x.disabled = true; if (x.dataset.o === q.a) x.classList.add("right"); else if (x === b) x.classList.add("wrong"); });
+        if (ok) { st.right++; naNote(660 + Math.min(st.right, 20) * 20, .07, "triangle", .08); } else { st.missed.push(q); naNote(200, .15, "sawtooth", .05); }
+        naTimer(setTimeout(next, ok ? 250 : 900));
+      };
+      btns.forEach(b => b.addEventListener("click", () => pick(b)));
+      keyHandler = e => { if (/^[1-4]$/.test(e.key) && btns[+e.key - 1]) pick(btns[+e.key - 1]); };
+    };
+    naTimer(setInterval(tick, 200));
+    next();
+  });
+}
+function glCompact(topic) {
+  topic ||= store.get("gl_compact_topic", "mix");
+  appScreen("📝 Grammar & Reading Lab", `<div class="row"><button class="chip" id="gl-back">⬅ All topics</button></div><h2>🧾 Compact</h2><p class="soft">Everything at once: the notes and a worksheet with questions from every topic, all on one page. Answer them all, then check!</p>${glTopicRow("compact", topic)}
+    <details class="sl-card gl-cheat gl-mini"><summary><b>📋 Notes (tap to open)</b></summary>${GL_CHEAT}</details><div id="gl"></div>`);
+  document.getElementById("gl-back").addEventListener("click", () => startGrammarLab());
+  $app.querySelectorAll("[data-topic]").forEach(b => b.addEventListener("click", () => { store.set("gl_compact_topic", b.dataset.topic); glCompact(b.dataset.topic); }));
+  const box = document.getElementById("gl");
+  const sheet = () => {
+    const units = topic === "mix" ? Object.keys(GL_UNITS).flatMap(u => [u, u, u]) : Array(12).fill(topic), qs = [], seen = new Set();
+    for (const u of units) { let q, tries = 0; do { q = glMakeQuestion(u); } while (seen.has(q.prompt) && ++tries < 30); seen.add(q.prompt); q.opts = shuffle([q.a, ...q.w]); qs.push(q); }
+    box.innerHTML = `<div class="gl-sheet">${qs.map((q, i) => `<div class="gl-cq" data-q="${i}"><p><b>${i + 1}.</b> ${q.prompt}</p><div class="gl-cops">${q.opts.map(o => `<button class="gl-cop" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div><div class="gl-cwhy" hidden></div></div>`).join("")}</div>
+      <p class="soft" id="gl-left">Answered 0 of ${qs.length}</p><div class="row"><button class="btn go" id="gl-check">✅ Check all</button><button class="btn" id="gl-newsheet">🔄 New sheet</button></div><div id="gl-score"></div>`;
+    const picked = Array(qs.length).fill(null); let checked = false;
+    box.querySelectorAll(".gl-cq").forEach(card => card.querySelectorAll(".gl-cop").forEach(b => b.addEventListener("click", () => {
+      if (checked) return; const i = +card.dataset.q; picked[i] = b.dataset.o;
+      card.querySelectorAll(".gl-cop").forEach(x => x.classList.toggle("sel", x === b));
+      document.getElementById("gl-left").textContent = `Answered ${picked.filter(x => x !== null).length} of ${qs.length}`;
+    })));
+    document.getElementById("gl-check").addEventListener("click", () => {
+      const blank = picked.filter(x => x === null).length;
+      if (blank && !checked && !confirm(`You still have ${blank} question${blank > 1 ? "s" : ""} to answer. Check anyway?`)) return;
+      if (checked) return; checked = true; let right = 0;
+      qs.forEach((q, i) => {
+        const card = box.querySelector(`.gl-cq[data-q="${i}"]`), ok = picked[i] === q.a;
+        if (picked[i] !== null) glCount(ok);
+        if (ok) right++;
+        card.classList.add(ok ? "ok" : "bad");
+        card.querySelectorAll(".gl-cop").forEach(x => { x.disabled = true; if (x.dataset.o === q.a) x.classList.add("right"); else if (x.dataset.o === picked[i]) x.classList.add("wrong"); });
+        if (!ok) { const w = card.querySelector(".gl-cwhy"); w.hidden = false; w.innerHTML = `${picked[i] === null ? "Not answered. " : ""}✅ ${esc(q.a)}. ${q.why}`; }
+      });
+      const pct = Math.round(right / qs.length * 100);
+      right === qs.length ? sfx.buy() : sfx.right();
+      document.getElementById("gl-score").innerHTML = `<div class="sl-card" style="text-align:center"><div class="big money">${right} / ${qs.length}</div><p>${pct === 100 ? "🏆 Perfect sheet!" : pct >= 75 ? "⭐ Great work! Read the red ones." : "Keep going! Read the red ones, then try a new sheet."}</p></div>`;
+      document.getElementById("gl-check").disabled = true;
+      document.getElementById("gl-score").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    document.getElementById("gl-newsheet").addEventListener("click", () => { sheet(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+  };
+  sheet();
 }
 function glResults(unit, box, st) {
   keyHandler = null;
