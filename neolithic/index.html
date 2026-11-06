@@ -337,7 +337,12 @@
   .gl-speedhud { display: flex; justify-content: space-between; font-size: 1.15rem; margin-bottom: 6px; } .gl-timebar { height: 10px; border-radius: 99px; background: rgba(255,255,255,.12); overflow: hidden; margin-bottom: 10px; } .gl-timebar div { height: 100%; width: 100%; background: linear-gradient(90deg, #3bb273, #ffe066); transition: width .2s linear; } .gl-timebar div.low { background: #e63946; }
   .gl-sq p { font-size: 1.1rem; line-height: 1.45; margin-top: 0; } .gl-sopts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .gl-sopt { display: flex; align-items: center; gap: 8px; text-align: left; min-height: 56px; padding: 8px 10px; border: 0; border-radius: 14px; color: #fff; font: inherit; font-weight: 700; cursor: pointer; min-width: 0; overflow-wrap: anywhere; } .gl-sopt .k { flex: none; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: rgba(255,255,255,.25); font-size: .85rem; }
-  .gl-sopt.c1 { background: #d62839; } .gl-sopt.c2 { background: #1e6fd8; } .gl-sopt.c3 { background: #12814a; } .gl-sopt.c4 { background: #d97400; } .gl-sopt.right { outline: 4px solid #7dffb2; } .gl-sopt.wrong { opacity: .45; } .gl-sopt:disabled { cursor: default; }
+  .gl-sopt.c1 { background: #d62839; } .gl-sopt.c2 { background: #1e6fd8; } .gl-sopt.c3 { background: #12814a; } .gl-sopt.c4 { background: #d97400; } .gl-sopt.right { background: #12814a; outline: 4px solid #7dffb2; } .gl-sopt.wrong { background: #8a0016; outline: 4px solid #ff4d6d; animation: glShake .4s; } .gl-sopt.dim { opacity: .35; }
+  @keyframes glShake { 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-4px); } }
+  .gl-sq.good { box-shadow: 0 0 0 4px #3bb273; } .gl-sq.bad { box-shadow: 0 0 0 4px #ff4d6d; background: rgba(214,40,57,.18); }
+  .gl-wrongbox { margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: #fff1f2; color: #3a0610; border: 3px solid #e63946; } .gl-wrongbox p { margin: 6px 0; } .gl-wrongbox .soft { color: #7a4a52; }
+  .gl-pz { color: #ffe066; font-size: .9rem; }
+  .gl-x { font-size: 1.6rem; font-weight: 900; color: #d62839; letter-spacing: 1px; } .gl-why { background: #fff7d1; color: #4a3800; border-radius: 8px; padding: 6px 10px; } .gl-sopt:disabled { cursor: default; }
   .gl-mini summary { cursor: pointer; } .gl-mini { font-size: .9rem; }
   .gl-sheet { display: grid; gap: 8px; } @media (min-width: 700px) { .gl-sheet { grid-template-columns: 1fr 1fr; } }
   .gl-cq { background: rgba(255,255,255,.06); border: 2px solid var(--line); border-radius: 12px; padding: 8px 10px; } .gl-cq p { margin: 0 0 6px; font-size: .92rem; line-height: 1.4; } .gl-cq.ok { border-color: #3bb273; } .gl-cq.bad { border-color: #e63946; }
@@ -8243,6 +8248,7 @@ function hippoAnswer(qRaw) {
   const q = qRaw.toLowerCase().replace(/[?!]/g, "").replace(/,(?=\d{3})/g, "").trim();
   let m;
   const R = (topic, icon, text, why, pic, action) => ({ topic, icon, text, why, pic, action });
+  if (/^(what|whats|what's) (is |are )?(grammar|parts of speech|text structures?|text features?)\b/.test(q)) { const ga = NEW_APPS.find(x => x.id === "grammar"); return R("Grammar", "📝", "Grammar is the set of rules for how words, sentences, and punctuation fit together.", "It includes the 8 parts of speech (noun, pronoun, verb, adjective, adverb, preposition, conjunction, interjection), sentence types (simple, compound, complex, compound-complex), text structures, and text features. You can learn and practice all of it in the 📝 Grammar & Reading Lab!", hBig("📝", "#f1ecff", "Grammar"), { label: "📝 Open the Grammar & Reading Lab", fn: () => ga.start() }); }
   { const app = q.length < 60 && !/^(what|why|how|who|when|where) (is|are|was|do|does|did)\b/.test(q) && appSearch(q); if (app) return R(app.name, app.emoji, `${app.emoji} ${app.name} is in the 📱 App-App!`, app.desc, hBig(app.emoji, "#2e1a4a", app.name), { label: `${app.emoji} Open ${app.name}`, fn: () => app.start() }); }
   // ➗ newer math and facts (checked first so the general patterns don't grab them)
   if ((m = q.match(/^(?:what is )?(\d+) ?(?:÷|\/|divided by) ?(\d+),? with (?:a )?remainders?$/))) { const a = +m[1], b = +m[2]; if (b > 0) { const qt = Math.floor(a / b), r = a % b; return R("Remainders", "➗", `${fmt(a)} ÷ ${b} = ${fmt(qt)} R ${r}`, `${b} fits into ${fmt(a)} ${fmt(qt)} whole times (${b} × ${fmt(qt)} = ${fmt(b * qt)}), with ${r} left over. The leftover is called the remainder.`, a <= 60 && b <= 12 ? HV(`<rect width="320" height="180" fill="#fff"/>` + Array.from({ length: a }, (_, k) => { const g = Math.floor(k / b), left = g >= qt, x = 18 + (g % 8) * 37 + (k % b % 3) * 10, y = 30 + Math.floor(g / 8) * 60 + Math.floor(k % b / 3) * 10; return `<circle cx="${x}" cy="${y}" r="4" fill="${left ? "#e63946" : "#2a9d8f"}"/>`; }).join("") + hT(160, 170, `${qt} groups of ${b}, ${r} left over (red)`, { s: 12, b: 1 })) : hCard(`${fmt(a)} ÷ ${b} = ${fmt(qt)} R ${r}`, [`${b} × ${fmt(qt)} = ${fmt(b * qt)}`, `${fmt(a)} − ${fmt(b * qt)} = ${r} left over`])); } }
@@ -10073,38 +10079,40 @@ const GL_UNITS = {
 // 📖 Lessons: [emoji, title, explanation, examples]
 const GL_LEARN = {
   pos: [
-    ["🏠", "Noun", "A noun names a person, place, thing, or idea.\n• Common noun: a general name, like dog or city.\n• Proper noun: a specific name that starts with a capital letter, like Leo or Ms. Lee.\n• Concrete noun: something you can sense with your 5 senses (see, hear, smell, taste, touch), like a cheeseburger.\n• Abstract noun: an idea or feeling you can't touch, like hope or power.", "The dog (common) chased Leo (proper). The cheeseburger (concrete) gave me hope (abstract)."],
-    ["🙋", "Pronoun", "A pronoun replaces a noun so you don't have to keep repeating it: he, she, it, they (and I, we, you, them…).", "Leo was hungry, so he ate lunch. (He replaces Leo.)"],
-    ["🏃", "Verb", "A verb is either:\n• an ACTION word, like walked or dreamt (dreaming is an action, even in your head!), or\n• a LINKING (state of being) verb that links the subject to more information: am, is, are, was, become, seem.", "Mia walked home. (action) Mia is happy. (linking) The sky seems gray. (linking)"],
-    ["🎨", "Adjective", "An adjective describes a noun. It tells what kind, which one, or how many.", "The tall man has an old car. The rich king smiled."],
-    ["⚡", "Adverb", "An adverb describes a verb, an adjective, or another adverb. It tells HOW, WHEN, WHERE, or HOW OFTEN. Many adverbs end in -ly (quickly, softly), but not all do (very, soon, often, here).", "She ran quickly. (how) We left yesterday. (when) Play outside. (where) I often read. (how often) It is very cold. (very describes the adjective cold)"],
-    ["📦", "Preposition", "A preposition shows location, time, or a relationship between words: on, near, under, between, after, with.\nTrick: think of anywhere a cat could go with a box: on the box, under the box, near the box, between the boxes!", "The cat hid under the bed. We ate after the game."],
-    ["🔗", "Conjunction", "A conjunction is a connector.\n• Coordinating conjunctions = FANBOYS: for, and, nor, but, or, yet, so.\n• Correlative conjunctions come in pairs: either/or, not only/but also.\n• Subordinating conjunctions start a dependent clause: because, although, when, if, while, until.", "I like cats, but my sister likes dogs. Either Sam or Ava will win. We stayed inside because it rained."],
-    ["😮", "Interjection", "An interjection shows strong feeling. It's often followed by an exclamation point.", "Ouch! Wow! Oops! Hooray!"],
+    ["🏠", "Noun", "A noun is a word to identify people, places, things, and ideas.\n• Common noun: does NOT name a specific person, place, or thing: teacher, school, dog.\n• Proper noun: DOES name a specific person, place, or thing, and starts with a capital letter: Ms. Lee, Leo.\n• Concrete noun (also called tangible): can be detected with the five senses: a cheeseburger, the whiteboard.\n• Abstract noun: an idea noun for a concept that can't be seen, touched, smelled, or tasted: power, betrayal, hope, love.", "The dog (common) chased Leo (proper). The cheeseburger (concrete) gave me hope (abstract)."],
+    ["🙋", "Pronoun", "A pronoun is a word that replaces the name of a noun, and it can act as a noun on its own: he, she, it, they (and I, we, you, them…). Usually the noun comes first, then the pronoun replaces it.", "I love my dog, Leo, because he is a good boy. (He replaces Leo.)"],
+    ["🏃", "Verb", "There are two kinds of verbs:\n1. Action verbs show physical or mental action done by the subject: walked (physical), dreamt (mental: it happens in your head!).\n2. Linking verbs show states of being: am, is, are, was, were. To be, to become, and to seem are ALWAYS linking verbs.", "Action: I walked home. I dreamt of French fries.  Linking: I am home. Pete is my favorite brother. That car was incredibly fast."],
+    ["🎨", "Adjective", "An adjective is a modifier that shares extra details or characteristics about a noun. It can tell the noun's size, shape, age, color, origin (where it's from), or material.", "a tall teacher (size), an old school (age), a wooden spoon (material), rich vocabulary, endless potential"],
+    ["⚡", "Adverb", "An adverb is a modifier that shares extra detail about verbs, adjectives, or other adverbs. It tells how much, how often, when, where, and how something is done. Adverbs often end in -ly, but not always (very, soon, often, here).", "The tall teacher earnestly emphasized the endless potential of students who invest energetically in the growth of their vocabulary. (earnestly and energetically are adverbs)"],
+    ["📦", "Preposition", "A preposition shows the relationship of a noun or pronoun to another word. It can show time, place, or relationship, like where something is compared to something else.\nExamples: at, on, in, from, with, for, near, between, about, under, behind.\nTrick: think of anywhere a cat could go with a box: on the box, under the box, near the box!", "I left my homework on the bus. The gas station is near the grocery store."],
+    ["🔗", "Conjunction", "A conjunction is a connector. It joins two words, ideas, or phrases together and shows how they are connected.\n• Coordinating conjunctions = FANBOYS: for, and, nor, but, or, yet, so.\n• Correlative conjunctions go together in pairs: not only/but also, either/or, neither/nor, if/then, whether/or.\n• Subordinating conjunctions start a part that has to add more (a dependent clause): because, although, if, after, as, while, when, until.", "My dog enjoys being bathed but hates getting his nails trimmed. He is not only intelligent, but also very funny. When the doorbell rang, my dog Leo barked loudly."],
+    ["😮", "Interjection", "An interjection is a word or phrase that expresses a strong feeling or emotion. It's a short exclamation, often followed by ! or a comma. Some are like little interruptions: uhh, hey, oof.", "Ouch! Wow! Oh! Eww! Oops!"],
   ],
   sent: [
-    ["🧱", "What is a sentence?", "A sentence = subject + predicate + a complete thought.\n• Subject: who or what the sentence is about.\n• Predicate: what the subject does or is (it has the verb).", "The puppy (subject) wagged its tail (predicate)."],
-    ["🔓", "Independent vs. dependent clauses", "A clause has a subject and a verb.\n• An independent clause CAN stand alone as a sentence.\n• A dependent clause CAN'T stand alone. It usually starts with a subordinating conjunction like because, when, or although.", "Independent: The bell rang.  Dependent: when the bell rang…"],
-    ["1️⃣", "Simple sentence", "A simple sentence has 1 independent clause.", "The dog barked."],
-    ["2️⃣", "Compound sentence", "A compound sentence has 2 independent clauses joined by a comma + a FANBOYS word, OR by a semicolon (;).", "I wanted pizza, but Mom made tacos.  It was raining; we stayed inside."],
-    ["🧩", "Complex sentence", "A complex sentence has 1 independent clause + 1 dependent clause.\n• Dependent clause FIRST → use a comma.\n• Independent clause FIRST → no comma.", "Because it rained, we stayed inside.  We stayed inside because it rained."],
-    ["🧩➕", "Compound-complex sentence", "A compound-complex sentence has 2 or more independent clauses + 1 or more dependent clauses.", "When the storm ended, we went outside, and the kids splashed in puddles."],
+    ["🧱", "What is a sentence?", "A sentence = subject + predicate + a complete thought.\n• Subject: the person, place, thing, or idea that is performing the action of the sentence. A sentence can have more than one subject!\n• Predicate: the part of the sentence that contains the verb and says something about the subject.", "Mary (subject) ran (predicate).  Mary, Tyler, and Shelby (subject) are going to D.C. this weekend (predicate)."],
+    ["🔓", "Clauses: independent and dependent", "A clause is a group of words that contains both a subject and a predicate.\n• Independent clause: can stand alone and expresses a complete thought. An independent clause is also known as a simple sentence.\n• Dependent clause: an incomplete sentence that can't stand alone by itself. It usually starts with a subordinating conjunction like although, because, or when.", "Destiny walked down the train tracks (independent clause) although she knew it was dangerous (dependent clause)."],
+    ["1️⃣", "Simple sentence", "A simple sentence has 1 independent clause. (It can still have more than one subject or more than one verb!)", "Destiny walked down the train tracks."],
+    ["2️⃣", "Compound sentence", "A compound sentence joins 2 independent clauses together with a conjunction and/or punctuation.\nFormula: independent clause + independent clause (simple sentence + simple sentence).\nPunctuation:\n1. Use a comma and a coordinating conjunction (FANBOYS), or\n2. Use a semicolon (;).\n3. Avoid a comma splice!", "You need this formula, and it will help you.  You need this formula; it will help you.  You need this formula; no doubt, it will help you."],
+    ["🧩", "Complex sentence", "A complex sentence has at least one independent clause and at least one dependent clause.\nFormulas: independent clause + dependent clause, OR dependent clause + independent clause. Either order works!\nPunctuation:\n1. If the DEPENDENT clause comes first, put a comma right before the independent clause.\n2. If the INDEPENDENT clause comes first, no comma is needed.", "Leo will go fetch the ball when I throw it.  When I throw the ball, Leo will go fetch it."],
+    ["🧩➕", "Compound-complex sentence", "A compound-complex sentence combines elements of compound and complex sentences.\nFormula: at least two independent clauses + one (or more) dependent clauses.\nPunctuation: the rules for BOTH compound and complex sentences apply!\n1. Use a comma before a FANBOYS conjunction when it joins two independent clauses.\n2. Use a semicolon before and a comma after a conjunctive adverb.", "Laura forgot her friend's birthday, so she sent her a card when she finally remembered.  The team captain jumped for joy, and the fans cheered because they won the game.  I was happy for the team; however, I did not cheer because I lost my voice."],
     ["🚫", "Comma splice (wrong!)", "A comma splice joins two independent clauses with ONLY a comma. That's a mistake! Fix it with a comma + FANBOYS, a semicolon, or a period.", "Wrong: I love pizza, it is my favorite.  Right: I love pizza; it is my favorite."],
     ["🌉", "Conjunctive adverbs", "Words like however, therefore and consequently can join two independent clauses. Put a semicolon BEFORE and a comma AFTER: ; however,", "I was tired; however, I finished my homework."],
   ],
   struct: [
-    ["🔎", "Description", "Describes a topic by telling its details and characteristics.\nSignal words: for instance, such as, an example, characteristics.", "The blue whale is huge. For instance, its tongue weighs as much as an elephant."],
-    ["🔢", "Sequence / Chronological", "Tells events or steps in order.\nSignal words: first, next, then, finally, before, after.", "First, crack the eggs. Next, stir them. Finally, cook them."],
-    ["⚖️", "Compare & Contrast", "Tells how things are alike (compare) and different (contrast).\nSignal words: same as, similar, both, on the other hand, different from.", "Frogs and toads are both amphibians. On the other hand, toads have bumpy skin."],
-    ["💥", "Cause & Effect", "Tells why something happened (the CAUSE) and what happened (the EFFECT).\nSignal words: because, so, therefore, as a result, consequently.", "It rained for days (cause). As a result, the river flooded (effect)."],
-    ["🧩", "Problem & Solution", "Tells about a problem and one or more ways to solve it.\nSignal words: the dilemma is, the puzzle is, to solve this, one answer is.", "The dilemma is that the garden is too dry. To solve this, we built a rain barrel."],
+    ["🔎", "Description", "A topic, idea, person, place, or thing is described by listing its features, characteristics, or examples.\nSignal questions: What is being described? How is it described (what does it look like, how does it work, what does it do)? What is important to remember about it?\nSignal words: for instance, such as, to begin with, an example, to illustrate, characteristics.\nTip: look for the topic word (or a synonym or pronoun for it) that keeps repeating.", "The blue whale is huge. For instance, its tongue weighs as much as an elephant."],
+    ["🔢", "Sequence / Chronological", "Describes items or events in order, or tells the steps to follow to do or make something.\nSignal questions: What items, events, or steps are listed? Do they have to happen in this order? Do they always happen in this order?\nSignal words: first, second, next, then, before, after, finally, following, not long after, now, soon.", "First, crack the eggs. Next, stir them. Finally, cook them."],
+    ["⚖️", "Compare & Contrast", "Shows how two or more things are alike and/or how they are different.\nSignal questions: What things are being compared? In what ways are they alike? In what ways are they different?\nSignal words: same as, similar/alike, as well as, not only…but also, both, instead of, either…or, on the other hand, different from, as opposed to.", "Frogs and toads are both amphibians. On the other hand, toads have bumpy skin."],
+    ["💥", "Cause & Effect", "Cause is WHY something happened. Effect is WHAT happened.\nSignal questions: What happened? Why did it happen? What caused it to happen?\nSignal words: so, because, since, therefore, if…then, this led to, reason why, as a result, may be due to, effect of, consequently, for this reason.", "It rained for days (cause). As a result, the river flooded (effect)."],
+    ["🧩", "Problem & Solution", "Tells about a problem (and sometimes says why there is a problem), then gives one or more possible solutions.\nSignal questions: What is the problem? Why is it a problem? Is anything being done to try to solve it? What can be done to solve it?\nSignal words: the question is, the dilemma is, the puzzle is, to solve this, one answer is, one reason for the problem is.", "The dilemma is that the garden is too dry. To solve this, we built a rain barrel."],
   ],
   feat: [
-    ["📑", "Table of contents, index, and glossary", "• Table of contents (FRONT of the book): lists the chapters and their page numbers.\n• Index (BACK): an alphabetical list of topics with their page numbers.\n• Glossary (BACK): definitions of important words.", "Want the chapter list? Table of contents. Want the page about volcanoes? Index. Want to know what 'magma' means? Glossary."],
-    ["📸", "Photograph, illustration, and caption", "• Photograph: a picture taken with a camera.\n• Illustration: a drawing.\n• Caption: the words under a picture that tell about it.", "A photo of a real tiger with the caption “Tigers can swim.”"],
-    ["🔧", "Diagram and cross section", "• Diagram: a labeled picture that shows how something works or its parts.\n• Cross section: a picture of something cut open so you can see inside.", "A diagram of a bicycle's parts. A cross section of the Earth's layers."],
-    ["📊", "Table, graph/chart, and timeline", "• Table: facts organized in rows and columns.\n• Graph or chart: a picture that compares data (like a bar graph).\n• Timeline: shows events in the order they happened over time.", "A table of planet sizes. A bar graph of favorite snacks. A timeline of a president's life."],
-    ["📦", "Sidebar and guide words", "• Sidebar: a box on the side with extra fun facts.\n• Guide words: the two words at the TOP of a dictionary page. They show the first and last words on that page.", "Guide words apple – arrow: “apron” is on that page because it comes between them in ABC order."],
+    ["🏷️", "Title, subtitle, heading, and subheading", "• Title: identifies the topic of the text and tells what it will be about.\n• Subtitle: gives the reader more information about the topic.\n• Heading: the title at the top of a page or section. It tells the main idea of that section.\n• Subheading: more headings after the main heading that break the section up even more.", "Title: Frogs  Subtitle: From the Beginning  Heading: Types of Squid  Subheadings: Myopsida, Oegopsida"],
+    ["📑", "Parts of a book", "• Title page (beginning): the title and author. Sometimes also the illustrator, publisher, and copyright.\n• Table of contents (beginning): the section or chapter titles and the page where each one is.\n• Index (back): an alphabetical list that tells where to find information on certain topics.\n• Glossary (back): definitions of key words found in the text.", "Want the chapter list? Table of contents. Want the page about volcanoes? Index. Want to know what 'magma' means? Glossary."],
+    ["📸", "Photograph, illustration, caption, and close up", "• Photograph: a picture taken with a camera to show what something looks like.\n• Illustration: a drawing that shows what something looks like.\n• Caption: text under or around a photo or illustration. It explains what's happening in the picture or what it's about.\n• Close up: part of an image zoomed in so you can examine it more closely.", "A photo of a whale shark with the caption “This is a whale shark.”"],
+    ["🔧", "Diagram, cross section, and map", "• Diagram & labels: a visual way to explain information or show how something works.\n• Cross section: a type of diagram where a piece is cut out to show things you usually could not see.\n• Map: a visual way to show where places or events are located.", "A labeled diagram of a flower (stem, leaf, roots). A cross section of a frog. A map of where a frog lives."],
+    ["📊", "Table, graph/chart, and timeline", "• Table: a visual way to organize facts and numbers (in rows and columns) so they're easier to read.\n• Graph or chart: a visual way to organize or compare data.\n• Timeline: a visual way to organize the sequence of events over time.", "A table of heartbeats per minute, day, month and year. A pie chart of frogs in danger. A timeline of a bull shark's life cycle."],
+    ["✨", "Keywords, bullet points, sidebar, and guide words", "• Keywords: important words that stand out, often in bold or italics. Most keywords are defined in the glossary.\n• Bullet points: a list of important facts or ideas, usually single words or short phrases.\n• Sidebar: a box with interesting facts or extra information about a topic.\n• Guide words: the words at the top of a dictionary or glossary page that tell which words are found (in ABC order) on that page.", "Guide words apple – arrow: “apron” is on that page because it comes between them in ABC order."],
+    ["💻", "Hyperlinks and icons", "• Hyperlink: words or phrases you can click to go to another webpage or digital document. They're often underlined and a different color.\n• Icons: small pictures or symbols that represent something. You can usually click digital icons for more information.", "For more about the human body, go to www.kidshealth.org (a hyperlink). ⭐ 🚒 🚑 (icons)"],
   ],
 };
 // The notes, word for word, for the cheat sheet
@@ -10137,7 +10145,24 @@ const GL_CHEAT = `<h3>🧩 8 Parts of Speech</h3><ul>
 <li><b>Photograph</b> = camera. <b>Illustration</b> = drawing. <b>Caption</b> = words under a picture.</li>
 <li><b>Diagram</b> = labeled picture of how something works. <b>Cross section</b> = cut open to see inside.</li>
 <li><b>Table</b> = rows/columns of facts. <b>Graph/chart</b> = visual to compare data. <b>Timeline</b> = events over time.</li>
-<li><b>Sidebar</b> = extra fun facts in a box. <b>Guide words</b> = top of a dictionary page.</li></ul>`;
+<li><b>Sidebar</b> = extra fun facts in a box. <b>Guide words</b> = top of a dictionary page.</li></ul>
+<h3>📒 More from the class notes</h3><ul>
+<li><b>Nouns</b> identify people, places, things, and ideas. Concrete = tangible (cheeseburger, the whiteboard). Abstract = concepts (power, betrayal, hope, love).</li>
+<li><b>Pronouns</b> replace the name of a noun and can act as a noun on their own: “I love my dog, Leo, because <b>he</b> is a good boy.”</li>
+<li><b>Action verbs</b> = physical or mental action (walked, dreamt). <b>Linking verbs</b> = states of being. To be, to become, and to seem are always linking verbs.</li>
+<li><b>Adjectives</b> tell a noun's size, shape, age, color, origin, or material (tall teacher, old school).</li>
+<li><b>Adverbs</b> tell how much, how often, when, and where (earnestly, energetically).</li>
+<li><b>Prepositions</b>: at, on, in, from, with, for, near, between, about, under, behind.</li>
+<li><b>Correlative pairs</b>: not only/but also, either/or, neither/nor, if/then, whether/or. <b>Subordinating</b>: because, although, if, after, as, while, when, until.</li>
+<li><b>Interjections</b>: ouch, wow, oh, eww, oops (and interruptions like uhh, hey, oof).</li>
+<li><b>Subject</b> = who or what performs the action (there can be more than one!). <b>Predicate</b> = the part with the verb that says something about the subject.</li>
+<li><b>Clause</b> = a group of words with a subject and a predicate. An independent clause is also known as a simple sentence.</li>
+<li><b>Compound</b> = independent + independent (simple sentence + simple sentence).</li>
+<li><b>Complex</b> = at least one independent + at least one dependent, in either order.</li>
+<li><b>Compound-complex</b> combines compound and complex, so both sets of punctuation rules apply.</li>
+<li><b>Signal questions</b>: Description: what is described, and how? Sequence: do they have to happen in this order? Compare: how are they alike and different? Cause &amp; effect: what happened, and why? Problem &amp; solution: what is the problem, why, and how can it be solved?</li>
+<li><b>More signal words</b>: Description: to begin with, to illustrate. Sequence: second, following, not long after, now, soon. Compare: alike, as well as, not only…but also, instead of, either…or, as opposed to. Cause: since, if…then, this led to, reason why, may be due to, effect of, for this reason. Problem: the question is, one reason for the problem is.</li>
+<li><b>More text features</b>: Title, subtitle, title page (front), heading, subheading, keywords (bold &amp; italics), close up, map, bullet points, hyperlink, icons.</li></ul>`;
 // 🔍 Sentences with every word's part of speech (art = a/an/the, p = punctuation)
 const GL_POS = { n: "noun", pro: "pronoun", v: "verb", adj: "adjective", adv: "adverb", prep: "preposition", conj: "conjunction", int: "interjection" };
 const GL_TAGGED = [
@@ -10211,21 +10236,24 @@ const GL_SORT = [
 ];
 // 🏗️ Text structures
 const GL_STRUCTS = { desc: "Description", seq: "Sequence / Chronological", cmp: "Compare & Contrast", cause: "Cause & Effect", prob: "Problem & Solution" };
-const GL_SIGNALS = { desc: ["for instance", "such as", "an example", "characteristics"], seq: ["first", "next", "then", "finally", "before", "after"], cmp: ["same as", "similar", "both", "on the other hand", "different from"], cause: ["because", "so", "therefore", "as a result", "consequently"], prob: ["the dilemma is", "the puzzle is", "to solve this", "one answer is"] };
+const GL_SIGNALS = { desc: ["for instance", "such as", "to begin with", "an example", "to illustrate", "characteristics"], seq: ["first", "second", "next", "then", "before", "after", "finally", "following", "not long after", "now", "soon"], cmp: ["same as", "similar", "alike", "as well as", "not only…but also", "both", "instead of", "either…or", "on the other hand", "different from", "as opposed to"], cause: ["so", "because", "since", "therefore", "if…then", "this led to", "reason why", "as a result", "may be due to", "effect of", "consequently", "for this reason"], prob: ["the question is", "the dilemma is", "the puzzle is", "to solve this", "one answer is", "one reason for the problem is"] };
 const GL_PASSAGES = [
   ["desc", "The blue whale is the largest animal on Earth. It can grow to 100 feet long. For instance, its tongue alone weighs as much as an elephant. Characteristics such as its huge size and blue-gray color make it easy to spot."],
   ["desc", "A cactus has thick, waxy skin and sharp spines. An example is the saguaro cactus, which can grow 40 feet tall. Characteristics such as storing water in its stem help it live in the desert."],
   ["seq", "First, crack two eggs into a bowl. Next, whisk them with a fork. Then, pour them into a hot pan. Finally, stir until they are cooked."],
   ["seq", "Before the race, Mia stretched her legs. Then she lined up at the starting line. After the whistle blew, she sprinted all the way to the finish."],
   ["cmp", "Frogs and toads are both amphibians. Frogs have smooth, wet skin. On the other hand, toads have dry, bumpy skin. Both lay their eggs in water."],
-  ["cmp", "Summer and winter are both seasons. Summer is hot, but winter is cold. Winter is different from summer because its days are shorter. Spring is similar to fall because both have mild weather."],
+  ["cmp", "Summer and winter are both seasons. Summer is hot, but winter is cold. Winter is different from summer: its days are shorter. Spring is similar to fall: both have mild weather."],
   ["cause", "Heavy rain fell for three days. As a result, the river overflowed its banks. Consequently, many roads were closed."],
   ["cause", "Leo forgot to water his plant for two weeks. Therefore, the leaves turned brown. Because the soil was so dry, the plant drooped."],
   ["prob", "The dilemma is that our school garden keeps drying out. To solve this, the students built a rain barrel. One answer is to water the plants early in the morning."],
   ["prob", "The puzzle is how to stop students from being late to class. To solve this, the school added a warning bell. One answer is to give every student a schedule."],
 ];
 // 🗂️ Text features
-const GL_FEATS = ["Table of contents", "Index", "Glossary", "Photograph", "Illustration", "Caption", "Diagram", "Cross section", "Table", "Graph / chart", "Timeline", "Sidebar", "Guide words"];
+const GL_FEATS = ["Title", "Subtitle", "Title page", "Table of contents", "Heading", "Subheading", "Index", "Glossary", "Photograph", "Illustration", "Caption", "Close up", "Diagram", "Cross section", "Map", "Table", "Graph / chart", "Timeline", "Keywords (bold & italics)", "Bullet points", "Sidebar", "Guide words", "Hyperlink", "Icons"];
+// Features that are too close to count as wrong choices for each other (a cross section IS a kind of diagram, etc.)
+const GL_FEAT_CLOSE = { "Cross section": ["Diagram"], "Diagram": ["Cross section", "Illustration"], "Title": ["Heading", "Subtitle", "Title page", "Guide words"], "Subtitle": ["Subheading", "Title"], "Title page": ["Title", "Table of contents"], "Table of contents": ["Title page", "Heading", "Subheading", "Title"], "Heading": ["Title", "Subheading", "Guide words"], "Subheading": ["Heading", "Subtitle"], "Guide words": ["Heading", "Title", "Subheading"], "Photograph": ["Close up"], "Close up": ["Photograph", "Illustration"], "Hyperlink": ["Icons"], "Icons": ["Hyperlink", "Illustration"], "Bullet points": ["Sidebar"], "Sidebar": ["Bullet points"], "Glossary": ["Keywords (bold & italics)"] };
+const glFeatWrong = (a, scenario, n) => shuffle(GL_FEATS.filter(x => x !== a && !(GL_FEAT_CLOSE[a] || []).includes(x) && !(/bold|italic/i.test(scenario) && x.startsWith("Keywords")))).slice(0, n);
 const GL_LOOK = [
   ["You want to see a list of the book's chapters and the page each one starts on.", "Table of contents", "The table of contents is at the FRONT and lists the chapters and their pages."],
   ["You want to find which page talks about volcanoes.", "Index", "The index is at the BACK. It lists topics in ABC order with their page numbers."],
@@ -10518,6 +10546,147 @@ GL_LOOK.push(   // 🧭 20 more "where would you look?"
   ["You want to compare how many students chose each favorite fruit, using a picture of the data.", "Graph / chart", "A graph or chart is a visual that compares data."],
   ["A tourist took a picture of the Grand Canyon with a camera, and it is printed in the book.", "Photograph", "A picture taken with a camera is a photograph."],
 );
+// 📒 Questions from the class notes (parts of speech, sentence structure, text structure and text feature worksheets)
+GL_TAGGED.push(
+  "I|pro walked|v home|adv .|p",
+  "I|pro dreamt|v of|prep French|adj fries|n .|p",
+  "The|art car|n was|v incredibly|adv fast|adj .|p",
+  "I|pro left|v the|art homework|n on|prep the|art bus|n .|p",
+  "When|conj the|art doorbell|n rang|v ,|p Leo|n barked|v loudly|adv .|p",
+  "Eww|int !|p Leo|n ate|v a|art bug|n .|p",
+  "Neither|conj Tyler|n nor|conj Shelby|n went|v .|p",
+  "Mary|n ,|p Tyler|n ,|p and|conj Shelby|n traveled|v to|prep Washington|n .|p",
+  "Destiny|n walked|v down|prep the|art tracks|n .|p",
+  "The|art tall|adj teacher|n earnestly|adv spoke|v .|p",
+);
+GL_BANK.push(
+  ["pos", "Nouns are words that identify…", "people, places, things, and ideas", ["actions and states of being", "how, when, and where", "strong feelings"], "A noun identifies a person, place, thing, or idea."],
+  ["pos", "Which noun is CONCRETE?", "whiteboard", ["betrayal", "power", "love"], "You can see and touch a whiteboard, so it's concrete. The others are ideas."],
+  ["pos", "Which noun is ABSTRACT?", "betrayal", ["whiteboard", "cheeseburger", "teacher"], "Betrayal is an idea. You can't see, touch, smell, or taste it."],
+  ["pos", "Concrete nouns are also called ___ nouns.", "tangible", ["abstract", "proper", "linking"], "Tangible means you can detect it with your five senses."],
+  ["pos", "Abstract nouns are idea nouns that refer to ___ that can't be seen, touched, smelled, or tasted.", "concepts", ["people", "places", "colors"], "Abstract nouns name concepts (ideas), like hope, love, power, and betrayal."],
+  ["pos", "In “Ms. Lee teaches at the school,” which word is a proper noun?", "Ms. Lee", ["teaches", "school", "at"], "Ms. Lee names one specific person, so it's a proper noun."],
+  ["pos", "A pronoun replaces a noun, and it can also…", "act as a noun on its own", ["describe a verb", "show strong feeling", "join two clauses"], "A pronoun replaces the name of a noun and can act as a noun on its own."],
+  ["pos", "In “I love my dog, Leo, because he is a good boy,” which word is the pronoun that replaces Leo?", "he", ["dog", "Leo", "because"], "He takes the place of the noun Leo."],
+  ["pos", "Action verbs show physical or ___ action.", "mental", ["linking", "abstract", "proper"], "Dreaming and thinking are mental actions. Running and walking are physical actions."],
+  ["pos", "In “I dreamt of French fries,” what kind of verb is “dreamt”?", "An action verb (mental action)", ["A linking verb", "Not a verb at all", "An adverb"], "Dreaming is an action that happens in your head, so it's a mental action verb."],
+  ["pos", "Which verbs are ALWAYS linking verbs?", "to be, to become, and to seem", ["to run, to jump, and to swim", "to dream, to think, and to wish", "to have, to go, and to make"], "To be (am, is, are, was, were), to become, and to seem are always linking verbs."],
+  ["pos", "In “Pete is my favorite brother,” what kind of verb is “is”?", "A linking verb", ["An action verb", "A preposition", "A conjunction"], "“Is” shows a state of being. It links Pete to “my favorite brother.”"],
+  ["pos", "In “That car was incredibly fast,” which word is the verb?", "was", ["car", "incredibly", "fast"], "“Was” is a linking (state of being) verb."],
+  ["pos", "An adjective can tell a noun's…", "size, shape, age, color, origin, or material", ["how, when, or where", "time, place, or relationship", "strong feeling or emotion"], "Adjectives share extra details about a noun, like its size, shape, age, color, origin, or material."],
+  ["pos", "In “a tall teacher,” the adjective “tall” tells the noun's…", "size", ["material", "origin", "color"], "Tall tells how big (the size)."],
+  ["pos", "Which adjective tells the MATERIAL something is made of?", "wooden (a wooden spoon)", ["quickly (ran quickly)", "under (under the bed)", "Wow! (Wow, a spoon!)"], "Wooden tells what the spoon is made of."],
+  ["pos", "Which adjective tells the ORIGIN (where something is from)?", "Italian (Italian pizza)", ["round (a round plate)", "slowly (walk slowly)", "between (between us)"], "Italian tells where the pizza is from. Round is an adjective too, but it tells shape."],
+  ["pos", "In “The tall teacher earnestly emphasized the endless potential…”, which word is an adverb?", "earnestly", ["tall", "teacher", "endless"], "Earnestly tells HOW the teacher emphasized, so it's an adverb. Tall and endless are adjectives."],
+  ["pos", "In “…the endless potential of students,” which word is an adjective?", "endless", ["potential", "students", "of"], "Endless describes the noun potential."],
+  ["pos", "Adverbs tell how much, how often, when, and…", "where something is done", ["who did it", "what color it is", "which noun it replaces"], "Adverbs tell how much, how often, when, where (and how) something is done."],
+  ["pos", "In “Students invest energetically,” what does “energetically” describe?", "The verb “invest”", ["The noun “Students”", "Nothing", "An adjective"], "Energetically tells HOW they invest, so it describes the verb."],
+  ["pos", "In “I left my homework on the bus,” which word is a preposition?", "on", ["left", "homework", "bus"], "On shows where the homework is compared to the bus."],
+  ["pos", "In “The gas station is near the grocery store,” which word is a preposition?", "near", ["station", "is", "store"], "Near shows the location of the gas station compared to the store."],
+  ["pos", "Prepositions can show time, place, or…", "relationship", ["feeling", "action", "size"], "Prepositions show the relationship of a noun or pronoun to another word: time, place, or relationship."],
+  ["pos", "Which group is ALL prepositions?", "at, on, in, from, with", ["and, but, or, so, yet", "ouch, wow, oh, eww, oops", "tall, old, rich, endless, fast"], "At, on, in, from, and with are prepositions. The others are conjunctions, interjections, and adjectives."],
+  ["pos", "Which of these is a correlative conjunction pair?", "neither / nor", ["because / since", "at / on", "oh / wow"], "Correlative conjunctions go together in pairs: not only/but also, either/or, neither/nor, if/then, whether/or."],
+  ["pos", "Which of these is a correlative conjunction pair?", "whether / or", ["although / if", "under / behind", "so / yet"], "Whether/or is a correlative pair: the two words go together."],
+  ["pos", "In “He is not only intelligent, but also very funny,” what are “not only … but also”?", "Correlative conjunctions", ["Prepositions", "Interjections", "Subordinating conjunctions"], "They go together as a pair, so they're correlative conjunctions."],
+  ["pos", "In “My dog enjoys being bathed but hates getting his nails trimmed,” what kind of conjunction is “but”?", "Coordinating (FANBOYS)", ["Subordinating", "Correlative", "An interjection"], "But is one of the FANBOYS."],
+  ["pos", "In “When the doorbell rang, my dog Leo barked loudly,” what kind of conjunction is “When”?", "Subordinating", ["Coordinating", "Correlative", "A preposition"], "When starts a dependent clause that has to add more, so it's subordinating."],
+  ["pos", "Subordinating conjunctions…", "start a part that has to add more (a dependent clause)", ["always come in pairs", "are the FANBOYS", "show strong feeling"], "Because, although, if, after, as, while, when, and until start dependent clauses."],
+  ["pos", "Conjunctions join two words, ideas, or phrases together and show…", "how they are connected", ["where they are", "how big they are", "what they mean"], "A conjunction is a connector that shows how ideas are connected."],
+  ["pos", "Which word is an interjection?", "Eww!", ["Every", "Even", "Eleven"], "Eww shows a strong feeling (disgust), so it's an interjection."],
+  ["pos", "An interjection is a short ___ that expresses strong feeling or emotion.", "exclamation", ["question", "definition", "comparison"], "Interjections like Ouch! and Wow! are short exclamations."],
+  ["sent", "The subject is the person, place, thing, or idea that is…", "performing the action of the sentence", ["describing a verb", "joining two clauses", "always at the end of the sentence"], "The subject is who or what is doing the action."],
+  ["sent", "The predicate is the part of the sentence that…", "contains the verb and says something about the subject", ["names the subject", "joins two clauses with a comma", "shows strong feeling"], "The predicate has the verb and tells something about the subject."],
+  ["sent", "In “Mary, Tyler, and Shelby are going to D.C. this weekend,” what is the subject?", "Mary, Tyler, and Shelby", ["are going", "to D.C. this weekend", "this weekend"], "A sentence can have more than one subject. All three people are doing the action."],
+  ["sent", "Can a sentence have more than one subject?", "Yes, like “Mary, Tyler, and Shelby are going to D.C.”", ["No, never", "Only in questions", "Only if it has a semicolon"], "Mary, Tyler, and Shelby are all subjects of the same verb."],
+  ["sent", "What is a clause?", "A group of words with both a subject and a predicate", ["Any group of words", "A word that shows strong feeling", "A list of FANBOYS"], "A clause has a subject and a predicate. If it can stand alone, it's independent."],
+  ["sent", "An independent clause is also known as a…", "simple sentence", ["comma splice", "fragment", "conjunctive adverb"], "An independent clause can stand alone, so it's a simple sentence by itself."],
+  ["sent", "In “Destiny walked down the train tracks although she knew it was dangerous,” which part is the dependent clause?", "although she knew it was dangerous", ["Destiny walked down the train tracks", "Destiny walked", "the train tracks"], "It starts with although and can't stand alone."],
+  ["sent", "What is the formula for a COMPOUND sentence?", "Independent clause + independent clause", ["Independent clause + dependent clause", "Dependent clause + dependent clause", "Just one independent clause"], "A compound sentence joins two independent clauses (simple sentence + simple sentence)."],
+  ["sent", "Which sentence is COMPOUND?", "You need this formula; it will help you.", ["You need this formula.", "Because you need this formula, it will help you.", "You need this formula when you study."], "Two independent clauses joined with a semicolon."],
+  ["sent", "In “You need this formula; no doubt, it will help you,” what joins the two independent clauses?", "A semicolon", ["A comma only", "The word because", "Nothing joins them"], "The semicolon joins the clauses. “No doubt,” works like a conjunctive adverb, with a comma after it."],
+  ["sent", "What are the two formulas for a COMPLEX sentence?", "Independent + dependent, OR dependent + independent", ["Independent + independent only", "Dependent + dependent", "Three independent clauses"], "A complex sentence has at least one of each, in either order."],
+  ["sent", "In a complex sentence, does the order of the clauses matter?", "No, either can come first, but the comma rule changes", ["Yes, the dependent clause must always come first", "Yes, the independent clause must always come first", "There is only one clause"], "Dependent first → comma. Independent first → no comma."],
+  ["sent", "In “When I throw the ball, Leo will go fetch it,” where does the comma go?", "Right before the independent clause", ["After the word Leo", "Before the word When", "There is no comma"], "The dependent clause comes first, so a comma goes right before the independent clause."],
+  ["sent", "Why is there no comma in “Leo will go fetch the ball when I throw it”?", "The independent clause comes first", ["The dependent clause comes first", "It is a compound sentence", "It is a comma splice"], "Independent first → no comma needed."],
+  ["sent", "A compound-complex sentence…", "combines elements of compound and complex sentences", ["has only one clause", "is always a comma splice", "has no independent clauses"], "It has 2+ independent clauses (compound) and 1+ dependent clauses (complex)."],
+  ["sent", "In “The team captain jumped for joy, and the fans cheered because they won the game,” which part is the dependent clause?", "because they won the game", ["The team captain jumped for joy", "the fans cheered", "and the fans cheered"], "It starts with because and can't stand alone."],
+  ["sent", "Which punctuation rules apply to a compound-complex sentence?", "Both the compound and the complex rules", ["Only the complex rules", "No rules at all", "Only commas, never semicolons"], "Use the comma + FANBOYS and semicolon rules, AND the dependent-clause comma rule."],
+  ["struct", "What does a DESCRIPTION text do?", "Describes a topic by listing its features, characteristics, or examples", ["Tells events in order", "Shows how things are alike and different", "Gives a problem and solutions"], "Description lists features, characteristics, or examples."],
+  ["struct", "In a description text, what should you look for that keeps repeating?", "The topic word (or a synonym or pronoun for it)", ["The word “finally”", "A semicolon", "The word “because”"], "The topic keeps coming back because the whole text describes it."],
+  ["struct", "Which signal phrase is a clue for DESCRIPTION?", "to illustrate", ["not long after", "the question is", "as opposed to"], "To illustrate means “to give an example,” so it signals description."],
+  ["struct", "Which signal phrase is a clue for SEQUENCE?", "not long after", ["to illustrate", "as well as", "may be due to"], "Not long after tells what happened next in time."],
+  ["struct", "Which signal phrase is a clue for COMPARE & CONTRAST?", "as opposed to", ["following", "this led to", "one answer is"], "As opposed to shows how two things are different."],
+  ["struct", "Which signal phrase is a clue for CAUSE & EFFECT?", "this led to", ["instead of", "to begin with", "now"], "This led to tells what happened because of something."],
+  ["struct", "Which signal phrase is a clue for PROBLEM & SOLUTION?", "one reason for the problem is", ["for this reason", "as well as", "soon"], "It explains why there's a problem. (For this reason is a cause & effect phrase.)"],
+  ["struct", "Which signal question goes with SEQUENCE?", "Do they have to happen in this order?", ["What things are being compared?", "Why is it a problem?", "What caused it to happen?"], "Sequence is all about order."],
+  ["struct", "Which signal question goes with COMPARE & CONTRAST?", "In what ways are they alike or different?", ["What happened?", "What is the problem?", "What steps are listed?"], "Compare & contrast shows how things are alike and different."],
+  ["struct", "Which signal question goes with CAUSE & EFFECT?", "Why did it happen?", ["What is being described?", "In what ways are they alike?", "Do they always happen in this order?"], "The cause is why it happened."],
+  ["struct", "Which signal question goes with PROBLEM & SOLUTION?", "What can be done to solve the problem?", ["What does it look like?", "What happened first?", "In what ways are they different?"], "Problem & solution asks what the problem is and how to solve it."],
+  ["struct", "Which signal question goes with DESCRIPTION?", "What does it look like, and how does it work?", ["Why did it happen?", "What is the problem?", "Do they happen in this order?"], "Description tells what something is like."],
+  ["struct", "“Since the bridge was closed, we took a detour.” The word “since” is a clue for which structure?", "Cause & Effect", ["Sequence / Chronological", "Compare & Contrast", "Description"], "Since tells why something happened: the bridge was closed (cause), so we took a detour (effect)."],
+  ["struct", "In the class notes, “to begin with” is a signal phrase for which structure?", "Description", ["Problem & Solution", "Cause & Effect", "Compare & Contrast"], "The notes list to begin with as a description signal word, along with for instance, such as and to illustrate."],
+  ["struct", "Besides the problem and solutions, a problem & solution text sometimes also tells…", "why there is a problem", ["how two things are alike", "the steps in a recipe", "what a word means"], "It can give a reason for the problem (one reason for the problem is…)."],
+  ["feat", "What does a TITLE do?", "Identifies the topic and tells what the text will be about", ["Gives definitions of words", "Lists every topic in ABC order", "Shows events over time"], "The title tells the topic of the text."],
+  ["feat", "What does a SUBTITLE do?", "Gives the reader more information about the topic", ["Lists the chapters", "Shows the inside of something", "Links to a webpage"], "A subtitle adds more information under the title."],
+  ["feat", "What is on a TITLE PAGE?", "The title and author (sometimes the illustrator, publisher, and copyright)", ["Definitions of key words", "A list of chapters and page numbers", "Fun facts in a box"], "The title page is at the beginning of the book."],
+  ["feat", "Where is the title page?", "At the beginning of the book", ["At the back of the book", "Under each picture", "At the top of every page"], "Title page and table of contents are at the beginning. Index and glossary are at the back."],
+  ["feat", "What is a HEADING?", "The title at the top of a page or section that tells its main idea", ["The words under a picture", "An alphabetical list at the back", "A small clickable picture"], "A heading helps you find the main idea of a section."],
+  ["feat", "What is a SUBHEADING?", "A smaller heading that breaks a section up even more", ["The name of the author", "A zoomed-in picture", "A definition of a word"], "Subheadings come after the main heading."],
+  ["feat", "What are KEYWORDS?", "Important words that stand out, often in bold or italics", ["The words at the top of a dictionary page", "The words under a picture", "Small pictures that stand for something"], "Keywords stand out so you notice them."],
+  ["feat", "Where are most keywords defined?", "In the glossary", ["In the table of contents", "In the title", "In a caption"], "Most keywords are defined in the glossary at the back."],
+  ["feat", "What is a CLOSE UP?", "Part of an image zoomed in to look more closely", ["A picture cut open to show the inside", "A drawing", "A map of places"], "A close up zooms in on part of an image."],
+  ["feat", "What is a HYPERLINK?", "Words you can click to go to another webpage or document", ["A box of extra facts", "A list of chapters", "A picture taken with a camera"], "Hyperlinks take you somewhere else when you click them."],
+  ["feat", "How can you usually spot a hyperlink?", "It's underlined and a different color", ["It's always in a box on the side", "It's at the top of a dictionary page", "It's written under a picture"], "Hyperlinks are often underlined and a different color so they stand out."],
+  ["feat", "What are ICONS?", "Small pictures or symbols that represent something", ["Important words in bold", "Events shown over time", "Words at the top of a page"], "Icons are little symbols. Digital icons can be clicked for more information."],
+  ["feat", "What are BULLET POINTS?", "A list of important facts or ideas, usually short phrases", ["A labeled picture", "Definitions at the back", "A zoomed-in image"], "Bullet points organize information and make it stand out."],
+  ["feat", "What is a MAP?", "A visual that shows where places or events are located", ["A visual that shows events over time", "Facts in rows and columns", "A drawing of what a word means"], "A map shows where things are."],
+  ["feat", "A cross section is a type of…", "diagram", ["timeline", "caption", "glossary"], "A cross section is a diagram with a piece cut out to show what you usually can't see."],
+  ["feat", "Guide words are at the top of a dictionary or ___ page.", "glossary", ["table of contents", "title", "map"], "Guide words can be on dictionary and glossary pages."],
+  ["feat", "A caption is text under or around a photograph or…", "an illustration", ["the glossary", "the index", "a hyperlink"], "Captions explain what's happening in a photo or illustration."],
+  ["feat", "Which feature organizes facts and numbers so they're easier to read and interpret?", "Table", ["Map", "Close up", "Subtitle"], "A table organizes facts and numbers."],
+);
+GL_SORT.push(
+  ["Mary ran.", "simple", "One independent clause: Mary (subject) ran (predicate)."],
+  ["Mary, Tyler, and Shelby are going to D.C. this weekend.", "simple", "Three subjects doing one action is still just 1 independent clause."],
+  ["Destiny walked down the train tracks.", "simple", "One independent clause. An independent clause is also called a simple sentence!"],
+  ["Destiny walked down the train tracks although she knew it was dangerous.", "complex", "Independent clause (Destiny walked down the train tracks) + dependent clause (although she knew it was dangerous)."],
+  ["You need this formula, and it will help you.", "compound", "Two independent clauses joined by , + and."],
+  ["You need this formula; it will help you.", "compound", "Two independent clauses joined by a semicolon."],
+  ["You need this formula; no doubt, it will help you.", "compound", "Two independent clauses joined by a semicolon, with “no doubt,” after it."],
+  ["Leo will go fetch the ball when I throw it.", "complex", "Independent clause first, then the dependent clause (when I throw it), so no comma."],
+  ["When I throw the ball, Leo will go fetch it.", "complex", "Dependent clause first (When I throw the ball), so a comma goes right before the independent clause."],
+  ["Laura forgot her friend's birthday, so she sent her a card when she finally remembered.", "cc", "2 independent clauses (Laura forgot her friend's birthday / she sent her a card) + 1 dependent clause (when she finally remembered)."],
+  ["The team captain jumped for joy, and the fans cheered because they won the game.", "cc", "2 independent clauses (The team captain jumped for joy / the fans cheered) + 1 dependent clause (because they won the game)."],
+  ["I was happy for the team; however, I did not cheer because I lost my voice.", "cc", "2 independent clauses joined by ; however, + 1 dependent clause (because I lost my voice)."],
+  ["My dog enjoys being bathed but hates getting his nails trimmed.", "simple", "Tricky! One subject (my dog) with two verbs (enjoys / hates). “But” joins the verbs, not two clauses, so it's simple."],
+  ["When the doorbell rang, my dog Leo barked loudly.", "complex", "Dependent clause (When the doorbell rang) + independent clause (my dog Leo barked loudly)."],
+  ["He is not only intelligent, but also very funny.", "simple", "Tricky! One subject (he) and one verb (is). “Not only … but also” joins two describing words, not two clauses."],
+  ["I left my homework on the bus.", "simple", "One independent clause."],
+);
+GL_PASSAGES.push(
+  ["desc", "To begin with, the octopus is a soft-bodied sea animal. To illustrate how smart it is, scientists have watched octopuses open jars. Characteristics such as its eight arms make it easy to recognize."],
+  ["seq", "First, the frog lays eggs in the water. Second, tadpoles hatch from the eggs. Not long after, the tadpoles grow legs. Now the frog can hop onto land, and soon it will lay eggs of its own."],
+  ["cmp", "Rain forests as well as deserts are home to many animals. Instead of rain all year, deserts get very little. As opposed to the dry desert, a rain forest is wet and green."],
+  ["cause", "The pond's water became polluted. This led to fewer frogs in the area. The reason why scientists worry is that frogs eat insects. For this reason, towns are cleaning their ponds."],
+  ["prob", "The question is how to keep the library quiet. One reason for the problem is that the reading room is beside the gym. To solve this, the school moved the reading room."],
+);
+GL_LOOK.push(
+  ["The big words at the very top of the article say “Frogs.”", "Title", "The title identifies the topic of the text."],
+  ["Right under the title, smaller words say “From the Beginning.”", "Subtitle", "A subtitle gives more information about the topic."],
+  ["A page at the beginning of the book shows the book's title, the author and the illustrator.", "Title page", "The title page gives the title and author, and sometimes the illustrator and publisher."],
+  ["Bold words at the top of one section say “Types of Squid” and tell you what that section is about.", "Heading", "A heading is the title at the top of a section. It tells the main idea."],
+  ["Under the heading “Types of Squid,” smaller titles say “Myopsida” and “Oegopsida.”", "Subheading", "Subheadings break a section up even more."],
+  ["The word “amphibian” is printed in bold so it stands out in the paragraph.", "Keywords (bold & italics)", "Keywords are important words in bold or italics."],
+  ["A small circle shows one part of a photo zoomed in so you can see tiny details.", "Close up", "A close up zooms in on part of an image."],
+  ["Underlined blue words say “www.kidshealth.org,” and clicking them opens another webpage.", "Hyperlink", "A hyperlink takes you to another webpage or document."],
+  ["Small symbols, like a star badge and a firefighter's helmet, stand for different emergency services.", "Icons", "Icons are small pictures or symbols that represent something."],
+  ["A list of short facts, each with a ✓ in front, lists the parts of a firefighter's uniform.", "Bullet points", "Bullet points list important facts in short phrases."],
+  ["You want to see where in the world a kind of frog lives.", "Map", "A map shows where places or events are located."],
+  ["A picture of a flower has lines pointing to the stem, leaf and roots.", "Diagram", "A diagram with labels explains information or shows how something works."],
+  ["You want to see the life cycle of a bull shark, in order over time.", "Timeline", "A timeline organizes the sequence of events over time."],
+  ["You want to see how many times your heart beats in a minute, a day, a month and a year, in rows and columns.", "Table", "A table organizes facts and numbers so they're easy to read."],
+  ["A pie chart shows how many kinds of frogs are in danger.", "Graph / chart", "A graph or chart organizes or compares data."],
+);
 function glMakeQuestion(unit) {
   const u = unit === "mix" ? rPick(Object.keys(GL_UNITS)) : unit, roll = Math.random();
   const mc = (tag, prompt, a, w, why) => ({ kind: "mc", tag, prompt: esc(prompt), a, w, why: esc(why) });
@@ -10534,7 +10703,7 @@ function glMakeQuestion(unit) {
     const [k, text] = rPick(GL_PASSAGES); return mc("Text Structures", `Which text structure is this? “${text}”`, GL_STRUCTS[k], Object.keys(GL_STRUCTS).filter(x => x !== k).map(x => GL_STRUCTS[x]).sort(() => Math.random() - .5).slice(0, 3), `Look for the signal words. ${GL_STRUCTS[k]} uses words like: ${GL_SIGNALS[k].join(", ")}.`);
   }
   if (u === "feat" && roll < .6) {
-    const [s, a, why] = rPick(GL_LOOK); return mc("Tricky Text Features", `${s} Which text feature is it?`, a, shuffle(GL_FEATS.filter(x => x !== a)).slice(0, 3), why);
+    const [s, a, why] = rPick(GL_LOOK); return mc("Tricky Text Features", `${s} Which text feature is it?`, a, glFeatWrong(a, s, 3), why);
   }
   const [, q, a, w, why] = rPick(GL_BANK.filter(x => x[0] === u)); return mc(GL_UNITS[u].name, q, a, w, why);
 }
@@ -10615,11 +10784,12 @@ const glTopicRow = (key, cur) => `<div class="gl-topics">${GL_TOPIC_CHIPS.map(([
 function glSpeed(topic) {
   topic ||= store.get("gl_speed_topic", "mix");
   const bestKey = "gl_speed_best_" + topic, best = store.get(bestKey, 0);
-  appScreen("📝 Grammar & Reading Lab", `<div class="row"><button class="chip" id="gl-back">⬅ All topics</button></div><h2>⚡ Speed Round</h2><p class="soft">Answer as many questions as you can in <b>90 seconds</b>! Right answers zoom to the next question. Use the 1-4 keys to go even faster.</p>${glTopicRow("speed", topic)}<div id="gl"><div class="sl-card" style="text-align:center"><p>🏆 Best score${topic === "mix" ? "" : " for this topic"}: <b>${best}</b></p><button class="btn go gl-big-go" id="gl-go">⚡ Go!</button></div></div>`);
+  appScreen("📝 Grammar & Reading Lab", `<div class="row"><button class="chip" id="gl-back">⬅ All topics</button></div><h2>⚡ Speed Round</h2><p class="soft">Answer as many questions as you can in <b>90 seconds</b>! Right answers zoom to the next question. If you get one wrong, the clock stops so you can read why. Use the 1-4 keys to go even faster.</p>${glTopicRow("speed", topic)}<div id="gl"><div class="sl-card" style="text-align:center"><p>🏆 Best score${topic === "mix" ? "" : " for this topic"}: <b>${best}</b></p><button class="btn go gl-big-go" id="gl-go">⚡ Go!</button></div></div>`);
   document.getElementById("gl-back").addEventListener("click", () => startGrammarLab());
   $app.querySelectorAll("[data-topic]").forEach(b => b.addEventListener("click", () => { store.set("gl_speed_topic", b.dataset.topic); glSpeed(b.dataset.topic); }));
   document.getElementById("gl-go").addEventListener("click", () => {
-    const box = document.getElementById("gl"), end = Date.now() + 90000, st = { right: 0, done: 0, missed: [], over: false };
+    const box = document.getElementById("gl"), st = { right: 0, done: 0, missed: [], over: false, paused: false };
+    let end = Date.now() + 90000, left = 90000;   // the clock stops while you read about a wrong answer
     $app.querySelector(".gl-topics").hidden = true;
     let q, locked = false;
     const finish = () => {
@@ -10627,25 +10797,34 @@ function glSpeed(topic) {
       const newBest = st.right > best; if (newBest) store.set(bestKey, st.right);
       newBest ? sfx.buy() : naNote(440, .3, "triangle", .1);
       box.innerHTML = `<div class="sl-card" style="text-align:center"><h3>⏰ Time's up!</h3><div class="big money">${st.right}</div><p>right in 90 seconds (${st.done} answered${st.done ? `, ${Math.round(st.right / st.done * 100)}% right` : ""})</p><p>${newBest ? "🏆 <b>New best score!</b>" : `Best: ${best}`}</p><button class="btn go" id="gl-again">⚡ Play again</button></div>
-        ${st.missed.length ? `<div class="sl-card"><h3>Study these again</h3><div class="missed">${st.missed.slice(0, 12).map(m => `<div class="miss"><b>${m.prompt}</b>Answer: ${esc(m.a)}</div>`).join("")}</div></div>` : ""}`;
+        ${st.missed.length ? `<div class="sl-card"><h3>Study these again</h3><div class="missed">${st.missed.slice(0, 12).map(m => `<div class="miss"><b>${m.prompt}</b>Answer: ${esc(m.a)}<br><small>${m.why}</small></div>`).join("")}</div></div>` : ""}`;
       document.getElementById("gl-again").addEventListener("click", () => glSpeed(topic));
       $app.querySelector(".gl-topics").hidden = false;
     };
-    const tick = () => { const left = Math.max(0, end - Date.now()), el = document.getElementById("gl-time"), bar = document.getElementById("gl-bar"); if (el) el.textContent = Math.ceil(left / 1000); if (bar) { bar.style.width = (left / 900) + "%"; bar.classList.toggle("low", left < 10000); } if (!left) finish(); };
+    const tick = () => { if (st.paused) return; left = Math.max(0, end - Date.now()); const el = document.getElementById("gl-time"), bar = document.getElementById("gl-bar"); if (el) el.textContent = Math.ceil(left / 1000); if (bar) { bar.style.width = (left / 900) + "%"; bar.classList.toggle("low", left < 10000); } if (!left) finish(); };
     const next = () => {
       if (st.over) return;
       q = glMakeQuestion(topic); locked = false;
       const opts = shuffle([q.a, ...q.w]);
-      box.innerHTML = `<div class="gl-speedhud"><span>⏱️ <b id="gl-time">90</b>s</span><span>✅ <b>${st.right}</b> right</span></div><div class="gl-timebar"><div id="gl-bar"></div></div>
-        <div class="sl-card gl-sq"><p>${q.prompt}</p><div class="gl-sopts">${opts.map((o, i) => `<button class="gl-sopt c${i + 1}" data-o="${esc(o)}"><span class="k">${i + 1}</span>${esc(o)}</button>`).join("")}</div></div>`;
+      box.innerHTML = `<div class="gl-speedhud"><span>⏱️ <b id="gl-time">90</b>s <b id="gl-pz" class="gl-pz"></b></span><span>✅ <b>${st.right}</b> right</span></div><div class="gl-timebar"><div id="gl-bar"></div></div>
+        <div class="sl-card gl-sq" id="gl-sq"><p>${q.prompt}</p><div class="gl-sopts">${opts.map((o, i) => `<button class="gl-sopt c${i + 1}" data-o="${esc(o)}"><span class="k">${i + 1}</span><span class="t">${esc(o)}</span></button>`).join("")}</div><div id="gl-review"></div></div>`;
       tick();
       const btns = [...box.querySelectorAll(".gl-sopt")];
       const pick = b => {
         if (locked || st.over) return; locked = true;
         const ok = b.dataset.o === q.a; st.done++; glCount(ok);
-        btns.forEach(x => { x.disabled = true; if (x.dataset.o === q.a) x.classList.add("right"); else if (x === b) x.classList.add("wrong"); });
-        if (ok) { st.right++; naNote(660 + Math.min(st.right, 20) * 20, .07, "triangle", .08); } else { st.missed.push(q); naNote(200, .15, "sawtooth", .05); }
-        naTimer(setTimeout(next, ok ? 250 : 900));
+        btns.forEach(x => { x.disabled = true; if (x.dataset.o === q.a) { x.classList.add("right"); x.querySelector(".k").textContent = "✓"; } else if (x === b) { x.classList.add("wrong"); x.querySelector(".k").textContent = "✗"; } else x.classList.add("dim"); });
+        if (ok) { st.right++; naNote(660 + Math.min(st.right, 20) * 20, .07, "triangle", .08); document.getElementById("gl-sq").classList.add("good"); naTimer(setTimeout(next, 350)); return; }
+        // ❌ wrong: stop the clock, show the right answer and why, and wait until they're ready
+        st.missed.push(q); tick(); st.paused = true; sfx.wrong();
+        document.getElementById("gl-sq").classList.add("bad");
+        const pz = document.getElementById("gl-pz"); if (pz) pz.textContent = "⏸ paused";
+        document.getElementById("gl-review").innerHTML = `<div class="gl-wrongbox" role="alert"><div class="gl-x">❌ WRONG</div><p>You picked: <s>${esc(b.dataset.o)}</s></p><p>✅ The right answer is: <b>${esc(q.a)}</b></p><p class="gl-why">💡 ${q.why}</p><p class="soft">⏸️ The clock is stopped. Take your time to read this!</p><button class="btn go" id="gl-snext">Got it! Keep going ➜</button></div>`;
+        const go = () => { if (!st.paused) return; st.paused = false; end = Date.now() + left; next(); };
+        document.getElementById("gl-snext").addEventListener("click", go);
+        document.getElementById("gl-snext").focus({ preventScroll: true });
+        document.getElementById("gl-review").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        keyHandler = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
       };
       btns.forEach(b => b.addEventListener("click", () => pick(b)));
       keyHandler = e => { if (/^[1-4]$/.test(e.key) && btns[+e.key - 1]) pick(btns[+e.key - 1]); };
@@ -10726,7 +10905,7 @@ function glGame(unit, box) {
   // the other games: pick the right button
   const items = unit === "sent" ? () => { const [s, t, why] = rPick(GL_SORT); return { prompt: `What kind of sentence is this?<br><span class="gl-big">“${esc(s)}”</span>`, a: GL_TYPES[t], opts: Object.values(GL_TYPES), why: esc(why) }; }
     : unit === "struct" ? () => { if (Math.random() < .6) { const k = rPick(Object.keys(GL_SIGNALS)), w = rPick(GL_SIGNALS[k]); return { prompt: `🕵️ Signal word:<br><span class="gl-big">“${esc(w)}”</span><br>Which text structure is it a clue for?`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`“${w}” signals ${GL_STRUCTS[k]}. Other clues: ${GL_SIGNALS[k].filter(x => x !== w).join(", ")}.`) }; } const [k, text] = rPick(GL_PASSAGES); return { prompt: `🕵️ Read the clues:<br><span class="gl-big">“${esc(text)}”</span>`, a: GL_STRUCTS[k], opts: Object.values(GL_STRUCTS), why: esc(`The signal words give it away: ${GL_SIGNALS[k].filter(x => new RegExp(`\\b${x}\\b`, "i").test(text)).join(", ")}.`) }; }
-    : () => { const [s, a, why] = rPick(GL_LOOK); return { prompt: `🧭 ${esc(s)}<br>Which text feature is it?`, a, opts: shuffle([a, ...shuffle(GL_FEATS.filter(x => x !== a)).slice(0, 5)]), why: esc(why) }; };
+    : () => { const [s, a, why] = rPick(GL_LOOK); return { prompt: `🧭 ${esc(s)}<br>Which text feature is it?`, a, opts: shuffle([a, ...glFeatWrong(a, s, 5)]), why: esc(why) }; };
   const round = () => {
     const it = items();
     box.innerHTML = `${hud()}<div class="sl-card"><p>${it.prompt}</p><div class="gl-opts">${it.opts.map(o => `<button class="btn gl-opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}</div><div class="gl-fb"></div></div>`;
@@ -10744,7 +10923,27 @@ NEW_APPS.push({ id: "grammar", emoji: "📝", name: "Grammar & Reading Lab", des
 const APP_KW = { code: "code lab|learn to code", ai: "ai studio", music: "piano|beat maker", science: "volcano experiment", space: "solar system", money: "piggy bank|budget", pixel: "pixel art", puzzle: "sudoku|tower of hanoi|lights out", lang: "learn spanish|learn french", world: "flag quiz", comic: "comics?|comic strip", calm: "breathing|calm down", hippopoly: "monopoly|monapely|property game" };
 function appSearch(q) {
   const rx = s => new RegExp("(^|[^a-z])(" + s + ")($|[^a-z])");
-  return NEW_APPS.find(a => rx(a.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).test(q) || (a.kw && rx(a.kw).test(q)) || (APP_KW[a.id] && rx(APP_KW[a.id]).test(q)));
+  return NEW_APPS.find(a => rx(a.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).test(q) || (a.kw && rx(a.kw).test(q)) || (APP_KW[a.id] && rx(APP_KW[a.id]).test(q))) || appFuzzy(q);
+}
+// 🔤 Misspelled app names still find the app (a missing, extra, swapped or wrong letter or two).
+// (Don't write misspelled examples in comments here: every word on the page counts as a real word for Hippo's spell checker.)
+// The app's whole name has to show up (words next to each other, misspellings allowed), or one of its special words below.
+const APP_FUZZY = { code: ["coding"], music: ["piano"], pixel: ["pixel"], puzzle: ["sudoku"], comic: ["comic", "comics"], hippopoly: ["hippopoly", "monopoly"], bship: ["battleship"], rummi: ["rummikub"], check: ["checkers"], yahtzee: ["yahtzee"], mancala: ["mancala"], chess: ["chess"], memorizer: ["memorizer", "memoriser", "memorize", "memorise"], grammar: ["grammar"] };
+const APP_STOP = ["the", "and", "of", "a", "an", "app", "game", "play", "open", "please", "i", "want", "to"];
+function appFuzzy(q) {
+  const V = hippoVocab(), tol = n => n <= 3 ? 0 : n <= 5 ? 1 : n <= 8 ? 2 : n <= 12 ? 3 : 4;
+  const words = (q.toLowerCase().match(/[a-z]+/g) || []).filter(w => !APP_STOP.includes(w));
+  // a real word someone typed on purpose (like "chest") is never treated as a misspelling
+  const near = (w, t, single) => w === t || (tol(t.length) > 0 && !(single && V.known.has(w)) && Math.abs(w.length - t.length) <= tol(t.length) && hippoDist(w, t, tol(t.length)) <= tol(t.length));
+  const runs = []; for (let i = 0; i < words.length; i++) for (let k = 1; k <= 4 && i + k <= words.length; k++) runs.push([words.slice(i, i + k), k === 1]);
+  let best = null, bestLen = 0;
+  for (const a of NEW_APPS) {
+    const name = (a.name.toLowerCase().match(/[a-z]+/g) || []).filter(t => !APP_STOP.includes(t)).join("");
+    // words run together ("battle ship" → battleship) only count if each real word in them is part of the name, so "do fish" isn't "go fish"
+    const hit = (name.length >= 3 && runs.some(([r, single]) => (single || r.every(w => !V.known.has(w) || name.includes(w))) && near(r.join(""), name, single))) || (APP_FUZZY[a.id] || []).some(t => words.some(w => near(w, t, true)));
+    if (hit && name.length > bestLen) { best = a; bestLen = name.length; }
+  }
+  return best;
 }
 
 function startMathCenter() {
