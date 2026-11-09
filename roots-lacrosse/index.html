@@ -102,7 +102,7 @@
   <!-- HOME -->
   <section id="home">
     <h1>🥍 Root Rush</h1>
-    <p class="sub">Emmett's 30 Greek &amp; Latin roots. Shoot the ball into the right goal to move a root from <span class="badge bx">X</span> → <span class="badge bt">~</span> → <span class="badge by">Y</span>.</p>
+    <p class="sub">Colin's 30 Greek &amp; Latin roots. Shoot the ball into the right goal to move a root from <span class="badge bx">X</span> → <span class="badge bt">~</span> → <span class="badge by">Y</span>.</p>
     <div class="stats">
       <div class="stat"><b id="sY" style="color:var(--y)">0</b><small>Know it</small></div>
       <div class="stat"><b id="sT" style="color:var(--tilde)">0</b><small>Getting there</small></div>
@@ -159,7 +159,7 @@
 </div></div>
 
 <script>
-// [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from Emmett's sheet: 0=X, 1=~, -1 = unmarked]
+// [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from Colin's sheet: 0=X, 1=~, -1 = unmarked]
 const DATA = [
   ["ast / aster","star",["asteroid","astronomy"],["[ast]ronaut","dis[aster]","[aster]isk"],0],
   ["audi","hear",["audible","audience"],["[audi]torium","[audi]tion","[audi]o"],0],
@@ -197,7 +197,7 @@ const DATA = [
 const startPts = s => s===0?0:s===1?2:2;
 const levelOf = p => p>=4?2:p>=2?1:0;
 const LV = [{t:"X",c:"bx"},{t:"~",c:"bt"},{t:"Y",c:"by"}];
-const KEY="rootRushLaxEmmett_v1";
+const KEY="rootRushLaxColin_v1";
 let store = {pts:DATA.map(d=>startPts(d.start)), best:0, sound:true};
 try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s && s.pts && s.pts.length===DATA.length) store=Object.assign(store,s);}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}};
@@ -400,7 +400,7 @@ function resolve(btn,ok){
   fb.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
-// short "why" hooks that connect the root to words Emmett already knows
+// short "why" hooks that connect the root to words Colin already knows
 const HOOKS={
   0:"An ASTEROID is a star-like rock; an ASTRONAUT is a \"star sailor.\"",
   1:"If it's AUDIBLE you can hear it. The AUDIENCE is the people who hear.",
