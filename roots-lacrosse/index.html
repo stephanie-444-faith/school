@@ -159,7 +159,7 @@
 </div></div>
 
 <script>
-// [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from Colin's sheet: 0=X, 1=~, -1 = unmarked]
+// [roots shown, meaning, sheet examples, more words ([] marks the root), original sheet marks (unused: every root starts at X)]
 const DATA = [
   ["ast / aster","star",["asteroid","astronomy"],["[ast]ronaut","dis[aster]","[aster]isk"],0],
   ["audi","hear",["audible","audience"],["[audi]torium","[audi]tion","[audi]o"],0],
@@ -194,10 +194,10 @@ const DATA = [
 ].map((d,i)=>({id:i,r:d[0],m:d[1],ex:d[2],more:d[3],start:d[4]}));
 
 // mastery points 0..4  → X: 0-1, ~: 2-3, Y: 4
-const startPts = s => s===0?0:s===1?2:2;
+const startPts = s => 0; // everyone starts at X
 const levelOf = p => p>=4?2:p>=2?1:0;
 const LV = [{t:"X",c:"bx"},{t:"~",c:"bt"},{t:"Y",c:"by"}];
-const KEY="rootRushLaxColin_v1";
+const KEY="rootRushLaxColin_v2";
 let store = {pts:DATA.map(d=>startPts(d.start)), best:0, sound:true};
 try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s && s.pts && s.pts.length===DATA.length) store=Object.assign(store,s);}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}};
