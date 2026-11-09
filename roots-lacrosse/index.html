@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Root Rush Lacrosse</title>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e2a1a; --bg2:#173b26; --card:#f6efdc; --ink:#2a2118; --muted:#7a6a55;
+    --red:#d64533; --blue:#2f6fb5; --gold:#ff8a1f; --green:#3f9a5a; --x:#d64533; --tilde:#e39b1c; --y:#3f9a5a;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;min-height:100%;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 60px,transparent 60px 120px),radial-gradient(ellipse at top,#256b3c,var(--bg) 70%);color:#fff;font-family:Nunito,system-ui,sans-serif}
+  .wrap{max-width:560px;margin:0 auto;padding:18px 16px 40px;position:relative;min-height:100vh}
+  h1{font-family:Bungee,sans-serif;font-weight:400;font-size:34px;margin:6px 0 0;letter-spacing:1px;color:var(--gold);text-shadow:0 3px 0 #7a3a05}
+  .sub{color:#cfe3d4;margin:4px 0 18px;font-size:15px}
+  .btn{font-family:Bungee,sans-serif;font-size:18px;border:0;border-radius:14px;padding:14px 18px;cursor:pointer;color:#2a1a05;background:var(--gold);box-shadow:0 4px 0 #9a4a08;width:100%;transition:transform .08s}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #9a4a08}
+  .btn.alt{background:#e8e1cc;box-shadow:0 4px 0 #8f8670;font-size:15px}
+  .row{display:flex;gap:10px}
+  .panel{background:var(--bg2);border:1px solid #33513d;border-radius:16px;padding:14px;margin-top:16px}
+  .panel h2{font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:#a9c9b2;margin:0 0 10px}
+  .legend{font-size:13px;color:#cfe3d4;margin-bottom:10px;display:flex;gap:12px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;font-weight:800;font-size:13px;color:#fff}
+  .bx{background:var(--x)} .bt{background:var(--tilde)} .by{background:var(--y)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .chip{background:#13201a;border-radius:10px;padding:7px 6px;display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;border:1px solid transparent}
+  .chip:hover{border-color:#4a6d55}
+  .chip .badge{flex:none}
+  .chip span.r{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stats{display:flex;gap:10px;margin-top:4px}
+  .stat{flex:1;background:#13201a;border-radius:12px;padding:10px;text-align:center}
+  .stat b{display:block;font-family:Bungee,sans-serif;font-size:22px;font-weight:400}
+  .stat small{color:#a9c9b2}
+  .toggle{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;color:#cfe3d4;cursor:pointer}
+  .toggle input{width:20px;height:20px;accent-color:var(--gold)}
+
+  /* play */
+  .hud{display:flex;justify-content:space-between;align-items:center;font-family:Bungee,sans-serif;font-size:15px;color:#cfe3d4}
+  .quiver{display:flex;gap:3px;margin:8px 0 12px}
+  .quiver i{flex:1;height:8px;border-radius:4px;background:#33513d}
+  .quiver i.hit{background:var(--green)} .quiver i.miss{background:var(--red)} .quiver i.now{background:var(--gold)}
+  .qcard{background:var(--card);color:var(--ink);border-radius:18px;padding:18px 16px 16px;text-align:center;box-shadow:0 6px 0 #b8ab88;position:relative}
+  .qtype{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:800}
+  .qmain{font-family:Bungee,sans-serif;font-size:40px;line-height:1.1;margin:8px 0 4px;color:#3b2a14;word-break:break-word}
+  .qmain.word{font-size:32px;letter-spacing:1px}
+  .qmain .hl{color:var(--red);text-decoration:underline;text-decoration-thickness:4px;text-underline-offset:6px}
+  .qask{font-size:17px;font-weight:800}
+  .clue{margin-top:10px;font-size:15px;color:var(--muted);min-height:22px}
+  .clue button{background:none;border:2px dashed #c9b994;border-radius:10px;padding:6px 12px;font:inherit;font-weight:800;color:var(--muted);cursor:pointer}
+  .clue em{color:var(--ink);font-style:normal;font-weight:800}
+  .targets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+  .tgt{background:#f6efdc;border:0;border-radius:16px;padding:12px 8px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:inherit;color:var(--ink);box-shadow:0 4px 0 #b8ab88;transition:transform .1s, background .2s}
+  .tgt:active{transform:translateY(2px)}
+  .tgt .ring{width:76px;height:58px;position:relative;border:5px solid #ff6a00;border-bottom:3px solid #fff;border-radius:3px 3px 0 0;background:repeating-linear-gradient(45deg,rgba(60,60,60,.35) 0 1.5px,transparent 1.5px 8px),repeating-linear-gradient(-45deg,rgba(60,60,60,.35) 0 1.5px,transparent 1.5px 8px),#e9e4d2;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+  .tgt .ring::after{content:"";position:absolute;left:-14px;right:-14px;bottom:-12px;height:10px;border-radius:50%;border:2px solid rgba(214,69,51,.55);border-top:0}
+  .ball{position:fixed;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbe0,#ffd23a 55%,#d9a400);box-shadow:0 2px 3px rgba(0,0,0,.4);pointer-events:none;z-index:50}
+  .inball{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbe0,#ffd23a 55%,#d9a400);transform:translate(-50%,-50%)}
+  .saved{position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-family:Bungee,sans-serif;font-size:12px;background:var(--red);color:#fff;padding:2px 6px;border-radius:6px;white-space:nowrap}
+  .tgt .lbl{font-weight:800;font-size:17px;line-height:1.15;min-height:20px}
+  .tgt.root .lbl{font-family:Bungee,sans-serif;font-weight:400;font-size:18px}
+  .tgt.right{background:#cfeed6}
+  .tgt.wrong{background:#f6cfc8}
+  .tgt.dim{opacity:.55}
+  .tgt[disabled]{cursor:default}
+  .arrow{position:fixed;width:54px;height:8px;pointer-events:none;z-index:50;transform-origin:100% 50%}
+  .arrow svg{display:block}
+  .stuck{position:absolute;left:50%;top:50%;width:46px;height:8px;transform-origin:0 50%;pointer-events:none}
+  .feedback{margin-top:16px;border-radius:16px;padding:14px;font-size:16px;line-height:1.4;display:none}
+  .feedback.show{display:block;animation:pop .25s ease-out}
+  .feedback.good{background:#1f4a2c;border:2px solid var(--green)}
+  .feedback.bad{background:#4a2420;border:2px solid var(--red)}
+  .feedback b.big{font-family:Bungee,sans-serif;font-weight:400;font-size:20px;display:block;margin-bottom:4px}
+  .feedback .btn{margin-top:12px}
+  .pts{position:absolute;right:14px;top:10px;font-family:Bungee,sans-serif;color:var(--green);font-size:20px;opacity:0}
+  .pts.go{animation:float 1s ease-out}
+  @keyframes float{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+  @keyframes pop{0%{transform:scale(.95);opacity:0}100%{transform:scale(1);opacity:1}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .shake{animation:shake .3s}
+  .end{text-align:center}
+  .end .score{font-family:Bungee,sans-serif;font-size:64px;color:var(--gold);text-shadow:0 4px 0 #7a3a05;margin:6px 0}
+  .end .rank{font-family:Bungee,sans-serif;font-size:22px}
+  .levelups{text-align:left}
+  .levelups div{padding:6px 0;border-bottom:1px solid #33513d;font-size:15px}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+  .modal.show{display:flex}
+  .modal .box{background:var(--card);color:var(--ink);border-radius:18px;padding:20px;max-width:360px;width:100%;text-align:center}
+  .modal .box h3{font-family:Bungee,sans-serif;font-weight:400;font-size:30px;margin:0;color:#3b2a14}
+  .modal .box p{margin:8px 0}
+  .hidden{display:none !important}
+  .tiny{font-size:12px;color:#8fb09a;text-align:center;margin-top:18px}
+  .linkbtn{background:none;border:0;color:#8fb09a;text-decoration:underline;font:inherit;cursor:pointer}
+  .confetti{position:fixed;top:-10px;width:8px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HOME -->
+  <section id="home">
+    <h1>🥍 Root Rush</h1>
+    <p class="sub">Emmett's 30 Greek &amp; Latin roots. Shoot the ball into the right goal to move a root from <span class="badge bx">X</span> → <span class="badge bt">~</span> → <span class="badge by">Y</span>.</p>
+    <div class="stats">
+      <div class="stat"><b id="sY" style="color:var(--y)">0</b><small>Know it</small></div>
+      <div class="stat"><b id="sT" style="color:var(--tilde)">0</b><small>Getting there</small></div>
+      <div class="stat"><b id="sX" style="color:var(--x)">0</b><small>Not yet</small></div>
+    </div>
+    <div style="margin-top:16px"><button class="btn" id="startBtn">Face-off! 10 shots</button></div>
+    <label class="toggle"><input type="checkbox" id="focusX" checked> Focus on my X's and ~'s</label>
+    <div class="panel">
+      <h2>My root sheet</h2>
+      <div class="legend"><span><span class="badge bx">X</span> Not yet</span><span><span class="badge bt">~</span> Becoming familiar</span><span><span class="badge by">Y</span> Confident</span></div>
+      <div class="grid" id="grid"></div>
+      <p style="font-size:13px;color:#a9c9b2;margin:10px 0 0">Tap a root to review it. Two goals in a row bumps a root up a level; a miss knocks it back.</p>
+    </div>
+    <p class="tiny">Best game: <span id="best">—</span> · <button class="linkbtn" id="soundBtn">Sound: on</button> · <button class="linkbtn" id="resetBtn">Reset to my sheet</button></p>
+  </section>
+
+  <!-- PLAY -->
+  <section id="play" class="hidden">
+    <div class="hud"><span id="hudArrow">Shot 1/10</span><span id="hudStreak"></span><span id="hudScore">0 pts</span></div>
+    <div class="quiver" id="quiver"></div>
+    <div class="qcard" id="qcard">
+      <div class="pts" id="pts">+10</div>
+      <div class="qtype" id="qtype"></div>
+      <div class="qmain" id="qmain"></div>
+      <div class="qask" id="qask"></div>
+      <div class="clue" id="clue"></div>
+    </div>
+    <div class="targets" id="targets"></div>
+    <div class="feedback" id="feedback"></div>
+    <p class="tiny"><button class="linkbtn" id="quitBtn">Leave the field</button></p>
+  </section>
+
+  <!-- END -->
+  <section id="end" class="hidden end">
+    <h1 style="font-size:26px">Final whistle!</h1>
+    <div class="score" id="endScore">0</div>
+    <div class="rank" id="endRank"></div>
+    <p class="sub" id="endHits"></p>
+    <div class="panel levelups hidden" id="lvlPanel"><h2>Level ups</h2><div id="lvlList"></div></div>
+    <div class="panel levelups hidden" id="missPanel"><h2>Practice these</h2><div id="missList"></div></div>
+    <div class="row" style="margin-top:18px">
+      <button class="btn alt" id="homeBtn">My sheet</button>
+      <button class="btn" id="againBtn">Again!</button>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="modal"><div class="box">
+  <h3 id="mRoot"></h3>
+  <p style="font-size:20px;font-weight:800" id="mMeaning"></p>
+  <p style="color:var(--muted)" id="mEx"></p>
+  <p style="color:var(--muted)" id="mMore"></p>
+  <button class="btn" id="mClose" style="margin-top:10px">Got it</button>
+</div></div>
+
+<script>
+// [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from Emmett's sheet: 0=X, 1=~, -1 = unmarked]
+const DATA = [
+  ["ast / aster","star",["asteroid","astronomy"],["[ast]ronaut","dis[aster]","[aster]isk"],0],
+  ["audi","hear",["audible","audience"],["[audi]torium","[audi]tion","[audi]o"],0],
+  ["auto","self",["automatic","autopsy"],["[auto]biography","[auto]pilot","[auto]mobile"],-1],
+  ["bene","good",["benefit","benign"],["[bene]ficial","[bene]factor","[bene]volent"],0],
+  ["bio","life",["biography","biology"],["[bio]me","anti[bio]tic","[bio]degradable"],-1],
+  ["chrono","time",["chronic","synchronize"],["[chrono]logical","[chron]icle","ana[chron]ism"],1],
+  ["dict","say",["dictate","diction"],["pre[dict]","contra[dict]","[dict]ionary"],0],
+  ["duc","lead, make",["deduce","produce"],["e[duc]ate","intro[duc]e","con[duc]tor"],0],
+  ["gen","give birth",["gene","generate"],["[gen]esis","[gen]eration","[gen]ealogy"],0],
+  ["geo","earth",["geography","geology"],["[geo]metry","[geo]thermal","[geo]de"],-1],
+  ["graph","write",["autograph","graph"],["para[graph]","[graph]ic","bio[graph]y"],1],
+  ["jur / jus","law",["jury","justice"],["in[jus]tice","[jur]isdiction","[jus]tify"],0],
+  ["log / logue","thought",["logic","obloquy"],["[log]ical","mono[logue]","dia[logue]"],-1],
+  ["luc","light",["lucid","translucent"],["[luc]idity","e[luc]idate","trans[luc]ence"],-1],
+  ["man / manu","hand",["manual","manure"],["[man]icure","[manu]facture","[man]ipulate"],-1],
+  ["mand / mend","order",["demand","recommend"],["com[mand]","[mand]atory","[mand]ate"],0],
+  ["mis / mit","send",["missile","transmission"],["trans[mit]","sub[mit]","[mis]sion"],0],
+  ["omni","all",["omnivorous"],["[omni]potent","[omni]present","[omni]scient"],0],
+  ["path","feel",["empathy","pathetic"],["sym[path]y","tele[path]y","a[path]y"],0],
+  ["phil","love",["philosophy","bibliophile"],["[phil]anthropy","[Phil]adelphia","audio[phil]e"],0],
+  ["phon","sound",["phonics","telephone"],["sym[phon]y","micro[phon]e","head[phon]es"],1],
+  ["photo","light",["photograph","photon"],["[photo]synthesis","[photo]copy","[photo]bomb"],-1],
+  ["port","carry",["export","portable"],["trans[port]","im[port]","[port]er"],0],
+  ["qui / quit","quiet, rest",["acquit","tranquil"],["[qui]et","tran[qui]lity","ac[quit]tal"],0],
+  ["scrib / script","write",["ascribe","script"],["de[scrib]e","pre[script]ion","[scrib]ble"],0],
+  ["sens / sent","feel",["resent","sensitive"],["[sens]ation","con[sent]","[sent]iment"],0],
+  ["tele","far off",["telecast","telephone"],["[tele]scope","[tele]vision","[tele]port"],-1],
+  ["terr","earth",["terrain","territory"],["[terr]arium","extra[terr]estrial","Medi[terr]anean"],-1],
+  ["vac","empty",["evacuate","vacate"],["[vac]uum","[vac]ant","[vac]ation"],-1],
+  ["vid / vis","see",["visible","video"],["[vis]ion","super[vis]e","e[vid]ence"],-1],
+].map((d,i)=>({id:i,r:d[0],m:d[1],ex:d[2],more:d[3],start:d[4]}));
+
+// mastery points 0..4  → X: 0-1, ~: 2-3, Y: 4
+const startPts = s => s===0?0:s===1?2:2;
+const levelOf = p => p>=4?2:p>=2?1:0;
+const LV = [{t:"X",c:"bx"},{t:"~",c:"bt"},{t:"Y",c:"by"}];
+const KEY="rootRushLaxEmmett_v1";
+let store = {pts:DATA.map(d=>startPts(d.start)), best:0, sound:true};
+try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s && s.pts && s.pts.length===DATA.length) store=Object.assign(store,s);}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}};
+
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const up=s=>s.toUpperCase();
+const plain=w=>w.replace(/[\[\]]/g,"");
+
+// ---------- sound ----------
+let actx=null;
+function tone(freq,dur,type="sine",vol=.15,slide=0){
+  if(!store.sound) return;
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.type=type;o.frequency.value=freq;
+    if(slide) o.frequency.exponentialRampToValueAtTime(slide,actx.currentTime+dur);
+    g.gain.setValueAtTime(vol,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+dur);
+    o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+dur);
+  }catch(e){}
+}
+const sWhoosh=()=>tone(900,.25,"triangle",.06,200);
+const sHit=()=>{tone(160,.12,"square",.12);setTimeout(()=>{tone(660,.12);tone(880,.18)},90)};
+const sMiss=()=>tone(220,.3,"sawtooth",.07,110);
+
+// ---------- home ----------
+function renderHome(){
+  const g=$("grid");g.innerHTML="";
+  const counts=[0,0,0];
+  DATA.forEach(d=>{
+    const lv=levelOf(store.pts[d.id]);counts[lv]++;
+    const c=document.createElement("div");c.className="chip";
+    c.innerHTML=`<span class="badge ${LV[lv].c}">${LV[lv].t}</span><span class="r">${d.r}</span>`;
+    c.onclick=()=>openModal(d);
+    g.appendChild(c);
+  });
+  $("sX").textContent=counts[0];$("sT").textContent=counts[1];$("sY").textContent=counts[2];
+  $("best").textContent=store.best?store.best+" pts":"—";
+  $("soundBtn").textContent="Sound: "+(store.sound?"on":"off");
+}
+function openModal(d){
+  $("mRoot").textContent=up(d.r);
+  $("mMeaning").textContent="= "+d.m;
+  $("mEx").textContent="On your sheet: "+d.ex.join(", ");
+  $("mMore").innerHTML="Also: "+d.more.map(plain).join(", ");
+  $("modal").classList.add("show");
+}
+$("mClose").onclick=()=>$("modal").classList.remove("show");
+$("modal").onclick=e=>{if(e.target.id==="modal")$("modal").classList.remove("show")};
+$("soundBtn").onclick=()=>{store.sound=!store.sound;save();renderHome()};
+$("resetBtn").onclick=()=>{
+  if($("resetBtn").dataset.sure){store.pts=DATA.map(d=>startPts(d.start));save();delete $("resetBtn").dataset.sure;$("resetBtn").textContent="Reset to my sheet";renderHome();}
+  else{$("resetBtn").dataset.sure=1;$("resetBtn").textContent="Tap again to reset";setTimeout(()=>{delete $("resetBtn").dataset.sure;$("resetBtn").textContent="Reset to my sheet"},3000)}
+};
+
+// ---------- game ----------
+const ROUND=10;
+let G=null;
+function show(id){["home","play","end"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0)}
+
+function pickRoot(){
+  const focus=$("focusX").checked;
+  const recent=G.recent;
+  let pool=DATA.filter(d=>!recent.includes(d.id));
+  const w=pool.map(d=>{const p=store.pts[d.id];return focus?Math.pow(5-p,2):1});
+  let r=Math.random()*w.reduce((a,b)=>a+b,0);
+  for(let i=0;i<pool.length;i++){r-=w[i];if(r<=0)return pool[i]}
+  return pool[pool.length-1];
+}
+function meaningChoices(d){
+  const others=shuffle([...new Set(DATA.map(x=>x.m))].filter(m=>m!==d.m)).slice(0,3);
+  return shuffle([d.m,...others]).map(m=>({label:m,ok:m===d.m}));
+}
+function rootChoices(d){
+  const others=shuffle(DATA.filter(x=>x.m!==d.m)).slice(0,3);
+  return shuffle([d,...others]).map(x=>({label:x.r,ok:x.id===d.id}));
+}
+
+function startRound(){
+  G={i:0,score:0,streak:0,hits:0,recent:[],results:[],before:store.pts.slice(),runs:{}};
+  const q=$("quiver");q.innerHTML="";for(let i=0;i<ROUND;i++)q.appendChild(document.createElement("i"));
+  show("play");nextQ();
+}
+
+function nextQ(){
+  if(G.i>=ROUND) return endRound();
+  const d=pickRoot();
+  G.recent.push(d.id);if(G.recent.length>4)G.recent.shift();
+  const lv=levelOf(store.pts[d.id]);
+  // harder question types unlock as a root improves
+  const types=lv===0?["r2m","r2m","m2r"]:lv===1?["r2m","m2r","word"]:["m2r","word","word"];
+  const type=types[Math.random()*types.length|0];
+  G.cur={d,type,clueUsed:false,done:false};
+
+  [...$("quiver").children].forEach((el,k)=>{el.classList.toggle("now",k===G.i)});
+  $("hudArrow").textContent=`Shot ${G.i+1}/${ROUND}`;
+  $("hudScore").textContent=G.score+" pts";
+  $("hudStreak").textContent=G.streak>=2?(G.streak>=3?`🎩 Hat trick+ (${G.streak})`:`🔥 ${G.streak} in a row`):"";
+  $("feedback").className="feedback";$("feedback").innerHTML="";
+
+  const qm=$("qmain");qm.className="qmain";
+  let choices,clueHTML;
+  if(type==="r2m"){
+    $("qtype").textContent="Root → meaning";
+    qm.textContent=up(d.r);
+    $("qask").textContent="What does this root mean?";
+    choices=meaningChoices(d);
+    clueHTML=`You know these words: <em>${d.ex.join(", ")}</em>`;
+  }else if(type==="m2r"){
+    $("qtype").textContent="Meaning → root";
+    qm.textContent=`"${up(d.m)}"`;
+    $("qask").textContent="Which root means this?";
+    choices=rootChoices(d);
+    clueHTML=`Think of: <em>${d.ex.join(", ")}</em>`;
+  }else{
+    $("qtype").textContent="Mystery word";
+    const w=d.more[Math.random()*d.more.length|0];
+    G.cur.word=w;
+    qm.classList.add("word");
+    qm.innerHTML=up(w).replace(/\[(.*?)\]/,'<span class="hl">$1</span>');
+    $("qask").textContent="The underlined root means…";
+    choices=meaningChoices(d);
+    clueHTML=`Same root as: <em>${d.ex.join(", ")}</em>`;
+  }
+  G.cur.clueHTML=clueHTML;
+  $("clue").innerHTML=`<button id="clueBtn">💡 Clue (half points)</button>`;
+  $("clueBtn").onclick=()=>{G.cur.clueUsed=true;$("clue").innerHTML=clueHTML};
+
+  const t=$("targets");t.innerHTML="";
+  choices.forEach(c=>{
+    const b=document.createElement("button");
+    b.className="tgt"+(type==="m2r"?" root":"");
+    b.innerHTML=`<div class="ring"></div><div class="lbl">${type==="m2r"?up(c.label):c.label}</div>`;
+    b.onclick=()=>shoot(b,c.ok);
+    b.dataset.ok=c.ok?1:"";
+    t.appendChild(b);
+  });
+}
+
+function shoot(btn,ok){
+  if(G.cur.done) return; G.cur.done=true;
+  [...$("targets").children].forEach(b=>b.disabled=true);
+  const goal=btn.querySelector(".ring"), r=goal.getBoundingClientRect();
+  // goal: ball lands in a corner of the net; save: ball hits the pipe/goalie area
+  const corner=Math.random()<.5?.25:.75;
+  const fx=ok?corner:(Math.random()<.5?-.1:1.1), fy=ok?.35+Math.random()*.3:.1;
+  const ex=r.left+r.width*fx, ey=r.top+r.height*fy;
+  const b=document.createElement("div");b.className="ball";
+  const sx=window.innerWidth/2-8, sy=window.innerHeight+10;
+  b.style.left=sx+"px";b.style.top=sy+"px";document.body.appendChild(b);
+  sWhoosh();
+  requestAnimationFrame(()=>{
+    b.style.transition="left .35s cubic-bezier(.2,.2,.5,1), top .35s cubic-bezier(.2,.6,.4,1), transform .35s";
+    b.style.left=(ex-8)+"px";b.style.top=(ey-8)+"px";b.style.transform="scale(.75)";
+  });
+  setTimeout(()=>{
+    b.remove();
+    if(ok){const ib=document.createElement("div");ib.className="inball";ib.style.left=(fx*100)+"%";ib.style.top=(fy*100+25)+"%";goal.appendChild(ib);}
+    else{const sv=document.createElement("div");sv.className="saved";sv.textContent="SAVED!";goal.appendChild(sv);}
+    resolve(btn,ok);
+  },370);
+}
+
+function resolve(btn,ok){
+  const {d,type,clueUsed}=G.cur;
+  const id=d.id;
+  const fb=$("feedback");
+  let earned=0;
+  if(ok){
+    G.hits++;G.streak++;
+    earned=(clueUsed?5:10)+(G.streak>=3?5:0);
+    G.score+=earned;
+    btn.classList.add("right");
+    sHit();
+    // mastery: +2 without clue, +1 with clue
+    store.pts[id]=Math.min(4,store.pts[id]+(clueUsed?1:2));
+    $("pts").textContent="+"+earned;$("pts").classList.remove("go");void $("pts").offsetWidth;$("pts").classList.add("go");
+  }else{
+    G.streak=0;
+    btn.classList.add("wrong");$("qcard").classList.add("shake");setTimeout(()=>$("qcard").classList.remove("shake"),300);
+    sMiss();
+    store.pts[id]=Math.max(0,store.pts[id]-2);
+    [...$("targets").children].forEach(b=>{if(b.dataset.ok)b.classList.add("right");else if(b!==btn)b.classList.add("dim")});
+  }
+  save();
+  G.results.push({id,ok});
+  $("quiver").children[G.i].className=ok?"hit":"miss";
+  $("hudScore").textContent=G.score+" pts";
+
+  const memory=hookFor(d);
+  const wordLine=type==="word"?`<br><b>${plain(G.cur.word)}</b> has <b>${up(d.r.split(" / ")[0])}</b> in it.`:"";
+  const lines=ok
+    ? [`🥅 GOAL!${G.streak===3?" 🎩 HAT TRICK!":G.streak>3?" On fire!":""}`]
+    : ["🧤 Saved by the goalie! Here's the trick:"];
+  fb.className="feedback show "+(ok?"good":"bad");
+  fb.innerHTML=`<b class="big">${lines[0]}</b><b>${up(d.r)}</b> = <b>${d.m}</b>${wordLine}<br><span style="color:#cfe3d4">${memory}</span>
+    <button class="btn" id="nextBtn">${G.i+1>=ROUND?"Final score":"Next shot ➜"}</button>`;
+  $("nextBtn").onclick=()=>{G.i++;nextQ()};
+  fb.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+// short "why" hooks that connect the root to words Emmett already knows
+const HOOKS={
+  0:"An ASTEROID is a star-like rock; an ASTRONAUT is a \"star sailor.\"",
+  1:"If it's AUDIBLE you can hear it. The AUDIENCE is the people who hear.",
+  2:"AUTOMATIC = works by itself. AUTOGRAPH = writing your own name.",
+  3:"A BENEFIT is something good for you. BENE = good.",
+  4:"BIOLOGY is the study of life. A BIOGRAPHY is writing about someone's life.",
+  5:"CHRONIC = lasts a long time. SYNCHRONIZE = same time.",
+  6:"DICTATE = say it out loud for someone to write. PREDICT = say it before it happens.",
+  7:"PRODUCE = make. A CONDUCTOR leads the band.",
+  8:"GENERATE = bring into being. A GENE is passed on at birth.",
+  9:"GEOGRAPHY = writing about the earth. GEOLOGY = studying the earth's rocks.",
+  10:"An AUTOGRAPH is self-writing. A GRAPH is data written as a picture.",
+  11:"A JURY decides according to the law. JUSTICE = fairness under law.",
+  12:"LOGIC is careful thinking. A MONOLOGUE is one person's thoughts spoken.",
+  13:"LUCID = clear, like light shining through. TRANSLUCENT lets light through.",
+  14:"MANUAL = done by hand. A MANICURE is care for your hands.",
+  15:"DEMAND = give an order. COMMAND, MANDATORY = it's ordered.",
+  16:"A MISSILE is something sent flying. TRANSMIT = send across.",
+  17:"An OMNIVORE eats all kinds of food — plants and meat.",
+  18:"EMPATHY = feeling what someone else feels. SYMPATHY = feeling with them.",
+  19:"PHILOSOPHY = love of wisdom. A BIBLIOPHILE loves books. Philadelphia = city of brotherly love.",
+  20:"PHONICS = letter sounds. TELEPHONE = sound from far off.",
+  21:"PHOTOGRAPH = writing with light. A PHOTON is a particle of light.",
+  22:"PORTABLE = easy to carry. EXPORT = carry out of the country.",
+  23:"TRANQUIL = calm and quiet. ACQUIT = set free so you can rest.",
+  24:"A SCRIPT is written lines. DESCRIBE = write down what something is like.",
+  25:"SENSITIVE = feels things strongly. RESENT = feel bad about something again and again.",
+  26:"TELEPHONE = sound from far off. TELESCOPE = see far off.",
+  27:"TERRAIN is the earth you ride over. TERRITORY = an area of land.",
+  28:"EVACUATE = empty the building. A VACUUM is empty space.",
+  29:"VISIBLE = you can see it. VIDEO = something you watch."
+};
+const hookFor=d=>HOOKS[d.id]||"";
+
+function endRound(){
+  show("end");
+  $("endScore").textContent=G.score;
+  const pct=G.hits/ROUND;
+  $("endRank").textContent=pct===1?"🏆 Perfect game — MVP!":pct>=.8?"🥍 All-American":pct>=.6?"⭐ Varsity starter":pct>=.4?"💪 JV scorer":"🏃 Back to practice!";
+  $("endHits").textContent=`${G.hits} goals on ${ROUND} shots`;
+  if(G.score>store.best){store.best=G.score;save();$("endHits").textContent+=" · New best!"}
+  // level ups / downs
+  const ups=[];const seen=new Set();
+  G.results.forEach(r=>{if(seen.has(r.id))return;seen.add(r.id);
+    const a=levelOf(G.before[r.id]),b=levelOf(store.pts[r.id]);
+    if(b>a)ups.push(r.id);
+  });
+  const misses=[...new Set(G.results.filter(r=>!r.ok).map(r=>r.id))];
+  $("lvlPanel").classList.toggle("hidden",!ups.length);
+  $("lvlList").innerHTML=ups.map(id=>{const d=DATA[id];const a=levelOf(G.before[id]),b=levelOf(store.pts[id]);
+    return `<div><span class="badge ${LV[a].c}">${LV[a].t}</span> → <span class="badge ${LV[b].c}">${LV[b].t}</span> &nbsp;<b>${up(d.r)}</b> = ${d.m}</div>`}).join("");
+  $("missPanel").classList.toggle("hidden",!misses.length);
+  $("missList").innerHTML=misses.map(id=>{const d=DATA[id];return `<div><b>${up(d.r)}</b> = ${d.m} <span style="color:#a9c9b2">(${d.ex.join(", ")})</span></div>`}).join("");
+  if(pct>=.8)confetti();
+}
+function confetti(){
+  const cols=["#ff8a1f","#ffd23a","#2f6fb5","#fff","#3f9a5a"];
+  for(let i=0;i<60;i++){const c=document.createElement("div");c.className="confetti";
+    c.style.left=Math.random()*100+"vw";c.style.background=cols[i%cols.length];
+    c.style.animationDuration=(1.5+Math.random()*2)+"s";c.style.animationDelay=Math.random()*.5+"s";
+    document.body.appendChild(c);setTimeout(()=>c.remove(),4500)}
+}
+
+$("startBtn").onclick=startRound;
+$("againBtn").onclick=startRound;
+$("homeBtn").onclick=()=>{renderHome();show("home")};
+$("quitBtn").onclick=()=>{renderHome();show("home")};
+renderHome();
+</script>
+</body>
+</html>
