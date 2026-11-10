@@ -1,6 +1,8 @@
-# "I Won't Bow Down"
+# "I Won't Be Bowing"
 ### A Purim play song: Mordechai and Haman at the palace gate
 *(Sung to the tune of "Holding Out for a Hero")*
+
+Every line is written to match the syllable count and beat of the original line it replaces.
 
 **Characters:** HAMAN, MORDECHAI, CHORUS (the people of Shushan)
 
@@ -9,65 +11,70 @@
 ---
 
 **HAMAN (Verse 1):**
-Here I come in my fancy robes,
+Here I come in fancy robes,
 The king's own number two!
 Everybody bows to me,
 So, Mordechai, should you!
-Bow down low, all you people of Shushan, get down on your knees,
-When Haman walks by you had better bow down, so bow down, if you please!
+So bow down low, everybody, get down on your knees,
+If you don't bow to me, then I'll be very, very displeased!
 
 **MORDECHAI (Chorus):**
-I won't bow down, no!
-I'm standing up for Hashem from the morning till night!
-You can stomp and you can shout and you can turn red with spite,
-I won't bow down, no!
-I only bow to Hashem, 'cause I know that it's right!
-You can huff and you can puff, but I'm not budging tonight,
-Not budging tonight!
+I won't be bowing,
+I'm never bowing to Haman, not by day or by night!
+Go yell till you're red, go and stomp till you're blue,
+But I'm not gonna bend to your might!
+I won't be bowing,
+I'm only bowing to my Maker, and I know it's right!
+Just huff all you want, and just puff all you want,
+But I'm standing up taller than you, taller than you!
 
 ---
 
 **HAMAN (Verse 2):**
-Who's that man by the palace gate,
+Who's that by the palace gate,
 Not bending at the knee?
 Doesn't he know who I am?
 The whole world bows to me!
-I've got power, I've got riches, I've got a hat with three points,
-And that stubborn old Mordechai's putting my nose out of joint!
+I've got power, I've got gold, and a three-cornered hat,
+So who does that Mordechai think he is, just standing like that?
 
 **MORDECHAI (Chorus):**
-I won't bow down, no!
-I'm standing up for Hashem from the morning till night!
-You can stomp and you can shout and you can turn red with spite,
-I won't bow down, no!
-I only bow to Hashem, 'cause I know that it's right!
-You can huff and you can puff, but I'm not budging tonight,
-Not budging tonight!
+I won't be bowing,
+I'm never bowing to Haman, not by day or by night!
+Go yell till you're red, go and stomp till you're blue,
+But I'm not gonna bend to your might!
+I won't be bowing,
+I'm only bowing to my Maker, and I know it's right!
+Just huff all you want, and just puff all you want,
+But I'm standing up taller than you, taller than you!
 
 ---
 
 **MORDECHAI (Bridge):**
-My grandpa Binyamin never bowed down to Eisav's clan,
-And I won't bow to you, Haman, I'm a Binyamin man!
-You can bring your guards, your threats, and your wicked plan,
-I'll stand right here as tall as I can!
+Back when the brothers bowed to Eisav's whole clan,
+Binyamin was not even born,
+So I'm a Binyamin man, and I
+Won't bow down!
+You can bring all your guards and your threats
+And your wicked decree,
+I'll stay standing right here,
+Just you wait and you'll see!
 
-**HAMAN:**
-Fine! I'll throw the pur, I'll pick a day, I'll go and tell the king!
+**HAMAN** *(spoken)*: Fine! I'll throw the pur, I'll pick a day, and I'll go tell the king!
 
-**MORDECHAI:**
-Go ahead! Hashem has got a plan for everything!
+**MORDECHAI** *(spoken)*: Go ahead! Hashem has a plan for everything!
 
 ---
 
 **MORDECHAI + CHORUS (Final Chorus):**
-We won't bow down, no!
-We're standing up for Hashem from the morning till night!
-You can stomp and you can shout and you can turn red with spite,
-We won't bow down, no!
-We only bow to Hashem, 'cause we know that it's right!
-You can huff and you can puff, but we're not budging tonight,
-Not budging tonight!
+We won't be bowing,
+We're never bowing to Haman, not by day or by night!
+Go yell till you're red, go and stomp till you're blue,
+But we're not gonna bend to your might!
+We won't be bowing,
+We're only bowing to our Maker, and we know it's right!
+Just huff all you want, and just puff all you want,
+But we're standing up taller than you, taller than you!
 
 **HAMAN** *(stomping off)*: GRRRRRR!
 
