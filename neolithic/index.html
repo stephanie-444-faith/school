@@ -228,6 +228,40 @@
   .ld-frame { display: block; width: calc(100% + 40px); margin: 0 -20px -20px; height: max(620px, calc(100vh - 150px)); border: 0; border-radius: 0 0 18px 18px; background: #F6FBFA; }
   .aa-card .aa-home { font-size: .75rem; font-weight: 800; color: var(--gold); }
   .home-new { position: absolute; top: -6px; right: -8px; font-style: normal; font-size: 9px; font-weight: 800; line-height: 1.4; background: var(--bad); color: #fff; border-radius: 99px; padding: 0 5px; }
+  .prof-chip { position: fixed; top: 12px; right: 12px; z-index: 40; border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 800; background: rgba(20, 14, 40, .88); color: #fff; box-shadow: 0 4px 14px rgba(0, 0, 0, .3); max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .prof-chip span { opacity: .7; }
+  body.emerg-on .prof-chip { top: 62px; }
+  .prof-pop { position: fixed; inset: 0; z-index: 90; background: rgba(0, 0, 0, .55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .prof-box { background: var(--panel); color: var(--ink); border-radius: 18px; padding: 16px; width: min(420px, 100%); max-height: 86vh; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 20px 60px rgba(0, 0, 0, .45); }
+  .prof-head { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; }
+  .prof-box .soft { margin: 0; }
+  .prof-list { overflow-y: auto; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .prof-row { display: flex; gap: 6px; }
+  .prof-pick { flex: 1; text-align: left; border: 2px solid var(--line); background: var(--panel-2); border-radius: 12px; padding: 9px 12px; font-weight: 800; }
+  .prof-row.on .prof-pick { border-color: var(--gold); }
+  .prof-del { border: 0; background: none; padding: 0 8px; font-weight: 800; }
+  .prof-add, .ty-add { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ty-add { margin-top: 12px; }
+  .prof-add input, .ty-add input, .ty-add select { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; font-weight: 700; }
+  .wh-stage { position: relative; width: min(86vw, 420px); aspect-ratio: 1; margin: 18px auto 0; }
+  .wh-stage canvas { width: 100%; height: 100%; display: block; border-radius: 50%; box-shadow: 0 10px 30px rgba(0, 0, 0, .35); }
+  .wh-pointer { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 34px solid #ff3b5c; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .45)); z-index: 2; }
+  .wh-hub { position: absolute; left: 50%; top: 50%; width: 22%; height: 22%; transform: translate(-50%, -50%); border-radius: 50%; border: 5px solid #fff; background: radial-gradient(circle at 35% 30%, #ffe27a, #f2a516); font-weight: 900; font-size: clamp(12px, 3.6vw, 18px); color: #3b2300; box-shadow: 0 4px 12px rgba(0, 0, 0, .35); }
+  .wh-result { text-align: center; font-size: 1.5rem; font-weight: 900; min-height: 2.2em; margin: 12px 0 4px; overflow-wrap: anywhere; }
+  .wh-result.pop { animation: whPop .5s ease-out; }
+  @keyframes whPop { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
+  .wh-opt { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .wh-tools { align-items: center; }
+  .wh-tools input { width: 6.5em; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; }
+  .wh-list { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
+  .wh-row { display: grid; grid-template-columns: 2.8em 4em 1fr auto; gap: 6px; align-items: center; }
+  .wh-row input { min-width: 0; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; }
+  .wh-row .wh-e { text-align: center; font-size: 1.2rem; padding: 6px 4px; }
+  .wh-num { font-weight: 800; text-align: center; border-left: 6px solid; border-radius: 4px; padding-left: 2px; }
+  .wh-x { border: 0; background: none; color: var(--ink); opacity: .7; padding: 4px 8px; }
+  .wh-paste summary { cursor: pointer; font-weight: 800; margin-top: 10px; }
+  .wh-paste textarea { width: 100%; margin: 8px 0; padding: 10px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; }
+  .wh-hist div { padding: 5px 0; border-bottom: 1px solid var(--line); font-weight: 700; }
   .aa-card em { position: absolute; top: 10px; right: 10px; font-style: normal; font-size: .7rem; font-weight: 800; background: var(--bad); color: #fff; border-radius: 999px; padding: 2px 8px; }
   .aa-card.small { flex-direction: row; align-items: center; } .aa-card.small i { font-size: 1.6rem; }
   .cl-steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .cl-step { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font-weight: 800; }
@@ -2254,13 +2288,27 @@ const MEM = {};
 const copy = v => v === undefined ? v : JSON.parse(JSON.stringify(v));
 const localT = k => { try { return +localStorage.getItem("ctc-t-" + k) || 0; } catch (e) { return MEM_T[k] || 0; } };
 const MEM_T = {};
+/* ---------- 👤 Profiles: every game and app has its own player list ----------
+   Everyone from Bunny Hop is on every list (MR.E first), and anyone can add more players to a game any time, up to 100 per game.
+   Each player's progress in that game is saved on its own. MR.E keeps the progress that was already there. */
+const PROF_MAX = 100;
+let PROF_GAME = null, PROF_RESTART = null;   // the game or app that's open now, and how to start it over for a new player
+const PROF_GLOBAL = /^(prof_|cg_|ty_|subject$|mlevel$|rpart$|goal$)|sound/;   // settings that every player shares
+const profBuilt = () => TY_ACCOUNTS.filter(a => !a.guest && !a.custom).map(a => ({ id: a.id, name: a.name }));
+const profExtra = g => { const v = store.get("prof_" + g, []); return Array.isArray(v) ? v.filter(p => p && p.id && p.name) : []; };
+const profList = g => [...profBuilt(), ...profExtra(g)].slice(0, PROF_MAX);
+const profCur = (g = PROF_GAME) => { if (!g) return "emmett"; const id = store.get("prof_cur_" + g, "emmett"); return profList(g).some(p => p.id === id) ? id : "emmett"; };
+const profName = (g = PROF_GAME, id = profCur(g)) => (profList(g).find(p => p.id === id) || { name: "MR.E" }).name;
+const profKey = k => (!PROF_GAME || k.includes("@") || PROF_GLOBAL.test(k) || profCur() === "emmett") ? k : k + "@" + profCur();
 const store = {
   get(k, d) {
+    k = profKey(k);
     if (k in MEM) return copy(MEM[k]);
     try { const v = localStorage.getItem("ctc-" + k); if (v != null) { MEM[k] = JSON.parse(v); return copy(MEM[k]); } } catch (e) {}
     return d;
   },
   set(k, v) {
+    k = profKey(k);
     const t = Math.max(Date.now(), localT(k) + 1);
     MEM[k] = copy(v); MEM_T[k] = t;
     try { localStorage.setItem("ctc-" + k, JSON.stringify(v)); localStorage.setItem("ctc-t-" + k, String(t)); } catch (e) {}
@@ -2268,7 +2316,7 @@ const store = {
   }
 };
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z]+|ra_v1)$/.test(k);
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -2336,7 +2384,7 @@ const flushNow = () => { if (CLOUD && pending.size) { clearTimeout(cloudTimer); 
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushNow(); });
 window.addEventListener("pagehide", flushNow);
 let keyHandler = null;
-document.addEventListener("keydown", e => { if (keyHandler) keyHandler(e); });
+document.addEventListener("keydown", e => { if (keyHandler && !e.target.closest?.("#prof-pop")) keyHandler(e); });
 
 /* ---------- Sound (starts after the first tap) ---------- */
 let muted = store.get("muted", false);
@@ -2435,6 +2483,7 @@ if (!GOALS[choice.goal]) choice.goal = "r10k";
 
 const moreBest = (id, v) => v == null ? "" : ["connect4", "pong"].includes(id) ? `Wins: ${v}` : id === "memory" ? `Best ${v} moves` : id === "mines" ? `Best ${v}s` : id === "rodeo" ? `Best ${fmt(v)} m` : `Best ${v}`;
 function showHome() {
+  PROF_GAME = null; PROF_RESTART = null;
   keyHandler = null;
   stopSlope();
   stopArchers();
@@ -5701,6 +5750,8 @@ const TY_ACCOUNTS = [
   { id: "franklin", name: "Franklin the Wise" }, { id: "peanut", name: "Peanut the Small and Cute" }, { id: "ewalk", name: "E-walk the Magnificent" }, { id: "abem", name: "Abem" },
   { id: "goodtyper", name: "Good Typer", guest: true }, { id: "funnytyper", name: "Funny Typer", guest: true }
 ];
+// ➕ typers added in Bunny Hop (up to 100 typers in all)
+function tySyncCustom() { for (let i = TY_ACCOUNTS.length - 1; i >= 0; i--) if (TY_ACCOUNTS[i].custom) TY_ACCOUNTS.splice(i, 1); profExtra("bunny").forEach(p => TY_ACCOUNTS.push({ id: p.id, name: p.name, custom: true })); }
 const TY_CHARS = [
   { id: "bunny", emoji: "🐰", name: "Bunny", cost: 0, power: "A speedy little hopper." },
   { id: "frog", emoji: "🐸", name: "Frog", cost: 0, power: "Ribbit! A free friend." },
@@ -5897,7 +5948,7 @@ const TY_START_WPM = 35, TY_STEP_WPM = 4;
 function startBunny() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
-  keyHandler = null;
+  keyHandler = null; PROF_GAME = null; tySyncCustom();
   $app.innerHTML = `
     <div class="panel ty-wrap">
       <div class="topline"><span class="label">Bunny Hop Typing</span><button class="iconbtn" id="ty-home">Back to menu</button></div>
@@ -5907,9 +5958,22 @@ function startBunny() {
           ${tyWear(a, "ty-ava")}<b>${ac.name}</b>
           ${isChamp(ac.id) ? `<span class="ty-champ">⭐ Carrot Champion</span>` : ""}${isSpeedChamp(ac.id) ? `<span class="ty-champ speed">⚡ Speed Champion</span>` : ""}<small>${ac.guest ? "Guest" : ""}${a.best.easy || a.best.hard ? `${ac.guest ? " · " : ""}Best ${Math.max(a.best.easy || 0, a.best.hard || 0)} words` : ""}</small>
         </button>`; }).join("")}</div>
+      ${TY_ACCOUNTS.length < PROF_MAX ? `<form class="ty-add" id="ty-add"><input id="ty-new" maxlength="20" placeholder="New typer's name" aria-label="New typer's name" autocomplete="off"><button class="btn go" type="submit">➕ Add a typer</button></form>` : `<p class="soft">Bunny Hop has ${PROF_MAX} typers, the most it can hold.</p>`}
+      ${TY_ACCOUNTS.some(a => a.custom) ? `<div class="ty-add"><select id="ty-del-sel" aria-label="Typer to remove">${TY_ACCOUNTS.filter(a => a.custom).map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join("")}</select><button class="chip" id="ty-del" type="button">🗑 Remove typer</button></div>` : ""}
       <p class="soft">Funny Typer gets silly words. Everyone else gets regular words.</p>
     </div>`;
   document.getElementById("ty-home").addEventListener("click", showHome);
+  document.getElementById("ty-add")?.addEventListener("submit", e => {
+    e.preventDefault(); const n = document.getElementById("ty-new").value.replace(/\s+/g, " ").trim().slice(0, 20); if (!n) return;
+    if (TY_ACCOUNTS.some(a => a.name.toLowerCase() === n.toLowerCase())) return toast(`${n} is already a typer.`);
+    if (TY_ACCOUNTS.length >= PROF_MAX) return toast(`Bunny Hop can hold ${PROF_MAX} typers.`);
+    store.set("prof_bunny", [...profExtra("bunny"), { id: "p" + Date.now().toString(36) + rnd(100, 999), name: n }]); startBunny(); toast(`👋 Welcome, ${n}! Tap your name to start.`);
+  });
+  document.getElementById("ty-del")?.addEventListener("click", e => {
+    const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to remove"; return; }
+    const id = document.getElementById("ty-del-sel").value, name = TY_ACCOUNTS.find(a => a.id === id)?.name || "That typer";
+    store.set("prof_bunny", profExtra("bunny").filter(p => p.id !== id)); startBunny(); toast(`${name} was removed.`);
+  });
   $app.querySelectorAll("[data-acct]").forEach(b => b.addEventListener("click", () => { TY = b.dataset.acct; store.set("ty_last", TY); bunnyLobby(); }));
 }
 
@@ -8600,7 +8664,7 @@ function bindHomeRow() {
   HOME_TIMER = setInterval(() => { if (!document.getElementById("gamesmenu")) return clearInterval(HOME_TIMER); if (aaDay() !== day) { clearInterval(HOME_TIMER); showHome(); } }, 20000);
 }
 function startAppApp() {
-  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; PROF_GAME = null;
   const day = aaDay(), home = new Set(homeToday().map(a => a.key)), extras = [HOME_PINNED()[1], ...HOME_CORE()];
   const card = (a, key, attr) => `<button class="aa-card" ${attr}><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${aaSpot(a, day) ? `<em>BRAND NEW</em>` : a.isNew ? `<em>NEW</em>` : ""}${home.has(key) ? `<small class="aa-home">🏠 On the home screen today</small>` : ""}</button>`;
   $app.innerHTML = `<div class="panel appapp">
@@ -8843,6 +8907,7 @@ let NA_TIMERS = [];
 function naCleanup() { NA_TIMERS.forEach(t => { clearInterval(t); clearTimeout(t); cancelAnimationFrame(t); }); NA_TIMERS = []; }
 const naTimer = t => (NA_TIMERS.push(t), t);
 function appScreen(label, inner) {
+  { const g = NEW_APPS.find(a => label.includes(a.name)); if (g && PROF_GAME !== g.id) { PROF_GAME = g.id; PROF_RESTART = () => g.start(); } }
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush();
   $app.innerHTML = `<div class="panel newapp"><div class="topline"><span class="label">${label}</span><button class="iconbtn" id="na-back">Back to App-App</button></div>${inner}</div>`;
   document.getElementById("na-back").addEventListener("click", () => { naCleanup(); startAppApp(); });
@@ -9291,10 +9356,10 @@ const CG_LVLS = [["easy", "😊 Easy"], ["medium", "🙂 Medium"], ["hard", "�
 const cgLvl = () => store.get("cg_lvl", "medium");
 const cgSmart = () => ({ easy: .35, medium: .7, hard: 1 })[cgLvl()] || .7;   // chance the computer makes its best move
 // The player picker uses the same players as Bunny Hop Typing, and each player keeps their own wins.
-const cgPlayer = () => { const id = store.get("cg_player", "emmett"); return TY_ACCOUNTS.some(a => a.id === id) ? id : "emmett"; };
-const cgName = () => TY_ACCOUNTS.find(a => a.id === cgPlayer()).name;
-const cgPick = () => `<label class="cg-pl">🙋 Player: <select class="cg-player" aria-label="Who is playing">${TY_ACCOUNTS.map(a => `<option value="${a.id}"${a.id === cgPlayer() ? " selected" : ""}>${esc(a.name)}</option>`).join("")}</select></label>`;
-const cgBindPick = after => $app.querySelectorAll(".cg-player").forEach(sel => sel.addEventListener("change", () => { store.set("cg_player", sel.value); toast(`🙋 Now playing: ${cgName()}`); after(); }));
+const cgPlayer = () => profCur();
+const cgName = () => profName();
+const cgPick = () => `<label class="cg-pl">🙋 Player: <select class="cg-player" aria-label="Who is playing">${profList(PROF_GAME).map(a => `<option value="${a.id}"${a.id === cgPlayer() ? " selected" : ""}>${esc(a.name)}</option>`).join("")}<option value="__add">➕ Add a new player…</option></select></label>`;
+const cgBindPick = after => $app.querySelectorAll(".cg-player").forEach(sel => sel.addEventListener("change", () => { if (sel.value === "__add") { sel.value = cgPlayer(); profOpen(true); return; } if (PROF_GAME) store.set("prof_cur_" + PROF_GAME, sel.value); toast(`🙋 Now playing: ${cgName()}`); after(); }));
 const cgScore = id => { const w = (store.get("cg_wins_" + cgPlayer(), {})[id]) || [0, 0, 0]; return `🦛 ${cgName()} ${w[0]} · 🤖 ${w[1]}${w[2] ? ` · 🤝 ${w[2]}` : ""}`; };
 function cgWin(id, who) {   // who: 0 you, 1 computer, 2 tie
   const key = "cg_wins_" + cgPlayer(), w = store.get(key, {}); w[id] = w[id] || [0, 0, 0]; w[id][who]++; store.set(key, w);
@@ -11179,11 +11244,33 @@ const RA_SKINS = [
   { id: "rainbow", icon: "🌈", name: "Rainbow Arrow", how: "Shoot a perfect 10 for 10", shaft: "#444444", tip: "#ffffff", f1: "#ff4d4d", f2: "#4da6ff", trail: ["#ff4d4d", "#ffa64d", "#ffe14d", "#5cd65c", "#4da6ff", "#a64dff"], ok: S => !!S.perfect },
   { id: "gold", icon: "👑", name: "Golden Arrow", how: "Get all 30 roots to Y", shaft: "#b8860b", tip: "#fff3b0", f1: "#ffd700", f2: "#fff8dc", trail: ["#ffd700", "#fff3b0", "#ffffff"], ok: (S, y) => y >= 30 },
 ];
+// 🛒 The Arrow Shop: 50 more arrows to buy with coins (every point scored is a coin). [emoji, name, shaft, tip, feather 1, feather 2]
+const RA_SHOP = [
+  ["🍃", "Leaf", "#4f7a2a", "#d9f2b4", "#7bc043", "#e8f5c8"], ["🌊", "Wave", "#1d4e89", "#bfe9ff", "#2e86de", "#9be7ff"], ["🌸", "Blossom", "#8a4b62", "#ffe0ef", "#ff8fc7", "#ffd1e8"],
+  ["🍬", "Candy Cane", "#ffffff", "#ff3b3b", "#ff3b3b", "#ffffff"], ["🍉", "Watermelon", "#2e7d32", "#ff5c7a", "#ff5c7a", "#1b5e20"], ["🍫", "Chocolate", "#4e2a12", "#c68e5b", "#7b4a26", "#e8c39e"],
+  ["🌵", "Cactus", "#2f6b3a", "#f2e6a0", "#5aa05a", "#ffd166"], ["🦄", "Unicorn", "#f3d6ff", "#ffd700", "#ff9ad5", "#9ad7ff"], ["🐉", "Dragon", "#1f5f3a", "#ffcf33", "#2fbf71", "#ff5a1f"],
+  ["🦅", "Eagle", "#5a3b1e", "#f2f2f2", "#8b5a2b", "#ffffff"], ["🦈", "Shark", "#4a5a6a", "#e8eef3", "#7d8fa1", "#c9d6e3"], ["🐝", "Bumblebee", "#222222", "#ffd400", "#ffd400", "#222222"],
+  ["🦋", "Butterfly", "#3a2a6a", "#ffe66d", "#6c5ce7", "#00cec9"], ["🐙", "Octopus", "#7a1f5c", "#ffb3d9", "#e84393", "#fd79a8"], ["🦖", "Dino", "#3b6b2a", "#f5e663", "#7cb342", "#c0ca33"],
+  ["🐧", "Penguin", "#1c1c1c", "#ffb300", "#1c1c1c", "#ffffff"], ["🦊", "Fox", "#a0461a", "#fff4e6", "#ff7f2a", "#ffffff"], ["🐼", "Panda", "#111111", "#ffffff", "#ffffff", "#111111"],
+  ["🦛", "Hippo", "#6b5b95", "#f8bbd0", "#9575cd", "#f48fb1"], ["🦜", "Parrot", "#c62828", "#ffeb3b", "#2e7d32", "#1e88e5"], ["🌙", "Moon", "#2c3e66", "#fff6c8", "#cfd8ff", "#fff6c8"],
+  ["☀️", "Sun", "#e67e22", "#fff176", "#ffb300", "#fff176"], ["⭐", "Star", "#5b4a00", "#fff59d", "#ffd600", "#ffffff"], ["🪐", "Planet", "#6d4c41", "#ffe0b2", "#ffab91", "#ce93d8"],
+  ["🌌", "Galaxy", "#1a1040", "#e1bee7", "#7c4dff", "#18ffff"], ["🚀", "Rocket", "#cfd8dc", "#ff5252", "#ff5252", "#ffd740"], ["🛸", "UFO", "#455a64", "#b2ff59", "#69f0ae", "#b2ff59"],
+  ["🌋", "Lava", "#3e1f1f", "#ffab40", "#ff3d00", "#ffab40"], ["🧊", "Glacier", "#81d4fa", "#ffffff", "#b3e5fc", "#e1f5fe"], ["🌪️", "Tornado", "#607d8b", "#eceff1", "#90a4ae", "#cfd8dc"],
+  ["⛈️", "Storm", "#37474f", "#ffff8d", "#546e7a", "#ffff8d"], ["🔷", "Prism", "#ffffff", "#ff80ab", "#80d8ff", "#b9f6ca"], ["💎", "Diamond", "#b2ebf2", "#ffffff", "#4dd0e1", "#e0f7fa"],
+  ["🔮", "Crystal", "#4a148c", "#ea80fc", "#aa00ff", "#ea80fc"], ["🪄", "Magic Wand", "#212121", "#ffffff", "#ffd740", "#e040fb"], ["🧲", "Magnet", "#b71c1c", "#cfd8dc", "#e53935", "#cfd8dc"],
+  ["🎸", "Rock Star", "#000000", "#ff1744", "#ff1744", "#ffea00"], ["🎃", "Pumpkin", "#33691e", "#ff9100", "#ff9100", "#212121"], ["👻", "Ghost", "#eceff1", "#ffffff", "#b0bec5", "#ffffff"],
+  ["🎄", "Holiday", "#1b5e20", "#ffd600", "#d50000", "#2e7d32"], ["🍀", "Lucky Clover", "#1b5e20", "#ffd700", "#43a047", "#a5d6a7"], ["🏈", "Football", "#6d3b1e", "#ffffff", "#8d4a24", "#ffffff"],
+  ["🥍", "Lacrosse", "#cfd6e2", "#ff6a13", "#ff6a13", "#ffffff"], ["⚽", "Soccer", "#212121", "#ffffff", "#ffffff", "#212121"], ["🎮", "Pixel", "#2d2d2d", "#00e676", "#ff4081", "#448aff"],
+  ["🤖", "Robot", "#78909c", "#00e5ff", "#b0bec5", "#00e5ff"], ["🥷", "Ninja", "#111111", "#d50000", "#212121", "#d50000"], ["🏴‍☠️", "Pirate", "#3e2723", "#ffd54f", "#212121", "#ffffff"],
+  ["🧙", "Wizard", "#311b92", "#ffd740", "#673ab7", "#ffd740"], ["🌟", "Superstar", "#ffd700", "#ffffff", "#ff4081", "#00e5ff"],
+].map(([icon, name, shaft, tip, f1, f2], i) => { const id = "shop" + i; return { id, icon, name: name + " Arrow", shaft, tip, f1, f2, trail: [f1, f2, tip], shop: true, cost: Math.round((40 + 12 * i + i * i) / 10) * 10, ok: S => (S.owned || []).includes(id) }; });
+const RA_ALL = [...RA_SKINS, ...RA_SHOP];
 // Emmett's sheet is progress, so it saves to the cloud with the rest of his progress (sound stays on this device)
 function raGet() {
-  const s = { pts: RA_DATA.map(d => raStartPts(d.start)), best: 0, bestStreak: 0, perfect: false, rapidBest: 0, skin: "oak" };
+  const s = { pts: RA_DATA.map(d => raStartPts(d.start)), best: 0, bestStreak: 0, perfect: false, rapidBest: 0, skin: "oak", coins: 0, owned: [] };
   const v = store.get("ra_v1", null);
   if (v && Array.isArray(v.pts) && v.pts.length === RA_DATA.length) Object.assign(s, v);
+  if (!Array.isArray(s.owned)) s.owned = [];
   return s;
 }
 const raYs = S => S.pts.filter(p => raLevelOf(p) === 2).length;
@@ -11286,6 +11373,13 @@ function raStyles() {
   .ra .ra-skin b{font-size:13px}
   .ra .ra-skin small{font-size:11px;color:#a9c9b2;text-align:center;line-height:1.2}
   .ra .ra-skinart{transform:rotate(-20deg);height:20px;display:flex;align-items:center}
+  .ra .ra-shopbox{margin-top:12px}
+  .ra .ra-shopbox summary{cursor:pointer;font-weight:800;color:#ffe08a;padding:8px 0}
+  .ra .ra-shopbox summary small{color:#a9c9b2;font-weight:600}
+  .ra .ra-shopnote{font-size:13px;color:#a9c9b2;margin:0 0 8px}
+  .ra .ra-shop .ra-skin.locked{opacity:.85}
+  .ra .ra-shop .ra-skin.locked .ra-skinart{filter:none}
+  .ra .ra-skin.afford{border-color:#3f9a5a}
   .ra .ra-hud{display:flex;justify-content:space-between;align-items:center;font-family:Bungee,sans-serif;font-size:15px;color:#cfe3d4;gap:8px}
   .ra .ra-quiver{display:flex;gap:3px;margin:8px 0 12px}
   .ra .ra-quiver i{flex:1;height:8px;border-radius:4px;background:#33513d}
@@ -11381,9 +11475,10 @@ function startRootArchery() {
       <div class="ra-stat"><b id="ra-sX" style="color:var(--ra-x)">0</b><small>Not yet</small></div>
     </div>
     <div class="ra-row" style="margin-top:16px"><button class="ra-btn" id="ra-startBtn" type="button">🎯 Shoot 10 arrows</button><button class="ra-btn hot" id="ra-rapidBtn" type="button">⚡ Rapid Fire</button></div>
-    <p class="ra-mode">🎯 10 arrows moves roots up your sheet, and the 10th arrow is a 🍎 Golden Apple worth double. ⚡ Rapid Fire: as many bullseyes as you can in 60 seconds (it doesn't change your sheet).</p>
+    <p class="ra-mode">🎯 10 arrows moves roots up your sheet, and the 10th arrow is a 🍎 Golden Apple worth double. ⚡ Rapid Fire: as many bullseyes as you can in 60 seconds (it doesn't change your sheet). Every point is a 🪙 coin for the Arrow Shop.</p>
     <label class="ra-toggle"><input type="checkbox" id="ra-focusX" checked> Aim mostly at my X's and ~'s</label>
-    <div class="ra-panel"><h2>🏹 Arrow locker</h2><div class="ra-locker" id="ra-locker"></div></div>
+    <div class="ra-panel"><h2>🏹 Arrow locker · 🪙 <span id="ra-coins">0</span> coins</h2><div class="ra-locker" id="ra-locker"></div>
+      <details class="ra-shopbox"><summary>🛒 Arrow Shop: 50 more arrows <small id="ra-shopOwned"></small></summary><p class="ra-shopnote">Every point you score is a 🪙 coin. Tap an arrow twice to buy it.</p><div class="ra-locker ra-shop" id="ra-shop"></div></details></div>
     <div class="ra-panel">
       <h2>My root sheet</h2>
       <div class="ra-legend"><span><span class="ra-badge ra-bx">X</span> Not yet</span><span><span class="ra-badge ra-bt">~</span> Becoming familiar</span><span><span class="ra-badge ra-by">Y</span> Confident</span></div>
@@ -11445,7 +11540,7 @@ function startRootArchery() {
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let S = raGet(), SND = store.get("ra_sound", true), G = null, lastMode = "round";
   const save = () => store.set("ra_v1", S);
-  const skin = () => RA_SKINS.find(k => k.id === S.skin && k.ok(S, raYs(S))) || RA_SKINS[0];
+  const skin = () => RA_ALL.find(k => k.id === S.skin && k.ok(S, raYs(S))) || RA_SKINS[0];
   // 🔊 sounds (made right here, nothing to download)
   const tone = (freq, dur, type = "sine", vol = .15, slide = 0, when = 0) => {
     if (!SND) return; const a = naAudio(); if (!a) return;
@@ -11513,12 +11608,19 @@ function startRootArchery() {
     renderLocker();
   }
   function renderLocker() {
-    const y = raYs(S), cur = skin().id;
-    $("locker").innerHTML = RA_SKINS.map(k => { const ok = k.ok(S, y); return `<button type="button" class="ra-skin${ok ? "" : " locked"}${k.id === cur ? " on" : ""}" data-skin="${k.id}"><span class="ra-skinart">${arrowSVG(k)}</span><b>${k.icon} ${k.name}</b><small>${k.id === cur ? "✓ Using it" : ok ? "Tap to use" : "🔒 " + k.how}</small></button>`; }).join("");
-    $("locker").querySelectorAll("[data-skin]").forEach(b => b.onclick = () => {
-      const k = RA_SKINS.find(x => x.id === b.dataset.skin);
-      if (!k.ok(S, raYs(S))) { toast(`🔒 ${k.name}: ${k.how} to unlock it.`); return; }
-      S.skin = k.id; save(); renderLocker(); tone(880, .08, "triangle", .1); tone(1320, .1, "triangle", .08, 0, .06);
+    const y = raYs(S), cur = skin().id, coins = S.coins || 0;
+    const tile = k => { const ok = k.ok(S, y); return `<button type="button" class="ra-skin${ok ? "" : " locked"}${k.id === cur ? " on" : ""}${!ok && k.shop && coins >= k.cost ? " afford" : ""}" data-skin="${k.id}"><span class="ra-skinart">${arrowSVG(k)}</span><b>${k.icon} ${k.name}</b><small>${k.id === cur ? "✓ Using it" : ok ? "Tap to use" : k.shop ? `🪙 ${fmt(k.cost)}` : "🔒 " + k.how}</small></button>`; };
+    $("coins").textContent = fmt(coins);
+    $("locker").innerHTML = RA_SKINS.map(tile).join("");
+    $("shop").innerHTML = RA_SHOP.map(tile).join("");
+    $("shopOwned").textContent = `(${RA_SHOP.filter(k => k.ok(S)).length} of ${RA_SHOP.length} bought)`;
+    document.getElementById("ra").querySelectorAll("[data-skin]").forEach(b => b.onclick = () => {
+      const k = RA_ALL.find(x => x.id === b.dataset.skin);
+      if (k.ok(S, raYs(S))) { S.skin = k.id; save(); renderLocker(); tone(880, .08, "triangle", .1); tone(1320, .1, "triangle", .08, 0, .06); return; }
+      if (!k.shop) { toast(`🔒 ${k.name}: ${k.how} to unlock it.`); return; }
+      if ((S.coins || 0) < k.cost) { toast(`🪙 The ${k.name} costs ${fmt(k.cost)} coins. You need ${fmt(k.cost - (S.coins || 0))} more. Every point you score is a coin!`); return; }
+      if (!b.dataset.sure) { b.dataset.sure = 1; b.querySelector("small").textContent = `Tap again to buy for 🪙 ${fmt(k.cost)}`; naTimer(setTimeout(() => { if (b.isConnected) { delete b.dataset.sure; b.querySelector("small").textContent = `🪙 ${fmt(k.cost)}`; } }, 3000)); return; }
+      S.coins -= k.cost; S.owned = [...(S.owned || []), k.id]; S.skin = k.id; save(); renderLocker(); sFan(); toast(`🛒 You bought the ${k.icon} ${k.name}! It's on your bow now.`);
     });
   }
   function openModal(d) {
@@ -11662,7 +11764,6 @@ function startRootArchery() {
     fb.innerHTML = `<b class="big">${ok ? (apple ? "🍎 Golden Apple! Double points!" : `🎯 Bullseye!${G.streak >= 3 ? " Streak bonus!" : ""}`) : "Missed — here's the trick:"}</b><b>${up(d.r)}</b> = <b>${d.m}</b>${wordLine}<br><span style="color:#cfe3d4">${RA_HOOKS[d.id] || ""}</span>${lvLine}
       <button class="ra-btn" id="ra-nextBtn" type="button">${G.i + 1 >= RA_ROUND ? "See score" : "Next arrow ➜"}</button>`;
     $("nextBtn").onclick = () => { if (G.cur.next) return; G.cur.next = true; G.i++; nextQ(); };
-    fb.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "nearest" });
   }
   function unlocks() {
     const gained = RA_SKINS.filter(k => raOwned(S).includes(k.id) && !G.owned.includes(k.id));
@@ -11682,6 +11783,7 @@ function startRootArchery() {
     $("endHits").textContent = `${G.hits} of ${RA_ROUND} bullseyes`;
     if (G.hits === RA_ROUND) S.perfect = true;
     if (G.score > S.best) { S.best = G.score; $("endHits").textContent += " · New best!"; }
+    S.coins = (S.coins || 0) + G.score; $("endHits").textContent += ` · 🪙 +${fmt(G.score)} coins`;
     save();
     const ups = [], seen = new Set();
     G.results.forEach(r => { if (seen.has(r.id)) return; seen.add(r.id); if (raLevelOf(S.pts[r.id]) > raLevelOf(G.before[r.id])) ups.push(r.id); });
@@ -11695,6 +11797,7 @@ function startRootArchery() {
     $("endRank").textContent = G.hits >= 20 ? "⚡ Lightning Fingers!" : G.hits >= 14 ? "🎯 Sharpshooter" : G.hits >= 9 ? "🏹 Archer" : G.hits >= 5 ? "🌲 Apprentice" : "🎪 Keep practicing!";
     $("endHits").textContent = `${G.hits} bullseye${G.hits === 1 ? "" : "s"} in ${RA_RAPID} seconds (${G.results.length} shots)`;
     if (G.hits > (S.rapidBest || 0)) { S.rapidBest = G.hits; $("endHits").textContent += " · New best!"; }
+    S.coins = (S.coins || 0) + G.score; $("endHits").textContent += ` · 🪙 +${fmt(G.score)} coins`;
     save(); $("lvlPanel").classList.add("ra-hidden"); missList(); unlocks();
     if (G.hits >= 14) confetti();
   }
@@ -11718,7 +11821,106 @@ function startRootArchery() {
   };
   renderHome();
 }
-NEW_APPS.push({ id: "roots", emoji: "🏹", name: "Root Archery", desc: "Emmett's 30 Greek & Latin roots: shoot the bullseye to move each root from X to ~ to Y. Earn new arrows, and try Rapid Fire!", start: () => startRootArchery(), isNew: true, added: "2026-11-09", kw: "root archery|archery|(greek|latin|word) roots?|greek (and |& )?latin roots?|root words?|root sheet|roots? practice|practice roots?" });
+NEW_APPS.push({ id: "roots", emoji: "🏹", name: "Root Archery", desc: "Emmett's 30 Greek & Latin roots: shoot the bullseye to move each root from X to ~ to Y. Earn arrows, buy 50 more in the Arrow Shop, and try Rapid Fire!", start: () => startRootArchery(), isNew: true, added: "2026-11-09", kw: "root archery|archery|(greek|latin|word) roots?|greek (and |& )?latin roots?|root words?|root sheet|roots? practice|practice roots?" });
+
+/* ---------- 🎡 Wheel Spinner: 1 to 1,000 parts, each with a name and an emoji ---------- */
+const WH_MAX = 1000;
+const WH_EMOJI = ["🍕", "🎈", "🐶", "🐱", "🦄", "🌈", "⚽", "🎮", "🍦", "🚀", "🌟", "🐸", "🍩", "🎨", "🏆", "🎁", "🐼", "🍓", "🦖", "🎵", "🐙", "🌮", "🧁", "🐢", "🍪", "🦊", "🎯", "🐝", "🍉", "🦋"];
+const WH_COLORS = ["#ff5c7a", "#ffb020", "#ffe14d", "#5cd65c", "#3fc1ff", "#7a6cff", "#ff7ad9", "#2fd3b5", "#ff8a3d", "#a3e635", "#60a5fa", "#f472b6"];
+const whFresh = () => ({ parts: [["Pizza", "🍕"], ["Ice cream", "🍦"], ["Tacos", "🌮"], ["Pancakes", "🥞"], ["Cupcakes", "🧁"], ["Watermelon", "🍉"]].map(([n, e]) => ({ n, e })), remove: false, history: [] });
+const whColor = (i, n) => n <= WH_COLORS.length ? WH_COLORS[i] : `hsl(${((i * 137.508) % 360).toFixed(1)} 85% ${i % 2 ? 62 : 70}%)`;
+function startWheel() {
+  const W = Object.assign(whFresh(), store.get("wheel_v1", {}));
+  if (!Array.isArray(W.parts) || !W.parts.length) W.parts = whFresh().parts;
+  W.parts = W.parts.slice(0, WH_MAX).map(p => ({ n: String(p?.n ?? "").slice(0, 40), e: String(p?.e ?? "").slice(0, 8) }));
+  if (!Array.isArray(W.history)) W.history = [];
+  appScreen("🎡 Wheel Spinner", `<h2>🎡 Wheel Spinner</h2>
+    <div class="wh-stage"><div class="wh-pointer" aria-hidden="true"></div><canvas id="wh-c" width="840" height="840" role="img" aria-label="The spinning wheel"></canvas><button class="wh-hub" id="wh-hub" type="button">SPIN</button></div>
+    <div class="wh-result" id="wh-result" aria-live="polite">Tap SPIN!</div>
+    <div class="row" style="justify-content:center"><button class="btn go" id="wh-go" type="button">🎡 Spin the wheel!</button><label class="wh-opt"><input type="checkbox" id="wh-remove"${W.remove ? " checked" : ""}> Take out the winner after each spin</label></div>
+    <div class="sl-card">
+      <h3>✏️ The parts (<span id="wh-count"></span>)</h3>
+      <div class="row wh-tools"><label>How many parts? <input id="wh-n" type="number" min="1" max="${WH_MAX}" inputmode="numeric"></label><button class="btn" id="wh-set" type="button">Set</button><button class="chip" id="wh-add" type="button">➕ Add a part</button><button class="chip" id="wh-rand" type="button">🎲 Fill empty emojis</button><button class="chip" id="wh-shuf" type="button">🔀 Shuffle</button><button class="chip" id="wh-reset" type="button">↩️ Start over</button></div>
+      <p class="soft">From 1 to ${fmt(WH_MAX)} parts. Give each part a name and an emoji (on Windows, press ⊞ Win + . to pick an emoji).</p>
+      <div class="wh-list" id="wh-list"></div>
+      <details class="wh-paste"><summary>📋 Paste a whole list (one part per line)</summary><textarea id="wh-paste" rows="6" placeholder="🍕 Pizza&#10;🌮 Tacos&#10;Ice cream"></textarea><button class="btn" id="wh-paste-go" type="button">Use this list</button></details>
+    </div>
+    <div class="sl-card"><h3>🕘 Last spins</h3><div class="wh-hist" id="wh-hist"></div></div>`);
+  const cv = document.getElementById("wh-c"), cx = cv.getContext("2d"), TAU = Math.PI * 2;
+  let img = null, rot = 0, spinning = false, drawQ = false;
+  const save = () => store.set("wheel_v1", W);
+  const label = (p, i) => `${p.e ? p.e + " " : ""}${p.n || "Part " + (i + 1)}`.trim();
+  function bake() {   // draw the wheel once, then just turn the picture while it spins
+    const n = W.parts.length, R = 410, off = document.createElement("canvas"); off.width = off.height = 840;
+    const c = off.getContext("2d"), a = TAU / n; c.translate(420, 420);
+    for (let i = 0; i < n; i++) { c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, R, -Math.PI / 2 + i * a, -Math.PI / 2 + (i + 1) * a); c.closePath(); c.fillStyle = whColor(i, n); c.fill(); if (n > 1 && n <= 200) { c.strokeStyle = "rgba(255,255,255,.75)"; c.lineWidth = n > 60 ? 1 : 3; c.stroke(); } }
+    if (a * R > 14) {
+      const fs = Math.max(10, Math.min(40, a * R * .5)); c.textAlign = "right"; c.textBaseline = "middle"; c.fillStyle = "#1b1030";
+      c.font = `800 ${fs}px "Atkinson Hyperlegible", system-ui, sans-serif`;
+      for (let i = 0; i < n; i++) { c.save(); c.rotate(-Math.PI / 2 + (i + .5) * a); let t = label(W.parts[i], i); while (t.length > 2 && c.measureText(t).width > R * .76) t = t.slice(0, -2) + "…"; c.fillText(t, R - 18, 0); c.restore(); }
+    }
+    c.beginPath(); c.arc(0, 0, R, 0, TAU); c.lineWidth = 10; c.strokeStyle = "#ffffff"; c.stroke();
+    img = off; paint();
+  }
+  function paint() { cx.clearRect(0, 0, 840, 840); cx.save(); cx.translate(420, 420); cx.rotate(rot); cx.drawImage(img, -420, -420); cx.restore(); }
+  const redraw = () => { if (drawQ) return; drawQ = true; naTimer(requestAnimationFrame(() => { drawQ = false; bake(); })); };
+  const atPointer = () => { const a = TAU / W.parts.length; return Math.min(W.parts.length - 1, Math.floor(((((-rot) % TAU) + TAU) % TAU) / a)); };
+  function list() {
+    const n = W.parts.length;
+    document.getElementById("wh-count").textContent = `${fmt(n)} part${n === 1 ? "" : "s"}`; document.getElementById("wh-n").value = n;
+    document.getElementById("wh-list").innerHTML = W.parts.map((p, i) => `<div class="wh-row"><span class="wh-num" style="border-color:${whColor(i, n)}">${i + 1}</span><input class="wh-e" data-e="${i}" maxlength="8" value="${esc(p.e)}" placeholder="🙂" aria-label="Emoji for part ${i + 1}"><input class="wh-name" data-n="${i}" maxlength="40" value="${esc(p.n)}" placeholder="Part ${i + 1}" aria-label="Name of part ${i + 1}"><button class="wh-x" data-x="${i}" type="button" aria-label="Remove part ${i + 1}" title="Remove this part">✕</button></div>`).join("");
+  }
+  function hist() { document.getElementById("wh-hist").innerHTML = W.history.length ? W.history.slice(0, 10).map(x => `<div>${esc(x)}</div>`).join("") : `<p class="soft">Spin the wheel to see the winners here.</p>`; }
+  const setParts = parts => { W.parts = parts.slice(0, WH_MAX); if (!W.parts.length) W.parts = [{ n: "Part 1", e: "🎯" }]; save(); list(); bake(); };
+  function spin() {
+    if (spinning) return; const n = W.parts.length, a = TAU / n;
+    spinning = true; document.getElementById("wh-result").className = "wh-result"; document.getElementById("wh-result").textContent = "Spinning…";
+    const w = Math.floor(Math.random() * n), phi = (w + .15 + Math.random() * .7) * a, start = rot, turns = 5 + Math.floor(Math.random() * 3);
+    const target = start + turns * TAU + ((((-phi - start) % TAU) + TAU) % TAU), dur = 4200 + Math.random() * 1300, t0 = performance.now();
+    let lastSeg = -1, lastTick = 0;
+    const step = now => {
+      if (!cv.isConnected) { spinning = false; return; }
+      const t = Math.min(1, (now - t0) / dur); rot = start + (target - start) * (1 - Math.pow(1 - t, 4)); paint();
+      const seg = atPointer(); if (seg !== lastSeg && now - lastTick > 45) { lastSeg = seg; lastTick = now; naNote(900 + Math.random() * 250, .035, "square", .045); }
+      if (t < 1) naTimer(requestAnimationFrame(step)); else done(atPointer());
+    };
+    naTimer(requestAnimationFrame(step));
+  }
+  function done(i) {
+    spinning = false; const p = W.parts[i], txt = label(p, i), r = document.getElementById("wh-result");
+    r.textContent = `🎉 ${txt}!`; r.className = "wh-result pop"; [523, 659, 784, 1047].forEach((f, k) => naNote(f, .25, "triangle", .14, k * .09));
+    W.history.unshift(txt); W.history = W.history.slice(0, 20); save(); hist();
+    if (W.remove && W.parts.length > 1) naTimer(setTimeout(() => { if (!cv.isConnected) return; W.parts.splice(i, 1); save(); list(); bake(); toast(`${txt} was taken out of the wheel.`); }, 1400));
+  }
+  document.getElementById("wh-go").addEventListener("click", spin);
+  document.getElementById("wh-hub").addEventListener("click", spin);
+  document.getElementById("wh-remove").addEventListener("change", e => { W.remove = e.target.checked; save(); });
+  document.getElementById("wh-set").addEventListener("click", () => {
+    const want = Math.max(1, Math.min(WH_MAX, Math.round(+document.getElementById("wh-n").value || 1))), n = W.parts.length;
+    if (want > n) setParts([...W.parts, ...Array.from({ length: want - n }, (_, k) => ({ n: `Part ${n + k + 1}`, e: rPick(WH_EMOJI) }))]);
+    else if (want < n) { setParts(W.parts.slice(0, want)); toast(`Took out ${fmt(n - want)} part${n - want === 1 ? "" : "s"}.`); }
+    else list();
+  });
+  document.getElementById("wh-add").addEventListener("click", () => { if (W.parts.length >= WH_MAX) return toast(`The wheel can have up to ${fmt(WH_MAX)} parts.`); setParts([...W.parts, { n: `Part ${W.parts.length + 1}`, e: rPick(WH_EMOJI) }]); const l = document.getElementById("wh-list"); l.scrollTop = l.scrollHeight; l.lastElementChild?.querySelector(".wh-name")?.select(); });
+  document.getElementById("wh-rand").addEventListener("click", () => setParts(W.parts.map(p => p.e ? p : { ...p, e: rPick(WH_EMOJI) })));
+  document.getElementById("wh-shuf").addEventListener("click", () => setParts(shuffle(W.parts)));
+  document.getElementById("wh-reset").addEventListener("click", e => { const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to start over"; return; } const keep = W.remove; Object.assign(W, whFresh(), { remove: keep }); delete b.dataset.sure; b.textContent = "↩️ Start over"; setParts(W.parts); hist(); });
+  document.getElementById("wh-paste-go").addEventListener("click", () => {
+    const lines = document.getElementById("wh-paste").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean).slice(0, WH_MAX);
+    if (!lines.length) return toast("Paste or type at least one line first.");
+    setParts(lines.map(s => { const m = s.match(/^((?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:️|‍\p{Extended_Pictographic}|\p{Regional_Indicator}|\p{Emoji_Modifier})*)\s*(.*)$/u); return m ? { e: m[1].slice(0, 8), n: m[2].slice(0, 40) } : { e: "", n: s.slice(0, 40) }; }));
+    toast(`🎡 The wheel has ${fmt(W.parts.length)} part${W.parts.length === 1 ? "" : "s"} now.`);
+  });
+  const listEl = document.getElementById("wh-list");
+  listEl.addEventListener("input", e => { const t = e.target; if (t.dataset.e != null) W.parts[+t.dataset.e].e = t.value.slice(0, 8); else if (t.dataset.n != null) W.parts[+t.dataset.n].n = t.value.slice(0, 40); else return; save(); redraw(); });
+  listEl.addEventListener("click", e => { const x = e.target.closest("[data-x]"); if (!x) return; if (W.parts.length <= 1) return toast("A wheel needs at least 1 part."); W.parts.splice(+x.dataset.x, 1); setParts(W.parts); });
+  keyHandler = e => { if ((e.key === " " || e.key === "Enter") && !/INPUT|TEXTAREA|SELECT|BUTTON|SUMMARY/.test(e.target.tagName)) { e.preventDefault(); spin(); } };
+  list(); hist(); bake();
+  if (document.fonts?.ready) document.fonts.ready.then(() => { if (cv.isConnected && !spinning) bake(); });
+}
+NEW_APPS.push({ id: "wheel", emoji: "🎡", name: "Wheel Spinner", desc: "Make a spinning wheel with 1 to 1,000 parts. Name each part, give it an emoji, and spin!", start: () => startWheel(), isNew: true, added: "2026-11-10", kw: "wheel spinner|spinning wheel|spin (the|a) wheel|wheel of names|name wheel|prize wheel|random picker|spinner|wheel" });
+// 👤 opening any App-App app picks that app's player list (see Profiles)
+NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
 // 🔎 Every App-App app can be found with Hippo search (by its name, or by these extra words)
 const APP_KW = { code: "code lab|learn to code", ai: "ai studio", music: "piano|beat maker", science: "volcano experiment", space: "solar system", money: "piggy bank|budget", pixel: "pixel art", puzzle: "sudoku|tower of hanoi|lights out", lang: "learn spanish|learn french", world: "flag quiz", comic: "comics?|comic strip", calm: "breathing|calm down", hippopoly: "monopoly|monapely|property game" };
@@ -11729,7 +11931,7 @@ function appSearch(q) {
 // 🔤 Misspelled app names still find the app (a missing, extra, swapped or wrong letter or two).
 // (Don't write misspelled examples in comments here: every word on the page counts as a real word for Hippo's spell checker.)
 // The app's whole name has to show up (words next to each other, misspellings allowed), or one of its special words below.
-const APP_FUZZY = { code: ["coding"], music: ["piano"], pixel: ["pixel"], puzzle: ["sudoku"], comic: ["comic", "comics"], hippopoly: ["hippopoly", "monopoly"], bship: ["battleship"], rummi: ["rummikub"], check: ["checkers"], yahtzee: ["yahtzee"], mancala: ["mancala"], chess: ["chess"], memorizer: ["memorizer", "memoriser", "memorize", "memorise"], grammar: ["grammar"], roots: ["archery"] };
+const APP_FUZZY = { code: ["coding"], music: ["piano"], pixel: ["pixel"], puzzle: ["sudoku"], comic: ["comic", "comics"], hippopoly: ["hippopoly", "monopoly"], bship: ["battleship"], rummi: ["rummikub"], check: ["checkers"], yahtzee: ["yahtzee"], mancala: ["mancala"], chess: ["chess"], memorizer: ["memorizer", "memoriser", "memorize", "memorise"], grammar: ["grammar"], roots: ["archery"], wheel: ["spinner"] };
 const APP_STOP = ["the", "and", "of", "a", "an", "app", "game", "play", "open", "please", "i", "want", "to"];
 function appFuzzy(q) {
   const V = hippoVocab(), tol = n => n <= 3 ? 0 : n <= 5 ? 1 : n <= 8 ? 2 : n <= 12 ? 3 : 4;
@@ -11748,6 +11950,7 @@ function appFuzzy(q) {
 }
 
 function startMathCenter() {
+  PROF_GAME = null;
   stopSlope(); stopArchers(); stopMini(); closeShop();
   keyHandler = null;
   const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
@@ -12787,12 +12990,14 @@ render();initCloud();initSample();
 </html>
 `;
 function startLuckyDuck() {
+  PROF_GAME = null;
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush();
   $app.innerHTML = `<div class="panel"><div class="topline"><span class="label">🦆 Lucky Duck Math</span><button class="iconbtn" id="ld-back">Back to Math Center</button></div><iframe class="ld-frame" id="ld-frame" title="Lucky Duck Math"></iframe></div>`;
   document.getElementById("ld-frame").srcdoc = LUCKY_DUCK_HTML;
   document.getElementById("ld-back").addEventListener("click", startMathCenter);
 }
 function startHippo(initial = "") {
+  PROF_GAME = null;
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
   keyHandler = null;
@@ -12864,6 +13069,7 @@ function startHippo(initial = "") {
 }
 
 function startStories() {
+  PROF_GAME = null;
   stopSlope(); stopArchers(); stopMini(); closeShop();
   keyHandler = null;
   const d = store.get("story_draft", null);
@@ -13194,9 +13400,62 @@ function emergencyGrammar() {
   window.scrollTo({ top: 0 });
 }
 emergBtn.addEventListener("click", emergencyGrammar);
+// 👤 the player button (top right) and the "Who's playing?" box
+function profChip() {
+  let c = document.getElementById("prof-chip");
+  if (!c) { c = document.createElement("button"); c.id = "prof-chip"; c.type = "button"; c.className = "prof-chip"; c.title = "Change the player, or add a new one"; c.addEventListener("click", () => profOpen()); document.body.appendChild(c); }
+  const show = !!PROF_GAME && !document.getElementById("gamesmenu") && !$app.querySelector(".cg-player");
+  c.hidden = !show; if (show) c.innerHTML = `👤 ${esc(profName())} <span aria-hidden="true">▾</span>`;
+}
+function profSwitch(g, id, say = true) {
+  store.set("prof_cur_" + g, id);
+  if (PROF_GAME === g && PROF_RESTART) PROF_RESTART();
+  profChip(); if (say) toast(`👤 Now playing: ${profName(g)}`);
+}
+function profOpen(focusAdd) {
+  document.getElementById("prof-pop")?.remove();
+  const g = PROF_GAME; if (!g) return;
+  const L = profList(g), cur = profCur(g), mine = new Set(profExtra(g).map(p => p.id));
+  const pop = document.createElement("div"); pop.id = "prof-pop"; pop.className = "prof-pop";
+  pop.innerHTML = `<div class="prof-box" role="dialog" aria-label="Choose a player">
+    <div class="prof-head"><b>👤 Who's playing?</b><button class="iconbtn" id="prof-x" type="button">✕ Close</button></div>
+    <p class="soft">${L.length} of ${PROF_MAX} players in this game. Each player's progress here is saved separately.</p>
+    <div class="prof-list">${L.map(p => `<div class="prof-row${p.id === cur ? " on" : ""}"><button class="prof-pick" type="button" data-pid="${p.id}">${p.id === cur ? "✓ " : ""}${esc(p.name)}</button>${mine.has(p.id) ? `<button class="prof-del" type="button" data-del="${p.id}" title="Remove ${esc(p.name)}" aria-label="Remove ${esc(p.name)}">🗑</button>` : ""}</div>`).join("")}</div>
+    ${L.length < PROF_MAX ? `<form class="prof-add" id="prof-add"><input id="prof-name" maxlength="30" placeholder="New player's name" aria-label="New player's name" autocomplete="off"><button class="btn go" type="submit">➕ Add</button></form>` : `<p class="soft">This game has ${PROF_MAX} players, the most it can hold. Remove one to add someone new.</p>`}
+  </div>`;
+  document.body.appendChild(pop);
+  const close = () => pop.remove();
+  pop.addEventListener("click", e => { if (e.target === pop) close(); });
+  pop.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+  pop.querySelector("#prof-x").addEventListener("click", close);
+  pop.querySelectorAll("[data-pid]").forEach(b => b.addEventListener("click", () => { close(); if (b.dataset.pid !== profCur(g)) profSwitch(g, b.dataset.pid); }));
+  pop.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+    if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Remove?"; return; }
+    const id = b.dataset.del, name = profName(g, id), wasCur = id === profCur(g);
+    store.set("prof_" + g, profExtra(g).filter(p => p.id !== id)); toast(`${name} was removed from this game.`);
+    if (wasCur) { close(); profSwitch(g, "emmett", false); } else profOpen();
+  }));
+  pop.querySelector("#prof-add")?.addEventListener("submit", e => {
+    e.preventDefault(); const n = pop.querySelector("#prof-name").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
+    if (profList(g).some(p => p.name.toLowerCase() === n.toLowerCase())) return toast(`${n} is already a player here.`);
+    if (profList(g).length >= PROF_MAX) return toast(`This game can hold ${PROF_MAX} players.`);
+    const id = "p" + Date.now().toString(36) + rnd(100, 999);
+    store.set("prof_" + g, [...profExtra(g), { id, name: n }]); close(); profSwitch(g, id, false); toast(`👋 Welcome, ${n}! You're playing now.`);
+  });
+  (focusAdd ? pop.querySelector("#prof-name") : pop.querySelector(".prof-row.on .prof-pick"))?.focus();
+}
+// 👤 games from the games menu get their own player lists too (Bunny Hop has its own typers)
+const MENU_STARTS = { dig: () => pickDig(), start: () => pickCash(), slope: () => startSlope(), archers: () => startArchers(), draw: () => startDraw(), "m-snake": () => startSnake(), "m-stack": () => startStack() };
+document.addEventListener("click", e => {
+  const b = e.target.closest?.(".gm-item, [data-more]"); if (!b) return;
+  const id = b.dataset.more || b.id; if (!id || id === "bunny") return;
+  const fn = MENU_STARTS[id] || MORE_GAMES.find(m => m.id === id)?.start; if (!fn) return;
+  const g = "g-" + id; PROF_GAME = g;
+  PROF_RESTART = () => { exitAll(); PROF_GAME = g; IN_MENU_GAME = true; fn(); profChip(); };
+}, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
@@ -13216,6 +13475,8 @@ new MutationObserver(() => {
   const lab = home ? "" : ($app.querySelector(".label")?.textContent || "").trim();
   if (home || (lab && !MENU_GAME_RX.test(lab))) IN_MENU_GAME = false;
   emergBtn.hidden = home || !(MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab));
+  document.body.classList.toggle("emerg-on", !emergBtn.hidden);
+  profChip();
 }).observe($app, { childList: true });
 
 showHome();
