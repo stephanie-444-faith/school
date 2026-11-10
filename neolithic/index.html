@@ -11228,6 +11228,8 @@ const RA_HOOKS = {
   28: "EVACUATE = empty the building. A VACUUM is empty space.",
   29: "VISIBLE = you can see it. VIDEO = something you watch."
 };
+// 📚 longer explanations: [where the root comes from, five words broken into their parts]
+const RA_WHY = [["Greek “astron” / “aster” = star", [["ASTEROID", "aster (star) + oid (like): a space rock that looks like a tiny star"], ["ASTRONOMY", "astro (star) + nomy (law, study): the science of stars and planets"], ["ASTRONAUT", "astro (star) + naut (sailor): a “star sailor” who travels into space"], ["DISASTER", "dis (bad) + aster (star): long ago, people blamed terrible events on a “bad star”"], ["ASTERISK", "“little star”: the * symbol"]]], ["Latin “audire” = to hear", [["AUDIBLE", "audi (hear) + ible (able): loud enough to be heard"], ["AUDIENCE", "the people who listen to a show or a speech"], ["AUDITORIUM", "audi (hear) + orium (place): a big room for listening"], ["AUDITION", "a tryout where the judges listen to you"], ["AUDIO", "the sound part of a video or a song"]]], ["Greek “autos” = self", [["AUTOMATIC", "works by itself, without anyone pushing it"], ["AUTOPSY", "auto (self) + opsy (seeing): a doctor seeing for themselves what happened to a body"], ["AUTOBIOGRAPHY", "auto (self) + bio (life) + graphy (writing): writing the story of your own life"], ["AUTOPILOT", "a system that flies the plane by itself"], ["AUTOMOBILE", "auto (self) + mobile (moving): a car, a machine that moves by itself"]]], ["Latin “bene” = well, good", [["BENEFIT", "a good thing that helps you"], ["BENIGN", "gentle and harmless, not dangerous"], ["BENEFICIAL", "helpful and good for you"], ["BENEFACTOR", "bene (good) + factor (doer): someone who does good by giving help or money"], ["BENEVOLENT", "bene (good) + vol (wish): kind, wishing good things for others"]]], ["Greek “bios” = life", [["BIOLOGY", "bio (life) + logy (study): the science of living things"], ["BIOGRAPHY", "bio (life) + graphy (writing): a book about someone's life"], ["BIOME", "a big area with its own living things, like a desert or a rainforest"], ["ANTIBIOTIC", "anti (against) + bio (life): medicine that fights tiny living germs"], ["BIODEGRADABLE", "able to be broken down by living things, like leaves rotting into soil"]]], ["Greek “chronos” = time", [["CHRONIC", "lasting a long time, or coming back again and again"], ["SYNCHRONIZE", "syn (same) + chron (time): to make things happen at the same time"], ["CHRONOLOGICAL", "chrono (time) + logical (in order): arranged in time order"], ["CHRONICLE", "a record of events in the order they happened"], ["ANACHRONISM", "ana (against) + chron (time): something in the wrong time, like a phone in a castle"]]], ["Latin “dicere” = to say", [["DICTATE", "to say words out loud for someone to write down"], ["DICTION", "the way you say and choose your words"], ["PREDICT", "pre (before) + dict (say): to say what will happen before it happens"], ["CONTRADICT", "contra (against) + dict (say): to say the opposite"], ["DICTIONARY", "a book of words and what they mean"]]], ["Latin “ducere” = to lead", [["DEDUCE", "de (down) + duc (lead): to lead your thinking down to an answer"], ["PRODUCE", "pro (forward) + duc (lead): to bring something forward, to make it"], ["EDUCATE", "e (out) + duc (lead): to lead knowledge out of someone, to teach"], ["INTRODUCE", "intro (in) + duc (lead): to lead someone in to meet others"], ["CONDUCTOR", "the person who leads a band, or who is in charge of a train"]]], ["Greek “genos” and Latin “genus” = birth, kind", [["GENE", "a tiny instruction passed down from your parents at birth"], ["GENERATE", "to bring something into being, to create it"], ["GENESIS", "the beginning, or birth, of something"], ["GENERATION", "all the people born around the same time"], ["GENEALOGY", "the study of your family tree: who was born to whom"]]], ["Greek “ge” = earth", [["GEOGRAPHY", "geo (earth) + graphy (writing): describing the earth's lands, places and people"], ["GEOLOGY", "geo (earth) + logy (study): the science of rocks and the earth"], ["GEOMETRY", "geo (earth) + metry (measuring): it started as a way to measure land"], ["GEOTHERMAL", "geo (earth) + thermal (heat): heat from deep inside the earth"], ["GEODE", "a plain-looking earth rock with crystals hidden inside"]]], ["Greek “graphein” = to write or draw", [["AUTOGRAPH", "auto (self) + graph (write): your signature, written by you"], ["GRAPH", "a drawing that shows numbers or data"], ["PARAGRAPH", "para (beside) + graph (write): long ago, a mark written beside a new section"], ["GRAPHIC", "a drawn picture or design"], ["BIOGRAPHY", "bio (life) + graphy (writing): the written story of someone's life"]]], ["Latin “jus” / “juris” = law, right", [["JURY", "the group of people who decide a case by the law"], ["JUSTICE", "fairness: doing what is right under the law"], ["INJUSTICE", "in (not) + justice: something that is not fair"], ["JURISDICTION", "juris (law) + diction (saying): the area where someone's law counts"], ["JUSTIFY", "to show that something is right or fair"]]], ["Greek “logos” = word, thought", [["LOGIC", "careful, clear thinking"], ["OBLOQUY", "ob (against) + loquy (speaking, a Latin cousin of logue): harsh words said against someone"], ["LOGICAL", "makes sense when you think it through"], ["MONOLOGUE", "mono (one) + logue (speaking): one person talking for a long time"], ["DIALOGUE", "dia (between) + logue (speaking): a conversation between people"]]], ["Latin “lux” / “lucis” = light", [["LUCID", "clear and easy to understand, like light shining through"], ["TRANSLUCENT", "trans (through) + luc (light): lets some light through, like frosted glass"], ["LUCIDITY", "clearness of thinking or writing"], ["ELUCIDATE", "e (out) + luc (light): to shine light on an idea, to explain it clearly"], ["TRANSLUCENCE", "the quality of letting some light through"]]], ["Latin “manus” = hand", [["MANUAL", "done by hand, or a handbook of instructions"], ["MANURE", "first it meant working the soil by hand; now it means animal waste used to help plants grow"], ["MANICURE", "mani (hand) + cure (care): taking care of hands and nails"], ["MANUFACTURE", "manu (hand) + facture (making): things were once made by hand; now mostly by machines"], ["MANIPULATE", "to handle or move something with your hands"]]], ["Latin “mandare” = to order, to put into someone's hand", [["DEMAND", "to ask for something firmly, like an order"], ["RECOMMEND", "to strongly suggest something to someone"], ["COMMAND", "an order, or to give an order"], ["MANDATORY", "required: you have been ordered to do it"], ["MANDATE", "an official order, or a job given to someone"]]], ["Latin “mittere” / “missus” = to send", [["MISSILE", "something sent flying through the air"], ["TRANSMISSION", "trans (across) + mission (sending): sending something across, like a radio signal"], ["TRANSMIT", "trans (across) + mit (send): to send across"], ["SUBMIT", "sub (under) + mit (send): to hand in, or send in, your work"], ["MISSION", "a job you are sent to do"]]], ["Latin “omnis” = all", [["OMNIVOROUS", "omni (all) + vorous (eating): eating all kinds of food, plants and meat"], ["OMNIPOTENT", "omni (all) + potent (powerful): having all the power"], ["OMNIPRESENT", "omni (all) + present (here): being everywhere at once"], ["OMNISCIENT", "omni (all) + scient (knowing): knowing everything"], ["OMNIBUS", "“for all”: the old word that “bus” comes from"]]], ["Greek “pathos” = feeling", [["EMPATHY", "em (in) + pathy (feeling): feeling what someone else feels, as if you were in their shoes"], ["PATHETIC", "makes you feel pity or sadness"], ["SYMPATHY", "sym (with) + pathy (feeling): feeling sorry along with someone"], ["TELEPATHY", "tele (far) + pathy (feeling): sensing thoughts from far away, like in stories"], ["APATHY", "a (without) + pathy (feeling): not caring at all"]]], ["Greek “philos” = loving", [["PHILOSOPHY", "philo (love) + sophy (wisdom): the love of wisdom and big questions"], ["BIBLIOPHILE", "biblio (book) + phile (lover): someone who loves books"], ["PHILANTHROPY", "phil (love) + anthropy (people): giving time or money because you love people"], ["PHILADELPHIA", "phil (love) + adelphia (brothers): the city of brotherly love"], ["AUDIOPHILE", "audio (sound) + phile (lover): someone who loves great sound"]]], ["Greek “phone” = sound, voice", [["PHONICS", "the sounds that letters make"], ["TELEPHONE", "tele (far) + phone (sound): sound from far away"], ["SYMPHONY", "sym (together) + phony (sound): many instruments sounding together"], ["MICROPHONE", "micro (small) + phone (sound): it makes small sounds loud"], ["HEADPHONES", "sound you wear on your head"]]], ["Greek “phos” / “photos” = light", [["PHOTOGRAPH", "photo (light) + graph (write): a picture “written” with light"], ["PHOTON", "a tiny particle of light"], ["PHOTOSYNTHESIS", "photo (light) + synthesis (putting together): plants putting together food using sunlight"], ["PHOTOCOPY", "a copy made with a flash of light"], ["PHOTOBOMB", "jumping into someone else's photo"]]], ["Latin “portare” = to carry", [["EXPORT", "ex (out) + port (carry): to carry goods out of a country to sell"], ["PORTABLE", "port (carry) + able: easy to carry around"], ["TRANSPORT", "trans (across) + port (carry): to carry from one place to another"], ["IMPORT", "im (in) + port (carry): to carry goods into a country"], ["PORTER", "a person whose job is carrying bags"]]], ["Latin “quies” = rest, quiet", [["ACQUIT", "to set someone free from a charge, so they can be at rest"], ["TRANQUIL", "very calm and peaceful"], ["QUIET", "still and at rest, with little noise"], ["TRANQUILITY", "a calm, peaceful feeling"], ["ACQUITTAL", "when a court says someone is not guilty and sets them free"]]], ["Latin “scribere” / “scriptus” = to write", [["ASCRIBE", "a (to) + scribe (write): to say something comes from someone, as if writing it down to them"], ["SCRIPT", "the written lines for a play or a movie"], ["DESCRIBE", "de (down) + scribe (write): to write or tell what something is like"], ["PRESCRIPTION", "pre (before) + script (write): a doctor's written order, written before you get medicine"], ["SCRIBBLE", "to write or draw quickly and messily"]]], ["Latin “sentire” / “sensus” = to feel", [["RESENT", "re (again) + sent (feel): to feel angry about something again and again"], ["SENSITIVE", "feeling things strongly, or easily hurt"], ["SENSATION", "a feeling, like warmth or tingling"], ["CONSENT", "con (together) + sent (feel): to agree, to feel the same way"], ["SENTIMENT", "a feeling or opinion about something"]]], ["Greek “tele” = far off", [["TELECAST", "tele (far) + cast (throw): a show sent far away on TV"], ["TELEPHONE", "tele (far) + phone (sound): sound from far away"], ["TELESCOPE", "tele (far) + scope (look): a tool for seeing far away"], ["TELEVISION", "tele (far) + vision (seeing): seeing shows from far away"], ["TELEPORT", "tele (far) + port (carry): to be carried far away in an instant"]]], ["Latin “terra” = earth, land", [["TERRAIN", "the shape and type of the land, like hilly or rocky"], ["TERRITORY", "an area of land that belongs to someone"], ["TERRARIUM", "terra (earth) + arium (place): a little piece of earth in a glass box for plants or animals"], ["EXTRATERRESTRIAL", "extra (outside) + terrestrial (of the earth): from outside Earth, like an alien"], ["MEDITERRANEAN", "medi (middle) + terra (land): the sea in the middle of the lands"]]], ["Latin “vacare” = to be empty", [["EVACUATE", "e (out) + vac (empty): to empty a building of people to keep them safe"], ["VACATE", "to leave a place empty"], ["VACUUM", "a completely empty space, or the cleaner that sucks up air and dirt"], ["VACANT", "empty, with no one there"], ["VACATION", "time when school or work sits empty and you get a break"]]], ["Latin “videre” / “visus” = to see", [["VISIBLE", "vis (see) + ible (able): able to be seen"], ["VIDEO", "Latin for “I see”"], ["VISION", "the ability to see, or a picture in your mind"], ["SUPERVISE", "super (over) + vise (see): to watch over people"], ["EVIDENCE", "e (out) + vid (see): something you can see that proves what happened"]]]];
 // mastery points 0..4 → X: 0-1, ~: 2-3, Y: 4
 const raStartPts = s => s === 0 ? 0 : 2;
 const raLevelOf = p => p >= 4 ? 2 : p >= 2 ? 1 : 0;
@@ -11402,6 +11404,30 @@ function raStyles() {
   .ra .ra-clue button{background:none;border:2px dashed #c9b994;border-radius:10px;padding:6px 12px;font:inherit;font-weight:800;color:var(--ra-muted);cursor:pointer;min-height:0}
   .ra .ra-clue em{color:var(--ra-ink);font-style:normal;font-weight:800}
   .ra .ra-clue b{color:#a3330a}
+  .ra .ra-clue button small{display:block;font-size:12px;font-weight:700;opacity:.8;margin-top:2px}
+  .ra .ra-clue em{color:var(--ra-ink);font-style:normal;font-weight:800}
+  .ra .ra-explain{display:none;text-align:left}
+  .ra .ra-qcard.done .ra-qtype,.ra .ra-qcard.done .ra-qmain,.ra .ra-qcard.done .ra-qask,.ra .ra-qcard.done .ra-clue{display:none}
+  .ra .ra-qcard.done .ra-explain{display:block;animation:raPop .25s ease-out}
+  .ra .ra-qcard.done.good{box-shadow:0 6px 0 #8fbf9c,0 0 0 3px var(--ra-green)}
+  .ra .ra-qcard.done.bad{box-shadow:0 6px 0 #d9a49b,0 0 0 3px var(--ra-red)}
+  .ra .ra-explain .big{font-family:Bungee,sans-serif;font-weight:400;font-size:20px;display:block}
+  .ra .ra-qcard.good .ra-explain .big{color:#1f7a3a}.ra .ra-qcard.bad .ra-explain .big{color:#b23a2a}
+  .ra .ra-ans{font-family:Bungee,sans-serif;font-size:26px;margin:2px 0 6px;color:#3b2a14;line-height:1.15}
+  .ra .ra-ans small{font-family:Nunito,system-ui,sans-serif;font-size:18px;font-weight:800;color:#5a4a35}
+  .ra .ra-picked{font-size:15px;color:#b23a2a;font-weight:800;margin:0 0 6px}
+  .ra .ra-word{font-size:15px;margin:0 0 6px}
+  .ra .ra-from,.ra .ra-parts,.ra .ra-trick{font-size:15px;line-height:1.4;margin:6px 0}
+  .ra .ra-parts ul{margin:4px 0 0;padding-left:18px}
+  .ra .ra-parts li{margin:3px 0}
+  .ra .ra-trick{background:#fff3c9;border-radius:10px;padding:8px 10px}
+  .ra .ra-explain .ra-btn{margin:8px 0 6px}
+  .ra .ra-explain .ra-lvup{color:#3b2a14;background:#ffe9a8}
+  .ra .ra-explain .ra-lvdown{color:#8a3a2a}
+  .ra .ra-mexplain{text-align:left;color:var(--ra-ink);font-size:14px}
+  .ra .ra-modal .box{max-height:88vh;overflow-y:auto}
+  .ra .ra-tgt.hint{box-shadow:0 4px 0 #b8ab88,0 0 0 4px #ffcf33;animation:raHint .8s ease-in-out infinite alternate}
+  @keyframes raHint{to{box-shadow:0 4px 0 #b8ab88,0 0 0 4px #ffcf33,0 0 18px 6px rgba(255,207,51,.75)}}
   .ra .ra-targets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
   .ra .ra-tgt{background:#f6efdc;border:0;border-radius:16px;padding:12px 8px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:inherit;color:var(--ra-ink);box-shadow:0 4px 0 #b8ab88;transition:transform .1s, background .2s;min-width:0;min-height:0}
   .ra .ra-tgt:active{transform:translateY(2px)}
@@ -11497,6 +11523,7 @@ function startRootArchery() {
       <div class="ra-qmain" id="ra-qmain"></div>
       <div class="ra-qask" id="ra-qask"></div>
       <div class="ra-clue" id="ra-clue"></div>
+      <div class="ra-explain" id="ra-explain" aria-live="polite"></div>
     </div>
     <div class="ra-targets" id="ra-targets"></div>
     <div class="ra-bowrow">
@@ -11530,7 +11557,7 @@ function startRootArchery() {
     <p style="font-size:20px;font-weight:800" id="ra-mMeaning"></p>
     <p style="color:var(--ra-muted)" id="ra-mEx"></p>
     <p style="color:var(--ra-muted)" id="ra-mMore"></p>
-    <p style="color:var(--ra-ink);font-size:14px" id="ra-mHook"></p>
+    <div class="ra-mexplain" id="ra-mHook"></div>
     <button class="ra-btn" id="ra-mClose" style="margin-top:10px" type="button">Got it</button>
   </div></div>
   <div id="ra-fx"></div>
@@ -11623,11 +11650,13 @@ function startRootArchery() {
       S.coins -= k.cost; S.owned = [...(S.owned || []), k.id]; S.skin = k.id; save(); renderLocker(); sFan(); toast(`🛒 You bought the ${k.icon} ${k.name}! It's on your bow now.`);
     });
   }
+  // 📚 the long explanation: where the root comes from, five words broken into parts, and the memory trick
+  const explainHTML = d => { const [from, parts] = RA_WHY[d.id]; return `<div class="ra-from">🌍 <b>Comes from:</b> ${from}</div><div class="ra-parts"><b>🧩 Break it down:</b><ul>${parts.map(([w, t]) => `<li><b>${w}</b>: ${t}</li>`).join("")}</ul></div><div class="ra-trick">💡 <b>Memory trick:</b> ${RA_HOOKS[d.id]}</div>`; };
   function openModal(d) {
     $("mRoot").textContent = up(d.r); $("mMeaning").textContent = "= " + d.m;
     $("mEx").textContent = "On your sheet: " + d.ex.join(", ");
-    $("mMore").textContent = "Also: " + d.more.map(raPlain).join(", ");
-    $("mHook").textContent = RA_HOOKS[d.id] || "";
+    $("mMore").textContent = "";
+    $("mHook").innerHTML = explainHTML(d);
     $("modal").classList.add("show");
   }
   $("mClose").onclick = () => $("modal").classList.remove("show");
@@ -11686,7 +11715,7 @@ function startRootArchery() {
     G.cur = { d, type, clueUsed: false, done: false, apple };
     if (G.mode === "round") [...$("quiver").children].forEach((el, k) => el.classList.toggle("now", k === G.i));
     hud();
-    $("feedback").className = "ra-feedback"; $("feedback").innerHTML = "";
+    $("feedback").className = "ra-feedback"; $("feedback").innerHTML = ""; $("explain").innerHTML = "";
     $("qcard").className = "ra-qcard" + (apple ? " apple" : G.streak >= 3 ? " fire" : "");
     const qm = $("qmain"); qm.className = "ra-qmain";
     let choices, clueHTML, label;
@@ -11694,7 +11723,18 @@ function startRootArchery() {
     else if (type === "m2r") { label = "Meaning → root"; qm.textContent = `"${up(d.m)}"`; $("qask").textContent = "Which root means this?"; choices = rootChoices(d); clueHTML = `Think of: <em>${d.ex.join(", ")}</em>`; }
     else { label = "Mystery word"; const w = d.more[Math.random() * d.more.length | 0]; G.cur.word = w; qm.classList.add("word"); qm.innerHTML = up(w).replace(/\[(.*?)\]/, '<span class="hl">$1</span>'); $("qask").textContent = "The underlined root means…"; choices = meaningChoices(d); clueHTML = `Same root as: <em>${d.ex.join(", ")}</em>`; }
     $("qtype").textContent = apple ? `🍎 Golden Apple · double points · ${label}` : label;
-    if (G.mode === "round") { $("clue").innerHTML = `<button id="ra-clueBtn" type="button">💡 Clue (half points)</button>`; $("clueBtn").onclick = () => { G.cur.clueUsed = true; $("clue").innerHTML = clueHTML; }; }
+    if (G.mode === "round") {
+      // 💡 one tap = a clue, two quick taps = the answer (both are half points)
+      $("clue").innerHTML = `<button id="ra-clueBtn" type="button" title="Tap once for a clue. Double-tap to see the answer.">💡 Clue (half points)<small>double-tap to see the answer</small></button>`;
+      let tm = null; const ansText = type === "m2r" ? up(d.r) : d.m;
+      const reveal = answer => {
+        if (G.cur.done) return; G.cur.clueUsed = true;
+        if (!answer) { $("clue").innerHTML = clueHTML; return; }
+        G.cur.answerShown = true; $("clue").innerHTML = `🔓 The answer is <em>${ansText}</em> (half points)`;
+        [...$("targets").children].forEach(b => { if (b.dataset.ok) b.classList.add("hint"); }); tone(660, .1, "triangle", .1); tone(990, .14, "triangle", .08, 0, .08);
+      };
+      $("clueBtn").onclick = () => { if (tm) { clearTimeout(tm); tm = null; reveal(true); } else tm = naTimer(setTimeout(() => { tm = null; reveal(false); }, 300)); };
+    }
     else $("clue").innerHTML = "";
     const t = $("targets"); t.innerHTML = "";
     choices.forEach((c, n) => {
@@ -11758,11 +11798,14 @@ function startRootArchery() {
     const lvB = raLevelOf(S.pts[id]); save();
     $("quiver").children[G.i].className = ok ? "hit" : "miss";
     if (lvB > lvA) naTimer(setTimeout(sFan, 350));
-    const wordLine = type === "word" ? `<br><b>${raPlain(G.cur.word)}</b> has <b>${up(d.r.split(" / ")[0])}</b> in it.` : "";
+    const wordLine = type === "word" ? `<div class="ra-word">🔎 <b>${up(raPlain(G.cur.word))}</b> has <b>${up(d.r.split(" / ")[0])}</b> in it, so it's about “${d.m}.”</div>` : "";
+    let picked = "";   // a miss also tells what the picked answer really means
+    if (!ok) { const pl = btn.querySelector(".lbl").textContent.trim(); if (type === "m2r") { const x = RA_DATA.find(r => up(r.r) === pl); if (x) picked = `❌ You picked <b>${up(x.r)}</b>, which means “${x.m}.”`; } else { const xs = RA_DATA.filter(r => r.m === pl); if (xs.length) picked = `❌ You picked “${pl},” which is what <b>${xs.map(r => up(r.r)).join(" and ")}</b> mean${xs.length === 1 ? "s" : ""}.`; } }
     const lvLine = lvB > lvA ? `<div class="ra-lvup">⬆️ LEVEL UP! <span class="ra-badge ${RA_LV[lvA].c}">${RA_LV[lvA].t}</span> → <span class="ra-badge ${RA_LV[lvB].c}">${RA_LV[lvB].t}</span> ${up(d.r)}</div>` : lvB < lvA ? `<div class="ra-lvdown">${up(d.r)} slipped back to <span class="ra-badge ${RA_LV[lvB].c}">${RA_LV[lvB].t}</span>. Hit it again and it climbs right back up.</div>` : "";
-    fb.className = "ra-feedback show " + (ok ? "good" : "bad");
-    fb.innerHTML = `<b class="big">${ok ? (apple ? "🍎 Golden Apple! Double points!" : `🎯 Bullseye!${G.streak >= 3 ? " Streak bonus!" : ""}`) : "Missed — here's the trick:"}</b><b>${up(d.r)}</b> = <b>${d.m}</b>${wordLine}<br><span style="color:#cfe3d4">${RA_HOOKS[d.id] || ""}</span>${lvLine}
-      <button class="ra-btn" id="ra-nextBtn" type="button">${G.i + 1 >= RA_ROUND ? "See score" : "Next arrow ➜"}</button>`;
+    const card = $("qcard"); card.classList.remove("fire", "apple"); card.classList.add("done", ok ? "good" : "bad");
+    $("explain").innerHTML = `<b class="big">${ok ? (apple ? "🍎 Golden Apple! Double points!" : `🎯 Bullseye!${G.streak >= 3 ? " Streak bonus!" : ""}`) : "Missed: here's the trick"}</b>
+      <div class="ra-ans">${up(d.r)} <small>= ${d.m}</small></div>${picked ? `<div class="ra-picked">${picked}</div>` : ""}${wordLine}${lvLine}
+      <button class="ra-btn" id="ra-nextBtn" type="button">${G.i + 1 >= RA_ROUND ? "See score" : "Next arrow ➜"}</button>${explainHTML(d)}`;
     $("nextBtn").onclick = () => { if (G.cur.next) return; G.cur.next = true; G.i++; nextQ(); };
   }
   function unlocks() {
