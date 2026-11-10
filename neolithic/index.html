@@ -11725,7 +11725,7 @@ function startRootArchery() {
     $("qtype").textContent = apple ? `🍎 Golden Apple · double points · ${label}` : label;
     if (G.mode === "round") {
       // 💡 one tap = a clue, two quick taps = the answer (both are half points)
-      $("clue").innerHTML = `<button id="ra-clueBtn" type="button" title="Tap once for a clue. Double-tap to see the answer.">💡 Clue (half points)<small>double-tap to see the answer</small></button>`;
+      $("clue").innerHTML = `<button id="ra-clueBtn" type="button">💡 Clue (half points)</button>`;
       let tm = null; const ansText = type === "m2r" ? up(d.r) : d.m;
       const reveal = answer => {
         if (G.cur.done) return; G.cur.clueUsed = true;

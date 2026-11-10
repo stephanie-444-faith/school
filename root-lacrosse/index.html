@@ -587,7 +587,7 @@ function nextQ() {
   $("qtype").textContent = golden ? `🥇 Golden Goal · double points · ${label}` : label;
   if (G.mode === "game") {
     // 💡 one tap = a coach's tip, two quick taps = the answer (both are half points)
-    $("clue").innerHTML = `<button id="clueBtn" type="button" title="Tap once for a tip. Double-tap to see the answer.">💡 Coach's tip (half points)<small>double-tap to see the answer</small></button>`;
+    $("clue").innerHTML = `<button id="clueBtn" type="button">💡 Coach's tip (half points)</button>`;
     let tm = null; const ansText = type === "m2r" ? up(d.r) : d.m;
     const reveal = answer => {
       if (G.cur.done) return; G.cur.clueUsed = true;
