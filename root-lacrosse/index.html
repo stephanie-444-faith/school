@@ -189,8 +189,34 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#0a1426;border:2px solid var(--gold);color:#fff;border-radius:14px;padding:10px 16px;font-weight:800;z-index:80;opacity:0;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.sun,.cloud{display:none}
+.sun{position:absolute;top:22px;right:28px;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fff6b0,#ffd23f 60%,#ffb703);box-shadow:0 0 50px 18px rgba(255,214,80,.5);animation:sunglow 4s ease-in-out infinite alternate}
+@keyframes sunglow{to{box-shadow:0 0 70px 26px rgba(255,214,80,.62)}}
+.cloud{position:absolute;width:96px;height:28px;border-radius:30px;background:#fff;opacity:.85;animation:cloudmove linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:44px;height:44px;left:14px;top:-20px}
+.cloud::after{width:34px;height:34px;left:46px;top:-14px}
+.cloud.c1{top:70px;animation-duration:70s;animation-delay:-10s}
+.cloud.c2{top:140px;width:70px;animation-duration:95s;animation-delay:-50s}
+.cloud.c3{top:210px;animation-duration:120s;animation-delay:-80s;opacity:.7}
+@keyframes cloudmove{from{left:-140px}to{left:110%}}
+.ball-in.drop{animation:drop .6s ease-in forwards}
+@keyframes drop{0%{transform:translateY(-4px)}100%{transform:translateY(22px);opacity:0}}
+body[data-sport="basketball"]{background:linear-gradient(#140b22,#2a1838 55%,#3a2448);background-attachment:fixed}
+body[data-sport="basketball"] .stars{display:none}
+body[data-sport="basketball"] .stands{background:linear-gradient(#1f1430,#33224a)}
+body[data-sport="basketball"] .field{background:linear-gradient(90deg,#c88a4a 0 40px,#d29652 40px 80px) 0 0/80px 100%;border-top-color:#ff7a1a}
+body[data-sport="basketball"] .tgt{background:#f7efe6}
+body[data-sport="soccer"]{background:linear-gradient(#1565c0,#1e88e5 55%,#64b5f6);background-attachment:fixed;--soft:#eaf4ff}
+body[data-sport="soccer"] .stars,body[data-sport="soccer"] .lights,body[data-sport="soccer"] .beam{display:none}
+body[data-sport="soccer"] .sun,body[data-sport="soccer"] .cloud{display:block}
+body[data-sport="soccer"] .stands{background:linear-gradient(#24476e,#2f5c8a)}
+body[data-sport="soccer"] .field{background:linear-gradient(90deg,#3aa54b 0 60px,#44b356 60px 120px) 0 0/120px 100%}
+body[data-sport="soccer"] .tgt{background:#e9f7ea}
+body[data-sport="soccer"] .mode,body[data-sport="soccer"] .tiny,body[data-sport="soccer"] .link{color:#e3f0ff}
+body[data-sport="soccer"] .players small{color:#d6e8ff}
 @media (max-width:420px){h1{font-size:28px}.qmain{font-size:34px}.btn{font-size:16px;padding:13px 10px}}
-@media (prefers-reduced-motion:reduce){.stars,.lights,.beam,.crowd,.flash,.field,.confetti,.shake,.pts.go,.qcard.fire,h1 .stickmoji,.tgt.swish svg,.feedback.show,.ball-in.off{animation:none}.flash{display:none}}
+@media (prefers-reduced-motion:reduce){.sun,.cloud,.ball-in.drop,.stars,.lights,.beam,.crowd,.flash,.field,.confetti,.shake,.pts.go,.qcard.fire,h1 .stickmoji,.tgt.swish svg,.feedback.show,.ball-in.off{animation:none}.flash{display:none}}
 </style>
 </head>
 <body>
@@ -199,7 +225,7 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
   <pattern id="pocket" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H5M0 0V5" stroke="#e8edf5" stroke-width=".9" fill="none"/></pattern>
 </defs></svg>
 <div class="stadium" aria-hidden="true" id="stadium">
-  <div class="stars"></div>
+  <div class="stars"></div><div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
   <div class="beam l"></div><div class="beam r"></div>
   <div class="lights l"></div><div class="lights r"></div>
   <div class="stands"></div>
@@ -209,8 +235,8 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
 
 <main class="lx" id="lx">
   <section id="home">
-    <h1><span class="stickmoji">🥍</span> Root Lacrosse</h1>
-    <p class="sub">Emmett's 30 Greek &amp; Latin roots. Score a goal to move a root from <span class="badge bx">X</span> → <span class="badge bt">~</span> → <span class="badge by">Y</span>.</p>
+    <h1><span class="stickmoji" id="tEmoji">🥍</span> <span id="tName">Root Lacrosse</span></h1>
+    <p class="sub">Emmett's 30 Greek &amp; Latin roots. <span id="tVerb">Score a goal</span> to move a root from <span class="badge bx">X</span> → <span class="badge bt">~</span> → <span class="badge by">Y</span>.</p>
     <div class="players"><label for="playerSel">👤 Player:</label> <select id="playerSel" aria-label="Who is playing"></select> <button class="link" id="addPlayerBtn" type="button">➕ New player</button> <button class="link hidden" id="delPlayer" type="button">🗑 Remove</button> <small id="playerCount"></small></div>
     <form class="addform hidden" id="addForm"><input id="newName" maxlength="30" placeholder="New player's name" aria-label="New player's name" autocomplete="off"><button class="btn" type="submit">Add</button></form>
     <div class="board" aria-label="My root scoreboard">
@@ -219,16 +245,16 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
       <div class="stat x"><b id="sX">0</b><small>Not yet</small></div>
     </div>
     <div class="row" style="margin-top:16px"><button class="btn" id="startBtn" type="button">🥅 Take 10 shots</button><button class="btn hot" id="clockBtn" type="button">⏱ Shot Clock</button></div>
-    <p class="mode">🥅 10 shots moves roots up your sheet, and shot #10 is a 🥇 Golden Goal worth double. ⏱ Shot Clock: as many goals as you can in 60 seconds (it doesn't change your sheet).</p>
+    <p class="mode" id="tMode">🥅 10 shots moves roots up your sheet, and shot #10 is a 🥇 Golden Goal worth double. ⏱ Shot Clock: as many goals as you can in 60 seconds (it doesn't change your sheet).</p>
     <label class="toggle"><input type="checkbox" id="focusX" checked> Aim mostly at my X's and ~'s</label>
-    <div class="panel"><h2>🥍 Ball bag</h2><div class="bag" id="bag"></div></div>
+    <div class="panel"><h2 id="tBag">🥍 Ball bag</h2><div class="bag" id="bag"></div></div>
     <div class="panel">
       <h2>My root sheet</h2>
       <div class="legend"><span><span class="badge bx">X</span> Not yet</span><span><span class="badge bt">~</span> Becoming familiar</span><span><span class="badge by">Y</span> Confident</span></div>
       <div class="grid" id="grid"></div>
-      <p style="font-size:13px;color:#a9bddb;margin:10px 0 0">Tap a root to review it. Two goals in a row bumps a root up a level; a miss knocks it back.</p>
+      <p style="font-size:13px;color:#a9bddb;margin:10px 0 0" id="tSheet">Tap a root to review it. Two goals in a row bumps a root up a level; a miss knocks it back.</p>
     </div>
-    <p class="tiny">Best game: <span id="best">—</span> · Shot Clock best: <span id="cbest">—</span> · <button class="link" id="soundBtn" type="button">Sound: on</button> · <button class="link" id="resetBtn" type="button">Reset to my sheet</button><br>Progress saves in this browser.</p>
+    <p class="tiny">Best game: <span id="best">—</span> · <span id="tClockName">Shot Clock</span> best: <span id="cbest">—</span> · <button class="link" id="soundBtn" type="button">Sound: on</button> · <button class="link" id="resetBtn" type="button">Reset to my sheet</button><br>Progress saves in this browser.</p>
   </section>
 
   <section id="play" class="hidden">
@@ -255,7 +281,7 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
           <circle id="pball" cx="60" cy="8" r="7.5" fill="#f4f4f0" stroke="#9aa3b0" stroke-width="1.2"/>
         </g>
       </svg>
-      <div class="tip">Tap a goal to shoot! (Keys 1–4 work too.)</div>
+      <div class="tip" id="tTip">Tap a goal to shoot! (Keys 1–4 work too.)</div>
     </div>
     <div class="feedback" id="feedback" aria-live="polite"></div>
     <p class="tiny"><button class="link" id="quitBtn" type="button">Quit game</button></p>
@@ -285,6 +311,25 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
+/* ===== One game, three sports. Each page sets SPORT; the rest is the same Root game. ===== */
+const SPORT = "lacrosse";
+const HOOP_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="14" y="2" width="56" height="34" rx="3" fill="#ffffff" stroke="#9aa8bf" stroke-width="2"/><rect x="32" y="14" width="20" height="16" fill="none" stroke="#ff6a13" stroke-width="2.5"/><path d="M28 40 L33 62 H51 L56 40 Z" fill="url(#mesh)" stroke="#c5ceda" stroke-width="1.2"/><ellipse cx="42" cy="40" rx="15" ry="3.6" fill="none" stroke="#ff6a13" stroke-width="3.5"/></svg>`;
+const SOCCER_GOAL_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="5" y="10" width="74" height="50" fill="url(#mesh)"/><path d="M5 60 L14 50 H70 L79 60" fill="none" stroke="#7c8aa0" stroke-width="1.5"/><path d="M5 62 V10 H79 V62" fill="none" stroke="#8d99ad" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 62 V10 H79 V62" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="0" y="62" width="84" height="3" rx="1.5" fill="#6bbf6b"/></svg>`;
+const HANDS_SVG = `<g id="arm"><path d="M34 98 L43 54" stroke="#c98b5e" stroke-width="12" stroke-linecap="round"/><path d="M86 98 L77 54" stroke="#c98b5e" stroke-width="12" stroke-linecap="round"/><rect x="33" y="64" width="15" height="7" rx="3" transform="rotate(-12 40 67)" fill="#ff6a13"/><rect x="72" y="64" width="15" height="7" rx="3" transform="rotate(12 80 67)" fill="#ff6a13"/><path d="M37 52 C 35 40 46 32 53 38 L 55 48 Z" fill="#e0a87c"/><path d="M83 52 C 85 40 74 32 67 38 L 65 48 Z" fill="#e0a87c"/><circle id="pball" cx="60" cy="24" r="17" fill="#f08a24" stroke="#a2490c" stroke-width="1.6"/></g>`;
+const BOOT_SVG = `<path d="M8 92 Q60 84 112 92" stroke="#2e8b3d" stroke-width="6" fill="none" opacity=".85"/><g id="arm"><rect x="24" y="-14" width="12" height="62" rx="5" fill="#ffcc33"/><rect x="24" y="20" width="12" height="9" fill="#1d4ed8"/><path d="M22 46 H38 L40 62 C56 62 64 66 64 74 C64 78 60 80 56 80 H20 C18 80 17 78 17 76 Z" fill="#1d2433"/><path d="M30 58 l6 -4 M33 63 l6 -4" stroke="#ffffff" stroke-width="1.6"/><circle cx="24" cy="82" r="2.2" fill="#aab2bf"/><circle cx="36" cy="82" r="2.2" fill="#aab2bf"/><circle cx="50" cy="82" r="2.2" fill="#aab2bf"/></g><circle id="pball" cx="82" cy="76" r="12" fill="#ffffff" stroke="#222222" stroke-width="1.6"/>`;
+const SPORTS = {
+  lacrosse: { name: "Root Lacrosse", emoji: "🥍", key: "rootLacrosseEmmett_v1", pkey: "rootLacrosse_players", verb: "Score a goal", startBtn: "🥅 Take 10 shots", clock: "Shot Clock", shot: "Shot", plural: "goals", next: "Next shot ➜", bag: "Ball bag", bagEmoji: "🥍", tip: "Tap a goal to shoot! (Keys 1–4 work too.)", hit: "🥅 GOAL!", hitIcon: "🥅", golden: "🥇 Golden Goal", goldenStamp: "🥇 GOLDEN GOAL!", missHead: "No goal: here's the trick", near: ["OFF THE POST!"], wide: "WIDE!", end: "Final whistle", clockEnd: "⏱ Buzzer", ranks: ["🏆 MVP!", "🥍 All-American", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Shooter!", streak: ["🎩 HAT TRICK!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 34 / 66, hitX: .45, hitY: 16, missX: [.4, .56], ball: { icon: "⚪", c1: "#f4f4f0", c2: "#aab2bf" } },
+  basketball: { name: "Root Basketball", emoji: "🏀", key: "rootBasketballEmmett_v1", pkey: "rootBasketball_players", verb: "Sink a basket", startBtn: "🏀 Take 10 shots", clock: "Shot Clock", shot: "Shot", plural: "baskets", next: "Next shot ➜", bag: "Ball rack", bagEmoji: "🏀", tip: "Tap a hoop to shoot! (Keys 1–4 work too.)", hit: "🏀 SWISH!", hitIcon: "🏀", golden: "🥇 Buzzer Beater", goldenStamp: "🥇 BUZZER BEATER!", missHead: "No basket: here's the trick", near: ["RIM OUT!", "BRICK!"], wide: "AIRBALL!", end: "Final buzzer", clockEnd: "⏱ Buzzer", ranks: ["🏆 MVP!", "🏀 All-Star", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Shooter!", streak: ["🔥 HEATING UP!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 40 / 66, hitX: .08, hitY: 2, missX: [.22, .55], drop: true, rim: true, target: HOOP_SVG, shooter: HANDS_SVG, wind: e => `translate(0 ${(10 * e).toFixed(2)})`, fling: "translate(0 -14)",
+    ball: { icon: "🏀", c1: "#f08a24", c2: "#a2490c", bg: "linear-gradient(90deg,transparent 46%,#5a2a08 46% 54%,transparent 54%),linear-gradient(0deg,transparent 46%,#5a2a08 46% 54%,transparent 54%),radial-gradient(circle at 34% 30%,#ffb46b,#f08a24 45%,#a2490c)" } },
+  soccer: { name: "Root Soccer", emoji: "⚽", key: "rootSoccerEmmett_v1", pkey: "rootSoccer_players", verb: "Score a goal", startBtn: "⚽ Take 10 kicks", clock: "Lightning Round", shot: "Kick", plural: "goals", next: "Next kick ➜", bag: "Ball bag", bagEmoji: "⚽", tip: "Tap a goal to kick! (Keys 1–4 work too.)", hit: "⚽ GOAL!", hitIcon: "⚽", golden: "🥇 Golden Goal", goldenStamp: "🥇 GOLDEN GOAL!", missHead: "No goal: here's the trick", near: ["OFF THE POST!", "SAVED!"], wide: "WIDE!", end: "Final whistle", clockEnd: "⏱ Final whistle", ranks: ["🏆 MVP!", "⚽ All-Star", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Striker!", streak: ["🎩 HAT TRICK!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 35 / 66, hitX: .55, hitY: 18, missX: [.46, .62], target: SOCCER_GOAL_SVG, shooter: BOOT_SVG, wind: e => `rotate(${(-40 * e).toFixed(2)} 30 -12)`, fling: "rotate(32 30 -12)",
+    ball: { icon: "⚽", c1: "#ffffff", c2: "#222222", bg: "radial-gradient(circle at 50% 50%,#222 0 17%,transparent 18%),radial-gradient(circle at 18% 22%,#222 0 11%,transparent 12%),radial-gradient(circle at 84% 26%,#222 0 11%,transparent 12%),radial-gradient(circle at 26% 86%,#222 0 11%,transparent 12%),radial-gradient(circle at 80% 84%,#222 0 11%,transparent 12%),radial-gradient(circle at 34% 30%,#ffffff,#e8e8e8 60%,#bdbdbd)" } },
+};
+const T = SPORTS[SPORT] || SPORTS.lacrosse;
+// 🤫 three quick taps on the tip button: a surprise
+function secretGame() {
+  if (window.parent !== window) { try { window.parent.postMessage({ studyArcade: "hoops" }, "*"); return; } catch (e) {} }
+  location.href = "../hippo-hoops/index.html";
+}
 /* ===== Emmett's roots: [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from his sheet: 0=X, 1=~, -1 = unmarked] ===== */
 const DATA = [
   ["ast / aster","star",["asteroid","astronomy"],["[ast]ronaut","dis[aster]","[aster]isk"],0],
@@ -360,10 +405,10 @@ const LV = [{ t: "X", c: "bx" }, { t: "~", c: "bt" }, { t: "Y", c: "by" }];
 const ROUND = 10, CLOCK = 60, FIRE = ["#ff5a1f", "#ffb000", "#ffe066"];
 // 🥍 Ball bag: every ball is earned by really doing it in the game
 const BALLS = [
-  { id: "classic", icon: "⚪", name: "Game Ball", how: "Ready from the start", c1: "#f4f4f0", c2: "#aab2bf", trail: null, ok: () => true },
-  { id: "fire", icon: "🔥", name: "Fire Ball", how: "Score 5 goals in a row", c1: "#ff7a1a", c2: "#b3260b", trail: FIRE, ok: S => (S.bestStreak || 0) >= 5 },
+  Object.assign({ id: "classic", name: "Game Ball", how: "Ready from the start", trail: null, ok: () => true }, T.ball),
+  { id: "fire", icon: "🔥", name: "Fire Ball", how: `Score 5 ${T.plural} in a row`, c1: "#ff7a1a", c2: "#b3260b", trail: FIRE, ok: S => (S.bestStreak || 0) >= 5 },
   { id: "ice", icon: "❄️", name: "Ice Ball", how: "Score 100 points in one game", c1: "#bff1ff", c2: "#3a8fc9", trail: ["#bff1ff", "#7fd8ff", "#ffffff"], ok: S => (S.best || 0) >= 100 },
-  { id: "comet", icon: "☄️", name: "Comet Ball", how: "Score 12 in one Shot Clock", c1: "#ff7ad9", c2: "#6b3fd1", trail: ["#ff7ad9", "#8be9ff", "#ffffff"], ok: S => (S.clockBest || 0) >= 12 },
+  { id: "comet", icon: "☄️", name: "Comet Ball", how: `Score 12 in one ${T.clock}`, c1: "#ff7ad9", c2: "#6b3fd1", trail: ["#ff7ad9", "#8be9ff", "#ffffff"], ok: S => (S.clockBest || 0) >= 12 },
   { id: "bolt", icon: "⚡", name: "Lightning Ball", how: "Get 10 roots to Y", c1: "#fff27a", c2: "#8a6bff", trail: ["#fff27a", "#c6b3ff", "#ffffff"], ok: (S, y) => y >= 10 },
   { id: "rainbow", icon: "🌈", name: "Rainbow Ball", how: "Score a perfect 10 for 10", c1: "#ffe14d", c2: "#4da6ff", bg: "radial-gradient(circle at 34% 30%,rgba(255,255,255,.95) 0 12%,transparent 32%),conic-gradient(#ff4d4d,#ffa64d,#ffe14d,#5cd65c,#4da6ff,#a64dff,#ff4d4d)", trail: ["#ff4d4d", "#ffa64d", "#ffe14d", "#5cd65c", "#4da6ff", "#a64dff"], ok: S => !!S.perfect },
   { id: "gold", icon: "👑", name: "Golden Ball", how: "Get all 30 roots to Y", c1: "#ffe066", c2: "#b8860b", trail: ["#ffd700", "#fff3b0", "#ffffff"], ok: (S, y) => y >= 30 },
@@ -371,7 +416,7 @@ const BALLS = [
 const ballBg = k => k.bg || `radial-gradient(circle at 34% 30%,#ffffff 0 12%,${k.c1} 42%,${k.c2} 100%)`;
 
 /* ===== saving (this browser): up to 100 players, each with their own root sheet ===== */
-const KEY = "rootLacrosseEmmett_v1", PKEY = "rootLacrosse_players", MAXP = 100;
+const KEY = T.key, PKEY = T.pkey, MAXP = 100;
 const fresh = () => ({ pts: DATA.map(d => startPts(d.start)), best: 0, bestStreak: 0, perfect: false, clockBest: 0, ball: "classic", sound: true });
 let P = { cur: "emmett", list: [{ id: "emmett", name: "Emmett" }] };
 try { const v = JSON.parse(localStorage.getItem(PKEY)); if (v && Array.isArray(v.list) && v.list.length) P = v; } catch (e) {}
@@ -428,6 +473,7 @@ const sCheer = big => noise(big ? 1.4 : .9, 900, .6, big ? .5 : .32, .05);
 const sHorn = () => [233, 294, 349].forEach(f => tone(f, .75, "sawtooth", .045, 0, .05));
 const sPing = () => { tone(1760, .35, "sine", .12); tone(2640, .2, "sine", .05); };
 const sAww = () => tone(330, .45, "sawtooth", .05, 180);
+const sClank = () => { tone(240, .14, "square", .1); tone(360, .1, "square", .06, 0, .03); noise(.12, 1800, 2, .2); };
 const sFan = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .22, "triangle", .12, 0, i * .09));
 const sTick = () => tone(1000, .04, "square", .03);
 
@@ -435,18 +481,18 @@ const sTick = () => tone(1000, .04, "square", .03);
 const bit = (cls, x, y, css = "") => { const e = document.createElement("div"); e.className = cls; e.style.cssText = `left:${x}px;top:${y}px;${css}`; e.addEventListener("animationend", () => e.remove()); $("fx").appendChild(e); setTimeout(() => e.remove(), 1600); return e; };
 const burst = (x, y, cols, n = 18) => { if (RM) return; for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, d = 30 + Math.random() * 60; bit("burst", x, y, `background:${cols[i % cols.length]};--dx:${(Math.cos(a) * d).toFixed(1)}px;--dy:${(Math.sin(a) * d).toFixed(1)}px`); } };
 const stamp = (x, y, txt, cls) => { bit("stamp " + cls, x, y).textContent = txt; };
-const streakWord = n => n >= 10 ? "🏆 MVP!" : n >= 7 ? "⚡ UNSTOPPABLE!" : n >= 5 ? "🔥 ON FIRE!" : n >= 3 ? "🎩 HAT TRICK!" : "🥅 GOAL!";
-const goalSVG = () => `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="9" y="8" width="66" height="52" fill="url(#mesh)"/><path d="M9 60 L20 50 H64 L75 60" fill="none" stroke="#7c8aa0" stroke-width="1.5"/><path d="M9 62 V8 H75 V62" fill="none" stroke="#ff6a13" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="62" width="80" height="3" rx="1.5" fill="#9aa8bf"/></svg>`;
-const goalAt = b => { const r = b.querySelector(".goal").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height * (34 / 66), r.width]; };
+const streakWord = n => n >= 10 ? T.streak[3] : n >= 7 ? T.streak[2] : n >= 5 ? T.streak[1] : n >= 3 ? T.streak[0] : T.hit;
+const goalSVG = () => T.target || `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="9" y="8" width="66" height="52" fill="url(#mesh)"/><path d="M9 60 L20 50 H64 L75 60" fill="none" stroke="#7c8aa0" stroke-width="1.5"/><path d="M9 62 V8 H75 V62" fill="none" stroke="#ff6a13" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="62" width="80" height="3" rx="1.5" fill="#9aa8bf"/></svg>`;
+const goalAt = b => { const r = b.querySelector(".goal").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height * T.aim, r.width]; };
 
 /* ===== the stick: it turns toward your goal, winds up, and fires ===== */
 function loadStick() { const k = ball(); $("pball").setAttribute("fill", k.c1); $("pball").setAttribute("stroke", k.c2); $("pball").style.opacity = 1; $("arm").setAttribute("transform", ""); $("stick").style.transform = "rotate(0deg)"; }
 function windUp(ms, done) {
   const t0 = performance.now(); sWind();
-  const step = now => { const t = Math.min(1, (now - t0) / ms), e = 1 - (1 - t) * (1 - t); $("arm").setAttribute("transform", `rotate(${(-24 * e).toFixed(2)} 60 98) translate(0 ${(6 * e).toFixed(2)})`); if (t < 1) requestAnimationFrame(step); else done(); };
+  const step = now => { const t = Math.min(1, (now - t0) / ms), e = 1 - (1 - t) * (1 - t); $("arm").setAttribute("transform", `rotate(${(-24 * e).toFixed(2)} 60 98) translate(0 ${(6 * e).toFixed(2)})`); if (T.wind) $("arm").setAttribute("transform", T.wind(e)); if (t < 1) requestAnimationFrame(step); else done(); };
   requestAnimationFrame(step);
 }
-function fling() { $("arm").setAttribute("transform", "rotate(14 60 98)"); $("pball").style.opacity = 0; sSnap(); setTimeout(() => $("arm").setAttribute("transform", ""), 130); }
+function fling() { $("arm").setAttribute("transform", T.fling || "rotate(14 60 98)"); $("pball").style.opacity = 0; sSnap(); setTimeout(() => $("arm").setAttribute("transform", ""), 130); }
 function flyBall(sx, sy, ex, ey, ms, k, trail, done) {
   const a = document.createElement("div"); a.className = "ball"; a.style.background = ballBg(k);
   if (trail) a.style.boxShadow = `0 0 12px 3px ${trail[0]}`;
@@ -475,7 +521,7 @@ function renderHome() {
   });
   $("sX").textContent = counts[0]; $("sT").textContent = counts[1]; $("sY").textContent = counts[2];
   $("best").textContent = S.best ? S.best + " pts" : "—";
-  $("cbest").textContent = S.clockBest ? S.clockBest + " goals" : "—";
+  $("cbest").textContent = S.clockBest ? S.clockBest + " " + T.plural : "—";
   $("soundBtn").textContent = "Sound: " + (S.sound ? "on" : "off");
   renderBag(); renderPlayers();
 }
@@ -562,8 +608,8 @@ function startClock() {
 }
 function drawClock() { $("hudLeft").textContent = G.paused ? "⏸ paused" : `⏱ ${Math.max(0, Math.ceil(G.left / 1000))}s`; $("tbar").style.width = Math.max(0, G.left / (CLOCK * 10)) + "%"; }
 function hud() {
-  if (G.mode === "game") $("hudLeft").textContent = `Shot ${Math.min(G.i + 1, ROUND)}/${ROUND}`; else if (G.left != null) drawClock();
-  $("hudScore").textContent = G.mode === "clock" ? `🥅 ${G.hits}` : G.score + " pts";
+  if (G.mode === "game") $("hudLeft").textContent = `${T.shot} ${Math.min(G.i + 1, ROUND)}/${ROUND}`; else if (G.left != null) drawClock();
+  $("hudScore").textContent = G.mode === "clock" ? `${T.hitIcon} ${G.hits}` : G.score + " pts";
   $("hudStreak").textContent = G.streak >= 2 ? `🔥 ${G.streak} in a row` : "";
 }
 function nextQ() {
@@ -584,7 +630,7 @@ function nextQ() {
   if (type === "r2m") { label = "Root → meaning"; qm.textContent = up(d.r); $("qask").textContent = "What does this root mean?"; choices = meaningChoices(d); clueHTML = `You know these words: <em>${d.ex.join(", ")}</em>`; }
   else if (type === "m2r") { label = "Meaning → root"; qm.textContent = `"${up(d.m)}"`; $("qask").textContent = "Which root means this?"; choices = rootChoices(d); clueHTML = `Think of: <em>${d.ex.join(", ")}</em>`; }
   else { label = "Mystery word"; const w = d.more[Math.floor(Math.random() * d.more.length)]; G.cur.word = w; qm.classList.add("word"); qm.innerHTML = up(w).replace(/\[(.*?)\]/, '<span class="hl">$1</span>'); $("qask").textContent = "The underlined root means…"; choices = meaningChoices(d); clueHTML = `Same root as: <em>${d.ex.join(", ")}</em>`; }
-  $("qtype").textContent = golden ? `🥇 Golden Goal · double points · ${label}` : label;
+  $("qtype").textContent = golden ? `${T.golden} · double points · ${label}` : label;
   if (G.mode === "game") {
     // 💡 one tap = a coach's tip (half points); two quick taps = the answer (normal points)
     $("clue").innerHTML = `<button id="clueBtn" type="button">💡 Coach's tip (half points)</button>`;
@@ -595,7 +641,8 @@ function nextQ() {
       G.cur.answerShown = true; $("clue").innerHTML = `🔓 The answer is <em>${ansText}</em>`;
       [...$("goals").children].forEach(b => { if (b.dataset.ok) b.classList.add("hint"); }); tone(660, .1, "triangle", .1); tone(990, .14, "triangle", .08, 0, .08);
     };
-    $("clueBtn").onclick = () => { if (tm) { clearTimeout(tm); tm = null; reveal(true); } else tm = setTimeout(() => { tm = null; reveal(false); }, 300); };
+    let taps = 0;
+    $("clueBtn").onclick = () => { taps++; clearTimeout(tm); tm = setTimeout(() => { const n = taps; taps = 0; tm = null; if (n >= 3) secretGame(); else reveal(n === 2); }, 320); };
   }
   else $("clue").innerHTML = "";
   const t = $("goals"); t.innerHTML = "";
@@ -612,7 +659,7 @@ function shoot(btn, ok) {
   [...$("goals").children].forEach(b => b.disabled = true);
   const [tx, ty, w] = goalAt(btn), side = Math.random() < .5 ? -1 : 1, wide = !ok && Math.random() < .4;
   // a goal lands somewhere in the net; a miss rings off the post or goes wide
-  const ox = ok ? (Math.random() - .5) * w * .45 : side * w * (wide ? .56 : .4), oy = ok ? (Math.random() - .5) * 16 : (Math.random() - .5) * 26;
+  const ox = ok ? (Math.random() - .5) * w * T.hitX : side * w * (wide ? T.missX[1] : T.missX[0]), oy = ok ? (Math.random() - .5) * T.hitY : (Math.random() - .5) * 26;
   const st = $("stick").getBoundingClientRect(), sx0 = st.left + st.width / 2, sy0 = st.top + st.height * .3;
   $("stick").style.transform = `rotate(${Math.max(-60, Math.min(60, Math.atan2(tx - sx0, sy0 - ty) * 180 / Math.PI)).toFixed(1)}deg)`;
   const k = ball(), trail = k.trail || (G.streak >= 3 ? FIRE : null), quick = G.mode === "clock", me = G;
@@ -622,10 +669,10 @@ function shoot(btn, ok) {
     fling(); sWhoosh();
     flyBall(sx, sy, tx + ox, ty + oy, quick ? 260 : 440, k, trail, () => {
       if (G !== me || G.over || !btn.isConnected) return;
-      const inNet = document.createElement("span"); inNet.className = "ball-in" + (ok ? "" : " off");
-      inNet.style.cssText = `left:calc(50% + ${ox.toFixed(1)}px);top:calc(${(34 / 66 * 100).toFixed(1)}% + ${oy.toFixed(1)}px);background:${ballBg(k)};--bx:${side * 26}px`;
+      const inNet = document.createElement("span"); inNet.className = "ball-in" + (ok ? (T.drop ? " drop" : "") : " off");
+      inNet.style.cssText = `left:calc(50% + ${ox.toFixed(1)}px);top:calc(${(T.aim * 100).toFixed(1)}% + ${oy.toFixed(1)}px);background:${ballBg(k)};--bx:${side * 26}px`;
       btn.querySelector(".goal").appendChild(inNet);
-      if (ok) { btn.classList.add("swish"); sSwish(); } else if (wide) sAww(); else sPing();
+      if (ok) { btn.classList.add("swish"); sSwish(); } else if (wide) sAww(); else if (T.rim) sClank(); else sPing();
       resolve(btn, ok, wide);
     });
   });
@@ -637,11 +684,11 @@ function resolve(btn, ok, wide) {
     let earned = (clock || !clueUsed ? 10 : 5) + (G.streak >= 3 ? 5 : 0); if (golden) earned *= 2;
     G.score += earned; btn.classList.add("right");
     burst(gx, gy, golden ? ["#ffd700", "#ff6a13", "#fff3b0"] : ball().trail || ["#ffcc33", "#ff6a13", "#ffffff", "#2fbf71"], golden ? 32 : G.streak >= 3 ? 26 : 18);
-    stamp(gx, gy - 36, golden ? "🥇 GOLDEN GOAL!" : streakWord(G.streak), "good");
+    stamp(gx, gy - 36, golden ? T.goldenStamp : streakWord(G.streak), "good");
     sCheer(golden || G.streak >= 3); if (golden || G.streak >= 3) sHorn();
     const p = $("pts"); p.textContent = "+" + earned; p.classList.remove("go"); void p.offsetWidth; p.classList.add("go");
   } else {
-    G.streak = 0; btn.classList.add("wrong"); stamp(gx, gy - 32, wide ? "WIDE!" : "OFF THE POST!", "bad");
+    G.streak = 0; btn.classList.add("wrong"); stamp(gx, gy - 32, wide ? T.wide : T.near[Math.floor(Math.random() * T.near.length)], "bad");
     $("qcard").classList.add("shake"); setTimeout(() => $("qcard").classList.remove("shake"), 300);
     [...$("goals").children].forEach(b => { if (b.dataset.ok) b.classList.add("right"); else if (b !== btn) b.classList.add("dim"); });
   }
@@ -667,15 +714,15 @@ function resolve(btn, ok, wide) {
   if (!ok) { const pl = btn.querySelector(".lbl").textContent.trim(); if (type === "m2r") { const x = DATA.find(r => up(r.r) === pl); if (x) picked = `❌ You picked <b>${up(x.r)}</b>, which means “${x.m}.”`; } else { const xs = DATA.filter(r => r.m === pl); if (xs.length) picked = `❌ You picked “${pl},” which is what <b>${xs.map(r => up(r.r)).join(" and ")}</b> mean${xs.length === 1 ? "s" : ""}.`; } }
   const lvLine = lvB > lvA ? `<div class="lvup">⬆️ LEVEL UP! <span class="badge ${LV[lvA].c}">${LV[lvA].t}</span> → <span class="badge ${LV[lvB].c}">${LV[lvB].t}</span> ${up(d.r)}</div>` : lvB < lvA ? `<div class="lvdown">${up(d.r)} slipped back to <span class="badge ${LV[lvB].c}">${LV[lvB].t}</span>. Score on it again and it climbs right back up.</div>` : "";
   const card = $("qcard"); card.classList.remove("fire", "golden"); card.classList.add("done", ok ? "good" : "bad");
-  $("explain").innerHTML = `<b class="big">${ok ? (golden ? "🥇 Golden Goal! Double points!" : `🥅 GOAL!${G.streak >= 3 ? " Streak bonus!" : ""}`) : "No goal: here's the trick"}</b>
+  $("explain").innerHTML = `<b class="big">${ok ? (golden ? `${T.golden}! Double points!` : `${T.hit}${G.streak >= 3 ? " Streak bonus!" : ""}`) : T.missHead}</b>
     <div class="ans">${up(d.r)} <small>= ${d.m}</small></div>${picked ? `<div class="picked">${picked}</div>` : ""}${wordLine}${lvLine}
-    <button class="btn" id="nextBtn" type="button">${G.i + 1 >= ROUND ? "See the score" : "Next shot ➜"}</button>${explainHTML(d)}`;
+    <button class="btn" id="nextBtn" type="button">${G.i + 1 >= ROUND ? "See the score" : T.next}</button>${explainHTML(d)}`;
   $("nextBtn").onclick = () => { if (G.cur.next) return; G.cur.next = true; G.i++; nextQ(); };
 }
 function unlocks() {
   const now = owned(), gained = BALLS.filter(k => now.includes(k.id) && !G.owned.includes(k.id));
   $("unlockPanel").classList.toggle("hidden", !gained.length);
-  $("unlockList").innerHTML = gained.map(k => `<div><span class="ballart" style="display:inline-block;vertical-align:middle;background:${ballBg(k)}"></span> &nbsp;<b>${k.icon} ${k.name}</b> · ${k.how}! Pick it in the Ball bag.</div>`).join("");
+  $("unlockList").innerHTML = gained.map(k => `<div><span class="ballart" style="display:inline-block;vertical-align:middle;background:${ballBg(k)}"></span> &nbsp;<b>${k.icon} ${k.name}</b> · ${k.how}! Pick it in the ${T.bag}.</div>`).join("");
   if (gained.length) { setTimeout(sFan, 500); toast(`🎁 New ball unlocked: ${gained.map(k => k.icon + " " + k.name).join(", ")}!`); }
 }
 function missList() {
@@ -684,10 +731,10 @@ function missList() {
   $("missList").innerHTML = misses.map(id => { const d = DATA[id]; return `<div><b>${up(d.r)}</b> = ${d.m} <span style="color:#a9bddb">(${d.ex.join(", ")})</span></div>`; }).join("");
 }
 function endGame() {
-  G.over = true; show("end"); $("endTitle").textContent = `Final whistle, ${curName()}!`; $("endScore").textContent = G.score;
+  G.over = true; show("end"); $("endTitle").textContent = `${T.end}, ${curName()}!`; $("endScore").textContent = G.score;
   const pct = G.hits / ROUND;
-  $("endRank").textContent = pct === 1 ? "🏆 MVP!" : pct >= .8 ? "🥍 All-American" : pct >= .6 ? "⭐ Starter" : pct >= .4 ? "👟 Rookie" : "🎽 Keep practicing!";
-  $("endHits").textContent = `${G.hits} of ${ROUND} goals`;
+  $("endRank").textContent = T.ranks[pct === 1 ? 0 : pct >= .8 ? 1 : pct >= .6 ? 2 : pct >= .4 ? 3 : 4];
+  $("endHits").textContent = `${G.hits} of ${ROUND} ${T.plural}`;
   if (G.hits === ROUND) S.perfect = true;
   if (G.score > S.best) { S.best = G.score; $("endHits").textContent += " · New best!"; }
   save();
@@ -699,9 +746,9 @@ function endGame() {
   if (pct >= .8) { confetti(); sHorn(); sCheer(true); }
 }
 function endClock() {
-  G.over = true; clearInterval(G.timer); show("end"); $("endTitle").textContent = `⏱ Buzzer, ${curName()}!`; $("endScore").textContent = G.hits;
-  $("endRank").textContent = G.hits >= 20 ? "⚡ Lightning Shooter!" : G.hits >= 14 ? "🥍 All-American" : G.hits >= 9 ? "⭐ Starter" : G.hits >= 5 ? "👟 Rookie" : "🎽 Keep practicing!";
-  $("endHits").textContent = `${G.hits} goal${G.hits === 1 ? "" : "s"} in ${CLOCK} seconds (${G.results.length} shots)`;
+  G.over = true; clearInterval(G.timer); show("end"); $("endTitle").textContent = `${T.clockEnd}, ${curName()}!`; $("endScore").textContent = G.hits;
+  $("endRank").textContent = G.hits >= 20 ? T.clockTop : T.ranks[G.hits >= 14 ? 1 : G.hits >= 9 ? 2 : G.hits >= 5 ? 3 : 4];
+  $("endHits").textContent = `${G.hits} ${G.hits === 1 ? T.plural.slice(0, -1) : T.plural} in ${CLOCK} seconds (${G.results.length} ${T.shot.toLowerCase()}s)`;
   if (G.hits > (S.clockBest || 0)) { S.clockBest = G.hits; $("endHits").textContent += " · New best!"; }
   save(); $("lvlPanel").classList.add("hidden"); missList(); unlocks();
   if (G.hits >= 14) { confetti(); sHorn(); }
@@ -723,6 +770,16 @@ document.addEventListener("keydown", e => {
   if (e.key.length === 1 && n >= 0) { $("goals").children[n]?.click(); return; }
   if ((e.key === "Enter" || e.key === " ") && $("nextBtn")) { e.preventDefault(); $("nextBtn").click(); }
 });
+(function applySport() {
+  document.body.dataset.sport = SPORT; document.title = T.name;
+  $("tEmoji").textContent = T.emoji; $("tName").textContent = T.name; $("tVerb").textContent = T.verb;
+  $("startBtn").textContent = T.startBtn; $("clockBtn").textContent = "⏱ " + T.clock; $("tClockName").textContent = T.clock;
+  const s = T.shot.toLowerCase();
+  $("tMode").textContent = `${T.startBtn.split(" ")[0]} 10 ${s}s moves roots up your sheet, and ${s} #10 is a ${T.golden} worth double. ⏱ ${T.clock}: as many ${T.plural} as you can in 60 seconds (it doesn't change your sheet).`;
+  $("tBag").textContent = `${T.bagEmoji} ${T.bag}`; $("tTip").textContent = T.tip;
+  $("tSheet").textContent = `Tap a root to review it. Two ${T.plural} in a row bumps a root up a level; a miss knocks it back.`;
+  if (T.shooter) $("stick").innerHTML = T.shooter;
+})();
 renderHome();
 </script>
 </body>
