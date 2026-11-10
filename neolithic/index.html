@@ -11724,13 +11724,13 @@ function startRootArchery() {
     else { label = "Mystery word"; const w = d.more[Math.random() * d.more.length | 0]; G.cur.word = w; qm.classList.add("word"); qm.innerHTML = up(w).replace(/\[(.*?)\]/, '<span class="hl">$1</span>'); $("qask").textContent = "The underlined root means…"; choices = meaningChoices(d); clueHTML = `Same root as: <em>${d.ex.join(", ")}</em>`; }
     $("qtype").textContent = apple ? `🍎 Golden Apple · double points · ${label}` : label;
     if (G.mode === "round") {
-      // 💡 one tap = a clue, two quick taps = the answer (both are half points)
+      // 💡 one tap = a clue (half points); two quick taps = the answer (normal points)
       $("clue").innerHTML = `<button id="ra-clueBtn" type="button">💡 Clue (half points)</button>`;
       let tm = null; const ansText = type === "m2r" ? up(d.r) : d.m;
       const reveal = answer => {
-        if (G.cur.done) return; G.cur.clueUsed = true;
-        if (!answer) { $("clue").innerHTML = clueHTML; return; }
-        G.cur.answerShown = true; $("clue").innerHTML = `🔓 The answer is <em>${ansText}</em> (half points)`;
+        if (G.cur.done) return;
+        if (!answer) { G.cur.clueUsed = true; $("clue").innerHTML = clueHTML; return; }
+        G.cur.answerShown = true; $("clue").innerHTML = `🔓 The answer is <em>${ansText}</em>`;
         [...$("targets").children].forEach(b => { if (b.dataset.ok) b.classList.add("hint"); }); tone(660, .1, "triangle", .1); tone(990, .14, "triangle", .08, 0, .08);
       };
       $("clueBtn").onclick = () => { if (tm) { clearTimeout(tm); tm = null; reveal(true); } else tm = naTimer(setTimeout(() => { tm = null; reveal(false); }, 300)); };
