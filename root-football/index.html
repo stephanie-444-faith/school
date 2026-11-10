@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Root Football</title>
+<meta name="description" content="Emmett's 30 Greek and Latin roots: score goals to move each root from X to ~ to Y.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* Night game in a lacrosse stadium: navy sky, stadium lights, a crowd, turf, orange goal pipes. One theme on purpose. */
+:root{
+  --navy:#0b1d3a; --panel:rgba(16,38,72,.9); --line:#2c4670; --card:#eef3f9; --ink:#13233d; --muted:#5d6f8a;
+  --gold:#ffcc33; --gold-d:#a8800f; --orange:#ff6a13; --turf:#2b8a3e; --x:#e5484d; --tilde:#f59f0b; --y:#2fbf71; --soft:#c9d6ea;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{background:linear-gradient(#071226,#0d2448 55%,#143768);background-attachment:fixed;color:#fff;font-family:Nunito,system-ui,sans-serif;font-size:16px;line-height:1.4;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---------- the stadium (always moving) ---------- */
+.stadium{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.stars{position:absolute;left:0;right:0;top:0;height:45%;background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1.2px 1.2px at 120px 80px,#fff,transparent),radial-gradient(1.4px 1.4px at 170px 20px,#ffe9a8,transparent),radial-gradient(1px 1px at 60px 150px,#fff,transparent),radial-gradient(1.1px 1.1px at 190px 120px,#cfe3ff,transparent);background-size:220px 220px;opacity:.6;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent);animation:twinkle 3.5s ease-in-out infinite alternate,drift 160s linear infinite}
+@keyframes twinkle{from{opacity:.25}to{opacity:.75}}
+@keyframes drift{to{background-position:660px 0}}
+.lights{position:absolute;top:16px;width:70px;height:30px;border-radius:7px;background:#1b2a44 radial-gradient(circle,#fffbe0 0 2.6px,transparent 3.4px) 3px 3px/11px 9px;box-shadow:0 0 0 3px #33476b,0 0 46px 16px rgba(255,248,215,.32);animation:glow 3s ease-in-out infinite alternate}
+.lights::after{content:"";position:absolute;left:50%;top:33px;width:5px;height:150px;margin-left:-2.5px;background:linear-gradient(#33476b,transparent)}
+.lights.l{left:14px}.lights.r{right:14px;animation-delay:-1.4s}
+@keyframes glow{to{box-shadow:0 0 0 3px #33476b,0 0 60px 22px rgba(255,248,215,.42)}}
+.beam{position:absolute;top:30px;width:300px;height:620px;background:linear-gradient(rgba(255,250,220,.2),transparent 78%);clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);transform-origin:50% 0;animation:sway 8s ease-in-out infinite alternate}
+.beam.l{left:-100px;--a:-28deg}.beam.r{right:-100px;--a:28deg;animation-delay:-3s}
+@keyframes sway{from{transform:rotate(calc(var(--a) - 5deg))}to{transform:rotate(calc(var(--a) + 5deg))}}
+.stands{position:absolute;left:0;right:0;bottom:84px;height:150px;background:linear-gradient(#0e1b34,#1b2b4c)}
+.crowd{position:absolute;left:0;right:0;background-repeat:repeat-x;animation:pan linear infinite,bob ease-in-out infinite}
+.crowd.back{bottom:150px;height:58px;background-size:200px 58px;opacity:.6;animation-duration:150s,1.3s}
+.crowd.front{bottom:88px;height:70px;background-size:240px 70px;animation-duration:100s,.9s;animation-delay:0s,-.4s}
+@keyframes pan{to{background-position-x:-2400px}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.flash{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 10px 5px rgba(255,255,255,.85);opacity:0;animation:flash ease-out infinite}
+@keyframes flash{0%,90%{opacity:0}92%{opacity:1}100%{opacity:0}}
+.field{position:absolute;left:0;right:0;bottom:0;height:88px;background:linear-gradient(90deg,#2b8a3e 0 60px,#33994a 60px 120px) 0 0/120px 100%;border-top:4px solid rgba(255,255,255,.85);animation:pan 60s linear infinite}
+.field::after{content:"";position:absolute;left:0;right:0;top:34px;height:3px;background:rgba(255,255,255,.35)}
+
+/* ---------- layout ---------- */
+.lx{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:58px 16px 120px}
+h1{font-family:Bungee,sans-serif;font-weight:400;font-size:34px;margin:6px 0 0;letter-spacing:1px;color:var(--gold);text-shadow:0 3px 0 #6b4f00}
+h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
+@keyframes wiggle{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg) translateY(-3px)}}
+.sub{color:var(--soft);margin:4px 0 16px;font-size:15px}
+.btn{font-family:Bungee,sans-serif;font-size:18px;border:0;border-radius:14px;padding:14px 16px;color:#231a00;background:var(--gold);box-shadow:0 4px 0 var(--gold-d);width:100%;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--gold-d)}
+.btn.hot{background:linear-gradient(#ff8a3d,var(--orange));color:#fff;box-shadow:0 4px 0 #a33a06;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.btn.alt{background:#e4e9f2;color:var(--ink);box-shadow:0 4px 0 #8d99ad;font-size:15px}
+.row{display:flex;gap:10px}
+.mode{font-size:13px;color:#a9bddb;margin:8px 0 0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:16px}
+.panel h2{font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:#a9bddb;margin:0 0 10px}
+.legend{font-size:13px;color:var(--soft);margin-bottom:10px;display:flex;gap:12px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;font-weight:800;font-size:13px;color:#fff}
+.bx{background:var(--x)}.bt{background:var(--tilde)}.by{background:var(--y)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.chip{background:#0d1d38;border:1px solid transparent;border-radius:10px;padding:7px 6px;display:flex;align-items:center;gap:6px;font-size:13px;text-align:left;min-width:0}
+.chip:hover{border-color:#4a6795}
+.chip .badge{flex:none}
+.chip span.r{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* scoreboard */
+.board{display:flex;gap:8px;background:#070d1a;border:3px solid #33476b;border-radius:14px;padding:8px;box-shadow:inset 0 0 18px rgba(0,0,0,.6)}
+.stat{flex:1;text-align:center;background:#0d1426;border-radius:9px;padding:8px 4px}
+.stat b{display:block;font-family:Bungee,sans-serif;font-weight:400;font-size:26px;letter-spacing:2px}
+.stat small{color:#8fa3c4;font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.stat.y b{color:#4ff59a;text-shadow:0 0 10px rgba(79,245,154,.7)}.stat.t b{color:#ffc04d;text-shadow:0 0 10px rgba(255,192,77,.7)}.stat.x b{color:#ff6b6b;text-shadow:0 0 10px rgba(255,107,107,.7)}
+.players{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-4px 0 12px;font-weight:800;color:var(--soft)}
+.players select{font:inherit;font-weight:800;background:#0d1d38;color:#fff;border:2px solid var(--line);border-radius:10px;padding:5px 8px;max-width:60%}
+.players small{color:#8fa3c4;font-weight:600}
+.addform{display:flex;gap:8px;margin:0 0 12px}
+.addform input{flex:1;min-width:0;font:inherit;font-weight:800;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:#0d1d38;color:#fff}
+.addform .btn{width:auto;font-size:15px;padding:10px 16px}
+.toggle{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;color:var(--soft);cursor:pointer}
+.toggle input{width:20px;height:20px;accent-color:var(--gold)}
+/* ball bag */
+.bag{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.skin{background:#0d1d38;border:2px solid transparent;border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.skin.on{border-color:var(--gold);box-shadow:0 0 12px rgba(255,204,51,.45)}
+.skin.locked{opacity:.6}.skin.locked .ballart{filter:grayscale(1) brightness(.6)}
+.skin b{font-size:13px}.skin small{font-size:11px;color:#a9bddb;text-align:center;line-height:1.2}
+.ballart{width:24px;height:24px;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.4)}
+/* play */
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:Bungee,sans-serif;font-size:15px;color:var(--soft)}
+.shots{display:flex;gap:3px;margin:8px 0 12px}
+.shots i{flex:1;height:8px;border-radius:4px;background:#2c4670}
+.shots i.hit{background:var(--y)}.shots i.miss{background:var(--x)}.shots i.now{background:var(--gold)}.shots i.golden{box-shadow:0 0 0 2px #ffd700}
+.timebar{height:10px;border-radius:6px;background:#2c4670;margin:8px 0 12px;overflow:hidden;display:none}
+.timebar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--orange),var(--gold),var(--y))}
+.clockmode .timebar{display:block}.clockmode .shots{display:none}
+.qcard{background:var(--card);color:var(--ink);border-radius:18px;padding:18px 16px 16px;text-align:center;box-shadow:0 6px 0 #9aa8bf;position:relative}
+.qcard.fire{box-shadow:0 6px 0 #9aa8bf,0 0 0 3px #ff8a1f,0 0 26px 6px rgba(255,120,30,.55);animation:fire 1.2s ease-in-out infinite alternate}
+@keyframes fire{to{box-shadow:0 6px 0 #9aa8bf,0 0 0 3px #ffd23f,0 0 36px 10px rgba(255,170,30,.6)}}
+.qcard.golden{background:linear-gradient(#fff8dc,#f7e3a0);box-shadow:0 6px 0 #c9a227,0 0 0 3px var(--gold),0 0 30px 8px rgba(255,204,51,.5)}
+.qtype{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:800}
+.qcard.golden .qtype{color:#a3330a}
+.qmain{font-family:Bungee,sans-serif;font-size:40px;line-height:1.1;margin:8px 0 4px;color:#13233d;word-break:break-word}
+.qmain.word{font-size:32px;letter-spacing:1px}
+.qmain .hl{color:var(--x);text-decoration:underline;text-decoration-thickness:4px;text-underline-offset:6px}
+.qask{font-size:17px;font-weight:800}
+.clue{margin-top:10px;font-size:15px;color:var(--muted);min-height:22px}
+.clue button{background:none;border:2px dashed #b7c3d6;border-radius:10px;padding:6px 12px;font-weight:800;color:var(--muted)}
+.clue em{color:var(--ink);font-style:normal;font-weight:800}
+.clue b{color:#a3330a}
+.clue button small{display:block;font-size:12px;font-weight:700;opacity:.8;margin-top:2px}
+.explain{display:none;text-align:left}
+.qcard.done .qtype,.qcard.done .qmain,.qcard.done .qask,.qcard.done .clue{display:none}
+.qcard.done .explain{display:block;animation:pop .25s ease-out}
+.qcard.done.good{box-shadow:0 6px 0 #8fbf9c,0 0 0 3px var(--y)}
+.qcard.done.bad{box-shadow:0 6px 0 #d9a49b,0 0 0 3px var(--x)}
+.explain .big{font-family:Bungee,sans-serif;font-weight:400;font-size:20px;display:block}
+.qcard.good .explain .big{color:#1f7a3a}.qcard.bad .explain .big{color:#b23a2a}
+.ans{font-family:Bungee,sans-serif;font-size:26px;margin:2px 0 6px;color:#13233d;line-height:1.15}
+.ans small{font-family:Nunito,system-ui,sans-serif;font-size:18px;font-weight:800;color:#3d4f6b}
+.picked{font-size:15px;color:#b23a2a;font-weight:800;margin:0 0 6px}
+.word{font-size:15px;margin:0 0 6px}
+.from,.parts,.trick{font-size:15px;line-height:1.4;margin:6px 0}
+.parts ul{margin:4px 0 0;padding-left:18px}
+.parts li{margin:3px 0}
+.trick{background:#fff3c9;border-radius:10px;padding:8px 10px}
+.explain .btn{margin:8px 0 6px}
+.explain .lvup{color:#13233d;background:#ffe9a8}
+.explain .lvdown{color:#8a3a2a}
+.mexplain{text-align:left;font-size:14px}
+.modal .box{max-height:88vh;overflow-y:auto}
+.tgt.hint{box-shadow:0 4px 0 #9aa8bf,0 0 0 4px #ffcf33;animation:hint .8s ease-in-out infinite alternate}
+@keyframes hint{to{box-shadow:0 4px 0 #9aa8bf,0 0 0 4px #ffcf33,0 0 18px 6px rgba(255,207,51,.75)}}
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.tgt{background:var(--card);border:0;border-radius:16px;padding:10px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink);box-shadow:0 4px 0 #9aa8bf;transition:transform .1s,background .2s;min-width:0}
+.tgt:active{transform:translateY(2px)}
+.goal{position:relative;width:84px;height:66px}
+.goal svg{display:block;overflow:visible}
+.tgt.golden .goal::after{content:"🥇";position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:20px;line-height:1}
+.lbl{font-weight:800;font-size:17px;line-height:1.15;min-height:20px}
+.key{font-size:11px;color:var(--muted);font-weight:800;margin-top:-3px}
+.tgt.root .lbl{font-family:Bungee,sans-serif;font-weight:400;font-size:18px}
+.tgt.right{background:#cfeed9}.tgt.wrong{background:#f6d0cb}.tgt.dim{opacity:.55}.tgt[disabled]{cursor:default}
+.tgt.swish svg{animation:swish .45s}
+@keyframes swish{0%{transform:scale(1)}30%{transform:scale(1.06,1.1)}60%{transform:scale(.97)}100%{transform:scale(1)}}
+.ball-in{position:absolute;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;box-shadow:0 2px 3px rgba(0,0,0,.35)}
+.ball-in.off{animation:off .7s ease-in forwards}
+@keyframes off{0%{transform:translate(0,0)}35%{transform:translate(var(--bx),-14px)}100%{transform:translate(calc(var(--bx) * 1.8),40px);opacity:0}}
+.stickrow{display:flex;flex-direction:column;align-items:center;margin-top:6px}
+.stick{transition:transform .12s ease-out;transform-origin:50% 85%;overflow:visible;filter:drop-shadow(0 3px 2px rgba(0,0,0,.5))}
+.tip{font-size:12px;color:#a9bddb;margin-top:2px;text-align:center}
+.ball{position:fixed;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;pointer-events:none;z-index:50;box-shadow:0 3px 5px rgba(0,0,0,.4)}
+.spark{position:fixed;width:6px;height:6px;border-radius:50%;margin:-3px 0 0 -3px;pointer-events:none;z-index:49;animation:spark .45s ease-out forwards}
+@keyframes spark{to{transform:scale(.1) translateY(6px);opacity:0}}
+.burst{position:fixed;width:7px;height:7px;border-radius:50%;margin:-3.5px 0 0 -3.5px;pointer-events:none;z-index:55;animation:burst .7s ease-out forwards}
+@keyframes burst{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.stamp{position:fixed;transform:translate(-50%,-50%);font-family:Bungee,sans-serif;font-size:22px;white-space:nowrap;pointer-events:none;z-index:56;animation:stamp .95s ease-out forwards;text-shadow:0 2px 0 rgba(0,0,0,.55),0 0 10px rgba(0,0,0,.35)}
+.stamp.good{color:#ffe066}.stamp.bad{color:#ff8a7a}
+@keyframes stamp{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}20%{transform:translate(-50%,-50%) scale(1.25);opacity:1}35%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-130%) scale(1);opacity:0}}
+.feedback{margin-top:16px;border-radius:16px;padding:14px;font-size:16px;line-height:1.4;display:none}
+.feedback.show{display:block;animation:pop .25s ease-out}
+.feedback.good{background:#173f2a;border:2px solid var(--y)}
+.feedback.bad{background:#4a2420;border:2px solid var(--x)}
+.feedback b.big{font-family:Bungee,sans-serif;font-weight:400;font-size:20px;display:block;margin-bottom:4px}
+.feedback .btn{margin-top:12px}
+.lvup{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(255,204,51,.16);border:1px solid var(--gold);font-weight:800}
+.lvdown{margin-top:8px;font-size:14px;color:#f0c4bd}
+.pts{position:absolute;right:14px;top:10px;font-family:Bungee,sans-serif;color:#1f9d55;font-size:20px;opacity:0}
+.pts.go{animation:float 1s ease-out}
+@keyframes float{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+@keyframes pop{0%{transform:scale(.95);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .3s}
+.end{text-align:center}
+.end .score{font-family:Bungee,sans-serif;font-size:64px;color:var(--gold);text-shadow:0 4px 0 #6b4f00;margin:6px 0}
+.end .rank{font-family:Bungee,sans-serif;font-size:22px}
+.list{text-align:left}
+.list div{padding:6px 0;border-bottom:1px solid var(--line);font-size:15px}
+.unlock{border-color:var(--gold);box-shadow:0 0 18px rgba(255,204,51,.35)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+.modal.show{display:flex}
+.modal .box{background:var(--card);color:var(--ink);border-radius:18px;padding:20px;max-width:360px;width:100%;text-align:center}
+.modal h3{font-family:Bungee,sans-serif;font-weight:400;font-size:30px;margin:0}
+.modal p{margin:8px 0}
+.hidden{display:none !important}
+.tiny{font-size:12px;color:#8fa3c4;text-align:center;margin-top:18px}
+.link{background:none;border:0;color:#8fa3c4;text-decoration:underline;padding:0}
+.confetti{position:fixed;top:-10px;width:8px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#0a1426;border:2px solid var(--gold);color:#fff;border-radius:14px;padding:10px 16px;font-weight:800;z-index:80;opacity:0;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.sun,.cloud{display:none}
+.sun{position:absolute;top:22px;right:28px;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fff6b0,#ffd23f 60%,#ffb703);box-shadow:0 0 50px 18px rgba(255,214,80,.5);animation:sunglow 4s ease-in-out infinite alternate}
+@keyframes sunglow{to{box-shadow:0 0 70px 26px rgba(255,214,80,.62)}}
+.cloud{position:absolute;width:96px;height:28px;border-radius:30px;background:#fff;opacity:.85;animation:cloudmove linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:44px;height:44px;left:14px;top:-20px}
+.cloud::after{width:34px;height:34px;left:46px;top:-14px}
+.cloud.c1{top:70px;animation-duration:70s;animation-delay:-10s}
+.cloud.c2{top:140px;width:70px;animation-duration:95s;animation-delay:-50s}
+.cloud.c3{top:210px;animation-duration:120s;animation-delay:-80s;opacity:.7}
+@keyframes cloudmove{from{left:-140px}to{left:110%}}
+.ball-in.drop{animation:drop .6s ease-in forwards}
+@keyframes drop{0%{transform:translateY(-4px)}100%{transform:translateY(22px);opacity:0}}
+body[data-sport="basketball"]{background:linear-gradient(#140b22,#2a1838 55%,#3a2448);background-attachment:fixed}
+body[data-sport="basketball"] .stars{display:none}
+body[data-sport="basketball"] .stands{background:linear-gradient(#1f1430,#33224a)}
+body[data-sport="basketball"] .field{background:linear-gradient(90deg,#c88a4a 0 40px,#d29652 40px 80px) 0 0/80px 100%;border-top-color:#ff7a1a}
+body[data-sport="basketball"] .tgt{background:#f7efe6}
+body[data-sport="soccer"]{background:linear-gradient(#1565c0,#1e88e5 55%,#64b5f6);background-attachment:fixed;--soft:#eaf4ff}
+body[data-sport="soccer"] .stars,body[data-sport="soccer"] .lights,body[data-sport="soccer"] .beam{display:none}
+body[data-sport="soccer"] .sun,body[data-sport="soccer"] .cloud{display:block}
+body[data-sport="soccer"] .stands{background:linear-gradient(#24476e,#2f5c8a)}
+body[data-sport="soccer"] .field{background:linear-gradient(90deg,#3aa54b 0 60px,#44b356 60px 120px) 0 0/120px 100%}
+body[data-sport="soccer"] .tgt{background:#e9f7ea}
+body[data-sport="soccer"] .mode,body[data-sport="soccer"] .tiny,body[data-sport="soccer"] .link{color:#e3f0ff}
+body[data-sport="soccer"] .players small{color:#d6e8ff}
+body[data-sport="football"] .field{background:repeating-linear-gradient(90deg,#2f9444 0 57px,#ffffff 57px 60px);border-top-color:#ffffff}
+body[data-sport="football"] .tgt{background:#e9f7ea}
+body[data-sport="football"] .ball{width:22px;height:14px;margin:-7px 0 0 -11px}
+body[data-sport="football"] .ball-in{width:16px;height:10px;margin:-5px 0 0 -8px}
+.ball-in.thru{animation:thru .6s ease-out forwards}
+@keyframes thru{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-18px) scale(.5);opacity:0}}
+@media (max-width:420px){h1{font-size:28px}.qmain{font-size:34px}.btn{font-size:16px;padding:13px 10px}}
+@media (prefers-reduced-motion:reduce){.ball-in.thru,.sun,.cloud,.ball-in.drop,.stars,.lights,.beam,.crowd,.flash,.field,.confetti,.shake,.pts.go,.qcard.fire,h1 .stickmoji,.tgt.swish svg,.feedback.show,.ball-in.off{animation:none}.flash{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="mesh" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H7M0 0V7" stroke="#7c8aa0" stroke-width="1.1" fill="none"/></pattern>
+  <pattern id="pocket" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H5M0 0V5" stroke="#e8edf5" stroke-width=".9" fill="none"/></pattern>
+</defs></svg>
+<div class="stadium" aria-hidden="true" id="stadium">
+  <div class="stars"></div><div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+  <div class="beam l"></div><div class="beam r"></div>
+  <div class="lights l"></div><div class="lights r"></div>
+  <div class="stands"></div>
+  <div class="crowd back" id="crowdBack"></div><div class="crowd front" id="crowdFront"></div>
+  <div class="field"></div>
+</div>
+
+<main class="lx" id="lx">
+  <section id="home">
+    <h1><span class="stickmoji" id="tEmoji">🥍</span> <span id="tName">Root Lacrosse</span></h1>
+    <p class="sub">Emmett's 30 Greek &amp; Latin roots. <span id="tVerb">Score a goal</span> to move a root from <span class="badge bx">X</span> → <span class="badge bt">~</span> → <span class="badge by">Y</span>.</p>
+    <div class="players"><label for="playerSel">👤 Player:</label> <select id="playerSel" aria-label="Who is playing"></select> <button class="link" id="addPlayerBtn" type="button">➕ New player</button> <button class="link hidden" id="delPlayer" type="button">🗑 Remove</button> <small id="playerCount"></small></div>
+    <form class="addform hidden" id="addForm"><input id="newName" maxlength="30" placeholder="New player's name" aria-label="New player's name" autocomplete="off"><button class="btn" type="submit">Add</button></form>
+    <div class="board" aria-label="My root scoreboard">
+      <div class="stat y"><b id="sY">0</b><small>Know it</small></div>
+      <div class="stat t"><b id="sT">0</b><small>Getting there</small></div>
+      <div class="stat x"><b id="sX">0</b><small>Not yet</small></div>
+    </div>
+    <div class="row" style="margin-top:16px"><button class="btn" id="startBtn" type="button">🥅 Take 10 shots</button><button class="btn hot" id="clockBtn" type="button">⏱ Shot Clock</button></div>
+    <p class="mode" id="tMode">🥅 10 shots moves roots up your sheet, and shot #10 is a 🥇 Golden Goal worth double. ⏱ Shot Clock: as many goals as you can in 60 seconds (it doesn't change your sheet).</p>
+    <label class="toggle"><input type="checkbox" id="focusX" checked> Aim mostly at my X's and ~'s</label>
+    <div class="panel"><h2 id="tBag">🥍 Ball bag</h2><div class="bag" id="bag"></div></div>
+    <div class="panel">
+      <h2>My root sheet</h2>
+      <div class="legend"><span><span class="badge bx">X</span> Not yet</span><span><span class="badge bt">~</span> Becoming familiar</span><span><span class="badge by">Y</span> Confident</span></div>
+      <div class="grid" id="grid"></div>
+      <p style="font-size:13px;color:#a9bddb;margin:10px 0 0" id="tSheet">Tap a root to review it. Two goals in a row bumps a root up a level; a miss knocks it back.</p>
+    </div>
+    <p class="tiny">Best game: <span id="best">—</span> · <span id="tClockName">Shot Clock</span> best: <span id="cbest">—</span> · <button class="link" id="soundBtn" type="button">Sound: on</button> · <button class="link" id="resetBtn" type="button">Reset to my sheet</button><br>Progress saves in this browser.</p>
+  </section>
+
+  <section id="play" class="hidden">
+    <div class="hud"><span id="hudLeft">Shot 1/10</span><span id="hudStreak"></span><span id="hudScore">0 pts</span></div>
+    <div class="shots" id="shots"></div>
+    <div class="timebar"><i id="tbar"></i></div>
+    <div class="qcard" id="qcard">
+      <div class="pts" id="pts">+10</div>
+      <div class="qtype" id="qtype"></div>
+      <div class="qmain" id="qmain"></div>
+      <div class="qask" id="qask"></div>
+      <div class="clue" id="clue"></div>
+      <div class="explain" id="explain" aria-live="polite"></div>
+    </div>
+    <div class="goals" id="goals"></div>
+    <div class="stickrow">
+      <svg class="stick" id="stick" viewBox="0 -26 120 126" width="112" height="118" aria-hidden="true">
+        <g id="arm">
+          <line x1="60" y1="98" x2="60" y2="30" stroke="#cfd6e2" stroke-width="5" stroke-linecap="round"/>
+          <line x1="60" y1="98" x2="60" y2="70" stroke="#1d2433" stroke-width="6.5" stroke-linecap="round"/>
+          <path d="M56 31 L52 20 C47 13 42 5 42 -5 C42 -14 47 -18 53 -18 L67 -18 C73 -18 78 -14 78 -5 C78 5 73 13 68 20 L64 31 Z" fill="url(#pocket)"/>
+          <path d="M56 31 L52 20 C47 13 42 5 42 -5 C42 -14 47 -18 53 -18 L67 -18 C73 -18 78 -14 78 -5 C78 5 73 13 68 20 L64 31 Z" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linejoin="round"/>
+          <path d="M44 -6 H76 M44 -1 H76" stroke="#ff6a13" stroke-width="1.6" opacity=".9"/><path d="M53 -18 Q60 -21 67 -18" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round"/>
+          <circle id="pball" cx="60" cy="8" r="7.5" fill="#f4f4f0" stroke="#9aa3b0" stroke-width="1.2"/>
+        </g>
+      </svg>
+      <div class="tip" id="tTip">Tap a goal to shoot! (Keys 1–4 work too.)</div>
+    </div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+    <p class="tiny"><button class="link" id="quitBtn" type="button">Quit game</button></p>
+  </section>
+
+  <section id="end" class="hidden end">
+    <h1 style="font-size:26px" id="endTitle">Final whistle!</h1>
+    <div class="score" id="endScore">0</div>
+    <div class="rank" id="endRank"></div>
+    <p class="sub" id="endHits"></p>
+    <div class="panel list unlock hidden" id="unlockPanel"><h2>🎁 New ball unlocked!</h2><div id="unlockList"></div></div>
+    <div class="panel list hidden" id="lvlPanel"><h2>Level ups</h2><div id="lvlList"></div></div>
+    <div class="panel list hidden" id="missPanel"><h2>Practice these</h2><div id="missList"></div></div>
+    <div class="row" style="margin-top:18px"><button class="btn alt" id="homeBtn" type="button">My sheet</button><button class="btn" id="againBtn" type="button">Again!</button></div>
+  </section>
+</main>
+
+<div class="modal" id="modal"><div class="box">
+  <h3 id="mRoot"></h3>
+  <p style="font-size:20px;font-weight:800" id="mMeaning"></p>
+  <p style="color:var(--muted)" id="mEx"></p>
+  <p style="color:var(--muted)" id="mMore"></p>
+  <div class="mexplain" id="mHook"></div>
+  <button class="btn" id="mClose" style="margin-top:10px" type="button">Got it</button>
+</div></div>
+<div id="fx"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===== One game, three sports. Each page sets SPORT; the rest is the same Root game. ===== */
+const SPORT = "football";
+const HOOP_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="14" y="2" width="56" height="34" rx="3" fill="#ffffff" stroke="#9aa8bf" stroke-width="2"/><rect x="32" y="14" width="20" height="16" fill="none" stroke="#ff6a13" stroke-width="2.5"/><path d="M28 40 L33 62 H51 L56 40 Z" fill="url(#mesh)" stroke="#c5ceda" stroke-width="1.2"/><ellipse cx="42" cy="40" rx="15" ry="3.6" fill="none" stroke="#ff6a13" stroke-width="3.5"/></svg>`;
+const SOCCER_GOAL_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="5" y="10" width="74" height="50" fill="url(#mesh)"/><path d="M5 60 L14 50 H70 L79 60" fill="none" stroke="#7c8aa0" stroke-width="1.5"/><path d="M5 62 V10 H79 V62" fill="none" stroke="#8d99ad" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 62 V10 H79 V62" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="0" y="62" width="84" height="3" rx="1.5" fill="#6bbf6b"/></svg>`;
+const HANDS_SVG = `<g id="arm"><path d="M34 98 L43 54" stroke="#c98b5e" stroke-width="12" stroke-linecap="round"/><path d="M86 98 L77 54" stroke="#c98b5e" stroke-width="12" stroke-linecap="round"/><rect x="33" y="64" width="15" height="7" rx="3" transform="rotate(-12 40 67)" fill="#ff6a13"/><rect x="72" y="64" width="15" height="7" rx="3" transform="rotate(12 80 67)" fill="#ff6a13"/><path d="M37 52 C 35 40 46 32 53 38 L 55 48 Z" fill="#e0a87c"/><path d="M83 52 C 85 40 74 32 67 38 L 65 48 Z" fill="#e0a87c"/><circle id="pball" cx="60" cy="24" r="17" fill="#f08a24" stroke="#a2490c" stroke-width="1.6"/></g>`;
+const BOOT_SVG = `<path d="M8 92 Q60 84 112 92" stroke="#2e8b3d" stroke-width="6" fill="none" opacity=".85"/><g id="arm"><rect x="24" y="-14" width="12" height="62" rx="5" fill="#ffcc33"/><rect x="24" y="20" width="12" height="9" fill="#1d4ed8"/><path d="M22 46 H38 L40 62 C56 62 64 66 64 74 C64 78 60 80 56 80 H20 C18 80 17 78 17 76 Z" fill="#1d2433"/><path d="M30 58 l6 -4 M33 63 l6 -4" stroke="#ffffff" stroke-width="1.6"/><circle cx="24" cy="82" r="2.2" fill="#aab2bf"/><circle cx="36" cy="82" r="2.2" fill="#aab2bf"/><circle cx="50" cy="82" r="2.2" fill="#aab2bf"/></g><circle id="pball" cx="82" cy="76" r="12" fill="#ffffff" stroke="#222222" stroke-width="1.6"/>`;
+const GOALPOST_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><path d="M42 64 V40 M18 40 H66 M18 40 V2 M66 40 V2" stroke="#b8860b" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M42 64 V40 M18 40 H66 M18 40 V2 M66 40 V2" stroke="#ffd84d" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="0" y="62" width="84" height="3" rx="1.5" fill="#6bbf6b"/></svg>`;
+const KICK_SVG = `<path d="M8 92 Q60 84 112 92" stroke="#2e8b3d" stroke-width="6" fill="none" opacity=".85"/><path d="M76 92 L88 92 L84 84 L80 84 Z" fill="#ff6a13"/><g id="arm"><rect x="24" y="-14" width="12" height="62" rx="5" fill="#ffffff"/><rect x="24" y="18" width="12" height="7" fill="#7a1f1f"/><rect x="24" y="28" width="12" height="4" fill="#ffcc33"/><path d="M22 46 H38 L40 62 C56 62 64 66 64 74 C64 78 60 80 56 80 H20 C18 80 17 78 17 76 Z" fill="#1d2433"/><path d="M30 58 l6 -4 M33 63 l6 -4" stroke="#ffffff" stroke-width="1.6"/></g><ellipse id="pball" cx="82" cy="72" rx="8" ry="13" transform="rotate(18 82 72)" fill="#8b4513" stroke="#4a2208" stroke-width="1.6"/>`;
+const SPORTS = {
+  lacrosse: { name: "Root Lacrosse", emoji: "🥍", key: "rootLacrosseEmmett_v1", pkey: "rootLacrosse_players", verb: "Score a goal", startBtn: "🥅 Take 10 shots", clock: "Shot Clock", shot: "Shot", plural: "goals", next: "Next shot ➜", bag: "Ball bag", bagEmoji: "🥍", tip: "Tap a goal to shoot! (Keys 1–4 work too.)", hit: "🥅 GOAL!", hitIcon: "🥅", golden: "🥇 Golden Goal", goldenStamp: "🥇 GOLDEN GOAL!", missHead: "No goal: here's the trick", near: ["OFF THE POST!"], wide: "WIDE!", end: "Final whistle", clockEnd: "⏱ Buzzer", ranks: ["🏆 MVP!", "🥍 All-American", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Shooter!", streak: ["🎩 HAT TRICK!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 34 / 66, hitX: .45, hitY: 16, missX: [.4, .56], ball: { icon: "⚪", c1: "#f4f4f0", c2: "#aab2bf" } },
+  basketball: { name: "Root Basketball", emoji: "🏀", key: "rootBasketballEmmett_v1", pkey: "rootBasketball_players", verb: "Sink a basket", startBtn: "🏀 Take 10 shots", clock: "Shot Clock", shot: "Shot", plural: "baskets", next: "Next shot ➜", bag: "Ball rack", bagEmoji: "🏀", tip: "Tap a hoop to shoot! (Keys 1–4 work too.)", hit: "🏀 SWISH!", hitIcon: "🏀", golden: "🥇 Buzzer Beater", goldenStamp: "🥇 BUZZER BEATER!", missHead: "No basket: here's the trick", near: ["RIM OUT!", "BRICK!"], wide: "AIRBALL!", end: "Final buzzer", clockEnd: "⏱ Buzzer", ranks: ["🏆 MVP!", "🏀 All-Star", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Shooter!", streak: ["🔥 HEATING UP!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 40 / 66, hitX: .08, hitY: 2, missX: [.22, .55], drop: true, rim: true, target: HOOP_SVG, shooter: HANDS_SVG, wind: e => `translate(0 ${(10 * e).toFixed(2)})`, fling: "translate(0 -14)",
+    ball: { icon: "🏀", c1: "#f08a24", c2: "#a2490c", bg: "linear-gradient(90deg,transparent 46%,#5a2a08 46% 54%,transparent 54%),linear-gradient(0deg,transparent 46%,#5a2a08 46% 54%,transparent 54%),radial-gradient(circle at 34% 30%,#ffb46b,#f08a24 45%,#a2490c)" } },
+  soccer: { name: "Root Soccer", emoji: "⚽", key: "rootSoccerEmmett_v1", pkey: "rootSoccer_players", verb: "Score a goal", startBtn: "⚽ Take 10 kicks", clock: "Lightning Round", shot: "Kick", plural: "goals", next: "Next kick ➜", bag: "Ball bag", bagEmoji: "⚽", tip: "Tap a goal to kick! (Keys 1–4 work too.)", hit: "⚽ GOAL!", hitIcon: "⚽", golden: "🥇 Golden Goal", goldenStamp: "🥇 GOLDEN GOAL!", missHead: "No goal: here's the trick", near: ["OFF THE POST!", "SAVED!"], wide: "WIDE!", end: "Final whistle", clockEnd: "⏱ Final whistle", ranks: ["🏆 MVP!", "⚽ All-Star", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Striker!", streak: ["🎩 HAT TRICK!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 35 / 66, hitX: .55, hitY: 18, missX: [.46, .62], target: SOCCER_GOAL_SVG, shooter: BOOT_SVG, wind: e => `rotate(${(-40 * e).toFixed(2)} 30 -12)`, fling: "rotate(32 30 -12)",
+    ball: { icon: "⚽", c1: "#ffffff", c2: "#222222", bg: "radial-gradient(circle at 50% 50%,#222 0 17%,transparent 18%),radial-gradient(circle at 18% 22%,#222 0 11%,transparent 12%),radial-gradient(circle at 84% 26%,#222 0 11%,transparent 12%),radial-gradient(circle at 26% 86%,#222 0 11%,transparent 12%),radial-gradient(circle at 80% 84%,#222 0 11%,transparent 12%),radial-gradient(circle at 34% 30%,#ffffff,#e8e8e8 60%,#bdbdbd)" } },
+  football: { name: "Root Football", emoji: "🏈", key: "rootFootballEmmett_v1", pkey: "rootFootball_players", verb: "Kick a field goal", startBtn: "🏈 Take 10 kicks", clock: "Two-Minute Drill", shot: "Kick", plural: "field goals", next: "Next kick ➜", bag: "Ball bag", bagEmoji: "🏈", tip: "Tap the goalposts to kick! (Keys 1–4 work too.)", hit: "🏈 IT'S GOOD!", hitIcon: "🏈", golden: "🥇 Game-Winning Kick", goldenStamp: "🥇 GAME WINNER!", missHead: "No good: here's the trick", near: ["OFF THE UPRIGHT!", "DOINK!"], wide: "WIDE!", wideSide: true, end: "Final whistle", clockEnd: "⏱ Time's up", ranks: ["🏆 MVP!", "🏈 Pro Bowler", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Kicker!", streak: ["🔥 HEATING UP!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 22 / 66, hitX: .3, hitY: 10, missX: [.31, .58], thru: true, target: GOALPOST_SVG, shooter: KICK_SVG, wind: e => `rotate(${(-40 * e).toFixed(2)} 30 -12)`, fling: "rotate(32 30 -12)",
+    ball: { icon: "🏈", c1: "#8b4513", c2: "#4a2208", bg: "linear-gradient(#ffffff,#ffffff) center/56% 2px no-repeat,repeating-linear-gradient(90deg,transparent 0 3px,#ffffff 3px 5px) center/40% 6px no-repeat,radial-gradient(ellipse at 40% 35%,#b5652a,#8b4513 55%,#4a2208)" } },
+};
+const T = SPORTS[SPORT] || SPORTS.lacrosse;
+// 🤫 three quick taps on the tip button: a surprise
+function secretGame() {
+  if (window.parent !== window) { try { window.parent.postMessage({ studyArcade: "secret", sport: SPORT }, "*"); return; } catch (e) {} }
+  location.href = SPORT === "basketball" ? "../hippo-hoops/index.html" : `../dream-team/index.html?sport=${SPORT}`;
+}
+/* ===== Emmett's roots: [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from his sheet: 0=X, 1=~, -1 = unmarked] ===== */
+const DATA = [
+  ["ast / aster","star",["asteroid","astronomy"],["[ast]ronaut","dis[aster]","[aster]isk"],0],
+  ["audi","hear",["audible","audience"],["[audi]torium","[audi]tion","[audi]o"],0],
+  ["auto","self",["automatic","autopsy"],["[auto]biography","[auto]pilot","[auto]mobile"],-1],
+  ["bene","good",["benefit","benign"],["[bene]ficial","[bene]factor","[bene]volent"],0],
+  ["bio","life",["biography","biology"],["[bio]me","anti[bio]tic","[bio]degradable"],-1],
+  ["chrono","time",["chronic","synchronize"],["[chrono]logical","[chron]icle","ana[chron]ism"],1],
+  ["dict","say",["dictate","diction"],["pre[dict]","contra[dict]","[dict]ionary"],0],
+  ["duc","lead, make",["deduce","produce"],["e[duc]ate","intro[duc]e","con[duc]tor"],0],
+  ["gen","give birth",["gene","generate"],["[gen]esis","[gen]eration","[gen]ealogy"],0],
+  ["geo","earth",["geography","geology"],["[geo]metry","[geo]thermal","[geo]de"],-1],
+  ["graph","write",["autograph","graph"],["para[graph]","[graph]ic","bio[graph]y"],1],
+  ["jur / jus","law",["jury","justice"],["in[jus]tice","[jur]isdiction","[jus]tify"],0],
+  ["log / logue","thought",["logic","obloquy"],["[log]ical","mono[logue]","dia[logue]"],-1],
+  ["luc","light",["lucid","translucent"],["[luc]idity","e[luc]idate","trans[luc]ence"],-1],
+  ["man / manu","hand",["manual","manure"],["[man]icure","[manu]facture","[man]ipulate"],-1],
+  ["mand / mend","order",["demand","recommend"],["com[mand]","[mand]atory","[mand]ate"],0],
+  ["mis / mit","send",["missile","transmission"],["trans[mit]","sub[mit]","[mis]sion"],0],
+  ["omni","all",["omnivorous"],["[omni]potent","[omni]present","[omni]scient"],0],
+  ["path","feel",["empathy","pathetic"],["sym[path]y","tele[path]y","a[path]y"],0],
+  ["phil","love",["philosophy","bibliophile"],["[phil]anthropy","[Phil]adelphia","audio[phil]e"],0],
+  ["phon","sound",["phonics","telephone"],["sym[phon]y","micro[phon]e","head[phon]es"],1],
+  ["photo","light",["photograph","photon"],["[photo]synthesis","[photo]copy","[photo]bomb"],-1],
+  ["port","carry",["export","portable"],["trans[port]","im[port]","[port]er"],0],
+  ["qui / quit","quiet, rest",["acquit","tranquil"],["[qui]et","tran[qui]lity","ac[quit]tal"],0],
+  ["scrib / script","write",["ascribe","script"],["de[scrib]e","pre[script]ion","[scrib]ble"],0],
+  ["sens / sent","feel",["resent","sensitive"],["[sens]ation","con[sent]","[sent]iment"],0],
+  ["tele","far off",["telecast","telephone"],["[tele]scope","[tele]vision","[tele]port"],-1],
+  ["terr","earth",["terrain","territory"],["[terr]arium","extra[terr]estrial","Medi[terr]anean"],-1],
+  ["vac","empty",["evacuate","vacate"],["[vac]uum","[vac]ant","[vac]ation"],-1],
+  ["vid / vis","see",["visible","video"],["[vis]ion","super[vis]e","e[vid]ence"],-1],
+].map((d, i) => ({ id: i, r: d[0], m: d[1], ex: d[2], more: d[3], start: d[4] }));
+// short "why" hooks that connect the root to words Emmett already knows
+const HOOKS = {
+  0: "An ASTEROID is a star-like rock; an ASTRONAUT is a \"star sailor.\"",
+  1: "If it's AUDIBLE you can hear it. The AUDIENCE is the people who hear.",
+  2: "AUTOMATIC = works by itself. AUTOGRAPH = writing your own name.",
+  3: "A BENEFIT is something good for you. BENE = good.",
+  4: "BIOLOGY is the study of life. A BIOGRAPHY is writing about someone's life.",
+  5: "CHRONIC = lasts a long time. SYNCHRONIZE = same time.",
+  6: "DICTATE = say it out loud for someone to write. PREDICT = say it before it happens.",
+  7: "PRODUCE = make. A CONDUCTOR leads the band.",
+  8: "GENERATE = bring into being. A GENE is passed on at birth.",
+  9: "GEOGRAPHY = writing about the earth. GEOLOGY = studying the earth's rocks.",
+  10: "An AUTOGRAPH is self-writing. A GRAPH is data written as a picture.",
+  11: "A JURY decides according to the law. JUSTICE = fairness under law.",
+  12: "LOGIC is careful thinking. A MONOLOGUE is one person's thoughts spoken.",
+  13: "LUCID = clear, like light shining through. TRANSLUCENT lets light through.",
+  14: "MANUAL = done by hand. A MANICURE is care for your hands.",
+  15: "DEMAND = give an order. COMMAND, MANDATORY = it's ordered.",
+  16: "A MISSILE is something sent flying. TRANSMIT = send across.",
+  17: "An OMNIVORE eats all kinds of food — plants and meat.",
+  18: "EMPATHY = feeling what someone else feels. SYMPATHY = feeling with them.",
+  19: "PHILOSOPHY = love of wisdom. A BIBLIOPHILE loves books. Philadelphia = city of brotherly love.",
+  20: "PHONICS = letter sounds. TELEPHONE = sound from far off.",
+  21: "PHOTOGRAPH = writing with light. A PHOTON is a particle of light.",
+  22: "PORTABLE = easy to carry. EXPORT = carry out of the country.",
+  23: "TRANQUIL = calm and quiet. ACQUIT = set free so you can rest.",
+  24: "A SCRIPT is written lines. DESCRIBE = write down what something is like.",
+  25: "SENSITIVE = feels things strongly. RESENT = feel bad about something again and again.",
+  26: "TELEPHONE = sound from far off. TELESCOPE = see far off.",
+  27: "TERRAIN is the earth you ride over. TERRITORY = an area of land.",
+  28: "EVACUATE = empty the building. A VACUUM is empty space.",
+  29: "VISIBLE = you can see it. VIDEO = something you watch."
+};
+// 📚 longer explanations: [where the root comes from, five words broken into their parts]
+const WHY = [["Greek “astron” / “aster” = star", [["ASTEROID", "aster (star) + oid (like): a space rock that looks like a tiny star"], ["ASTRONOMY", "astro (star) + nomy (law, study): the science of stars and planets"], ["ASTRONAUT", "astro (star) + naut (sailor): a “star sailor” who travels into space"], ["DISASTER", "dis (bad) + aster (star): long ago, people blamed terrible events on a “bad star”"], ["ASTERISK", "“little star”: the * symbol"]]], ["Latin “audire” = to hear", [["AUDIBLE", "audi (hear) + ible (able): loud enough to be heard"], ["AUDIENCE", "the people who listen to a show or a speech"], ["AUDITORIUM", "audi (hear) + orium (place): a big room for listening"], ["AUDITION", "a tryout where the judges listen to you"], ["AUDIO", "the sound part of a video or a song"]]], ["Greek “autos” = self", [["AUTOMATIC", "works by itself, without anyone pushing it"], ["AUTOPSY", "auto (self) + opsy (seeing): a doctor seeing for themselves what happened to a body"], ["AUTOBIOGRAPHY", "auto (self) + bio (life) + graphy (writing): writing the story of your own life"], ["AUTOPILOT", "a system that flies the plane by itself"], ["AUTOMOBILE", "auto (self) + mobile (moving): a car, a machine that moves by itself"]]], ["Latin “bene” = well, good", [["BENEFIT", "a good thing that helps you"], ["BENIGN", "gentle and harmless, not dangerous"], ["BENEFICIAL", "helpful and good for you"], ["BENEFACTOR", "bene (good) + factor (doer): someone who does good by giving help or money"], ["BENEVOLENT", "bene (good) + vol (wish): kind, wishing good things for others"]]], ["Greek “bios” = life", [["BIOLOGY", "bio (life) + logy (study): the science of living things"], ["BIOGRAPHY", "bio (life) + graphy (writing): a book about someone's life"], ["BIOME", "a big area with its own living things, like a desert or a rainforest"], ["ANTIBIOTIC", "anti (against) + bio (life): medicine that fights tiny living germs"], ["BIODEGRADABLE", "able to be broken down by living things, like leaves rotting into soil"]]], ["Greek “chronos” = time", [["CHRONIC", "lasting a long time, or coming back again and again"], ["SYNCHRONIZE", "syn (same) + chron (time): to make things happen at the same time"], ["CHRONOLOGICAL", "chrono (time) + logical (in order): arranged in time order"], ["CHRONICLE", "a record of events in the order they happened"], ["ANACHRONISM", "ana (against) + chron (time): something in the wrong time, like a phone in a castle"]]], ["Latin “dicere” = to say", [["DICTATE", "to say words out loud for someone to write down"], ["DICTION", "the way you say and choose your words"], ["PREDICT", "pre (before) + dict (say): to say what will happen before it happens"], ["CONTRADICT", "contra (against) + dict (say): to say the opposite"], ["DICTIONARY", "a book of words and what they mean"]]], ["Latin “ducere” = to lead", [["DEDUCE", "de (down) + duc (lead): to lead your thinking down to an answer"], ["PRODUCE", "pro (forward) + duc (lead): to bring something forward, to make it"], ["EDUCATE", "e (out) + duc (lead): to lead knowledge out of someone, to teach"], ["INTRODUCE", "intro (in) + duc (lead): to lead someone in to meet others"], ["CONDUCTOR", "the person who leads a band, or who is in charge of a train"]]], ["Greek “genos” and Latin “genus” = birth, kind", [["GENE", "a tiny instruction passed down from your parents at birth"], ["GENERATE", "to bring something into being, to create it"], ["GENESIS", "the beginning, or birth, of something"], ["GENERATION", "all the people born around the same time"], ["GENEALOGY", "the study of your family tree: who was born to whom"]]], ["Greek “ge” = earth", [["GEOGRAPHY", "geo (earth) + graphy (writing): describing the earth's lands, places and people"], ["GEOLOGY", "geo (earth) + logy (study): the science of rocks and the earth"], ["GEOMETRY", "geo (earth) + metry (measuring): it started as a way to measure land"], ["GEOTHERMAL", "geo (earth) + thermal (heat): heat from deep inside the earth"], ["GEODE", "a plain-looking earth rock with crystals hidden inside"]]], ["Greek “graphein” = to write or draw", [["AUTOGRAPH", "auto (self) + graph (write): your signature, written by you"], ["GRAPH", "a drawing that shows numbers or data"], ["PARAGRAPH", "para (beside) + graph (write): long ago, a mark written beside a new section"], ["GRAPHIC", "a drawn picture or design"], ["BIOGRAPHY", "bio (life) + graphy (writing): the written story of someone's life"]]], ["Latin “jus” / “juris” = law, right", [["JURY", "the group of people who decide a case by the law"], ["JUSTICE", "fairness: doing what is right under the law"], ["INJUSTICE", "in (not) + justice: something that is not fair"], ["JURISDICTION", "juris (law) + diction (saying): the area where someone's law counts"], ["JUSTIFY", "to show that something is right or fair"]]], ["Greek “logos” = word, thought", [["LOGIC", "careful, clear thinking"], ["OBLOQUY", "ob (against) + loquy (speaking, a Latin cousin of logue): harsh words said against someone"], ["LOGICAL", "makes sense when you think it through"], ["MONOLOGUE", "mono (one) + logue (speaking): one person talking for a long time"], ["DIALOGUE", "dia (between) + logue (speaking): a conversation between people"]]], ["Latin “lux” / “lucis” = light", [["LUCID", "clear and easy to understand, like light shining through"], ["TRANSLUCENT", "trans (through) + luc (light): lets some light through, like frosted glass"], ["LUCIDITY", "clearness of thinking or writing"], ["ELUCIDATE", "e (out) + luc (light): to shine light on an idea, to explain it clearly"], ["TRANSLUCENCE", "the quality of letting some light through"]]], ["Latin “manus” = hand", [["MANUAL", "done by hand, or a handbook of instructions"], ["MANURE", "first it meant working the soil by hand; now it means animal waste used to help plants grow"], ["MANICURE", "mani (hand) + cure (care): taking care of hands and nails"], ["MANUFACTURE", "manu (hand) + facture (making): things were once made by hand; now mostly by machines"], ["MANIPULATE", "to handle or move something with your hands"]]], ["Latin “mandare” = to order, to put into someone's hand", [["DEMAND", "to ask for something firmly, like an order"], ["RECOMMEND", "to strongly suggest something to someone"], ["COMMAND", "an order, or to give an order"], ["MANDATORY", "required: you have been ordered to do it"], ["MANDATE", "an official order, or a job given to someone"]]], ["Latin “mittere” / “missus” = to send", [["MISSILE", "something sent flying through the air"], ["TRANSMISSION", "trans (across) + mission (sending): sending something across, like a radio signal"], ["TRANSMIT", "trans (across) + mit (send): to send across"], ["SUBMIT", "sub (under) + mit (send): to hand in, or send in, your work"], ["MISSION", "a job you are sent to do"]]], ["Latin “omnis” = all", [["OMNIVOROUS", "omni (all) + vorous (eating): eating all kinds of food, plants and meat"], ["OMNIPOTENT", "omni (all) + potent (powerful): having all the power"], ["OMNIPRESENT", "omni (all) + present (here): being everywhere at once"], ["OMNISCIENT", "omni (all) + scient (knowing): knowing everything"], ["OMNIBUS", "“for all”: the old word that “bus” comes from"]]], ["Greek “pathos” = feeling", [["EMPATHY", "em (in) + pathy (feeling): feeling what someone else feels, as if you were in their shoes"], ["PATHETIC", "makes you feel pity or sadness"], ["SYMPATHY", "sym (with) + pathy (feeling): feeling sorry along with someone"], ["TELEPATHY", "tele (far) + pathy (feeling): sensing thoughts from far away, like in stories"], ["APATHY", "a (without) + pathy (feeling): not caring at all"]]], ["Greek “philos” = loving", [["PHILOSOPHY", "philo (love) + sophy (wisdom): the love of wisdom and big questions"], ["BIBLIOPHILE", "biblio (book) + phile (lover): someone who loves books"], ["PHILANTHROPY", "phil (love) + anthropy (people): giving time or money because you love people"], ["PHILADELPHIA", "phil (love) + adelphia (brothers): the city of brotherly love"], ["AUDIOPHILE", "audio (sound) + phile (lover): someone who loves great sound"]]], ["Greek “phone” = sound, voice", [["PHONICS", "the sounds that letters make"], ["TELEPHONE", "tele (far) + phone (sound): sound from far away"], ["SYMPHONY", "sym (together) + phony (sound): many instruments sounding together"], ["MICROPHONE", "micro (small) + phone (sound): it makes small sounds loud"], ["HEADPHONES", "sound you wear on your head"]]], ["Greek “phos” / “photos” = light", [["PHOTOGRAPH", "photo (light) + graph (write): a picture “written” with light"], ["PHOTON", "a tiny particle of light"], ["PHOTOSYNTHESIS", "photo (light) + synthesis (putting together): plants putting together food using sunlight"], ["PHOTOCOPY", "a copy made with a flash of light"], ["PHOTOBOMB", "jumping into someone else's photo"]]], ["Latin “portare” = to carry", [["EXPORT", "ex (out) + port (carry): to carry goods out of a country to sell"], ["PORTABLE", "port (carry) + able: easy to carry around"], ["TRANSPORT", "trans (across) + port (carry): to carry from one place to another"], ["IMPORT", "im (in) + port (carry): to carry goods into a country"], ["PORTER", "a person whose job is carrying bags"]]], ["Latin “quies” = rest, quiet", [["ACQUIT", "to set someone free from a charge, so they can be at rest"], ["TRANQUIL", "very calm and peaceful"], ["QUIET", "still and at rest, with little noise"], ["TRANQUILITY", "a calm, peaceful feeling"], ["ACQUITTAL", "when a court says someone is not guilty and sets them free"]]], ["Latin “scribere” / “scriptus” = to write", [["ASCRIBE", "a (to) + scribe (write): to say something comes from someone, as if writing it down to them"], ["SCRIPT", "the written lines for a play or a movie"], ["DESCRIBE", "de (down) + scribe (write): to write or tell what something is like"], ["PRESCRIPTION", "pre (before) + script (write): a doctor's written order, written before you get medicine"], ["SCRIBBLE", "to write or draw quickly and messily"]]], ["Latin “sentire” / “sensus” = to feel", [["RESENT", "re (again) + sent (feel): to feel angry about something again and again"], ["SENSITIVE", "feeling things strongly, or easily hurt"], ["SENSATION", "a feeling, like warmth or tingling"], ["CONSENT", "con (together) + sent (feel): to agree, to feel the same way"], ["SENTIMENT", "a feeling or opinion about something"]]], ["Greek “tele” = far off", [["TELECAST", "tele (far) + cast (throw): a show sent far away on TV"], ["TELEPHONE", "tele (far) + phone (sound): sound from far away"], ["TELESCOPE", "tele (far) + scope (look): a tool for seeing far away"], ["TELEVISION", "tele (far) + vision (seeing): seeing shows from far away"], ["TELEPORT", "tele (far) + port (carry): to be carried far away in an instant"]]], ["Latin “terra” = earth, land", [["TERRAIN", "the shape and type of the land, like hilly or rocky"], ["TERRITORY", "an area of land that belongs to someone"], ["TERRARIUM", "terra (earth) + arium (place): a little piece of earth in a glass box for plants or animals"], ["EXTRATERRESTRIAL", "extra (outside) + terrestrial (of the earth): from outside Earth, like an alien"], ["MEDITERRANEAN", "medi (middle) + terra (land): the sea in the middle of the lands"]]], ["Latin “vacare” = to be empty", [["EVACUATE", "e (out) + vac (empty): to empty a building of people to keep them safe"], ["VACATE", "to leave a place empty"], ["VACUUM", "a completely empty space, or the cleaner that sucks up air and dirt"], ["VACANT", "empty, with no one there"], ["VACATION", "time when school or work sits empty and you get a break"]]], ["Latin “videre” / “visus” = to see", [["VISIBLE", "vis (see) + ible (able): able to be seen"], ["VIDEO", "Latin for “I see”"], ["VISION", "the ability to see, or a picture in your mind"], ["SUPERVISE", "super (over) + vise (see): to watch over people"], ["EVIDENCE", "e (out) + vid (see): something you can see that proves what happened"]]]];
+// mastery points 0..4 → X: 0-1, ~: 2-3, Y: 4
+const startPts = s => s === 0 ? 0 : 2;
+const levelOf = p => p >= 4 ? 2 : p >= 2 ? 1 : 0;
+const LV = [{ t: "X", c: "bx" }, { t: "~", c: "bt" }, { t: "Y", c: "by" }];
+const ROUND = 10, CLOCK = 60, FIRE = ["#ff5a1f", "#ffb000", "#ffe066"];
+// 🥍 Ball bag: every ball is earned by really doing it in the game
+const BALLS = [
+  Object.assign({ id: "classic", name: "Game Ball", how: "Ready from the start", trail: null, ok: () => true }, T.ball),
+  { id: "fire", icon: "🔥", name: "Fire Ball", how: `Score 5 ${T.plural} in a row`, c1: "#ff7a1a", c2: "#b3260b", trail: FIRE, ok: S => (S.bestStreak || 0) >= 5 },
+  { id: "ice", icon: "❄️", name: "Ice Ball", how: "Score 100 points in one game", c1: "#bff1ff", c2: "#3a8fc9", trail: ["#bff1ff", "#7fd8ff", "#ffffff"], ok: S => (S.best || 0) >= 100 },
+  { id: "comet", icon: "☄️", name: "Comet Ball", how: `Score 12 in one ${T.clock}`, c1: "#ff7ad9", c2: "#6b3fd1", trail: ["#ff7ad9", "#8be9ff", "#ffffff"], ok: S => (S.clockBest || 0) >= 12 },
+  { id: "bolt", icon: "⚡", name: "Lightning Ball", how: "Get 10 roots to Y", c1: "#fff27a", c2: "#8a6bff", trail: ["#fff27a", "#c6b3ff", "#ffffff"], ok: (S, y) => y >= 10 },
+  { id: "rainbow", icon: "🌈", name: "Rainbow Ball", how: "Score a perfect 10 for 10", c1: "#ffe14d", c2: "#4da6ff", bg: "radial-gradient(circle at 34% 30%,rgba(255,255,255,.95) 0 12%,transparent 32%),conic-gradient(#ff4d4d,#ffa64d,#ffe14d,#5cd65c,#4da6ff,#a64dff,#ff4d4d)", trail: ["#ff4d4d", "#ffa64d", "#ffe14d", "#5cd65c", "#4da6ff", "#a64dff"], ok: S => !!S.perfect },
+  { id: "gold", icon: "👑", name: "Golden Ball", how: "Get all 30 roots to Y", c1: "#ffe066", c2: "#b8860b", trail: ["#ffd700", "#fff3b0", "#ffffff"], ok: (S, y) => y >= 30 },
+];
+const ballBg = k => k.bg || `radial-gradient(circle at 34% 30%,#ffffff 0 12%,${k.c1} 42%,${k.c2} 100%)`;
+
+/* ===== saving (this browser): up to 100 players, each with their own root sheet ===== */
+const KEY = T.key, PKEY = T.pkey, MAXP = 100;
+const fresh = () => ({ pts: DATA.map(d => startPts(d.start)), best: 0, bestStreak: 0, perfect: false, clockBest: 0, ball: "classic", sound: true });
+let P = { cur: "emmett", list: [{ id: "emmett", name: "Emmett" }] };
+try { const v = JSON.parse(localStorage.getItem(PKEY)); if (v && Array.isArray(v.list) && v.list.length) P = v; } catch (e) {}
+if (!P.list.some(p => p.id === P.cur)) P.cur = P.list[0].id;
+const savePlayers = () => { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} };
+const pkey = id => id === "emmett" ? KEY : KEY + ":" + id;
+function loadPlayer(id) { const s = fresh(); try { const v = JSON.parse(localStorage.getItem(pkey(id))); if (v && Array.isArray(v.pts) && v.pts.length === DATA.length) Object.assign(s, v); } catch (e) {} return s; }
+let S = loadPlayer(P.cur);
+const save = () => { try { localStorage.setItem(pkey(P.cur), JSON.stringify(S)); } catch (e) {} };
+const curName = () => (P.list.find(p => p.id === P.cur) || P.list[0]).name;
+const ys = () => S.pts.filter(p => levelOf(p) === 2).length;
+const owned = () => BALLS.filter(k => k.ok(S, ys())).map(k => k.id);
+const ball = () => BALLS.find(k => k.id === S.ball && k.ok(S, ys())) || BALLS[0];
+
+/* ===== little helpers ===== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const up = s => s.toUpperCase(), plain = w => w.replace(/[\[\]]/g, "");
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let toastT = null;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2800); }
+
+/* ===== the crowd (drawn once, then it bobs and the camera pans) ===== */
+(function crowd() {
+  let seed = 11; const rr = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const cols = ["#2f4a7a", "#3b5a8f", "#5a3b6e", "#6b4a3a", "#2f6a5a", "#7a2f3a", "#4a4f60", "#a2763a"];
+  const tile = (w, h) => { let s = ""; for (let r = 0; r < 3; r++) for (let x = 6 + r * 4; x < w; x += 15) { const y = 16 + r * 19 + rr() * 3, c = cols[Math.floor(rr() * cols.length)]; s += `<ellipse cx="${x.toFixed(1)}" cy="${(y + 11).toFixed(1)}" rx="8" ry="7" fill="${c}"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="${c}" opacity=".95"/>`; } return `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'>${s}</svg>`)}")`; };
+  $("crowdFront").style.backgroundImage = tile(240, 70); $("crowdBack").style.backgroundImage = tile(200, 70);
+  let f = ""; for (let i = 0; i < 14; i++) f += `<i class="flash" style="left:${(Math.random() * 96 + 2).toFixed(1)}%;bottom:${(96 + Math.random() * 110).toFixed(0)}px;animation-duration:${(3 + Math.random() * 5).toFixed(1)}s;animation-delay:-${(Math.random() * 6).toFixed(1)}s"></i>`;
+  $("stadium").insertAdjacentHTML("beforeend", f);
+})();
+
+/* ===== sounds (made right here, nothing to download) ===== */
+let AC = null, NB = null;
+const ac = () => { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state !== "running") AC.resume(); return AC; } catch (e) { return null; } };
+function tone(f, d, type = "sine", v = .15, slide = 0, when = 0) {
+  if (!S.sound) return; const a = ac(); if (!a) return;
+  try { const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + d); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g).connect(a.destination); o.start(t); o.stop(t + d + .02); } catch (e) {}
+}
+function noise(d, freq, q, v, when = 0) {
+  if (!S.sound) return; const a = ac(); if (!a) return;
+  try {
+    if (!NB) { NB = a.createBuffer(1, a.sampleRate * 1.6, a.sampleRate); const ch = NB.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; }
+    const t = a.currentTime + when, s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(); s.buffer = NB; f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q;
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(v, t + .04); g.gain.exponentialRampToValueAtTime(.0005, t + d); s.connect(f).connect(g).connect(a.destination); s.start(t); s.stop(t + d + .05);
+  } catch (e) {}
+}
+const sWind = () => tone(260, .16, "triangle", .06, 420);
+const sSnap = () => { tone(170, .07, "square", .1); noise(.08, 2500, 1.2, .25); };
+const sWhoosh = () => tone(900, .25, "triangle", .05, 240);
+const sSwish = () => noise(.25, 3200, .9, .35);
+const sCheer = big => noise(big ? 1.4 : .9, 900, .6, big ? .5 : .32, .05);
+const sHorn = () => [233, 294, 349].forEach(f => tone(f, .75, "sawtooth", .045, 0, .05));
+const sPing = () => { tone(1760, .35, "sine", .12); tone(2640, .2, "sine", .05); };
+const sAww = () => tone(330, .45, "sawtooth", .05, 180);
+const sClank = () => { tone(240, .14, "square", .1); tone(360, .1, "square", .06, 0, .03); noise(.12, 1800, 2, .2); };
+const sFan = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .22, "triangle", .12, 0, i * .09));
+const sTick = () => tone(1000, .04, "square", .03);
+
+/* ===== effects ===== */
+const bit = (cls, x, y, css = "") => { const e = document.createElement("div"); e.className = cls; e.style.cssText = `left:${x}px;top:${y}px;${css}`; e.addEventListener("animationend", () => e.remove()); $("fx").appendChild(e); setTimeout(() => e.remove(), 1600); return e; };
+const burst = (x, y, cols, n = 18) => { if (RM) return; for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, d = 30 + Math.random() * 60; bit("burst", x, y, `background:${cols[i % cols.length]};--dx:${(Math.cos(a) * d).toFixed(1)}px;--dy:${(Math.sin(a) * d).toFixed(1)}px`); } };
+const stamp = (x, y, txt, cls) => { bit("stamp " + cls, x, y).textContent = txt; };
+const streakWord = n => n >= 10 ? T.streak[3] : n >= 7 ? T.streak[2] : n >= 5 ? T.streak[1] : n >= 3 ? T.streak[0] : T.hit;
+const goalSVG = () => T.target || `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="9" y="8" width="66" height="52" fill="url(#mesh)"/><path d="M9 60 L20 50 H64 L75 60" fill="none" stroke="#7c8aa0" stroke-width="1.5"/><path d="M9 62 V8 H75 V62" fill="none" stroke="#ff6a13" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="62" width="80" height="3" rx="1.5" fill="#9aa8bf"/></svg>`;
+const goalAt = b => { const r = b.querySelector(".goal").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height * T.aim, r.width]; };
+
+/* ===== the stick: it turns toward your goal, winds up, and fires ===== */
+function loadStick() { const k = ball(); $("pball").setAttribute("fill", k.c1); $("pball").setAttribute("stroke", k.c2); $("pball").style.opacity = 1; $("arm").setAttribute("transform", ""); $("stick").style.transform = "rotate(0deg)"; }
+function windUp(ms, done) {
+  const t0 = performance.now(); sWind();
+  const step = now => { const t = Math.min(1, (now - t0) / ms), e = 1 - (1 - t) * (1 - t); $("arm").setAttribute("transform", `rotate(${(-24 * e).toFixed(2)} 60 98) translate(0 ${(6 * e).toFixed(2)})`); if (T.wind) $("arm").setAttribute("transform", T.wind(e)); if (t < 1) requestAnimationFrame(step); else done(); };
+  requestAnimationFrame(step);
+}
+function fling() { $("arm").setAttribute("transform", T.fling || "rotate(14 60 98)"); $("pball").style.opacity = 0; sSnap(); setTimeout(() => $("arm").setAttribute("transform", ""), 130); }
+function flyBall(sx, sy, ex, ey, ms, k, trail, done) {
+  const a = document.createElement("div"); a.className = "ball"; a.style.background = ballBg(k);
+  if (trail) a.style.boxShadow = `0 0 12px 3px ${trail[0]}`;
+  $("fx").appendChild(a);
+  // a little arc, like a real shot
+  const dx = ex - sx, dy = ey - sy, dist = Math.hypot(dx, dy) || 1; let nx = -dy / dist, ny = dx / dist; if (ny > 0) { nx = -nx; ny = -ny; }
+  const bend = Math.min(50, dist * .14), cx = (sx + ex) / 2 + nx * bend, cy = (sy + ey) / 2 + ny * bend, t0 = performance.now(); let last = 0;
+  const step = now => {
+    if (!a.isConnected) return;
+    const t = Math.min(1, (now - t0) / ms), u = 1 - t, x = u * u * sx + 2 * u * t * cx + t * t * ex, y = u * u * sy + 2 * u * t * cy + t * t * ey;
+    a.style.left = x + "px"; a.style.top = y + "px"; a.style.transform = `scale(${(1.3 - .5 * t).toFixed(3)})`;
+    if (trail && !RM && now - last > 14) { last = now; bit("spark", x, y, `background:${trail[Math.floor(Math.random() * trail.length)]}`); }
+    if (t < 1) requestAnimationFrame(step); else { a.remove(); done(); }
+  };
+  requestAnimationFrame(step);
+}
+
+/* ===== home ===== */
+function renderHome() {
+  const g = $("grid"); g.innerHTML = ""; const counts = [0, 0, 0];
+  DATA.forEach(d => {
+    const lv = levelOf(S.pts[d.id]); counts[lv]++;
+    const c = document.createElement("button"); c.type = "button"; c.className = "chip";
+    c.innerHTML = `<span class="badge ${LV[lv].c}">${LV[lv].t}</span><span class="r">${d.r}</span>`;
+    c.onclick = () => openModal(d); g.appendChild(c);
+  });
+  $("sX").textContent = counts[0]; $("sT").textContent = counts[1]; $("sY").textContent = counts[2];
+  $("best").textContent = S.best ? S.best + " pts" : "—";
+  $("cbest").textContent = S.clockBest ? S.clockBest + " " + T.plural : "—";
+  $("soundBtn").textContent = "Sound: " + (S.sound ? "on" : "off");
+  renderBag(); renderPlayers();
+}
+/* ===== players ===== */
+function renderPlayers() {
+  $("playerSel").innerHTML = P.list.map(p => `<option value="${p.id}"${p.id === P.cur ? " selected" : ""}>${esc(p.name)}</option>`).join("");
+  $("delPlayer").classList.toggle("hidden", P.cur === "emmett");
+  $("playerCount").textContent = `(${P.list.length} of ${MAXP})`;
+}
+const usePlayer = id => { P.cur = id; savePlayers(); S = loadPlayer(id); renderHome(); };
+$("playerSel").onchange = e => { usePlayer(e.target.value); toast(`👤 Now playing: ${curName()}`); };
+$("addPlayerBtn").onclick = () => { if (P.list.length >= MAXP) return toast(`This game can hold ${MAXP} players.`); $("addForm").classList.toggle("hidden"); if (!$("addForm").classList.contains("hidden")) $("newName").focus(); };
+$("addForm").onsubmit = e => {
+  e.preventDefault(); const n = $("newName").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
+  if (P.list.some(p => p.name.toLowerCase() === n.toLowerCase())) return toast(`${n} is already a player.`);
+  if (P.list.length >= MAXP) return toast(`This game can hold ${MAXP} players.`);
+  const id = "p" + Date.now().toString(36) + Math.floor(Math.random() * 1000);
+  P.list.push({ id, name: n }); $("newName").value = ""; $("addForm").classList.add("hidden"); usePlayer(id); toast(`👋 Welcome to the team, ${n}!`);
+};
+$("delPlayer").onclick = () => {
+  const b = $("delPlayer");
+  if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Tap again to remove ${curName()}`; setTimeout(() => { delete b.dataset.sure; b.textContent = "🗑 Remove"; }, 3000); return; }
+  delete b.dataset.sure; b.textContent = "🗑 Remove";
+  const gone = P.cur, name = curName(); try { localStorage.removeItem(pkey(gone)); } catch (e) {}
+  P.list = P.list.filter(p => p.id !== gone); usePlayer("emmett"); toast(`${name} was removed.`);
+};
+function renderBag() {
+  const y = ys(), cur = ball().id;
+  $("bag").innerHTML = BALLS.map(k => { const ok = k.ok(S, y); return `<button type="button" class="skin${ok ? "" : " locked"}${k.id === cur ? " on" : ""}" data-ball="${k.id}"><span class="ballart" style="background:${ballBg(k)}"></span><b>${k.icon} ${k.name}</b><small>${k.id === cur ? "✓ Using it" : ok ? "Tap to use" : "🔒 " + k.how}</small></button>`; }).join("");
+  $("bag").querySelectorAll("[data-ball]").forEach(b => b.onclick = () => {
+    const k = BALLS.find(x => x.id === b.dataset.ball);
+    if (!k.ok(S, ys())) { toast(`🔒 ${k.name}: ${k.how} to unlock it.`); return; }
+    S.ball = k.id; save(); renderBag(); tone(880, .08, "triangle", .1); tone(1320, .1, "triangle", .08, 0, .06);
+  });
+}
+// 📚 the long explanation: where the root comes from, five words broken into parts, and the memory trick
+const explainHTML = d => { const [from, parts] = WHY[d.id]; return `<div class="from">🌍 <b>Comes from:</b> ${from}</div><div class="parts"><b>🧩 Break it down:</b><ul>${parts.map(([w, t]) => `<li><b>${w}</b>: ${t}</li>`).join("")}</ul></div><div class="trick">💡 <b>Memory trick:</b> ${HOOKS[d.id]}</div>`; };
+function openModal(d) {
+  $("mRoot").textContent = up(d.r); $("mMeaning").textContent = "= " + d.m;
+  $("mEx").textContent = "On your sheet: " + d.ex.join(", ");
+  $("mMore").textContent = "";
+  $("mHook").innerHTML = explainHTML(d);
+  $("modal").classList.add("show");
+}
+$("mClose").onclick = () => $("modal").classList.remove("show");
+$("modal").onclick = e => { if (e.target.id === "modal") $("modal").classList.remove("show"); };
+$("soundBtn").onclick = () => { S.sound = !S.sound; save(); renderHome(); };
+$("resetBtn").onclick = () => {
+  const b = $("resetBtn");
+  if (b.dataset.sure) { S.pts = DATA.map(d => startPts(d.start)); save(); delete b.dataset.sure; b.textContent = "Reset to my sheet"; renderHome(); toast("Your root sheet is back to how it started."); }
+  else { b.dataset.sure = 1; b.textContent = "Tap again to reset"; setTimeout(() => { delete b.dataset.sure; b.textContent = "Reset to my sheet"; }, 3000); }
+};
+
+/* ===== the game ===== */
+let G = null, lastMode = "game";
+const show = id => { ["home", "play", "end"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0, 0); };
+function pickRoot() {
+  const focus = $("focusX").checked, pool = DATA.filter(d => !G.recent.includes(d.id));
+  const w = pool.map(d => focus ? Math.pow(5 - S.pts[d.id], 2) : 1);
+  let r = Math.random() * w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < pool.length; i++) { r -= w[i]; if (r <= 0) return pool[i]; }
+  return pool[pool.length - 1];
+}
+const meaningChoices = d => shuffle([d.m, ...shuffle([...new Set(DATA.map(x => x.m))].filter(m => m !== d.m)).slice(0, 3)]).map(m => ({ label: m, ok: m === d.m }));
+const rootChoices = d => shuffle([d, ...shuffle(DATA.filter(x => x.m !== d.m)).slice(0, 3)]).map(x => ({ label: x.r, ok: x.id === d.id }));
+function newGame(mode) {
+  if (G && G.timer) clearInterval(G.timer);
+  lastMode = mode;
+  G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false };
+  $("play").classList.toggle("clockmode", mode === "clock");
+  $("shots").innerHTML = Array.from({ length: ROUND }, (_, i) => `<i${i === ROUND - 1 ? ' class="golden"' : ""}></i>`).join("");
+  $("quitBtn").textContent = mode === "clock" ? "Stop" : "Quit game";
+  show("play"); nextQ();
+}
+function startClock() {
+  newGame("clock"); G.left = CLOCK * 1000; G.last = performance.now(); G.lastSec = CLOCK; drawClock();
+  const me = G;
+  G.timer = setInterval(() => {
+    if (G !== me || G.over) return clearInterval(me.timer);
+    const now = performance.now(); if (!G.paused) G.left -= now - G.last; G.last = now;
+    const s = Math.max(0, Math.ceil(G.left / 1000)); if (s !== G.lastSec) { G.lastSec = s; if (s <= 10 && s > 0) sTick(); }
+    drawClock(); if (G.left <= 0) endClock();
+  }, 100);
+}
+function drawClock() { $("hudLeft").textContent = G.paused ? "⏸ paused" : `⏱ ${Math.max(0, Math.ceil(G.left / 1000))}s`; $("tbar").style.width = Math.max(0, G.left / (CLOCK * 10)) + "%"; }
+function hud() {
+  if (G.mode === "game") $("hudLeft").textContent = `${T.shot} ${Math.min(G.i + 1, ROUND)}/${ROUND}`; else if (G.left != null) drawClock();
+  $("hudScore").textContent = G.mode === "clock" ? `${T.hitIcon} ${G.hits}` : G.score + " pts";
+  $("hudStreak").textContent = G.streak >= 2 ? `🔥 ${G.streak} in a row` : "";
+}
+function nextQ() {
+  if (G.over) return;
+  if (G.mode === "game" && G.i >= ROUND) return endGame();
+  const d = pickRoot(); G.recent.push(d.id); if (G.recent.length > 4) G.recent.shift();
+  const lv = levelOf(S.pts[d.id]);
+  // harder question types unlock as a root improves
+  const types = lv === 0 ? ["r2m", "r2m", "m2r"] : lv === 1 ? ["r2m", "m2r", "word"] : ["m2r", "word", "word"];
+  const type = types[Math.floor(Math.random() * types.length)], golden = G.mode === "game" && G.i === ROUND - 1;
+  G.cur = { d, type, clueUsed: false, done: false, golden };
+  if (G.mode === "game") [...$("shots").children].forEach((el, k) => el.classList.toggle("now", k === G.i));
+  hud();
+  $("feedback").className = "feedback"; $("feedback").innerHTML = ""; $("explain").innerHTML = "";
+  $("qcard").className = "qcard" + (golden ? " golden" : G.streak >= 3 ? " fire" : "");
+  const qm = $("qmain"); qm.className = "qmain";
+  let choices, clueHTML, label;
+  if (type === "r2m") { label = "Root → meaning"; qm.textContent = up(d.r); $("qask").textContent = "What does this root mean?"; choices = meaningChoices(d); clueHTML = `You know these words: <em>${d.ex.join(", ")}</em>`; }
+  else if (type === "m2r") { label = "Meaning → root"; qm.textContent = `"${up(d.m)}"`; $("qask").textContent = "Which root means this?"; choices = rootChoices(d); clueHTML = `Think of: <em>${d.ex.join(", ")}</em>`; }
+  else { label = "Mystery word"; const w = d.more[Math.floor(Math.random() * d.more.length)]; G.cur.word = w; qm.classList.add("word"); qm.innerHTML = up(w).replace(/\[(.*?)\]/, '<span class="hl">$1</span>'); $("qask").textContent = "The underlined root means…"; choices = meaningChoices(d); clueHTML = `Same root as: <em>${d.ex.join(", ")}</em>`; }
+  $("qtype").textContent = golden ? `${T.golden} · double points · ${label}` : label;
+  if (G.mode === "game") {
+    // 💡 one tap = a coach's tip (half points); two quick taps = the answer (normal points)
+    $("clue").innerHTML = `<button id="clueBtn" type="button">💡 Coach's tip (half points)</button>`;
+    let tm = null; const ansText = type === "m2r" ? up(d.r) : d.m;
+    const reveal = answer => {
+      if (G.cur.done) return;
+      if (!answer) { G.cur.clueUsed = true; $("clue").innerHTML = clueHTML; return; }
+      G.cur.answerShown = true; $("clue").innerHTML = `🔓 The answer is <em>${ansText}</em>`;
+      [...$("goals").children].forEach(b => { if (b.dataset.ok) b.classList.add("hint"); }); tone(660, .1, "triangle", .1); tone(990, .14, "triangle", .08, 0, .08);
+    };
+    let taps = 0;
+    $("clueBtn").onclick = () => { taps++; clearTimeout(tm); tm = setTimeout(() => { const n = taps; taps = 0; tm = null; if (n >= 3) secretGame(); else reveal(n === 2); }, 320); };
+  }
+  else $("clue").innerHTML = "";
+  const t = $("goals"); t.innerHTML = "";
+  choices.forEach((c, n) => {
+    const b = document.createElement("button"); b.type = "button";
+    b.className = "tgt" + (type === "m2r" ? " root" : "") + (golden ? " golden" : "");
+    b.innerHTML = `<div class="goal">${goalSVG()}</div><div class="lbl">${type === "m2r" ? up(c.label) : c.label}</div><div class="key">${n + 1}</div>`;
+    b.onclick = () => shoot(b, c.ok); b.dataset.ok = c.ok ? 1 : ""; t.appendChild(b);
+  });
+  loadStick();
+}
+function shoot(btn, ok) {
+  if (!G || G.over || G.cur.done) return; G.cur.done = true;
+  [...$("goals").children].forEach(b => b.disabled = true);
+  const [tx, ty, w] = goalAt(btn), side = Math.random() < .5 ? -1 : 1, wide = !ok && Math.random() < .4;
+  // a goal lands somewhere in the net; a miss rings off the post or goes wide
+  const ox = ok ? (Math.random() - .5) * w * T.hitX : side * w * (wide ? T.missX[1] : T.missX[0]), oy = ok ? (Math.random() - .5) * T.hitY : (Math.random() - .5) * 26;
+  const st = $("stick").getBoundingClientRect(), sx0 = st.left + st.width / 2, sy0 = st.top + st.height * .3;
+  $("stick").style.transform = `rotate(${Math.max(-60, Math.min(60, Math.atan2(tx - sx0, sy0 - ty) * 180 / Math.PI)).toFixed(1)}deg)`;
+  const k = ball(), trail = k.trail || (G.streak >= 3 ? FIRE : null), quick = G.mode === "clock", me = G; G.cur.side = side;
+  windUp(quick ? 80 : 160, () => {
+    if (G !== me || G.over) return;
+    const p = $("pball").getBoundingClientRect(), sx = p.left + p.width / 2, sy = p.top + p.height / 2;
+    fling(); sWhoosh();
+    flyBall(sx, sy, tx + ox, ty + oy, quick ? 260 : 440, k, trail, () => {
+      if (G !== me || G.over || !btn.isConnected) return;
+      const inNet = document.createElement("span"); inNet.className = "ball-in" + (ok ? (T.drop ? " drop" : T.thru ? " thru" : "") : " off");
+      inNet.style.cssText = `left:calc(50% + ${ox.toFixed(1)}px);top:calc(${(T.aim * 100).toFixed(1)}% + ${oy.toFixed(1)}px);background:${ballBg(k)};--bx:${side * 26}px`;
+      btn.querySelector(".goal").appendChild(inNet);
+      if (ok) { btn.classList.add("swish"); sSwish(); } else if (wide) sAww(); else if (T.rim) sClank(); else sPing();
+      resolve(btn, ok, wide);
+    });
+  });
+}
+function resolve(btn, ok, wide) {
+  const { d, type, clueUsed, golden } = G.cur, id = d.id, fb = $("feedback"), [gx, gy] = goalAt(btn), clock = G.mode === "clock";
+  if (ok) {
+    G.hits++; G.streak++; G.bestStreak = Math.max(G.bestStreak, G.streak);
+    let earned = (clock || !clueUsed ? 10 : 5) + (G.streak >= 3 ? 5 : 0); if (golden) earned *= 2;
+    G.score += earned; btn.classList.add("right");
+    burst(gx, gy, golden ? ["#ffd700", "#ff6a13", "#fff3b0"] : ball().trail || ["#ffcc33", "#ff6a13", "#ffffff", "#2fbf71"], golden ? 32 : G.streak >= 3 ? 26 : 18);
+    stamp(gx, gy - 36, golden ? T.goldenStamp : streakWord(G.streak), "good");
+    sCheer(golden || G.streak >= 3); if (golden || G.streak >= 3) sHorn();
+    const p = $("pts"); p.textContent = "+" + earned; p.classList.remove("go"); void p.offsetWidth; p.classList.add("go");
+  } else {
+    G.streak = 0; btn.classList.add("wrong"); stamp(gx, gy - 32, wide ? (T.wideSide ? (G.cur.side < 0 ? "WIDE LEFT!" : "WIDE RIGHT!") : T.wide) : T.near[Math.floor(Math.random() * T.near.length)], "bad");
+    $("qcard").classList.add("shake"); setTimeout(() => $("qcard").classList.remove("shake"), 300);
+    [...$("goals").children].forEach(b => { if (b.dataset.ok) b.classList.add("right"); else if (b !== btn) b.classList.add("dim"); });
+  }
+  if (G.bestStreak > (S.bestStreak || 0)) { S.bestStreak = G.bestStreak; save(); }
+  G.results.push({ id, ok }); hud();
+  if (clock) {
+    const me = G;
+    if (ok) setTimeout(() => { if (G === me && !G.over) nextQ(); }, 420);
+    else {
+      G.paused = true; drawClock(); $("clue").innerHTML = `<b>${up(d.r)}</b> = <b>${d.m}</b> · clock paused so you can read it`;
+      setTimeout(() => { if (G === me && !G.over) { G.paused = false; G.last = performance.now(); nextQ(); } }, 1800);
+    }
+    return;
+  }
+  // mastery: +2 without the tip, +1 with it, −2 for a miss
+  const lvA = levelOf(S.pts[id]);
+  S.pts[id] = ok ? Math.min(4, S.pts[id] + (clueUsed ? 1 : 2)) : Math.max(0, S.pts[id] - 2);
+  const lvB = levelOf(S.pts[id]); save();
+  $("shots").children[G.i].className = ok ? "hit" : "miss";
+  if (lvB > lvA) setTimeout(sFan, 350);
+  const wordLine = type === "word" ? `<div class="word">🔎 <b>${up(plain(G.cur.word))}</b> has <b>${up(d.r.split(" / ")[0])}</b> in it, so it's about “${d.m}.”</div>` : "";
+  let picked = "";   // a miss also tells what the picked answer really means
+  if (!ok) { const pl = btn.querySelector(".lbl").textContent.trim(); if (type === "m2r") { const x = DATA.find(r => up(r.r) === pl); if (x) picked = `❌ You picked <b>${up(x.r)}</b>, which means “${x.m}.”`; } else { const xs = DATA.filter(r => r.m === pl); if (xs.length) picked = `❌ You picked “${pl},” which is what <b>${xs.map(r => up(r.r)).join(" and ")}</b> mean${xs.length === 1 ? "s" : ""}.`; } }
+  const lvLine = lvB > lvA ? `<div class="lvup">⬆️ LEVEL UP! <span class="badge ${LV[lvA].c}">${LV[lvA].t}</span> → <span class="badge ${LV[lvB].c}">${LV[lvB].t}</span> ${up(d.r)}</div>` : lvB < lvA ? `<div class="lvdown">${up(d.r)} slipped back to <span class="badge ${LV[lvB].c}">${LV[lvB].t}</span>. Score on it again and it climbs right back up.</div>` : "";
+  const card = $("qcard"); card.classList.remove("fire", "golden"); card.classList.add("done", ok ? "good" : "bad");
+  $("explain").innerHTML = `<b class="big">${ok ? (golden ? `${T.golden}! Double points!` : `${T.hit}${G.streak >= 3 ? " Streak bonus!" : ""}`) : T.missHead}</b>
+    <div class="ans">${up(d.r)} <small>= ${d.m}</small></div>${picked ? `<div class="picked">${picked}</div>` : ""}${wordLine}${lvLine}
+    <button class="btn" id="nextBtn" type="button">${G.i + 1 >= ROUND ? "See the score" : T.next}</button>${explainHTML(d)}`;
+  $("nextBtn").onclick = () => { if (G.cur.next) return; G.cur.next = true; G.i++; nextQ(); };
+}
+function unlocks() {
+  const now = owned(), gained = BALLS.filter(k => now.includes(k.id) && !G.owned.includes(k.id));
+  $("unlockPanel").classList.toggle("hidden", !gained.length);
+  $("unlockList").innerHTML = gained.map(k => `<div><span class="ballart" style="display:inline-block;vertical-align:middle;background:${ballBg(k)}"></span> &nbsp;<b>${k.icon} ${k.name}</b> · ${k.how}! Pick it in the ${T.bag}.</div>`).join("");
+  if (gained.length) { setTimeout(sFan, 500); toast(`🎁 New ball unlocked: ${gained.map(k => k.icon + " " + k.name).join(", ")}!`); }
+}
+function missList() {
+  const misses = [...new Set(G.results.filter(r => !r.ok).map(r => r.id))];
+  $("missPanel").classList.toggle("hidden", !misses.length);
+  $("missList").innerHTML = misses.map(id => { const d = DATA[id]; return `<div><b>${up(d.r)}</b> = ${d.m} <span style="color:#a9bddb">(${d.ex.join(", ")})</span></div>`; }).join("");
+}
+function endGame() {
+  G.over = true; show("end"); $("endTitle").textContent = `${T.end}, ${curName()}!`; $("endScore").textContent = G.score;
+  const pct = G.hits / ROUND;
+  $("endRank").textContent = T.ranks[pct === 1 ? 0 : pct >= .8 ? 1 : pct >= .6 ? 2 : pct >= .4 ? 3 : 4];
+  $("endHits").textContent = `${G.hits} of ${ROUND} ${T.plural}`;
+  if (G.hits === ROUND) S.perfect = true;
+  if (G.score > S.best) { S.best = G.score; $("endHits").textContent += " · New best!"; }
+  save();
+  const ups = [], seen = new Set();
+  G.results.forEach(r => { if (seen.has(r.id)) return; seen.add(r.id); if (levelOf(S.pts[r.id]) > levelOf(G.before[r.id])) ups.push(r.id); });
+  $("lvlPanel").classList.toggle("hidden", !ups.length);
+  $("lvlList").innerHTML = ups.map(id => { const d = DATA[id], a = levelOf(G.before[id]), b = levelOf(S.pts[id]); return `<div><span class="badge ${LV[a].c}">${LV[a].t}</span> → <span class="badge ${LV[b].c}">${LV[b].t}</span> &nbsp;<b>${up(d.r)}</b> = ${d.m}</div>`; }).join("");
+  missList(); unlocks();
+  if (pct >= .8) { confetti(); sHorn(); sCheer(true); }
+}
+function endClock() {
+  G.over = true; clearInterval(G.timer); show("end"); $("endTitle").textContent = `${T.clockEnd}, ${curName()}!`; $("endScore").textContent = G.hits;
+  $("endRank").textContent = G.hits >= 20 ? T.clockTop : T.ranks[G.hits >= 14 ? 1 : G.hits >= 9 ? 2 : G.hits >= 5 ? 3 : 4];
+  $("endHits").textContent = `${G.hits} ${G.hits === 1 ? T.plural.slice(0, -1) : T.plural} in ${CLOCK} seconds (${G.results.length} ${T.shot.toLowerCase()}s)`;
+  if (G.hits > (S.clockBest || 0)) { S.clockBest = G.hits; $("endHits").textContent += " · New best!"; }
+  save(); $("lvlPanel").classList.add("hidden"); missList(); unlocks();
+  if (G.hits >= 14) { confetti(); sHorn(); }
+}
+function confetti() {
+  if (RM) return;
+  const cols = ball().trail || ["#ffcc33", "#ff6a13", "#2f6fb5", "#2fbf71", "#ffffff"];
+  for (let i = 0; i < 60; i++) { const c = document.createElement("div"); c.className = "confetti"; c.style.left = Math.random() * 100 + "vw"; c.style.background = cols[i % cols.length]; c.style.animationDuration = (1.5 + Math.random() * 2) + "s"; c.style.animationDelay = Math.random() * .5 + "s"; $("fx").appendChild(c); setTimeout(() => c.remove(), 4500); }
+}
+const goHome = () => { if (G) { G.over = true; clearInterval(G.timer); } $("fx").innerHTML = ""; renderHome(); show("home"); };
+$("startBtn").onclick = () => newGame("game"); $("clockBtn").onclick = startClock;
+$("againBtn").onclick = () => lastMode === "clock" ? startClock() : newGame("game");
+$("homeBtn").onclick = goHome; $("quitBtn").onclick = goHome;
+// ⌨️ keys 1-4 shoot, Enter goes to the next shot
+document.addEventListener("keydown", e => {
+  if ($("modal").classList.contains("show")) { if (e.key === "Escape" || e.key === "Enter") $("modal").classList.remove("show"); return; }
+  if ($("play").classList.contains("hidden") || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  const n = "1234".indexOf(e.key);
+  if (e.key.length === 1 && n >= 0) { $("goals").children[n]?.click(); return; }
+  if ((e.key === "Enter" || e.key === " ") && $("nextBtn")) { e.preventDefault(); $("nextBtn").click(); }
+});
+(function applySport() {
+  document.body.dataset.sport = SPORT; document.title = T.name;
+  $("tEmoji").textContent = T.emoji; $("tName").textContent = T.name; $("tVerb").textContent = T.verb;
+  $("startBtn").textContent = T.startBtn; $("clockBtn").textContent = "⏱ " + T.clock; $("tClockName").textContent = T.clock;
+  const s = T.shot.toLowerCase();
+  $("tMode").textContent = `${T.startBtn.split(" ")[0]} 10 ${s}s moves roots up your sheet, and ${s} #10 is a ${T.golden} worth double. ⏱ ${T.clock}: as many ${T.plural} as you can in 60 seconds (it doesn't change your sheet).`;
+  $("tBag").textContent = `${T.bagEmoji} ${T.bag}`; $("tTip").textContent = T.tip;
+  $("tSheet").textContent = `Tap a root to review it. Two ${T.plural} in a row bumps a root up a level; a miss knocks it back.`;
+  if (T.shooter) $("stick").innerHTML = T.shooter;
+})();
+renderHome();
+</script>
+</body>
+</html>

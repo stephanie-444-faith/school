@@ -215,8 +215,14 @@ body[data-sport="soccer"] .field{background:linear-gradient(90deg,#3aa54b 0 60px
 body[data-sport="soccer"] .tgt{background:#e9f7ea}
 body[data-sport="soccer"] .mode,body[data-sport="soccer"] .tiny,body[data-sport="soccer"] .link{color:#e3f0ff}
 body[data-sport="soccer"] .players small{color:#d6e8ff}
+body[data-sport="football"] .field{background:repeating-linear-gradient(90deg,#2f9444 0 57px,#ffffff 57px 60px);border-top-color:#ffffff}
+body[data-sport="football"] .tgt{background:#e9f7ea}
+body[data-sport="football"] .ball{width:22px;height:14px;margin:-7px 0 0 -11px}
+body[data-sport="football"] .ball-in{width:16px;height:10px;margin:-5px 0 0 -8px}
+.ball-in.thru{animation:thru .6s ease-out forwards}
+@keyframes thru{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-18px) scale(.5);opacity:0}}
 @media (max-width:420px){h1{font-size:28px}.qmain{font-size:34px}.btn{font-size:16px;padding:13px 10px}}
-@media (prefers-reduced-motion:reduce){.sun,.cloud,.ball-in.drop,.stars,.lights,.beam,.crowd,.flash,.field,.confetti,.shake,.pts.go,.qcard.fire,h1 .stickmoji,.tgt.swish svg,.feedback.show,.ball-in.off{animation:none}.flash{display:none}}
+@media (prefers-reduced-motion:reduce){.ball-in.thru,.sun,.cloud,.ball-in.drop,.stars,.lights,.beam,.crowd,.flash,.field,.confetti,.shake,.pts.go,.qcard.fire,h1 .stickmoji,.tgt.swish svg,.feedback.show,.ball-in.off{animation:none}.flash{display:none}}
 </style>
 </head>
 <body>
@@ -317,18 +323,22 @@ const HOOP_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="t
 const SOCCER_GOAL_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><rect x="5" y="10" width="74" height="50" fill="url(#mesh)"/><path d="M5 60 L14 50 H70 L79 60" fill="none" stroke="#7c8aa0" stroke-width="1.5"/><path d="M5 62 V10 H79 V62" fill="none" stroke="#8d99ad" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 62 V10 H79 V62" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="0" y="62" width="84" height="3" rx="1.5" fill="#6bbf6b"/></svg>`;
 const HANDS_SVG = `<g id="arm"><path d="M34 98 L43 54" stroke="#c98b5e" stroke-width="12" stroke-linecap="round"/><path d="M86 98 L77 54" stroke="#c98b5e" stroke-width="12" stroke-linecap="round"/><rect x="33" y="64" width="15" height="7" rx="3" transform="rotate(-12 40 67)" fill="#ff6a13"/><rect x="72" y="64" width="15" height="7" rx="3" transform="rotate(12 80 67)" fill="#ff6a13"/><path d="M37 52 C 35 40 46 32 53 38 L 55 48 Z" fill="#e0a87c"/><path d="M83 52 C 85 40 74 32 67 38 L 65 48 Z" fill="#e0a87c"/><circle id="pball" cx="60" cy="24" r="17" fill="#f08a24" stroke="#a2490c" stroke-width="1.6"/></g>`;
 const BOOT_SVG = `<path d="M8 92 Q60 84 112 92" stroke="#2e8b3d" stroke-width="6" fill="none" opacity=".85"/><g id="arm"><rect x="24" y="-14" width="12" height="62" rx="5" fill="#ffcc33"/><rect x="24" y="20" width="12" height="9" fill="#1d4ed8"/><path d="M22 46 H38 L40 62 C56 62 64 66 64 74 C64 78 60 80 56 80 H20 C18 80 17 78 17 76 Z" fill="#1d2433"/><path d="M30 58 l6 -4 M33 63 l6 -4" stroke="#ffffff" stroke-width="1.6"/><circle cx="24" cy="82" r="2.2" fill="#aab2bf"/><circle cx="36" cy="82" r="2.2" fill="#aab2bf"/><circle cx="50" cy="82" r="2.2" fill="#aab2bf"/></g><circle id="pball" cx="82" cy="76" r="12" fill="#ffffff" stroke="#222222" stroke-width="1.6"/>`;
+const GOALPOST_SVG = `<svg viewBox="0 0 84 66" width="84" height="66" aria-hidden="true"><path d="M42 64 V40 M18 40 H66 M18 40 V2 M66 40 V2" stroke="#b8860b" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M42 64 V40 M18 40 H66 M18 40 V2 M66 40 V2" stroke="#ffd84d" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="0" y="62" width="84" height="3" rx="1.5" fill="#6bbf6b"/></svg>`;
+const KICK_SVG = `<path d="M8 92 Q60 84 112 92" stroke="#2e8b3d" stroke-width="6" fill="none" opacity=".85"/><path d="M76 92 L88 92 L84 84 L80 84 Z" fill="#ff6a13"/><g id="arm"><rect x="24" y="-14" width="12" height="62" rx="5" fill="#ffffff"/><rect x="24" y="18" width="12" height="7" fill="#7a1f1f"/><rect x="24" y="28" width="12" height="4" fill="#ffcc33"/><path d="M22 46 H38 L40 62 C56 62 64 66 64 74 C64 78 60 80 56 80 H20 C18 80 17 78 17 76 Z" fill="#1d2433"/><path d="M30 58 l6 -4 M33 63 l6 -4" stroke="#ffffff" stroke-width="1.6"/></g><ellipse id="pball" cx="82" cy="72" rx="8" ry="13" transform="rotate(18 82 72)" fill="#8b4513" stroke="#4a2208" stroke-width="1.6"/>`;
 const SPORTS = {
   lacrosse: { name: "Root Lacrosse", emoji: "🥍", key: "rootLacrosseEmmett_v1", pkey: "rootLacrosse_players", verb: "Score a goal", startBtn: "🥅 Take 10 shots", clock: "Shot Clock", shot: "Shot", plural: "goals", next: "Next shot ➜", bag: "Ball bag", bagEmoji: "🥍", tip: "Tap a goal to shoot! (Keys 1–4 work too.)", hit: "🥅 GOAL!", hitIcon: "🥅", golden: "🥇 Golden Goal", goldenStamp: "🥇 GOLDEN GOAL!", missHead: "No goal: here's the trick", near: ["OFF THE POST!"], wide: "WIDE!", end: "Final whistle", clockEnd: "⏱ Buzzer", ranks: ["🏆 MVP!", "🥍 All-American", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Shooter!", streak: ["🎩 HAT TRICK!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 34 / 66, hitX: .45, hitY: 16, missX: [.4, .56], ball: { icon: "⚪", c1: "#f4f4f0", c2: "#aab2bf" } },
   basketball: { name: "Root Basketball", emoji: "🏀", key: "rootBasketballEmmett_v1", pkey: "rootBasketball_players", verb: "Sink a basket", startBtn: "🏀 Take 10 shots", clock: "Shot Clock", shot: "Shot", plural: "baskets", next: "Next shot ➜", bag: "Ball rack", bagEmoji: "🏀", tip: "Tap a hoop to shoot! (Keys 1–4 work too.)", hit: "🏀 SWISH!", hitIcon: "🏀", golden: "🥇 Buzzer Beater", goldenStamp: "🥇 BUZZER BEATER!", missHead: "No basket: here's the trick", near: ["RIM OUT!", "BRICK!"], wide: "AIRBALL!", end: "Final buzzer", clockEnd: "⏱ Buzzer", ranks: ["🏆 MVP!", "🏀 All-Star", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Shooter!", streak: ["🔥 HEATING UP!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 40 / 66, hitX: .08, hitY: 2, missX: [.22, .55], drop: true, rim: true, target: HOOP_SVG, shooter: HANDS_SVG, wind: e => `translate(0 ${(10 * e).toFixed(2)})`, fling: "translate(0 -14)",
     ball: { icon: "🏀", c1: "#f08a24", c2: "#a2490c", bg: "linear-gradient(90deg,transparent 46%,#5a2a08 46% 54%,transparent 54%),linear-gradient(0deg,transparent 46%,#5a2a08 46% 54%,transparent 54%),radial-gradient(circle at 34% 30%,#ffb46b,#f08a24 45%,#a2490c)" } },
   soccer: { name: "Root Soccer", emoji: "⚽", key: "rootSoccerEmmett_v1", pkey: "rootSoccer_players", verb: "Score a goal", startBtn: "⚽ Take 10 kicks", clock: "Lightning Round", shot: "Kick", plural: "goals", next: "Next kick ➜", bag: "Ball bag", bagEmoji: "⚽", tip: "Tap a goal to kick! (Keys 1–4 work too.)", hit: "⚽ GOAL!", hitIcon: "⚽", golden: "🥇 Golden Goal", goldenStamp: "🥇 GOLDEN GOAL!", missHead: "No goal: here's the trick", near: ["OFF THE POST!", "SAVED!"], wide: "WIDE!", end: "Final whistle", clockEnd: "⏱ Final whistle", ranks: ["🏆 MVP!", "⚽ All-Star", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Striker!", streak: ["🎩 HAT TRICK!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 35 / 66, hitX: .55, hitY: 18, missX: [.46, .62], target: SOCCER_GOAL_SVG, shooter: BOOT_SVG, wind: e => `rotate(${(-40 * e).toFixed(2)} 30 -12)`, fling: "rotate(32 30 -12)",
     ball: { icon: "⚽", c1: "#ffffff", c2: "#222222", bg: "radial-gradient(circle at 50% 50%,#222 0 17%,transparent 18%),radial-gradient(circle at 18% 22%,#222 0 11%,transparent 12%),radial-gradient(circle at 84% 26%,#222 0 11%,transparent 12%),radial-gradient(circle at 26% 86%,#222 0 11%,transparent 12%),radial-gradient(circle at 80% 84%,#222 0 11%,transparent 12%),radial-gradient(circle at 34% 30%,#ffffff,#e8e8e8 60%,#bdbdbd)" } },
+  football: { name: "Root Football", emoji: "🏈", key: "rootFootballEmmett_v1", pkey: "rootFootball_players", verb: "Kick a field goal", startBtn: "🏈 Take 10 kicks", clock: "Two-Minute Drill", shot: "Kick", plural: "field goals", next: "Next kick ➜", bag: "Ball bag", bagEmoji: "🏈", tip: "Tap the goalposts to kick! (Keys 1–4 work too.)", hit: "🏈 IT'S GOOD!", hitIcon: "🏈", golden: "🥇 Game-Winning Kick", goldenStamp: "🥇 GAME WINNER!", missHead: "No good: here's the trick", near: ["OFF THE UPRIGHT!", "DOINK!"], wide: "WIDE!", wideSide: true, end: "Final whistle", clockEnd: "⏱ Time's up", ranks: ["🏆 MVP!", "🏈 Pro Bowler", "⭐ Starter", "👟 Rookie", "🎽 Keep practicing!"], clockTop: "⚡ Lightning Kicker!", streak: ["🔥 HEATING UP!", "🔥 ON FIRE!", "⚡ UNSTOPPABLE!", "🏆 MVP!"], aim: 22 / 66, hitX: .3, hitY: 10, missX: [.31, .58], thru: true, target: GOALPOST_SVG, shooter: KICK_SVG, wind: e => `rotate(${(-40 * e).toFixed(2)} 30 -12)`, fling: "rotate(32 30 -12)",
+    ball: { icon: "🏈", c1: "#8b4513", c2: "#4a2208", bg: "linear-gradient(#ffffff,#ffffff) center/56% 2px no-repeat,repeating-linear-gradient(90deg,transparent 0 3px,#ffffff 3px 5px) center/40% 6px no-repeat,radial-gradient(ellipse at 40% 35%,#b5652a,#8b4513 55%,#4a2208)" } },
 };
 const T = SPORTS[SPORT] || SPORTS.lacrosse;
 // 🤫 three quick taps on the tip button: a surprise
 function secretGame() {
-  if (window.parent !== window) { try { window.parent.postMessage({ studyArcade: "hoops" }, "*"); return; } catch (e) {} }
-  location.href = "../hippo-hoops/index.html";
+  if (window.parent !== window) { try { window.parent.postMessage({ studyArcade: "secret", sport: SPORT }, "*"); return; } catch (e) {} }
+  location.href = SPORT === "basketball" ? "../hippo-hoops/index.html" : `../dream-team/index.html?sport=${SPORT}`;
 }
 /* ===== Emmett's roots: [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from his sheet: 0=X, 1=~, -1 = unmarked] ===== */
 const DATA = [
@@ -662,14 +672,14 @@ function shoot(btn, ok) {
   const ox = ok ? (Math.random() - .5) * w * T.hitX : side * w * (wide ? T.missX[1] : T.missX[0]), oy = ok ? (Math.random() - .5) * T.hitY : (Math.random() - .5) * 26;
   const st = $("stick").getBoundingClientRect(), sx0 = st.left + st.width / 2, sy0 = st.top + st.height * .3;
   $("stick").style.transform = `rotate(${Math.max(-60, Math.min(60, Math.atan2(tx - sx0, sy0 - ty) * 180 / Math.PI)).toFixed(1)}deg)`;
-  const k = ball(), trail = k.trail || (G.streak >= 3 ? FIRE : null), quick = G.mode === "clock", me = G;
+  const k = ball(), trail = k.trail || (G.streak >= 3 ? FIRE : null), quick = G.mode === "clock", me = G; G.cur.side = side;
   windUp(quick ? 80 : 160, () => {
     if (G !== me || G.over) return;
     const p = $("pball").getBoundingClientRect(), sx = p.left + p.width / 2, sy = p.top + p.height / 2;
     fling(); sWhoosh();
     flyBall(sx, sy, tx + ox, ty + oy, quick ? 260 : 440, k, trail, () => {
       if (G !== me || G.over || !btn.isConnected) return;
-      const inNet = document.createElement("span"); inNet.className = "ball-in" + (ok ? (T.drop ? " drop" : "") : " off");
+      const inNet = document.createElement("span"); inNet.className = "ball-in" + (ok ? (T.drop ? " drop" : T.thru ? " thru" : "") : " off");
       inNet.style.cssText = `left:calc(50% + ${ox.toFixed(1)}px);top:calc(${(T.aim * 100).toFixed(1)}% + ${oy.toFixed(1)}px);background:${ballBg(k)};--bx:${side * 26}px`;
       btn.querySelector(".goal").appendChild(inNet);
       if (ok) { btn.classList.add("swish"); sSwish(); } else if (wide) sAww(); else if (T.rim) sClank(); else sPing();
@@ -688,7 +698,7 @@ function resolve(btn, ok, wide) {
     sCheer(golden || G.streak >= 3); if (golden || G.streak >= 3) sHorn();
     const p = $("pts"); p.textContent = "+" + earned; p.classList.remove("go"); void p.offsetWidth; p.classList.add("go");
   } else {
-    G.streak = 0; btn.classList.add("wrong"); stamp(gx, gy - 32, wide ? T.wide : T.near[Math.floor(Math.random() * T.near.length)], "bad");
+    G.streak = 0; btn.classList.add("wrong"); stamp(gx, gy - 32, wide ? (T.wideSide ? (G.cur.side < 0 ? "WIDE LEFT!" : "WIDE RIGHT!") : T.wide) : T.near[Math.floor(Math.random() * T.near.length)], "bad");
     $("qcard").classList.add("shake"); setTimeout(() => $("qcard").classList.remove("shake"), 300);
     [...$("goals").children].forEach(b => { if (b.dataset.ok) b.classList.add("right"); else if (b !== btn) b.classList.add("dim"); });
   }

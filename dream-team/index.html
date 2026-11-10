@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dream Team</title>
+<meta name="description" content="Build your dream team: buy real players, win matches, open reward packs, train your stars and climb the leagues.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+/* Stadium at night in each sport's colors. One theme per sport on purpose. */
+:root{--bg:#06140d;--bg2:#0d2a1a;--panel:rgba(16,40,27,.92);--panel2:#183823;--line:#2a5a3c;--soft:#c8e4d2;--gold:#ffcc33;--gold-d:#a8800f;--accent:#2fbf71;--accent2:#7cf0ad;color-scheme:dark}
+body[data-sport="lacrosse"]{--bg:#06122a;--bg2:#0e2550;--panel:rgba(14,34,70,.92);--panel2:#16305a;--line:#2c4a7a;--soft:#c9d6ea;--accent:#ff6a13;--accent2:#ffb27a}
+body[data-sport="football"]{--bg:#120a05;--bg2:#2a180c;--panel:rgba(42,26,14,.92);--panel2:#3a2616;--line:#6a4a2a;--soft:#eedfc8;--accent:#e0a526;--accent2:#ffd36a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:radial-gradient(ellipse at top,var(--bg2),var(--bg) 70%) fixed;color:#fff;font-family:Nunito,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.lights{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 8% 0,rgba(255,250,220,.22),transparent 30%),radial-gradient(circle at 92% 0,rgba(255,250,220,.22),transparent 30%);animation:flick 5s ease-in-out infinite alternate}
+@keyframes flick{to{opacity:.6}}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:12px 14px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+h1{font-family:Bungee,sans-serif;font-weight:400;color:var(--gold);font-size:clamp(22px,4.6vw,34px);margin:0;text-shadow:0 3px 0 #6b4f00,0 0 18px rgba(255,204,51,.35)}
+h1 .em{display:inline-block;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg) translateY(-3px)}}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{background:var(--panel);border:2px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:900;font-size:14px;white-space:nowrap}
+.pill.coins{border-color:var(--gold);color:#ffe08a}
+.who{color:var(--soft);font-size:14px;margin:2px 0 0}
+.tabs{display:flex;gap:6px;margin:12px 0 0;overflow-x:auto}
+.tab{flex:1;min-width:max-content;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:9px 12px;font-weight:900}
+.tab.on{background:var(--accent);border-color:var(--accent2);color:#08130c;box-shadow:0 0 16px color-mix(in srgb,var(--accent) 60%,transparent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
+.panel h2{font-family:Bungee,sans-serif;font-weight:400;font-size:18px;margin:0 0 8px;color:var(--accent2)}
+.soft{color:var(--soft)}
+.btn{font-family:Bungee,sans-serif;font-weight:400;font-size:18px;border:0;border-radius:14px;padding:12px 22px;background:var(--gold);color:#2a1a00;box-shadow:0 4px 0 var(--gold-d);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--gold-d)}
+.btn.alt{background:#e7eef5;color:#14202e;box-shadow:0 4px 0 #8a96a8}
+.btn.go{background:linear-gradient(var(--accent2),var(--accent));color:#08130c;box-shadow:0 4px 0 color-mix(in srgb,var(--accent) 50%,#000)}
+.btn.small{font-size:13px;padding:7px 10px;border-radius:10px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{background:var(--panel2);border:2px solid var(--line);border-radius:999px;padding:5px 11px;font-weight:800;font-size:13px}
+.chip.on{border-color:var(--gold);color:#ffe08a}
+/* player cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{position:relative;border-radius:14px;padding:10px 10px 8px;color:#1b1206;overflow:hidden;display:flex;flex-direction:column;gap:2px;min-height:150px;box-shadow:0 6px 14px rgba(0,0,0,.35);isolation:isolate}
+.card::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.45) 45%,transparent 60%);transform:translateX(-120%);animation:shine 4.5s ease-in-out infinite}
+@keyframes shine{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.card.bronze{background:linear-gradient(150deg,#e6a06a,#a8612e)}
+.card.silver{background:linear-gradient(150deg,#f0f4f8,#9aa6b4)}
+.card.gold{background:linear-gradient(150deg,#ffe580,#d39a10)}
+.card.legend{background:linear-gradient(150deg,#ffd7ff,#8a5cff 45%,#2a1a6a);color:#fff;box-shadow:0 0 18px rgba(170,120,255,.6),0 6px 14px rgba(0,0,0,.35)}
+.card.legend .pos{background:rgba(255,255,255,.2);color:#fff}
+.card .ovr{font-family:Bungee,sans-serif;font-size:30px;line-height:1}
+.card .pos{align-self:flex-start;font-weight:900;font-size:11px;background:rgba(0,0,0,.18);border-radius:6px;padding:1px 6px}
+.card .nm{font-weight:900;font-size:15px;line-height:1.15;margin-top:2px}
+.card .tier{font-size:11px;font-weight:800;opacity:.85}
+.card .spt{position:absolute;right:8px;top:6px;font-size:26px;opacity:.9}
+.card .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.card .acts .btn{box-shadow:0 2px 0 rgba(0,0,0,.35)}
+.card .own{position:absolute;right:8px;bottom:8px;font-size:11px;font-weight:900;background:rgba(0,0,0,.25);color:#fff;border-radius:6px;padding:1px 6px}
+.card.starter::after{content:"⭐ STARTER";position:absolute;left:0;right:0;top:0;text-align:center;font-size:10px;font-weight:900;letter-spacing:1px;background:rgba(0,0,0,.25);color:#fff}
+.card.starter{padding-top:18px}
+/* the lineup */
+.pitch{border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;gap:10px;background:repeating-linear-gradient(90deg,#2b8a3e 0 50px,#33994a 50px 100px);border:3px solid rgba(255,255,255,.7)}
+body[data-sport="lacrosse"] .pitch{background:repeating-linear-gradient(90deg,#2b8a3e 0 50px,#2f9444 50px 100px)}
+body[data-sport="football"] .pitch{background:repeating-linear-gradient(90deg,#2f9444 0 47px,#ffffff 47px 50px)}
+.line{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.slot{width:118px;min-height:84px;border-radius:12px;border:2px dashed rgba(255,255,255,.8);background:rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px;text-align:center}
+.slot b{font-family:Bungee,sans-serif;font-weight:400;font-size:22px;line-height:1}
+.slot small{font-size:12px;font-weight:800;line-height:1.1}
+.slot .p{font-size:10px;font-weight:900;opacity:.9;letter-spacing:1px}
+.slot.filled{border-style:solid}
+.slot.bronze{background:linear-gradient(150deg,#e6a06acc,#a8612ecc)}.slot.silver{background:linear-gradient(150deg,#f0f4f8cc,#9aa6b4cc);color:#14202e}.slot.gold{background:linear-gradient(150deg,#ffe580dd,#d39a10dd);color:#2a1a00}.slot.legend{background:linear-gradient(150deg,#ffd7ffcc,#8a5cffdd 45%,#2a1a6add);box-shadow:0 0 14px rgba(170,120,255,.6)}
+.meter{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;align-items:center;font-weight:900;font-size:14px}
+.bar{height:12px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold))}
+/* match */
+.score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;text-align:center;background:#05080f;border:3px solid #33476b;border-radius:16px;padding:10px;box-shadow:inset 0 0 18px rgba(0,0,0,.7)}
+.score .tm{font-weight:900;font-size:14px;color:var(--soft)}
+.score .num{font-family:Bungee,sans-serif;font-size:42px;letter-spacing:2px;color:#ffd84d;text-shadow:0 0 12px rgba(255,216,77,.7)}
+.score .clk{font-family:Bungee,sans-serif;font-size:16px;color:#7cf0ad}
+.field{position:relative;height:120px;margin-top:10px;border-radius:14px;overflow:hidden;border:3px solid rgba(255,255,255,.75);background:repeating-linear-gradient(90deg,#2b8a3e 0 40px,#33994a 40px 80px)}
+body[data-sport="football"] .field{background:repeating-linear-gradient(90deg,#2f9444 0 37px,#ffffff 37px 40px)}
+.field .mid{position:absolute;left:50%;top:0;bottom:0;width:3px;background:rgba(255,255,255,.8)}
+.field .goalL,.field .goalR{position:absolute;top:30%;bottom:30%;width:8px;background:rgba(255,255,255,.9);border-radius:3px}
+.field .goalL{left:4px}.field .goalR{right:4px}
+.field .ball{position:absolute;top:50%;left:50%;font-size:30px;transform:translate(-50%,-50%);transition:left .9s cubic-bezier(.4,.1,.3,1),top .9s;filter:drop-shadow(0 4px 3px rgba(0,0,0,.5))}
+.field .flash{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,230,120,.65),transparent 70%);opacity:0;pointer-events:none}
+.field .flash.go{animation:flash 1s ease-out}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+.prog{height:8px;border-radius:6px;background:rgba(255,255,255,.12);margin-top:10px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7cf0ad,#ffd84d);transition:width .8s linear}
+.feed{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
+.feed li{background:var(--panel2);border-radius:10px;padding:8px 10px;font-weight:700;animation:in .35s ease-out}
+.feed li.good{background:linear-gradient(90deg,#1f6a3a,#174a2b);border-left:5px solid #7cf0ad}
+.feed li.bad{background:linear-gradient(90deg,#6a1f2a,#4a1720);border-left:5px solid #ff7a8a}
+.feed li.big{font-family:Bungee,sans-serif;font-weight:400;font-size:18px}
+@keyframes in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.goalbig{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);font-family:Bungee,sans-serif;font-size:clamp(40px,11vw,96px);color:#ffd84d;text-shadow:0 6px 0 #6b4f00,0 0 30px rgba(255,216,77,.8);pointer-events:none;z-index:80;animation:boom 1.4s ease-out forwards;white-space:nowrap}
+@keyframes boom{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}20%{transform:translate(-50%,-50%) scale(1.15);opacity:1}35%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-80%) scale(1);opacity:0}}
+/* modal, pack, toast */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.66);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.modal.hidden{display:none}
+.box{background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:18px;width:min(460px,100%);max-height:88vh;overflow-y:auto;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.box h3{font-family:Bungee,sans-serif;font-weight:400;font-size:22px;margin:0 0 6px;color:var(--gold)}
+.choices{display:grid;gap:10px;margin-top:12px}
+.choice{font-family:Bungee,sans-serif;font-weight:400;font-size:18px;padding:14px;border-radius:14px;border:3px solid var(--line);background:var(--panel2)}
+.choice:hover{border-color:var(--gold)}
+.choice.right{background:#1f6a3a;border-color:#7cf0ad}.choice.wrong{background:#6a1f2a;border-color:#ff7a8a}.choice.theirs{outline:3px dashed #ffd84d}
+.pack{perspective:900px;margin:12px auto;width:190px;height:260px}
+.flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.3,1.4,.4,1)}
+.flip.open{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.face.front{background:linear-gradient(150deg,var(--accent2),var(--accent) 50%,#111);font-size:70px;box-shadow:0 0 30px color-mix(in srgb,var(--accent) 70%,transparent);animation:wob 1.2s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.face.back{transform:rotateY(180deg)}
+.face.back .card{width:100%;height:100%;font-size:110%}
+.face.back .card .ovr{font-size:48px}
+.spark{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:70;animation:spark 1s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.conf{position:fixed;top:-12px;width:8px;height:14px;z-index:75;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#0a1420;border:2px solid var(--gold);color:#fff;border-radius:14px;padding:10px 16px;font-weight:800;z-index:90;opacity:0;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.dots{display:flex;gap:6px;margin:8px 0}
+.dots i{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:900;font-size:13px}
+.dots i.W{background:#1f9d55}.dots i.D{background:#a8800f}.dots i.L{background:#b23a48}
+.leagues{display:grid;gap:8px}
+.lg{display:flex;align-items:center;gap:10px;background:var(--panel2);border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:800}
+.lg.now{border-color:var(--gold);box-shadow:0 0 12px rgba(255,204,51,.35)}
+.lg.locked{opacity:.5}
+.note{font-size:12px;color:var(--soft);opacity:.8;text-align:center;margin-top:16px}
+@media (prefers-reduced-motion:reduce){.lights,h1 .em,.card::before,.face.front,.feed li,.goalbig,.conf,.spark{animation:none}.goalbig{display:none}}
+</style>
+</head>
+<body>
+<div class="lights" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div><h1><span class="em" id="hEm">⚽</span> <span id="hName">Dream Team</span></h1><p class="who" id="who"></p></div>
+    <div class="pills"><span class="pill coins" id="pCoins">🪙 0</span><span class="pill" id="pOvr">⭐ 0</span><span class="pill" id="pLg">🥉</span><button class="pill" id="pSound" type="button">🔊</button></div>
+  </header>
+  <nav class="tabs" role="tablist"><button class="tab" data-tab="play" type="button">🏟️ Play</button><button class="tab" data-tab="team" type="button">👕 My Team</button><button class="tab" data-tab="market" type="button">🛒 Market</button><button class="tab" data-tab="league" type="button">🏆 Leagues</button></nav>
+  <main id="view"></main>
+  <p class="note">The player names are real athletes. Their ratings and prices here are made up just for this game.</p>
+</div>
+<div class="modal hidden" id="modal"><div class="box" id="mbox"></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+/* ===== Dream Team: buy players, win matches, open packs, train your stars, climb the leagues ===== */
+const SPORT0 = /*DT_SPORT*/"soccer"/*END_DT_SPORT*/;
+const SAVE = /*DT_SAVE*/{ key: "dreamTeam", name: "" }/*END_DT_SAVE*/;
+const LEAGUES = [["🥉", "Rookie League", 56, 63], ["🥈", "Rising Stars", 63, 70], ["🥇", "Pro League", 70, 77], ["💎", "Champions", 77, 84], ["👑", "Legends", 84, 91]];
+const DATA = {
+  soccer: {
+    name: "Soccer Dream Team", emoji: "⚽", slots: ["FWD", "FWD", "MID", "MID", "DEF", "DEF", "GK"],
+    pos: { FWD: "Forward", MID: "Midfielder", DEF: "Defender", GK: "Goalkeeper" }, att: { FWD: 1, MID: .6 }, def: { GK: 1.3, DEF: 1, MID: .4 },
+    clock: m => `${Math.round(m * 90)}'`, chances: 11, base: .3, scorers: ["FWD", "FWD", "FWD", "MID"], word: "GOAL!",
+    big: { att: ["⚽ Big chance! Pick your corner", ["↖️ Top left", "⬇️ Low middle", "↗️ Top right"], "GOAL!", "SAVED by the keeper!"], def: ["😱 They're shooting! Where does your keeper dive?", ["↖️ Dive left", "⬆️ Stay middle", "↗️ Dive right"], "WHAT A SAVE!", "They scored."] },
+    teams: ["Riverside Rovers", "Thunder FC", "Harbor City", "Lightning United", "Mountain Kings", "Comet Athletic", "Golden Eagles FC", "Dragon City", "Northside Wanderers", "Sunset Strikers"],
+    starters: [["Sam Rivera", "FWD", 60], ["Jordan Lee", "FWD", 58], ["Alex Kim", "MID", 59], ["Chris Patel", "MID", 57], ["Taylor Brooks", "DEF", 58], ["Morgan Diaz", "DEF", 56], ["Riley Chen", "GK", 59]],
+    prospects: [["Leo Santos", "FWD", 68], ["Mia Novak", "FWD", 72], ["Kai Okafor", "FWD", 76], ["Nora Lind", "MID", 67], ["Theo Marsh", "MID", 71], ["Ava Duarte", "MID", 75], ["Owen Park", "DEF", 66], ["Isla Grant", "DEF", 70], ["Max Fontaine", "DEF", 74], ["Eli Moreau", "GK", 69], ["Zara Quinn", "GK", 73], ["Ben Arroyo", "MID", 79]],
+    real: [["Kylian Mbappé", "FWD", 92], ["Erling Haaland", "FWD", 92], ["Vinícius Júnior", "FWD", 91], ["Lionel Messi", "FWD", 91], ["Mohamed Salah", "FWD", 90], ["Harry Kane", "FWD", 90], ["Cristiano Ronaldo", "FWD", 88], ["Lautaro Martínez", "FWD", 88], ["Sam Kerr", "FWD", 88], ["Lamine Yamal", "FWD", 87], ["Bukayo Saka", "FWD", 87], ["Son Heung-min", "FWD", 87], ["Sophia Smith", "FWD", 87], ["Rafael Leão", "FWD", 86], ["Trinity Rodman", "FWD", 85], ["Christian Pulisic", "FWD", 84],
+      ["Aitana Bonmatí", "MID", 92], ["Rodri", "MID", 91], ["Kevin De Bruyne", "MID", 90], ["Jude Bellingham", "MID", 90], ["Alexia Putellas", "MID", 90], ["Martin Ødegaard", "MID", 88], ["Federico Valverde", "MID", 88], ["Florian Wirtz", "MID", 88], ["Jamal Musiala", "MID", 88], ["Bruno Fernandes", "MID", 87], ["Declan Rice", "MID", 87], ["Cole Palmer", "MID", 87], ["Pedri", "MID", 86], ["Lindsey Horan", "MID", 86],
+      ["Virgil van Dijk", "DEF", 89], ["Rúben Dias", "DEF", 88], ["William Saliba", "DEF", 87], ["Antonio Rüdiger", "DEF", 87], ["Lucy Bronze", "DEF", 87], ["Achraf Hakimi", "DEF", 86], ["Trent Alexander-Arnold", "DEF", 86], ["Naomi Girma", "DEF", 86], ["Theo Hernández", "DEF", 85], ["Joško Gvardiol", "DEF", 85], ["Alphonso Davies", "DEF", 84],
+      ["Thibaut Courtois", "GK", 90], ["Alisson Becker", "GK", 89], ["Emiliano Martínez", "GK", 88], ["Ederson", "GK", 87], ["Marc-André ter Stegen", "GK", 87], ["Mike Maignan", "GK", 87], ["Jan Oblak", "GK", 87], ["Gianluigi Donnarumma", "GK", 86], ["Alyssa Naeher", "GK", 84]],
+  },
+  lacrosse: {
+    name: "Lacrosse Dream Team", emoji: "🥍", slots: ["A", "A", "A", "M", "M", "D", "D", "G"],
+    pos: { A: "Attack", M: "Midfield", D: "Defense", G: "Goalie" }, att: { A: 1, M: .7 }, def: { G: 1.3, D: 1, M: .4 },
+    clock: m => `Q${Math.min(4, Math.floor(m * 4) + 1)}`, chances: 22, base: .36, scorers: ["A", "A", "A", "M", "M"], word: "GOAL!",
+    big: { att: ["🥍 Open look! Pick your spot", ["↖️ High left", "🎯 Five-hole", "↗️ High right"], "GOAL!", "SAVED by the goalie!"], def: ["😱 They're winding up! Where does your goalie step?", ["↖️ Step left", "⬆️ Stay home", "↗️ Step right"], "HUGE SAVE!", "They scored."] },
+    teams: ["Timber Wolves LC", "Storm Chasers", "Iron Hawks", "Blue Ridge LC", "Harbor Hammerheads", "Summit Rams", "Canyon Kestrels", "Bay Breakers", "Northern Lights LC", "Red Rock Raptors"],
+    starters: [["Sam Rivera", "A", 60], ["Jordan Lee", "A", 58], ["Casey Moore", "A", 57], ["Alex Kim", "M", 59], ["Chris Patel", "M", 57], ["Taylor Brooks", "D", 58], ["Morgan Diaz", "D", 56], ["Riley Chen", "G", 59]],
+    prospects: [["Leo Santos", "A", 68], ["Mia Novak", "A", 72], ["Kai Okafor", "A", 76], ["Nora Lind", "M", 67], ["Theo Marsh", "M", 71], ["Ava Duarte", "M", 75], ["Owen Park", "D", 66], ["Isla Grant", "D", 70], ["Max Fontaine", "D", 74], ["Eli Moreau", "G", 69], ["Zara Quinn", "G", 73], ["Ben Arroyo", "A", 79]],
+    real: [["Lyle Thompson", "A", 92], ["Jeff Teat", "A", 91], ["Charlotte North", "A", 90], ["Izzy Scane", "A", 89], ["Rob Pannell", "A", 88], ["Michael Sowers", "A", 88], ["Chris Gray", "A", 88], ["Brennan O'Neill", "A", 87], ["Pat Kavanagh", "A", 87], ["Asher Nolting", "A", 86], ["Miles Thompson", "A", 85], ["Marcus Holman", "A", 85],
+      ["Tom Schreiber", "M", 90], ["Trevor Baptiste", "M", 88], ["Paul Rabil", "M", 88], ["Grant Ament", "M", 87], ["TD Ierlan", "M", 85], ["Myles Jones", "M", 84],
+      ["Michael Ehrhardt", "D", 87], ["Graeme Hossack", "D", 86], ["JT Giles-Harris", "D", 86], ["Garrett Epple", "D", 85], ["Jared Conners", "D", 84],
+      ["Blaze Riorden", "G", 89], ["Taylor Moreno", "G", 86], ["Liam Entenmann", "G", 85]],
+  },
+  football: {
+    name: "Football Dream Team", emoji: "🏈", slots: ["WR", "QB", "WR", "RB", "TE", "DEF", "DEF", "K"],
+    pos: { QB: "Quarterback", RB: "Running Back", WR: "Wide Receiver", TE: "Tight End", DEF: "Defense", K: "Kicker" }, att: { QB: 1.5, RB: .9, WR: 1, TE: .7 }, def: { DEF: 1.4, K: .3 },
+    clock: m => `Q${Math.min(4, Math.floor(m * 4) + 1)}`, chances: 11, base: .34, football: true, word: "TOUCHDOWN!",
+    big: { att: ["🏈 4th and goal! Call the play", ["🏃 Run left", "🏈 Throw deep", "🏃 Run right"], "TOUCHDOWN!", "Stopped short!"], def: ["😱 They're going for it! Guess their play", ["🛡️ Stop the run left", "🛡️ Cover the pass", "🛡️ Stop the run right"], "STUFFED! Big stop!", "Touchdown for them."] },
+    teams: ["Metro Mustangs", "Canyon Coyotes", "Bay City Sharks", "Prairie Bison", "Steel Titans", "Thunder Rams", "Lakeside Lynx", "Desert Scorpions", "Harbor Pirates", "Mountain Grizzlies"],
+    starters: [["Sam Rivera", "QB", 60], ["Jordan Lee", "RB", 58], ["Alex Kim", "WR", 59], ["Chris Patel", "WR", 57], ["Casey Moore", "TE", 57], ["Taylor Brooks", "DEF", 58], ["Morgan Diaz", "DEF", 56], ["Riley Chen", "K", 59]],
+    prospects: [["Leo Santos", "QB", 70], ["Mia Novak", "WR", 72], ["Kai Okafor", "RB", 76], ["Nora Lind", "WR", 67], ["Theo Marsh", "TE", 71], ["Ava Duarte", "QB", 77], ["Owen Park", "DEF", 66], ["Isla Grant", "DEF", 70], ["Max Fontaine", "DEF", 75], ["Eli Moreau", "K", 69], ["Zara Quinn", "K", 74], ["Ben Arroyo", "RB", 79]],
+    real: [["Patrick Mahomes", "QB", 97], ["Josh Allen", "QB", 95], ["Lamar Jackson", "QB", 95], ["Joe Burrow", "QB", 93], ["Jalen Hurts", "QB", 90], ["C.J. Stroud", "QB", 88], ["Justin Herbert", "QB", 88],
+      ["Christian McCaffrey", "RB", 95], ["Saquon Barkley", "RB", 94], ["Derrick Henry", "RB", 93], ["Bijan Robinson", "RB", 90], ["Jahmyr Gibbs", "RB", 90], ["Josh Jacobs", "RB", 87],
+      ["Justin Jefferson", "WR", 96], ["Ja'Marr Chase", "WR", 95], ["Tyreek Hill", "WR", 95], ["CeeDee Lamb", "WR", 94], ["Amon-Ra St. Brown", "WR", 93], ["A.J. Brown", "WR", 92], ["Puka Nacua", "WR", 89],
+      ["Travis Kelce", "TE", 93], ["George Kittle", "TE", 92], ["Mark Andrews", "TE", 88], ["Sam LaPorta", "TE", 87],
+      ["Myles Garrett", "DEF", 96], ["Micah Parsons", "DEF", 95], ["T.J. Watt", "DEF", 95], ["Nick Bosa", "DEF", 93], ["Maxx Crosby", "DEF", 93], ["Fred Warner", "DEF", 92], ["Patrick Surtain II", "DEF", 91], ["Sauce Gardner", "DEF", 90], ["Kyle Hamilton", "DEF", 90], ["Derwin James", "DEF", 89],
+      ["Justin Tucker", "K", 92], ["Brandon Aubrey", "K", 92], ["Harrison Butker", "K", 91], ["Evan McPherson", "K", 86]],
+  },
+};
+const QS = new URLSearchParams(location.search).get("sport");
+const SPORT = DATA[QS] ? QS : DATA[SPORT0] ? SPORT0 : "soccer";
+const D = DATA[SPORT];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pick = a => a[Math.floor(Math.random() * a.length)], clamp = (v, a, b) => Math.max(a, Math.min(b, v)), rnd = (a, b) => a + Math.random() * (b - a);
+const fmt = n => Math.round(n).toLocaleString("en-US");
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const ALL = [...D.real.map(([n, p, o]) => ({ key: "r:" + n, name: n, pos: p, ovr: o, real: true })), ...D.prospects.map(([n, p, o]) => ({ key: "g:" + n, name: n, pos: p, ovr: o, real: false }))];
+const priceOf = o => Math.max(50, Math.round(100 * Math.pow(1.12, o - 60) / 10) * 10);
+const trainCost = o => Math.round(priceOf(o + 1) * .3 / 10) * 10;
+const sellPrice = o => Math.round(priceOf(o) * .5 / 10) * 10;
+const tier = o => o >= 90 ? "legend" : o >= 80 ? "gold" : o >= 70 ? "silver" : "bronze";
+const tierName = o => ({ legend: "💜 LEGEND", gold: "🥇 GOLD", silver: "🥈 SILVER", bronze: "🥉 BRONZE" })[tier(o)];
+
+/* ---------- saving ---------- */
+const KEY = `${SAVE.key}_${SPORT}`;
+function fresh() {
+  const owned = D.starters.map(([n, p, o]) => ({ key: "g:" + n, name: n, pos: p, ovr: o, real: false }));
+  return { coins: 500, owned, lineup: autoLineup(owned), league: { lv: 0, results: [], trophies: [] }, packs: 0, sound: true, wins: 0, games: 0 };
+}
+function autoLineup(owned) {
+  const used = new Set();
+  return D.slots.map(pos => { const best = owned.filter(p => p.pos === pos && !used.has(p.key)).sort((a, b) => b.ovr - a.ovr)[0]; if (best) { used.add(best.key); return best.key; } return null; });
+}
+let S = fresh();
+try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && Array.isArray(v.owned) && v.owned.length) S = Object.assign(fresh(), v); } catch (e) {}
+if (!Array.isArray(S.lineup) || S.lineup.length !== D.slots.length) S.lineup = autoLineup(S.owned);
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const ownedBy = k => S.owned.find(p => p.key === k);
+
+/* ---------- sound ---------- */
+let AC = null, NB = null;
+const ac = () => { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state !== "running") AC.resume(); return AC; } catch (e) { return null; } };
+function tone(f, d, type = "sine", v = .14, slide = 0, when = 0) { if (!S.sound) return; const a = ac(); if (!a) return; try { const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + d); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g).connect(a.destination); o.start(t); o.stop(t + d + .02); } catch (e) {} }
+function noise(d, freq, q, v, when = 0) { if (!S.sound) return; const a = ac(); if (!a) return; try { if (!NB) { NB = a.createBuffer(1, a.sampleRate * 1.6, a.sampleRate); const ch = NB.getChannelData(0); for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1; } const t = a.currentTime + when, s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(); s.buffer = NB; f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q; g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(v, t + .04); g.gain.exponentialRampToValueAtTime(.0005, t + d); s.connect(f).connect(g).connect(a.destination); s.start(t); s.stop(t + d + .05); } catch (e) {} }
+const sWhistle = () => { tone(2100, .2, "sine", .1); tone(2300, .3, "sine", .1, 0, .22); };
+const sRoar = big => noise(big ? 1.8 : 1, 850, .6, big ? .55 : .3);
+const sHorn = () => [233, 294, 349].forEach(f => tone(f, .9, "sawtooth", .045, 0, .05));
+const sCoin = () => { tone(988, .08, "square", .06); tone(1319, .14, "square", .06, 0, .07); };
+const sFan = () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .2, "triangle", .1, 0, i * .08));
+const sAww = () => tone(320, .5, "sawtooth", .045, 170);
+
+/* ---------- little helpers ---------- */
+let toastT = null;
+function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2800); }
+function sparks(x, y, n = 24, cols = ["#ffd84d", "#7cf0ad", "#ffffff", "#ff7ad9"]) { if (RM) return; for (let i = 0; i < n; i++) { const e = document.createElement("i"), a = Math.random() * 6.28, d = 40 + Math.random() * 110; e.className = "spark"; e.style.cssText = `left:${x}px;top:${y}px;background:${cols[i % cols.length]};--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d}px`; document.body.appendChild(e); setTimeout(() => e.remove(), 1100); } }
+function confetti() { if (RM) return; const cols = ["#ffd84d", "#7cf0ad", "#2f7de1", "#ff7ad9", "#ffffff"]; for (let i = 0; i < 70; i++) { const c = document.createElement("i"); c.className = "conf"; c.style.left = Math.random() * 100 + "vw"; c.style.background = cols[i % cols.length]; c.style.animationDuration = (1.6 + Math.random() * 2) + "s"; c.style.animationDelay = Math.random() * .4 + "s"; document.body.appendChild(c); setTimeout(() => c.remove(), 4500); } }
+function bigText(t) { const e = document.createElement("div"); e.className = "goalbig"; e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), 1500); }
+function modal(html) { const box = $("mbox"); delete box.dataset.done; box.innerHTML = html; $("modal").classList.remove("hidden"); return box; }
+const closeModal = () => $("modal").classList.add("hidden");
+function cardHTML(p, opts = {}) {
+  return `<div class="card ${tier(p.ovr)}${opts.starter ? " starter" : ""}"><span class="spt">${D.emoji}</span><span class="ovr">${p.ovr}</span><span class="pos">${p.pos} · ${D.pos[p.pos]}</span><span class="nm">${esc(p.name)}</span><span class="tier">${tierName(p.ovr)}${p.real ? " · ⭐ REAL STAR" : ""}</span>${opts.acts ? `<div class="acts">${opts.acts}</div>` : ""}</div>`;
+}
+
+/* ---------- team strength ---------- */
+function strength() {
+  let a = 0, aw = 0, d = 0, dw = 0, sum = 0;
+  D.slots.forEach((pos, i) => { const p = ownedBy(S.lineup[i]), o = p ? p.ovr : 35; sum += o; const wa = D.att[pos] || 0, wd = D.def[pos] || 0; a += o * wa; aw += wa; d += o * wd; dw += wd; });
+  return { att: Math.round(a / aw), def: Math.round(d / dw), ovr: Math.round(sum / D.slots.length) };
+}
+function header() {
+  const s = strength(), L = LEAGUES[S.league.lv];
+  $("pCoins").textContent = `🪙 ${fmt(S.coins)}`; $("pOvr").textContent = `⭐ ${s.ovr} team`; $("pLg").textContent = `${L[0]} ${L[1]}`;
+  $("pSound").textContent = S.sound ? "🔊" : "🔇";
+  $("who").textContent = `${SAVE.name ? SAVE.name + "'s club" : "Your club"} · ${S.wins} wins in ${S.games} games`;
+}
+
+/* ---------- tabs ---------- */
+let TAB = "play", MKT = "all";
+function show(tab) { TAB = tab; document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.tab === tab)); header(); ({ play: viewPlay, team: viewTeam, market: viewMarket, league: viewLeague })[tab](); window.scrollTo({ top: 0 }); }
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => show(b.dataset.tab));
+$("pSound").onclick = () => { S.sound = !S.sound; save(); header(); };
+
+function viewPlay() {
+  const s = strength(), L = LEAGUES[S.league.lv], played = S.league.results.length, pts = S.league.results.reduce((t, r) => t + (r === "W" ? 3 : r === "D" ? 1 : 0), 0), empty = S.lineup.some(k => !k);
+  $("view").innerHTML = `<div class="panel"><h2>🏟️ Match day</h2>
+    <div class="meter"><span>⚔️ Attack</span><span class="bar"><i style="width:${s.att}%"></i></span><span>${s.att}</span><span>🛡️ Defense</span><span class="bar"><i style="width:${s.def}%"></i></span><span>${s.def}</span></div>
+    <p class="soft">${L[0]} <b>${L[1]}</b>: match ${played + 1} of 5 · ${pts} points (9 points moves you up). Opponents here are rated about ${L[2]}–${L[3]}.</p>
+    ${empty ? `<p style="color:#ff9aa8;font-weight:800">Some spots in your lineup are empty. Fill them in 👕 My Team first!</p>` : ""}
+    <div class="row"><button class="btn go" id="kick" type="button"${empty ? " disabled" : ""}>▶ Play the next match</button><button class="btn alt" id="toTeam" type="button">👕 Lineup</button></div></div>
+    <div class="panel"><h2>⭐ Your starters</h2><div class="cards">${S.lineup.map(k => ownedBy(k)).filter(Boolean).map(p => cardHTML(p, { starter: true })).join("")}</div></div>
+    <div class="panel"><h2>💡 How it works</h2><p class="soft">Play matches to earn 🪙 coins and a 🎁 reward pack every game. Use coins in the 🛒 Market to buy real stars, or ⬆ train the players you have. Big chances during a match are up to you: pick well and you'll score!</p></div>`;
+  $("kick").onclick = playMatch; $("toTeam").onclick = () => show("team");
+}
+function viewTeam() {
+  const rows = [...new Set(D.slots)];
+  $("view").innerHTML = `<div class="panel"><h2>👕 Your lineup</h2><p class="soft">Tap a spot to choose who starts there.</p>
+    <div class="pitch">${rows.map(pos => `<div class="line">${D.slots.map((p, i) => p !== pos ? "" : (() => { const pl = ownedBy(S.lineup[i]); return `<button class="slot${pl ? " filled " + tier(pl.ovr) : ""}" data-slot="${i}" type="button"><span class="p">${pos}</span>${pl ? `<b>${pl.ovr}</b><small>${esc(pl.name)}</small>` : `<b>＋</b><small>Empty</small>`}</button>`; })()).join("")}</div>`).join("")}</div>
+    <div class="row" style="margin-top:10px"><button class="btn go small" id="auto" type="button">⭐ Pick my best lineup</button></div></div>
+    <div class="panel"><h2>🧑‍🤝‍🧑 Your club (${S.owned.length})</h2><div class="cards">${S.owned.slice().sort((a, b) => b.ovr - a.ovr).map(p => cardHTML(p, { starter: S.lineup.includes(p.key), acts: `${p.ovr < 99 ? `<button class="btn small" data-train="${esc(p.key)}" type="button">⬆ Train 🪙${fmt(trainCost(p.ovr))}</button>` : ""}<button class="btn alt small" data-sell="${esc(p.key)}" type="button">💰 ${fmt(sellPrice(p.ovr))}</button>` })).join("")}</div></div>`;
+  document.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => pickForSlot(+b.dataset.slot));
+  $("auto").onclick = () => { S.lineup = autoLineup(S.owned); save(); viewTeam(); header(); toast("⭐ Your best players are starting!"); };
+  document.querySelectorAll("[data-train]").forEach(b => b.onclick = e => train(b.dataset.train, e));
+  document.querySelectorAll("[data-sell]").forEach(b => b.onclick = () => sell(b.dataset.sell, b));
+}
+function pickForSlot(i) {
+  const pos = D.slots[i], list = S.owned.filter(p => p.pos === pos).sort((a, b) => b.ovr - a.ovr);
+  const box = modal(`<h3>${pos}: ${D.pos[pos]}</h3><p class="soft">Who should start here?</p><div class="cards">${list.map(p => `<div>${cardHTML(p, { starter: S.lineup.includes(p.key), acts: `<button class="btn small go" data-put="${esc(p.key)}" type="button">Start</button>` })}</div>`).join("") || `<p class="soft">You don't have a ${D.pos[pos]} yet. Find one in the 🛒 Market!</p>`}</div><div class="row" style="justify-content:center;margin-top:12px"><button class="btn alt small" id="mx" type="button">Close</button></div>`);
+  box.querySelector("#mx").onclick = closeModal;
+  box.querySelectorAll("[data-put]").forEach(b => b.onclick = () => { const k = b.dataset.put, other = S.lineup.indexOf(k); if (other >= 0) S.lineup[other] = S.lineup[i]; S.lineup[i] = k; save(); closeModal(); viewTeam(); header(); });
+}
+function train(k, e) {
+  const p = ownedBy(k), cost = trainCost(p.ovr);
+  if (p.ovr >= 99) return;
+  if (S.coins < cost) return toast(`🪙 Training costs ${fmt(cost)}. You need ${fmt(cost - S.coins)} more. Win matches to earn coins!`);
+  S.coins -= cost; p.ovr++; save(); sCoin(); sparks(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2, 14);
+  toast(`⬆ ${p.name} trained up to ${p.ovr}!${p.ovr === 70 || p.ovr === 80 || p.ovr === 90 ? " New card color!" : ""}`); viewTeam(); header();
+}
+function sell(k, b) {
+  const p = ownedBy(k);
+  if (S.owned.filter(x => x.pos === p.pos).length <= D.slots.filter(x => x === p.pos).length) return toast(`You need ${D.slots.filter(x => x === p.pos).length} ${D.pos[p.pos]}${D.slots.filter(x => x === p.pos).length > 1 ? "s" : ""} to play, so you can't sell ${p.name} right now.`);
+  if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Sure? Tap again"; setTimeout(() => { if (b.isConnected) { delete b.dataset.sure; b.textContent = `💰 ${fmt(sellPrice(p.ovr))}`; } }, 3000); return; }
+  S.coins += sellPrice(p.ovr); S.owned = S.owned.filter(x => x.key !== k);
+  S.lineup = S.lineup.map(x => x === k ? null : x); const fill = autoLineup(S.owned); S.lineup = S.lineup.map((x, i) => x || fill[i]);
+  save(); sCoin(); toast(`💰 Sold ${p.name} for 🪙${fmt(sellPrice(p.ovr))}.`); viewTeam(); header();
+}
+function viewMarket() {
+  const have = new Set(S.owned.map(p => p.key)), poss = [...new Set(D.slots)];
+  const list = ALL.filter(p => !have.has(p.key) && (MKT === "all" || (MKT === "stars" ? p.real : p.pos === MKT))).sort((a, b) => b.ovr - a.ovr);
+  $("view").innerHTML = `<div class="panel"><h2>🛒 Market</h2><p class="soft">Buy real stars and up-and-coming players. Tap Buy twice to sign them. You have 🪙 <b>${fmt(S.coins)}</b>.</p>
+    <div class="row"><button class="chip${MKT === "all" ? " on" : ""}" data-f="all" type="button">All</button><button class="chip${MKT === "stars" ? " on" : ""}" data-f="stars" type="button">⭐ Real stars</button>${poss.map(p => `<button class="chip${MKT === p ? " on" : ""}" data-f="${p}" type="button">${p}</button>`).join("")}</div></div>
+    <div class="panel"><div class="cards">${list.map(p => cardHTML(p, { acts: `<button class="btn small${S.coins >= priceOf(p.ovr) ? " go" : ""}" data-buy="${esc(p.key)}" type="button">🪙 ${fmt(priceOf(p.ovr))}</button>` })).join("") || `<p class="soft">You've signed everyone here. Wow!</p>`}</div></div>`;
+  document.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { MKT = b.dataset.f; viewMarket(); });
+  document.querySelectorAll("[data-buy]").forEach(b => b.onclick = e => buy(b.dataset.buy, b, e));
+}
+function signPlayer(p) {
+  S.owned.push(Object.assign({}, p));
+  // a new player starts right away if they're better than the starter at that spot
+  let msg = "";
+  const spots = D.slots.map((pos, i) => pos === p.pos ? i : -1).filter(i => i >= 0);
+  const worst = spots.map(i => ({ i, o: ownedBy(S.lineup[i])?.ovr ?? 0 })).sort((a, b) => a.o - b.o)[0];
+  if (worst && worst.o < p.ovr) { S.lineup[worst.i] = p.key; msg = ` They're starting at ${p.pos}!`; }
+  return msg;
+}
+function buy(k, b, e) {
+  const p = ALL.find(x => x.key === k), cost = priceOf(p.ovr);
+  if (S.coins < cost) return toast(`🪙 ${p.name} costs ${fmt(cost)}. You need ${fmt(cost - S.coins)} more. Keep winning!`);
+  if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Sign for 🪙${fmt(cost)}?`; setTimeout(() => { if (b.isConnected) { delete b.dataset.sure; b.textContent = `🪙 ${fmt(cost)}`; } }, 3000); return; }
+  S.coins -= cost; const msg = signPlayer(p); save(); sFan(); sparks(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2, 30); confetti();
+  toast(`✍️ You signed ${p.name}!${msg}`); viewMarket(); header();
+}
+function viewLeague() {
+  const lv = S.league.lv, res = S.league.results, pts = res.reduce((t, r) => t + (r === "W" ? 3 : r === "D" ? 1 : 0), 0);
+  $("view").innerHTML = `<div class="panel"><h2>🏆 This season</h2><p class="soft">${LEAGUES[lv][0]} <b>${LEAGUES[lv][1]}</b> · ${pts} points · get 9 points in 5 matches to move up.</p>
+    <div class="dots">${[0, 1, 2, 3, 4].map(i => `<i class="${res[i] || ""}">${res[i] || i + 1}</i>`).join("")}</div></div>
+    <div class="panel"><h2>🪜 The leagues</h2><div class="leagues">${LEAGUES.map(([e, n, lo, hi], i) => `<div class="lg${i === lv ? " now" : ""}${i > lv ? " locked" : ""}"><span style="font-size:24px">${e}</span><span>${n}<br><small class="soft">Teams rated ${lo}–${hi}</small></span><span style="margin-left:auto">${i < lv ? "✅" : i === lv ? "▶ Now" : "🔒"}</span></div>`).join("")}</div></div>
+    <div class="panel"><h2>🏅 Trophies</h2><p>${S.league.trophies.length ? S.league.trophies.map(t => `<span class="pill" style="display:inline-block;margin:3px">${t}</span>`).join("") : `<span class="soft">Win a league to earn your first trophy!</span>`}</p></div>`;
+}
+
+/* ---------- a match ---------- */
+let M = null;
+function playMatch() {
+  if (S.lineup.some(k => !k)) return show("team");
+  const L = LEAGUES[S.league.lv], o = Math.round(rnd(L[2], L[3])), me = strength();
+  const opp = { name: pick(D.teams), att: o + Math.round(rnd(-3, 3)), def: o + Math.round(rnd(-3, 3)), ovr: o };
+  // plan the chances: who gets them depends on attack against defense
+  const pYou = clamp(.5 + ((me.att - opp.def) - (opp.att - me.def)) / 40, .22, .78);
+  const ev = Array.from({ length: D.chances }, () => ({ t: Math.random() * .96 + .02, you: Math.random() < pYou })).sort((a, b) => a.t - b.t);
+  const mine = ev.filter(e => e.you), theirs = ev.filter(e => !e.you);
+  [...mine].sort(() => Math.random() - .5).slice(0, 2).forEach(e => e.big = true);
+  if (theirs.length) pick(theirs).big = true;
+  M = { opp, me, ev, i: 0, you: 0, them: 0, last: null, skip: false };
+  $("view").innerHTML = `<div class="panel"><div class="score"><div><div class="tm">${esc(SAVE.name || "Your club")}</div><div class="num" id="sYou">0</div><div class="tm">⭐ ${me.ovr}</div></div><div class="clk" id="clk">${D.clock(0)}</div><div><div class="tm">${esc(opp.name)}</div><div class="num" id="sThem">0</div><div class="tm">⭐ ${opp.ovr}</div></div></div>
+    <div class="field"><div class="mid"></div><div class="goalL"></div><div class="goalR"></div><div class="ball" id="ball">${D.emoji}</div><div class="flash" id="flash"></div></div>
+    <div class="prog"><i id="prog"></i></div>
+    <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn alt small" id="skip" type="button">⏩ Skip to the end</button></div>
+    <ul class="feed" id="feed"></ul></div>`;
+  $("skip").onclick = () => { M.skip = true; };
+  sWhistle(); line(`📣 Kickoff! ${esc(SAVE.name || "Your club")} vs ${esc(opp.name)}.`);
+  setTimeout(nextEvent, 900);
+}
+function line(t, cls = "") { const li = document.createElement("li"); li.className = cls; li.innerHTML = t; $("feed")?.prepend(li); }
+const scorerName = () => { const pool = D.slots.map((pos, i) => ({ pos, p: ownedBy(S.lineup[i]) })).filter(x => x.p && (D.scorers || []).includes(x.pos)); if (D.football) return ownedBy(S.lineup[D.slots.indexOf("QB")])?.name || "Your QB"; const w = pool.flatMap(x => Array(Math.max(1, x.p.ovr - 50)).fill(x.p)); return (pick(w) || { name: "Your team" }).name; };
+const catcher = () => { const pool = D.slots.map((pos, i) => ({ pos, p: ownedBy(S.lineup[i]) })).filter(x => x.p && ["WR", "TE", "RB"].includes(x.pos)); return (pick(pool)?.p || { name: "a receiver" }).name; };
+const keeper = () => { if (D.football) { const d = D.slots.map((pos, i) => pos === "DEF" ? ownedBy(S.lineup[i]) : null).filter(Boolean).sort((a, b) => b.ovr - a.ovr)[0]; return d ? d.name : "Your defense"; } return ownedBy(S.lineup[D.slots.length - 1])?.name || "Your keeper"; };
+function moveBall(toYou) { const b = $("ball"); if (!b) return; b.style.left = (toYou ? rnd(70, 92) : rnd(8, 30)) + "%"; b.style.top = rnd(25, 75) + "%"; }
+function scored(you, pts, text) {
+  if (you) M.you += pts; else M.them += pts;
+  $("sYou").textContent = M.you; $("sThem").textContent = M.them;
+  if (you) { $("flash").classList.remove("go"); void $("flash").offsetWidth; $("flash").classList.add("go"); if (!M.skip) { bigText(D.word); sRoar(true); sHorn(); const r = $("ball").getBoundingClientRect(); sparks(r.left + r.width / 2, r.top + r.height / 2, 30); } line(text, "good big"); }
+  else { if (!M.skip) sAww(); line(text, "bad"); }
+}
+function nextEvent() {
+  if (!M || !$("feed")) return;
+  if (M.i >= M.ev.length) return endMatch();
+  const e = M.ev[M.i++];
+  $("clk").textContent = D.clock(e.t); $("prog").style.width = (e.t * 100) + "%"; moveBall(e.you);
+  const go = () => setTimeout(nextEvent, M.skip ? 30 : 1100);
+  const time = `<b>${D.clock(e.t)}</b>`;
+  if (e.big && !M.skip) return bigChance(e, time, go);
+  const att = e.you ? M.me.att : M.opp.att, def = e.you ? M.opp.def : M.me.def;
+  const p = clamp(D.base + (att - def) / 50, .08, .65);
+  if (D.football) {
+    const r = Math.random();
+    if (r < p) scored(e.you, 7, e.you ? `🏈 ${time} TOUCHDOWN! ${esc(scorerName())} finds ${esc(catcher())} in the end zone!` : `${time} Touchdown, ${esc(M.opp.name)}.`);
+    else if (r < p + .22) { if (e.you) scored(true, 3, `🏈 ${time} Field goal is GOOD! ${esc(ownedBy(S.lineup[D.slots.indexOf("K")])?.name || "Your kicker")} splits the uprights!`); else scored(false, 3, `${time} ${esc(M.opp.name)} kick a field goal.`); }
+    else line(e.you ? `${time} Drive stalls for ${esc(scorerName())}. Punt.` : `${time} 🛡️ Your defense forces a punt!`);
+  } else {
+    if (Math.random() < p) { const who = scorerName(); scored(e.you, 1, e.you ? `${D.emoji} ${time} ${D.word} ${esc(who)} ${pick(["scores!", "finishes it!", "buries it!", "makes no mistake!"])}` : `${time} ${esc(M.opp.name)} score.`); }
+    else line(e.you ? `${time} Chance for ${esc(scorerName())}… ${pick(["just wide!", "saved!", "off the post!", "over the bar!"])}` : `${time} 🧤 ${esc(keeper())} ${pick(["makes the save!", "stops it!", "holds on!"])}`);
+  }
+  go();
+}
+function bigChance(e, time, go) {
+  const [prompt, opts, win, lose] = e.you ? D.big.att : D.big.def;
+  const who = e.you ? scorerName() : keeper();
+  const box = modal(`<h3>${prompt}</h3><p class="soft">${e.you ? `⭐ ${esc(who)} has the ball!` : `🧤 ${esc(who)} is ready.`}</p><div class="choices">${opts.map((o, i) => `<button class="choice" data-c="${i}" type="button">${o}</button>`).join("")}</div><p class="soft" id="res" style="min-height:1.5em;font-weight:900;margin-top:10px"></p>`);
+  tone(700, .15, "triangle", .1); tone(900, .15, "triangle", .1, 0, .15);
+  box.querySelectorAll("[data-c]").forEach(b => b.onclick = () => {
+    if (box.dataset.done) return; box.dataset.done = 1;
+    const mine = +b.dataset.c;
+    let ok, theirs;
+    if (e.you) {   // you shoot; the keeper guesses (and sometimes remembers your favorite spot)
+      theirs = M.last != null && Math.random() < .35 ? M.last : Math.floor(Math.random() * 3);
+      const diff = (S.owned.find(p => p.name === who)?.ovr || M.me.att) - M.opp.def;
+      ok = mine !== theirs ? Math.random() < clamp(.82 + diff / 100, .6, .97) : Math.random() < clamp(.15 + diff / 80, .05, .35);
+    } else {       // they shoot; you guess where
+      theirs = Math.floor(Math.random() * 3);
+      const diff = M.me.def - M.opp.att;
+      ok = mine === theirs ? Math.random() < clamp(.85 + diff / 100, .65, .97) : Math.random() < clamp(.12 + diff / 80, .04, .3);
+    }
+    M.last = mine;
+    box.querySelectorAll("[data-c]").forEach(x => { x.disabled = true; if (+x.dataset.c === theirs) x.classList.add("theirs"); });
+    b.classList.add(ok ? "right" : "wrong");
+    box.querySelector("#res").textContent = ok ? `✅ ${win}` : `❌ ${lose}`;
+    if (ok) { sRoar(!e.you ? false : true); } else sAww();
+    setTimeout(() => {
+      closeModal();
+      if (e.you) { if (ok) scored(true, D.football ? 7 : 1, D.football ? `🏈 ${time} TOUCHDOWN on 4th down! ${esc(who)} calls it perfectly!` : `${D.emoji} ${time} ${D.word} ${esc(who)} picks the perfect spot!`); else line(`${time} ${esc(who)}: ${lose}`, "bad"); }
+      else { if (ok) line(`🧤 ${time} ${win} ${esc(who)} reads it!`, "good"); else scored(false, D.football ? 7 : 1, `${time} ${esc(M.opp.name)} score on the big chance.`); }
+      go();
+    }, 1300);
+  });
+}
+function endMatch() {
+  $("clk").textContent = "FULL TIME"; $("prog").style.width = "100%"; sWhistle();
+  const res = M.you > M.them ? "W" : M.you === M.them ? "D" : "L", lv = S.league.lv;
+  const coins = (res === "W" ? 400 : res === "D" ? 200 : 100) + lv * 120 + Math.min(10, M.you) * (D.football ? 4 : 20);
+  S.coins += coins; S.games++; if (res === "W") S.wins++;
+  S.league.results.push(res);
+  let season = "";
+  if (S.league.results.length >= 5) {
+    const pts = S.league.results.reduce((t, r) => t + (r === "W" ? 3 : r === "D" ? 1 : 0), 0);
+    if (pts >= 9) { S.league.trophies.push(`${LEAGUES[lv][0]} ${LEAGUES[lv][1]} champs`); season = lv < 4 ? `🏆 You won the ${LEAGUES[lv][1]}! Welcome to the ${LEAGUES[lv + 1][1]}!` : "👑 LEGENDS CHAMPIONS! You beat the very best!"; if (lv < 4) S.league.lv++; }
+    else season = `This season ended with ${pts} points. You need 9 to move up. New season, new chance!`;
+    S.league.results = [];
+  }
+  save(); header();
+  if (res === "W") { confetti(); sFan(); sRoar(true); }
+  const title = res === "W" ? "🏆 YOU WIN!" : res === "D" ? "🤝 A DRAW" : "😤 SO CLOSE";
+  setTimeout(() => {
+    const box = modal(`<h3>${title}</h3><p style="font-family:Bungee,sans-serif;font-size:28px;margin:4px 0">${M.you} – ${M.them}</p><p class="soft">vs ${esc(M.opp.name)}</p><p style="font-weight:900;color:#ffe08a">🪙 +${fmt(coins)} coins</p>${season ? `<p style="font-weight:900">${season}</p>` : ""}<button class="btn go" id="packBtn" type="button">🎁 Open your reward pack</button>`);
+    box.querySelector("#packBtn").onclick = () => openPack(res);
+  }, M.skip ? 200 : 900);
+}
+function openPack(res) {
+  // better results give better odds for a real star
+  const starChance = res === "W" ? .28 : res === "D" ? .14 : .07, have = new Set(S.owned.map(p => p.key));
+  const star = Math.random() < starChance, fresh = ALL.filter(p => !have.has(p.key));
+  let pool = (fresh.length ? fresh : ALL).filter(p => star ? p.real : !p.real);
+  if (!pool.length) pool = fresh.length ? fresh : ALL;
+  const weights = pool.map(p => p.real ? Math.max(1, 100 - p.ovr) : Math.max(1, 90 - p.ovr));
+  let r = Math.random() * weights.reduce((a, b) => a + b, 0), got = pool[0];
+  for (let i = 0; i < pool.length; i++) { r -= weights[i]; if (r <= 0) { got = pool[i]; break; } }
+  const dup = have.has(got.key);
+  const box = modal(`<h3>🎁 Reward pack</h3><p class="soft">Tap the pack to open it!</p><div class="pack"><div class="flip" id="flip"><div class="face front">${D.emoji}</div><div class="face back">${cardHTML(dup ? Object.assign({}, ownedBy(got.key), { ovr: Math.min(99, ownedBy(got.key).ovr + 2) }) : got)}</div></div></div><p id="packMsg" style="font-weight:900;min-height:1.4em"></p><div class="row" style="justify-content:center"><button class="btn go hidden" id="nextM" type="button">▶ Next match</button><button class="btn alt hidden" id="toT" type="button">👕 My team</button></div>`);
+  let opened = false;
+  box.querySelector(".pack").onclick = () => {
+    if (opened) return; opened = true; $("flip").classList.add("open"); tone(400, .3, "sine", .08, 1200);
+    setTimeout(() => {
+      let msg;
+      if (dup) { const p = ownedBy(got.key); p.ovr = Math.min(99, p.ovr + 2); msg = `🔁 Duplicate! ${p.name} gets a training boost to ${p.ovr}!`; }
+      else msg = `✨ ${got.name} joined your club!${signPlayer(got)}`;
+      save(); header(); box.querySelector("#packMsg").textContent = msg;
+      const r = box.querySelector(".pack").getBoundingClientRect(); sparks(r.left + r.width / 2, r.top + r.height / 2, got.real ? 46 : 24, got.ovr >= 90 ? ["#ffd7ff", "#8a5cff", "#ffd84d", "#ffffff"] : undefined);
+      if (got.real) { sFan(); if (got.ovr >= 90) confetti(); } else sCoin();
+      box.querySelector("#nextM").classList.remove("hidden"); box.querySelector("#toT").classList.remove("hidden");
+    }, 1000);
+  };
+  box.querySelector("#nextM").onclick = () => { closeModal(); show("play"); };
+  box.querySelector("#toT").onclick = () => { closeModal(); show("team"); };
+}
+$("modal").addEventListener("click", e => { if (e.target.id === "modal" && !M?.lock) { /* keep big chances open until you choose */ if ($("mbox").querySelector(".choices") || $("mbox").querySelector(".pack")) return; closeModal(); } });
+
+/* ---------- start ---------- */
+document.body.dataset.sport = SPORT; document.title = D.name;
+$("hEm").textContent = D.emoji; $("hName").textContent = D.name;
+show("play");
+if (!S.games) setTimeout(() => toast(`👋 Welcome to ${D.name}! Your starters are ready. Win matches to buy real stars!`), 500);
+</script>
+</body>
+</html>
