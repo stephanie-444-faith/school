@@ -639,6 +639,21 @@
   .gamesmenu { position: absolute; top: 0; right: 0; z-index: 10; }
   .gamesmenu summary { list-style: none; cursor: pointer; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--ink-soft); opacity: .45; font-size: 1.3rem; line-height: 1; }
   .gamesmenu summary::-webkit-details-marker { display: none; }
+  .infopage h2 { margin: 6px 0 4px; }
+  .if-jump { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+  .if-jump .chip { padding: 7px 12px; }
+  .if-sec { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); scroll-margin-top: 76px; }
+  .if-sec h3 { margin: 0 0 4px; font-size: 1.15rem; }
+  .if-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+  .if-row > div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .if-row span { color: var(--ink-soft); font-size: .92rem; }
+  .if-where { color: var(--ink-soft); font-size: .8rem; opacity: .85; }
+  .if-today { font-style: normal; font-size: .75rem; color: var(--gold); white-space: nowrap; }
+  .if-go { flex: none; font: inherit; font-weight: 800; font-size: .85rem; border: 1px solid var(--line); background: var(--panel); color: inherit; border-radius: 999px; padding: 6px 12px; cursor: pointer; margin-left: 4px; }
+  .if-go:hover { border-color: var(--gold); }
+  .if-one { margin-top: 12px; display: flex; justify-content: center; }
+  .if-one .if-go { font-size: .95rem; padding: 9px 16px; }
+  .if-terms ol { padding-left: 1.3em; margin: 8px 0 0; display: grid; gap: 8px; line-height: 1.45; }
   .gamesmenu summary:hover, .gamesmenu[open] summary { opacity: 1; background: var(--panel); }
   .gamesmenu summary:focus-visible { outline: 3px solid var(--gold); opacity: 1; }
   .gm-panel { position: absolute; right: 0; top: 42px; width: min(340px, calc(100vw - 32px)); background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
@@ -2536,7 +2551,7 @@ function showHome() {
         <p class="soft">Tap a subject to start studying.</p>
       </div>
       <details class="gamesmenu" id="gamesmenu">
-        <summary aria-label="Games menu">⋯</summary>
+        <summary aria-label="Info: where to find everything">⋯</summary>
         <div class="gm-panel">
           <span class="label">Games</span>
           <button class="gm-item" id="dig"><b>Dig It Up</b><span>Mine gems, craft pickaxes, answer pop-up questions</span>${bestLine(best.dig ? "Fastest win " + formatTime(best.dig) : "")}</button>
@@ -2601,6 +2616,7 @@ function showHome() {
   $app.querySelectorAll("[data-more]").forEach(b => b.addEventListener("click", () => MORE_GAMES.find(g => g.id === b.dataset.more).start()));
   document.getElementById("start").addEventListener("click", pickCash);
   keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
+  bindDots();
   bindHomeRow();
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
@@ -2611,6 +2627,90 @@ document.addEventListener("click", e => {
   const m = document.getElementById("gamesmenu");
   if (m?.open && !m.contains(e.target)) m.open = false;
 });
+// ⋯ One tap opens the info page (where to find everything except the games, plus the Terms of Service).
+//   Two quick taps open the games menu, like it used to on one tap. A tap on ⋯ while the menu is open closes it.
+function bindDots() {
+  const m = document.getElementById("gamesmenu"), s = m.querySelector("summary"); let taps = 0, tm = null, openedAt = 0;
+  s.addEventListener("click", e => {
+    e.preventDefault();
+    if (m.open) { if (Date.now() - openedAt > 450) m.open = false; return; }
+    taps++; clearTimeout(tm);
+    if (taps >= 2) { taps = 0; tm = null; m.open = true; openedAt = Date.now(); return; }
+    tm = setTimeout(() => { taps = 0; tm = null; if (m.isConnected && !m.open) startInfo(); }, 320);
+  });
+}
+// ℹ️ The info page: where to find everything in Study Arcade except the games, and the Terms of Service
+const INFO_GAME_APPS = new Set(["hippopoly", "uno", "bship", "hclass", "rummi", "check", "yahtzee", "mancala", "gofish", "dots", "chess", "roots", "puzzle", "bunny"]);   // games stay off this page
+function startInfo(jump) {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
+  const today = new Set(homeToday().map(a => a.key));
+  const apps = homePool().filter(a => !INFO_GAME_APPS.has(a.key.replace(/^na-/, "")) && a.key !== "bunny");
+  const go = [];   // what each "go" button opens
+  const btn = (fn, label) => { go.push(fn); return `<button class="if-go" type="button" data-go="${go.length - 1}">${label}</button>`; };
+  const subj = k => () => { choice.subject = k; store.set("subject", k); if (k === "ss") { choice.set = "all"; store.set("set", "all"); } startStudy(); };
+  const where = txt => `<small class="if-where">📍 ${txt}</small>`;
+  const sec = (id, title, intro, body) => `<section class="if-sec" id="if-${id}"><h3>${title}</h3>${intro ? `<p class="soft">${intro}</p>` : ""}${body}</section>`;
+  const row = (name, desc, w, open) => `<div class="if-row"><div><b>${name}</b><span>${desc}</span>${w ? where(w) : ""}</div>${open || ""}</div>`;
+  $app.innerHTML = `<div class="panel infopage">
+    <div class="topline"><span class="label">ℹ️ Where to find everything</span><button class="iconbtn" id="if-home" type="button">Back to menu</button></div>
+    <h2>ℹ️ Where to find everything</h2>
+    <p class="soft">Everything in Study Arcade except the games, and where it lives. Tap <b>Go</b> to jump right there.</p>
+    <nav class="if-jump" aria-label="Sections">${[["study", "📚 Studying"], ["math", "🧮 Math"], ["apps", "📱 Apps"], ["hippo", "🦛 Ask Hippo"], ["buttons", "🔘 Buttons"], ["saving", "💾 Saving"], ["terms", "📜 Terms of Service"]].map(([id, t]) => `<button class="chip" type="button" data-jump="${id}">${t}</button>`).join("")}</nav>
+    ${sec("study", "📚 Studying", "On the home screen, under <b>Tap a subject to start studying</b>.",
+      Object.entries(SUBJECTS).map(([k, v]) => row(esc(v.name), esc(v.desc), "Home screen → subjects", btn(subj(k), "Go"))).join("") +
+      row("Health topics", Object.values(HEALTH_PARTS).map(v => esc(v.name)).join(", ") + ": study just one part of Health.", "Home screen → Health topic", btn(() => { choice.subject = "health"; store.set("subject", "health"); startStudy(); }, "Go")) +
+      row("One part of Social Studies", Object.values(SETS).map(v => esc(v.name)).join(", ") + " from Early Humans to the Neolithic Revolution.", "Home screen → Or study one part of Social Studies", "") +
+      row("Timeline and Focus Questions", "Put 14 events in order, and read the 8 study-guide questions with model answers. Plus what GRAPES stands for.", "Home screen → Social Studies extras (when Social Studies is picked)", btn(startTimeline, "Timeline") + btn(startFocus, "Questions")))}
+    ${sec("math", "🧮 Math Center", "In the 📱 App-App (and on the home screen on some days). You can also ask Hippo for the calculator.",
+      row("Calculator", "Hippo's calculator, with square roots, powers and percents.", "Math Center → top", "") +
+      row("Math practice", "Easy or Hard math, and the MP1 unit practice.", "Math Center", "") +
+      row("Ratios &amp; Rates", "Practice ratios, rates and unit rates, one part at a time.", "Math Center", "") +
+      row("4th Grade Challenge Lounge", "Harder 4th-grade problems for kids who love a challenge.", "Math Center → Challenge Lounge", "") +
+      row("The glowing portal", "Opens the Challenge Classroom.", "Math Center → the portal", "") +
+      row("🦆 Lucky Duck Math", "Fractions, big numbers, patterns, story problems, coins and more.", "Math Center → at the very bottom", "") +
+      `<div class="if-one">${btn(startMathCenter, "🧮 Open the Math Center")}</div>`)}
+    ${sec("apps", "📱 Apps", "Every app lives in the <b>📱 App-App</b> (the first button on the home screen). The home screen shows 8 apps at a time, and they change at midnight. ⭐ means it's on the home screen today.",
+      apps.map(a => row(`${a.emoji} ${esc(a.name)}${today.has(a.key) ? ` <em class="if-today">⭐ home screen today</em>` : ""}`, esc(a.desc), "📱 App-App", btn(a.start, "Go"))).join("") +
+      `<div class="if-one">${btn(startAppApp, "📱 Open the App-App")}</div>`)}
+    ${sec("hippo", "🦛 Ask Hippo", "The 🦛 on the home screen. It's always there.",
+      row("Ask anything", "Hippo answers questions with pictures, and reads them out loud.", "Home screen → 🦛", "") +
+      row("Open any app by name", "Type an app's name, even spelled wrong, and Hippo opens it.", "Ask Hippo", "") +
+      row("Library, songs, jokes and a calculator", "Ask for “the library”, “sing me a song”, “tell me a joke” or “calculator”.", "Ask Hippo", "") +
+      `<div class="if-one">${btn(() => startHippo(), "🦛 Ask Hippo")}</div>`)}
+    ${sec("buttons", "🔘 Buttons you'll see", "",
+      row("✕ Exit", "Goes back to the home screen.", "Top left, inside apps", "") +
+      row("👤 Player", "Pick who you are, or add a new player (up to 100). MR.E, Colin, Alex and the whole crew are always there. Each player's progress is saved on its own.", "Top right, inside apps", "") +
+      row("🚨 Emergency", "Jumps straight to Greek &amp; Latin roots practice.", "Shows up on some screens", "") +
+      row("Sound", "Turns sounds on or off.", "Bottom of the page", "") +
+      row("⋯", "Opens this page.", "Top right of the home screen", ""))}
+    ${sec("saving", "💾 Saving", "",
+      row("It saves by itself", "Your progress is saved in this browser and, when the note at the bottom says <b>✓ Progress saved</b>, online too, so it follows you to other devices.", "Bottom of the page", "") +
+      row("Only on this device?", "<b>Saved on this device only</b> means only this browser has it. Clearing the browser's data would erase it.", "Bottom of the page", ""))}
+    <section class="if-sec if-terms" id="if-terms">
+      <h3>📜 Terms of Service</h3>
+      <p class="soft">Last updated November 10, 2026. Please read these with a grown-up.</p>
+      <ol>
+        <li><b>What Study Arcade is.</b> Study Arcade is a free, homemade study site made for Emmett, his family and friends, for practicing schoolwork and having some fun. It is not made by a school, a school district or a company.</li>
+        <li><b>Who can use it.</b> Anyone this page has been shared with. Kids should use it with a parent's or guardian's OK. Using Study Arcade means you agree to these terms.</li>
+        <li><b>Be kind and stay safe.</b> Use nice names for players. Never type private information, like a home address, phone number, password or school login, into Study Arcade: not in player names, stories, the Memorizer, AI Studio or Ask Hippo.</li>
+        <li><b>Your saves.</b> Progress is saved in your browser and in this page's own online storage. People this page is shared with use the same saves, so they can see player names and scores. There are no ads, and nothing is sold or given to anyone else.</li>
+        <li><b>AI.</b> Some parts, like 🤖 AI Studio, use AI to write answers. AI can make mistakes. Don't trust it for anything important without checking.</li>
+        <li><b>Answers can be wrong.</b> Study Arcade tries hard to get things right, but your teacher, your textbook and your real tests always win. Check anything important with a teacher or a book.</li>
+        <li><b>Real names.</b> Real people, teams, books and places are mentioned for learning and fun. None of them made or support Study Arcade.</li>
+        <li><b>Take breaks.</b> Homework comes first. Rest your eyes, stretch, and try the 🧘 Calm Corner when you need a break.</li>
+        <li><b>No promises.</b> Study Arcade is offered as it is. It might have bugs, it might be down sometimes, and saves can be lost if the browser's data is cleared.</li>
+        <li><b>Changes.</b> Study Arcade changes often, and these terms can change too. The date at the top shows the newest version.</li>
+        <li><b>Questions?</b> Ask the grown-up who shared Study Arcade with you.</li>
+      </ol>
+    </section>
+    <div class="if-one"><button class="btn go" type="button" id="if-done">✅ Got it, back to the menu</button></div>
+  </div>`;
+  $app.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go[+b.dataset.go]()));
+  $app.querySelectorAll("[data-jump]").forEach(b => b.addEventListener("click", () => document.getElementById("if-" + b.dataset.jump)?.scrollIntoView({ behavior: "smooth", block: "start" })));
+  document.getElementById("if-home").addEventListener("click", showHome);
+  document.getElementById("if-done").addEventListener("click", showHome);
+  if (jump) setTimeout(() => document.getElementById("if-" + jump)?.scrollIntoView({ block: "start" }), 50);
+}
 // 🎮 Secret shortcut: typing "franklin rules" into Ask Hippo opens a game room with every game
 function gamesMenuHTML() {
   const best = store.get("best", {}), bestLine = txt => txt ? `<small class="gm-best">${txt}</small>` : "";
@@ -8356,7 +8456,7 @@ function hippoAnswer(qRaw) {
     if (new RegExp(`\\b${name.toLowerCase()}'?s?\\b`).test(q) && /\bbirth ?days?\b|\bbday\b/.test(q)) return R("Birthdays", "🎂", `${name}'s birthday is ${mon} ${day}! 🎉`, `Mark your calendar: ${name}'s birthday is on ${mon} ${day}. 🎂🥳`, hBig("🎂🎉", "#ffe3f1", `${mon} ${day}`));
   }
   if (/^(what|whats|what's) (is |are )?(grammar|parts of speech|text structures?|text features?)\b/.test(q)) { const ga = NEW_APPS.find(x => x.id === "grammar"); return R("Grammar", "📝", "Grammar is the set of rules for how words, sentences, and punctuation fit together.", "It includes the 8 parts of speech (noun, pronoun, verb, adjective, adverb, preposition, conjunction, interjection), sentence types (simple, compound, complex, compound-complex), text structures, and text features. You can learn and practice all of it in the 📝 Grammar & Reading Lab!", hBig("📝", "#f1ecff", "Grammar"), { label: "📝 Open the Grammar & Reading Lab", fn: () => ga.start() }); }
-  if (/\bhippo hoops\b|\bbasketball bros?\b|\bbasketball game\b/.test(q)) return R("Hippo Hoops", "🏀", "🏀 Hippo Hoops is in the games menu (the ⋯ button)!", "One-on-one arcade basketball: pick a baller, then dunk, steal, block and shoot threes against the computer. Rookie, Pro or Legend.", hBig("🏀🦛", "#2a1838", "Hippo Hoops"), { label: "🏀 Play Hippo Hoops", fn: () => startHippoHoops() });
+  if (/\bhippo hoops\b|\bbasketball bros?\b|\bbasketball game\b/.test(q)) return R("Hippo Hoops", "🏀", "🏀 Hippo Hoops is in the games menu (double-tap the ⋯ button)!", "One-on-one arcade basketball: pick a baller, then dunk, steal, block and shoot threes against the computer. Rookie, Pro or Legend.", hBig("🏀🦛", "#2a1838", "Hippo Hoops"), { label: "🏀 Play Hippo Hoops", fn: () => startHippoHoops() });
   // 🏹 Greek & Latin roots from Emmett's sheet ("what does the root bio mean", "which root means star", "what roots are in photograph")
   if (/\broots?\b/.test(q) && !/\b(square|cube|cubed|plants?|trees?|hair)\b|root (canal|beer)/.test(q)) { const ra = raRootAnswer(q); if (ra) return R(...ra); }
   if (/\blucky ?duck\b|\bduck math\b/.test(q)) return R("Lucky Duck Math", "🦆", "🦆 Lucky Duck Math is at the bottom of the 🧮 Math Center!", "A math buddy with fractions, big numbers, patterns, story problems, coins, making change, measuring, and adding, subtracting and multiplying. Get hints or see every step, and earn feathers to dress up Lucky Duck in the Duck shop.", hBig("🦆", "#0E7C86", "Lucky Duck Math"), { label: "🦆 Open Lucky Duck Math", fn: () => startLuckyDuck() });
@@ -8395,7 +8495,7 @@ function hippoAnswer(qRaw) {
     return Object.assign(R("Franklin's Secrets", "🤫", "🤫 Franklin's secrets: every way to get to the games!",
       `🔓 SECRET GAME ROOM: type "franklin rules" into Ask Hippo to open a room with every game.\n\n` +
       `🤫 SECRET TAPS: tap the help button 3 times fast in a roots game:\n🏹 Root Archery (💡 Clue) → Ragdoll Archers\n🥍 Root Lacrosse (💡 Coach's tip) → Lacrosse Dream Team\n⚽ Root Soccer → Soccer Dream Team\n🏈 Root Football → Football Dream Team\n🏀 Root Basketball → Hippo Hoops\nTap it 2 times fast instead to see the answer.\n\n` +
-      `🎮 GAMES MENU: tap the ⋯ on the home screen for ${menu.join(", ")}.\n\n` +
+      `🎮 GAMES MENU: double-tap the ⋯ on the home screen for ${menu.join(", ")}. (One tap opens the info page and the Terms of Service.)\n\n` +
       `📱 APP-APP: every app lives there, like Uno, Chess, Battleship, Hippopoly, Wheel Spinner and Root Archery (with Lacrosse, Basketball, Soccer and Football). The home screen shows 8 apps, and they change at midnight.\n\n` +
       `🦛 ASK HIPPO: type any game's or app's name, even spelled wrong, and Hippo opens it. "hippo hoops" and "basketball bros" work too.\n\n` +
       `🚨 EMERGENCY: in a games-menu game, the 🚨 button jumps straight into a Root Archery round.\n\n` +
@@ -15551,7 +15651,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
