@@ -785,6 +785,9 @@
   .bunny-btn:hover { transform: scale(1.08); }
   .gm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-top: 10px; }
   .hip-games { grid-column: 1 / -1; }
+  .room-emerg-row { display: flex; justify-content: center; margin: 4px 0 2px; }
+  .room-emerg { border: 0; border-radius: 99px; padding: 10px 22px; font: inherit; font-weight: 800; font-size: 1rem; background: #ffb703; color: #3a1d00; box-shadow: 0 4px 14px rgba(0,0,0,.35); cursor: pointer; }
+  .room-emerg:hover { filter: brightness(1.08); } .room-emerg:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .hip-head { display: flex; gap: 12px; align-items: center; } .hip-head h2 { margin: 0; } .hip-face { font-size: 3.4rem; animation: skyBob 3s ease-in-out infinite; }
   .hip-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 8px; }
   .hip-bar input { flex: 1; min-width: 200px; font: inherit; font-size: 1.1rem; padding: 12px 16px; border-radius: 99px; border: 2px solid var(--gold); background: var(--panel-2); color: inherit; }
@@ -2536,10 +2539,8 @@ function showHome() {
   stopSlope();
   stopArchers();
   stopMini();
-  const best = store.get("best", {});
   const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
   const ss = choice.subject === "ss";
-  const bestLine = txt => txt ? `<small class="gm-best">${txt}</small>` : "";
   $app.innerHTML = `
     <div class="topbar">
       <div class="emoji-row">
@@ -2552,20 +2553,6 @@ function showHome() {
       </div>
       <details class="gamesmenu" id="gamesmenu">
         <summary aria-label="Info: where to find everything">⋯</summary>
-        <div class="gm-panel">
-          <span class="label">Games</span>
-          <button class="gm-item" id="dig"><b>Dig It Up</b><span>Mine gems, craft pickaxes, answer pop-up questions</span>${bestLine(best.dig ? "Fastest win " + formatTime(best.dig) : "")}</button>
-          <div class="gm-item gm-cash">
-            <button id="start"><b>Cash Race</b><span>Earn money for right answers, buy upgrades</span></button>
-            <label for="goal-pick" class="sr">Cash Race mode</label>
-            <select id="goal-pick">${Object.entries(GOALS).map(([k, v]) => `<option value="${k}" ${choice.goal === k ? "selected" : ""}>${v.name}</option>`).join("")}</select>
-          </div>
-          <button class="gm-item" id="slope"><b>Slope City</b><span>Roll, jump, and smash through a neon city. Collect crystals for new balls. No questions.</span>${bestLine(best.slope ? "Best " + fmt(best.slope) + " m" : "")}</button>
-          <button class="gm-item" id="draw"><b>Drawing Studio</b><span>Draw with any color, add shapes, and move everything around.</span></button>
-          <button class="gm-item" id="archers"><b>Ragdoll Archers</b><span>Enemies get tougher every round. Trade kills for better bows and gear. No questions.</span>${bestLine(best.archers ? "Best " + best.archers + " archers beaten" : "")}</button>
-          ${["snake", "stack"].map((k, i) => { const seen = store.get("seen", {})[k]; return `<button class="gm-item gm-mystery" id="m-${k}"><b>${seen ? MYSTERY[k].name : "Mystery Game #" + (i + 1)}</b><span>${seen ? MYSTERY[k].desc + " No questions." : "Tap to find out what it is!"}</span>${bestLine(best[k] ? "Best " + best[k] : "")}</button>`; }).join("")}
-          ${MORE_GAMES.map(g => `<button class="gm-item" data-more="${g.id}"><b>${g.name}</b><span>${g.desc}</span>${bestLine(moreBest(g.id, best[g.id]))}</button>`).join("")}
-        </div>
       </details>
     </div>
     <div class="panel">
@@ -2606,16 +2593,6 @@ function showHome() {
     choice.subject = "ss"; choice.set = b.dataset.set; store.set("subject", "ss"); store.set("set", choice.set);
     startStudy();
   }));
-  document.getElementById("goal-pick").addEventListener("change", e => { choice.goal = e.target.value; store.set("goal", choice.goal); });
-  document.getElementById("dig").addEventListener("click", pickDig);
-  document.getElementById("slope").addEventListener("click", startSlope);
-  document.getElementById("archers").addEventListener("click", startArchers);
-  document.getElementById("draw").addEventListener("click", startDraw);
-  document.getElementById("m-snake").addEventListener("click", startSnake);
-  document.getElementById("m-stack").addEventListener("click", startStack);
-  $app.querySelectorAll("[data-more]").forEach(b => b.addEventListener("click", () => MORE_GAMES.find(g => g.id === b.dataset.more).start()));
-  document.getElementById("start").addEventListener("click", pickCash);
-  keyHandler = e => { if (e.key === "Escape") document.getElementById("gamesmenu").open = false; };
   bindDots();
   bindHomeRow();
   if (ss) {
@@ -2628,15 +2605,13 @@ document.addEventListener("click", e => {
   if (m?.open && !m.contains(e.target)) m.open = false;
 });
 // ⋯ One tap opens the info page (where to find everything except the games, plus the Terms of Service).
-//   Two quick taps open the games menu, like it used to on one tap. A tap on ⋯ while the menu is open closes it.
+//   Two quick taps open the 🎮 Game Room page.
 function bindDots() {
-  const m = document.getElementById("gamesmenu"), s = m.querySelector("summary"); let taps = 0, tm = null, openedAt = 0;
+  const m = document.getElementById("gamesmenu"), s = m.querySelector("summary"); let taps = 0, tm = null;
   s.addEventListener("click", e => {
-    e.preventDefault();
-    if (m.open) { if (Date.now() - openedAt > 450) m.open = false; return; }
-    taps++; clearTimeout(tm);
-    if (taps >= 2) { taps = 0; tm = null; m.open = true; openedAt = Date.now(); return; }
-    tm = setTimeout(() => { taps = 0; tm = null; if (m.isConnected && !m.open) startInfo(); }, 320);
+    e.preventDefault(); taps++; clearTimeout(tm);
+    if (taps >= 2) { taps = 0; tm = null; startGameRoom(); return; }
+    tm = setTimeout(() => { taps = 0; tm = null; if (m.isConnected) startInfo(); }, 320);
   });
 }
 // ℹ️ The info page: where to find everything in Study Arcade except the games, and the Terms of Service
@@ -2710,6 +2685,21 @@ function startInfo(jump) {
   document.getElementById("if-home").addEventListener("click", showHome);
   document.getElementById("if-done").addEventListener("click", showHome);
   if (jump) setTimeout(() => document.getElementById("if-" + jump)?.scrollIntoView({ block: "start" }), 50);
+}
+// 🚨 Both game rooms (this page and Hippo's "franklin rules" room) have their own Emergency button: one tap jumps straight into a round of Root Archery
+const roomEmergHTML = id => `<div class="room-emerg-row"><button class="room-emerg" id="${id}" type="button" title="Jump to Root Archery practice">🚨 Emergency</button></div>`;
+const bindRoomEmerg = id => document.getElementById(id)?.addEventListener("click", emergencyGrammar);
+// 🎮 The Game Room: double-tap the ⋯ on the home screen. It has the same games as Hippo's "franklin rules" room, on its own page.
+function startGameRoom() {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); HIPPO_SONG_STOP?.(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
+  $app.innerHTML = `<div class="panel groom">
+    <div class="topline"><span class="label">🎮 Game Room</span><button class="iconbtn" id="gr-home" type="button">Back to menu</button></div>
+    <div class="hip-card wide"><div class="hip-diagram">${hBig("🎮🔓", "#2e1a4a", "secret game room")}</div><div class="hip-text"><small class="hip-topic">🔓 Secret Game Room</small><b>🔓 The secret game room is open.</b><p>Every game in one place. Pick one!</p></div>
+      <div class="hip-games">${roomEmergHTML("gr-emerg")}${gamesMenuHTML()}</div></div>
+  </div>`;
+  bindGamesMenu(); bindRoomEmerg("gr-emerg");
+  document.getElementById("gr-home").addEventListener("click", showHome);
+  window.scrollTo({ top: 0 });
 }
 // 🎮 Secret shortcut: typing "franklin rules" into Ask Hippo opens a game room with every game
 function gamesMenuHTML() {
@@ -8456,7 +8446,7 @@ function hippoAnswer(qRaw) {
     if (new RegExp(`\\b${name.toLowerCase()}'?s?\\b`).test(q) && /\bbirth ?days?\b|\bbday\b/.test(q)) return R("Birthdays", "🎂", `${name}'s birthday is ${mon} ${day}! 🎉`, `Mark your calendar: ${name}'s birthday is on ${mon} ${day}. 🎂🥳`, hBig("🎂🎉", "#ffe3f1", `${mon} ${day}`));
   }
   if (/^(what|whats|what's) (is |are )?(grammar|parts of speech|text structures?|text features?)\b/.test(q)) { const ga = NEW_APPS.find(x => x.id === "grammar"); return R("Grammar", "📝", "Grammar is the set of rules for how words, sentences, and punctuation fit together.", "It includes the 8 parts of speech (noun, pronoun, verb, adjective, adverb, preposition, conjunction, interjection), sentence types (simple, compound, complex, compound-complex), text structures, and text features. You can learn and practice all of it in the 📝 Grammar & Reading Lab!", hBig("📝", "#f1ecff", "Grammar"), { label: "📝 Open the Grammar & Reading Lab", fn: () => ga.start() }); }
-  if (/\bhippo hoops\b|\bbasketball bros?\b|\bbasketball game\b/.test(q)) return R("Hippo Hoops", "🏀", "🏀 Hippo Hoops is in the games menu (double-tap the ⋯ button)!", "One-on-one arcade basketball: pick a baller, then dunk, steal, block and shoot threes against the computer. Rookie, Pro or Legend.", hBig("🏀🦛", "#2a1838", "Hippo Hoops"), { label: "🏀 Play Hippo Hoops", fn: () => startHippoHoops() });
+  if (/\bhippo hoops\b|\bbasketball bros?\b|\bbasketball game\b/.test(q)) return R("Hippo Hoops", "🏀", "🏀 Hippo Hoops is in the 🎮 Game Room (double-tap the ⋯ button)!", "One-on-one arcade basketball: pick a baller, then dunk, steal, block and shoot threes against the computer. Rookie, Pro or Legend.", hBig("🏀🦛", "#2a1838", "Hippo Hoops"), { label: "🏀 Play Hippo Hoops", fn: () => startHippoHoops() });
   // 🏹 Greek & Latin roots from Emmett's sheet ("what does the root bio mean", "which root means star", "what roots are in photograph")
   if (/\broots?\b/.test(q) && !/\b(square|cube|cubed|plants?|trees?|hair)\b|root (canal|beer)/.test(q)) { const ra = raRootAnswer(q); if (ra) return R(...ra); }
   if (/\blucky ?duck\b|\bduck math\b/.test(q)) return R("Lucky Duck Math", "🦆", "🦆 Lucky Duck Math is at the bottom of the 🧮 Math Center!", "A math buddy with fractions, big numbers, patterns, story problems, coins, making change, measuring, and adding, subtracting and multiplying. Get hints or see every step, and earn feathers to dress up Lucky Duck in the Duck shop.", hBig("🦆", "#0E7C86", "Lucky Duck Math"), { label: "🦆 Open Lucky Duck Math", fn: () => startLuckyDuck() });
@@ -8495,10 +8485,10 @@ function hippoAnswer(qRaw) {
     return Object.assign(R("Franklin's Secrets", "🤫", "🤫 Franklin's secrets: every way to get to the games!",
       `🔓 SECRET GAME ROOM: type "franklin rules" into Ask Hippo to open a room with every game.\n\n` +
       `🤫 SECRET TAPS: tap the help button 3 times fast in a roots game:\n🏹 Root Archery (💡 Clue) → Ragdoll Archers\n🥍 Root Lacrosse (💡 Coach's tip) → Lacrosse Dream Team\n⚽ Root Soccer → Soccer Dream Team\n🏈 Root Football → Football Dream Team\n🏀 Root Basketball → Hippo Hoops\nTap it 2 times fast instead to see the answer.\n\n` +
-      `🎮 GAMES MENU: double-tap the ⋯ on the home screen for ${menu.join(", ")}. (One tap opens the info page and the Terms of Service.)\n\n` +
+      `🎮 GAME ROOM: double-tap the ⋯ on the home screen to open the Game Room, with ${menu.join(", ")}. (One tap opens the info page and the Terms of Service.)\n\n` +
       `📱 APP-APP: every app lives there, like Uno, Chess, Battleship, Hippopoly, Wheel Spinner and Root Archery (with Lacrosse, Basketball, Soccer and Football). The home screen shows 8 apps, and they change at midnight.\n\n` +
       `🦛 ASK HIPPO: type any game's or app's name, even spelled wrong, and Hippo opens it. "hippo hoops" and "basketball bros" work too.\n\n` +
-      `🚨 EMERGENCY: in a games-menu game, the 🚨 button jumps straight into a Root Archery round.\n\n` +
+      `🚨 EMERGENCY: both game rooms (the 🎮 Game Room and "franklin rules") and every game from them have a 🚨 button that jumps straight into a Root Archery round.\n\n` +
       `🧮 MATH CENTER: Lucky Duck Math is at the bottom, and the glowing portals open the Challenge Lounges.\n\n` +
       `🧱 SKY STACK: double-click the Sound button to jump straight to 100 blocks.\n\n` +
       `💡 MATH HINTS: tap Hint once for a hint, then double-click the empty spot where it was to see every step.\n\n` +
@@ -15227,7 +15217,7 @@ function startHippo(initial = "") {
     out.innerHTML = `<div class="hip-card${ans.wide ? " wide" : ""}"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? esc(ans.why).split("\n\n").map(x => `<p>${x.replace(/\n/g, "<br>")}</p>`).join("") : ""}${ans.reveal ? `<details class="hip-reveal"><summary>👀 Show the answer</summary><p>${esc(ans.reveal)}</p></details>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}${ans.actions ? `<div class="hip-acts">${ans.actions.map((a, i) => a.heading ? `<h4 class="hip-acts-h">${esc(a.heading)}</h4>` : `<button class="btn${i && !a.go ? "" : " go"}" data-hact="${i}">${esc(a.label)}</button>`).join("")}</div>` : ""}</div></div>`;
     if (ans.action) document.getElementById("hip-act").addEventListener("click", ans.action.fn);
     if (ans.fixedQ) out.querySelector(".hip-text").insertAdjacentHTML("afterbegin", `<p class="hip-fixed">🔤 Hippo fixed the spelling: “${esc(ans.fixedQ)}”</p>`);
-    if (ans.games) { out.querySelector(".hip-card").insertAdjacentHTML("beforeend", `<div class="hip-games">${gamesMenuHTML()}</div>`); bindGamesMenu(); }
+    if (ans.games) { out.querySelector(".hip-card").insertAdjacentHTML("beforeend", `<div class="hip-games">${roomEmergHTML("hip-emerg")}${gamesMenuHTML()}</div>`); bindGamesMenu(); bindRoomEmerg("hip-emerg"); }
     // 🗣️ Hippo reads every answer out loud (stories start reading by themselves)
     if (!ans.noRead && !ans.games && ans.topic !== "Songs") {
       const words = [ans.text, ans.why, ans.reveal ? "" : ""].filter(Boolean).join(". ");
@@ -15651,7 +15641,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
