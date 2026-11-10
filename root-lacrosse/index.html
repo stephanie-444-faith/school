@@ -71,8 +71,12 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
 .stat b{display:block;font-family:Bungee,sans-serif;font-weight:400;font-size:26px;letter-spacing:2px}
 .stat small{color:#8fa3c4;font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800}
 .stat.y b{color:#4ff59a;text-shadow:0 0 10px rgba(79,245,154,.7)}.stat.t b{color:#ffc04d;text-shadow:0 0 10px rgba(255,192,77,.7)}.stat.x b{color:#ff6b6b;text-shadow:0 0 10px rgba(255,107,107,.7)}
-.players{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-4px 0 12px;font-weight:800;color:var(--soft)}
-.players select{font:inherit;font-weight:800;background:#0d1d38;color:#fff;border:2px solid var(--line);border-radius:10px;padding:5px 8px;max-width:60%}
+.players{margin:-4px 0 12px;font-weight:800;color:var(--soft)}
+.players .phead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 6px;max-height:122px;overflow-y:auto}
+.pchip{font:inherit;font-weight:800;font-size:15px;color:#fff;background:#0d1d38;border:2px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+.pchip.on{background:var(--gold);color:#231a00;border-color:var(--gold);box-shadow:0 0 12px rgba(255,204,51,.45)}
+.pacts{display:flex;gap:14px;flex-wrap:wrap}
 .players small{color:#8fa3c4;font-weight:600}
 .addform{display:flex;gap:8px;margin:0 0 12px}
 .addform input{flex:1;min-width:0;font:inherit;font-weight:800;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:#0d1d38;color:#fff}
@@ -243,7 +247,7 @@ body[data-sport="football"] .ball-in{width:16px;height:10px;margin:-5px 0 0 -8px
   <section id="home">
     <h1><span class="stickmoji" id="tEmoji">🥍</span> <span id="tName">Root Lacrosse</span></h1>
     <p class="sub">Emmett's 30 Greek &amp; Latin roots. <span id="tVerb">Score a goal</span> to move a root from <span class="badge bx">X</span> → <span class="badge bt">~</span> → <span class="badge by">Y</span>.</p>
-    <div class="players"><label for="playerSel">👤 Player:</label> <select id="playerSel" aria-label="Who is playing"></select> <button class="link" id="addPlayerBtn" type="button">➕ New player</button> <button class="link hidden" id="delPlayer" type="button">🗑 Remove</button> <small id="playerCount"></small></div>
+    <div class="players"><div class="phead"><b>👤 Who are you?</b> <small id="playerCount"></small></div><div class="pchips" id="playerChips" role="group" aria-label="Who is playing"></div><div class="pacts"><button class="link" id="addPlayerBtn" type="button">➕ New player</button> <button class="link hidden" id="delPlayer" type="button">🗑 Remove</button></div></div>
     <form class="addform hidden" id="addForm"><input id="newName" maxlength="30" placeholder="New player's name" aria-label="New player's name" autocomplete="off"><button class="btn" type="submit">Add</button></form>
     <div class="board" aria-label="My root scoreboard">
       <div class="stat y"><b id="sY">0</b><small>Know it</small></div>
@@ -428,8 +432,12 @@ const ballBg = k => k.bg || `radial-gradient(circle at 34% 30%,#ffffff 0 12%,${k
 /* ===== saving (this browser): up to 100 players, each with their own root sheet ===== */
 const KEY = T.key, PKEY = T.pkey, MAXP = 100;
 const fresh = () => ({ pts: DATA.map(d => startPts(d.start)), best: 0, bestStreak: 0, perfect: false, clockBest: 0, ball: "classic", sound: true });
-let P = { cur: "emmett", list: [{ id: "emmett", name: "Emmett" }] };
-try { const v = JSON.parse(localStorage.getItem(PKEY)); if (v && Array.isArray(v.list) && v.list.length) P = v; } catch (e) {}
+// 👤 Emmett, Colin and Alex are always on the team (they can't be removed). Anyone else can be added, up to 100 players.
+const PERM = [{ id: "emmett", name: "Emmett" }, { id: "colin", name: "Colin" }, { id: "alex", name: "Alex" }];
+let P = { cur: "emmett", list: [] }, PERM_IDS = new Set();
+try { const v = JSON.parse(localStorage.getItem(PKEY)); if (v && Array.isArray(v.list)) P = { cur: v.cur, list: v.list.filter(p => p && p.id && p.name) }; } catch (e) {}
+{ const perm = PERM.map(q => P.list.find(p => p.id === q.id) || P.list.find(p => p.name.toLowerCase() === q.name.toLowerCase()) || q);   // someone already added as "Colin" keeps their sheet
+  P.list = [...perm, ...P.list.filter(p => !perm.includes(p))].slice(0, MAXP); PERM_IDS = new Set(perm.map(p => p.id)); }
 if (!P.list.some(p => p.id === P.cur)) P.cur = P.list[0].id;
 const savePlayers = () => { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} };
 const pkey = id => id === "emmett" ? KEY : KEY + ":" + id;
@@ -537,12 +545,12 @@ function renderHome() {
 }
 /* ===== players ===== */
 function renderPlayers() {
-  $("playerSel").innerHTML = P.list.map(p => `<option value="${p.id}"${p.id === P.cur ? " selected" : ""}>${esc(p.name)}</option>`).join("");
-  $("delPlayer").classList.toggle("hidden", P.cur === "emmett");
-  $("playerCount").textContent = `(${P.list.length} of ${MAXP})`;
+  $("playerChips").innerHTML = P.list.map(p => `<button class="pchip${p.id === P.cur ? " on" : ""}" type="button" data-pid="${p.id}" aria-pressed="${p.id === P.cur}">${p.id === P.cur ? "✓ " : ""}${esc(p.name)}</button>`).join("");
+  $("delPlayer").classList.toggle("hidden", PERM_IDS.has(P.cur));
+  $("playerCount").textContent = `(${P.list.length} of ${MAXP} players)`;
 }
 const usePlayer = id => { P.cur = id; savePlayers(); S = loadPlayer(id); renderHome(); };
-$("playerSel").onchange = e => { usePlayer(e.target.value); toast(`👤 Now playing: ${curName()}`); };
+$("playerChips").onclick = e => { const b = e.target.closest("[data-pid]"); if (!b || b.dataset.pid === P.cur) return; usePlayer(b.dataset.pid); toast(`👤 Now playing: ${curName()}`); };
 $("addPlayerBtn").onclick = () => { if (P.list.length >= MAXP) return toast(`This game can hold ${MAXP} players.`); $("addForm").classList.toggle("hidden"); if (!$("addForm").classList.contains("hidden")) $("newName").focus(); };
 $("addForm").onsubmit = e => {
   e.preventDefault(); const n = $("newName").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
@@ -554,7 +562,7 @@ $("addForm").onsubmit = e => {
 $("delPlayer").onclick = () => {
   const b = $("delPlayer");
   if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Tap again to remove ${curName()}`; setTimeout(() => { delete b.dataset.sure; b.textContent = "🗑 Remove"; }, 3000); return; }
-  delete b.dataset.sure; b.textContent = "🗑 Remove";
+  delete b.dataset.sure; b.textContent = "🗑 Remove"; if (PERM_IDS.has(P.cur)) return;
   const gone = P.cur, name = curName(); try { localStorage.removeItem(pkey(gone)); } catch (e) {}
   P.list = P.list.filter(p => p.id !== gone); usePlayer("emmett"); toast(`${name} was removed.`);
 };

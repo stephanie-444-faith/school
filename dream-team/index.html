@@ -20,6 +20,15 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .lights{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 8% 0,rgba(255,250,220,.22),transparent 30%),radial-gradient(circle at 92% 0,rgba(255,250,220,.22),transparent 30%);animation:flick 5s ease-in-out infinite alternate}
 @keyframes flick{to{opacity:.6}}
 .wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:12px 14px 40px}
+.pk{margin:10px 0;font-weight:800;font-size:14px;color:#e8eefc}
+.pk-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;max-height:122px;overflow-y:auto}
+.pk-chip{font:inherit;font-weight:800;font-size:15px;color:#fff;background:rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 14px;cursor:pointer}
+.pk-chip.on{background:#ffcc33;color:#231a00;border-color:#ffcc33;box-shadow:0 0 12px rgba(255,204,51,.45)}
+.pk-chip.add{border-style:dashed}
+.pk-form{display:flex;gap:6px;margin-top:8px}.pk-form[hidden]{display:none}
+.pk-form input{flex:1;min-width:0;font:inherit;padding:9px 11px;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff}
+.pk-form button{font:inherit;font-weight:800;border:0;border-radius:10px;padding:9px 14px;background:#ffcc33;color:#231a00;cursor:pointer}
+.pk-del{font:inherit;font-weight:700;background:none;border:0;color:inherit;opacity:.8;text-decoration:underline;padding:8px 0 0;cursor:pointer}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 h1{font-family:Bungee,sans-serif;font-weight:400;color:var(--gold);font-size:clamp(22px,4.6vw,34px);margin:0;text-shadow:0 3px 0 #6b4f00,0 0 18px rgba(255,204,51,.35)}
 h1 .em{display:inline-block;animation:bob 2.2s ease-in-out infinite}
@@ -143,6 +152,7 @@ body[data-sport="football"] .field{background:repeating-linear-gradient(90deg,#2
     <div><h1><span class="em" id="hEm">⚽</span> <span id="hName">Dream Team</span></h1><p class="who" id="who"></p></div>
     <div class="pills"><span class="pill coins" id="pCoins">🪙 0</span><span class="pill" id="pOvr">⭐ 0</span><span class="pill" id="pLg">🥉</span><button class="pill" id="pSound" type="button">🔊</button></div>
   </header>
+  <div class="pk" id="pkBox" hidden></div>
   <nav class="tabs" role="tablist"><button class="tab" data-tab="play" type="button">🏟️ Play</button><button class="tab" data-tab="team" type="button">👕 My Team</button><button class="tab" data-tab="market" type="button">🛒 Market</button><button class="tab" data-tab="league" type="button">🏆 Leagues</button></nav>
   <main id="view"></main>
   <p class="note">The player names are real athletes. Their ratings and prices here are made up just for this game.</p>
@@ -153,6 +163,41 @@ body[data-sport="football"] .field{background:repeating-linear-gradient(90deg,#2
 /* ===== Dream Team: buy players, win matches, open packs, train your stars, climb the leagues ===== */
 const SPORT0 = /*DT_SPORT*/"soccer"/*END_DT_SPORT*/;
 const SAVE = /*DT_SAVE*/{ key: "dreamTeam", name: "" }/*END_DT_SAVE*/;
+
+/* 👤 On its own page (not inside Study Arcade) this game keeps its own players: Emmett, Colin and Alex are always here, and anyone can be added (up to 100). */
+const PICK = (() => {
+  if (SAVE.name) return null;   // inside Study Arcade the site already picked the player
+  const PERM = [{ id: "emmett", name: "Emmett" }, { id: "colin", name: "Colin" }, { id: "alex", name: "Alex" }];
+  let t = { cur: "emmett", list: [] };
+  try { const v = JSON.parse(localStorage.getItem("dreamTeam_players")); if (v && Array.isArray(v.list)) t = { cur: v.cur, list: v.list.filter(p => p && p.id && p.name) }; } catch (e) {}
+  const perm = PERM.map(q => t.list.find(p => p.id === q.id) || t.list.find(p => p.name.toLowerCase() === q.name.toLowerCase()) || q);
+  t.list = [...perm, ...t.list.filter(p => !perm.includes(p))].slice(0, 100); t.perm = new Set(perm.map(p => p.id));
+  if (!t.list.some(p => p.id === t.cur)) t.cur = "emmett";
+  if (t.cur !== "emmett") SAVE.key += ":" + t.cur;
+  SAVE.name = t.list.find(p => p.id === t.cur).name;
+  t.use = id => { t.cur = id; try { localStorage.setItem("dreamTeam_players", JSON.stringify({ cur: t.cur, list: t.list })); } catch (e) {} location.reload(); };
+  return t;
+})();
+function pickerUI() {
+  const box = document.getElementById("pkBox"); if (!PICK || !box) return;
+  const e = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  box.hidden = false;
+  box.innerHTML = `<b>👤 Who are you?</b><div class="pk-chips">${PICK.list.map(p => `<button type="button" class="pk-chip${p.id === PICK.cur ? " on" : ""}" data-pk="${p.id}" aria-pressed="${p.id === PICK.cur}">${p.id === PICK.cur ? "✓ " : ""}${e(p.name)}</button>`).join("")}${PICK.list.length < 100 ? `<button type="button" class="pk-chip add" id="pkAdd">➕ New player</button>` : ""}</div>` +
+    `<form class="pk-form" id="pkForm" hidden><input id="pkName" maxlength="30" placeholder="New player's name" aria-label="New player's name" autocomplete="off"><button type="submit">Add</button></form>` +
+    (PICK.perm.has(PICK.cur) ? "" : `<button type="button" class="pk-del" id="pkDel">🗑 Remove ${e(SAVE.name)}</button>`);
+  box.querySelectorAll("[data-pk]").forEach(b => b.onclick = () => { if (b.dataset.pk !== PICK.cur) PICK.use(b.dataset.pk); });
+  const add = document.getElementById("pkAdd"), form = document.getElementById("pkForm"), del = document.getElementById("pkDel");
+  if (add) add.onclick = () => { form.hidden = !form.hidden; if (!form.hidden) document.getElementById("pkName").focus(); };
+  form.onsubmit = ev => {
+    ev.preventDefault(); const n = document.getElementById("pkName").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
+    const old = PICK.list.find(p => p.name.toLowerCase() === n.toLowerCase()); if (old) return PICK.use(old.id);
+    const id = "p" + Date.now().toString(36) + Math.floor(Math.random() * 1000); PICK.list.push({ id, name: n }); PICK.use(id);
+  };
+  if (del) del.onclick = () => {
+    if (!del.dataset.sure) { del.dataset.sure = 1; del.textContent = `Tap again to remove ${SAVE.name}`; return; }
+    PICK.list = PICK.list.filter(p => p.id !== PICK.cur); PICK.use("emmett");
+  };
+}
 const LEAGUES = [["🥉", "Rookie League", 56, 63], ["🥈", "Rising Stars", 63, 70], ["🥇", "Pro League", 70, 77], ["💎", "Champions", 77, 84], ["👑", "Legends", 84, 91]];
 const DATA = {
   soccer: {
@@ -485,7 +530,7 @@ $("modal").addEventListener("click", e => { if (e.target.id === "modal" && !M?.l
 /* ---------- start ---------- */
 document.body.dataset.sport = SPORT; document.title = D.name;
 $("hEm").textContent = D.emoji; $("hName").textContent = D.name;
-show("play");
+show("play"); pickerUI();
 if (!S.games) setTimeout(() => toast(`👋 Welcome to ${D.name}! Your starters are ready. Win matches to buy real stars!`), 500);
 </script>
 </body>

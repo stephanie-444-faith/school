@@ -19,6 +19,15 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
 .top h1{font-family:Bungee,sans-serif;font-weight:400;color:var(--gold);font-size:clamp(20px,4vw,30px);margin:0;text-shadow:0 3px 0 #6b4f00}
 .tbtn{background:var(--panel);border:2px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:800;font-size:14px}
+.pk{margin:10px 0;font-weight:800;font-size:14px;color:#e8eefc}
+.pk-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;max-height:122px;overflow-y:auto}
+.pk-chip{font:inherit;font-weight:800;font-size:15px;color:#fff;background:rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 14px;cursor:pointer}
+.pk-chip.on{background:#ffcc33;color:#231a00;border-color:#ffcc33;box-shadow:0 0 12px rgba(255,204,51,.45)}
+.pk-chip.add{border-style:dashed}
+.pk-form{display:flex;gap:6px;margin-top:8px}.pk-form[hidden]{display:none}
+.pk-form input{flex:1;min-width:0;font:inherit;padding:9px 11px;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff}
+.pk-form button{font:inherit;font-weight:800;border:0;border-radius:10px;padding:9px 14px;background:#ffcc33;color:#231a00;cursor:pointer}
+.pk-del{font:inherit;font-weight:700;background:none;border:0;color:inherit;opacity:.8;text-decoration:underline;padding:8px 0 0;cursor:pointer}
 .stage{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.55);background:#000;touch-action:none;user-select:none}
 canvas{width:100%;height:100%;display:block}
 .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:10px;background:rgba(10,6,20,.82);padding:14px;text-align:center;overflow-y:auto}
@@ -56,6 +65,7 @@ canvas{width:100%;height:100%;display:block}
 <body>
 <div class="wrap">
   <div class="top"><h1>🏀 Hippo Hoops</h1><div class="row"><button class="tbtn" id="muteBtn" type="button">🔊 Sound</button><button class="tbtn" id="pauseBtn" type="button">⏸ Pause</button><button class="tbtn hidden" id="backBtn" type="button">↩ Back</button></div></div>
+  <div class="pk" id="pkBox" hidden></div>
   <div class="stage" id="stage">
     <canvas id="cv" width="960" height="540" aria-label="Basketball court"></canvas>
     <div class="overlay" id="menu">
@@ -81,6 +91,41 @@ canvas{width:100%;height:100%;display:block}
 /* ===== Hippo Hoops: an original one-on-one arcade basketball game ===== */
 // The Study Arcade site can set the player's save key and name here; on its own page it uses these.
 const PLAYER = /*HOOPS_PLAYER*/{ key: "hippoHoops_v1", name: "" }/*END_HOOPS_PLAYER*/;
+
+/* 👤 On its own page (not inside Study Arcade) this game keeps its own players: Emmett, Colin and Alex are always here, and anyone can be added (up to 100). */
+const PICK = (() => {
+  if (PLAYER.name) return null;   // inside Study Arcade the site already picked the player
+  const PERM = [{ id: "emmett", name: "Emmett" }, { id: "colin", name: "Colin" }, { id: "alex", name: "Alex" }];
+  let t = { cur: "emmett", list: [] };
+  try { const v = JSON.parse(localStorage.getItem("hippoHoops_players")); if (v && Array.isArray(v.list)) t = { cur: v.cur, list: v.list.filter(p => p && p.id && p.name) }; } catch (e) {}
+  const perm = PERM.map(q => t.list.find(p => p.id === q.id) || t.list.find(p => p.name.toLowerCase() === q.name.toLowerCase()) || q);
+  t.list = [...perm, ...t.list.filter(p => !perm.includes(p))].slice(0, 100); t.perm = new Set(perm.map(p => p.id));
+  if (!t.list.some(p => p.id === t.cur)) t.cur = "emmett";
+  if (t.cur !== "emmett") PLAYER.key += ":" + t.cur;
+  PLAYER.name = t.list.find(p => p.id === t.cur).name;
+  t.use = id => { t.cur = id; try { localStorage.setItem("hippoHoops_players", JSON.stringify({ cur: t.cur, list: t.list })); } catch (e) {} location.reload(); };
+  return t;
+})();
+function pickerUI() {
+  const box = document.getElementById("pkBox"); if (!PICK || !box) return;
+  const e = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  box.hidden = false;
+  box.innerHTML = `<b>👤 Who are you?</b><div class="pk-chips">${PICK.list.map(p => `<button type="button" class="pk-chip${p.id === PICK.cur ? " on" : ""}" data-pk="${p.id}" aria-pressed="${p.id === PICK.cur}">${p.id === PICK.cur ? "✓ " : ""}${e(p.name)}</button>`).join("")}${PICK.list.length < 100 ? `<button type="button" class="pk-chip add" id="pkAdd">➕ New player</button>` : ""}</div>` +
+    `<form class="pk-form" id="pkForm" hidden><input id="pkName" maxlength="30" placeholder="New player's name" aria-label="New player's name" autocomplete="off"><button type="submit">Add</button></form>` +
+    (PICK.perm.has(PICK.cur) ? "" : `<button type="button" class="pk-del" id="pkDel">🗑 Remove ${e(PLAYER.name)}</button>`);
+  box.querySelectorAll("[data-pk]").forEach(b => b.onclick = () => { if (b.dataset.pk !== PICK.cur) PICK.use(b.dataset.pk); });
+  const add = document.getElementById("pkAdd"), form = document.getElementById("pkForm"), del = document.getElementById("pkDel");
+  if (add) add.onclick = () => { form.hidden = !form.hidden; if (!form.hidden) document.getElementById("pkName").focus(); };
+  form.onsubmit = ev => {
+    ev.preventDefault(); const n = document.getElementById("pkName").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
+    const old = PICK.list.find(p => p.name.toLowerCase() === n.toLowerCase()); if (old) return PICK.use(old.id);
+    const id = "p" + Date.now().toString(36) + Math.floor(Math.random() * 1000); PICK.list.push({ id, name: n }); PICK.use(id);
+  };
+  if (del) del.onclick = () => {
+    if (!del.dataset.sure) { del.dataset.sure = 1; del.textContent = `Tap again to remove ${PLAYER.name}`; return; }
+    PICK.list = PICK.list.filter(p => p.id !== PICK.cur); PICK.use("emmett");
+  };
+}
 const W = 960, H = 540, FLOOR = 470, GP = .62, GB = .42, RIM = 22, BR = 11;
 const HOOPS = [{ x: 862, y: 250, board: 896, dir: 1 }, { x: 98, y: 250, board: 64, dir: -1 }];   // [0] you shoot here, [1] the computer shoots here
 const CHARS = [
@@ -156,7 +201,7 @@ function newGame() {
   score = [0, 0]; frame = 0; clock = 120 * 60; overtime = false; popups = []; parts = []; excite = 0;
   stats = [{ made: 0, tries: 0, threes: 0, dunks: 0, steals: 0, blocks: 0 }, { made: 0, tries: 0, threes: 0, dunks: 0, steals: 0, blocks: 0 }];
   ball = { x: 0, y: 0, vx: 0, vy: 0, state: "held", owner: P[0], shot: null, noPick: 0, scored: 0, spin: 0 };
-  state = "play"; ["menu", "pausebox", "endbox"].forEach(id => $(id).classList.add("hidden"));
+  state = "play"; ["menu", "pausebox", "endbox"].forEach(id => $(id).classList.add("hidden")); $("pkBox").hidden = true;
   pop(W / 2, 200, `${myChar.e} vs ${opp.e}`, "#ffcc33", 40); S.whistle();
   try { window.focus(); cv.focus(); } catch (e) {}
 }
@@ -506,6 +551,7 @@ document.addEventListener("visibilitychange", () => { if (document.hidden && sta
 /* ---------- the menu ---------- */
 const stars = n => "★".repeat(n) + "☆".repeat(5 - n);
 function buildMenu() {
+  pickerUI();
   $("hello").textContent = PLAYER.name ? `${PLAYER.name}, pick your baller!` : "One-on-one arcade basketball. Pick your baller!";
   $("pick").innerHTML = CHARS.map(c => `<button class="ch${c.id === myChar.id ? " on" : ""}" data-c="${c.id}" type="button"><span class="e">${c.e}</span><b>${c.name}</b><small>Speed ${stars(c.spd)}</small><small>Jump ${stars(c.jmp)}</small><small>Shot ${stars(c.sht)}</small><small>Dunk ${stars(c.dnk)}</small></button>`).join("");
   $("pick").querySelectorAll("[data-c]").forEach(b => b.onclick = () => { myChar = CHARS.find(c => c.id === b.dataset.c); REC.char = myChar.id; saveRec(); buildMenu(); tone(660, .08, "triangle", .1); });
