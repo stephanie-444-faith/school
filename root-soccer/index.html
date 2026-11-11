@@ -438,6 +438,9 @@ let P = { cur: "emmett", list: [] }, PERM_IDS = new Set();
 try { const v = JSON.parse(localStorage.getItem(PKEY)); if (v && Array.isArray(v.list)) P = { cur: v.cur, list: v.list.filter(p => p && p.id && p.name) }; } catch (e) {}
 { const perm = PERM.map(q => P.list.find(p => p.id === q.id) || P.list.find(p => p.name.toLowerCase() === q.name.toLowerCase()) || q);   // someone already added as "Colin" keeps their sheet
   P.list = [...perm, ...P.list.filter(p => !perm.includes(p))].slice(0, MAXP); PERM_IDS = new Set(perm.map(p => p.id)); }
+// 👤 inside Study Arcade the site already asked who's playing: use that person and hide the picker
+const SITE_PLAYER = /*RS_PLAYER*/null/*END_RS_PLAYER*/;
+if (SITE_PLAYER && SITE_PLAYER.id) { if (!P.list.some(p => p.id === SITE_PLAYER.id)) P.list.push({ id: String(SITE_PLAYER.id), name: String(SITE_PLAYER.name || "Player").slice(0, 30) }); P.cur = SITE_PLAYER.id; }
 if (!P.list.some(p => p.id === P.cur)) P.cur = P.list[0].id;
 const savePlayers = () => { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} };
 const pkey = id => id === "emmett" ? KEY : KEY + ":" + id;
@@ -545,6 +548,7 @@ function renderHome() {
 }
 /* ===== players ===== */
 function renderPlayers() {
+  if (SITE_PLAYER) { document.querySelector(".players").style.display = "none"; $("addForm").classList.add("hidden"); return; }
   $("playerChips").innerHTML = P.list.map(p => `<button class="pchip${p.id === P.cur ? " on" : ""}" type="button" data-pid="${p.id}" aria-pressed="${p.id === P.cur}">${p.id === P.cur ? "✓ " : ""}${esc(p.name)}</button>`).join("");
   $("delPlayer").classList.toggle("hidden", PERM_IDS.has(P.cur));
   $("playerCount").textContent = `(${P.list.length} of ${MAXP} players)`;

@@ -650,6 +650,24 @@
   .gamesmenu { position: absolute; top: 0; right: 0; z-index: 10; }
   .gamesmenu summary { list-style: none; cursor: pointer; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--ink-soft); opacity: .45; font-size: 1.3rem; line-height: 1; }
   .gamesmenu summary::-webkit-details-marker { display: none; }
+  .who-screen { text-align: center; }
+  .who-switch { margin-top: 8px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; font-weight: 700; font-size: .9rem; border-radius: 99px; padding: 6px 14px; cursor: pointer; }
+  .who-switch:hover, .who-switch:focus-visible { border-color: var(--gold); outline: none; }
+  .who-h { font-family: var(--display); font-size: 2.2rem; margin: 6px 0 4px; }
+  .who-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 16px 0; }
+  .who-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 10px; border-radius: 18px; border: 3px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; transition: transform .1s, border-color .1s; }
+  .who-btn:hover, .who-btn:focus-visible { border-color: var(--gold); transform: translateY(-2px); outline: none; }
+  .who-btn b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; overflow-wrap: anywhere; }
+  .who-ava { font-size: 2.4rem; line-height: 1; }
+  .who-add { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .who-add input { flex: 1; min-width: 200px; max-width: 360px; font: inherit; padding: 12px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
+  .bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
+  .bg-sw { display: flex; flex-direction: column; gap: 6px; padding: 6px 6px 10px; border-radius: 14px; border: 3px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; text-align: center; }
+  .bg-sw:hover { border-color: var(--gold); }
+  .bg-sw.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,201,60,.35); }
+  .bg-sw b { font-size: .9rem; line-height: 1.2; }
+  .bg-pv { position: relative; display: block; height: 78px; border-radius: 10px; overflow: hidden; background-size: cover; }
+  .bg-pv i { position: absolute; inset: 0; display: grid; place-items: center; font-style: normal; font-size: 1.4rem; letter-spacing: 4px; }
   .infopage h2 { margin: 6px 0 4px; }
   .if-jump { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
   .if-jump .chip { padding: 7px 12px; }
@@ -2353,14 +2371,14 @@ const MEM_T = {};
    Each player's progress in that game is saved on its own. MR.E keeps the progress that was already there. */
 const PROF_MAX = 100;
 let PROF_GAME = null, PROF_RESTART = null;   // the game or app that's open now, and how to start it over for a new player
-const PROF_GLOBAL = /^(prof_|cg_|ty_|subject$|mlevel$|rpart$|goal$)|sound/;   // settings that every player shares
+const PROF_GLOBAL = /^(prof_|cg_|ty_|bg_|subject$|mlevel$|rpart$|goal$)|sound/;   // settings that every player shares
 const profBuilt = () => TY_ACCOUNTS.filter(a => !a.guest && !a.custom).map(a => ({ id: a.id, name: a.name }));
 const profExtra = g => { const v = store.get("prof_" + g, []); return Array.isArray(v) ? v.filter(p => p && p.id && p.name) : []; };
 const profSame = (a, b) => a.name.toLowerCase() === b.name.toLowerCase();
 // someone added to a game before they became permanent (like Colin or Alex) keeps their progress and takes that permanent spot
-const profList = g => { const ex = profExtra(g), b = profBuilt().map(p => ex.find(x => profSame(x, p)) || p); return [...b, ...ex.filter(x => !b.includes(x))].slice(0, PROF_MAX); };
-const profCur = (g = PROF_GAME) => { if (!g) return "emmett"; const id = store.get("prof_cur_" + g, "emmett"); return profList(g).some(p => p.id === id) ? id : "emmett"; };
-const profName = (g = PROF_GAME, id = profCur(g)) => (profList(g).find(p => p.id === id) || { name: "MR.E" }).name;
+const profList = g => { const ex = [...profExtra("site"), ...profExtra(g)].filter((p, i, a) => a.findIndex(x => x.id === p.id) === i), b = profBuilt().map(p => ex.find(x => profSame(x, p)) || p); return [...b, ...ex.filter(x => !b.includes(x))].slice(0, PROF_MAX); };
+const profCur = (g = PROF_GAME) => { if (SITE_WHO) return SITE_WHO; if (!g) return "emmett"; const id = store.get("prof_cur_" + g, "emmett"); return profList(g).some(p => p.id === id) ? id : "emmett"; };
+const profName = (g = PROF_GAME, id = profCur(g)) => id === SITE_WHO && SITE_NAME ? SITE_NAME : (profList(g).find(p => p.id === id) || { name: "MR.E" }).name;
 const profKey = k => (!PROF_GAME || k.includes("@") || PROF_GLOBAL.test(k) || profCur() === "emmett") ? k : k + "@" + profCur();
 const store = {
   get(k, d) {
@@ -2436,6 +2454,7 @@ async function cloudConnect() {
     CLOUD = db; saveState = "cloud";
     await cloudFlush();
     if (changed && document.getElementById("gamesmenu")) showHome();   // show the synced progress on the main page
+    else if (changed && document.getElementById("who-screen")) startWho();   // people added on another device
   } catch (e) {
     saveState = "local"; showSaveState();
     setTimeout(cloudConnect, 8000);   // try again in a moment
@@ -2545,6 +2564,7 @@ if (!GOALS[choice.goal]) choice.goal = "r10k";
 
 const moreBest = (id, v) => v == null ? "" : ["connect4", "pong"].includes(id) ? `Wins: ${v}` : id === "memory" ? `Best ${v} moves` : id === "mines" ? `Best ${v}s` : id === "rodeo" ? `Best ${fmt(v)} m` : `Best ${v}`;
 function showHome() {
+  if (!SITE_WHO) return startWho();   // 👋 first, who are you?
   PROF_GAME = null; PROF_RESTART = null;
   keyHandler = null;
   stopSlope();
@@ -2560,7 +2580,8 @@ function showHome() {
       <div class="hero">
         <span class="label">Practice, then play</span>
         <h1>Study <span>Arcade</span></h1>
-        <p class="soft">Tap a subject to start studying.</p>
+        <p class="soft">👋 Hi, ${esc(SITE_NAME)}! Tap a subject to start studying.</p>
+        <button class="who-switch" id="who-switch" type="button" title="Tell Study Arcade who you are">🔄 Not ${esc(SITE_NAME)}? Switch person</button>
       </div>
       <details class="gamesmenu" id="gamesmenu">
         <summary aria-label="Info: where to find everything">⋯</summary>
@@ -2605,6 +2626,7 @@ function showHome() {
     startStudy();
   }));
   bindDots();
+  document.getElementById("who-switch").addEventListener("click", () => { SITE_WHO = null; SITE_NAME = ""; BG_PICK = null; startWho(); window.scrollTo({ top: 0 }); });   // 🔄 asks "Who are you?" again
   bindHomeRow();
   if (ss) {
     document.getElementById("tl").addEventListener("click", startTimeline);
@@ -2615,6 +2637,101 @@ document.addEventListener("click", e => {
   const m = document.getElementById("gamesmenu");
   if (m?.open && !m.contains(e.target)) m.open = false;
 });
+/* ---------- 👋 Who are you? Study Arcade asks every time it opens. After that every game and app uses that person, and nothing else asks. ---------- */
+let SITE_WHO = null, SITE_NAME = "";
+const WHO_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵", "🦁", "🐰", "🐶", "🐱", "🐧", "🦉", "🐢", "🦖", "🐬", "🦋", "🐝", "🐻"];
+// everyone: the built-in crew, people added on this screen, and anyone who was added to a game before
+function sitePeople() {
+  const out = [...profBuilt()], add = p => { if (p && p.id && p.name && !out.some(x => x.id === p.id || profSame(x, p))) out.push({ id: p.id, name: p.name }); };
+  profExtra("site").forEach(add);
+  const keys = new Set(Object.keys(MEM)); try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith("ctc-prof_")) keys.add(k.slice(4)); } } catch (e) {}
+  [...keys].filter(k => /^prof_(?!cur_|site$)[^@]+$/.test(k)).forEach(k => profExtra(k.slice(5)).forEach(add));
+  return out.slice(0, PROF_MAX);
+}
+function pickWho(id) {
+  const p = sitePeople().find(x => x.id === id); if (!p) return;
+  if (!profBuilt().some(x => x.id === id) && !profExtra("site").some(x => x.id === id)) store.set("prof_site", [...profExtra("site"), p].slice(0, PROF_MAX));   // everyone picked here is on every list
+  SITE_WHO = p.id; SITE_NAME = p.name; BG_PICK = store.get("bg_" + p.id, null); tySyncCustom();
+  showHome(); window.scrollTo({ top: 0 });
+}
+function startWho() {
+  PROF_GAME = null; PROF_RESTART = null; keyHandler = null;
+  const L = sitePeople();
+  $app.innerHTML = `<div class="panel who-screen" id="who-screen">
+    <span class="label">👋 Who are you?</span>
+    <h1 class="who-h">👋 Who are you?</h1>
+    <p class="soft">Tap your name. Study Arcade saves everyone's progress separately.</p>
+    <div class="who-grid">${L.map((p, i) => `<button class="who-btn" type="button" data-site-who="${esc(p.id)}"><span class="who-ava" aria-hidden="true">${p.id === "emmett" ? "👑" : WHO_EMOJI[i % WHO_EMOJI.length]}</span><b>${esc(p.name)}</b></button>`).join("")}</div>
+    ${L.length < PROF_MAX ? `<form class="who-add" id="who-add"><input id="who-name" maxlength="30" placeholder="Someone new? Type your name" aria-label="New person's name" autocomplete="off"><button class="btn go" type="submit">➕ Add me</button></form>` : ""}
+  </div>`;
+  $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => pickWho(b.dataset.siteWho)));
+  document.getElementById("who-add")?.addEventListener("submit", e => {
+    e.preventDefault(); const n = document.getElementById("who-name").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
+    const old = sitePeople().find(p => p.name.toLowerCase() === n.toLowerCase()); if (old) return pickWho(old.id);
+    const id = "p" + Date.now().toString(36) + rnd(100, 999); store.set("prof_site", [...profExtra("site"), { id, name: n }].slice(0, PROF_MAX)); pickWho(id); toast(`👋 Welcome, ${n}!`);
+  });
+}
+/* ---------- 🎨 Backgrounds: pick one, and it shows on every page except the home screen and the pages where you pick a game (saved for each person) ---------- */
+let BG_PICK = null;   // null: every page uses its own background · "default": neon space · or one background's id
+const BG_KEEP = /^(🎮 Game Room|🏹 Pick a roots game|📱 App-App)/;
+const BG_MADE = [["default", "🌌 Neon Space"], ["meadow", "🌼 Sunny Meadow"], ["galaxy", "🌠 Galaxy"], ["arcade", "💜 Neon Lights"], ["field", "🏟️ Sports Field"], ["rainbow", "🌈 Rainbow"], ["river", "🏞️ River"], ["notebook", "📓 Notebook"], ["castle", "🏰 Castle"], ["cards", "🟩 Green Felt"], ["ocean", "🌊 Ocean"], ["classroom", "🏫 Classroom"], ["savanna", "🦁 Savanna"], ["money", "💵 Money"], ["cave", "🕯️ Cave"], ["city", "🌃 Neon City"], ["art", "🎨 Art Studio"], ["matrix", "💚 Matrix"], ["sky", "☁️ Blue Sky"], ["candy", "🍬 Candy Land"], ["retro", "🟪 Retro Pixels"], ["garden", "🌷 Garden"], ["disco", "🪩 Disco"], ["library", "📚 Library"], ["ancient", "🏺 Ancient World"], ["chalk", "🧮 Chalkboard"], ["apps", "📱 App World"], ["lab", "🔬 Science Lab"], ["code", "💻 Code"], ["ai", "🤖 AI Lab"], ["graph", "📈 Graph Paper"], ["lounge", "🛋️ Lounge"], ["health", "🍎 Health"]];
+const BG_MORE = [
+  ["pizza", "🍕 Pizza Party", "#ffcf70", "#ff7b54", ["🍕", "🧀", "🍅"]], ["dinos", "🦖 Dino Land", "#5fa052", "#2d5a27", ["🦖", "🦕", "🌿"]], ["deepsea", "🐙 Deep Sea", "#035388", "#011f3a", ["🐙", "🐠", "🫧"]],
+  ["arctic", "🐧 Arctic", "#dff6ff", "#9fd3e8", ["🐧", "❄️", "🐻‍❄️"]], ["desert", "🌵 Desert", "#ffd28a", "#e08e45", ["🌵", "🐪", "☀️"]], ["jungle", "🐒 Jungle", "#2f8f5b", "#12432a", ["🐒", "🌴", "🦜"]],
+  ["volcano", "🌋 Volcano", "#ff5e3a", "#3b0a0a", ["🌋", "🔥", "🪨"]], ["rocket", "🚀 Rocket Launch", "#3a0ca3", "#050520", ["🚀", "🌙", "⭐"]], ["robots", "🤖 Robot Factory", "#8d99ae", "#2b2d42", ["🤖", "⚙️", "🔩"]],
+  ["icecream", "🍦 Ice Cream", "#ffd6e8", "#bde0fe", ["🍦", "🍨", "🍒"]], ["autumn", "🍁 Fall Leaves", "#f4a259", "#8c2f39", ["🍁", "🍂", "🌰"]], ["snowday", "⛄ Snow Day", "#e3f6fb", "#9ccfe4", ["⛄", "❄️", "🧣"]],
+  ["spring", "🌸 Spring Blossoms", "#e9f7e4", "#a8dba8", ["🌸", "🐝", "🌱"]], ["beach", "🏖️ Beach Day", "#7fd8f0", "#ffe7a3", ["🏖️", "🐚", "🌊"]], ["sunset", "🌅 Sunset", "#ff9e4f", "#6a2c91", ["🌅", "🕊️", "☁️"]],
+  ["starry", "✨ Starry Night", "#1c2a5a", "#070b1f", ["🌙", "✨", "⭐"]], ["farm", "🐄 Farm", "#bfe3a0", "#6f9d4a", ["🐄", "🐔", "🚜"]], ["pirates", "🏴‍☠️ Pirate Seas", "#1d6fa3", "#062a43", ["🏴‍☠️", "⚓", "🦜"]],
+  ["dragons", "🐉 Dragon Lair", "#5a189a", "#1b0436", ["🐉", "🔥", "💎"]], ["unicorns", "🦄 Unicorns", "#ffc8dd", "#cdb4db", ["🦄", "🌈", "✨"]], ["court", "🏀 Basketball Court", "#d9a066", "#8a5a2b", ["🏀", "🏆", "👟"]],
+  ["music", "🎸 Music Studio", "#5a189a", "#240046", ["🎵", "🎸", "🥁"]], ["planets", "🪐 Planets", "#3c096c", "#0b0018", ["🪐", "☄️", "🌍"]], ["bugs", "🐞 Bug World", "#b5c99a", "#606c38", ["🐞", "🦋", "🐛"]],
+  ["forest", "🌲 Forest", "#74c69d", "#1b4332", ["🌲", "🦊", "🍄"]], ["mountains", "🏔️ Mountains", "#a8dadc", "#457b9d", ["🏔️", "🦅", "🐐"]], ["trains", "🚂 Train Ride", "#c9ced6", "#5c6672", ["🚂", "🛤️", "💨"]],
+  ["racecars", "🏎️ Race Cars", "#e63946", "#1b1b1f", ["🏎️", "🏁", "💨"]], ["skyhigh", "✈️ Sky High", "#ffffff", "#9adcf2", ["✈️", "☁️", "🪁"]], ["balloons", "🎈 Balloons", "#fff1b8", "#ffc2d4", ["🎈", "🎉", "🎁"]],
+  ["birthday", "🎂 Birthday Bash", "#ff70a6", "#70d6ff", ["🎂", "🥳", "🎊"]], ["halloween", "🎃 Halloween", "#ff8c00", "#1a0a2e", ["🎃", "👻", "🦇"]], ["holidays", "🎄 Holidays", "#1f7a4d", "#a4161a", ["🎄", "🎁", "⭐"]],
+  ["hearts", "💖 Hearts", "#ffc2d1", "#ff8fab", ["💖", "💕", "💗"]], ["trophy", "🏆 Trophy Room", "#ffd60a", "#6b4f00", ["🏆", "🥇", "⭐"]], ["cats", "🐱 Cats", "#ffe5d9", "#f4acb7", ["🐱", "🐾", "🧶"]],
+  ["dogs", "🐶 Dogs", "#edf2c9", "#a3b18a", ["🐶", "🦴", "🐾"]], ["fruit", "🍓 Fruit Salad", "#fff3b0", "#ff9b85", ["🍓", "🍉", "🍌"]], ["tacos", "🌮 Taco Tuesday", "#ffd166", "#f77f00", ["🌮", "🌯", "🥑"]],
+  ["sushi", "🍣 Sushi Bar", "#fdf0e0", "#e76f51", ["🍣", "🍙", "🥢"]], ["storm", "⛈️ Thunderstorm", "#4a5568", "#111827", ["⛈️", "⚡", "🌧️"]], ["clouds", "🌤️ Cloud Nine", "#f0fbff", "#c3e3f0", ["☁️", "🌤️", "🕊️"]],
+  ["gems", "💎 Gem Mine", "#4361ee", "#1a0050", ["💎", "🔮", "💠"]], ["treasure", "👑 Treasure", "#ffe066", "#8a5a00", ["🪙", "💰", "👑"]], ["skate", "🛹 Skate Park", "#ced4da", "#495057", ["🛹", "🛼", "🧢"]],
+  ["camping", "⛺ Camping", "#606c38", "#1f2a12", ["⛺", "🔥", "🌲"]], ["aliens", "👽 Alien Planet", "#38b000", "#062b06", ["👽", "🛸", "🌌"]], ["bubbles", "🫧 Bubbles", "#caf0f8", "#48cae4", ["🫧", "🐳", "💧"]],
+  ["flowers", "🌻 Flower Field", "#fff0f3", "#ffb3c6", ["🌺", "🌻", "🌷"]], ["butterflies", "🦋 Butterflies", "#e0aaff", "#9d4edd", ["🦋", "🌸", "✨"]]
+];
+const BG_ALL = [...BG_MADE, ...BG_MORE.map(b => [b[0], b[1]])];
+(function bgStyles() {   // the 50 newer backgrounds are drawn the same way as the others: a sky gradient plus a drifting layer of emoji
+  const pos = [[14, 40, 26], [120, 70, 20], [220, 30, 30], [60, 150, 22], [180, 170, 26], [270, 120, 18], [20, 250, 20], [130, 260, 28], [240, 240, 22]];
+  const st = document.createElement("style"); st.id = "bg-more";
+  st.textContent = BG_MORE.map(([id, , c1, c2, em]) => { const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='320' height='290'>${pos.map(([x, y, s], i) => `<text x='${x}' y='${y}' font-size='${s}' opacity='.24'>${em[i % em.length]}</text>`).join("")}</svg>`;
+    return `body[data-scene="${id}"] { background: radial-gradient(circle at 18% 12%, rgba(255,255,255,.22), transparent 38%), linear-gradient(${c1}, ${c2}); background-attachment: fixed; }
+  body[data-scene="${id}"]::before { background-image: url("data:image/svg+xml,${encodeURIComponent(svg)}"); background-size: 320px 290px; opacity: 1; animation-duration: 140s; }
+  body[data-scene="${id}"]::after { display: none; }`; }).join("\n");
+  document.head.appendChild(st);
+})();
+function startBackgrounds() {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
+  const cur = BG_PICK || "";
+  $app.innerHTML = `<div class="panel bgpage">
+    <div class="topline"><span class="label">🎨 Choose a background</span><button class="iconbtn" id="bg-back" type="button">Back to info</button></div>
+    <h2>🎨 Choose a background</h2>
+    <p class="soft">Tap one to try it. It shows on every page except the home screen and a few picker pages, and it's saved just for <b>${esc(SITE_NAME || "you")}</b>.</p>
+    <div class="bg-grid">${[["", "✨ Each page picks its own"], ...BG_ALL].map(([id, name]) => `<button class="bg-sw${id === cur ? " on" : ""}" type="button" data-bg="${id}" aria-pressed="${id === cur}"><span class="bg-pv" data-pv="${id}"><i></i></span><b>${id === cur ? "✓ " : ""}${name}</b></button>`).join("")}</div>
+  </div>`;
+  // little previews: borrow each background's real colors and emoji
+  const keep = document.body.dataset.scene;
+  $app.querySelectorAll("[data-pv]").forEach(el => {
+    const id = el.dataset.pv;
+    if (!id) { el.style.backgroundImage = "conic-gradient(from 200deg, #79c2f2, #ffcf70, #ff70a6, #9d4edd, #38b000, #79c2f2)"; el.firstChild.textContent = "🌼🌌🍕"; return; }
+    if (id === "default") delete document.body.dataset.scene; else document.body.dataset.scene = id;
+    const cs = getComputedStyle(document.body), be = getComputedStyle(document.body, "::before");
+    el.style.backgroundColor = cs.backgroundColor; el.style.backgroundImage = cs.backgroundImage;
+    if (be.backgroundImage && be.backgroundImage !== "none") { el.firstChild.style.backgroundImage = be.backgroundImage; el.firstChild.style.backgroundSize = "150px 136px"; }
+  });
+  if (keep) document.body.dataset.scene = keep; else delete document.body.dataset.scene;
+  $app.querySelectorAll("[data-bg]").forEach(b => b.addEventListener("click", () => {
+    BG_PICK = b.dataset.bg || null; if (SITE_WHO) store.set("bg_" + SITE_WHO, BG_PICK);
+    $app.querySelectorAll("[data-bg]").forEach(x => { const on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on); const t = x.querySelector("b"); t.textContent = (on ? "✓ " : "") + t.textContent.replace(/^✓ /, ""); });
+    setScene(); toast(`🎨 ${b.querySelector("b").textContent.replace(/^✓ /, "")}`);
+  }));
+  document.getElementById("bg-back").addEventListener("click", () => startInfo());
+  window.scrollTo({ top: 0 });
+}
 // ⋯ One tap opens the info page (where to find everything except the games, plus the Terms of Service).
 //   Two quick taps open the 🎮 Game Room page.
 function bindDots() {
@@ -2643,6 +2760,7 @@ function startInfo(jump) {
     <div class="topline"><span class="label">ℹ️ Where to find everything</span><button class="iconbtn" id="if-home" type="button">Back to menu</button></div>
     <h2>ℹ️ Where to find everything</h2>
     <p class="soft">Everything in Study Arcade, and where it lives. Tap <b>Go</b> to jump right there.</p>
+    <div class="if-one">${btn(startBackgrounds, "🎨 Choose a background")}</div>
     <nav class="if-jump" aria-label="Sections">${[["study", "📚 Studying"], ["math", "🧮 Math"], ["apps", "📱 Apps"], ["hippo", "🦛 Ask Hippo"], ["buttons", "🔘 Buttons"], ["saving", "💾 Saving"], ["terms", "📜 Terms of Service"]].map(([id, t]) => `<button class="chip" type="button" data-jump="${id}">${t}</button>`).join("")}</nav>
     ${sec("study", "📚 Studying", "On the home screen, under <b>Tap a subject to start studying</b>.",
       Object.entries(SUBJECTS).map(([k, v]) => row(esc(v.name), esc(v.desc), "Home screen → subjects", btn(subj(k), "Go"))).join("") +
@@ -2667,7 +2785,7 @@ function startInfo(jump) {
       `<div class="if-one">${btn(() => startHippo(), "🦛 Ask Hippo")}</div>`)}
     ${sec("buttons", "🔘 Buttons you'll see", "",
       row("✕ Exit", "Goes back to the home screen.", "Top left, inside apps", "") +
-      row("👤 Who are you?", "Pick who you are, or add someone new (up to 100). MR.E, Colin, Alex and the whole crew are always there. Everyone's progress is saved separately.", "Top right, inside apps", "") +
+      row("👋 Who are you?", "Study Arcade asks who you are each time it opens (MR.E, Colin, Alex, the whole crew, or someone new), and saves everyone's progress separately.", "When Study Arcade opens", "") +
       row("Sound", "Turns sounds on or off.", "Bottom of the page", "") +
       row("⋯", "Opens this page.", "Top right of the home screen", ""))}
     ${sec("saving", "💾 Saving", "",
@@ -2677,7 +2795,7 @@ function startInfo(jump) {
       <h3>📜 Terms of Service</h3>
       <p class="soft">Last updated November 10, 2026. Please read these with a grown-up.</p>
       <ol>
-        <li><b>What Study Arcade is.</b> Study Arcade is a free, homemade study site made for Emmett, his family and friends, for practicing schoolwork. It is not made by a school, a school district or a company.</li>
+        <li><b>What Study Arcade is.</b> Study Arcade is a free, homemade study site made for the community by Emmett, Claude and Stephanie, for practicing schoolwork. It is not made by a school, a school district or a company.</li>
         <li><b>Who can use it.</b> Anyone this page has been shared with. Kids should use it with a parent's or guardian's OK. Using Study Arcade means you agree to these terms.</li>
         <li><b>Be kind and stay safe.</b> Use nice names for everyone you add. Never type private information, like a home address, phone number, password or school login, into Study Arcade: not in names, stories, the Memorizer, AI Studio or Ask Hippo.</li>
         <li><b>Your saves.</b> Progress is saved in your browser and in this page's own online storage. People this page is shared with use the same saves, so they can see names and progress. There are no ads, and nothing is sold or given to anyone else.</li>
@@ -5264,7 +5382,7 @@ function startRodeo() {
     if (!r.emmett && Object.keys(store.get("rodeo_zoo", {})).length) { r.emmett = { zoo: store.get("rodeo_zoo", {}), best: store.get("best", {}).rodeo || 0 }; store.set("rodeo_riders", r); } // older single zoo belongs to MR.E
     return r;
   };
-  let RIDER = store.get("rodeo_rider", "emmett");
+  tySyncCustom(); let RIDER = SITE_WHO || store.get("rodeo_rider", "emmett");
   if (!TY_ACCOUNTS.some(a => a.id === RIDER)) RIDER = "emmett";
   const riderName = () => TY_ACCOUNTS.find(a => a.id === RIDER).name;
   const me1 = () => riders()[RIDER] || { zoo: {}, best: 0 };
@@ -5272,7 +5390,7 @@ function startRodeo() {
   // the zoo animal this rider starts on (a Buffalo until they pick one they've tamed)
   const starter = () => { const n = me1().starter; return (n && zoo()[n] && RODEO_ANIMALS.find(a => a.name === n)) || RODEO_ANIMALS[0]; };
   const saveRider = d => { const r = riders(); r[RIDER] = { ...me1(), ...d }; store.set("rodeo_riders", r); };
-  const riderPick = () => `<label class="rodeo-rider">🤠 Rider: <select id="rodeo-rider">${TY_ACCOUNTS.map(a => `<option value="${a.id}"${a.id === RIDER ? " selected" : ""}>${esc(a.name)}</option>`).join("")}</select></label>`;
+  const riderPick = () => SITE_WHO ? "" : `<label class="rodeo-rider">🤠 Rider: <select id="rodeo-rider">${TY_ACCOUNTS.map(a => `<option value="${a.id}"${a.id === RIDER ? " selected" : ""}>${esc(a.name)}</option>`).join("")}</select></label>`;
   const unlocked = id => !!(riders()[id || RIDER] || {}).unlocked;
   const shownTotal = () => RODEO_ANIMALS.length - (unlocked() ? 0 : 10);
   let WHERE = store.get("rodeo_where", "");
@@ -5881,13 +5999,13 @@ function startPong() {
 // Type the word on the next platform to hop to it before the platform you're on crumbles.
 // Each account keeps its own carrots, characters, and best scores (saved on this device).
 const TY_ACCOUNTS = [
-  { id: "emmett", name: "MR.E" }, { id: "colin", name: "Colin" }, { id: "alex", name: "Alex" }, { id: "dakota", name: "Dakota" }, { id: "stephenie", name: "Stephenie" },
+  { id: "emmett", name: "MR.E" }, { id: "colin", name: "Colin" }, { id: "alex", name: "Alex" }, { id: "dakota", name: "Dakota" }, { id: "stephenie", name: "Stephanie" },
   { id: "madison", name: "Madison" }, { id: "seirra", name: "Seirra" }, { id: "shawn", name: "Shawn" },
   { id: "franklin", name: "Franklin the Wise" }, { id: "peanut", name: "Peanut the Small and Cute" }, { id: "ewalk", name: "E-walk the Magnificent" }, { id: "abem", name: "Abem" },
   { id: "goodtyper", name: "Good Typer", guest: true }, { id: "funnytyper", name: "Funny Typer", guest: true }
 ];
 // ➕ typers added in Bunny Hop (up to 100 typers in all)
-function tySyncCustom() { for (let i = TY_ACCOUNTS.length - 1; i >= 0; i--) if (TY_ACCOUNTS[i].custom) TY_ACCOUNTS.splice(i, 1); profExtra("bunny").forEach(p => TY_ACCOUNTS.push({ id: p.id, name: p.name, custom: true })); }
+function tySyncCustom() { for (let i = TY_ACCOUNTS.length - 1; i >= 0; i--) if (TY_ACCOUNTS[i].custom) TY_ACCOUNTS.splice(i, 1); [...profExtra("bunny"), ...profExtra("site")].forEach(p => { if (!TY_ACCOUNTS.some(a => a.id === p.id || a.name.toLowerCase() === p.name.toLowerCase())) TY_ACCOUNTS.push({ id: p.id, name: p.name, custom: true }); }); }
 const TY_CHARS = [
   { id: "bunny", emoji: "🐰", name: "Bunny", cost: 0, power: "A speedy little hopper." },
   { id: "frog", emoji: "🐸", name: "Frog", cost: 0, power: "Ribbit! A free friend." },
@@ -6085,6 +6203,7 @@ function startBunny() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
   keyHandler = null; PROF_GAME = null; tySyncCustom();
+  if (SITE_WHO && TY_ACCOUNTS.some(a => a.id === SITE_WHO)) { TY = SITE_WHO; store.set("ty_last", TY); return bunnyLobby(); }   // the site already asked who's typing
   $app.innerHTML = `
     <div class="panel ty-wrap">
       <div class="topline"><span class="label">Bunny Hop Typing</span><button class="iconbtn" id="ty-home">Back to menu</button></div>
@@ -6369,7 +6488,7 @@ function bunnyLobby() {
   const a = tyLoad(TY);
   $app.innerHTML = `
     <div class="panel ty-wrap">
-      <div class="topline"><span class="label">Bunny Hop Typing · ${esc(ac.name)}</span><button class="iconbtn" id="ty-switch">Switch account</button></div>
+      <div class="topline"><span class="label">Bunny Hop Typing · ${esc(ac.name)}</span><button class="iconbtn" id="ty-switch">${SITE_WHO ? "Back to menu" : "Switch account"}</button></div>
       <div class="ty-hero">${tyWear(a, "ty-big")}
         <div><h2>${esc(ac.name)}</h2><p>🥕 <b>${a.carrots}</b> carrots · ${a.words} words typed</p>
         <p class="soft">Best: Easy ${a.best.easy || 0} · Hard ${a.best.hard || 0} · Extreme ${a.best.extreme || 0}${a.topWpm ? ` (top ${a.topWpm} WPM${a.beatWR ? " 🏆" : ""})` : ""}</p>
@@ -6519,7 +6638,7 @@ function bunnyLobby() {
     else a2.acc = a2.acc === x.id ? null : x.id;
     tySave(TY, a2); bunnyLobby();
   }));
-  document.getElementById("ty-switch").addEventListener("click", startBunny);
+  document.getElementById("ty-switch").addEventListener("click", SITE_WHO ? showHome : startBunny);
   clearInterval(window._tyLifeTick);
   window._tyLifeTick = setInterval(() => {
     const el = document.getElementById("ty-life");
@@ -8478,6 +8597,7 @@ function hippoAnswer(qRaw) {
   if (/\b(type|typing|keyboard|touch typ\w*|wpm|words per minute)\b/.test(q) && /\b(how|learn|teach|get better|faster|practice|improve|good|help|where)\b/.test(q))
     return R("Typing", "⌨️", "Learn to type with Bunny Hop Typing!", "Bunny Hop Typing has a Training Ground with a color-coded keyboard that shows which finger presses each key. Then race across platforms by typing words, earn carrots, and try to become Speed Champion!", hBig("🐰⌨️", "#e8f7e8", "Bunny Hop Typing"), { label: "🐰 Go to Bunny Hop Typing", fn: () => startBunny() });
   // 📱 the App-App and its apps
+  if (/\b(change|pick|choose|set|new|switch)\b.*\bbackgrounds?\b|^backgrounds?$/.test(q)) return R("Backgrounds", "🎨", "🎨 Pick a background!", `There are ${BG_ALL.length} to choose from, like Pizza Party, Deep Sea, Dino Land and Starry Night. You can also find them by tapping the ⋯ on the home screen.`, hBig("🎨🌈", "#2e1a4a", "backgrounds"), { label: "🎨 Choose a background", fn: () => startBackgrounds() });
   if (/\b(app ?app|new apps?|newest apps?)\b/.test(q)) return R("App-App", "📱", "📱 The App-App has every app!", `Today's home screen: ${homeToday().map(a => a.emoji + " " + a.name).join(", ")}. Some apps rotate in and out of the home screen at midnight, and every app always stays in the App-App.`, hBig("📱✨", "#2e1a4a", "App-App"), { label: "📱 Open the App-App", fn: () => startAppApp() });
   if (/\b(learn(ing)? (to |how to )?code|coding|code lab|html|python|programming|javascript)\b/.test(q)) return R("Code Lab", "💻", "💻 Learn to code in the Code Lab!", "It has step-by-step lessons for HTML (making websites, with a live preview) and Python (real programming, even turtle drawing and games). It's in the App-App.", hBig("💻🐍", "#0b2a1a", "Code Lab"), { label: "💻 Open the Code Lab", fn: () => startCodeLab() });
   if (/\b(ai studio|use ai|using ai|prompts?|prompting|artificial intelligence|chatbot|chat ?gpt|claude)\b/.test(q)) return R("AI Studio", "🤖", "🤖 Learn to use AI in the AI Studio!", "Lessons on what AI is, staying safe, and writing great prompts, plus a Prompt Builder, a prompt challenge, and a project where AI helps you make your own game. It's in the App-App.", hBig("🤖✨", "#1a1050", "AI Studio"), { label: "🤖 Open the AI Studio", fn: () => startAIStudio() });
@@ -9519,7 +9639,7 @@ const cgSmart = () => ({ easy: .35, medium: .7, hard: 1 })[cgLvl()] || .7;   // 
 // The player picker uses the same players as Bunny Hop Typing, and each player keeps their own wins.
 const cgPlayer = () => profCur();
 const cgName = () => profName();
-const cgPick = () => `<label class="cg-pl">🙋 Player: <select class="cg-player" aria-label="Who is playing">${profList(PROF_GAME).map(a => `<option value="${a.id}"${a.id === cgPlayer() ? " selected" : ""}>${esc(a.name)}</option>`).join("")}<option value="__add">➕ Add a new player…</option></select></label>`;
+const cgPick = () => SITE_WHO ? "" : `<label class="cg-pl">🙋 Player: <select class="cg-player" aria-label="Who is playing">${profList(PROF_GAME).map(a => `<option value="${a.id}"${a.id === cgPlayer() ? " selected" : ""}>${esc(a.name)}</option>`).join("")}<option value="__add">➕ Add a new player…</option></select></label>`;
 const cgBindPick = after => $app.querySelectorAll(".cg-player").forEach(sel => sel.addEventListener("change", () => { if (sel.value === "__add") { sel.value = cgPlayer(); profOpen(true); return; } if (PROF_GAME) store.set("prof_cur_" + PROF_GAME, sel.value); toast(`🙋 Now playing: ${cgName()}`); after(); }));
 const cgScore = id => { const w = (store.get("cg_wins_" + cgPlayer(), {})[id]) || [0, 0, 0]; return `🦛 ${cgName()} ${w[0]} · 🤖 ${w[1]}${w[2] ? ` · 🤝 ${w[2]}` : ""}`; };
 function cgWin(id, who) {   // who: 0 you, 1 computer, 2 tie
@@ -11731,7 +11851,8 @@ function startRootArchery() {
 </div>`);
   PROF_GAME = "roots"; PROF_RESTART = () => startRootArchery(); profChip();
   // 👤 Who are you? Tap your name (Emmett, Colin, Alex and everyone on the list), or add a new player
-  { const w = document.getElementById("ra-who"), me = profCur("roots");
+  if (SITE_WHO) document.getElementById("ra-who").remove();   // the site already asked
+  else { const w = document.getElementById("ra-who"), me = profCur("roots");
     w.innerHTML = `<b>👤 Who are you?</b><div class="ra-whochips">${profList("roots").map(p => `<button class="ra-whochip${p.id === me ? " on" : ""}" type="button" data-who="${p.id}" aria-pressed="${p.id === me}">${p.id === me ? "✓ " : ""}${esc(p.name)}</button>`).join("")}${profList("roots").length < PROF_MAX ? `<button class="ra-whochip add" type="button" id="ra-whoAdd">➕ New player</button>` : ""}</div>`;
     w.querySelectorAll("[data-who]").forEach(b => b.addEventListener("click", () => { if (b.dataset.who !== profCur("roots")) profSwitch("roots", b.dataset.who); }));
     document.getElementById("ra-whoAdd")?.addEventListener("click", () => profOpen(true)); }
@@ -12481,6 +12602,9 @@ let P = { cur: "emmett", list: [] }, PERM_IDS = new Set();
 try { const v = JSON.parse(localStorage.getItem(PKEY)); if (v && Array.isArray(v.list)) P = { cur: v.cur, list: v.list.filter(p => p && p.id && p.name) }; } catch (e) {}
 { const perm = PERM.map(q => P.list.find(p => p.id === q.id) || P.list.find(p => p.name.toLowerCase() === q.name.toLowerCase()) || q);   // someone already added as "Colin" keeps their sheet
   P.list = [...perm, ...P.list.filter(p => !perm.includes(p))].slice(0, MAXP); PERM_IDS = new Set(perm.map(p => p.id)); }
+// 👤 inside Study Arcade the site already asked who's playing: use that person and hide the picker
+const SITE_PLAYER = /*RS_PLAYER*/null/*END_RS_PLAYER*/;
+if (SITE_PLAYER && SITE_PLAYER.id) { if (!P.list.some(p => p.id === SITE_PLAYER.id)) P.list.push({ id: String(SITE_PLAYER.id), name: String(SITE_PLAYER.name || "Player").slice(0, 30) }); P.cur = SITE_PLAYER.id; }
 if (!P.list.some(p => p.id === P.cur)) P.cur = P.list[0].id;
 const savePlayers = () => { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} };
 const pkey = id => id === "emmett" ? KEY : KEY + ":" + id;
@@ -12588,6 +12712,7 @@ function renderHome() {
 }
 /* ===== players ===== */
 function renderPlayers() {
+  if (SITE_PLAYER) { document.querySelector(".players").style.display = "none"; $("addForm").classList.add("hidden"); return; }
   $("playerChips").innerHTML = P.list.map(p => \`<button class="pchip\${p.id === P.cur ? " on" : ""}" type="button" data-pid="\${p.id}" aria-pressed="\${p.id === P.cur}">\${p.id === P.cur ? "✓ " : ""}\${esc(p.name)}</button>\`).join("");
   $("delPlayer").classList.toggle("hidden", PERM_IDS.has(P.cur));
   $("playerCount").textContent = \`(\${P.list.length} of \${MAXP} players)\`;
@@ -13566,7 +13691,7 @@ function startRootHyper() {
     $("best").textContent = H.best ? fmt(H.best) + " pts" : "—"; $("bstreak").textContent = H.bestStreak || "—"; $("sbest").textContent = H.speedBest ? H.speedBest + " right" : "—";
     $("types").querySelectorAll("[data-qt]").forEach(b => { b.classList.toggle("on", b.dataset.qt === H.qt); b.setAttribute("aria-pressed", b.dataset.qt === H.qt); });
     const me = profCur(), L = profList();
-    $("who").innerHTML = `<b>👤 Who are you?</b><div class="rh-chips">${L.map(p => `<button class="rh-chip${p.id === me ? " on" : ""}" type="button" data-who="${p.id}" aria-pressed="${p.id === me}">${p.id === me ? "✓ " : ""}${esc(p.name)}</button>`).join("")}${L.length < PROF_MAX ? `<button class="rh-chip add" type="button" id="rh-whoAdd">➕ New player</button>` : ""}</div>`;
+    if (SITE_WHO) $("who").hidden = true; else $("who").innerHTML = `<b>👤 Who are you?</b><div class="rh-chips">${L.map(p => `<button class="rh-chip${p.id === me ? " on" : ""}" type="button" data-who="${p.id}" aria-pressed="${p.id === me}">${p.id === me ? "✓ " : ""}${esc(p.name)}</button>`).join("")}${L.length < PROF_MAX ? `<button class="rh-chip add" type="button" id="rh-whoAdd">➕ New player</button>` : ""}</div>`;
     $("who").querySelectorAll("[data-who]").forEach(b => b.addEventListener("click", () => { if (b.dataset.who !== profCur()) profSwitch(PROF_GAME, b.dataset.who); }));
     $("whoAdd")?.addEventListener("click", () => profOpen(true));
   }
@@ -13682,7 +13807,7 @@ function startRootSport(sport) {
   const [e, name] = ROOT_SPORT_INFO[sport] || ROOT_SPORT_INFO.lacrosse;
   appScreen(`${e} ${name}`, `<div class="row"><button class="chip" id="rc-back" type="button">⬅ Pick a game</button></div><iframe class="ld-frame" id="rl-frame" title="${name}"></iframe>`);
   PROF_GAME = null; PROF_RESTART = null; profChip();   // each sport has its own player list inside
-  document.getElementById("rl-frame").srcdoc = ROOT_SPORTS_HTML.replace('const SPORT = "lacrosse";', `const SPORT = "${sport in ROOT_SPORT_INFO ? sport : "lacrosse"}";`);
+  document.getElementById("rl-frame").srcdoc = ROOT_SPORTS_HTML.replace('const SPORT = "lacrosse";', `const SPORT = "${sport in ROOT_SPORT_INFO ? sport : "lacrosse"}";`).replace("/*RS_PLAYER*/null/*END_RS_PLAYER*/", "/*RS_PLAYER*/" + (SITE_WHO ? JSON.stringify({ id: SITE_WHO, name: SITE_NAME }).replace(/</g, "\\u003c") : "null") + "/*END_RS_PLAYER*/");
   document.getElementById("rc-back").addEventListener("click", startRootsChooser);
 }
 function startHippoHoops() {
@@ -15849,7 +15974,7 @@ emergBtn.addEventListener("click", emergencyGrammar);
 function profChip() {
   let c = document.getElementById("prof-chip");
   if (!c) { c = document.createElement("button"); c.id = "prof-chip"; c.type = "button"; c.className = "prof-chip"; c.title = "Change the player, or add a new one"; c.addEventListener("click", () => profOpen()); document.body.appendChild(c); }
-  const show = !!PROF_GAME && !document.getElementById("gamesmenu") && !$app.querySelector(".cg-player");
+  const show = !SITE_WHO && !!PROF_GAME && !document.getElementById("gamesmenu") && !$app.querySelector(".cg-player");
   c.hidden = !show; if (show) c.innerHTML = `👤 ${esc(profName())} <span aria-hidden="true">▾</span>`;
 }
 function profSwitch(g, id, say = true) {
@@ -15909,13 +16034,14 @@ function setScene() {
   if (SCREEN_LAST !== null && screenId !== SCREEN_LAST) window.scrollTo({ top: 0 });
   SCREEN_LAST = screenId;
   const hit = lab && SCENES.find(([re]) => re.test(lab));
-  const sc = hit ? hit[1] : "";
+  let sc = hit ? hit[1] : "";
+  if (BG_PICK && !document.getElementById("gamesmenu") && !BG_KEEP.test(lab)) sc = BG_PICK === "default" ? "" : BG_PICK;
   if (document.body.dataset.scene !== sc) { if (sc) document.body.dataset.scene = sc; else delete document.body.dataset.scene; }
 }
 new MutationObserver(() => {
   setScene();
   const home = !!document.getElementById("gamesmenu");
-  exitBtn.hidden = home;
+  exitBtn.hidden = home || !!document.getElementById("who-screen");
   document.body.classList.toggle("has-exit", !home);
   const lab = home ? "" : ($app.querySelector(".label")?.textContent || "").trim();
   if (home || (lab && !MENU_GAME_RX.test(lab))) IN_MENU_GAME = false;
