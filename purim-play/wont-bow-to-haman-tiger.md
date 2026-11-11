@@ -28,7 +28,7 @@ I bow only to Hashem above!
 **MORDECHAI (Chorus):**
 No, I won't bow to Haman, 'cause I know that I'm right!
 Standing tall, I'm not bending for a minute!
-I'm a Jew from Binyamin, holding firm day and night,
+With Hashem right beside me, I will shine like a light,
 And I'll only bow down to Hashem, not to Haman!
 
 ---
@@ -42,7 +42,7 @@ Bow to me, or you'll wish that you had!
 **MORDECHAI (Chorus):**
 No, I won't bow to Haman, 'cause I know that I'm right!
 Standing tall, I'm not bending for a minute!
-I'm a Jew from Binyamin, holding firm day and night,
+With Hashem right beside me, I will shine like a light,
 And I'll only bow down to Hashem, not to Haman!
 
 ---
@@ -62,7 +62,7 @@ Just a Jew with his head held up high!
 **MORDECHAI + CHORUS (Final Chorus):**
 No, we won't bow to Haman, 'cause we know that we're right!
 Standing tall, we're not bending for a minute!
-We're the Jews of the kingdom, holding firm day and night,
+With Hashem right beside us, we will shine like a light,
 And we'll only bow down to Hashem, not to Haman!
 
 **OUTRO (everyone, getting louder each time):**
