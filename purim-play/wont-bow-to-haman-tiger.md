@@ -28,7 +28,7 @@ I bow only to Hashem above!
 **MORDECHAI (Chorus):**
 No, I won't bow to Haman, 'cause I know that I'm right!
 Standing tall, I'm not bending for a minute!
-With Hashem right beside me, I will shine like a light,
+With a heart full of courage, I will stand in the light,
 And I'll only bow down to Hashem, not to Haman!
 
 ---
@@ -42,7 +42,7 @@ Bow to me, or you'll wish that you had!
 **MORDECHAI (Chorus):**
 No, I won't bow to Haman, 'cause I know that I'm right!
 Standing tall, I'm not bending for a minute!
-With Hashem right beside me, I will shine like a light,
+With a heart full of courage, I will stand in the light,
 And I'll only bow down to Hashem, not to Haman!
 
 ---
@@ -62,7 +62,7 @@ Just a Jew with his head held up high!
 **MORDECHAI + CHORUS (Final Chorus):**
 No, we won't bow to Haman, 'cause we know that we're right!
 Standing tall, we're not bending for a minute!
-With Hashem right beside us, we will shine like a light,
+With our hearts full of courage, we will stand in the light,
 And we'll only bow down to Hashem, not to Haman!
 
 **OUTRO (everyone, getting louder each time):**
