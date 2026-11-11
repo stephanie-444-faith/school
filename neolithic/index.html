@@ -2818,7 +2818,7 @@ function bindDots() {
 // ℹ️ The info page: where to find everything in Study Arcade except the games, and the Terms of Service
 // on this page the games don't exist: their apps are left out, and these descriptions are reworded so they don't mention games
 const INFO_DESC = { "na-money": "Savings goals, needs vs. wants, making a budget, and growing money.", "na-pixel": "Paint pixel pictures one square at a time, and save a gallery.", "na-grammar": "The 8 parts of speech, sentence types, text structures and text features: learn them, then quiz yourself." };
-const INFO_GAME_APPS = new Set(["hippopoly", "uno", "bship", "hclass", "rummi", "check", "yahtzee", "mancala", "gofish", "dots", "chess", "roots", "puzzle", "bunny"]);   // games stay off this page
+const INFO_GAME_APPS = new Set(["tune", "hippopoly", "uno", "bship", "hclass", "rummi", "check", "yahtzee", "mancala", "gofish", "dots", "chess", "roots", "puzzle", "bunny"]);   // games stay off this page
 function startInfo(jump) {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
   const today = new Set(homeToday().map(a => a.key));
@@ -14559,6 +14559,1778 @@ function startWheel() {
   if (document.fonts?.ready) document.fonts.ready.then(() => { if (cv.isConnected && !spinning) bake(); });
 }
 NEW_APPS.push({ id: "wheel", emoji: "🎡", name: "Wheel Spinner", desc: "Make a spinning wheel with 1 to 1,000 parts. Name each part, give it an emoji, and spin!", start: () => startWheel(), isNew: true, added: "2026-11-10", kw: "wheel spinner|spinning wheel|spin (the|a) wheel|wheel of names|name wheel|prize wheel|random picker|spinner|wheel" });
+/* ---------- 🎵 Name That Tune ----------
+   🎹 Hear It: real melodies of old songs anyone may use (nursery rhymes, holiday songs, folk songs and famous classical music),
+   played on a built-in piano. The fewer notes you need, the more points. 🧩 Song Clues: real songs you name from the artist,
+   the year and letter hints. Type the name either way: close spelling counts. */
+const NT_TUNES = `Twinkle Twinkle Little Star|kids|100|C4 C4 G4 G4 A4 A4 G4h F4 F4 E4 E4 D4 D4 C4h G4 G4 F4 F4 E4 E4 D4h G4 G4 F4 F4 E4 E4 D4h|twinkle twinkle|abc song|alphabet song|abcs|baa baa black sheep
+Mary Had a Little Lamb|kids|110|E4 D4 C4 D4 E4 E4 E4h D4 D4 D4h E4 G4 G4h E4 D4 C4 D4 E4 E4 E4 E4 D4 D4 E4 D4 C4w|little lamb
+Old MacDonald Had a Farm|kids|120|G4 G4 G4 D4 E4 E4 D4h B4 B4 A4 A4 G4h R D4 G4 G4 G4 D4 E4 E4 D4h B4 B4 A4 A4 G4h|old macdonald|old mcdonald|e i e i o
+Row, Row, Row Your Boat|kids|100|C4q. C4q. C4q D4e E4q. E4q D4e E4q F4e G4h. C5e C5e C5e G4e G4e G4e E4e E4e E4e C4e C4e C4e G4q F4e E4q D4e C4h.|row your boat
+London Bridge Is Falling Down|kids|110|G4q. A4e G4q F4q E4q F4q G4h D4q E4q F4h E4q F4q G4h G4q. A4e G4q F4q E4q F4q G4h|london bridge|london bridges
+The Itsy Bitsy Spider|kids|110|G3e C4q C4e C4q D4e E4q. E4q E4e D4q C4e D4q E4e C4q.|itsy bitsy spider|eensy weensy spider|incy wincy spider
+Happy Birthday to You|kids|100|G4e. G4s A4q G4q C5q B4h G4e. G4s A4q G4q D5q C5h G4e. G4s G5q E5q C5q B4q A4q F5e. F5s E5q C5q D5q C5h|happy birthday
+Bingo|kids|130|G4 C5 C5 G4 G4 A4 A4 G4 G4 C5 C5 D5 D5 E5h C5|b i n g o|there was a farmer had a dog
+Pop Goes the Weasel|kids|120|C4q C4e D4q D4e E4e G4e E4e C4q. G3e C4q C4e D4q D4e E4q. C4q. G3e C4q C4e D4q D4e E4e G4e E4e C4q.|all around the mulberry bush
+Three Blind Mice|kids|100|E4q. D4q. C4h. E4q. D4q. C4h. G4q. F4e F4q. E4h. G4q. F4e F4q. E4h.|3 blind mice
+Frère Jacques|kids|110|C4 D4 E4 C4 C4 D4 E4 C4 E4 F4 G4h E4 F4 G4h G4e A4e G4e F4e E4 C4 G4e A4e G4e F4e E4 C4 C4 G3 C4h C4 G3 C4h|frere jacques|are you sleeping|brother john|are you sleeping brother john
+Hot Cross Buns|kids|110|E4 D4 C4h E4 D4 C4h C4e C4e C4e C4e D4e D4e D4e D4e E4 D4 C4h|hot cross bun
+The Wheels on the Bus|kids|120|C4 F4 F4e F4e F4 A4 C5 A4 F4h G4 E4 C4h C5 A4 F4h C4 F4 F4e F4e F4 A4 C5 A4 F4h G4h C4h F4h|wheels on the bus|the wheels on the bus go round and round
+If You're Happy and You Know It|kids|120|C4e C4e F4 F4 F4 F4 F4e F4e E4e F4e G4h C4e C4e G4 G4 G4 G4 G4e G4e F4e G4e A4h|if youre happy|clap your hands
+The Farmer in the Dell|kids|110|C4e F4q F4e F4q. F4e G4q A4e A4q. A4q.|farmer in the dell
+This Old Man|kids|120|G4 E4 G4h G4 E4 G4h A4 G4 F4 E4 D4e E4e F4 E4e F4e G4 C4 C4 C4e C4e C4 D4 E4 F4 G4 G4 D4 D4 F4 E4 D4 C4h|knick knack paddy whack
+Lightly Row|kids|110|G4 E4 E4h F4 D4 D4h C4 D4 E4 F4 G4 G4 G4h|
+Song of the Wind|kids|130|C4 D4 E4 F4 G4 G4 G4h A4 A4 A4 A4 G4w A4 A4 A4 A4 G4w F4 F4 F4 F4 E4h E4h D4 D4 D4 D4 C4w|
+Go Tell Aunt Rhody|kids|110|E4q. E4e D4 C4 C4h D4 D4 F4 E4 D4 C4h|aunt rhody
+Au Clair de la Lune|kids|100|C4 C4 C4 D4 E4h D4h C4 E4 D4 D4 C4w|
+Did You Ever See a Lassie|kids|140|G4q. A4e G4 F4 E4 F4 G4h D4 E4 F4h E4 F4 G4h|ach du lieber augustin|the more we get together
+Skip to My Lou|kids|120|E4h C4h E4h G4h D4h B3h D4h F4h E4h C4h E4h G4h|lou lou skip to my lou
+Alouette|kids|120|C4q. D4e E4 E4 D4q. C4e D4 E4 C4 G3 C4q. D4e E4 E4 D4q. C4e D4 E4 C4h|
+Shave and a Haircut|kids|120|C5 G4e G4e A4 G4 R B4 C5|shave and a haircut two bits|two bits
+Jingle Bells|holiday|130|E4 E4 E4h E4 E4 E4h E4 G4 C4q. D4e E4w F4 F4 F4q. F4e F4 E4 E4 E4e E4e E4 D4 D4 E4 D4h G4h|jingle all the way
+Deck the Halls|holiday|120|G4q. F4e E4 D4 C4 D4 E4 C4 D4e E4e F4e D4e E4q. D4e C4 B3 C4h|fa la la la la
+We Wish You a Merry Christmas|holiday|140|D4 G4 G4e A4e G4e F#4e E4 E4 E4 A4 A4e B4e A4e G4e F#4 D4 D4 B4 B4e C5e B4e A4e G4 E4 D4e D4e E4 A4 F#4 G4h|we wish you a merry christmas
+Joy to the World|holiday|100|C5q. B4e A4q. G4e F4q. E4q D4q C4q. G4e A4q. A4e B4q. B4e C5h.|
+Silent Night|holiday|80|G4q. A4e G4 E4h. G4q. A4e G4 E4h. D5h D5 B4h. C5h C5 G4h.|holy night
+O Christmas Tree|holiday|100|D4 G4e. G4s G4q. A4 B4e. B4s B4q. B4 A4 B4 C5 F#4 A4 G4|o tannenbaum|oh christmas tree
+Hark! The Herald Angels Sing|holiday|110|D4 G4 G4q. F#4e G4 B4 B4 A4 D5 D5 D5q. C5e B4 A4 B4h|hark the herald angels sing|hark the herald
+O Come, All Ye Faithful|holiday|100|G4 G4h D4 G4 A4h D4h B4 A4 B4 C5 B4h A4 G4|o come all ye faithful|adeste fideles
+The First Noel|holiday|100|E4e D4e C4q. D4e E4e F4e G4h A4e B4e C5 B4 A4 G4h|first noel
+Good King Wenceslas|holiday|110|G4 G4 G4 A4 G4 G4 D4h E4 D4 E4 F#4 G4h G4h|
+God Rest Ye Merry Gentlemen|holiday|120|E4 E4 B4 B4 A4 G4 F#4 E4 D4 E4 F#4 G4 A4 B4h|god rest you merry gentlemen
+We Three Kings|holiday|110|B4 A4e G4 E4e F#4e G4e F#4e E4q.|we three kings of orient are
+Angels We Have Heard on High|holiday|110|A4 A4 A4 C5 C5q. Bb4e A4h A4 G4 A4 C5 A4q. G4e F4h|gloria
+O Holy Night|holiday|70|E4q. E4e E4 G4q. G4e A4 F4 A4 C5h.|oh holy night
+The Twelve Days of Christmas|holiday|120|C4e C4e C4q F4e F4e F4q E4e F4e G4e A4e Bb4e G4e A4q.|twelve days of christmas|12 days of christmas
+Auld Lang Syne|holiday|90|C4 F4q. F4e F4 A4 G4q. F4e G4 A4 F4q. F4e A4 C5 D5h.|should auld acquaintance be forgot
+Yankee Doodle|folk|130|C4 C4 D4 E4 C4 E4 D4 G3 C4 C4 D4 E4 C4h B3h|yankee doodle went to town
+The Star-Spangled Banner|folk|90|G4e. E4s C4 E4 G4 C5h E5e. D5s C5 E4 F#4 G4h|star spangled banner|national anthem|oh say can you see
+America the Beautiful|folk|100|G4 G4q. E4e E4 G4 G4q. D4e D4 E4 F4 G4 A4 B4 G4h.|oh beautiful for spacious skies
+My Country, 'Tis of Thee|folk|100|F4 F4 G4 E4q. F4e G4 A4 A4 Bb4 A4q. G4e F4 G4 F4 E4 F4h.|my country tis of thee|god save the king|god save the queen
+When the Saints Go Marching In|folk|140|C4 E4 F4 G4w C4 E4 F4 G4w C4 E4 F4 G4h E4h C4h E4h D4w|oh when the saints|when the saints
+Oh! Susanna|folk|120|C4e D4e E4 G4 G4q. A4e G4 E4 C4q. D4e E4 E4 D4 C4 D4h|oh susanna|oh susannah
+Camptown Races|folk|140|G4e G4e E4e G4e A4e G4e E4q E4e D4q. E4e D4q. G4e G4e E4e G4e A4e G4e E4q D4e. E4s D4e C4q.|doo dah|camptown ladies
+Home on the Range|folk|100|C4 C4 F4 G4 A4h F4e E4e D4 Bb4 Bb4 Bb4h. A4 Bb4 C5h A4 F4 E4 F4 G4h.|oh give me a home
+Oh My Darling, Clementine|folk|110|F4e. F4s F4q C4 A4e. A4s A4q F4 F4e. A4s C5q. C5q Bb4e. A4s G4h.|clementine|oh my darling
+Old Folks at Home|folk|90|E4h. D4 C4 E4 D4 C4 C5 A4 C5h.|swanee river|way down upon the swanee river
+My Bonnie Lies over the Ocean|folk|110|G4 E5q. D5e C5 D5 C5 A4 G4 E4h. G4 E5q. D5e C5 C5 B4 C5 D5h.|my bonnie|bring back my bonnie
+Daisy Bell|folk|120|D5h. B4h. G4h. D4h. E4 F#4 G4 E4h G4 D4h.|bicycle built for two|daisy daisy
+Take Me Out to the Ball Game|folk|140|C5h C5 A4 G4 E4 G4h. D4h. C5h C5 A4 G4 E4 G4h.|take me out to the ballgame|ball game
+For He's a Jolly Good Fellow|folk|120|C4 E4 E4 E4 D4 E4 F4h. E4 E4h D4 D4h.|jolly good fellow|the bear went over the mountain
+Michael, Row the Boat Ashore|folk|110|C4 E4 G4h E4 G4 A4h G4h E4 G4 A4 G4h|michael row your boat ashore
+Amazing Grace|folk|80|D4 G4h B4e G4e B4h A4 G4h E4 D4h D4 G4h B4e G4e B4h A4 D5h.|
+Greensleeves|folk|110|A4 C5h D5 E5q. F5e E5 D5h B4 G4q. A4e B4 C5h A4 A4q. G#4e A4 B4h G#4 E4h.|what child is this
+Drunken Sailor|folk|140|A4 A4e A4e A4 A4e A4e A4 D4 F4 A4 G4 G4e G4e G4 G4e G4e G4 C4 E4 G4|what shall we do with the drunken sailor|what shall we do with a drunken sailor
+La Cucaracha|folk|140|C4e C4e C4e F4q. A4 C4e C4e C4e F4q. A4h|cucaracha
+Red River Valley|folk|100|D4e G4e B4 B4 B4e A4e B4 A4 G4h|
+On Top of Old Smoky|folk|110|C4 C4 E4 G4 C5h. A4h. A4 F4 G4 A4 G4h.|on top of old smokey|on top of spaghetti
+Sakura Sakura|folk|80|A4 A4 B4h A4 A4 B4h A4 B4 C5 B4 A4 B4e A4e F4h|sakura|cherry blossoms
+Korobeiniki|folk|140|E5 B4e C5e D5 C5e B4e A4 A4e C5e E5 D5e C5e B4q. C5e D5 E5 C5 A4 A4h|tetris|tetris theme|tetris song|the tetris song|tetris music
+Westminster Chimes|folk|80|E4h C4h D4h G3w G3h D4h E4h C4w|westminster quarters|big ben|clock chimes|big ben chimes
+Taps|folk|60|G3q. G3e C4w G3q. C4e E4w G3 C4 E4 G3 C4 E4 G3 C4 E4h|day is done
+Charge!|folk|140|G4e C5e E5e G5q. E5e G5h|charge|charge fanfare|stadium charge
+Old Hundredth|folk|80|G4h G4 F#4 E4 D4h G4 A4 B4h B4 B4 B4 A4 G4 C5 B4 A4h G4h|doxology|praise god from whom all blessings flow
+Holy, Holy, Holy|folk|80|D4 D4 F#4 F#4 A4h A4h B4h B4 B4 A4h F#4h|holy holy holy
+Ode to Joy|classical|110|E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4q. D4e D4h|beethoven 9|beethovens ninth|ninth symphony|symphony no 9
+Für Elise|classical|120|E5e D#5e E5e D#5e E5e B4e D5e C5e A4q. C4e E4e A4e B4q. E4e G#4e B4e C5q.|fur elise|fuer elise
+Beethoven's Fifth Symphony|classical|108|Re G4e G4e G4e Eb4w Re F4e F4e F4e D4w|beethovens fifth|beethoven 5|fifth symphony|symphony no 5|beethovens 5th
+Moonlight Sonata|classical|60|G#3e C#4e E4e G#3e C#4e E4e G#3e C#4e E4e G#3e C#4e E4e A3e C#4e E4e A3e C#4e E4e|
+Eine kleine Nachtmusik|classical|120|G4q. D4e G4q. D4e G4e D4e G4e B4e D5h|a little night music|eine kleine
+Turkish March|classical|130|B4s A4s G#4s A4s C5q D5s C5s B4s C5s E5q F5s E5s D#5s E5s B5s A5s G#5s A5s B5s A5s G#5s A5s C6q|rondo alla turca|alla turca|turkish rondo
+Mozart's Symphony No. 40|classical|110|Eb5e D5e D5q Eb5e D5e D5q Eb5e D5e D5q Bb5q|symphony no 40|mozart 40|mozarts 40th|symphony 40
+William Tell Overture|classical|150|G4s G4s G4e G4s G4s G4e G4s G4s C5e D5e E5e G4s G4s G4e G4s G4s G4e C5s E5s D5e B4e G4e|william tell|lone ranger
+In the Hall of the Mountain King|classical|130|A3e B3e C4e D4e E4e C4e E4q D#4e B3e D#4q D4e Bb3e D4q|hall of the mountain king|mountain king
+Morning Mood|classical|100|G5e E5e D5e C5e D5e E5e G5e E5e D5e C5e D5q E5e D5e E5e G5e E5e G5e A5e E5e A5e G5e E5e D5e C5q.|morning|peer gynt morning
+Canon in D|classical|70|F#5h E5h D5h C#5h B4h A4h B4h C#5h|pachelbel canon|pachelbels canon|canon
+Toccata and Fugue in D Minor|classical|60|A5s G5s A5h. G5s F5s E5s D5s C#5q D5h.|toccata and fugue|toccata
+Minuet in G|classical|120|D5 G4e A4e B4e C5e D5 G4 G4 E5 C5e D5e E5e F#5e G5 G4 G4|minuet
+Jesu, Joy of Man's Desiring|classical|100|G4e A4e B4e D5e C5e C5e E5e D5e D5e G5e F#5e G5e D5e B4e G4e A4e B4e C5e D5e E5e D5e C5e B4e A4e B4e G4e|jesu joy of mans desiring|jesu joy
+Hallelujah Chorus|classical|100|D5h A4e. B4s A4q D5h A4e. B4s A4q D5e. D5s D5e. D5s D5q D5q|hallelujah|messiah
+Spring (The Four Seasons)|classical|110|E5 G#5 G#5 G#5 F#5e E5e B5h. B5e A5e G#5 G#5 G#5 F#5e E5e B5h.|spring|four seasons|the four seasons|vivaldi spring
+The Blue Danube|classical|160|D4 D4 F#4 A4 A4h. A5 A5h. F#5 F#5h. D4 D4 F#4 A4 A4h. A5 A5h. G5 G5h.|blue danube|blue danube waltz
+Toreador Song|classical|100|C4q. D4e C4 A3 A3 A3e G3e A3e Bb3e A3h.|toreador|carmen|toreador march
+Habanera|classical|70|D5q. C#5e C5 B4e Bb4e A4q. Ab4e G4e F#4e F4e E4h|carmen habanera
+Here Comes the Bride|classical|70|C4 F4e. F4s F4h C4 G4e. E4s F4h|bridal chorus|wedding march|bridal march
+Swan Lake|classical|80|F#4h B3e C#4e D4e E4e F#4q. D4e F#4q. D4e F#4q. B3e D4e B3e G3e D4e B3h.|swan lake theme
+Can-Can|classical|150|C4 D4e F4e E4e D4e G4 G4 G4e A4e E4e F4e D4 D4 D4e F4e E4e D4e C4e C5e B4e A4e G4e F4e E4e D4e|can can|cancan|galop infernal
+The Entertainer|classical|100|D4e D#4e E4e C5q E4e C5q E4e C5h. C5e D5e D#5e E5e C5e D5e E5q B4e D5q C5h|entertainer
+New World Symphony|classical|60|E4q G4e. G4s E4h D4q C4e. D4s E4q G4q E4h.|largo|going home|from the new world
+Funeral March|classical|50|Bb3h Bb3q. Bb3e Bb3h Db4q. C4e C4q. Bb3e Bb3q. A3e Bb3h|chopin funeral march|death march
+Ride of the Valkyries|classical|110|B3e. D4s B3e D4q. F#4h D4h F#4e. D4s F#4e A4q. F#4h|valkyries|kill the wabbit
+Also sprach Zarathustra|classical|60|C4w G4w C5w E5h Eb5w|2001|2001 a space odyssey|space odyssey|thus spoke zarathustra
+Surprise Symphony|classical|100|C4e C4e E4e E4e G4e G4e E4q F4e F4e D4e D4e B3e B3e G3q|haydn surprise|symphony no 94
+Brahms' Lullaby|classical|80|E4e E4e G4h E4e E4e G4h E4e G4e C5 B4q. A4e A4 G4|lullaby|cradle song|lullaby and goodnight|wiegenlied
+Gymnopédie No. 1|classical|70|F#5h. A5 G5 F#5 C#5 B4 C#5 D5 A4h.|gymnopedie`.trim().split("\n").map(l => { const [t, cat, bpm, notes, ...alts] = l.split("|"); return { t, cat, bpm: +bpm, notes, alts: alts.filter(Boolean) }; });
+const NT_SONGS = `Let It Go|Idina Menzel|2013|movie
+Do You Want to Build a Snowman?|Kristen Bell|2013|movie
+For the First Time in Forever|Kristen Bell and Idina Menzel|2013|movie
+Love Is an Open Door|Kristen Bell and Santino Fontana|2013|movie
+In Summer|Josh Gad|2013|movie
+Fixer Upper|Maia Wilson|2013|movie
+Frozen Heart|Frozen Cast|2013|movie
+Reindeer(s) Are Better Than People|Jonathan Groff|2013|movie
+Into the Unknown|Idina Menzel and AURORA|2019|movie
+Show Yourself|Idina Menzel and Evan Rachel Wood|2019|movie
+Lost in the Woods|Jonathan Groff|2019|movie
+When I Am Older|Josh Gad|2019|movie
+Some Things Never Change|Frozen 2 Cast|2019|movie
+The Next Right Thing|Kristen Bell|2019|movie
+How Far I'll Go|Auli'i Cravalho|2016|movie
+You're Welcome|Dwayne Johnson|2016|movie
+Shiny|Jemaine Clement|2016|movie
+Where You Are|Moana Cast|2016|movie
+We Know the Way|Opetaia Foa'i and Lin-Manuel Miranda|2016|movie
+Beyond|Auli'i Cravalho|2024|movie
+We Don't Talk About Bruno|Encanto Cast|2021|movie
+Surface Pressure|Jessica Darrow|2021|movie
+The Family Madrigal|Stephanie Beatriz|2021|movie
+What Else Can I Do?|Diane Guerrero and Stephanie Beatriz|2021|movie
+Waiting on a Miracle|Stephanie Beatriz|2021|movie
+Dos Oruguitas|Sebastián Yatra|2021|movie
+Colombia, Mi Encanto|Carlos Vives|2021|movie
+Remember Me|Benjamin Bratt|2017|movie
+Un Poco Loco|Anthony Gonzalez and Gael García Bernal|2017|movie
+Proud Corazón|Anthony Gonzalez|2017|movie
+Circle of Life|Carmen Twillie and Lebo M|1994|movie
+Hakuna Matata|Nathan Lane and Ernie Sabella|1994|movie
+I Just Can't Wait to Be King|Jason Weaver|1994|movie
+Can You Feel the Love Tonight|Elton John|1994|movie
+Be Prepared|Jeremy Irons|1994|movie
+He Lives in You|Lebo M|1998|movie
+Under the Sea|Samuel E. Wright|1989|movie
+Part of Your World|Jodi Benson|1989|movie
+Kiss the Girl|Samuel E. Wright|1989|movie
+Poor Unfortunate Souls|Pat Carroll|1989|movie
+Les Poissons|René Auberjonois|1989|movie
+Be Our Guest|Jerry Orbach and Angela Lansbury|1991|movie
+Beauty and the Beast|Angela Lansbury|1991|movie
+Belle|Paige O'Hara|1991|movie
+Gaston|Jesse Corti and Richard White|1991|movie
+Something There|Paige O'Hara and Robby Benson|1991|movie
+A Whole New World|Brad Kane and Lea Salonga|1992|movie
+Friend Like Me|Robin Williams|1992|movie
+Prince Ali|Robin Williams|1992|movie
+One Jump Ahead|Brad Kane|1992|movie
+Arabian Nights|Bruce Adler|1992|movie
+Speechless|Naomi Scott|2019|movie
+Colors of the Wind|Judy Kuhn|1995|movie
+Just Around the Riverbend|Judy Kuhn|1995|movie
+You've Got a Friend in Me|Randy Newman|1995|movie
+Strange Things|Randy Newman|1995|movie
+Out There|Tom Hulce|1996|movie
+God Help the Outcasts|Heidi Mollenhauer|1996|movie
+Topsy Turvy|Paul Kandel|1996|movie
+The Bells of Notre Dame|Paul Kandel|1996|movie
+Go the Distance|Roger Bart|1997|movie
+Zero to Hero|The Muses|1997|movie
+I Won't Say (I'm in Love)|Susan Egan|1997|movie
+The Gospel Truth|The Muses|1997|movie
+One Last Hope|Danny DeVito|1997|movie
+I'll Make a Man Out of You|Donny Osmond|1998|movie
+Reflection|Lea Salonga|1998|movie
+Honor to Us All|Beth Fowler|1998|movie
+A Girl Worth Fighting For|Mulan Cast|1998|movie
+You'll Be in My Heart|Phil Collins|1999|movie
+Two Worlds|Phil Collins|1999|movie
+Strangers Like Me|Phil Collins|1999|movie
+Son of Man|Phil Collins|1999|movie
+Trashin' the Camp|Phil Collins and Rosie O'Donnell|1999|movie
+My Funny Friend and Me|Sting|2000|movie
+Perfect World|Tom Jones|2000|movie
+Look Through My Eyes|Phil Collins|2003|movie
+Great Spirits|Tina Turner|2003|movie
+I See the Light|Mandy Moore and Zachary Levi|2010|movie
+When Will My Life Begin|Mandy Moore|2010|movie
+I've Got a Dream|Mandy Moore and Zachary Levi|2010|movie
+Mother Knows Best|Donna Murphy|2010|movie
+Almost There|Anika Noni Rose|2009|movie
+Friends on the Other Side|Keith David|2009|movie
+Dig a Little Deeper|Jenifer Lewis|2009|movie
+Ma Belle Evangeline|Jim Cummings|2009|movie
+Touch the Sky|Julie Fowlis|2012|movie
+Try Everything|Shakira|2016|movie
+This Wish|Ariana DeBose|2023|movie
+Knowing What I Know Now|Ariana DeBose|2023|movie
+I'm a Star|Wish Cast|2023|movie
+Nobody Like U|4*Town|2022|movie
+1 True Love|4*Town|2022|movie
+Immortals|Fall Out Boy|2014|movie
+Everything Is Awesome|Tegan and Sara|2014|movie
+Shallow|Lady Gaga and Bradley Cooper|2018|movie
+This Is Me|Keala Settle|2017|movie
+The Greatest Show|Hugh Jackman|2017|movie
+A Million Dreams|Ziv Zaifman, Hugh Jackman and Michelle Williams|2017|movie
+Rewrite the Stars|Zac Efron and Zendaya|2017|movie
+Never Enough|Loren Allred|2017|movie
+Come Alive|Hugh Jackman|2017|movie
+City of Stars|Ryan Gosling and Emma Stone|2016|movie
+Another Day of Sun|La La Land Cast|2016|movie
+The Bare Necessities|Phil Harris and Bruce Reitherman|1967|movie
+I Wan'na Be Like You|Louis Prima|1967|movie
+Trust in Me|Sterling Holloway|1967|movie
+Supercalifragilisticexpialidocious|Julie Andrews and Dick Van Dyke|1964|movie
+A Spoonful of Sugar|Julie Andrews|1964|movie
+Chim Chim Cher-ee|Dick Van Dyke|1964|movie
+Let's Go Fly a Kite|David Tomlinson|1964|movie
+Feed the Birds|Julie Andrews|1964|movie
+Step in Time|Dick Van Dyke|1964|movie
+Trip a Little Light Fantastic|Lin-Manuel Miranda|2018|movie
+Can You Imagine That?|Emily Blunt|2018|movie
+Do-Re-Mi|Julie Andrews|1965|movie
+My Favorite Things|Julie Andrews|1965|movie
+The Sound of Music|Julie Andrews|1965|movie
+Edelweiss|Christopher Plummer|1965|movie
+So Long, Farewell|The Sound of Music Cast|1965|movie
+Sixteen Going on Seventeen|Charmian Carr and Daniel Truhitte|1965|movie
+Climb Ev'ry Mountain|Peggy Wood|1965|movie
+Over the Rainbow|Judy Garland|1939|movie
+We're Off to See the Wizard|Judy Garland|1939|movie
+If I Only Had a Brain|Ray Bolger|1939|movie
+Ding-Dong! The Witch Is Dead|The Munchkins|1939|movie
+When You Wish Upon a Star|Cliff Edwards|1940|movie
+I've Got No Strings|Dickie Jones|1940|movie
+Hi-Diddle-Dee-Dee (An Actor's Life for Me)|Walter Catlett|1940|movie
+Heigh-Ho|The Dwarfs|1937|movie
+Whistle While You Work|Adriana Caselotti|1937|movie
+Someday My Prince Will Come|Adriana Caselotti|1937|movie
+Baby Mine|Betty Noyes|1941|movie
+Pink Elephants on Parade|Dumbo Cast|1941|movie
+Bibbidi-Bobbidi-Boo|Verna Felton|1950|movie
+A Dream Is a Wish Your Heart Makes|Ilene Woods|1950|movie
+So This Is Love|Ilene Woods and Mike Douglas|1950|movie
+I'm Late|Bill Thompson|1951|movie
+The Unbirthday Song|Ed Wynn and Jerry Colonna|1951|movie
+You Can Fly! You Can Fly! You Can Fly!|The Jud Conlon Chorus|1953|movie
+Following the Leader|Peter Pan Cast|1953|movie
+The Second Star to the Right|The Jud Conlon Chorus|1953|movie
+He's a Tramp|Peggy Lee|1955|movie
+Bella Notte|George Givot|1955|movie
+Once Upon a Dream|Mary Costa|1959|movie
+Cruella de Vil|Bill Lee|1961|movie
+Everybody Wants to Be a Cat|Phil Harris and Scatman Crothers|1970|movie
+Scales and Arpeggios|The Aristocats Cast|1970|movie
+The Age of Not Believing|Angela Lansbury|1971|movie
+Portobello Road|David Tomlinson|1971|movie
+Oo-De-Lally|Roger Miller|1973|movie
+Love|Nancy Adams|1973|movie
+Winnie the Pooh|The Sherman Brothers|1966|movie
+The Wonderful Thing About Tiggers|Paul Winchell|1968|movie
+Heffalumps and Woozles|The Mellomen|1968|movie
+Best of Friends|Pearl Bailey|1981|movie
+Once Upon a Time in New York City|Huey Lewis|1988|movie
+Why Should I Worry?|Billy Joel|1988|movie
+It's a Small World|The Sherman Brothers|1964|movie
+Pure Imagination|Gene Wilder|1971|movie
+The Candy Man|Sammy Davis Jr.|1972|movie
+Oompa Loompa|The Oompa-Loompas|1971|movie
+Tomorrow|Andrea McArdle|1977|movie
+It's the Hard Knock Life|Annie Cast|1977|movie
+Memory|Elaine Paige|1981|movie
+The Phantom of the Opera|Michael Crawford and Sarah Brightman|1986|movie
+The Music of the Night|Michael Crawford|1986|movie
+Defying Gravity|Idina Menzel and Kristin Chenoweth|2003|movie
+Popular|Kristin Chenoweth|2003|movie
+What Is This Feeling?|Cynthia Erivo and Ariana Grande|2024|movie
+The Wizard and I|Cynthia Erivo|2024|movie
+Dancing Through Life|Jonathan Bailey|2024|movie
+Seasons of Love|Rent Cast|1996|movie
+Alexander Hamilton|Hamilton Cast|2015|movie
+My Shot|Hamilton Cast|2015|movie
+You'll Be Back|Jonathan Groff|2015|movie
+Satisfied|Renée Elise Goldsberry|2015|movie
+The Schuyler Sisters|Hamilton Cast|2015|movie
+Wait for It|Leslie Odom Jr.|2015|movie
+The Room Where It Happens|Leslie Odom Jr.|2015|movie
+Non-Stop|Hamilton Cast|2015|movie
+Waving Through a Window|Ben Platt|2016|movie
+You Will Be Found|Dear Evan Hansen Cast|2016|movie
+Do You Hear the People Sing?|Les Misérables Cast|1985|movie
+I Dreamed a Dream|Patti LuPone|1985|movie
+On My Own|Frances Ruffelle|1985|movie
+Oh, What a Beautiful Mornin'|Gordon MacRae|1955|movie
+Oklahoma!|Oklahoma! Cast|1943|movie
+Getting to Know You|The King and I Cast|1951|movie
+Shall We Dance?|The King and I Cast|1951|movie
+Some Enchanted Evening|Ezio Pinza|1949|movie
+I Could Have Danced All Night|Julie Andrews|1956|movie
+Wouldn't It Be Loverly|Julie Andrews|1956|movie
+Tonight|West Side Story Cast|1957|movie
+I Feel Pretty|West Side Story Cast|1957|movie
+Maria|West Side Story Cast|1957|movie
+If I Were a Rich Man|Topol|1964|movie
+Tradition|Fiddler on the Roof Cast|1964|movie
+Sunrise, Sunset|Fiddler on the Roof Cast|1964|movie
+Matchmaker|Fiddler on the Roof Cast|1964|movie
+Consider Yourself|Oliver! Cast|1960|movie
+Food, Glorious Food|Oliver! Cast|1960|movie
+Singin' in the Rain|Gene Kelly|1952|movie
+Good Morning|Gene Kelly, Debbie Reynolds and Donald O'Connor|1952|movie
+Make 'Em Laugh|Donald O'Connor|1952|movie
+There's No Business Like Show Business|Ethel Merman|1946|movie
+Anything You Can Do|Ethel Merman|1946|movie
+Seventy-Six Trombones|The Music Man Cast|1957|movie
+Moon River|Audrey Hepburn|1961|movie
+You're the One That I Want|John Travolta and Olivia Newton-John|1978|movie
+Summer Nights|John Travolta and Olivia Newton-John|1978|movie
+Greased Lightnin'|John Travolta|1978|movie
+Hopelessly Devoted to You|Olivia Newton-John|1978|movie
+Breaking Free|Zac Efron and Vanessa Hudgens|2006|movie
+We're All in This Together|High School Musical Cast|2006|movie
+Start of Something New|Zac Efron and Vanessa Hudgens|2006|movie
+Get'cha Head in the Game|Zac Efron|2006|movie
+Bet On It|Zac Efron|2007|movie
+What Time Is It|High School Musical Cast|2007|movie
+We Rock|Camp Rock Cast|2008|movie
+Rotten to the Core|Descendants Cast|2015|movie
+Ways to Be Wicked|Descendants 2 Cast|2017|movie
+What's My Name|China Anne McClain|2017|movie
+Queen of Mean|Sarah Jeffery|2019|movie
+Golden|HUNTR/X|2025|movie
+Soda Pop|Saja Boys|2025|movie
+How It's Done|HUNTR/X|2025|movie
+Your Idol|Saja Boys|2025|movie
+I'm Just Ken|Ryan Gosling|2023|movie
+What Was I Made For?|Billie Eilish|2023|movie
+Dance the Night|Dua Lipa|2023|movie
+Peaches|Jack Black|2023|movie
+Hold My Hand|Lady Gaga|2022|movie
+Skyfall|Adele|2012|movie
+Writing's on the Wall|Sam Smith|2015|movie
+Love Me Like You Do|Ellie Goulding|2015|movie
+Heathens|Twenty One Pilots|2016|movie
+Decode|Paramore|2008|movie
+Ghostbusters|Ray Parker Jr.|1984|movie
+Footloose|Kenny Loggins|1984|movie
+Danger Zone|Kenny Loggins|1986|movie
+Flashdance... What a Feeling|Irene Cara|1983|movie
+Fame|Irene Cara|1980|movie
+My Heart Will Go On|Celine Dion|1997|movie
+Somewhere Out There|Linda Ronstadt and James Ingram|1986|movie
+The Rainbow Connection|Kermit the Frog|1979|movie
+Can't Fight the Moonlight|LeAnn Rimes|2000|movie
+Real Gone|Sheryl Crow|2006|movie
+Life Is a Highway|Rascal Flatts|2006|movie
+Accidentally in Love|Counting Crows|2004|movie
+Upside Down|Jack Johnson|2006|movie
+Little Wonders|Rob Thomas|2007|movie
+Real in Rio|Rio Cast|2011|movie
+Hot Wings (I Wanna Party)|will.i.am and Jamie Foxx|2011|movie
+Hair Up|Justin Timberlake, Gwen Stefani and Ron Funches|2016|movie
+Get Back Up Again|Anna Kendrick|2016|movie
+Better Place|*NSYNC|2023|movie
+Set It All Free|Scarlett Johansson|2016|movie
+Don't You Worry 'bout a Thing|Tori Kelly|2016|movie
+Your Song Saved My Life|U2|2021|movie
+What's Up Danger|Blackway and Black Caviar|2018|movie
+Steal the Show|Lauv|2023|movie
+Men in Black|Will Smith|1997|movie
+Star Wars Main Title|John Williams|1977|movie
+The Imperial March|John Williams|1980|movie
+Raiders March|John Williams|1981|movie
+Jurassic Park Theme|John Williams|1993|movie
+Hedwig's Theme|John Williams|2001|movie
+Jaws Theme|John Williams|1975|movie
+Superman Theme|John Williams|1978|movie
+The Pink Panther Theme|Henry Mancini|1963|movie
+James Bond Theme|Monty Norman|1962|movie
+He's a Pirate|Klaus Badelt|2003|movie
+Mission: Impossible Theme|Lalo Schifrin|1966|movie
+Gonna Fly Now|Bill Conti|1976|movie
+Chariots of Fire|Vangelis|1981|movie
+Happy|Pharrell Williams|2013|pop
+Can't Stop the Feeling!|Justin Timberlake|2016|pop
+Uptown Funk|Mark Ronson ft. Bruno Mars|2014|pop
+Shake It Off|Taylor Swift|2014|pop
+Love Story|Taylor Swift|2008|pop
+You Belong with Me|Taylor Swift|2009|pop
+We Are Never Ever Getting Back Together|Taylor Swift|2012|pop
+Blank Space|Taylor Swift|2014|pop
+Style|Taylor Swift|2015|pop
+Bad Blood|Taylor Swift|2015|pop
+Wildest Dreams|Taylor Swift|2015|pop
+Cruel Summer|Taylor Swift|2019|pop
+Cardigan|Taylor Swift|2020|pop
+Willow|Taylor Swift|2020|pop
+Look What You Made Me Do|Taylor Swift|2017|pop
+ME!|Taylor Swift|2019|pop
+Lover|Taylor Swift|2019|pop
+22|Taylor Swift|2013|pop
+Anti-Hero|Taylor Swift|2022|pop
+Lavender Haze|Taylor Swift|2022|pop
+Karma|Taylor Swift|2023|pop
+Is It Over Now?|Taylor Swift|2023|pop
+Fortnight|Taylor Swift|2024|pop
+Mean|Taylor Swift|2011|country
+Our Song|Taylor Swift|2007|country
+Teardrops on My Guitar|Taylor Swift|2007|country
+Firework|Katy Perry|2010|pop
+Roar|Katy Perry|2013|pop
+Teenage Dream|Katy Perry|2010|pop
+California Gurls|Katy Perry ft. Snoop Dogg|2010|pop
+Hot n Cold|Katy Perry|2008|pop
+Dark Horse|Katy Perry|2013|pop
+Last Friday Night (T.G.I.F.)|Katy Perry|2011|pop
+Wide Awake|Katy Perry|2012|pop
+Part of Me|Katy Perry|2012|pop
+Unconditionally|Katy Perry|2013|pop
+Rise|Katy Perry|2016|pop
+Chained to the Rhythm|Katy Perry|2017|pop
+Fight Song|Rachel Platten|2015|pop
+Brave|Sara Bareilles|2013|pop
+Love Song|Sara Bareilles|2007|pop
+Count on Me|Bruno Mars|2010|pop
+Just the Way You Are|Bruno Mars|2010|pop
+Grenade|Bruno Mars|2010|pop
+24K Magic|Bruno Mars|2016|pop
+Treasure|Bruno Mars|2013|pop
+Locked Out of Heaven|Bruno Mars|2012|pop
+When I Was Your Man|Bruno Mars|2012|pop
+APT.|Rosé and Bruno Mars|2024|pop
+Die with a Smile|Lady Gaga and Bruno Mars|2024|pop
+Thinking Out Loud|Ed Sheeran|2014|pop
+Shape of You|Ed Sheeran|2017|pop
+Perfect|Ed Sheeran|2017|pop
+Photograph|Ed Sheeran|2014|pop
+Castle on the Hill|Ed Sheeran|2017|pop
+Bad Habits|Ed Sheeran|2021|pop
+Shivers|Ed Sheeran|2021|pop
+The A Team|Ed Sheeran|2011|pop
+Blinding Lights|The Weeknd|2019|pop
+Save Your Tears|The Weeknd|2020|pop
+Levitating|Dua Lipa|2020|pop
+Don't Start Now|Dua Lipa|2019|pop
+New Rules|Dua Lipa|2017|pop
+Watermelon Sugar|Harry Styles|2019|pop
+As It Was|Harry Styles|2022|pop
+Adore You|Harry Styles|2019|pop
+Sign of the Times|Harry Styles|2017|pop
+drivers license|Olivia Rodrigo|2021|pop
+good 4 u|Olivia Rodrigo|2021|pop
+vampire|Olivia Rodrigo|2023|pop
+traitor|Olivia Rodrigo|2021|pop
+Flowers|Miley Cyrus|2023|pop
+Party in the U.S.A.|Miley Cyrus|2009|pop
+The Climb|Miley Cyrus|2009|pop
+See You Again|Miley Cyrus|2007|pop
+Espresso|Sabrina Carpenter|2024|pop
+Please Please Please|Sabrina Carpenter|2024|pop
+Birds of a Feather|Billie Eilish|2024|pop
+Bad Guy|Billie Eilish|2019|pop
+Ocean Eyes|Billie Eilish|2016|pop
+Everything I Wanted|Billie Eilish|2019|pop
+Stay|The Kid LAROI and Justin Bieber|2021|pop
+Peaches|Justin Bieber|2021|pop
+Sorry|Justin Bieber|2015|pop
+Baby|Justin Bieber|2010|pop
+Love Yourself|Justin Bieber|2015|pop
+What Do You Mean?|Justin Bieber|2015|pop
+Ghost|Justin Bieber|2021|pop
+Despacito|Luis Fonsi and Daddy Yankee|2017|pop
+Sunflower|Post Malone and Swae Lee|2018|pop
+Circles|Post Malone|2019|pop
+Señorita|Shawn Mendes and Camila Cabello|2019|pop
+Havana|Camila Cabello|2017|pop
+Stitches|Shawn Mendes|2015|pop
+Treat You Better|Shawn Mendes|2016|pop
+There's Nothing Holdin' Me Back|Shawn Mendes|2017|pop
+Counting Stars|OneRepublic|2013|pop
+Good Life|OneRepublic|2010|pop
+I Lived|OneRepublic|2014|pop
+Apologize|Timbaland ft. OneRepublic|2007|pop
+Something Just Like This|The Chainsmokers and Coldplay|2017|pop
+Closer|The Chainsmokers ft. Halsey|2016|pop
+Rolling in the Deep|Adele|2010|pop
+Someone Like You|Adele|2011|pop
+Hello|Adele|2015|pop
+Set Fire to the Rain|Adele|2011|pop
+Easy on Me|Adele|2021|pop
+Chasing Pavements|Adele|2008|pop
+Umbrella|Rihanna|2007|pop
+Diamonds|Rihanna|2012|pop
+Only Girl (In the World)|Rihanna|2010|pop
+Bad Romance|Lady Gaga|2009|pop
+Poker Face|Lady Gaga|2008|pop
+Born This Way|Lady Gaga|2011|pop
+Thank U, Next|Ariana Grande|2018|pop
+7 Rings|Ariana Grande|2019|pop
+No Tears Left to Cry|Ariana Grande|2018|pop
+Problem|Ariana Grande ft. Iggy Azalea|2014|pop
+Break Free|Ariana Grande ft. Zedd|2014|pop
+positions|Ariana Grande|2020|pop
+We Can't Be Friends|Ariana Grande|2024|pop
+Santa Tell Me|Ariana Grande|2014|holiday
+Toxic|Britney Spears|2003|pop
+...Baby One More Time|Britney Spears|1998|pop
+Oops!... I Did It Again|Britney Spears|2000|pop
+Lucky|Britney Spears|2000|pop
+Since U Been Gone|Kelly Clarkson|2004|pop
+Stronger (What Doesn't Kill You)|Kelly Clarkson|2011|pop
+Breakaway|Kelly Clarkson|2004|pop
+Behind These Hazel Eyes|Kelly Clarkson|2005|pop
+Because of You|Kelly Clarkson|2004|pop
+A Moment Like This|Kelly Clarkson|2002|pop
+Complicated|Avril Lavigne|2002|pop
+Sk8er Boi|Avril Lavigne|2002|rock
+Girlfriend|Avril Lavigne|2007|pop
+I Want It That Way|Backstreet Boys|1999|pop
+Everybody (Backstreet's Back)|Backstreet Boys|1997|pop
+As Long as You Love Me|Backstreet Boys|1997|pop
+Larger than Life|Backstreet Boys|1999|pop
+Show Me the Meaning of Being Lonely|Backstreet Boys|2000|pop
+Quit Playing Games (with My Heart)|Backstreet Boys|1996|pop
+Bye Bye Bye|*NSYNC|2000|pop
+It's Gonna Be Me|*NSYNC|2000|pop
+Tearin' Up My Heart|*NSYNC|1998|pop
+This I Promise You|*NSYNC|2000|pop
+Pop|*NSYNC|2001|pop
+Cry Me a River|Justin Timberlake|2002|pop
+Mirrors|Justin Timberlake|2013|pop
+Rock Your Body|Justin Timberlake|2003|pop
+What Goes Around... Comes Around|Justin Timberlake|2006|pop
+Wannabe|Spice Girls|1996|pop
+Say You'll Be There|Spice Girls|1996|pop
+2 Become 1|Spice Girls|1996|pop
+Spice Up Your Life|Spice Girls|1997|pop
+MMMBop|Hanson|1997|pop
+Genie in a Bottle|Christina Aguilera|1999|pop
+Beautiful|Christina Aguilera|2002|pop
+Livin' la Vida Loca|Ricky Martin|1999|pop
+Hips Don't Lie|Shakira ft. Wyclef Jean|2006|pop
+Waka Waka (This Time for Africa)|Shakira|2010|pop
+Whenever, Wherever|Shakira|2001|pop
+Bailando|Enrique Iglesias|2014|pop
+Hero|Enrique Iglesias|2001|pop
+Hero|Mariah Carey|1993|pop
+Fantasy|Mariah Carey|1995|pop
+We Belong Together|Mariah Carey|2005|rnb
+Vision of Love|Mariah Carey|1990|pop
+Emotions|Mariah Carey|1991|pop
+I Wanna Dance with Somebody (Who Loves Me)|Whitney Houston|1987|pop
+Greatest Love of All|Whitney Houston|1985|pop
+How Will I Know|Whitney Houston|1985|pop
+I Will Always Love You|Whitney Houston|1992|pop
+Thriller|Michael Jackson|1982|pop
+Beat It|Michael Jackson|1982|pop
+Billie Jean|Michael Jackson|1982|pop
+Smooth Criminal|Michael Jackson|1987|pop
+Bad|Michael Jackson|1987|pop
+Man in the Mirror|Michael Jackson|1987|pop
+Black or White|Michael Jackson|1991|pop
+Don't Stop 'Til You Get Enough|Michael Jackson|1979|pop
+Rock with You|Michael Jackson|1979|pop
+Heal the World|Michael Jackson|1991|pop
+Remember the Time|Michael Jackson|1991|pop
+Ben|Michael Jackson|1972|oldies
+Like a Prayer|Madonna|1989|pop
+Material Girl|Madonna|1984|pop
+Vogue|Madonna|1990|pop
+Holiday|Madonna|1983|pop
+Into the Groove|Madonna|1985|pop
+Girls Just Want to Have Fun|Cyndi Lauper|1983|pop
+Time After Time|Cyndi Lauper|1984|pop
+True Colors|Cyndi Lauper|1986|pop
+Walk Like an Egyptian|The Bangles|1986|pop
+Eternal Flame|The Bangles|1989|pop
+Take On Me|a-ha|1985|pop
+Come On Eileen|Dexys Midnight Runners|1982|pop
+Tainted Love|Soft Cell|1981|pop
+Sweet Dreams (Are Made of This)|Eurythmics|1983|pop
+Don't You Want Me|The Human League|1981|pop
+Wake Me Up Before You Go-Go|Wham!|1984|pop
+Careless Whisper|George Michael|1984|pop
+Faith|George Michael|1987|pop
+Freedom! '90|George Michael|1990|pop
+Karma Chameleon|Culture Club|1983|pop
+Hungry Like the Wolf|Duran Duran|1982|pop
+Rio|Duran Duran|1982|pop
+Everybody Wants to Rule the World|Tears for Fears|1985|pop
+Shout|Tears for Fears|1984|pop
+Mad World|Tears for Fears|1982|pop
+Never Gonna Give You Up|Rick Astley|1987|pop
+Together Forever|Rick Astley|1988|pop
+Kiss|Prince|1986|pop
+Purple Rain|Prince|1984|pop
+When Doves Cry|Prince|1984|pop
+1999|Prince|1982|pop
+Let's Go Crazy|Prince|1984|pop
+Raspberry Beret|Prince|1985|pop
+Holding Out for a Hero|Bonnie Tyler|1984|pop
+Total Eclipse of the Heart|Bonnie Tyler|1983|pop
+Sussudio|Phil Collins|1985|pop
+Another Day in Paradise|Phil Collins|1989|pop
+I Just Called to Say I Love You|Stevie Wonder|1984|pop
+Part-Time Lover|Stevie Wonder|1985|pop
+You Can Call Me Al|Paul Simon|1986|pop
+Venus|Bananarama|1986|pop
+Running Up That Hill (A Deal with God)|Kate Bush|1985|pop
+Don't Go Breaking My Heart|Elton John and Kiki Dee|1976|pop
+Close to You|The Carpenters|1970|pop
+Top of the World|The Carpenters|1973|pop
+We've Only Just Begun|The Carpenters|1970|pop
+Yesterday Once More|The Carpenters|1973|pop
+Sing|The Carpenters|1973|pop
+You've Got a Friend|James Taylor|1971|pop
+It's Too Late|Carole King|1971|pop
+I Feel the Earth Move|Carole King|1971|pop
+Vincent|Don McLean|1971|pop
+Mamma Mia|ABBA|1975|pop
+Waterloo|ABBA|1974|pop
+Take a Chance on Me|ABBA|1978|pop
+Fernando|ABBA|1976|pop
+The Winner Takes It All|ABBA|1980|pop
+Super Trouper|ABBA|1980|pop
+Money, Money, Money|ABBA|1976|pop
+Hold On|Wilson Phillips|1990|pop
+Un-Break My Heart|Toni Braxton|1996|pop
+Because You Loved Me|Celine Dion|1996|pop
+It's All Coming Back to Me Now|Celine Dion|1996|pop
+The Power of Love|Celine Dion|1993|pop
+Kiss from a Rose|Seal|1994|pop
+Truly Madly Deeply|Savage Garden|1997|pop
+I Knew I Loved You|Savage Garden|1999|pop
+Torn|Natalie Imbruglia|1997|pop
+Kiss Me|Sixpence None the Richer|1998|pop
+Steal My Sunshine|Len|1999|pop
+Lovefool|The Cardigans|1996|pop
+How Bizarre|OMC|1996|pop
+Bad Day|Daniel Powter|2005|pop
+Unwritten|Natasha Bedingfield|2004|pop
+Pocketful of Sunshine|Natasha Bedingfield|2008|pop
+Bleeding Love|Leona Lewis|2007|pop
+Mercy|Duffy|2008|pop
+Valerie|Mark Ronson ft. Amy Winehouse|2007|pop
+Moves like Jagger|Maroon 5 ft. Christina Aguilera|2011|pop
+Sugar|Maroon 5|2015|pop
+Payphone|Maroon 5|2012|pop
+Memories|Maroon 5|2019|pop
+Girls Like You|Maroon 5 ft. Cardi B|2018|pop
+This Love|Maroon 5|2004|pop
+She Will Be Loved|Maroon 5|2004|pop
+Hey, Soul Sister|Train|2010|pop
+Drive By|Train|2012|pop
+I'm Yours|Jason Mraz|2008|pop
+Bubbly|Colbie Caillat|2007|pop
+Try|Colbie Caillat|2014|pop
+Banana Pancakes|Jack Johnson|2005|pop
+Good Time|Owl City and Carly Rae Jepsen|2012|pop
+Fireflies|Owl City|2009|pop
+Call Me Maybe|Carly Rae Jepsen|2011|pop
+Hall of Fame|The Script ft. will.i.am|2012|pop
+Breakeven|The Script|2008|pop
+Superheroes|The Script|2014|pop
+Some Nights|fun.|2012|pop
+We Are Young|fun. ft. Janelle Monáe|2011|pop
+Carry On|fun.|2012|pop
+Pompeii|Bastille|2013|pop
+Royals|Lorde|2013|pop
+Team|Lorde|2013|pop
+Stressed Out|Twenty One Pilots|2015|pop
+Ride|Twenty One Pilots|2015|pop
+Sit Next to Me|Foster the People|2017|pop
+High Hopes|Panic! at the Disco|2018|pop
+Victorious|Panic! at the Disco|2015|pop
+Riptide|Vance Joy|2013|pop
+Budapest|George Ezra|2013|pop
+Shotgun|George Ezra|2018|pop
+Let Her Go|Passenger|2012|pop
+Say Something|A Great Big World and Christina Aguilera|2013|pop
+Sucker|Jonas Brothers|2019|pop
+Burnin' Up|Jonas Brothers|2008|pop
+Year 3000|Jonas Brothers|2006|pop
+S.O.S.|Jonas Brothers|2007|pop
+Cool|Jonas Brothers|2019|pop
+What Makes You Beautiful|One Direction|2011|pop
+Story of My Life|One Direction|2013|pop
+Best Song Ever|One Direction|2013|pop
+Live While We're Young|One Direction|2012|pop
+Night Changes|One Direction|2014|pop
+Drag Me Down|One Direction|2015|pop
+Steal My Girl|One Direction|2014|pop
+Little Things|One Direction|2012|pop
+Kiss You|One Direction|2013|pop
+One Thing|One Direction|2012|pop
+Price Tag|Jessie J ft. B.o.B|2011|pop
+Bang Bang|Jessie J, Ariana Grande and Nicki Minaj|2014|pop
+Domino|Jessie J|2011|pop
+Cheap Thrills|Sia|2016|pop
+Elastic Heart|Sia|2015|pop
+Unstoppable|Sia|2016|pop
+Happier|Marshmello and Bastille|2018|pop
+The Middle|Zedd, Maren Morris and Grey|2018|pop
+See You Again|Wiz Khalifa ft. Charlie Puth|2015|pop
+Attention|Charlie Puth|2017|pop
+One Call Away|Charlie Puth|2015|pop
+All of Me|John Legend|2013|pop
+Green Light|John Legend|2008|pop
+Burn|Ellie Goulding|2013|pop
+Lights|Ellie Goulding|2011|pop
+Stay with Me|Sam Smith|2014|pop
+Too Good at Goodbyes|Sam Smith|2017|pop
+I'm Not the Only One|Sam Smith|2014|pop
+Dynamite|BTS|2020|pop
+Butter|BTS|2021|pop
+Permission to Dance|BTS|2021|pop
+Boy with Luv|BTS ft. Halsey|2019|pop
+How You Like That|Blackpink|2020|pop
+Super Shy|NewJeans|2023|pop
+Cupid|Fifty Fifty|2023|pop
+Good Luck, Babe!|Chappell Roan|2024|pop
+Pink Pony Club|Chappell Roan|2020|pop
+Hot to Go!|Chappell Roan|2023|pop
+Lose Control|Teddy Swims|2023|pop
+Beautiful Things|Benson Boone|2024|pop
+Too Sweet|Hozier|2024|pop
+Calm Down|Rema and Selena Gomez|2022|pop
+Lose You to Love Me|Selena Gomez|2019|pop
+Come & Get It|Selena Gomez|2013|pop
+Who Says|Selena Gomez & the Scene|2011|pop
+Love You Like a Love Song|Selena Gomez & the Scene|2011|pop
+Naturally|Selena Gomez & the Scene|2009|pop
+Wolves|Selena Gomez and Marshmello|2017|pop
+Heart Attack|Demi Lovato|2013|pop
+Skyscraper|Demi Lovato|2011|pop
+Confident|Demi Lovato|2015|pop
+Glad You Came|The Wanted|2011|pop
+Love Me Again|John Newman|2013|pop
+Lush Life|Zara Larsson|2015|pop
+Cake by the Ocean|DNCE|2015|pop
+Cheerleader|OMI|2014|pop
+Sax|Fleur East|2015|pop
+All About That Bass|Meghan Trainor|2014|pop
+Lips Are Movin|Meghan Trainor|2014|pop
+Me Too|Meghan Trainor|2016|pop
+No|Meghan Trainor|2016|pop
+Made You Look|Meghan Trainor|2022|pop
+Dear Future Husband|Meghan Trainor|2015|pop
+Golden Hour|JVKE|2022|pop
+Heat Waves|Glass Animals|2020|pop
+Bad Habit|Steve Lacy|2022|pop
+Tattoo|Loreen|2023|pop
+Dance Monkey|Tones and I|2019|pop
+Someone You Loved|Lewis Capaldi|2019|pop
+Before You Go|Lewis Capaldi|2019|pop
+Eastside|benny blanco, Halsey and Khalid|2018|pop
+Talk|Khalid|2019|pop
+Panini|Lil Nas X|2019|pop
+Juice|Lizzo|2019|pop
+Say So|Doja Cat|2019|pop
+Freedom|Pharrell Williams|2015|pop
+Crazy|Gnarls Barkley|2006|pop
+Fast Car|Tracy Chapman|1988|pop
+Such Great Heights|The Postal Service|2003|pop
+Hey There Delilah|Plain White T's|2007|pop
+Glorious|Macklemore ft. Skylar Grey|2017|pop
+Eye of the Tiger|Survivor|1982|rock
+Don't You (Forget About Me)|Simple Minds|1985|rock
+The Power of Love|Huey Lewis and the News|1985|rock
+(Everything I Do) I Do It for You|Bryan Adams|1991|rock
+Summer of '69|Bryan Adams|1984|rock
+Heaven|Bryan Adams|1984|rock
+Born to Be Wild|Steppenwolf|1968|rock
+Magic Carpet Ride|Steppenwolf|1968|rock
+Mrs. Robinson|Simon & Garfunkel|1968|rock
+All Star|Smash Mouth|1999|rock
+Believer|Imagine Dragons|2017|rock
+Thunder|Imagine Dragons|2017|rock
+Radioactive|Imagine Dragons|2012|rock
+Demons|Imagine Dragons|2013|rock
+On Top of the World|Imagine Dragons|2013|rock
+Natural|Imagine Dragons|2018|rock
+Enemy|Imagine Dragons|2021|rock
+Bones|Imagine Dragons|2022|rock
+Viva la Vida|Coldplay|2008|rock
+Yellow|Coldplay|2000|rock
+Clocks|Coldplay|2002|rock
+The Scientist|Coldplay|2002|rock
+Fix You|Coldplay|2005|rock
+Paradise|Coldplay|2011|rock
+A Sky Full of Stars|Coldplay|2014|rock
+Hymn for the Weekend|Coldplay|2016|rock
+Adventure of a Lifetime|Coldplay|2015|rock
+Don't Stop Believin'|Journey|1981|rock
+Separate Ways (Worlds Apart)|Journey|1983|rock
+Any Way You Want It|Journey|1980|rock
+Faithfully|Journey|1983|rock
+Livin' on a Prayer|Bon Jovi|1986|rock
+You Give Love a Bad Name|Bon Jovi|1986|rock
+It's My Life|Bon Jovi|2000|rock
+Wanted Dead or Alive|Bon Jovi|1987|rock
+Jump|Van Halen|1984|rock
+Panama|Van Halen|1984|rock
+Sweet Child o' Mine|Guns N' Roses|1987|rock
+Welcome to the Jungle|Guns N' Roses|1987|rock
+Paradise City|Guns N' Roses|1987|rock
+November Rain|Guns N' Roses|1991|rock
+Back in Black|AC/DC|1980|rock
+Thunderstruck|AC/DC|1990|rock
+We Will Rock You|Queen|1977|rock
+We Are the Champions|Queen|1977|rock
+Bohemian Rhapsody|Queen|1975|rock
+Another One Bites the Dust|Queen|1980|rock
+Don't Stop Me Now|Queen|1978|rock
+Somebody to Love|Queen|1976|rock
+Killer Queen|Queen|1974|rock
+Under Pressure|Queen and David Bowie|1981|rock
+Radio Ga Ga|Queen|1984|rock
+Crazy Little Thing Called Love|Queen|1979|rock
+Bicycle Race|Queen|1978|rock
+I Want to Break Free|Queen|1984|rock
+Space Oddity|David Bowie|1969|rock
+Heroes|David Bowie|1977|rock
+Starman|David Bowie|1972|rock
+Let's Dance|David Bowie|1983|rock
+Changes|David Bowie|1971|rock
+Rocket Man|Elton John|1972|rock
+Tiny Dancer|Elton John|1971|rock
+Your Song|Elton John|1970|rock
+Bennie and the Jets|Elton John|1974|rock
+Crocodile Rock|Elton John|1972|rock
+I'm Still Standing|Elton John|1983|rock
+Goodbye Yellow Brick Road|Elton John|1973|rock
+Piano Man|Billy Joel|1973|rock
+Uptown Girl|Billy Joel|1983|rock
+We Didn't Start the Fire|Billy Joel|1989|rock
+Just the Way You Are|Billy Joel|1977|rock
+It's Still Rock and Roll to Me|Billy Joel|1980|rock
+The Longest Time|Billy Joel|1983|rock
+Hey Jude|The Beatles|1968|rock
+Let It Be|The Beatles|1970|rock
+Yesterday|The Beatles|1965|rock
+Here Comes the Sun|The Beatles|1969|rock
+Yellow Submarine|The Beatles|1966|rock
+I Want to Hold Your Hand|The Beatles|1963|rock
+She Loves You|The Beatles|1963|rock
+Help!|The Beatles|1965|rock
+A Hard Day's Night|The Beatles|1964|rock
+Twist and Shout|The Beatles|1963|rock
+All You Need Is Love|The Beatles|1967|rock
+Come Together|The Beatles|1969|rock
+Octopus's Garden|The Beatles|1969|rock
+Ob-La-Di, Ob-La-Da|The Beatles|1968|rock
+Can't Buy Me Love|The Beatles|1964|rock
+Penny Lane|The Beatles|1967|rock
+Strawberry Fields Forever|The Beatles|1967|rock
+Eleanor Rigby|The Beatles|1966|rock
+Blackbird|The Beatles|1968|rock
+Love Me Do|The Beatles|1962|rock
+Hello, Goodbye|The Beatles|1967|rock
+Get Back|The Beatles|1969|rock
+Imagine|John Lennon|1971|rock
+Live and Let Die|Paul McCartney and Wings|1973|rock
+Band on the Run|Paul McCartney and Wings|1974|rock
+(I Can't Get No) Satisfaction|The Rolling Stones|1965|rock
+Paint It Black|The Rolling Stones|1966|rock
+Start Me Up|The Rolling Stones|1981|rock
+Jumpin' Jack Flash|The Rolling Stones|1968|rock
+Angie|The Rolling Stones|1973|rock
+Hotel California|Eagles|1976|rock
+Take It Easy|Eagles|1972|rock
+Dream On|Aerosmith|1973|rock
+Walk This Way|Aerosmith|1975|rock
+I Don't Want to Miss a Thing|Aerosmith|1998|rock
+Sweet Emotion|Aerosmith|1975|rock
+Stairway to Heaven|Led Zeppelin|1971|rock
+Immigrant Song|Led Zeppelin|1970|rock
+Kashmir|Led Zeppelin|1975|rock
+Black Dog|Led Zeppelin|1971|rock
+Smoke on the Water|Deep Purple|1972|rock
+Iron Man|Black Sabbath|1970|rock
+Paranoid|Black Sabbath|1970|rock
+Crazy Train|Ozzy Osbourne|1980|rock
+Enter Sandman|Metallica|1991|rock
+Nothing Else Matters|Metallica|1991|rock
+Master of Puppets|Metallica|1986|rock
+Smells Like Teen Spirit|Nirvana|1991|rock
+Come as You Are|Nirvana|1991|rock
+Seven Nation Army|The White Stripes|2003|rock
+Mr. Brightside|The Killers|2004|rock
+Somebody Told Me|The Killers|2004|rock
+Human|The Killers|2008|rock
+Boulevard of Broken Dreams|Green Day|2004|rock
+Wake Me Up When September Ends|Green Day|2005|rock
+Good Riddance (Time of Your Life)|Green Day|1997|rock
+Basket Case|Green Day|1994|rock
+Wonderwall|Oasis|1995|rock
+Don't Look Back in Anger|Oasis|1996|rock
+Bitter Sweet Symphony|The Verve|1997|rock
+Karma Police|Radiohead|1997|rock
+Under the Bridge|Red Hot Chili Peppers|1992|rock
+Can't Stop|Red Hot Chili Peppers|2002|rock
+Scar Tissue|Red Hot Chili Peppers|1999|rock
+Zombie|The Cranberries|1994|rock
+Linger|The Cranberries|1993|rock
+Dreams|The Cranberries|1992|rock
+Dreams|Fleetwood Mac|1977|rock
+Go Your Own Way|Fleetwood Mac|1977|rock
+Landslide|Fleetwood Mac|1975|rock
+Rhiannon|Fleetwood Mac|1976|rock
+Everywhere|Fleetwood Mac|1987|rock
+The Chain|Fleetwood Mac|1977|rock
+Don't Stop|Fleetwood Mac|1977|rock
+Africa|Toto|1982|rock
+Rosanna|Toto|1982|rock
+Hold the Line|Toto|1978|rock
+Every Breath You Take|The Police|1983|rock
+Message in a Bottle|The Police|1979|rock
+Every Little Thing She Does Is Magic|The Police|1981|rock
+In the Air Tonight|Phil Collins|1981|rock
+Land of Confusion|Genesis|1986|rock
+Invisible Touch|Genesis|1986|rock
+Sledgehammer|Peter Gabriel|1986|rock
+Money for Nothing|Dire Straits|1985|rock
+Sultans of Swing|Dire Straits|1978|rock
+Walk of Life|Dire Straits|1985|rock
+Owner of a Lonely Heart|Yes|1983|rock
+Roundabout|Yes|1971|rock
+Another Brick in the Wall, Part 2|Pink Floyd|1979|rock
+Comfortably Numb|Pink Floyd|1979|rock
+Wish You Were Here|Pink Floyd|1975|rock
+Money|Pink Floyd|1973|rock
+Baba O'Riley|The Who|1971|rock
+My Generation|The Who|1965|rock
+Pinball Wizard|The Who|1969|rock
+Won't Get Fooled Again|The Who|1971|rock
+Who Are You|The Who|1978|rock
+You Really Got Me|The Kinks|1964|rock
+Lola|The Kinks|1970|rock
+Purple Haze|Jimi Hendrix|1967|rock
+All Along the Watchtower|The Jimi Hendrix Experience|1968|rock
+Sunshine of Your Love|Cream|1967|rock
+Layla|Derek and the Dominos|1970|rock
+Wonderful Tonight|Eric Clapton|1977|rock
+Tears in Heaven|Eric Clapton|1992|rock
+Gimme Some Lovin'|The Spencer Davis Group|1966|rock
+The House of the Rising Sun|The Animals|1964|rock
+Gloria|Them|1964|rock
+Wild Thing|The Troggs|1966|rock
+Spirit in the Sky|Norman Greenbaum|1969|rock
+Joy to the World|Three Dog Night|1971|rock
+American Pie|Don McLean|1971|rock
+Fire and Rain|James Taylor|1970|rock
+Proud Mary|Creedence Clearwater Revival|1969|rock
+Bad Moon Rising|Creedence Clearwater Revival|1969|rock
+Fortunate Son|Creedence Clearwater Revival|1969|rock
+Have You Ever Seen the Rain|Creedence Clearwater Revival|1971|rock
+Down on the Corner|Creedence Clearwater Revival|1969|rock
+Centerfield|John Fogerty|1985|rock
+Born in the U.S.A.|Bruce Springsteen|1984|rock
+Born to Run|Bruce Springsteen|1975|rock
+Dancing in the Dark|Bruce Springsteen|1984|rock
+Glory Days|Bruce Springsteen|1985|rock
+Jack & Diane|John Mellencamp|1982|rock
+Small Town|John Mellencamp|1985|rock
+Pink Houses|John Mellencamp|1983|rock
+Free Fallin'|Tom Petty|1989|rock
+I Won't Back Down|Tom Petty|1989|rock
+American Girl|Tom Petty and the Heartbreakers|1977|rock
+Learning to Fly|Tom Petty and the Heartbreakers|1991|rock
+Runnin' Down a Dream|Tom Petty|1989|rock
+More Than a Feeling|Boston|1976|rock
+Peace of Mind|Boston|1976|rock
+Carry On Wayward Son|Kansas|1976|rock
+Dust in the Wind|Kansas|1977|rock
+Come Sail Away|Styx|1977|rock
+Mr. Roboto|Styx|1983|rock
+Renegade|Styx|1978|rock
+Hold On Loosely|.38 Special|1981|rock
+Sweet Home Alabama|Lynyrd Skynyrd|1974|rock
+Free Bird|Lynyrd Skynyrd|1974|rock
+Takin' Care of Business|Bachman-Turner Overdrive|1974|rock
+You Ain't Seen Nothing Yet|Bachman-Turner Overdrive|1974|rock
+Rock and Roll All Nite|Kiss|1975|rock
+Detroit Rock City|Kiss|1976|rock
+I Was Made for Lovin' You|Kiss|1979|rock
+Old Time Rock and Roll|Bob Seger|1978|rock
+Night Moves|Bob Seger|1976|rock
+Juke Box Hero|Foreigner|1981|rock
+Cold as Ice|Foreigner|1977|rock
+I Want to Know What Love Is|Foreigner|1984|rock
+Urgent|Foreigner|1981|rock
+Hit Me with Your Best Shot|Pat Benatar|1980|rock
+Heartbreaker|Pat Benatar|1979|rock
+Love Is a Battlefield|Pat Benatar|1983|rock
+I Love Rock 'n' Roll|Joan Jett & the Blackhearts|1981|rock
+Bad Reputation|Joan Jett|1980|rock
+Edge of Seventeen|Stevie Nicks|1981|rock
+Here I Go Again|Whitesnake|1987|rock
+The Final Countdown|Europe|1986|rock
+Pour Some Sugar on Me|Def Leppard|1987|rock
+We're Not Gonna Take It|Twisted Sister|1984|rock
+The Boys of Summer|Don Henley|1984|rock
+Hooked on a Feeling|Blue Swede|1974|rock
+Play That Funky Music|Wild Cherry|1976|rock
+Like a Rolling Stone|Bob Dylan|1965|rock
+Knockin' on Heaven's Door|Bob Dylan|1973|rock
+Moondance|Van Morrison|1970|rock
+Black Magic Woman|Santana|1970|rock
+Oye Como Va|Santana|1970|rock
+Smooth|Santana ft. Rob Thomas|1999|rock
+Maria Maria|Santana ft. The Product G&B|1999|rock
+Beautiful Day|U2|2000|rock
+With or Without You|U2|1987|rock
+I Still Haven't Found What I'm Looking For|U2|1987|rock
+Where the Streets Have No Name|U2|1987|rock
+One|U2|1991|rock
+Vertigo|U2|2004|rock
+Pride (In the Name of Love)|U2|1984|rock
+Losing My Religion|R.E.M.|1991|rock
+Everybody Hurts|R.E.M.|1992|rock
+Shiny Happy People|R.E.M.|1991|rock
+It's the End of the World as We Know It (And I Feel Fine)|R.E.M.|1987|rock
+Man on the Moon|R.E.M.|1992|rock
+Iris|Goo Goo Dolls|1998|rock
+Slide|Goo Goo Dolls|1998|rock
+Name|Goo Goo Dolls|1995|rock
+Tubthumping|Chumbawamba|1997|rock
+Don't Speak|No Doubt|1995|rock
+Just a Girl|No Doubt|1995|rock
+Ironic|Alanis Morissette|1995|rock
+Hand in My Pocket|Alanis Morissette|1995|rock
+Hold My Hand|Hootie & the Blowfish|1994|rock
+Only Wanna Be with You|Hootie & the Blowfish|1995|rock
+Run-Around|Blues Traveler|1994|rock
+What's Up?|4 Non Blondes|1992|rock
+Two Princes|Spin Doctors|1993|rock
+Closing Time|Semisonic|1998|rock
+Everything You Want|Vertical Horizon|1999|rock
+Breakfast at Tiffany's|Deep Blue Something|1995|rock
+Drops of Jupiter (Tell Me)|Train|2001|rock
+Everlong|Foo Fighters|1997|rock
+Learn to Fly|Foo Fighters|1999|rock
+Best of You|Foo Fighters|2005|rock
+The Pretender|Foo Fighters|2007|rock
+My Hero|Foo Fighters|1998|rock
+Times Like These|Foo Fighters|2002|rock
+In the End|Linkin Park|2000|rock
+Numb|Linkin Park|2003|rock
+What I've Done|Linkin Park|2007|rock
+Bring Me to Life|Evanescence|2003|rock
+My Immortal|Evanescence|2003|rock
+How You Remind Me|Nickelback|2001|rock
+Kryptonite|3 Doors Down|2000|rock
+Here Without You|3 Doors Down|2002|rock
+Drive|Incubus|1999|rock
+The Middle|Jimmy Eat World|2001|rock
+All the Small Things|Blink-182|1999|rock
+I Miss You|Blink-182|2003|rock
+In Too Deep|Sum 41|2001|rock
+1985|Bowling for Soup|2004|rock
+Absolutely (Story of a Girl)|Nine Days|2000|rock
+Sugar, We're Goin Down|Fall Out Boy|2005|rock
+Thnks fr th Mmrs|Fall Out Boy|2007|rock
+Centuries|Fall Out Boy|2014|rock
+My Songs Know What You Did in the Dark (Light Em Up)|Fall Out Boy|2013|rock
+Welcome to the Black Parade|My Chemical Romance|2006|rock
+Helena|My Chemical Romance|2005|rock
+Misery Business|Paramore|2007|rock
+Still into You|Paramore|2013|rock
+Ain't It Fun|Paramore|2014|rock
+Use Somebody|Kings of Leon|2008|rock
+Ho Hey|The Lumineers|2012|rock
+Stubborn Love|The Lumineers|2012|rock
+Little Talks|Of Monsters and Men|2011|rock
+Home|Edward Sharpe and the Magnetic Zeros|2009|rock
+I Will Wait|Mumford & Sons|2012|rock
+The Cave|Mumford & Sons|2009|rock
+Shut Up and Dance|Walk the Moon|2014|rock
+Feel It Still|Portugal. The Man|2017|rock
+Float On|Modest Mouse|2004|rock
+Take Me Out|Franz Ferdinand|2004|rock
+Feel Good Inc.|Gorillaz|2005|rock
+Buddy Holly|Weezer|1994|rock
+Say It Ain't So|Weezer|1995|rock
+Island in the Sun|Weezer|2001|rock
+Beverly Hills|Weezer|2005|rock
+Undone – The Sweater Song|Weezer|1994|rock
+Shake It Out|Florence + the Machine|2011|rock
+Dog Days Are Over|Florence + the Machine|2008|rock
+ABC|The Jackson 5|1970|oldies
+I Want You Back|The Jackson 5|1969|oldies
+I'll Be There|The Jackson 5|1970|oldies
+Rockin' Robin|Bobby Day|1958|oldies
+Good Vibrations|The Beach Boys|1966|oldies
+Surfin' U.S.A.|The Beach Boys|1963|oldies
+Wouldn't It Be Nice|The Beach Boys|1966|oldies
+Kokomo|The Beach Boys|1988|oldies
+Barbara Ann|The Beach Boys|1965|oldies
+I Get Around|The Beach Boys|1964|oldies
+Fun, Fun, Fun|The Beach Boys|1964|oldies
+California Girls|The Beach Boys|1965|oldies
+My Girl|The Temptations|1964|oldies
+Ain't Too Proud to Beg|The Temptations|1966|oldies
+Stop! In the Name of Love|The Supremes|1965|oldies
+Baby Love|The Supremes|1964|oldies
+You Can't Hurry Love|The Supremes|1966|oldies
+Where Did Our Love Go|The Supremes|1964|oldies
+Ain't No Mountain High Enough|Marvin Gaye and Tammi Terrell|1967|oldies
+I Heard It Through the Grapevine|Marvin Gaye|1968|oldies
+Respect|Aretha Franklin|1967|oldies
+Think|Aretha Franklin|1968|oldies
+(You Make Me Feel Like) A Natural Woman|Aretha Franklin|1967|oldies
+Chain of Fools|Aretha Franklin|1967|oldies
+I Got You (I Feel Good)|James Brown|1965|oldies
+Papa's Got a Brand New Bag|James Brown|1965|oldies
+Dancing in the Street|Martha and the Vandellas|1964|oldies
+Heat Wave|Martha and the Vandellas|1963|oldies
+Please Mr. Postman|The Marvelettes|1961|oldies
+Reach Out I'll Be There|Four Tops|1966|oldies
+I Can't Help Myself (Sugar Pie Honey Bunch)|Four Tops|1965|oldies
+The Tracks of My Tears|Smokey Robinson and the Miracles|1965|oldies
+The Tears of a Clown|Smokey Robinson and the Miracles|1970|oldies
+Shop Around|The Miracles|1960|oldies
+Stand by Me|Ben E. King|1961|oldies
+Under the Boardwalk|The Drifters|1964|oldies
+Save the Last Dance for Me|The Drifters|1960|oldies
+Up on the Roof|The Drifters|1962|oldies
+Johnny B. Goode|Chuck Berry|1958|oldies
+Roll Over Beethoven|Chuck Berry|1956|oldies
+Maybellene|Chuck Berry|1955|oldies
+Rock Around the Clock|Bill Haley & His Comets|1954|oldies
+Shake, Rattle and Roll|Bill Haley & His Comets|1954|oldies
+Hound Dog|Elvis Presley|1956|oldies
+Jailhouse Rock|Elvis Presley|1957|oldies
+Heartbreak Hotel|Elvis Presley|1956|oldies
+Love Me Tender|Elvis Presley|1956|oldies
+Can't Help Falling in Love|Elvis Presley|1961|oldies
+Blue Suede Shoes|Elvis Presley|1956|oldies
+All Shook Up|Elvis Presley|1957|oldies
+Suspicious Minds|Elvis Presley|1969|oldies
+Return to Sender|Elvis Presley|1962|oldies
+Don't Be Cruel|Elvis Presley|1956|oldies
+Viva Las Vegas|Elvis Presley|1964|oldies
+Burning Love|Elvis Presley|1972|oldies
+Great Balls of Fire|Jerry Lee Lewis|1957|oldies
+Whole Lotta Shakin' Goin' On|Jerry Lee Lewis|1957|oldies
+Tutti Frutti|Little Richard|1955|oldies
+Long Tall Sally|Little Richard|1956|oldies
+Good Golly, Miss Molly|Little Richard|1958|oldies
+Peggy Sue|Buddy Holly|1957|oldies
+That'll Be the Day|Buddy Holly and the Crickets|1957|oldies
+La Bamba|Ritchie Valens|1958|oldies
+Donna|Ritchie Valens|1958|oldies
+Blueberry Hill|Fats Domino|1956|oldies
+Ain't That a Shame|Fats Domino|1955|oldies
+Earth Angel|The Penguins|1954|oldies
+Only You (And You Alone)|The Platters|1955|oldies
+The Great Pretender|The Platters|1955|oldies
+Smoke Gets in Your Eyes|The Platters|1958|oldies
+Unchained Melody|The Righteous Brothers|1965|oldies
+You've Lost That Lovin' Feelin'|The Righteous Brothers|1964|oldies
+Be My Baby|The Ronettes|1963|oldies
+Leader of the Pack|The Shangri-Las|1964|oldies
+Chapel of Love|The Dixie Cups|1964|oldies
+Do Wah Diddy Diddy|Manfred Mann|1964|oldies
+Sugar, Sugar|The Archies|1969|oldies
+I'm a Believer|The Monkees|1966|oldies
+Daydream Believer|The Monkees|1967|oldies
+Last Train to Clarksville|The Monkees|1966|oldies
+Happy Together|The Turtles|1967|oldies
+California Dreamin'|The Mamas & the Papas|1965|oldies
+Monday, Monday|The Mamas & the Papas|1966|oldies
+Mr. Tambourine Man|The Byrds|1965|oldies
+Turn! Turn! Turn!|The Byrds|1965|oldies
+Blowin' in the Wind|Bob Dylan|1963|oldies
+The Times They Are a-Changin'|Bob Dylan|1964|oldies
+The Sound of Silence|Simon & Garfunkel|1965|oldies
+Bridge over Troubled Water|Simon & Garfunkel|1970|oldies
+Cecilia|Simon & Garfunkel|1970|oldies
+The Boxer|Simon & Garfunkel|1969|oldies
+Brown Eyed Girl|Van Morrison|1967|oldies
+Leaving on a Jet Plane|Peter, Paul and Mary|1969|oldies
+Puff, the Magic Dragon|Peter, Paul and Mary|1963|oldies
+If I Had a Hammer|Peter, Paul and Mary|1962|oldies
+Raindrops Keep Fallin' on My Head|B.J. Thomas|1969|oldies
+The Lion Sleeps Tonight|The Tokens|1961|oldies
+(Sittin' On) The Dock of the Bay|Otis Redding|1968|oldies
+Soul Man|Sam & Dave|1967|oldies
+Mustang Sally|Wilson Pickett|1966|oldies
+In the Midnight Hour|Wilson Pickett|1965|oldies
+Green Onions|Booker T. & the M.G.'s|1962|oldies
+What a Wonderful World|Louis Armstrong|1967|oldies
+Hello, Dolly!|Louis Armstrong|1964|oldies
+Fly Me to the Moon|Frank Sinatra|1964|oldies
+Theme from New York, New York|Frank Sinatra|1980|oldies
+My Way|Frank Sinatra|1969|oldies
+Strangers in the Night|Frank Sinatra|1966|oldies
+That's Life|Frank Sinatra|1966|oldies
+Come Fly with Me|Frank Sinatra|1958|oldies
+Mack the Knife|Bobby Darin|1959|oldies
+Beyond the Sea|Bobby Darin|1959|oldies
+Splish Splash|Bobby Darin|1958|oldies
+Unforgettable|Nat King Cole|1951|oldies
+L-O-V-E|Nat King Cole|1965|oldies
+Mona Lisa|Nat King Cole|1950|oldies
+Sway|Dean Martin|1954|oldies
+That's Amore|Dean Martin|1953|oldies
+Volare|Dean Martin|1958|oldies
+Everybody Loves Somebody|Dean Martin|1964|oldies
+Purple People Eater|Sheb Wooley|1958|oldies
+Witch Doctor|David Seville|1958|oldies
+Yakety Yak|The Coasters|1958|oldies
+Charlie Brown|The Coasters|1959|oldies
+The Twist|Chubby Checker|1960|oldies
+Let's Twist Again|Chubby Checker|1961|oldies
+Limbo Rock|Chubby Checker|1962|oldies
+The Loco-Motion|Little Eva|1962|oldies
+Mashed Potato Time|Dee Dee Sharp|1962|oldies
+Wipe Out|The Surfaris|1963|oldies
+Pipeline|The Chantays|1963|oldies
+Surfin' Bird|The Trashmen|1963|oldies
+Louie Louie|The Kingsmen|1963|oldies
+Runaround Sue|Dion|1961|oldies
+The Wanderer|Dion|1961|oldies
+Big Girls Don't Cry|The Four Seasons|1962|oldies
+Sherry|The Four Seasons|1962|oldies
+Walk Like a Man|The Four Seasons|1963|oldies
+Can't Take My Eyes Off You|Frankie Valli|1967|oldies
+December, 1963 (Oh, What a Night)|The Four Seasons|1975|oldies
+Oh, Pretty Woman|Roy Orbison|1964|oldies
+Only the Lonely|Roy Orbison|1960|oldies
+Crying|Roy Orbison|1961|oldies
+Bye Bye Love|The Everly Brothers|1957|oldies
+Wake Up Little Susie|The Everly Brothers|1957|oldies
+All I Have to Do Is Dream|The Everly Brothers|1958|oldies
+Lollipop|The Chordettes|1958|oldies
+Mr. Sandman|The Chordettes|1954|oldies
+Sh-Boom|The Chords|1954|oldies
+At the Hop|Danny & the Juniors|1957|oldies
+Book of Love|The Monotones|1958|oldies
+Tequila|The Champs|1958|oldies
+Wooly Bully|Sam the Sham and the Pharaohs|1965|oldies
+Hang On Sloopy|The McCoys|1965|oldies
+Build Me Up Buttercup|The Foundations|1968|oldies
+Downtown|Petula Clark|1964|oldies
+These Boots Are Made for Walkin'|Nancy Sinatra|1966|oldies
+Son of a Preacher Man|Dusty Springfield|1968|oldies
+I Only Want to Be with You|Dusty Springfield|1963|oldies
+You Don't Own Me|Lesley Gore|1963|oldies
+It's My Party|Lesley Gore|1963|oldies
+Diana|Paul Anka|1957|oldies
+Put Your Head on My Shoulder|Paul Anka|1959|oldies
+Venus|Frankie Avalon|1959|oldies
+Runaway|Del Shannon|1961|oldies
+Hello Mary Lou|Ricky Nelson|1961|oldies
+Travelin' Man|Ricky Nelson|1961|oldies
+Poetry in Motion|Johnny Tillotson|1960|oldies
+Love Potion No. 9|The Searchers|1964|oldies
+Glad All Over|The Dave Clark Five|1963|oldies
+I'm Into Something Good|Herman's Hermits|1964|oldies
+Mrs. Brown, You've Got a Lovely Daughter|Herman's Hermits|1965|oldies
+I'm Henry the Eighth, I Am|Herman's Hermits|1965|oldies
+Jolene|Dolly Parton|1973|country
+9 to 5|Dolly Parton|1980|country
+Coat of Many Colors|Dolly Parton|1971|country
+Islands in the Stream|Kenny Rogers and Dolly Parton|1983|country
+The Gambler|Kenny Rogers|1978|country
+Ring of Fire|Johnny Cash|1963|country
+I Walk the Line|Johnny Cash|1956|country
+A Boy Named Sue|Johnny Cash|1969|country
+Jackson|Johnny Cash and June Carter|1967|country
+Crazy|Patsy Cline|1961|country
+Walkin' After Midnight|Patsy Cline|1957|country
+I Fall to Pieces|Patsy Cline|1961|country
+Hey, Good Lookin'|Hank Williams|1951|country
+On the Road Again|Willie Nelson|1980|country
+Always on My Mind|Willie Nelson|1982|country
+The Devil Went Down to Georgia|The Charlie Daniels Band|1979|country
+Friends in Low Places|Garth Brooks|1990|country
+The Dance|Garth Brooks|1990|country
+Ain't Goin' Down ('Til the Sun Comes Up)|Garth Brooks|1993|country
+Chattahoochee|Alan Jackson|1993|country
+Where Were You (When the World Stopped Turning)|Alan Jackson|2001|country
+Achy Breaky Heart|Billy Ray Cyrus|1992|country
+Boot Scootin' Boogie|Brooks & Dunn|1992|country
+Man! I Feel Like a Woman!|Shania Twain|1999|country
+You're Still the One|Shania Twain|1998|country
+That Don't Impress Me Much|Shania Twain|1998|country
+Any Man of Mine|Shania Twain|1995|country
+Breathe|Faith Hill|1999|country
+This Kiss|Faith Hill|1998|country
+Before He Cheats|Carrie Underwood|2006|country
+Jesus, Take the Wheel|Carrie Underwood|2005|country
+Cowboy Casanova|Carrie Underwood|2009|country
+Need You Now|Lady A|2009|country
+Cruise|Florida Georgia Line|2012|country
+Meant to Be|Bebe Rexha and Florida Georgia Line|2017|country
+Tennessee Whiskey|Chris Stapleton|2015|country
+Die a Happy Man|Thomas Rhett|2015|country
+Chicken Fried|Zac Brown Band|2008|country
+Toes|Zac Brown Band|2008|country
+Wagon Wheel|Darius Rucker|2013|country
+Fast Car|Luke Combs|2023|country
+Beautiful Crazy|Luke Combs|2018|country
+Last Night|Morgan Wallen|2023|country
+Strawberry Wine|Deana Carter|1996|country
+Independence Day|Martina McBride|1994|country
+Concrete Angel|Martina McBride|2002|country
+Live Like You Were Dying|Tim McGraw|2004|country
+Humble and Kind|Tim McGraw|2016|country
+I Hope You Dance|Lee Ann Womack|2000|country
+Wide Open Spaces|Dixie Chicks|1998|country
+Cowboy Take Me Away|Dixie Chicks|1999|country
+Should've Been a Cowboy|Toby Keith|1993|country
+God Bless the U.S.A.|Lee Greenwood|1984|country
+Rhinestone Cowboy|Glen Campbell|1975|country
+Gentle on My Mind|Glen Campbell|1967|country
+King of the Road|Roger Miller|1965|country
+Mountain Music|Alabama|1982|country
+Amarillo by Morning|George Strait|1983|country
+Check Yes or No|George Strait|1995|country
+Take Me Home, Country Roads|John Denver|1971|country
+Rocky Mountain High|John Denver|1972|country
+Annie's Song|John Denver|1974|country
+Old Town Road|Lil Nas X|2019|country
+Texas Hold 'Em|Beyoncé|2024|country
+Stayin' Alive|Bee Gees|1977|dance
+Night Fever|Bee Gees|1977|dance
+How Deep Is Your Love|Bee Gees|1977|dance
+Dancing Queen|ABBA|1976|dance
+Gimme! Gimme! Gimme! (A Man After Midnight)|ABBA|1979|dance
+I Will Survive|Gloria Gaynor|1978|dance
+Le Freak|Chic|1978|dance
+Good Times|Chic|1979|dance
+Funkytown|Lipps Inc.|1980|dance
+Disco Inferno|The Trammps|1976|dance
+Boogie Oogie Oogie|A Taste of Honey|1978|dance
+That's the Way (I Like It)|KC and the Sunshine Band|1975|dance
+Get Down Tonight|KC and the Sunshine Band|1975|dance
+Hot Stuff|Donna Summer|1979|dance
+Last Dance|Donna Summer|1978|dance
+I Feel Love|Donna Summer|1977|dance
+Kung Fu Fighting|Carl Douglas|1974|dance
+We Are Family|Sister Sledge|1979|dance
+Ring My Bell|Anita Ward|1979|dance
+Don't Leave Me This Way|Thelma Houston|1976|dance
+Rock the Boat|The Hues Corporation|1974|dance
+Car Wash|Rose Royce|1976|dance
+The Hustle|Van McCoy|1975|dance
+Y.M.C.A.|Village People|1978|dance
+Celebration|Kool & the Gang|1980|dance
+Get Down On It|Kool & the Gang|1981|dance
+September|Earth, Wind & Fire|1978|dance
+Boogie Wonderland|Earth, Wind & Fire|1979|dance
+Let's Groove|Earth, Wind & Fire|1981|dance
+Electric Boogie|Marcia Griffiths|1983|dance
+Gonna Make You Sweat (Everybody Dance Now)|C+C Music Factory|1990|dance
+Rhythm Is a Dancer|Snap!|1992|dance
+The Power|Snap!|1990|dance
+Pump Up the Jam|Technotronic|1989|dance
+What Is Love|Haddaway|1993|dance
+Rhythm of the Night|Corona|1993|dance
+Mr. Vain|Culture Beat|1993|dance
+Be My Lover|La Bouche|1995|dance
+Sandstorm|Darude|1999|dance
+Better Off Alone|Alice Deejay|1999|dance
+Freed from Desire|Gala|1996|dance
+Macarena|Los del Río|1995|dance
+Mambo No. 5 (A Little Bit of...)|Lou Bega|1999|dance
+Blue (Da Ba Dee)|Eiffel 65|1998|dance
+Barbie Girl|Aqua|1997|dance
+Cotton Eye Joe|Rednex|1994|dance
+I Like to Move It|Reel 2 Real|1993|dance
+Who Let the Dogs Out|Baha Men|2000|dance
+Cha Cha Slide|DJ Casper|2000|dance
+Cupid Shuffle|Cupid|2007|dance
+Gangnam Style|PSY|2012|dance
+Watch Me (Whip/Nae Nae)|Silentó|2015|dance
+I Gotta Feeling|The Black Eyed Peas|2009|dance
+Boom Boom Pow|The Black Eyed Peas|2009|dance
+Pump It|The Black Eyed Peas|2005|dance
+Party Rock Anthem|LMFAO|2011|dance
+Just Dance|Lady Gaga|2008|dance
+Rain on Me|Lady Gaga and Ariana Grande|2020|dance
+We Found Love|Rihanna ft. Calvin Harris|2011|dance
+Titanium|David Guetta ft. Sia|2011|dance
+I'm Good (Blue)|David Guetta and Bebe Rexha|2022|dance
+Wake Me Up|Avicii|2013|dance
+Levels|Avicii|2011|dance
+Hey Brother|Avicii|2013|dance
+The Nights|Avicii|2014|dance
+Waiting for Love|Avicii|2015|dance
+Animals|Martin Garrix|2013|dance
+Summer|Calvin Harris|2014|dance
+Feel So Close|Calvin Harris|2011|dance
+This Is What You Came For|Calvin Harris ft. Rihanna|2016|dance
+One Kiss|Calvin Harris and Dua Lipa|2018|dance
+Lean On|Major Lazer and DJ Snake|2015|dance
+Faded|Alan Walker|2015|dance
+Alone|Marshmello|2016|dance
+Clarity|Zedd ft. Foxes|2012|dance
+Stay the Night|Zedd ft. Hayley Williams|2013|dance
+Don't You Worry Child|Swedish House Mafia|2012|dance
+Harlem Shake|Baauer|2012|dance
+Get Lucky|Daft Punk ft. Pharrell Williams|2013|dance
+One More Time|Daft Punk|2000|dance
+Around the World|Daft Punk|1997|dance
+Harder, Better, Faster, Stronger|Daft Punk|2001|dance
+Rather Be|Clean Bandit ft. Jess Glynne|2014|dance
+Symphony|Clean Bandit ft. Zara Larsson|2017|dance
+Superstition|Stevie Wonder|1972|rnb
+Sir Duke|Stevie Wonder|1976|rnb
+Isn't She Lovely|Stevie Wonder|1976|rnb
+Signed, Sealed, Delivered I'm Yours|Stevie Wonder|1970|rnb
+Higher Ground|Stevie Wonder|1973|rnb
+What's Going On|Marvin Gaye|1971|rnb
+Shining Star|Earth, Wind & Fire|1975|rnb
+Love Train|The O'Jays|1972|rnb
+Lean on Me|Bill Withers|1972|rnb
+Ain't No Sunshine|Bill Withers|1971|rnb
+Lovely Day|Bill Withers|1977|rnb
+Just the Two of Us|Grover Washington Jr. and Bill Withers|1980|rnb
+Let's Stay Together|Al Green|1971|rnb
+End of the Road|Boyz II Men|1992|rnb
+Motownphilly|Boyz II Men|1991|rnb
+Waterfalls|TLC|1995|rnb
+Survivor|Destiny's Child|2001|rnb
+Say My Name|Destiny's Child|1999|rnb
+Crazy in Love|Beyoncé ft. Jay-Z|2003|rnb
+Single Ladies (Put a Ring on It)|Beyoncé|2008|rnb
+Halo|Beyoncé|2008|rnb
+Irreplaceable|Beyoncé|2006|rnb
+Love On Top|Beyoncé|2011|rnb
+No One|Alicia Keys|2007|rnb
+Fallin'|Alicia Keys|2001|rnb
+Girl on Fire|Alicia Keys|2012|rnb
+If I Ain't Got You|Alicia Keys|2003|rnb
+Ordinary People|John Legend|2004|rnb
+Better|Khalid|2018|rnb
+Leave the Door Open|Silk Sonic|2021|rnb
+Hey Ya!|OutKast|2003|rnb
+Where Is the Love?|The Black Eyed Peas|2003|rnb
+Let's Get It Started|The Black Eyed Peas|2004|rnb
+Empire State of Mind|Jay-Z ft. Alicia Keys|2009|rnb
+Can't Hold Us|Macklemore & Ryan Lewis|2012|rnb
+Rapper's Delight|The Sugarhill Gang|1979|rnb
+It Takes Two|Rob Base and DJ E-Z Rock|1988|rnb
+It's Tricky|Run-DMC|1986|rnb
+Parents Just Don't Understand|DJ Jazzy Jeff & the Fresh Prince|1988|rnb
+Summertime|DJ Jazzy Jeff & the Fresh Prince|1991|rnb
+Bust a Move|Young MC|1989|rnb
+Ice Ice Baby|Vanilla Ice|1990|rnb
+U Can't Touch This|MC Hammer|1990|rnb
+Jump Around|House of Pain|1992|rnb
+Whoomp! (There It Is)|Tag Team|1993|rnb
+Jump|Kris Kross|1992|rnb
+Gettin' Jiggy wit It|Will Smith|1998|rnb
+Miami|Will Smith|1998|rnb
+Nothin' on You|B.o.B ft. Bruno Mars|2009|rnb
+Magic|B.o.B ft. Rivers Cuomo|2010|rnb
+All I Want for Christmas Is You|Mariah Carey|1994|holiday
+Santa Claus Is Comin' to Town|Mariah Carey|1994|holiday
+Last Christmas|Wham!|1984|holiday
+The Christmas Song|Nat King Cole|1946|holiday
+Let It Snow! Let It Snow! Let It Snow!|Dean Martin|1959|holiday
+Rudolph the Red-Nosed Reindeer|Gene Autry|1949|holiday
+Frosty the Snowman|Gene Autry|1950|holiday
+Here Comes Santa Claus|Gene Autry|1947|holiday
+White Christmas|Bing Crosby|1942|holiday
+I'll Be Home for Christmas|Bing Crosby|1943|holiday
+It's Beginning to Look a Lot Like Christmas|Perry Como|1951|holiday
+Jingle Bell Rock|Bobby Helms|1957|holiday
+Rockin' Around the Christmas Tree|Brenda Lee|1958|holiday
+A Holly Jolly Christmas|Burl Ives|1964|holiday
+Feliz Navidad|José Feliciano|1970|holiday
+Blue Christmas|Elvis Presley|1957|holiday
+Sleigh Ride|The Ronettes|1963|holiday
+Silver Bells|Bing Crosby and Carol Richards|1950|holiday
+Have Yourself a Merry Little Christmas|Judy Garland|1944|holiday
+Do They Know It's Christmas?|Band Aid|1984|holiday
+Wonderful Christmastime|Paul McCartney|1979|holiday
+Happy Xmas (War Is Over)|John Lennon and Yoko Ono|1971|holiday
+Underneath the Tree|Kelly Clarkson|2013|holiday
+Mistletoe|Justin Bieber|2011|holiday
+Christmas (Baby Please Come Home)|Darlene Love|1963|holiday
+Little Saint Nick|The Beach Boys|1963|holiday
+Run Rudolph Run|Chuck Berry|1958|holiday
+Grandma Got Run Over by a Reindeer|Elmo & Patsy|1979|holiday
+The Chipmunk Song (Christmas Don't Be Late)|The Chipmunks|1958|holiday
+Christmas Time Is Here|Vince Guaraldi Trio|1965|holiday
+Monster Mash|Bobby "Boris" Pickett|1962|holiday
+Linus and Lucy|Vince Guaraldi Trio|1964|kids
+Mahna Mahna|The Muppets|1969|kids
+Rubber Duckie|Ernie|1970|kids
+C Is for Cookie|Cookie Monster|1971|kids
+Bein' Green|Kermit the Frog|1970|kids
+Sesame Street Theme|Sesame Street|1969|kids
+Won't You Be My Neighbor?|Fred Rogers|1968|kids
+SpongeBob SquarePants Theme|Pat Pinney|1999|kids
+Pokémon Theme|Jason Paige|1998|kids
+Teenage Mutant Ninja Turtles Theme|Chuck Lorre and Dennis C. Brown|1987|kids
+Baby Shark|Pinkfong|2016|kids
+DuckTales Theme|Jeff Pescetto|1987|kids
+Phineas and Ferb Theme|Bowling for Soup|2007|kids
+Gravity Falls Theme|Brad Breeck|2012|kids
+Bluey Theme Tune|Joff Bush|2018|kids
+Paw Patrol Theme|Paw Patrol|2013|kids
+Mickey Mouse Club March|Jimmie Dodd|1955|kids
+Hot Dog!|They Might Be Giants|2006|kids
+The Muppet Show Theme|The Muppets|1976|kids
+Go Go Power Rangers|Ron Wasserman|1993|kids
+Spider-Man Theme|Paul Francis Webster and Bob Harris|1967|kids
+Batman Theme|Neal Hefti|1966|kids
+Think! (Jeopardy! Theme)|Merv Griffin|1964|kids
+The Fresh Prince of Bel-Air Theme|Will Smith|1990|kids
+The Simpsons Theme|Danny Elfman|1989|kids
+I'll Be There for You|The Rembrandts|1995|kids
+The Addams Family Theme|Vic Mizzy|1964|kids
+Meet the Flintstones|The Flintstones|1962|kids
+Scooby-Doo, Where Are You!|Larry Marks|1969|kids
+Best of Both Worlds|Hannah Montana|2006|kids
+Nobody's Perfect|Hannah Montana|2007|kids
+Everything Is Not What It Seems|Selena Gomez|2007|kids
+Super Mario Bros. Theme|Koji Kondo|1985|kids
+The Legend of Zelda Theme|Koji Kondo|1986|kids
+Sweden|C418|2011|kids
+Megalovania|Toby Fox|2015|kids
+Still Alive|Jonathan Coulton|2007|kids
+The Hokey Pokey|Ray Anthony|1953|kids`.trim().split("\n").map(l => { const [t, a, y, cat] = l.split("|"); return { t, a, y: +y, cat }; });
+const NT_TUNE_CATS = { all: "🎵 All tunes", kids: "🧸 Kids' songs", holiday: "🎄 Holiday", folk: "🗽 Folk & America", classical: "🎻 Classical" };
+const NT_SONG_CATS = { all: "🎵 All songs", pop: "🎤 Pop", rock: "🎸 Rock", movie: "🎬 Movies & shows", oldies: "📻 Oldies", country: "🤠 Country", dance: "🪩 Dance & disco", rnb: "🎷 R&B & rap", holiday: "🎄 Holiday", kids: "🧸 Kids & TV" };
+const NT_INST = { piano: "🎹 Piano", flute: "🪈 Flute", "8bit": "👾 8-bit" };
+const NT_STAGES = [4, 8, 12, Infinity], NT_STAGE_PTS = [100, 75, 50, 30];
+const NT_SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+function ntParse(s) {   // "C4 D4e F#5h." → notes with a pitch (Hz) and a length (in beats)
+  let oct = 4;
+  return s.trim().split(/\s+/).map(tok => {
+    const m = tok.match(/^(R|[A-G])(#|b)?(\d)?([whqes])?(\.)?$/); if (!m) return { f: 0, d: 1 };
+    let d = { w: 4, h: 2, q: 1, e: .5, s: .25 }[m[4] || "q"]; if (m[5]) d *= 1.5;
+    if (m[1] === "R") return { f: 0, d };
+    if (m[3]) oct = +m[3];
+    const midi = NT_SEMI[m[1]] + (m[2] === "#" ? 1 : m[2] === "b" ? -1 : 0) + (oct + 1) * 12;
+    return { f: 440 * Math.pow(2, (midi - 69) / 12), d };
+  });
+}
+// names: lowercase, no accents or punctuation, and "the"/"a" don't matter
+const ntNorm = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ").replace(/\b(the|a|an)\b/g, " ").replace(/\s+/g, " ").trim();
+function ntForms(title, alts = []) {   // every way the name can be typed: the whole title, without the (part in brackets), just the brackets, and other names
+  const out = new Set(), add = x => { const n = ntNorm(x); if (n) out.add(n); };
+  add(title); add(title.replace(/\([^)]*\)/g, " ")); (title.match(/\(([^)]*)\)/g) || []).forEach(p => add(p.slice(1, -1))); alts.forEach(add);
+  return [...out];
+}
+let NT_ALL = null;   // every tune and song name, so a different real song's name doesn't count as a misspelling
+const ntDist = (t, f) => Math.min(rhDist(t, f), rhDist(t.replace(/ /g, ""), f.replace(/ /g, "")), rhDist(rhKey(t), rhKey(f)));
+function ntMatch(typed, forms) {
+  const t = ntNorm(typed); if (!t) return { yes: false };
+  NT_ALL ||= [...new Set([...NT_TUNES.flatMap(x => ntForms(x.t, x.alts)), ...NT_SONGS.flatMap(x => ntForms(x.t))])];
+  let best = { d: Infinity, f: null }, other = Infinity;
+  for (const f of forms) { const d = ntDist(t, f); if (d < best.d) best = { d, f }; }
+  const allow = n => n <= 3 ? 0 : n <= 6 ? 1 : n <= 12 ? 2 : Math.floor(n / 5);
+  if (best.d > 0 && best.d <= allow(best.f.length)) for (const f of NT_ALL) if (!forms.includes(f) && Math.abs(f.length - t.length) <= best.d) { const d = ntDist(t, f); if (d < other) other = d; }
+  const yes = best.f !== null && best.d <= allow(best.f.length) && best.d <= other;
+  return { yes, exact: yes && forms.includes(t) };
+}
+let NT_TIMERS = [];
+const ntStop = () => { NT_TIMERS.forEach(clearTimeout); NT_TIMERS = []; };
+function ntPlay(notes, bpm, inst, upto = notes.length, onNote, onEnd) {   // plays notes one at a time (each one is timed, so leaving the page stops it)
+  ntStop(); const a = naAudio(); if (!a) return;
+  const beat = 60 / bpm; let at = 0;
+  notes.slice(0, upto).forEach((n, i) => {
+    const dur = n.d * beat;
+    NT_TIMERS.push(naTimer(setTimeout(() => { if (n.f) ntNote(a, n.f, dur, inst); onNote?.(i); }, at * 1000)));
+    at += dur;
+  });
+  NT_TIMERS.push(naTimer(setTimeout(() => onEnd?.(), at * 1000 + 150)));
+}
+function ntNote(a, f, dur, inst) {
+  const t = a.currentTime + .01, o = a.createOscillator(), g = a.createGain(), len = Math.max(.09, dur * .92);
+  o.type = inst === "8bit" ? "square" : inst === "flute" ? "sine" : "triangle"; o.frequency.setValueAtTime(f, t);
+  const peak = inst === "8bit" ? .07 : inst === "flute" ? .2 : .26;
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + .012);
+  if (inst === "piano") g.gain.exponentialRampToValueAtTime(.002, t + Math.max(.3, len * 1.3));
+  else { g.gain.setValueAtTime(peak, t + len - .03); g.gain.linearRampToValueAtTime(0, t + len); }
+  if (inst === "flute") { const l = a.createOscillator(), lg = a.createGain(); l.frequency.value = 5.5; lg.gain.value = f * .007; l.connect(lg); lg.connect(o.frequency); l.start(t); l.stop(t + len + .05); }
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + Math.max(.32, len * 1.3) + .05);
+}
+function ntStyles() {
+  if (document.getElementById("nt-css")) return;
+  const st = document.createElement("style"); st.id = "nt-css";
+  st.textContent = `
+  .nt { position: relative; border-radius: 18px; padding: 16px; color: #fff8e6; overflow: hidden; background: radial-gradient(circle at 50% -10%, rgba(255,214,0,.35), transparent 55%), radial-gradient(circle at 0% 100%, rgba(255,43,214,.25), transparent 50%), linear-gradient(170deg, #2a0845, #12002a); border: 3px solid #ffd60a; box-shadow: 0 0 30px rgba(255,214,0,.25), inset 0 0 0 4px rgba(255,214,0,.15); }
+  .nt::before { content: ""; position: absolute; inset: 6px; border-radius: 12px; pointer-events: none; background-image: radial-gradient(circle, #ffe66d 0 2px, transparent 3px); background-size: 22px 22px; background-position: 0 0; opacity: .25; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask: linear-gradient(#000 0 0); }
+  .nt > * { position: relative; }
+  .nt h1 { font-family: var(--display); font-size: 2.1rem; line-height: 1.1; margin: 0; color: #ffd60a; text-shadow: 0 3px 0 #8a4b00, 0 0 18px rgba(255,214,0,.5); text-align: center; }
+  .nt-sub { text-align: center; color: #f3dcff; margin: 6px 0 14px; }
+  .nt-modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  .nt-mode { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 12px; border-radius: 18px; border: 0; cursor: pointer; font: inherit; color: #2a0845; background: linear-gradient(180deg, #ffe66d, #ffc300); box-shadow: 0 6px 0 #b38600, 0 0 22px rgba(255,214,0,.35); text-align: center; transition: transform .08s; }
+  .nt-mode.pink { background: linear-gradient(180deg, #ff8ad8, #ff3fb0); color: #2a0020; box-shadow: 0 6px 0 #9c1266, 0 0 22px rgba(255,63,176,.35); }
+  .nt-mode:active { transform: translateY(4px); }
+  .nt-mode span { font-size: 2.2rem; } .nt-mode b { font-family: var(--display); font-size: 1.4rem; } .nt-mode small { font-weight: 700; font-size: .9rem; }
+  .nt-h { font-weight: 800; color: #f3dcff; font-size: 14px; margin: 16px 0 6px; }
+  .nt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .nt-chip { font: inherit; font-weight: 800; font-size: 14px; color: #fff8e6; background: rgba(255,255,255,.08); border: 2px solid rgba(255,214,0,.4); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+  .nt-chip.on { background: #ffd60a; color: #2a0845; border-color: #ffd60a; }
+  .nt-tiny { color: #d9c2ef; font-size: 13px; margin: 14px 0 0; text-align: center; }
+  .nt-hud { display: flex; justify-content: space-between; gap: 8px; font-weight: 800; margin-bottom: 8px; flex-wrap: wrap; }
+  .nt-bar { height: 8px; background: rgba(255,255,255,.12); border-radius: 9px; overflow: hidden; margin-bottom: 12px; } .nt-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ffd60a, #ff3fb0); transition: width .25s; }
+  .nt-card { background: rgba(20,0,40,.85); border: 2px solid #ffd60a; border-radius: 18px; padding: 16px; }
+  .nt-card.yes { border-color: #3dff9a; box-shadow: 0 0 24px rgba(61,255,154,.35); } .nt-card.no { border-color: #ff4d6d; box-shadow: 0 0 24px rgba(255,77,109,.3); }
+  .nt-kind { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #ff9be0; }
+  .nt-eq { display: flex; justify-content: center; align-items: flex-end; gap: 5px; height: 64px; margin: 10px 0; }
+  .nt-eq i { width: 12px; border-radius: 4px 4px 0 0; background: linear-gradient(#ffd60a, #ff3fb0); height: 10px; transition: height .12s; }
+  .nt-eq.on i { animation: ntBounce .5s ease-in-out infinite alternate; } .nt-eq.on i:nth-child(2n) { animation-delay: -.2s; } .nt-eq.on i:nth-child(3n) { animation-delay: -.35s; }
+  @keyframes ntBounce { from { height: 10px; } to { height: 60px; } }
+  .nt-notes { text-align: center; font-weight: 800; color: #ffe66d; margin: 0 0 10px; }
+  .nt-clues { display: grid; gap: 6px; margin: 10px 0; font-size: 1.05rem; } .nt-clues b { color: #ffe66d; }
+  .nt-blanks { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.5rem; font-weight: 800; letter-spacing: .12em; text-align: center; margin: 12px 0; line-height: 1.6; overflow-wrap: anywhere; color: #fff; }
+  .nt-blanks .gap { display: inline-block; width: .9em; }
+  .nt-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .nt-btn { flex: 1; min-width: 120px; font: inherit; font-weight: 800; font-size: 1.02rem; border: 0; border-radius: 14px; padding: 12px; cursor: pointer; background: linear-gradient(180deg, #ffe66d, #ffc300); color: #2a0845; box-shadow: 0 4px 0 #b38600; }
+  .nt-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b38600; }
+  .nt-btn.alt { background: rgba(255,255,255,.12); color: #fff8e6; box-shadow: 0 4px 0 rgba(0,0,0,.35); }
+  .nt-btn.pink { background: linear-gradient(180deg, #ff8ad8, #ff3fb0); color: #2a0020; box-shadow: 0 4px 0 #9c1266; }
+  .nt-btn:disabled { opacity: .45; cursor: default; }
+  .nt-form { display: flex; gap: 8px; margin-top: 10px; }
+  .nt-in { flex: 1; min-width: 0; font: inherit; font-size: 1.2rem; font-weight: 700; padding: 12px 14px; border-radius: 12px; border: 2px solid #ff3fb0; background: #0d0020; color: #fff; }
+  .nt-in:focus { outline: none; border-color: #ffd60a; box-shadow: 0 0 0 3px rgba(255,214,0,.3); }
+  .nt-in.shake { animation: rhShake .3s; }
+  .nt-go { flex: none; min-width: 0; padding: 12px 18px; }
+  .nt-res { font-family: var(--display); font-size: 1.6rem; margin: 0; } .nt-res.yes { color: #3dff9a; } .nt-res.no { color: #ff6b85; }
+  .nt-ans { font-size: 1.25rem; font-weight: 800; margin: 6px 0 2px; } .nt-by { color: #e6cff7; margin: 0; }
+  .nt-spell { color: #ffe66d; font-weight: 700; margin: 4px 0; } .nt-you { color: #d9c2ef; font-size: 14px; margin: 2px 0; }
+  .nt-pts { display: inline-block; font-weight: 800; color: #12002a; background: #3dff9a; border-radius: 999px; padding: 3px 12px; margin: 8px 0 2px; }
+  .nt-big { font-family: var(--display); font-size: 4rem; color: #ffd60a; text-shadow: 0 4px 0 #8a4b00; text-align: center; margin: 4px 0; }
+  .nt-rank { text-align: center; font-size: 1.3rem; font-weight: 800; color: #ff9be0; margin: 0; }
+  .nt-end p { text-align: center; }
+  .nt-list { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; } .nt-list li { background: rgba(255,255,255,.07); border-radius: 10px; padding: 8px 10px; }
+  .nt-hidden { display: none !important; }
+  @keyframes rhShake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }`;
+  document.head.appendChild(st);
+}
+function startNameThatTune() {
+  ntStyles(); ntStop();
+  appScreen("🎵 Name That Tune", `<div class="nt" id="nt">
+  <section id="nt-home">
+    <h1>🎵 Name That Tune 🎵</h1>
+    <p class="nt-sub">Hear a tune and name it, or name a famous song from clues. Type the name: close spelling counts!</p>
+    <div class="nt-modes">
+      <button class="nt-mode" id="nt-hear" type="button"><span>🎹</span><b>Hear It</b><small>${NT_TUNES.length} real melodies. The fewer notes you need, the more points!</small></button>
+      <button class="nt-mode pink" id="nt-clue" type="button"><span>🧩</span><b>Song Clues</b><small>${fmt(NT_SONGS.length)} real songs. Name them from the artist, the year and letter hints.</small></button>
+    </div>
+    <p class="nt-h">🎹 Hear It tunes</p><div class="nt-chips" id="nt-hcats"></div>
+    <p class="nt-h">🔊 Sound</p><div class="nt-chips" id="nt-insts"></div>
+    <p class="nt-h">🧩 Song Clues songs</p><div class="nt-chips" id="nt-ccats"></div>
+    <p class="nt-tiny" id="nt-bests"></p>
+  </section>
+  <section id="nt-play" class="nt-hidden">
+    <div class="nt-hud"><span id="nt-count"></span><span id="nt-streak"></span><span id="nt-score">0 pts</span></div>
+    <div class="nt-bar"><i id="nt-bar"></i></div>
+    <div class="nt-card" id="nt-card" aria-live="polite"></div>
+    <div class="nt-row"><button class="nt-btn alt" id="nt-quit" type="button">⏹ Stop</button></div>
+  </section>
+  <section id="nt-end" class="nt-hidden nt-end"></section>
+</div>`);
+  const $ = id => document.getElementById("nt-" + id);
+  let H = Object.assign({ bestHear: 0, bestClue: 0, inst: "piano", hcat: "all", ccat: "all", named: 0 }, store.get("tune_v1", {})), G = null;
+  if (!NT_INST[H.inst]) H.inst = "piano"; if (!NT_TUNE_CATS[H.hcat]) H.hcat = "all"; if (!NT_SONG_CATS[H.ccat]) H.ccat = "all";
+  const saveH = () => store.set("tune_v1", H);
+  const show = id => ["home", "play", "end"].forEach(k => $(k).classList.toggle("nt-hidden", k !== id));
+  const focusIn = () => { const i = $("in"); if (i) try { i.focus({ preventScroll: true }); } catch (e) { i.focus(); } };
+  const chips = (el, obj, key) => { el.innerHTML = Object.entries(obj).map(([k, v]) => `<button class="nt-chip${H[key] === k ? " on" : ""}" type="button" data-k="${k}" aria-pressed="${H[key] === k}">${v}</button>`).join(""); el.onclick = e => { const b = e.target.closest("[data-k]"); if (!b) return; H[key] = b.dataset.k; saveH(); home(); if (key === "inst") { const tn = NT_TUNES.find(x => x.t === "Twinkle Twinkle Little Star"); ntPlay(ntParse(tn.notes), tn.bpm, H.inst, 4); } }; };
+  function home() {
+    show("home"); ntStop();
+    chips($("hcats"), NT_TUNE_CATS, "hcat"); chips($("insts"), NT_INST, "inst"); chips($("ccats"), NT_SONG_CATS, "ccat");
+    $("bests").textContent = `🏆 Best Hear It round: ${H.bestHear ? fmt(H.bestHear) + " pts" : "—"} · Best Song Clues round: ${H.bestClue ? fmt(H.bestClue) + " pts" : "—"} · Tunes and songs named: ${fmt(H.named || 0)}`;
+  }
+  function start(mode) {
+    naAudio();
+    const pool = mode === "hear" ? NT_TUNES.map((x, i) => i).filter(i => H.hcat === "all" || NT_TUNES[i].cat === H.hcat) : NT_SONGS.map((x, i) => i).filter(i => H.ccat === "all" || NT_SONGS[i].cat === H.ccat);
+    G = { mode, list: shuffle(pool).slice(0, 10), n: 0, score: 0, right: 0, streak: 0, got: [], missed: [] };
+    G.total = G.list.length; show("play"); ask();
+  }
+  function hud() {
+    $("count").textContent = `${G.mode === "hear" ? "🎹 Tune" : "🧩 Song"} ${Math.min(G.n + 1, G.total)} of ${G.total}`;
+    $("bar").style.width = (100 * G.n / G.total) + "%";
+    $("streak").textContent = G.streak >= 2 ? `🔥 ${G.streak} in a row` : `✅ ${G.right} right`;
+    $("score").textContent = `${fmt(G.score)} pts`;
+  }
+  const blanks = (title, shown) => [...title].map((c, i) => /[a-z0-9]/i.test(c) ? (shown.has(i) ? esc(c) : "_") : c === " " ? `<span class="gap"></span>` : esc(c)).join("");
+  function ask() {
+    if (G.n >= G.total) return end();
+    G.locked = false; G.stage = 0; G.hints = 0; G.shown = new Set(); hud();
+    const idx = G.list[G.n];
+    if (G.mode === "hear") {
+      const tn = NT_TUNES[idx]; G.cur = { t: tn.t, forms: ntForms(tn.t, tn.alts), notes: ntParse(tn.notes), bpm: tn.bpm, sub: NT_TUNE_CATS[tn.cat] };
+      $("card").className = "nt-card";
+      $("card").innerHTML = `<div class="nt-kind">🎹 Name that tune!</div>
+        <div class="nt-eq" id="nt-eq">${"<i></i>".repeat(9)}</div><p class="nt-notes" id="nt-notes"></p>
+        <div class="nt-row"><button class="nt-btn pink" id="nt-playbtn" type="button">▶ Play it again</button><button class="nt-btn alt" id="nt-more" type="button">➕ More notes</button></div>
+        <form class="nt-form" id="nt-form" autocomplete="off"><input class="nt-in" id="nt-in" type="text" placeholder="Name the tune…" aria-label="Your answer" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" maxlength="60"><button class="nt-btn nt-go" type="submit">✓</button></form>
+        <div class="nt-row"><button class="nt-btn alt" id="nt-idk" type="button">🤷 Show me</button></div>`;
+      $("playbtn").addEventListener("click", () => { playStage(); focusIn(); });
+      $("more").addEventListener("click", () => { if (G.stage < NT_STAGES.length - 1) G.stage++; playStage(); focusIn(); });
+      playStage();
+    } else {
+      const sg = NT_SONGS[idx]; G.cur = { t: sg.t, forms: ntForms(sg.t), a: sg.a, y: sg.y, sub: NT_SONG_CATS[sg.cat] };
+      $("card").className = "nt-card";
+      $("card").innerHTML = `<div class="nt-kind">🧩 Name that song!</div>
+        <div class="nt-clues"><div>🎤 <b>Artist:</b> ${esc(sg.a)}</div><div>📅 <b>Year:</b> ${sg.y}</div><div>🏷️ <b>Kind:</b> ${NT_SONG_CATS[sg.cat].replace(/^\S+ /, "")}</div></div>
+        <div class="nt-blanks" id="nt-blanks">${blanks(sg.t, G.shown)}</div>
+        <div class="nt-row"><button class="nt-btn pink" id="nt-hint" type="button">💡 Hint</button></div>
+        <form class="nt-form" id="nt-form" autocomplete="off"><input class="nt-in" id="nt-in" type="text" placeholder="Name the song…" aria-label="Your answer" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" maxlength="80"><button class="nt-btn nt-go" type="submit">✓</button></form>
+        <div class="nt-row"><button class="nt-btn alt" id="nt-idk" type="button">🤷 Show me</button></div>`;
+      $("hint").addEventListener("click", () => {   // first the first letter of every word, then a few more letters each time
+        const t = G.cur.t, letters = [...t].map((c, i) => /[a-z0-9]/i.test(c) ? i : -1).filter(i => i >= 0);
+        if (!G.hints) [...t].forEach((c, i) => { if (/[a-z0-9]/i.test(c) && (i === 0 || !/[a-z0-9']/i.test(t[i - 1]))) G.shown.add(i); });
+        else shuffle(letters.filter(i => !G.shown.has(i))).slice(0, Math.max(1, Math.ceil(letters.length / 5))).forEach(i => G.shown.add(i));
+        G.hints++; $("blanks").innerHTML = blanks(t, G.shown); $("hint").textContent = `💡 Hint (${Math.max(20, 100 - G.hints * 20)} pts left)`;
+        if (letters.every(i => G.shown.has(i))) $("hint").disabled = true;
+        focusIn();
+      });
+    }
+    $("form").addEventListener("submit", e => { e.preventDefault(); answer(false); });
+    $("idk").addEventListener("click", () => answer(true));
+    focusIn();
+  }
+  function playStage() {
+    const n = Math.min(G.cur.notes.length, NT_STAGES[G.stage]), eq = $("eq");
+    $("notes").textContent = n >= G.cur.notes.length ? `🎵 The whole tune · worth ${NT_STAGE_PTS[G.stage]} points` : `🎵 ${n} notes · worth ${NT_STAGE_PTS[G.stage]} points`;
+    if (G.stage >= NT_STAGES.length - 1 || n >= G.cur.notes.length) { G.stage = NT_STAGES.length - 1; $("more").disabled = true; }
+    eq?.classList.add("on");
+    ntPlay(G.cur.notes, G.cur.bpm, H.inst, n, null, () => $("eq")?.classList.remove("on"));
+  }
+  function answer(skip) {
+    if (!G || G.locked) return;
+    const typed = $("in").value;
+    if (!skip && !ntNorm(typed)) { const i = $("in"); i.classList.remove("shake"); void i.offsetWidth; i.classList.add("shake"); focusIn(); return; }
+    G.locked = true; ntStop();
+    const res = skip ? { yes: false } : ntMatch(typed, G.cur.forms);
+    let pts = 0;
+    if (res.yes) { pts = G.mode === "hear" ? NT_STAGE_PTS[G.stage] : Math.max(20, 100 - G.hints * 20); G.score += pts; G.right++; G.streak++; G.got.push(G.cur.t); H.named = (H.named || 0) + 1; saveH(); [523, 659, 784, 1047].forEach((f, k) => naNote(f, .18, "triangle", .12, k * .08)); }
+    else { G.streak = 0; G.missed.push(G.mode === "hear" ? G.cur.t : `${G.cur.t} (${G.cur.a}, ${G.cur.y})`); naNote(220, .25, "sawtooth", .08); naNote(160, .3, "sawtooth", .08, .12); }
+    G.n++; hud();
+    $("card").className = "nt-card " + (res.yes ? "yes" : "no");
+    $("card").innerHTML = `<p class="nt-res ${res.yes ? "yes" : "no"}">${res.yes ? (res.exact ? "✅ Yes!" : "✅ Yes! Close enough!") : skip ? "👀 Here's the answer" : "❌ Not quite"}</p>
+      ${skip ? "" : `<p class="nt-you">You typed: <b>${esc(typed.trim())}</b></p>`}
+      ${res.yes && !res.exact ? `<p class="nt-spell">✏️ It's spelled “${esc(G.cur.t)}”.</p>` : ""}
+      <p class="nt-ans">🎵 ${esc(G.cur.t)}</p><p class="nt-by">${G.mode === "hear" ? G.cur.sub : `${esc(G.cur.a)} · ${G.cur.y}`}</p>
+      ${pts ? `<span class="nt-pts">+${pts}</span>` : ""}
+      ${G.mode === "hear" ? `<div class="nt-eq on" id="nt-eq">${"<i></i>".repeat(9)}</div>` : ""}
+      <div class="nt-row"><button class="nt-btn" id="nt-next" type="button">${G.n >= G.total ? "See my score ➜" : "Next ➜"}</button></div>`;
+    if (G.mode === "hear") ntPlay(G.cur.notes, G.cur.bpm, H.inst, G.cur.notes.length, null, () => $("eq")?.classList.remove("on"));   // hear the whole tune
+    $("next").addEventListener("click", () => { ntStop(); ask(); });
+    try { $("next").focus({ preventScroll: true }); } catch (e) {}
+  }
+  function end() {
+    if (!G) return; ntStop();
+    const g = G, hear = g.mode === "hear"; let rec = "";
+    if (hear ? g.score > H.bestHear : g.score > H.bestClue) { if (hear) H.bestHear = g.score; else H.bestClue = g.score; rec = "🏆 New best round!"; } saveH();
+    const rank = g.right >= 10 ? "🏆 Music Master!" : g.right >= 8 ? "🌟 Superstar!" : g.right >= 6 ? "🎤 Rock Star!" : g.right >= 3 ? "🎵 Getting the beat!" : "🎧 Keep listening!";
+    $("end").innerHTML = `<h1>${hear ? "🎹" : "🧩"} Round over!</h1><div class="nt-big">${fmt(g.score)}</div><p class="nt-rank">${rank}</p>
+      <p>${g.right} of ${g.total} named${rec ? `<br><b style="color:#ffe66d">${rec}</b>` : ""}</p>
+      ${g.got.length ? `<p class="nt-h" style="text-align:left">✅ You named</p><ul class="nt-list">${g.got.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+      ${g.missed.length ? `<p class="nt-h" style="text-align:left">🔁 Try these again</p><ul class="nt-list">${g.missed.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+      <div class="nt-row"><button class="nt-btn" id="nt-again" type="button">🎵 Play again</button><button class="nt-btn alt" id="nt-homeBtn" type="button">🏠 Home</button></div>`;
+    show("end"); G = null; window.scrollTo({ top: 0 });
+    $("again").addEventListener("click", () => start(g.mode)); $("homeBtn").addEventListener("click", home);
+    try { $("again").focus({ preventScroll: true }); } catch (e) {}
+  }
+  $("hear").addEventListener("click", () => start("hear"));
+  $("clue").addEventListener("click", () => start("clue"));
+  $("quit").addEventListener("click", () => { ntStop(); if (G && G.n > 0) end(); else { G = null; home(); } });
+  home();
+}
+NEW_APPS.push({ id: "tune", emoji: "🎵", name: "Name That Tune", desc: "Hear a real melody and name it, or name famous songs from clues. About 100 tunes and over 1,400 songs!", start: () => startNameThatTune(), isNew: true, added: "2026-11-11", kw: "name that tune|name the tune|guess the song|guess that song|song quiz|music quiz" });
+
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
@@ -16098,7 +17870,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
