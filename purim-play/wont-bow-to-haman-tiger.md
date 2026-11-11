@@ -19,7 +19,7 @@ Mordechai doesn't move. Everyone shakes their graggers!*
 Morning comes, down on the street,
 All the crowds, they are bowing,
 Here comes Haman, everyone at his feet,
-But this Jew will not budge, push or shove!
+But I'll stand for the faith that I love!
 He wants me down on hands and on knees,
 He thinks he's really so fancy,
 I'll never bow to a man, if you please,
