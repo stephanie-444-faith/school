@@ -53,10 +53,6 @@ Turn bright red, I'm not moving,
 Throw a tantrum, but I'm not bowing down,
 Just a Jew with his head held up high!
 
-**HAMAN** *(spoken)*: Fine! I'll throw the pur, I'll pick a day, and I'll go tell the king!
-
-**MORDECHAI** *(spoken)*: Go ahead! Hashem has a plan for everything!
-
 ---
 
 **MORDECHAI + CHORUS (Final Chorus):**
