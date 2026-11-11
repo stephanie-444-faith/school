@@ -270,6 +270,9 @@
   .rc-card.lax { background: linear-gradient(#0b1d3a, #143768); }
   .rc-card::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 16px; }
   .rc-card.arch::after { background: #0b1710; }
+  .rc-card.hy { background: radial-gradient(circle at 20% 0%, rgba(0,229,255,.35), transparent 55%), radial-gradient(circle at 90% 40%, rgba(255,43,214,.3), transparent 50%), linear-gradient(160deg, #0b0f2e, #170b3d); }
+  .rc-card.hy::after { background: repeating-linear-gradient(90deg, #2be4ff 0 18px, #ff2bd6 18px 36px); }
+  .rc-card.hy b { color: #7af7ff; text-shadow: 0 0 12px rgba(0,229,255,.6); }
   .rc-card.lax::after { background: linear-gradient(90deg, #2b8a3e 0 30px, #33994a 30px 60px) 0 0 / 60px 100%; border-top: 2px solid rgba(255, 255, 255, .8); }
   .rc-art { font-size: 3.2rem; line-height: 1; display: inline-block; animation: rcBob 2.4s ease-in-out infinite; }
   .rc-card.lax .rc-art { animation-delay: -1.2s; }
@@ -13408,18 +13411,261 @@ requestAnimationFrame(loop);
 </html>
 `/*HIPPO_HOOPS_END*/;
 const ROOT_SPORT_INFO = { lacrosse: ["🥍", "Root Lacrosse"], basketball: ["🏀", "Root Basketball"], soccer: ["⚽", "Root Soccer"], football: ["🏈", "Root Football"] };
+/* ---------- ⚡ Root Hyper Practice: no choices, just type the answer (close spelling counts) ----------
+   Three kinds of questions about Emmett's 30 roots: what a root means, which root means a word, and which root is hiding in a word.
+   A misspelled answer still counts as right, unless it's closer to a different real answer (like "mand" when the answer is "man").
+   A 20-question round moves roots on the player's Root Archery sheet (X → ~ → Y). Hyper Speed (60 seconds) doesn't change the sheet. */
+const RH_SYN = [["star", "stars"], ["hear", "hearing", "listen"], ["self", "myself", "yourself"], ["good", "well", "kind"], ["life", "living", "alive"], ["time"], ["say", "speak", "tell", "word", "words"], ["lead", "make", "bring"], ["give birth", "birth", "born", "create", "beginning"], ["earth", "ground", "land", "world"], ["write", "writing", "draw"], ["law", "right", "justice", "just"], ["thought", "think", "reason", "study", "speech", "word"], ["light", "bright", "shine"], ["hand", "hands"], ["order", "command"], ["send", "sent"], ["all", "every", "everything"], ["feel", "feeling", "suffer", "emotion"], ["love", "loving", "friend"], ["sound", "voice"], ["light"], ["carry"], ["quiet", "rest", "calm", "still"], ["write", "writing"], ["feel", "feeling", "sense"], ["far off", "far", "distant", "far away"], ["earth", "land", "ground"], ["empty"], ["see", "look", "sight"]];
+const RH_ROOTS = RA_DATA.map(d => [...raToks(d), ...({ 0: ["astro"], 5: ["chron"] }[d.id] || [])]);
+const RH_STOP = new Set(["it", "its", "means", "mean", "meaning", "the", "a", "an", "to", "of", "is", "root", "word", "and", "or"]);
+const RH_TYPES = { mix: "🔀 Mixed", meaning: "🔤 Root → meaning", root: "💬 Meaning → root", word: "🧩 Word → root" };
+const rhNorm = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ").trim();
+const rhKey = s => s.replace(/igh/g, "i").replace(/ph/g, "f").replace(/ck/g, "k").replace(/qu/g, "kw").replace(/c(?=[aou]|$)/g, "k").replace(/(.)\1+/g, "$1").replace(/(.)e$/, "$1");   // sounds-alike spelling
+function rhDist(a, b) {   // how many letters you'd have to add, drop, change or swap
+  const m = a.length, n = b.length; if (!m || !n) return m + n;
+  const d = Array.from({ length: m + 1 }, (_, i) => { const r = new Array(n + 1).fill(0); r[0] = i; return r; }); for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) {
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+  }
+  return d[m][n];
+}
+const rhAllow = len => len <= 2 ? 0 : len <= 4 ? 1 : len <= 7 ? 2 : 3;
+// correct and wrong are lists of { s: answer, id: root }. Returns whether it counts, whether it was spelled exactly, and what a wrong answer matched.
+function rhCheck(typed, correct, wrong) {
+  const toks = rhNorm(typed).split(" ").filter(w => w && !RH_STOP.has(w)), tries = [...new Set([toks.join(" "), ...toks])].filter(Boolean);
+  if (!tries.length) return { yes: false, exact: false };
+  const best = list => { let b = { d: Infinity, c: null }; for (const c of list) for (const x of tries) { const d = Math.min(rhDist(x, c.s), rhDist(rhKey(x), rhKey(c.s))); if (d < b.d) b = { d, c }; } return b; };
+  const ok = best(correct), bad = best(wrong);
+  const yes = !!ok.c && ok.d <= rhAllow(ok.c.s.length) && ok.d <= bad.d;
+  return { yes, exact: yes && tries.includes(ok.c.s), spelled: ok.c?.s, id: yes ? ok.c.id : null, oops: !yes && bad.c && bad.d < ok.d && bad.d <= rhAllow(bad.c.s.length) ? bad.c : null };
+}
+function rhQuestion(id, type) {
+  const d = RA_DATA[id], up = s => s.toUpperCase();
+  if (type === "meaning") {
+    const mine = new Set(RH_SYN[id]);
+    return { id, type, ask: `What does the root <b>${up(d.r)}</b> mean?`, ph: "Type what it means…", answer: `${up(d.r)} means “${d.m}”.`,
+      correct: RH_SYN[id].map(s => ({ s, id })), wrong: RH_SYN.flatMap((L, j) => L.some(s => mine.has(s)) ? [] : L.map(s => ({ s, id: j }))) };
+  }
+  if (type === "root") {
+    const same = RA_DATA.filter(x => x.m === d.m).map(x => x.id);
+    return { id, type, ask: `Which root means <b>“${d.m}”</b>?`, ph: "Type the root…", answer: `“${d.m}” → ${same.map(j => up(RA_DATA[j].r)).join(" or ")}.`,
+      correct: same.flatMap(j => RH_ROOTS[j].map(s => ({ s, id: j }))), wrong: RA_DATA.filter(x => !same.includes(x.id)).flatMap(x => RH_ROOTS[x.id].map(s => ({ s, id: x.id }))) };
+  }
+  const w = d.more[rnd(0, d.more.length - 1)], plain = raPlain(w).toLowerCase();
+  const inWord = RA_DATA.filter(x => x.id === id || RH_ROOTS[x.id].some(t => t.length >= 3 && plain.includes(t))).map(x => x.id);
+  return { id, type, ask: `Find the root hiding in <b>${up(raPlain(w))}</b>`, ph: "Type the root…", word: w,
+    answer: `${up(w).replace(/\[([^\]]+)\]/, '<mark class="rh-mk">$1</mark>')} has the root ${up(d.r)} (“${d.m}”)${inWord.length > 1 ? `, and ${inWord.filter(j => j !== id).map(j => up(RA_DATA[j].r)).join(" and ")} too` : ""}.`,
+    correct: inWord.flatMap(j => RH_ROOTS[j].map(s => ({ s, id: j }))), wrong: RA_DATA.filter(x => !inWord.includes(x.id)).flatMap(x => RH_ROOTS[x.id].map(s => ({ s, id: x.id }))) };
+}
+function rhStyles() {
+  if (document.getElementById("rh-css")) return;
+  const st = document.createElement("style"); st.id = "rh-css";
+  st.textContent = `
+  .rh { position: relative; border-radius: 18px; padding: 16px; color: #eef6ff; background: radial-gradient(circle at 15% 0%, rgba(0,229,255,.2), transparent 50%), radial-gradient(circle at 95% 35%, rgba(255,43,214,.18), transparent 45%), linear-gradient(160deg, #0b0f2e, #170b3d); border: 2px solid rgba(43,228,255,.35); overflow: hidden; }
+  .rh::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(43,228,255,.05) 0 1px, transparent 1px 26px), repeating-linear-gradient(90deg, rgba(43,228,255,.05) 0 1px, transparent 1px 26px); }
+  .rh > * { position: relative; }
+  .rh h1 { font-family: var(--display); font-size: 2rem; line-height: 1.1; margin: 0; color: #7af7ff; text-shadow: 0 0 16px rgba(0,229,255,.65); }
+  .rh h1 .zap { display: inline-block; animation: rhZap 1.6s ease-in-out infinite; }
+  @keyframes rhZap { 0%, 100% { transform: rotate(-8deg) scale(1); } 50% { transform: rotate(8deg) scale(1.15); filter: drop-shadow(0 0 10px #ffe14d); } }
+  .rh-sub { color: #c6d6ff; margin: 6px 0 14px; }
+  .rh-who { font-weight: 800; color: #c6d6ff; font-size: 14px; margin-bottom: 14px; }
+  .rh-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; max-height: 122px; overflow-y: auto; }
+  .rh-chip { font: inherit; font-weight: 800; font-size: 15px; color: #e6f3ff; background: #121a4a; border: 2px solid #34408f; border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+  .rh-chip.on { background: #2be4ff; color: #04102a; border-color: #2be4ff; box-shadow: 0 0 14px rgba(43,228,255,.55); }
+  .rh-chip.add { border-style: dashed; color: #c6d6ff; }
+  .rh-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 14px; }
+  .rh-stat { background: rgba(10,16,52,.85); border: 1px solid #2b3678; border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .rh-stat b { display: block; font-family: var(--display); font-size: 1.6rem; } .rh-stat small { color: #b8c6ef; }
+  .rh-h { font-weight: 800; color: #c6d6ff; font-size: 14px; margin: 0 0 6px; }
+  .rh-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .rh-btn { flex: 1; min-width: 130px; font: inherit; font-weight: 800; font-size: 1.05rem; border: 0; border-radius: 14px; padding: 13px 12px; background: linear-gradient(90deg, #2be4ff, #7a5cff); color: #04102a; cursor: pointer; box-shadow: 0 4px 0 #2a2a8a; }
+  .rh-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #2a2a8a; }
+  .rh-btn.hot { background: linear-gradient(90deg, #ff2bd6, #ff8a00); color: #22001c; box-shadow: 0 4px 0 #8a1f5a; }
+  .rh-btn.alt { background: #1a2260; color: #d6e6ff; box-shadow: 0 4px 0 #0c1240; }
+  .rh-note { color: #b8c6ef; font-size: 14px; margin: 10px 0 0; }
+  .rh-tiny { color: #9fb0dd; font-size: 13px; margin: 14px 0 0; }
+  .rh-link { background: none; border: 0; color: #9fd8ff; text-decoration: underline; font: inherit; cursor: pointer; padding: 0; }
+  .rh-hud { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 800; margin-bottom: 8px; flex-wrap: wrap; }
+  .rh-hud .fire { color: #ffb347; }
+  .rh-bar { height: 8px; background: #1a2260; border-radius: 9px; overflow: hidden; margin-bottom: 12px; } .rh-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #2be4ff, #ff2bd6); transition: width .25s; }
+  .rh-card { background: rgba(8,12,44,.92); border: 2px solid #2be4ff; border-radius: 18px; padding: 16px; box-shadow: 0 0 24px rgba(43,228,255,.25); }
+  .rh-card.yes { border-color: #3dff9a; box-shadow: 0 0 26px rgba(61,255,154,.4); }
+  .rh-card.no { border-color: #ff4d6d; box-shadow: 0 0 26px rgba(255,77,109,.35); }
+  .rh-kind { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #ff7ae6; }
+  .rh-ask { font-size: 1.35rem; font-weight: 800; margin: 4px 0 12px; line-height: 1.3; }
+  .rh-ask b { color: #ffe14d; letter-spacing: .03em; }
+  .rh-form { display: flex; gap: 8px; }
+  .rh-in { flex: 1; min-width: 0; font: inherit; font-size: 1.3rem; font-weight: 700; padding: 12px 14px; border-radius: 12px; border: 2px solid #7a5cff; background: #050925; color: #fff; }
+  .rh-in:focus { outline: none; border-color: #2be4ff; box-shadow: 0 0 0 3px rgba(43,228,255,.3); }
+  .rh-in.shake { animation: rhShake .3s; } @keyframes rhShake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .rh-go { flex: none; min-width: 0; padding: 12px 18px; }
+  .rh-res { font-family: var(--display); font-size: 1.7rem; margin: 0; }
+  .rh-res.yes { color: #3dff9a; } .rh-res.no { color: #ff6b85; }
+  .rh-ans { font-size: 1.2rem; font-weight: 800; margin: 4px 0; }
+  .rh-mk { background: #ffe14d; color: #1c1200; border-radius: 5px; padding: 0 3px; }
+  .rh-you { color: #b8c6ef; font-size: 14px; margin: 2px 0; }
+  .rh-spell { color: #ffe14d; font-weight: 700; margin: 4px 0; }
+  .rh-oops { color: #ffb3c1; margin: 4px 0; }
+  .rh-pts { display: inline-block; font-weight: 800; color: #04102a; background: #3dff9a; border-radius: 999px; padding: 3px 12px; margin: 6px 0 2px; animation: rhPop .35s ease-out; }
+  .rh-pts.hyper { background: linear-gradient(90deg, #ffe14d, #ff8a00); }
+  @keyframes rhPop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .rh-lv { color: #9ff5ff; font-weight: 700; font-size: 14px; margin: 4px 0 0; }
+  .rh-why { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #34408f; color: #d4def9; font-size: 15px; line-height: 1.5; }
+  .rh-big { font-family: var(--display); font-size: 4rem; color: #7af7ff; text-shadow: 0 0 20px rgba(0,229,255,.7); margin: 4px 0; text-align: center; }
+  .rh-rank { text-align: center; font-size: 1.3rem; font-weight: 800; color: #ffe14d; margin: 0; }
+  .rh-end p { text-align: center; }
+  .rh-miss { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  .rh-miss li { background: rgba(10,16,52,.85); border: 1px solid #2b3678; border-radius: 10px; padding: 8px 10px; }
+  .rh-hidden { display: none !important; }`;
+  document.head.appendChild(st);
+}
+function startRootHyper() {
+  rhStyles();
+  appScreen("⚡ Root Hyper Practice", `<div class="rh" id="rh">
+  <section id="rh-home">
+    <h1><span class="zap">⚡</span> Root Hyper Practice</h1>
+    <p class="rh-sub">Emmett's 30 Greek &amp; Latin roots, with no choices to pick from. <b>Type the answer!</b> Close spelling counts.</p>
+    <div class="rh-who" id="rh-who"></div>
+    <div class="rh-stats"><div class="rh-stat"><b id="rh-sY" style="color:#3dff9a">0</b><small>Know it</small></div><div class="rh-stat"><b id="rh-sT" style="color:#ffc93c">0</b><small>Getting there</small></div><div class="rh-stat"><b id="rh-sX" style="color:#ff6b85">0</b><small>Not yet</small></div></div>
+    <p class="rh-h">Questions</p>
+    <div class="rh-chips" id="rh-types">${Object.entries(RH_TYPES).map(([k, v]) => `<button class="rh-chip" type="button" data-qt="${k}">${v}</button>`).join("")}</div>
+    <div class="rh-row" style="margin-top:16px"><button class="rh-btn" id="rh-round" type="button">⚡ 20 questions</button><button class="rh-btn hot" id="rh-speed" type="button">⏱ Hyper Speed</button></div>
+    <p class="rh-note">⚡ 20 questions moves roots on your root sheet (the same one as 🏹 Root Archery), and roots you miss come back later in the round. ⏱ Hyper Speed: as many right as you can in 60 seconds (it doesn't change your sheet). Fast answers earn ⚡ HYPER bonus points.</p>
+    <p class="rh-tiny">Best round: <span id="rh-best">—</span> · Best streak: <span id="rh-bstreak">—</span> · Hyper Speed best: <span id="rh-sbest">—</span><br><button class="rh-link" id="rh-pick" type="button">🏹🥍🏀⚽🏈 Play another roots game</button></p>
+  </section>
+  <section id="rh-play" class="rh-hidden">
+    <div class="rh-hud"><span id="rh-count"></span><span id="rh-streak"></span><span id="rh-score">0 pts</span></div>
+    <div class="rh-bar"><i id="rh-bar"></i></div>
+    <div class="rh-card" id="rh-card" aria-live="polite"></div>
+    <div class="rh-row"><button class="rh-btn alt" id="rh-quit" type="button">⏹ Stop</button></div>
+  </section>
+  <section id="rh-end" class="rh-hidden rh-end"></section>
+</div>`);
+  const $ = id => document.getElementById("rh-" + id), up = s => s.toUpperCase();
+  let H = Object.assign({ best: 0, bestStreak: 0, speedBest: 0, qt: "mix" }, store.get("rhp_v1", {})), G = null;
+  if (!RH_TYPES[H.qt]) H.qt = "mix";
+  const saveH = () => store.set("rhp_v1", H);
+  const sheet = () => raGet();
+  const show = id => ["home", "play", "end"].forEach(k => $(k).classList.toggle("rh-hidden", k !== id));
+  const focusIn = () => { const i = $("in"); if (i) try { i.focus({ preventScroll: true }); } catch (e) { i.focus(); } };
+  function home() {
+    show("home");
+    const S = sheet(), lv = S.pts.map(raLevelOf);
+    $("sY").textContent = lv.filter(x => x === 2).length; $("sT").textContent = lv.filter(x => x === 1).length; $("sX").textContent = lv.filter(x => x === 0).length;
+    $("best").textContent = H.best ? fmt(H.best) + " pts" : "—"; $("bstreak").textContent = H.bestStreak || "—"; $("sbest").textContent = H.speedBest ? H.speedBest + " right" : "—";
+    $("types").querySelectorAll("[data-qt]").forEach(b => { b.classList.toggle("on", b.dataset.qt === H.qt); b.setAttribute("aria-pressed", b.dataset.qt === H.qt); });
+    const me = profCur(), L = profList();
+    $("who").innerHTML = `<b>👤 Who are you?</b><div class="rh-chips">${L.map(p => `<button class="rh-chip${p.id === me ? " on" : ""}" type="button" data-who="${p.id}" aria-pressed="${p.id === me}">${p.id === me ? "✓ " : ""}${esc(p.name)}</button>`).join("")}${L.length < PROF_MAX ? `<button class="rh-chip add" type="button" id="rh-whoAdd">➕ New player</button>` : ""}</div>`;
+    $("who").querySelectorAll("[data-who]").forEach(b => b.addEventListener("click", () => { if (b.dataset.who !== profCur()) profSwitch(PROF_GAME, b.dataset.who); }));
+    $("whoAdd")?.addEventListener("click", () => profOpen(true));
+  }
+  $("types").addEventListener("click", e => { const b = e.target.closest("[data-qt]"); if (!b) return; H.qt = b.dataset.qt; saveH(); home(); });
+  $("pick").addEventListener("click", startRootsChooser);
+  // pick the next root: X roots come up the most, then ~, then Y. Missed roots come back 3 questions later.
+  function nextId() {
+    const back = G.again.findIndex(a => a.at <= G.n && a.id !== G.last);
+    if (back >= 0) return G.again.splice(back, 1)[0].id;
+    const S = sheet(), w = RA_DATA.map(d => d.id === G.last ? 0 : [3, 2, 1][raLevelOf(S.pts[d.id])]), tot = w.reduce((a, b) => a + b, 0);
+    let r = Math.random() * tot; for (let i = 0; i < w.length; i++) { r -= w[i]; if (r < 0) return i; } return 0;
+  }
+  function start(mode) {
+    G = { mode, n: 0, total: mode === "round" ? 20 : Infinity, score: 0, streak: 0, top: 0, right: 0, misses: [], again: [], last: -1, q: null, locked: false, ends: mode === "speed" ? performance.now() + RA_RAPID * 1000 : 0 };
+    show("play"); naAudio();
+    if (mode === "speed") { const tick = () => { if (!G || G.mode !== "speed" || !$("bar")) return; const left = Math.max(0, G.ends - performance.now()); $("bar").style.width = (100 * left / (RA_RAPID * 1000)) + "%"; $("count").textContent = `⏱ ${Math.ceil(left / 1000)}s`; if (left <= 0) return end(); naTimer(setTimeout(tick, 200)); }; tick(); }
+    ask();
+  }
+  function hud() {
+    if (G.mode === "round") { $("count").textContent = `Question ${Math.min(G.n + 1, G.total)} of ${G.total}`; $("bar").style.width = (100 * G.n / G.total) + "%"; }
+    $("streak").innerHTML = G.streak >= 2 ? `<span class="fire">🔥 ${G.streak} in a row</span>` : `✅ ${G.right} right`;
+    $("score").textContent = `${fmt(G.score)} pts`;
+  }
+  function ask() {
+    if (G.mode === "round" && G.n >= G.total) return end();
+    const id = nextId(), type = H.qt === "mix" ? ["meaning", "root", "word"][rnd(0, 2)] : H.qt;
+    G.q = rhQuestion(id, type); G.last = id; G.locked = false; G.t0 = performance.now(); hud();
+    $("card").className = "rh-card";
+    $("card").innerHTML = `<div class="rh-kind">${RH_TYPES[type]}</div><div class="rh-ask">${G.q.ask}</div>
+      <form class="rh-form" id="rh-form" autocomplete="off"><input class="rh-in" id="rh-in" type="text" placeholder="${G.q.ph}" aria-label="Your answer" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" maxlength="40"><button class="rh-btn rh-go" type="submit">✓</button></form>
+      <div class="rh-row"><button class="rh-btn alt" id="rh-idk" type="button">🤷 Show me</button></div>`;
+    $("form").addEventListener("submit", e => { e.preventDefault(); answer(false); });
+    $("idk").addEventListener("click", () => answer(true));
+    focusIn();
+  }
+  function answer(skip) {
+    if (!G || G.locked) return;
+    const typed = $("in").value;
+    if (!skip && !rhNorm(typed)) { $("in").classList.remove("shake"); void $("in").offsetWidth; $("in").classList.add("shake"); focusIn(); return; }
+    G.locked = true;
+    const q = G.q, d = RA_DATA[q.id], secs = (performance.now() - G.t0) / 1000, res = skip ? { yes: false } : rhCheck(typed, q.correct, q.wrong);
+    let pts = 0, lvMsg = "";
+    if (res.yes) {
+      const hyper = secs < 4; pts = 10 + (hyper ? 5 : secs < 8 ? 2 : 0) + Math.min(G.streak, 10);
+      G.score += pts; G.streak++; G.right++; G.top = Math.max(G.top, G.streak);
+      [660, 880, 1320].forEach((f, k) => naNote(f, .14, "square", .07, k * .06));
+    } else {
+      G.streak = 0; G.misses.push(q.id); if (G.mode === "round") G.again.push({ id: q.id, at: G.n + 3 });
+      naNote(220, .25, "sawtooth", .08); naNote(160, .3, "sawtooth", .08, .12);
+    }
+    if (G.mode === "round") {   // move the root on the root sheet, like Root Archery
+      const S = sheet(), rid = res.yes && res.id != null ? res.id : q.id, before = raLevelOf(S.pts[rid]);   // the root you typed (when two roots fit the question)
+      S.pts[rid] = res.yes ? Math.min(4, S.pts[rid] + 2) : Math.max(0, S.pts[rid] - (skip ? 1 : 2)); store.set("ra_v1", S);
+      const after = raLevelOf(S.pts[rid]);
+      if (after !== before) lvMsg = `${after > before ? "⬆" : "⬇"} ${up(RA_DATA[rid].r)} is now <b>${RA_LV[after].t}</b> on your root sheet`;
+    }
+    G.n++; hud();
+    const oops = res.oops ? (q.type === "meaning" ? `“${esc(res.oops.s)}” is what ${RA_DATA.filter((x, j) => RH_SYN[j].includes(res.oops.s)).map(x => up(x.r)).join(" and ")} means.` : `${up(res.oops.s)} is a different root: ${up(RA_DATA[res.oops.id].r)} means “${RA_DATA[res.oops.id].m}”.`) : "";
+    $("card").className = "rh-card " + (res.yes ? "yes" : "no");
+    $("card").innerHTML = `<p class="rh-res ${res.yes ? "yes" : "no"}">${res.yes ? (res.exact ? "✅ Yes!" : "✅ Yes! Close enough!") : skip ? "👀 Here's the answer" : "❌ Not quite"}</p>
+      ${skip ? "" : `<p class="rh-you">You typed: <b>${esc(typed.trim())}</b></p>`}
+      ${res.yes && !res.exact ? `<p class="rh-spell">✏️ It's spelled “${esc(q.type === "meaning" ? res.spelled : up(res.spelled))}”.</p>` : ""}
+      <p class="rh-ans">${q.answer}</p>
+      ${oops ? `<p class="rh-oops">🔎 ${oops}</p>` : ""}
+      ${pts ? `<span class="rh-pts${secs < 4 ? " hyper" : ""}">+${pts}${secs < 4 ? " ⚡ HYPER!" : ""}</span>` : ""}
+      ${lvMsg ? `<p class="rh-lv">${lvMsg}</p>` : ""}
+      <div class="rh-row"><button class="rh-btn" id="rh-next" type="button">${G.mode === "round" && G.n >= G.total ? "See my score ➜" : "Next ➜"}</button></div>
+      <div class="rh-why">🎯 ${RA_HOOKS[q.id]}<br>📚 Words: ${[...d.ex, ...d.more.map(raPlain)].join(", ")}</div>`;
+    $("next").addEventListener("click", () => ask());
+    try { $("next").focus({ preventScroll: true }); } catch (e) {}
+    if (G.mode === "speed") { const g = G; naTimer(setTimeout(() => { if (G === g && G.locked && $("next")) ask(); }, res.yes ? 650 : 1700)); }
+  }
+  function end() {
+    if (!G || G.over) return; G.over = true;
+    const g = G, round = g.mode === "round", missed = [...new Set(g.misses)];
+    let rec = "";
+    if (round) { if (g.score > H.best) { H.best = g.score; rec = "🏆 New best round!"; } }
+    else if (g.right > H.speedBest) { H.speedBest = g.right; rec = "🏆 New Hyper Speed record!"; }
+    if (g.top > H.bestStreak) H.bestStreak = g.top; saveH();
+    const rank = round ? (g.right >= 19 ? "🏆 Hyper Master!" : g.right >= 16 ? "⚡ Lightning Brain!" : g.right >= 12 ? "⭐ Root Ranger!" : g.right >= 8 ? "👟 Warming up!" : "🎽 Keep practicing!") : (g.right >= 15 ? "⚡ Lightning Fingers!" : g.right >= 8 ? "🔥 Speedy!" : "👟 Keep going!");
+    $("end").innerHTML = `<h1 style="text-align:center"><span class="zap">⚡</span> ${round ? "Round over!" : "Time!"}</h1>
+      <div class="rh-big">${fmt(g.score)}</div><p class="rh-rank">${rank}</p>
+      <p>${round ? `${g.right} of ${g.total} right` : `${g.right} right in ${RA_RAPID} seconds`} · best streak ${g.top}${rec ? `<br><b style="color:#ffe14d">${rec}</b>` : ""}</p>
+      ${missed.length ? `<p class="rh-h" style="text-align:left;margin-top:14px">🔁 Roots to look at again</p><ul class="rh-miss">${missed.map(i => `<li><b>${up(RA_DATA[i].r)}</b> = ${RA_DATA[i].m} · ${RA_DATA[i].ex.join(", ")}</li>`).join("")}</ul>` : `<p>🎯 You didn't miss a single one!</p>`}
+      <div class="rh-row"><button class="rh-btn" id="rh-again" type="button">⚡ Go again</button><button class="rh-btn alt" id="rh-homeBtn" type="button">🏠 Home</button></div>`;
+    show("end"); G = null;
+    [523, 659, 784, 1047].forEach((f, k) => naNote(f, .22, "triangle", .12, k * .09));
+    $("again").addEventListener("click", () => start(g.mode)); $("homeBtn").addEventListener("click", home);
+    try { $("again").focus({ preventScroll: true }); } catch (e) {}
+    window.scrollTo({ top: 0 });
+  }
+  $("round").addEventListener("click", () => start("round"));
+  $("speed").addEventListener("click", () => start("speed"));
+  $("quit").addEventListener("click", () => { if (G && G.n > 0) end(); else { G = null; home(); } });
+  home();
+}
 function startRootsChooser() {
   raStyles();
-  appScreen("🏹 Pick a roots game", `<h2>🏹 Emmett's Greek &amp; Latin Roots</h2><p class="soft">The same 30 roots, five ways to play. Pick one!</p>
+  appScreen("🏹 Pick a roots game", `<h2>🏹 Emmett's Greek &amp; Latin Roots</h2><p class="soft">The same 30 roots, six ways to play. Pick one!</p>
     <div class="rc-grid">
       <button class="rc-card arch" data-rc="arch" type="button"><span class="rc-art" aria-hidden="true">🏹🎯</span><b>Bow &amp; Arrow</b><span>Root Archery: shoot the bullseye, buy arrows in the Arrow Shop, and try Rapid Fire.</span><small>🌲 Night forest · your root sheet</small></button>
       <button class="rc-card lax" data-rc="lacrosse" type="button"><span class="rc-art" aria-hidden="true">🥍🥅</span><b>Lacrosse</b><span>Root Lacrosse: score goals in a night stadium, earn new balls, and beat the Shot Clock.</span><small>🏟️ Night stadium · its own players</small></button>
       <button class="rc-card bb" data-rc="basketball" type="button"><span class="rc-art" aria-hidden="true">🏀🏆</span><b>Basketball</b><span>Root Basketball: sink baskets in the arena, go for the SWISH, and hit the Buzzer Beater.</span><small>🏟️ Indoor arena · its own players</small></button>
       <button class="rc-card soc" data-rc="soccer" type="button"><span class="rc-art" aria-hidden="true">⚽🥅</span><b>Soccer</b><span>Root Soccer: kick goals on a sunny day, get past the keeper, and score a Golden Goal.</span><small>☀️ Sunny stadium · its own players</small></button>
       <button class="rc-card fb" data-rc="football" type="button"><span class="rc-art" aria-hidden="true">🏈🏟️</span><b>Football</b><span>Root Football: kick field goals under the lights, split the uprights, and nail the Game-Winning Kick.</span><small>🏟️ Friday night lights · its own players</small></button>
+      <button class="rc-card hy" data-rc="hyper" type="button"><span class="rc-art" aria-hidden="true">⚡⌨️</span><b>Hyper Practice</b><span>Root Hyper Practice: no choices. Type the answer as fast as you can. Close spelling counts!</span><small>⚡ Neon speed · moves your root sheet</small></button>
     </div>`);
   PROF_GAME = null; PROF_RESTART = null; profChip();
-  $app.querySelectorAll("[data-rc]").forEach(b => b.addEventListener("click", () => b.dataset.rc === "arch" ? startRootArchery() : startRootSport(b.dataset.rc)));
+  $app.querySelectorAll("[data-rc]").forEach(b => b.addEventListener("click", () => b.dataset.rc === "arch" ? startRootArchery() : b.dataset.rc === "hyper" ? startRootHyper() : startRootSport(b.dataset.rc)));
 }
 function startRootSport(sport) {
   const [e, name] = ROOT_SPORT_INFO[sport] || ROOT_SPORT_INFO.lacrosse;
@@ -13999,7 +14245,8 @@ function startDreamTeam(sport) {
   document.getElementById("dt-back").addEventListener("click", startRootsChooser);
   profChip();
 }
-NEW_APPS.push({ id: "roots", emoji: "🏹", name: "Root Archery", desc: "Emmett's 30 Greek & Latin roots, five ways to play: 🏹 bow and arrow, 🥍 lacrosse, 🏀 basketball, ⚽ soccer or 🏈 football! Move each root from X to ~ to Y.", start: () => startRootsChooser(), isNew: true, added: "2026-11-09", kw: "root archery|root lacrosse|root basketball|root soccer|root football|lacrosse|archery|(greek|latin|word) roots?|greek (and |& )?latin roots?|root words?|root sheet|roots? practice|practice roots?|roots? games?" });
+NEW_APPS.push({ id: "roots", emoji: "🏹", name: "Root Archery", desc: "Emmett's 30 Greek & Latin roots, six ways to play: 🏹 bow and arrow, 🥍 lacrosse, 🏀 basketball, ⚽ soccer, 🏈 football or ⚡ hyper typing practice! Move each root from X to ~ to Y.", start: () => startRootsChooser(), isNew: true, added: "2026-11-09", kw: "root archery|root lacrosse|root basketball|root soccer|root football|lacrosse|archery|(greek|latin|word) roots?|greek (and |& )?latin roots?|root words?|root sheet|roots? practice|practice roots?|roots? games?" });
+NEW_APPS.push({ id: "rhyper", emoji: "⚡", name: "Root Hyper Practice", desc: "No choices: type what each Greek & Latin root means, which root means a word, or the root hiding in a word. Close spelling counts!", start: () => startRootHyper(), isNew: true, added: "2026-11-11", kw: "root hyper( practice)?|hyper (root )?practice|hyper roots?|root typing|type (the )?roots?|typing roots?|roots? quiz" });
 
 /* ---------- 🎡 Wheel Spinner: 1 to 1,000 parts, each with a name and an emoji ---------- */
 const WH_MAX = 1000;
@@ -15641,7 +15888,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
