@@ -8316,7 +8316,7 @@ function hippoBank() {
   HIPPO_LONG_JOKES.forEach(([jq, ja]) => add("Jokes and riddles", "😂", "Tell me a long joke: " + jq.slice(0, 40), ja, ""));
   Object.values(HIPPO_SONGS).forEach(sg => add("Songs", "🎵", `Sing me a ${sg.name.toLowerCase()} song`, sg.name, ""));
   add("Jokes and riddles", "😂", "Tell me a joke", "", ""); add("Jokes and riddles", "😂", "Tell me a riddle", "", "");
-  HIPPO_GAMES.forEach(([n]) => { add("Games", "🎮", `What is ${n}?`, n, ""); add("Games", "🎮", `How do I play ${n}?`, n, ""); });
+  add("Games", "🎮", "What games are there?", "", "");
   Object.keys(HIPPO_DEFS).forEach(t => { add("What is…?", "📖", `What ${/^(dinosaur|pharaoh|knight|viking|mummy)$/.test(t) ? "was" : "is"} ${/^[aeiou]/.test(t) ? "an" : "a"} ${t}?`, t, ""); add("What is…?", "📖", `What does ${t} mean?`, t, ""); });
   ["Give me a story idea", "How do I write a story?", "Story starter please", "What should I write a story about?"].forEach(t => add("Story Starters", "✍️", t, "Story Starters", ""));
   STARTERS.forEach(st => add("Story Starters", "✍️", `Give me a ${st.genre.toLowerCase()} story idea`, st.text, ""));
@@ -8458,7 +8458,6 @@ function hippoAnswer(qRaw) {
     if (new RegExp(`\\b${name.toLowerCase()}'?s?\\b`).test(q) && /\bbirth ?days?\b|\bbday\b/.test(q)) return R("Birthdays", "🎂", `${name}'s birthday is ${mon} ${day}! 🎉`, `Mark your calendar: ${name}'s birthday is on ${mon} ${day}. 🎂🥳`, hBig("🎂🎉", "#ffe3f1", `${mon} ${day}`));
   }
   if (/^(what|whats|what's) (is |are )?(grammar|parts of speech|text structures?|text features?)\b/.test(q)) { const ga = NEW_APPS.find(x => x.id === "grammar"); return R("Grammar", "📝", "Grammar is the set of rules for how words, sentences, and punctuation fit together.", "It includes the 8 parts of speech (noun, pronoun, verb, adjective, adverb, preposition, conjunction, interjection), sentence types (simple, compound, complex, compound-complex), text structures, and text features. You can learn and practice all of it in the 📝 Grammar & Reading Lab!", hBig("📝", "#f1ecff", "Grammar"), { label: "📝 Open the Grammar & Reading Lab", fn: () => ga.start() }); }
-  if (/\bhippo hoops\b|\bbasketball bros?\b|\bbasketball game\b/.test(q)) return R("Hippo Hoops", "🏀", "🏀 Hippo Hoops is in the 🎮 Game Room (double-tap the ⋯ button)!", "One-on-one arcade basketball: pick a baller, then dunk, steal, block and shoot threes against the computer. Rookie, Pro or Legend.", hBig("🏀🦛", "#2a1838", "Hippo Hoops"), { label: "🏀 Play Hippo Hoops", fn: () => startHippoHoops() });
   // 🏹 Greek & Latin roots from Emmett's sheet ("what does the root bio mean", "which root means star", "what roots are in photograph")
   if (/\broots?\b/.test(q) && !/\b(square|cube|cubed|plants?|trees?|hair)\b|root (canal|beer)/.test(q)) { const ra = raRootAnswer(q); if (ra) return R(...ra); }
   if (/\blucky ?duck\b|\bduck math\b/.test(q)) return R("Lucky Duck Math", "🦆", "🦆 Lucky Duck Math is at the bottom of the 🧮 Math Center!", "A math buddy with fractions, big numbers, patterns, story problems, coins, making change, measuring, and adding, subtracting and multiplying. Get hints or see every step, and earn feathers to dress up Lucky Duck in the Duck shop.", hBig("🦆", "#0E7C86", "Lucky Duck Math"), { label: "🦆 Open Lucky Duck Math", fn: () => startLuckyDuck() });
@@ -8479,7 +8478,6 @@ function hippoAnswer(qRaw) {
   if (/\b(type|typing|keyboard|touch typ\w*|wpm|words per minute)\b/.test(q) && /\b(how|learn|teach|get better|faster|practice|improve|good|help|where)\b/.test(q))
     return R("Typing", "⌨️", "Learn to type with Bunny Hop Typing!", "Bunny Hop Typing has a Training Ground with a color-coded keyboard that shows which finger presses each key. Then race across platforms by typing words, earn carrots, and try to become Speed Champion!", hBig("🐰⌨️", "#e8f7e8", "Bunny Hop Typing"), { label: "🐰 Go to Bunny Hop Typing", fn: () => startBunny() });
   // 📱 the App-App and its apps
-  if (/\b(hippopoly|monopoly|monapely|board game|property game)\b/.test(q)) return R("Hippopoly", "🎲", "🎲 Play Hippopoly!", "Buy properties, build houses and collect rent against the computer. 10 levels, and the computer gets smarter each one.", hBig("🎲🏠", "#0f5a3a", "Hippopoly"), { label: "🎲 Play Hippopoly", fn: () => startHippopoly() });
   if (/\b(app ?app|new apps?|newest apps?)\b/.test(q)) return R("App-App", "📱", "📱 The App-App has every app!", `Today's home screen: ${homeToday().map(a => a.emoji + " " + a.name).join(", ")}. Some apps rotate in and out of the home screen at midnight, and every app always stays in the App-App.`, hBig("📱✨", "#2e1a4a", "App-App"), { label: "📱 Open the App-App", fn: () => startAppApp() });
   if (/\b(learn(ing)? (to |how to )?code|coding|code lab|html|python|programming|javascript)\b/.test(q)) return R("Code Lab", "💻", "💻 Learn to code in the Code Lab!", "It has step-by-step lessons for HTML (making websites, with a live preview) and Python (real programming, even turtle drawing and games). It's in the App-App.", hBig("💻🐍", "#0b2a1a", "Code Lab"), { label: "💻 Open the Code Lab", fn: () => startCodeLab() });
   if (/\b(ai studio|use ai|using ai|prompts?|prompting|artificial intelligence|chatbot|chat ?gpt|claude)\b/.test(q)) return R("AI Studio", "🤖", "🤖 Learn to use AI in the AI Studio!", "Lessons on what AI is, staying safe, and writing great prompts, plus a Prompt Builder, a prompt challenge, and a project where AI helps you make your own game. It's in the App-App.", hBig("🤖✨", "#1a1050", "AI Studio"), { label: "🤖 Open the AI Studio", fn: () => startAIStudio() });
@@ -8498,8 +8496,8 @@ function hippoAnswer(qRaw) {
       `🔓 SECRET GAME ROOM: type "franklin rules" into Ask Hippo to open a room with every game.\n\n` +
       `🤫 SECRET TAPS: tap the help button 3 times fast in a roots game:\n🏹 Root Archery (💡 Clue) → Ragdoll Archers\n🥍 Root Lacrosse (💡 Coach's tip) → Lacrosse Dream Team\n⚽ Root Soccer → Soccer Dream Team\n🏈 Root Football → Football Dream Team\n🏀 Root Basketball → Hippo Hoops\nTap it 2 times fast instead to see the answer.\n\n` +
       `🎮 GAME ROOM: double-tap the ⋯ on the home screen to open the Game Room, with ${menu.join(", ")}. (One tap opens the info page and the Terms of Service.)\n\n` +
-      `📱 APP-APP: every app lives there, like Uno, Chess, Battleship, Hippopoly, Wheel Spinner and Root Archery (with Lacrosse, Basketball, Soccer and Football). The home screen shows 8 apps, and they change at midnight.\n\n` +
-      `🦛 ASK HIPPO: type any game's or app's name, even spelled wrong, and Hippo opens it. "hippo hoops" and "basketball bros" work too.\n\n` +
+      `📱 APP-APP: every app lives there, like Uno, Chess, Battleship, Hippopoly, Wheel Spinner and Root Archery (with Lacrosse, Basketball, Soccer, Football and the yellow ⚡ Root Hyper Practice button). The home screen shows 8 apps, and they change at midnight.\n\n` +
+      `🦛 ASK HIPPO: Hippo opens any app by name (even spelled wrong), but not games. Typing a game's name won't find it, so say "franklin rules" instead.\n\n` +
       `🚨 EMERGENCY: both game rooms (the 🎮 Game Room and "franklin rules") and every game from them have a 🚨 button that jumps straight into a Root Archery round.\n\n` +
       `🧮 MATH CENTER: Lucky Duck Math is at the bottom, and the glowing portals open the Challenge Lounges.\n\n` +
       `🧱 SKY STACK: double-click the Sound button to jump straight to 100 blocks.\n\n` +
@@ -8517,7 +8515,7 @@ function hippoAnswer(qRaw) {
         { label: "📱 App-App", fn: () => startAppApp() },
       ] });
   }
-  if (/^franklin\s+rules$/.test(q)) return Object.assign(R("Secret Game Room", "🔓", "🔓 Franklin rules! The secret game room is open.", "Every game in one place. Pick one!", hBig("🎮🔓", "#2e1a4a", "secret game room")), { games: true, wide: true });
+  if (/^frank\w{0,5}\s+(rules?|rulez|rulz|rools?|rocks?)$/.test(q.replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ").trim())) return Object.assign(R("Secret Game Room", "🔓", "🔓 Franklin rules! The secret game room is open.", "Every game in one place. Pick one!", hBig("🎮🔓", "#2e1a4a", "secret game room")), { games: true, wide: true });
   const askAgain = t => () => { const b = document.getElementById("hip-q"); b.value = t; document.getElementById("hip-form").requestSubmit(); };
   // 📖 Hippo's Library: the 100-page books and all the classic stories in one place
   if (/\b(library|books|100 page|hundred page|chapter book|read me a book|read a book|long book|full book|novel|stories|story list|list of stories|which stories|what stories|pick a story|classic stories)\b/.test(q) && !/\b(ideas?|starters?|write|writing|how)\b/.test(q) || /^(a )?book$/.test(q)) {
@@ -8591,9 +8589,9 @@ function hippoAnswer(qRaw) {
       const leap = new Date(Date.UTC(2000, 1, 29)); leap.setUTCFullYear(y); const febDays = leap.getUTCMonth() === 1 ? 29 : 28, real = mo === 1 ? febDays : HIPPO_MONTHS[mo][1];
       return R("Time machine (what day was it?)", "🗓️", `Trick question! ${HIPPO_MONTHS[mo][0]} ${d} doesn't exist in ${y}.`, `${HIPPO_MONTHS[mo][0]} ${y} only has ${real} days.`, hMonthGrid(y, mo, 0)); } }
   // 🎮 games: offer to take you there
-  if (/^(?:2048|what is 2048|play 2048)$/.test(q)) { const g = HIPPO_GAMES.find(x => x[0] === "2048"); return R("Games", "🎮", `2048 is a game here! ${g[3]}`, "Want to play? Tap the button.", hBig(g[1], "#e8f7e8", g[0]), { label: `${g[1]} Go to 2048`, fn: g[4] }); }
-  for (const g of HIPPO_GAMES) { const [name, emo, words, what, go] = g; if (words.split("|").some(w => new RegExp(`\\b${w.replace(/[-]/g, "\\-")}\\b`).test(q))) return R("Games", "🎮", `${name} is a game you can play here!`, `${what} Want to go there now?`, hBig(emo, "#e8f7e8", name), { label: `${emo} Go to ${name}`, fn: go }); }
-  if (/\b(games?|play)\b/.test(q) && /(what|which|list|any|can i|fun|find|where|show)/.test(q)) return R("Games", "🎮", `There are ${HIPPO_GAMES.length - 1} games to play!`, HIPPO_GAMES.filter(g => g[0] !== "Training Ground").map(g => `${g[1]} ${g[0]}`).join(" · ") + ". Ask Hippo about any of them, like “what is slope?”, and Hippo will take you there.", hBig("🎮🕹️", "#e8f7e8", "games"), { label: "🎲 Take me to a random game", fn: () => HIPPO_GAMES[rnd(0, HIPPO_GAMES.length - 2)][4]() });
+  if (false) { const g = HIPPO_GAMES.find(x => x[0] === "2048"); return R("Games", "🎮", `2048 is a game here! ${g[3]}`, "Want to play? Tap the button.", hBig(g[1], "#e8f7e8", g[0]), { label: `${g[1]} Go to 2048`, fn: g[4] }); }
+  for (const g of HIPPO_GAMES) { const [name, emo, words, what, go] = g; if (name !== "Story Starters") continue; if (words.split("|").some(w => new RegExp(`\\b${w.replace(/[-]/g, "\\-")}\\b`).test(q))) return R("Games", "🎮", `${name} is a game you can play here!`, `${what} Want to go there now?`, hBig(emo, "#e8f7e8", name), { label: `${emo} Go to ${name}`, fn: go }); }
+  if (/\b(games?|play)\b/.test(q) && /(what|which|list|any|can i|fun|find|where|show)/.test(q)) return R("Games", "🎮", `There are ${HIPPO_GAMES.length - 1} games to play!`, HIPPO_GAMES.filter(g => g[0] !== "Training Ground").map(g => `${g[1]} ${g[0]}`).join(" · ") + ". Tap the button to jump into a random one!", hBig("🎮🕹️", "#e8f7e8", "games"), { label: "🎲 Take me to a random game", fn: () => HIPPO_GAMES[rnd(0, HIPPO_GAMES.length - 2)][4]() });
   // 🦖 "What is a dinosaur?"
   if (/\bdino(saur)?s?\b/.test(q) && !/(why|how did|what happened|die|extinct|disappear|asteroid|fossil|bring back|come back|clone)/.test(q) && !HIPPO_EXTINCT.some(e => q.includes(e[0].toLowerCase()) || (e[2] && new RegExp(`\\b(${e[2]})\\b`).test(q))))
     return Object.assign(R("Dinosaurs", "🦖", "A dinosaur was a kind of reptile that lived on Earth for about 165 million years, from about 230 to 66 million years ago.",
@@ -13551,6 +13549,9 @@ function startRootHyper() {
   </section>
   <section id="rh-end" class="rh-hidden rh-end"></section>
 </div>`);
+  // it lives inside Root Archery: same player list, and the back button goes back to the roots games
+  PROF_GAME = "roots"; PROF_RESTART = () => startRootHyper(); profChip();
+  { const back = document.getElementById("na-back"), nb = back.cloneNode(false); nb.textContent = "Back to Root Archery"; back.replaceWith(nb); nb.addEventListener("click", () => { naCleanup(); startRootsChooser(); }); }
   const $ = id => document.getElementById("rh-" + id), up = s => s.toUpperCase();
   let H = Object.assign({ best: 0, bestStreak: 0, speedBest: 0, qt: "mix" }, store.get("rhp_v1", {})), G = null;
   if (!RH_TYPES[H.qt]) H.qt = "mix";
@@ -14256,7 +14257,6 @@ function startDreamTeam(sport) {
   profChip();
 }
 NEW_APPS.push({ id: "roots", emoji: "🏹", name: "Root Archery", desc: "Emmett's 30 Greek & Latin roots, six ways to play: 🏹 bow and arrow, 🥍 lacrosse, 🏀 basketball, ⚽ soccer, 🏈 football or ⚡ hyper typing practice! Move each root from X to ~ to Y.", start: () => startRootsChooser(), isNew: true, added: "2026-11-09", kw: "root archery|root lacrosse|root basketball|root soccer|root football|lacrosse|archery|(greek|latin|word) roots?|greek (and |& )?latin roots?|root words?|root sheet|roots? practice|practice roots?|roots? games?" });
-NEW_APPS.push({ id: "rhyper", emoji: "⚡", name: "Root Hyper Practice", desc: "No choices: type what each Greek & Latin root means, which root means a word, or the root hiding in a word. Close spelling counts!", start: () => startRootHyper(), isNew: true, added: "2026-11-11", kw: "root hyper( practice)?|hyper (root )?practice|hyper roots?|root typing|type (the )?roots?|typing roots?|roots? quiz" });
 
 /* ---------- 🎡 Wheel Spinner: 1 to 1,000 parts, each with a name and an emoji ---------- */
 const WH_MAX = 1000;
@@ -14366,9 +14366,10 @@ NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; 
 
 // 🔎 Every App-App app can be found with Hippo search (by its name, or by these extra words)
 const APP_KW = { code: "code lab|learn to code", ai: "ai studio", music: "piano|beat maker", science: "volcano experiment", space: "solar system", money: "piggy bank|budget", pixel: "pixel art", puzzle: "sudoku|tower of hanoi|lights out", lang: "learn spanish|learn french", world: "flag quiz", comic: "comics?|comic strip", calm: "breathing|calm down", hippopoly: "monopoly|monapely|property game" };
+// 🎮 games can't be found by typing their name into Hippo (say "franklin rules" for the secret game room instead)
 function appSearch(q) {
   const rx = s => new RegExp("(^|[^a-z])(" + s + ")($|[^a-z])");
-  return NEW_APPS.find(a => rx(a.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).test(q) || (a.kw && rx(a.kw).test(q)) || (APP_KW[a.id] && rx(APP_KW[a.id]).test(q))) || appFuzzy(q);
+  return NEW_APPS.find(a => !INFO_GAME_APPS.has(a.id) && (rx(a.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).test(q) || (a.kw && rx(a.kw).test(q)) || (APP_KW[a.id] && rx(APP_KW[a.id]).test(q)))) || appFuzzy(q);
 }
 // 🔤 Misspelled app names still find the app (a missing, extra, swapped or wrong letter or two).
 // (Don't write misspelled examples in comments here: every word on the page counts as a real word for Hippo's spell checker.)
@@ -14383,6 +14384,7 @@ function appFuzzy(q) {
   const runs = []; for (let i = 0; i < words.length; i++) for (let k = 1; k <= 4 && i + k <= words.length; k++) runs.push([words.slice(i, i + k), k === 1]);
   let best = null, bestLen = 0;
   for (const a of NEW_APPS) {
+    if (INFO_GAME_APPS.has(a.id)) continue;   // games aren't found by name
     const name = (a.name.toLowerCase().match(/[a-z]+/g) || []).filter(t => !APP_STOP.includes(t)).join("");
     // words run together ("battle ship" → battleship) only count if each real word in them is part of the name, so "do fish" isn't "go fish"
     const hit = (name.length >= 3 && runs.some(([r, single]) => (single || r.every(w => !V.known.has(w) || name.includes(w))) && near(r.join(""), name, single))) || (APP_FUZZY[a.id] || []).some(t => words.some(w => near(w, t, true)));
