@@ -2626,6 +2626,8 @@ function bindDots() {
   });
 }
 // ℹ️ The info page: where to find everything in Study Arcade except the games, and the Terms of Service
+// on this page the games don't exist: their apps are left out, and these descriptions are reworded so they don't mention games
+const INFO_DESC = { "na-money": "Savings goals, needs vs. wants, making a budget, and growing money.", "na-pixel": "Paint pixel pictures one square at a time, and save a gallery.", "na-grammar": "The 8 parts of speech, sentence types, text structures and text features: learn them, then quiz yourself." };
 const INFO_GAME_APPS = new Set(["hippopoly", "uno", "bship", "hclass", "rummi", "check", "yahtzee", "mancala", "gofish", "dots", "chess", "roots", "puzzle", "bunny"]);   // games stay off this page
 function startInfo(jump) {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
@@ -2640,7 +2642,7 @@ function startInfo(jump) {
   $app.innerHTML = `<div class="panel infopage">
     <div class="topline"><span class="label">ℹ️ Where to find everything</span><button class="iconbtn" id="if-home" type="button">Back to menu</button></div>
     <h2>ℹ️ Where to find everything</h2>
-    <p class="soft">Everything in Study Arcade except the games, and where it lives. Tap <b>Go</b> to jump right there.</p>
+    <p class="soft">Everything in Study Arcade, and where it lives. Tap <b>Go</b> to jump right there.</p>
     <nav class="if-jump" aria-label="Sections">${[["study", "📚 Studying"], ["math", "🧮 Math"], ["apps", "📱 Apps"], ["hippo", "🦛 Ask Hippo"], ["buttons", "🔘 Buttons"], ["saving", "💾 Saving"], ["terms", "📜 Terms of Service"]].map(([id, t]) => `<button class="chip" type="button" data-jump="${id}">${t}</button>`).join("")}</nav>
     ${sec("study", "📚 Studying", "On the home screen, under <b>Tap a subject to start studying</b>.",
       Object.entries(SUBJECTS).map(([k, v]) => row(esc(v.name), esc(v.desc), "Home screen → subjects", btn(subj(k), "Go"))).join("") +
@@ -2656,7 +2658,7 @@ function startInfo(jump) {
       row("🦆 Lucky Duck Math", "Fractions, big numbers, patterns, story problems, coins and more.", "Math Center → at the very bottom", "") +
       `<div class="if-one">${btn(startMathCenter, "🧮 Open the Math Center")}</div>`)}
     ${sec("apps", "📱 Apps", "Every app lives in the <b>📱 App-App</b> (the first button on the home screen). The home screen shows 8 apps at a time, and they change at midnight. ⭐ means it's on the home screen today.",
-      apps.map(a => row(`${a.emoji} ${esc(a.name)}${today.has(a.key) ? ` <em class="if-today">⭐ home screen today</em>` : ""}`, esc(a.desc), "📱 App-App", btn(a.start, "Go"))).join("") +
+      apps.map(a => row(`${a.emoji} ${esc(a.name)}${today.has(a.key) ? ` <em class="if-today">⭐ home screen today</em>` : ""}`, esc(INFO_DESC[a.key] || a.desc), "📱 App-App", btn(a.start, "Go"))).join("") +
       `<div class="if-one">${btn(startAppApp, "📱 Open the App-App")}</div>`)}
     ${sec("hippo", "🦛 Ask Hippo", "The 🦛 on the home screen. It's always there.",
       row("Ask anything", "Hippo answers questions with pictures, and reads them out loud.", "Home screen → 🦛", "") +
@@ -2665,8 +2667,7 @@ function startInfo(jump) {
       `<div class="if-one">${btn(() => startHippo(), "🦛 Ask Hippo")}</div>`)}
     ${sec("buttons", "🔘 Buttons you'll see", "",
       row("✕ Exit", "Goes back to the home screen.", "Top left, inside apps", "") +
-      row("👤 Player", "Pick who you are, or add a new player (up to 100). MR.E, Colin, Alex and the whole crew are always there. Each player's progress is saved on its own.", "Top right, inside apps", "") +
-      row("🚨 Emergency", "Jumps straight to Greek &amp; Latin roots practice.", "Shows up on some screens", "") +
+      row("👤 Who are you?", "Pick who you are, or add someone new (up to 100). MR.E, Colin, Alex and the whole crew are always there. Everyone's progress is saved separately.", "Top right, inside apps", "") +
       row("Sound", "Turns sounds on or off.", "Bottom of the page", "") +
       row("⋯", "Opens this page.", "Top right of the home screen", ""))}
     ${sec("saving", "💾 Saving", "",
@@ -2676,13 +2677,13 @@ function startInfo(jump) {
       <h3>📜 Terms of Service</h3>
       <p class="soft">Last updated November 10, 2026. Please read these with a grown-up.</p>
       <ol>
-        <li><b>What Study Arcade is.</b> Study Arcade is a free, homemade study site made for Emmett, his family and friends, for practicing schoolwork and having some fun. It is not made by a school, a school district or a company.</li>
+        <li><b>What Study Arcade is.</b> Study Arcade is a free, homemade study site made for Emmett, his family and friends, for practicing schoolwork. It is not made by a school, a school district or a company.</li>
         <li><b>Who can use it.</b> Anyone this page has been shared with. Kids should use it with a parent's or guardian's OK. Using Study Arcade means you agree to these terms.</li>
-        <li><b>Be kind and stay safe.</b> Use nice names for players. Never type private information, like a home address, phone number, password or school login, into Study Arcade: not in player names, stories, the Memorizer, AI Studio or Ask Hippo.</li>
-        <li><b>Your saves.</b> Progress is saved in your browser and in this page's own online storage. People this page is shared with use the same saves, so they can see player names and scores. There are no ads, and nothing is sold or given to anyone else.</li>
+        <li><b>Be kind and stay safe.</b> Use nice names for everyone you add. Never type private information, like a home address, phone number, password or school login, into Study Arcade: not in names, stories, the Memorizer, AI Studio or Ask Hippo.</li>
+        <li><b>Your saves.</b> Progress is saved in your browser and in this page's own online storage. People this page is shared with use the same saves, so they can see names and progress. There are no ads, and nothing is sold or given to anyone else.</li>
         <li><b>AI.</b> Some parts, like 🤖 AI Studio, use AI to write answers. AI can make mistakes. Don't trust it for anything important without checking.</li>
-        <li><b>Answers can be wrong.</b> Study Arcade tries hard to get things right, but your teacher, your textbook and your real tests always win. Check anything important with a teacher or a book.</li>
-        <li><b>Real names.</b> Real people, teams, books and places are mentioned for learning and fun. None of them made or support Study Arcade.</li>
+        <li><b>Answers can be wrong.</b> Study Arcade tries hard to get things right, but your teacher, your textbook and your real tests always come first. Check anything important with a teacher or a book.</li>
+        <li><b>Real names.</b> Real people, books and places are mentioned for learning. None of them made or support Study Arcade.</li>
         <li><b>Take breaks.</b> Homework comes first. Rest your eyes, stretch, and try the 🧘 Calm Corner when you need a break.</li>
         <li><b>No promises.</b> Study Arcade is offered as it is. It might have bugs, it might be down sometimes, and saves can be lost if the browser's data is cleared.</li>
         <li><b>Changes.</b> Study Arcade changes often, and these terms can change too. The date at the top shows the newest version.</li>
