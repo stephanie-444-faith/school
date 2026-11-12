@@ -315,6 +315,19 @@
   #cl-ed { width: 100%; min-height: 240px; resize: vertical; font: 15px/1.5 ui-monospace, Menlo, Consolas, monospace; background: #0b1020; color: #d6f7e2; border: 0; border-radius: 0 0 12px 12px; padding: 10px; tab-size: 4; }
   .cl-view { width: 100%; min-height: 240px; border: 0; border-radius: 0 0 12px 12px; background: #fff; }
   .cl-out { margin: 0; min-height: 120px; max-height: 260px; overflow: auto; white-space: pre-wrap; background: #000; color: #7CFC9A; font: 14px/1.45 ui-monospace, monospace; padding: 10px; border-radius: 0 0 12px 12px; }
+  .cl-ex { align-items: center; margin: 6px 0; }
+  .rb-board { display: grid; gap: 4px; max-width: 420px; margin: 12px auto; }
+  .rb-cell { aspect-ratio: 1; display: grid; place-items: center; border-radius: 10px; background: var(--panel-2); font-size: clamp(1.1rem, 6vw, 1.8rem); }
+  .rb-cell.wall { background: #3a2a52; }
+  .rb-bot { position: relative; } .rb-bot i { position: absolute; right: -12px; bottom: -8px; font-style: normal; font-size: .6em; } .rb-bot.crash { animation: rhShake .3s 2; }
+  .rb-prog { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 44px; padding: 8px; border-radius: 12px; background: #0b1020; margin: 8px 0; }
+  .rb-block { background: #2f6fe4; color: #fff; font-weight: 800; border-radius: 8px; padding: 5px 10px; font-size: .9rem; } .rb-prog small { color: var(--ink-soft); margin-left: auto; }
+  .rb-cmds { align-items: center; margin-top: 6px; }
+  .bn-row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin: 14px 0 8px; }
+  .bn-bit { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 0; border-radius: 12px; border: 2px solid var(--line); background: #0b1020; color: #7CFC9A; font: inherit; cursor: pointer; }
+  .bn-bit b { font: 800 1.8rem ui-monospace, monospace; } .bn-bit small { color: var(--ink-soft); font-size: .75rem; }
+  .bn-bit.on { background: #1f5f2f; border-color: #7CFC9A; box-shadow: 0 0 14px rgba(124,252,154,.4); }
+  .bn-total { text-align: center; font-size: 1.4rem; margin: 6px 0 10px; } .bn-total span { font-family: ui-monospace, monospace; color: #7CFC9A; } .bn-total b { font-size: 2rem; color: var(--gold); }
   .cl-turtle { margin-top: 8px; background: #fff; border-radius: 12px; overflow: hidden; } .cl-turtle canvas { max-width: 100%; }
   .cl-win, .cl-try { margin: 10px 0; padding: 10px 12px; border-radius: 12px; font-weight: 700; } .cl-win { background: rgba(66,227,146,.18); border: 1px solid var(--money); } .cl-try { background: rgba(255,96,112,.15); border: 1px solid var(--bad); }
   .ai-lesson { padding: 14px; border-radius: 16px; background: var(--panel-2); margin: 10px 0; } .ai-lesson > span { font-size: 2.6rem; } .ai-lesson p { margin: .6em 0; line-height: 1.55; }
@@ -9157,7 +9170,7 @@ function bindHippoCalc() {
 // 🧮 Math Center: the calculator, math practice levels and Ratios & Rates in one place
 /* ---------- 📱 The App-App: every newer app lives here ---------- */
 const NEW_APPS = [
-  { id: "code", emoji: "💻", name: "Code Lab", desc: "Learn to code websites (HTML) and real Python, step by step.", start: () => startCodeLab() },
+  { id: "code", emoji: "💻", name: "Code Lab", desc: "Learn HTML, CSS, JavaScript and real Python, program a robot, count in binary, and build in the Python and JavaScript playgrounds.", start: () => startCodeLab() },
   { id: "ai", emoji: "🤖", name: "AI Studio", desc: "Learn how to use AI to make cool things, and try your prompts for real.", start: () => startAIStudio() }
 ];
 // 🏠 Home screen: it shows 8 apps at a time, counting the 📱 App-App. The App-App and 🦛 Hippo always stay;
@@ -9260,58 +9273,259 @@ async function runPython(code, onOut, turtleId) {
   await Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code, true));
   return out;
 }
+const CSS_LESSONS = [
+  { t: "Color your words", learn: "CSS makes pages look cool. Inside <code>&lt;style&gt;</code>, <code>h1 { color: blue; }</code> makes every big heading blue.", code: "<style>\n  h1 { color: blue; }\n</style>\n<h1>Hello!</h1>", goal: "Make the heading a different color, like orange, green or hotpink.", check: (d, src) => /h1\s*\{[^}]*color\s*:/i.test(src) && !/color\s*:\s*blue\s*;?/i.test(src) ? "" : "Change blue to another color." },
+  { t: "Backgrounds", learn: "<code>background</code> colors the space behind things. <code>body</code> is the whole page.", code: "<style>\n  body { background: lightblue; }\n</style>\n<p>What a nice sky!</p>", goal: "Give the page a different background color.", check: (d, src) => /background(-color)?\s*:/i.test(src) && !/background(-color)?\s*:\s*lightblue/i.test(src) ? "" : "Change lightblue to a new color." },
+  { t: "Big and small text", learn: "<code>font-size</code> sets how big words are. <code>px</code> means pixels (tiny dots on the screen).", code: "<style>\n  p { font-size: 30px; }\n</style>\n<h1>Title</h1>\n<p>Some big words</p>", goal: "Make the h1 HUGE: font-size 60px or bigger.", check: (d, src) => { const m = src.match(/h1\s*\{[^}]*font-size\s*:\s*(\d+)px/i); return m && +m[1] >= 60 ? "" : "Add font-size: 60px (or more) to h1."; } },
+  { t: "Fonts", learn: "<code>font-family</code> changes the style of the letters: <code>cursive</code>, <code>monospace</code>, <code>fantasy</code> or a named font like <code>Arial</code>.", code: "<style>\n  h1 { font-family: serif; }\n</style>\n<h1>Fancy title</h1>", goal: "Use a different font family, like cursive or monospace.", check: (d, src) => /font-family\s*:\s*[^;}]*(cursive|monospace|fantasy|arial|verdana|comic|courier|impact|georgia|sans-serif)/i.test(src) ? "" : "Try font-family: cursive; (or monospace)." },
+  { t: "Borders", learn: "<code>border: 4px solid red;</code> draws a line around something: how thick, what style, what color.", code: "<style>\n  .box { border: 4px solid red; padding: 10px; }\n</style>\n<div class=\"box\">A box!</div>", goal: "Make the border dashed or dotted.", check: (d, src) => /border\s*:[^;}]*(dashed|dotted)/i.test(src) ? "" : "Change solid to dashed or dotted." },
+  { t: "Round things", learn: "<code>border-radius</code> rounds the corners. With the same width and height, <code>border-radius: 50%</code> makes a circle!", code: "<style>\n  .ball { width: 100px; height: 100px; background: tomato; border-radius: 20px; }\n</style>\n<div class=\"ball\"></div>", goal: "Turn the box into a circle with border-radius: 50%.", check: (d, src) => /border-radius\s*:\s*50%/i.test(src) ? "" : "Use border-radius: 50%;" },
+  { t: "Side by side", learn: "<code>display: flex</code> lines things up in a row. <code>gap</code> adds space between them.", code: "<style>\n  .row { display: flex; gap: 10px; }\n  .row div { width: 60px; height: 60px; background: gold; }\n</style>\n<div class=\"row\">\n  <div></div>\n  <div></div>\n</div>", goal: "Make 4 boxes sit side by side.", check: d => [...d.querySelectorAll(".row")].some(r => r.children.length >= 4) ? "" : "Put 4 boxes inside the row." },
+  { t: "Hover magic", learn: "<code>:hover</code> styles something when the mouse is over it. Try moving the mouse over the button!", code: "<style>\n  button { font-size: 24px; background: lightgreen; }\n  button:hover { background: gold; }\n</style>\n<button>Hover me!</button>", goal: "Make something else change on hover, like its color, size or border.", check: (d, src) => (src.match(/:hover/g) || []).length >= 1 && src.trim() !== "" ? "" : "Add a :hover style." }
+];
+const JS_LESSONS = [
+  { t: "Say hello", learn: "JavaScript makes websites do things. <code>console.log()</code> prints a message.", code: "console.log(\"Hello, World!\");", goal: "Print your name.", check: (out, src) => /console\.log/.test(src) && out.trim() && !/^hello, world!?$/i.test(out.trim()) ? "" : "Print something other than Hello, World!" },
+  { t: "Math", learn: "JavaScript does math: <code>+ - * /</code>. <code>**</code> is a power.", code: "console.log(7 * 8);\nconsole.log(100 - 1);", goal: "Print the answer to 123 + 456 (let JavaScript do the work!).", check: (out, src) => /123\s*\+\s*456/.test(src) && /579/.test(out) ? "" : "Use console.log(123 + 456);" },
+  { t: "Variables", learn: "<code>let</code> makes a box with a name. <code>let pet = \"dog\";</code> puts \"dog\" in a box called pet.", code: "let pet = \"dog\";\nconsole.log(\"I love my \" + pet + \"!\");", goal: "Make a variable called food and print a sentence using it.", check: (out, src) => /\b(let|const|var)\s+food\b/.test(src) && out.trim() ? "" : "Make let food = \"...\"; and print it." },
+  { t: "Template strings", learn: "Backticks let you drop variables right into words: <code>`I am ${age}`</code>.", code: "let name = \"Pip\";\nlet age = 10;\nconsole.log(`${name} is ${age} years old`);", goal: "Make 2 new variables and print a sentence with both, using backticks.", check: (out, src) => /`/.test(src) && (src.match(/\$\{/g) || []).length >= 2 && !/Pip/.test(src) ? "" : "Use your own 2 variables with ${ } inside backticks." },
+  { t: "If and else", learn: "<code>if</code> makes choices. If the test is true, the first part runs. Otherwise <code>else</code> runs.", code: "let score = 7;\nif (score >= 5) {\n  console.log(\"You win!\");\n} else {\n  console.log(\"Try again!\");\n}", goal: "Change score so it prints Try again!", check: out => /try again/i.test(out) ? "" : "Make score smaller than 5." },
+  { t: "Loops", learn: "<code>for (let i = 1; i &lt;= 5; i++)</code> repeats with i = 1, 2, 3, 4, 5.", code: "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}", goal: "Count from 1 to 20.", check: out => { const l = out.trim().split("\n"); return l[0] === "1" && l.at(-1) === "20" ? "" : "Make it count from 1 to 20."; } },
+  { t: "Arrays", learn: "An <b>array</b> holds a list: <code>[\"cat\", \"dog\"]</code>. <code>for (const x of list)</code> goes through each one.", code: "let pets = [\"cat\", \"dog\", \"hippo\"];\nfor (const pet of pets) {\n  console.log(\"I love my \" + pet);\n}", goal: "Make an array of 5 colors and print each one.", check: (out, src) => { const m = src.match(/\[([^\]]*)\]/); return m && m[1].split(",").filter(s => s.trim()).length >= 5 && out.trim().split("\n").length >= 5 ? "" : "Put 5 colors in the array and print them."; } },
+  { t: "Functions", learn: "A <b>function</b> is a mini program with a name you can use again and again.", code: "function cheer(name) {\n  console.log(\"Go, \" + name + \"!\");\n}\ncheer(\"Pip\");", goal: "Make your own function and call it 3 times.", check: (out, src) => /function\s+\w+|=>/.test(src) && out.trim().split("\n").length >= 3 ? "" : "Call your function 3 times." },
+  { t: "Random dice", learn: "<code>Math.random()</code> gives a random number. <code>Math.floor(Math.random() * 6) + 1</code> rolls a die!", code: "let roll = Math.floor(Math.random() * 6) + 1;\nconsole.log(\"You rolled a \" + roll);", goal: "Roll TWO dice and print the total.", check: (out, src) => (src.match(/Math\.random/g) || []).length >= 2 && /\d/.test(out) ? "" : "Roll two dice (use Math.random twice) and add them." }
+];
+const PY_PLAY_EXAMPLES = [
+  ["👋 Hello", "name = \"Pip\"\nprint(\"Hello, \" + name + \"!\")\nprint(\"2 + 2 =\", 2 + 2)"],
+  ["🌈 Rainbow star", "from turtle import *\ncolors = [\"red\", \"orange\", \"gold\", \"green\", \"blue\", \"purple\"]\nspeed(0)\npenup()\ngoto(-60, 10)\npendown()\nfor i in range(36):\n    color(colors[i % 6])\n    forward(120)\n    right(170)"],
+  ["🎲 Dice roller", "import random\nfor roll in range(5):\n    a = random.randint(1, 6)\n    b = random.randint(1, 6)\n    print(\"Roll\", roll + 1, \":\", a, \"+\", b, \"=\", a + b)"],
+  ["✖️ Times table", "n = 7\nfor i in range(1, 13):\n    print(n, \"x\", i, \"=\", n * i)"],
+  ["🤔 Guess the number", "import random\nsecret = random.randint(1, 10)\nfor tries in range(3):\n    guess = int(input(\"Guess 1 to 10: \"))\n    if guess == secret:\n        print(\"You got it!\")\n        break\n    elif guess < secret:\n        print(\"Higher!\")\n    else:\n        print(\"Lower!\")\nprint(\"The number was\", secret)"],
+  ["📖 Silly story", "import random\nanimals = [\"hippo\", \"dragon\", \"penguin\", \"llama\"]\nplaces = [\"the moon\", \"a castle\", \"the ocean\", \"school\"]\nfoods = [\"pizza\", \"tacos\", \"pancakes\", \"broccoli\"]\nprint(\"Once upon a time, a\", random.choice(animals), \"flew to\", random.choice(places), \"and ate\", random.choice(foods) + \"!\")"]
+];
+const JS_PLAY_EXAMPLES = [
+  ["👋 Hello", "let name = \"Pip\";\nconsole.log(`Hello, ${name}!`);\nconsole.log(\"2 + 2 =\", 2 + 2);"],
+  ["🔢 FizzBuzz", "for (let i = 1; i <= 20; i++) {\n  if (i % 15 === 0) console.log(\"FizzBuzz\");\n  else if (i % 3 === 0) console.log(\"Fizz\");\n  else if (i % 5 === 0) console.log(\"Buzz\");\n  else console.log(i);\n}"],
+  ["🎲 Dice roller", "for (let r = 1; r <= 5; r++) {\n  const a = Math.floor(Math.random() * 6) + 1;\n  const b = Math.floor(Math.random() * 6) + 1;\n  console.log(`Roll ${r}: ${a} + ${b} = ${a + b}`);\n}"],
+  ["📝 Shopping list", "const list = [\"apples\", \"milk\", \"bread\"];\nlist.push(\"cookies\");\nlist.forEach((item, i) => console.log(`${i + 1}. ${item}`));\nconsole.log(`That's ${list.length} things!`);"],
+  ["🚀 Countdown", "let n = 10;\nwhile (n > 0) {\n  console.log(n);\n  n--;\n}\nconsole.log(\"Blast off! 🚀\");"]
+];
+// ⚡ JavaScript runs in a sealed-off frame. Every loop gets a counter so an endless loop stops itself. A program still running after 3 seconds is stopped too.
+function jsGuardLoops(code) {
+  let out = "", i = 0; const n = code.length;
+  const skipStr = (q, j) => { j++; while (j < n && code[j] !== q) { if (code[j] === "\\") j++; j++; } return j + 1; };
+  const header = j => { let d = 0, k = j; while (k < n) { const c = code[k]; if (c === '"' || c === "'" || c === "`") { k = skipStr(c, k); continue; } if (c === "(") d++; else if (c === ")" && --d === 0) return k; k++; } return -1; };
+  const splitTop = s => { const parts = []; let d = 0, last = 0; for (let k = 0; k < s.length; k++) { const c = s[k]; if (c === '"' || c === "'" || c === "`") { let q = c; k++; while (k < s.length && s[k] !== q) { if (s[k] === "\\") k++; k++; } continue; } if ("([{".includes(c)) d++; else if (")]}".includes(c)) d--; else if (c === ";" && !d) { parts.push(s.slice(last, k)); last = k + 1; } } parts.push(s.slice(last)); return parts; };
+  while (i < n) {
+    const c = code[i];
+    if (c === '"' || c === "'" || c === "`") { const j = skipStr(c, i); out += code.slice(i, j); i = j; continue; }
+    if (c === "/" && code[i + 1] === "/") { const j = code.indexOf("\n", i); const e = j < 0 ? n : j; out += code.slice(i, e); i = e; continue; }
+    if (c === "/" && code[i + 1] === "*") { const j = code.indexOf("*/", i + 2); const e = j < 0 ? n : j + 2; out += code.slice(i, e); i = e; continue; }
+    const m = /^(for|while)\s*\(/.exec(code.slice(i, i + 12));
+    if (m && !/[\w$.]/.test(code[i - 1] || "")) {
+      const open = i + m[0].length - 1, close = header(open);
+      if (close > 0) {
+        const inner = code.slice(open + 1, close);
+        if (m[1] === "while") out += `while (__g() && (${jsGuardLoops(inner)}))`;
+        else { const p = splitTop(inner); out += p.length === 3 ? `for (${jsGuardLoops(p[0])}; __g()${p[1].trim() ? ` && (${jsGuardLoops(p[1])})` : ""}; ${jsGuardLoops(p[2])})` : `for (${inner})`; }
+        i = close + 1; continue;
+      }
+    }
+    out += c; i++;
+  }
+  return out;
+}
+function runJS(code, onOut) {
+  return new Promise(resolve => {
+    const safe = jsGuardLoops(code).replace(/<\/script/gi, "<\\/script");
+    const id = "js" + Date.now() + Math.random().toString(36).slice(2), f = document.createElement("iframe");
+    f.setAttribute("sandbox", "allow-scripts"); f.style.display = "none";
+    let out = "", over = false;
+    const finish = () => { if (over) return; over = true; window.removeEventListener("message", onMsg); f.remove(); resolve(out); };
+    const onMsg = e => { if (e.source !== f.contentWindow || !e.data || e.data.id !== id) return; if (e.data.t === "out") { out += e.data.s + "\n"; onOut(out); } else if (e.data.t === "err") { out += "❌ " + e.data.s + "\n"; onOut(out); } else if (e.data.t === "done") finish(); };
+    window.addEventListener("message", onMsg);
+    f.srcdoc = `<!doctype html><script>const __id=${JSON.stringify(id)};let __loops=0,__wait=0,__main=true;const __g=()=>{if(++__loops>1000000)throw new Error("Your loop ran over a million times, so it was stopped. Is it endless?");return true};const __s=v=>typeof v==="string"?v:(()=>{try{return v===undefined?"undefined":JSON.stringify(v)}catch(e){return String(v)}})();const __p=(t,s)=>parent.postMessage({id:__id,t,s},"*");const __end=()=>{if(!__main&&__wait<=0)__p("done")};console.log=(...a)=>__p("out",a.map(__s).join(" "));console.error=console.warn=console.info=console.log;window.alert=m=>__p("out","🔔 "+__s(m));window.prompt=q=>{__p("out","❓ "+q+" (questions don't work here, so the answer is empty)");return ""};const __st=setTimeout,__ct=clearTimeout,__si=setInterval,__ci=clearInterval,__live=new Set();window.setTimeout=(fn,ms,...a)=>{__wait++;const h=__st(()=>{__live.delete(h);try{typeof fn==="function"?fn(...a):0}catch(e){__p("err",e.message)}__wait--;__end()},ms);__live.add(h);return h};window.clearTimeout=h=>{if(__live.delete(h))__wait--;__ct(h);__end()};window.setInterval=(fn,ms,...a)=>{__wait++;const h=__si(()=>{try{typeof fn==="function"?fn(...a):0}catch(e){__p("err",e.message)}},ms);__live.add(h);return h};window.clearInterval=h=>{if(__live.delete(h))__wait--;__ci(h);__end()};window.onerror=(m,s,l)=>{__p("err",String(m).replace(/^Uncaught /,"")+(l?" (line "+l+")":""));__main=false;__wait=0;__p("done");return true};<\/script><script>try{${safe}
+}catch(e){__p("err",e.message)}__main=false;__end();<\/script>`;
+    document.body.appendChild(f);
+    setTimeout(() => { if (!over) { out += "⏱ Your program ran for 3 seconds, so it was stopped.\n"; onOut(out); finish(); } }, 3000);
+  });
+}
+const CL_TRACKS = { html: ["🌐", "HTML", "code_html"], css: ["🎨", "CSS", "code_css"], js: ["⚡", "JavaScript", "code_js"], py: ["🐍", "Python", "code_py"], play: ["🛝", "HTML playground", "code_play"], pyplay: ["🐍", "Python playground", "code_pyplay"], jsplay: ["⚡", "JavaScript playground", "code_jsplay"] };
 function startCodeLab(track, lesson) {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
-  if (!track) {
-    const h = store.get("code_html", []), py = store.get("code_py", []);
+  if (track === "robot") return startRobotCode();
+  if (track === "binary") return startBinary();
+  if (!CL_TRACKS[track]) {
+    const n = k => store.get(k, []).length, rb = store.get("code_robot", []).length, bn = store.get("code_binary", []).length;
     $app.innerHTML = `<div class="panel codelab">
       <div class="topline"><span class="label">💻 Code Lab</span><button class="iconbtn" id="cl-back">Back to App-App</button></div>
-      <h2>💻 Code Lab</h2><p class="soft">Real coders start exactly like this. Pick a language!</p>
+      <h2>💻 Code Lab</h2><p class="soft">Real coders start exactly like this. Pick a kind of coding!</p>
+      <h3>📚 Lessons</h3>
       <div class="aa-grid">
-        <button class="aa-card" id="cl-html"><i>🌐</i><b>HTML: build websites</b><span>Make real web pages with headings, colors, lists, links and buttons. See your page change as you type!</span><small>✅ ${h.length} / ${HTML_LESSONS.length} lessons</small></button>
-        <button class="aa-card" id="cl-py"><i>🐍</i><b>Python: real programming</b><span>The language scientists and game makers use. Math, variables, loops, turtle drawing and your own games!</span><small>✅ ${py.length} / ${PY_LESSONS.length} lessons</small></button>
-        <button class="aa-card" id="cl-play"><i>🛝</i><b>HTML playground</b><span>A blank page to build anything you want (or paste code an AI made for you).</span></button>
+        <button class="aa-card" data-tr="html"><i>🌐</i><b>HTML: build websites</b><span>Make real web pages with headings, colors, lists, links and buttons. See your page change as you type!</span><small>✅ ${n("code_html")} / ${HTML_LESSONS.length} lessons</small></button>
+        <button class="aa-card" data-tr="css"><i>🎨</i><b>CSS: style websites</b><span>Colors, fonts, borders, circles, boxes side by side and hover magic.</span><small>✅ ${n("code_css")} / ${CSS_LESSONS.length} lessons</small></button>
+        <button class="aa-card" data-tr="js"><i>⚡</i><b>JavaScript: make websites think</b><span>The language that runs inside every web browser: variables, choices, loops, lists and functions.</span><small>✅ ${n("code_js")} / ${JS_LESSONS.length} lessons</small></button>
+        <button class="aa-card" data-tr="py"><i>🐍</i><b>Python: real programming</b><span>The language scientists and game makers use. Math, variables, loops, turtle drawing and your own games!</span><small>✅ ${n("code_py")} / ${PY_LESSONS.length} lessons</small></button>
+        <button class="aa-card" data-tr="robot"><i>🤖</i><b>Robot Code</b><span>Program a robot with commands to get it through mazes to the star. Use as few blocks as you can!</span><small>✅ ${rb} / ${ROBOT_LEVELS.length} levels</small></button>
+        <button class="aa-card" data-tr="binary"><i>0️⃣1️⃣</i><b>Binary: how computers count</b><span>Computers only use 0s and 1s. Flip the switches to make numbers!</span><small>✅ ${bn} / ${BIN_GOALS.length} challenges</small></button>
+      </div>
+      <h3>🛝 Playgrounds</h3>
+      <div class="aa-grid">
+        <button class="aa-card" data-tr="pyplay"><i>🐍</i><b>Python playground</b><span>Write and run any Python you want, with turtle drawing and examples to start from. Saved for you.</span></button>
+        <button class="aa-card" data-tr="jsplay"><i>⚡</i><b>JavaScript playground</b><span>Write and run any JavaScript you want, with examples to start from. Saved for you.</span></button>
+        <button class="aa-card" data-tr="play"><i>🛝</i><b>HTML playground</b><span>A blank page to build anything you want (or paste code an AI made for you).</span></button>
       </div></div>`;
     document.getElementById("cl-back").addEventListener("click", startAppApp);
-    document.getElementById("cl-html").addEventListener("click", () => startCodeLab("html"));
-    document.getElementById("cl-py").addEventListener("click", () => startCodeLab("py"));
-    document.getElementById("cl-play").addEventListener("click", () => startCodeLab("play"));
+    $app.querySelectorAll("[data-tr]").forEach(b => b.addEventListener("click", () => startCodeLab(b.dataset.tr)));
     return;
   }
-  const isPy = track === "py", L = track === "play" ? null : (isPy ? PY_LESSONS : HTML_LESSONS), doneKey = isPy ? "code_py" : "code_html", done = store.get(doneKey, []);
-  const idx = L ? (lesson ?? Math.min(done.length, L.length - 1)) : 0, les = L ? L[idx] : { t: "HTML playground", learn: "Build anything! Your work is saved on this device.", code: store.get("code_play", "<h1>My page</h1>\n<p>Build anything here!</p>"), goal: "" };
+  const [emo, tname, doneKey] = CL_TRACKS[track], isPy = track === "py" || track === "pyplay", isJs = track === "js" || track === "jsplay", isPlay = /play$/.test(track);
+  const L = { html: HTML_LESSONS, css: CSS_LESSONS, js: JS_LESSONS, py: PY_LESSONS }[track] || null, done = L ? store.get(doneKey, []) : [];
+  const blank = { play: "<h1>My page</h1>\n<p>Build anything here!</p>", pyplay: PY_PLAY_EXAMPLES[0][1], jsplay: JS_PLAY_EXAMPLES[0][1] }[track];
+  const idx = L ? (lesson ?? Math.min(done.length, L.length - 1)) : 0;
+  const les = L ? L[idx] : { t: tname, learn: isPlay && track !== "play" ? `Write any ${isPy ? "Python" : "JavaScript"} you want and press ▶ Run. Pick an example to start from. Your code is saved for you.` : "Build anything! Your work is saved for you.", code: store.get(doneKey, blank) };
+  const examples = track === "pyplay" ? PY_PLAY_EXAMPLES : track === "jsplay" ? JS_PLAY_EXAMPLES : null;
   $app.innerHTML = `<div class="panel codelab">
-    <div class="topline"><span class="label">💻 Code Lab · ${isPy ? "Python" : "HTML"}</span><button class="iconbtn" id="cl-up">All lessons</button></div>
+    <div class="topline"><span class="label">💻 Code Lab · ${tname}</span><button class="iconbtn" id="cl-up">All coding</button></div>
     ${L ? `<div class="cl-steps">${L.map((x, i) => `<button class="cl-step${done.includes(i) ? " done" : ""}${i === idx ? " on" : ""}" data-i="${i}" title="${esc(x.t)}">${done.includes(i) ? "✓" : i + 1}</button>`).join("")}</div>` : ""}
-    <h2>${L ? `Lesson ${idx + 1}: ` : ""}${esc(les.t)}</h2>
+    <h2>${L ? `Lesson ${idx + 1}: ` : emo + " "}${esc(les.t)}</h2>
     <p class="cl-learn">${les.learn}</p>
     ${les.goal ? `<div class="cl-goal">🎯 <b>Your challenge:</b> ${esc(les.goal)}</div>` : ""}
+    ${examples ? `<div class="row cl-ex"><span class="soft">Start from an example:</span>${examples.map((x, i) => `<button class="chip" type="button" data-ex="${i}">${x[0]}</button>`).join("")}</div>` : ""}
     <div class="cl-work">
-      <div class="cl-edwrap"><div class="cl-bar"><span>${isPy ? "🐍 your_code.py" : "🌐 index.html"}</span><button class="btn mini" id="cl-reset">↺ Reset</button></div><textarea id="cl-ed" spellcheck="false" autocapitalize="off" autocomplete="off">${esc(les.code)}</textarea></div>
-      <div class="cl-outwrap">${isPy ? `<div class="cl-bar"><span>▶ Output</span><button class="btn go mini" id="cl-run">▶ Run</button></div><pre id="cl-out" class="cl-out">Press ▶ Run to start your program.</pre><div id="cl-turtle" class="cl-turtle"></div>` : `<div class="cl-bar"><span>👀 Live preview</span></div><iframe id="cl-view" class="cl-view" sandbox="allow-scripts" title="Your page"></iframe>`}</div>
+      <div class="cl-edwrap"><div class="cl-bar"><span>${isPy ? "🐍 your_code.py" : isJs ? "⚡ script.js" : "🌐 index.html"}</span><button class="btn mini" id="cl-reset">↺ ${isPlay ? "Clear" : "Reset"}</button></div><textarea id="cl-ed" spellcheck="false" autocapitalize="off" autocomplete="off">${esc(les.code)}</textarea></div>
+      <div class="cl-outwrap">${isPy || isJs ? `<div class="cl-bar"><span>▶ Output</span><button class="btn go mini" id="cl-run">▶ Run</button></div><pre id="cl-out" class="cl-out">Press ▶ Run to start your program.</pre>${isPy ? `<div id="cl-turtle" class="cl-turtle"></div>` : ""}` : `<div class="cl-bar"><span>👀 Live preview</span></div><iframe id="cl-view" class="cl-view" sandbox="allow-scripts" title="Your page"></iframe>`}</div>
     </div>
     ${L ? `<div class="row cl-actions"><button class="btn gold" id="cl-check">✅ Check my challenge</button>${idx < L.length - 1 ? `<button class="btn" id="cl-next">Next lesson ▶</button>` : ""}</div><div id="cl-msg"></div>` : ""}
   </div>`;
   const ed = document.getElementById("cl-ed");
-  ed.addEventListener("keydown", e => { if (e.key === "Tab") { e.preventDefault(); const s = ed.selectionStart; ed.setRangeText("    ", s, ed.selectionEnd, "end"); ed.dispatchEvent(new Event("input")); } });
+  ed.addEventListener("keydown", e => { if (e.key === "Tab") { e.preventDefault(); const s = ed.selectionStart; ed.setRangeText(isJs ? "  " : "    ", s, ed.selectionEnd, "end"); ed.dispatchEvent(new Event("input")); } });
+  if (isPlay) ed.addEventListener("input", () => store.set(doneKey, ed.value));
   document.getElementById("cl-up").addEventListener("click", () => startCodeLab());
-  document.getElementById("cl-reset").addEventListener("click", () => { ed.value = L ? les.code : "<h1>My page</h1>\n<p>Build anything here!</p>"; ed.dispatchEvent(new Event("input")); });
+  document.getElementById("cl-reset").addEventListener("click", () => { ed.value = L ? les.code : track === "play" ? blank : ""; ed.dispatchEvent(new Event("input")); ed.focus(); });
+  $app.querySelectorAll("[data-ex]").forEach(b => b.addEventListener("click", () => { ed.value = examples[+b.dataset.ex][1]; ed.dispatchEvent(new Event("input")); go(); }));
   $app.querySelectorAll(".cl-step").forEach(b => b.addEventListener("click", () => startCodeLab(track, +b.dataset.i)));
   document.getElementById("cl-next")?.addEventListener("click", () => startCodeLab(track, idx + 1));
   let lastOut = "";
   const win = () => { if (!done.includes(idx)) { done.push(idx); store.set(doneKey, done); } sfx.buy(); document.getElementById("cl-msg").innerHTML = `<div class="cl-win">🎉 Challenge complete! ${idx < L.length - 1 ? "On to the next lesson!" : "You finished every lesson. You're a real coder now!"}</div>`; $app.querySelector(`.cl-step[data-i="${idx}"]`)?.classList.add("done"); };
-  if (!isPy) {
+  const tryMsg = why => { sfx.wrong(); document.getElementById("cl-msg").innerHTML = `<div class="cl-try">🤔 Almost! ${esc(why)}</div>`; };
+  let go = () => {};
+  if (!isPy && !isJs) {
     const view = document.getElementById("cl-view");
-    const show = () => { view.srcdoc = `<!doctype html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;margin:12px;color:#222;background:#fff}</style>${ed.value}`; if (!L) store.set("code_play", ed.value); };
+    const show = () => { view.srcdoc = `<!doctype html><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;margin:12px;color:#222;background:#fff}</style>${ed.value}`; };
     ed.addEventListener("input", show); show();
-    document.getElementById("cl-check")?.addEventListener("click", () => { const d = new DOMParser().parseFromString(ed.value, "text/html"), why = ed.value.trim() === les.code.trim() ? "Change the example to make it your own!" : les.check(d, ed.value); if (why) { sfx.wrong(); document.getElementById("cl-msg").innerHTML = `<div class="cl-try">🤔 Almost! ${esc(why)}</div>`; } else win(); });
+    document.getElementById("cl-check")?.addEventListener("click", () => { const d = new DOMParser().parseFromString(ed.value, "text/html"), why = ed.value.trim() === les.code.trim() ? "Change the example to make it your own!" : les.check(d, ed.value); if (why) tryMsg(why); else win(); });
   } else {
-    const out = document.getElementById("cl-out"), run = document.getElementById("cl-run");
-    const go = async () => { run.disabled = true; out.textContent = "Starting Python…"; document.getElementById("cl-turtle").innerHTML = ""; document.getElementById("cl-turtle").hidden = !/turtle/.test(ed.value); try { lastOut = await runPython(ed.value, t => { out.textContent = t; }, "cl-turtle"); if (!lastOut) out.textContent = /turtle/.test(ed.value) ? "🐢 Drawing finished!" : "(Your program ran but didn't print anything.)"; } catch (e) { const msg = e && e.message === "load" ? "Python couldn't load. Check your internet connection and try again." : String(e && e.toString ? e.toString() : e); out.textContent = (lastOut || "") + "\n❌ " + msg.replace(/on line (\d+)/, "on line $1") + "\n\n💡 Check your spelling, quotes, colons ( : ) and spaces at the start of lines."; } finally { run.disabled = false; } return lastOut; };
+    const out = document.getElementById("cl-out"), run = document.getElementById("cl-run"), turtle = document.getElementById("cl-turtle");
+    go = async () => {
+      run.disabled = true; lastOut = "";
+      try {
+        if (isPy) {
+          out.textContent = "Starting Python…"; turtle.innerHTML = ""; turtle.hidden = !/turtle/.test(ed.value);
+          lastOut = await runPython(ed.value, t => { out.textContent = t; }, "cl-turtle");
+          if (!lastOut) out.textContent = /turtle/.test(ed.value) ? "🐢 Drawing finished!" : "(Your program ran but didn't print anything.)";
+        } else {
+          out.textContent = "Running…";
+          lastOut = await runJS(ed.value, t => { out.textContent = t; });
+          if (!lastOut) out.textContent = "(Your program ran but didn't print anything. Use console.log() to print.)";
+          else if (/❌/.test(lastOut)) out.textContent = lastOut + "\n💡 Check your spelling, quotes, brackets { } and ( ), and semicolons.";
+        }
+      } catch (e) {
+        const msg = e && e.message === "load" ? "Python couldn't load. Check your internet connection and try again." : String(e && e.toString ? e.toString() : e);
+        out.textContent = (lastOut || "") + "\n❌ " + msg + "\n\n💡 Check your spelling, quotes, colons ( : ) and spaces at the start of lines.";
+      } finally { run.disabled = false; }
+      return lastOut;
+    };
     run.addEventListener("click", go);
-    document.getElementById("cl-check").addEventListener("click", async () => { const o = await go(); const why = ed.value.trim() === les.code.trim() ? "Change the example to make it your own!" : les.check(o || "", ed.value); if (why) { sfx.wrong(); document.getElementById("cl-msg").innerHTML = `<div class="cl-try">🤔 Almost! ${esc(why)}</div>`; } else win(); });
-    document.getElementById("cl-turtle").hidden = true;
+    document.getElementById("cl-check")?.addEventListener("click", async () => { const o = await go(); const why = ed.value.trim() === les.code.trim() ? "Change the example to make it your own!" : les.check(o || "", ed.value); if (why) tryMsg(why); else win(); });
+    if (turtle) turtle.hidden = true;
   }
+}
+/* ---------- 🤖 Robot Code: program a robot through a maze (S start facing right, * star, # wall) ---------- */
+const ROBOT_LEVELS = [
+  { m: ["S...*"], par: 1, tip: "Tap ⬆️ Forward, then make it ×4. Then press ▶ Run!" },
+  { m: ["S.#", "#.#", "#..", "##*"], par: 7, tip: "Turn right to face down, then turn left to face right again." },
+  { m: ["S...", "###.", "*..."], par: 5 },
+  { m: ["S#...", ".#.#.", ".#.#.", "...#*"], par: 10 },
+  { m: ["..*..", ".###.", ".#S#.", ".#.#.", "....."], par: 8, tip: "The robot starts facing right, into a wall. Turn first!" },
+  { m: ["S.....", "#####.", "......", ".#####", ".....*"], par: 9 },
+  { m: ["S.#...", ".##.#.", "....#.", "##.##.", "*...#."], par: 8 },
+  { m: ["S.....", ".####.", ".#*.#.", ".#..#.", ".#.##.", "......"], par: 6 }
+];
+const RB_DIRS = [[1, 0], [0, 1], [-1, 0], [0, -1]];   // right, down, left, up
+function startRobotCode(level) {
+  const done = store.get("code_robot", []), li = level ?? Math.min(done.length, ROBOT_LEVELS.length - 1), lv = ROBOT_LEVELS[li], H = lv.m.length, W = lv.m[0].length;
+  let start; lv.m.forEach((r, y) => [...r].forEach((c, x) => { if (c === "S") start = { x, y }; }));
+  let prog = [], bot = { ...start, d: 0 }, running = false;
+  $app.innerHTML = `<div class="panel codelab robot">
+    <div class="topline"><span class="label">💻 Code Lab · Robot Code</span><button class="iconbtn" id="rb-up">All coding</button></div>
+    <div class="cl-steps">${ROBOT_LEVELS.map((x, i) => `<button class="cl-step${done.includes(i) ? " done" : ""}${i === li ? " on" : ""}" data-i="${i}">${done.includes(i) ? "✓" : i + 1}</button>`).join("")}</div>
+    <h2>🤖 Level ${li + 1}: get to the ⭐</h2>
+    <p class="cl-learn">Give the robot commands, then press ▶ Run. It starts facing <b>right</b>. A program is a list of steps a computer follows in order. ${lv.tip ? "💡 " + lv.tip : ""}</p>
+    <div class="rb-board" id="rb-board" style="grid-template-columns:repeat(${W},1fr)"></div>
+    <div class="rb-prog" id="rb-prog"></div>
+    <div class="row rb-cmds"><button class="btn" data-c="F" type="button">⬆️ Forward</button><button class="btn" data-c="L" type="button">↩️ Turn left</button><button class="btn" data-c="R" type="button">↪️ Turn right</button></div>
+    <div class="row rb-cmds"><span class="soft">Repeat the last block:</span><button class="chip" data-n="2" type="button">×2</button><button class="chip" data-n="3" type="button">×3</button><button class="chip" data-n="4" type="button">×4</button><button class="chip" data-n="5" type="button">×5</button><button class="chip" id="rb-undo" type="button">⌫ Undo</button><button class="chip" id="rb-clear" type="button">🗑 Clear</button></div>
+    <div class="row"><button class="btn go" id="rb-run" type="button">▶ Run</button></div>
+    <div id="rb-msg"></div>
+  </div>`;
+  const $r = id => document.getElementById("rb-" + id), ARROW = ["➡️", "⬇️", "⬅️", "⬆️"], NAME = { F: "⬆️ Forward", L: "↩️ Left", R: "↪️ Right" };
+  const draw = (crash) => { $r("board").innerHTML = lv.m.map((r, y) => [...r].map((c, x) => `<div class="rb-cell${c === "#" ? " wall" : ""}">${bot.x === x && bot.y === y ? `<span class="rb-bot${crash ? " crash" : ""}">🤖<i>${ARROW[bot.d]}</i></span>` : c === "*" ? "⭐" : c === "#" ? "🧱" : ""}</div>`).join("")).join(""); };
+  const drawProg = () => { $r("prog").innerHTML = prog.length ? prog.map(b => `<span class="rb-block">${NAME[b.c]}${b.n > 1 ? ` ×${b.n}` : ""}</span>`).join("") + `<small>${prog.length} block${prog.length === 1 ? "" : "s"}</small>` : `<span class="soft">Your program is empty. Tap the commands below!</span>`; };
+  draw(); drawProg();
+  $app.querySelectorAll("[data-c]").forEach(b => b.addEventListener("click", () => { if (running) return; if (prog.length >= 30) return toast("That's a lot of blocks! Try ×2, ×3 or ×4."); prog.push({ c: b.dataset.c, n: 1 }); drawProg(); }));
+  $app.querySelectorAll("[data-n]").forEach(b => b.addEventListener("click", () => { if (running || !prog.length) return; prog.at(-1).n = +b.dataset.n; drawProg(); }));
+  $r("undo").addEventListener("click", () => { if (running) return; prog.pop(); drawProg(); });
+  $r("clear").addEventListener("click", () => { if (running) return; prog = []; bot = { ...start, d: 0 }; draw(); drawProg(); $r("msg").innerHTML = ""; });
+  $r("up").addEventListener("click", () => startCodeLab());
+  $app.querySelectorAll(".cl-step").forEach(b => b.addEventListener("click", () => startRobotCode(+b.dataset.i)));
+  $r("run").addEventListener("click", () => {
+    if (running || !prog.length) return; running = true; bot = { ...start, d: 0 }; draw(); $r("msg").innerHTML = "";
+    const steps = prog.flatMap(b => Array(b.n).fill(b.c)); let i = 0;
+    const tick = () => {
+      if (!document.getElementById("rb-board")) return;
+      if (i >= steps.length) { running = false; $r("msg").innerHTML = `<div class="cl-try">🤔 The robot stopped before the ⭐. Add more steps!</div>`; sfx.wrong(); return; }
+      const c = steps[i++];
+      if (c === "L") bot.d = (bot.d + 3) % 4; else if (c === "R") bot.d = (bot.d + 1) % 4;
+      else { const [dx, dy] = RB_DIRS[bot.d], nx = bot.x + dx, ny = bot.y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H || lv.m[ny][nx] === "#") { draw(true); running = false; $r("msg").innerHTML = `<div class="cl-try">💥 Bonk! The robot hit a wall on step ${i}. Fix your program and try again.</div>`; sfx.wrong(); return; } bot.x = nx; bot.y = ny; }
+      draw();
+      if (lv.m[bot.y][bot.x] === "*") {
+        running = false; if (!done.includes(li)) { done.push(li); store.set("code_robot", done); }
+        const stars = prog.length <= lv.par ? "⭐⭐⭐" : prog.length <= lv.par + 2 ? "⭐⭐" : "⭐"; sfx.buy();
+        $r("msg").innerHTML = `<div class="cl-win">🎉 The robot made it! ${stars} (${prog.length} block${prog.length === 1 ? "" : "s"}${prog.length > lv.par ? `, can you do it in ${lv.par}?` : ", perfect!"}) ${li < ROBOT_LEVELS.length - 1 ? `<button class="btn" id="rb-next" type="button">Next level ▶</button>` : "You beat every level!"}</div>`;
+        document.getElementById("rb-next")?.addEventListener("click", () => startRobotCode(li + 1)); return;
+      }
+      naTimer(setTimeout(tick, 330));
+    };
+    naTimer(setTimeout(tick, 250));
+  });
+}
+/* ---------- 0️⃣1️⃣ Binary: flip the switches to make numbers ---------- */
+const BIN_GOALS = [5, 10, 15, 32, 64, 100, 200, 255];
+function startBinary() {
+  const done = store.get("code_binary", []); let bits = Array(8).fill(0);
+  const goal = () => BIN_GOALS.find((g, i) => !done.includes(i));
+  $app.innerHTML = `<div class="panel codelab binary">
+    <div class="topline"><span class="label">💻 Code Lab · Binary</span><button class="iconbtn" id="bn-up">All coding</button></div>
+    <h2>0️⃣1️⃣ Binary: how computers count</h2>
+    <p class="cl-learn">Computers only understand <b>0</b> (off) and <b>1</b> (on). Each switch is worth double the one to its right: 1, 2, 4, 8, 16, 32, 64, 128. Turn switches on and add up their numbers!</p>
+    <div class="bn-row" id="bn-row"></div>
+    <div class="bn-total" id="bn-total"></div>
+    <div class="cl-goal" id="bn-goal"></div>
+    <div class="row"><button class="chip" id="bn-clear" type="button">🔄 All off</button></div>
+    <div id="bn-msg"></div>
+  </div>`;
+  const $b = id => document.getElementById("bn-" + id);
+  const draw = () => {
+    const v = bits.reduce((a, b, i) => a + b * (128 >> i), 0), g = goal();
+    $b("row").innerHTML = bits.map((b, i) => `<button class="bn-bit${b ? " on" : ""}" type="button" data-b="${i}"><b>${b}</b><small>${128 >> i}</small></button>`).join("");
+    $b("total").innerHTML = `<span>${bits.join("")}</span> = <b>${v}</b>`;
+    $b("goal").innerHTML = g == null ? "🏆 You finished every challenge! Try making your age, or 1000 (can you? why not?)." : `🎯 <b>Challenge ${done.length + 1} of ${BIN_GOALS.length}:</b> make the number <b>${g}</b>.`;
+    $app.querySelectorAll("[data-b]").forEach(b => b.addEventListener("click", () => { bits[+b.dataset.b] ^= 1; tone(bits[+b.dataset.b] ? 660 : 440, .06, "square", .05); draw(); }));
+    if (g != null && v === g) { done.push(BIN_GOALS.indexOf(g)); store.set("code_binary", done); sfx.buy(); $b("msg").innerHTML = `<div class="cl-win">🎉 ${g} in binary is ${bits.join("")}! ${goal() != null ? "Next challenge!" : ""}</div>`; bits = Array(8).fill(0); naTimer(setTimeout(() => { if (document.getElementById("bn-row")) draw(); }, 1400)); }
+  };
+  draw();
+  $b("clear").addEventListener("click", () => { bits = Array(8).fill(0); draw(); });
+  $b("up").addEventListener("click", () => startCodeLab());
 }
 
 /* ---------- 🤖 AI Studio: how to use AI to make cool things ---------- */
