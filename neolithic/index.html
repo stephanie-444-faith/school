@@ -358,6 +358,15 @@
   .sd-grid { display: grid; gap: 2px; width: min(100%, 420px); margin: 10px auto; background: #1a1240; padding: 3px; border-radius: 8px; } .sd-c { aspect-ratio: 1; width: 100%; text-align: center; font: 800 1.3rem var(--body); border: 0; border-radius: 3px; background: #fff; color: #1e3a8a; padding: 0; min-width: 0; } .sd-c[readonly] { background: #e8e4ff; color: #1a1240; } .sd-c.br { margin-right: 3px; } .sd-c.bb { margin-bottom: 3px; } .sd-c.bad { background: #ffd6da; color: #c1121f; }
   .hn { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; } .hn-peg { position: relative; height: 170px; border: 2px solid var(--line); border-radius: 12px; background: var(--panel-2); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; padding-bottom: 6px; cursor: pointer; } .hn-peg.sel { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,201,60,.35); } .hn-pole { position: absolute; top: 14px; bottom: 6px; left: 50%; width: 6px; margin-left: -3px; background: #8a5a2b; border-radius: 3px; } .hn-peg i { position: relative; height: 18px; border-radius: 8px; z-index: 1; }
   .lo { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: min(100%, 320px); margin: 12px auto; } .lo-c { aspect-ratio: 1; border-radius: 10px; border: 2px solid var(--line); background: #2a2440; cursor: pointer; } .lo-c.on { background: #ffe066; box-shadow: 0 0 16px #ffd23f; }
+  .sg-card { background: linear-gradient(135deg, #3a2470, #1d3b6e); border: 3px solid var(--gold); border-radius: 20px; padding: 16px; margin: 12px 0; text-align: center; }
+  .sg-word { font-family: var(--display); font-size: clamp(1.8rem, 8vw, 2.8rem); color: var(--gold); overflow-wrap: anywhere; line-height: 1.1; }
+  .sg-pos { color: var(--ink-soft); font-style: italic; margin: 4px 0 8px; } .sg-ex { font-size: 1.1rem; } .sg-how { color: var(--ink-soft); font-size: .92rem; } .sg-card .row { justify-content: center; }
+  .sg-go { font-size: 1.2rem; }
+  .sg-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .sg-item { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--panel-2); } .sg-item > div:first-child { flex: 1; min-width: 0; } .sg-item b { font-size: 1.15rem; color: var(--gold); } .sg-item span, .sg-item em { display: block; } .sg-item em, .sg-item small { color: var(--ink-soft); }
+  .sg-btns { display: flex; flex-direction: column; gap: 6px; } .sg-btns .btn.sg-del { background: #b3263a; color: #fff; }
+  .sg-own { background: var(--panel-2); border-radius: 12px; padding: 10px 12px; margin: 10px 0; } .sg-own summary { font-weight: 800; cursor: pointer; } .sg-own label { display: block; margin: 8px 0; }
+  .sg-own input, .sg-search { display: block; width: 100%; box-sizing: border-box; font: inherit; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line); background: #0b1020; color: var(--ink); margin-top: 4px; }
   .lw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
   .lw-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 16px 8px 10px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; cursor: pointer; text-align: center; }
   .lw-card:hover, .lw-card:focus-visible { border-color: var(--gold); }
@@ -10075,6 +10084,137 @@ function startLanguageWorld(view = {}) {
   }
 }
 
+// 😎 Slang Generator: invents brand-new slang words, explains how each was made, and keeps your own slang dictionary.
+/*NO_VOCAB*/
+const SG_VIBES = [
+  ["awesome", "🔥", "adjective", "really awesome or amazing", "epic awesome stellar rad super mega cosmic turbo blaze glow", ["That roller coaster was totally {w}!", "Your drawing is so {w}.", "This is the most {w} day ever!"]],
+  ["boring", "😴", "adjective", "super boring", "snooze yawn blah meh drab dull nap sleepy", ["That movie was so {w} I fell asleep.", "Waiting in line is {w}.", "Ugh, this car ride is {w}."]],
+  ["funny", "😂", "adjective", "really, really funny", "giggle snort silly wacky goofy chuckle hoot bonkers", ["Your joke was so {w} that milk came out of my nose!", "Grandpa's dance moves are {w}.", "That cat video is {w}!"]],
+  ["hungry", "🍕", "adjective", "super hungry", "snack munch crunch nom tummy grub chomp starving", ["When's lunch? I'm so {w}!", "After soccer practice I'm always {w}.", "My stomach is growling. I'm {w}."]],
+  ["tired", "💤", "adjective", "really tired and sleepy", "sleepy pillow drowsy nap zonk yawn snooze flop", ["I stayed up late and now I'm totally {w}.", "After the field trip, everyone was {w}.", "Too {w} to even think!"]],
+  ["excited", "🤩", "adjective", "so excited you could explode", "hype zoom bounce fizz sparkle rocket jump buzz", ["It's my birthday tomorrow and I'm so {w}!", "The whole class was {w} about the snow day.", "I'm {w} for summer!"]],
+  ["friend", "🤝", "noun", "a really good friend", "buddy pal crew squad bestie partner twin sidekick", ["Max is my {w}. We do everything together.", "My {w} saved me a seat at lunch.", "You're the best {w} ever!"]],
+  ["hello", "👋", "greeting", "a fun way to say hello", "hey hiya howdy yo hello greetings wave", ["“{W}!” Lily shouted when she saw her friends.", "{W}, everybody! I'm here!", "Mom walked in and I said, “{W}!”"]],
+  ["bye", "🏃", "verb", "to leave or head out", "zoom dash scoot jet poof bolt vamoose skedaddle", ["It's almost dinner, I gotta {w}.", "The bell rang, so we {wed} out of class.", "See you tomorrow, time to {w}!"]],
+  ["real", "💯", "phrase", "for real, totally true", "true real truly totally facts yep honest legit", ["That was the best pizza ever, {w}.", "I'm not joking, {w}!", "{W}, this book is amazing."]],
+  ["whoa", "😱", "exclamation", "no way! (you're super surprised)", "whoa wow gasp yikes shock zowie jeepers holy", ["“{W}! You got a puppy?”", "{W}, that's the biggest sandwich I've ever seen!", "When I saw the score I yelled, “{W}!”"]],
+  ["cringe", "😳", "adjective", "really embarrassing or awkward", "cringe blush oops awkward yikes facepalm wobbly eek", ["I tripped in front of everyone. So {w}!", "Singing in the wrong key was {w}.", "That moment was super {w}."]],
+  ["showoff", "💪", "noun", "someone who loves to show off", "flex brag fancy strut shiny peacock swagger bling", ["He keeps bragging about his new bike. What a {w}!", "Don't be a {w}, just share.", "She's a total {w} on the trampoline."]],
+  ["yummy", "😋", "adjective", "super delicious", "yummy tasty delish flavor munchy scrumptious gobble savory", ["Grandma's cookies are so {w}!", "This mac and cheese is {w}.", "That smoothie was {w}!"]],
+  ["win", "🏆", "verb", "to win big or do something perfectly", "win crush nail ace score champ victory boss", ["I'm going to {w} this spelling test!", "We totally {wed} that game.", "You {wed} it!"]],
+  ["chill", "🧊", "adjective", "calm, relaxed and easygoing", "chill calm breezy mellow cozy easy floaty comfy", ["Our new teacher is super {w}.", "Let's have a {w} day at home.", "Don't worry, it's {w}."]]
+].map(([k, e, pos, mean, seeds, ex]) => ({ k, e, pos, mean, seeds: seeds.split(" "), ex }));
+const SG_SHORT = { awesome: "Awesome", boring: "Boring", funny: "Funny", hungry: "Hungry", tired: "Tired", excited: "Excited", friend: "Best friend", hello: "Hello", bye: "Goodbye", real: "For real", whoa: "No way!", cringe: "Cringe", showoff: "Show-off", yummy: "Yummy", win: "Win big", chill: "Chill" };
+const SG_SUFFIX = [["tastic", "fantastic"], ["tacular", "spectacular"], ["licious", "delicious"], ["zilla", "Godzilla"], ["saurus", "dinosaur"], ["arama", "panorama"], ["erific", "terrific"], ["nado", "tornado"], ["palooza", "a big party word"], ["inator", "a silly machine name"], ["ometer", "a measuring meter"], ["oodle", "noodle"], ["tron", "a robot name"], ["ster", "prankster"], ["zoid", "a space alien name"], ["ola", "a fun ending"]];
+const SG_FUN = "spectacular fantastic tornado banana volcano dinosaur rocket noodle unicorn galaxy bubble thunder marshmallow kazoo pickle zebra waffle gizmo jelly pancake".split(" ");
+const SG_BLOCK = /fuck|shit|bitch|cunt|dick|cock|piss|slut|whore|fag|nig|rape|sex|porn|nazi|kill|dead|die|damn|hell|crap|butt|ass|tit|poo|pee|fart|wee|boob|anal|anus|cum|jizz|hoe|gay|drug|weed|nappy|crack|bum|pube|puke|barf|snot|stoner|bomb|gun|beer|wine|god|hate|stupid|dumb|idiot|loser|ugly|fat/;
+const SG_REAL = [
+  ["no cap", "no lie, for real", "That was the best pizza I've ever had, no cap."], ["cap", "a lie or a made-up story", "You finished all your homework in two minutes? Cap!"], ["bet", "okay, sure, it's a deal", "“Want to play basketball after school?” “Bet.”"],
+  ["GOAT", "Greatest Of All Time", "Grandma's lasagna is the GOAT."], ["slay", "to do something really, really well", "You slayed that piano solo!"], ["ate", "did amazingly well (also “ate and left no crumbs”)", "Your science project? You ate."],
+  ["lowkey", "a little bit, or secretly", "I'm lowkey excited for the field trip."], ["highkey", "a lot, and not hiding it", "I'm highkey obsessed with this song."], ["vibes", "the feeling a place, song or person gives you", "This park has really good vibes."],
+  ["sus", "suspicious, a little fishy", "Why is the cookie jar empty? That's sus."], ["rizz", "charm, being smooth and easy to like (from “charisma”)", "He has so much rizz, he can talk to anyone."], ["bussin'", "really, really tasty", "These tacos are bussin'!"],
+  ["mid", "just okay, not great", "The new cereal is kind of mid."], ["W / L", "a win / a loss", "Snow day tomorrow? Huge W."], ["fire", "awesome, amazing", "Your new sneakers are fire."],
+  ["salty", "a little upset or grumpy about something small", "He's still salty about losing the game."], ["extra", "over the top, way too much", "Wearing a tuxedo to the park is so extra."], ["glow up", "a big change for the better", "My bedroom makeover was a total glow up."],
+  ["IYKYK", "if you know, you know (an inside joke)", "Pickles on pancakes… IYKYK."], ["fr", "for real", "This book is so good, fr."], ["it's giving…", "it looks or feels like…", "Your cape and mask? It's giving superhero."],
+  ["main character energy", "acting confident, like the star of the movie", "Walking into class with sunglasses on is main character energy."], ["understood the assignment", "did exactly what was needed, really well", "Your costume was perfect. You understood the assignment."],
+  ["big yikes", "really embarrassing or awkward", "I called my teacher “Mom.” Big yikes."], ["cooked", "in big trouble, done for", "I forgot my homework at home. I'm cooked."], ["let them cook", "let someone keep going, they have a plan", "Let her cook, she knows what she's doing!"],
+  ["chat", "talking to the people around you like they're a livestream chat", "Chat, is this real?"], ["aura", "how cool someone seems (people joke about gaining or losing “aura points”)", "Catching that ball one-handed was big aura."], ["aura farming", "doing things on purpose to look cool", "He fixed his hair in the window again. Aura farming."],
+  ["delulu", "believing something that probably won't happen (from “delusional”)", "Thinking we'll get no homework all year is delulu."], ["crash out", "to totally lose your cool and get really upset", "Don't crash out over a board game!"], ["glazing", "praising someone way, way too much", "Okay, stop glazing, it was just one goal."],
+  ["Fanum tax", "when a friend sneaks a bite of your food", "He took one of my fries. Fanum tax!"], ["brain rot", "silly internet stuff that makes your brain feel mushy", "Too many silly videos. Total brain rot."], ["skibidi", "a silly nonsense word from internet videos; it can mean anything, it's just funny", "That dance was so skibidi."],
+  ["6-7", "a silly phrase people shout with a hand-weighing move; it doesn't really mean anything (sometimes “so-so”)", "“How was the test?” “6-7.”"], ["drip", "really cool clothes or style", "Nice jacket, you've got drip."], ["say less", "got it, you don't need to explain more", "“Want to get ice cream?” “Say less.”"],
+  ["hits different", "feels extra special", "Hot cocoa on a snow day hits different."], ["tbh / ngl", "to be honest / not gonna lie", "Ngl, that puzzle was hard."], ["stan", "a super-fan", "I stan this band."], ["clock it", "to notice something", "I clocked your new haircut right away!"], ["bruh", "said when something is silly or disappointing", "Bruh, the game got rained out."]
+];
+/*END_NO_VOCAB*/
+const sgPick = a => a[Math.floor(Math.random() * a.length)];
+const sgFront = s => (s.match(/^[^aeiouy]*[aeiouy]+[^aeiouy]?/) || [s])[0];
+const sgBack = s => { const i = s.search(/[aeiou]/); return i > 0 ? s.slice(i) : s.slice(1); };
+function sgOk(w, seeds) {
+  const flat = w.replace(/[- ]/g, "");
+  if (!/^[a-z]+([- ][a-z]+)?$/.test(w) || flat.length < 4 || flat.length > 16 || /[^aeiouy]{4}/.test(flat) || /(.)\1\1/.test(flat) || SG_BLOCK.test(flat) || seeds.includes(w)) return false;
+  try { const K = hippoVocab().known; if (w.split(/[- ]/).every(p => K.has(p))) return false; } catch (e) {}
+  return true;
+}
+function sgMake(v) {
+  const S = v.seeds;
+  for (let t = 0; t < 80; t++) {
+    const m = sgPick(["suffix", "suffix", "blend", "blend", "rhyme", "clip", "swap"]), a = sgPick(S); let w, how;
+    if (m === "suffix") { const [suf, from] = sgPick(SG_SUFFIX); w = (/^[aeiou]/.test(suf) ? a.replace(/[aeiouy]$/, "") : a) + suf; how = `“${a}” + “-${suf}” (from ${from})`; }
+    else if (m === "blend") { const b = Math.random() < .5 ? sgPick(SG_FUN) : sgPick(S.filter(x => x !== a)); w = sgFront(a) + sgBack(b); how = `a mash-up of “${a}” + “${b}”`; if (w.startsWith(b) || w.endsWith(a)) continue; }
+    else if (m === "rhyme") { const base = /y$/.test(a) ? a : /e$/.test(a) ? a.slice(0, -1) + "y" : /^[^aeiou]*[aeiou][bdgmnpt]$/.test(a) ? a + a.slice(-1) + "y" : a + "y", rest = base.replace(/^[^aeiou]*/, ""), rh = sgPick(["w", "b", "z", "fl", "sh", "d", "m", "p", "sn", "r", "j"]) + rest; if (rh === base || rest.length < 2) continue; w = base + "-" + rh; how = `a rhyming double word made from “${a}”`; }
+    else if (m === "clip") { const end = sgPick(["o", "ers", "zies", "ski", "eroo", "z", "ies"]); w = sgFront(a) + end; how = `“${a}” chopped short + “-${end}”`; }
+    else { const b = sgPick(S.filter(x => x !== a)), ca = a.match(/^[^aeiou]+/), cb = b.match(/^[^aeiou]+/); if (!ca || !cb || ca[0] === cb[0]) continue; w = cb[0] + a.slice(ca[0].length) + " " + ca[0] + b.slice(cb[0].length); how = `swap the first sounds of “${a} ${b}”`; }
+    w = w.toLowerCase().replace(/(.)\1\1+/g, "$1$1");
+    if (sgOk(w, S)) return { w, how, v: v.k };
+  }
+  return { w: sgFront(sgPick(S)) + "zoid", how: "a word + “-zoid”", v: v.k };
+}
+const sgQuote = s => /[“”"]/.test(s) ? s : `“${s}”`;
+const sgFill = (tpl, w) => tpl.replace(/\{wed\}/g, w.endsWith("e") ? w + "d" : w + "ed").replace(/\{W\}/g, w[0].toUpperCase() + w.slice(1)).replace(/\{w\}/g, w);
+const sgKey = "slang_saved";
+function sgSave(x) { const list = store.get(sgKey, []); if (list.some(y => y.w === x.w)) return toast("⭐ It's already in your dictionary!"); if (list.length >= 300) return toast("Your dictionary is full (300 words). Delete some first."); list.unshift({ ...x, at: Date.now() }); store.set(sgKey, list); sfx.buy(); toast(`⭐ Saved “${x.w}”!`); }
+function startSlang(tab = "make", vibe) {
+  try { hippoVocab(); } catch (e) {}   // learn the real words first, so new slang is never a real word
+  appScreen("😎 Slang Generator", `<h2>😎 Slang Generator</h2><p class="soft">Invent brand-new slang words, see how they were made, and start your own slang dictionary!</p>${naTabs([["make", "✨ Make new slang"], ["mine", `📒 My dictionary (${store.get(sgKey, []).length})`], ["real", "📖 Slang decoder"]], tab)}<div id="sg"></div>`);
+  bindTabs(t => startSlang(t, vibe));
+  const box = document.getElementById("sg"), en = lwLang("en");
+  const card = (x, i) => { const v = SG_VIBES.find(z => z.k === x.v) || SG_VIBES[0], ex = x.ex || sgFill(sgPick(v.ex), x.w); x.ex = ex; x.m = x.m || v.mean; x.e = x.e || v.e; x.pos = x.pos || v.pos;
+    return `<div class="sg-card"><div class="sg-word">${esc(x.w)}</div><div class="sg-pos">${esc(x.pos)} · ${x.e}</div><p><b>Means:</b> ${esc(x.m)}</p><p class="sg-ex">${esc(sgQuote(ex))}</p>${x.how ? `<p class="sg-how">🧪 How it was made: ${esc(x.how)}</p>` : ""}<div class="row"><button class="btn gold" data-save="${i}" type="button">⭐ Save</button><button class="btn" data-say="${i}" type="button">🔊 Say it</button></div></div>`; };
+  if (tab === "make") {
+    const cur = SG_VIBES.find(v => v.k === vibe);
+    box.innerHTML = `<h3>1. Pick what your slang means</h3><div class="na-chips">${SG_VIBES.map(v => `<button class="chip${v === cur ? " on" : ""}" data-vibe="${v.k}" type="button">${v.e} ${SG_SHORT[v.k]}</button>`).join("")}<button class="chip${!cur ? " on" : ""}" data-vibe="" type="button">🎲 Surprise me</button></div>
+      <div class="row"><button class="btn go sg-go" id="sg-go" type="button">✨ Make slang!</button><button class="btn" id="sg-ai" type="button" hidden>🤖 Ask Claude to invent some</button></div><p class="soft" id="sg-note"></p><div id="sg-out"></div>`;
+    let made = [];
+    const bindCards = el => { el.querySelectorAll("[data-save]").forEach(b => b.addEventListener("click", () => sgSave(made[+b.dataset.save]))); el.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => { const x = made[+b.dataset.say]; lwSay(x.w + ". " + x.ex, en); })); };
+    const go = () => {
+      const v = cur || sgPick(SG_VIBES), seen = new Set(); made = [];
+      while (made.length < 4) { const x = sgMake(v); if (!seen.has(x.w)) { seen.add(x.w); made.push(x); } }
+      const out = document.getElementById("sg-out");
+      out.innerHTML = card(made[0], 0) + `<p class="soft">Or try one of these:</p><div class="na-chips">${made.slice(1).map((x, i) => `<button class="chip" data-alt="${i + 1}" type="button">${esc(x.w)}</button>`).join("")}</div>`;
+      bindCards(out); tone([523, 784, 1047], .06, "triangle", .05);
+      out.querySelectorAll("[data-alt]").forEach(b => b.addEventListener("click", () => { const k = +b.dataset.alt; [made[0], made[k]] = [made[k], made[0]]; out.querySelector(".sg-card").outerHTML = card(made[0], 0); b.textContent = made[k].w; bindCards(out.querySelector(".sg-card").parentElement); }));
+    };
+    $app.querySelectorAll("[data-vibe]").forEach(b => b.addEventListener("click", () => { startSlang("make", b.dataset.vibe || undefined); document.getElementById("sg-go").click(); }));
+    document.getElementById("sg-go").addEventListener("click", go);
+    aiSample().then(sample => {
+      if (!sample || !document.getElementById("sg-ai")) return;
+      const ai = document.getElementById("sg-ai"); ai.hidden = false;
+      ai.addEventListener("click", async () => {
+        const v = cur || sgPick(SG_VIBES), note = document.getElementById("sg-note"), out = document.getElementById("sg-out"); ai.disabled = true; note.textContent = "🤔 Claude is inventing slang…";
+        try {
+          const { text } = await sample(AI_KID_FRAME(`Invent 3 brand-new, kid-friendly slang words that nobody uses yet. They should mean "${v.mean}". For each one give the word, what it means, an example sentence a kid might say, and a short note on how you made the word. Reply with ONLY JSON like [{"word":"","meaning":"","example":"","how":""}] and nothing else.`), { modelTier: "quick", cache: false });
+          const list = JSON.parse((text.match(/\[[\s\S]*\]/) || ["[]"])[0]).filter(x => x && x.word).slice(0, 3);
+          if (!list.length) throw new Error("none");
+          made = list.map(x => ({ w: String(x.word).toLowerCase().slice(0, 30), m: String(x.meaning || v.mean).slice(0, 140), ex: String(x.example || "").slice(0, 200) || sgFill(v.ex[0], String(x.word)), how: "🤖 Claude: " + String(x.how || "invented it").slice(0, 160), v: v.k, e: v.e, pos: v.pos }));
+          out.innerHTML = made.map(card).join(""); bindCards(out); note.textContent = "";
+        } catch (e) { note.textContent = e && e.code ? aiErrText(e) : "Claude couldn't make slang right now. Try ✨ Make slang! instead."; }
+        finally { ai.disabled = false; }
+      });
+    });
+    go();
+  } else if (tab === "mine") {
+    const draw = keepOpen => {
+      const list = store.get(sgKey, []);
+      box.innerHTML = `<details class="sg-own"${list.length && !keepOpen ? "" : " open"}><summary>✏️ Make up your own slang word</summary>
+          <label>Word <input id="sg-w" maxlength="30" autocomplete="off" placeholder="like: zoomtastic"></label><label>What it means <input id="sg-m" maxlength="140" autocomplete="off" placeholder="like: super fast and awesome"></label><label>Use it in a sentence <input id="sg-e" maxlength="200" autocomplete="off" placeholder="like: My new bike is zoomtastic!"></label><button class="btn go" id="sg-add" type="button">⭐ Add to my dictionary</button></details>
+        ${list.length ? `<div class="sg-list">${list.map((x, i) => `<div class="sg-item"><div><b>${esc(x.w)}</b> <small>${esc(x.pos || "")} ${x.e || ""}</small><span>${esc(x.m || "")}</span>${x.ex ? `<em>${esc(sgQuote(x.ex))}</em>` : ""}</div><div class="sg-btns"><button class="btn mini" data-say="${i}" type="button" aria-label="Say it">🔊</button><button class="btn mini sg-del" data-del="${i}" type="button">🗑 Delete</button></div></div>`).join("")}</div>` : `<p class="soft">Your dictionary is empty. Make some slang and tap ⭐ Save!</p>`}`;
+      box.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => { const x = list[+b.dataset.say]; lwSay(x.w + (x.ex ? ". " + x.ex : ""), en); }));
+      box.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => { const l = store.get(sgKey, []), [gone] = l.splice(+b.dataset.del, 1); store.set(sgKey, l); toast(`🗑 Deleted “${gone.w}”`); draw(); $app.querySelector('[data-tab="mine"]').textContent = `📒 My dictionary (${l.length})`; }));
+      document.getElementById("sg-add").addEventListener("click", () => {
+        const w = document.getElementById("sg-w").value.trim(), m = document.getElementById("sg-m").value.trim(), ex = document.getElementById("sg-e").value.trim();
+        if (!w || !m) return toast("Type a word and what it means.");
+        if (SG_BLOCK.test(w.toLowerCase().replace(/[^a-z]/g, ""))) return toast("Let's pick a different word.");
+        sgSave({ w, m, ex, how: "made up by you!", e: "✏️", pos: "" }); draw(true); $app.querySelector('[data-tab="mine"]').textContent = `📒 My dictionary (${store.get(sgKey, []).length})`;
+      });
+    };
+    draw();
+  } else {
+    box.innerHTML = `<p class="soft">Real slang people say right now, and what it means.</p><input class="sg-search" id="sg-q" placeholder="🔍 Search slang…" autocomplete="off"><div class="sg-list" id="sg-real"></div>`;
+    const draw = q => { const rx = q ? new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") : null, rows = SG_REAL.filter(r => !rx || rx.test(r[0]) || rx.test(r[1]));
+      document.getElementById("sg-real").innerHTML = rows.length ? rows.map(([w, m, ex]) => `<div class="sg-item"><div><b>${esc(w)}</b><span>${esc(m)}</span><em>${esc(sgQuote(ex))}</em></div></div>`).join("") : `<p class="soft">No slang found. Try another word, or invent it in ✨ Make new slang!</p>`; };
+    document.getElementById("sg-q").addEventListener("input", e => draw(e.target.value.trim())); draw("");
+  }
+}
+
 // 🌍 World Explorer
 function startWorldExplorer(tab = "flags") {
   appScreen("🌍 World Explorer", `<h2>🌍 World Explorer</h2>${naTabs([["flags", "🏳️ Flag quiz"], ["capitals", "🏛️ Capitals quiz"], ["cont", "🗺️ Which continent?"], ["atlas", "📖 Atlas"]], tab)}<div id="we"></div>`);
@@ -10155,6 +10295,7 @@ NEW_APPS.push(
   { id: "puzzle", emoji: "🧩", name: "Puzzle Room", desc: "Sudoku, Tower of Hanoi and Lights Out brain puzzles.", start: () => startPuzzleRoom(), isNew: true },
   { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab(), isNew: true },
   { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), isNew: true, added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
+  { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), isNew: true, added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer(), isNew: true },
   { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
   { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
@@ -18489,7 +18630,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
