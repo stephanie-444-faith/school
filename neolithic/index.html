@@ -2660,7 +2660,6 @@ const WHO_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵
 const whoHash = (id, code) => aaHash("ctc-code:" + id + ":" + String(code).trim().toLowerCase()).toString(36);
 const whoAbout = id => String((store.get("who_about", {}) || {})[id] || "");
 const whoHasCode = id => !!(store.get("who_code", {}) || {})[id];
-const whoMaster = s => /^frank[a-z]{0,5}(rules?|rulez|rulz|rools?|rocks?)$/.test(String(s).toLowerCase().replace(/[^a-z]/g, ""));   // the emergency code opens any profile (only MR.E is told)
 const whoSecretOK = () => SITE_WHO === "emmett" && whoHasCode("emmett");   // MR.E sees the secret once his own profile is locked
 const whoAva = id => { const i = sitePeople().findIndex(p => p.id === id); return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
 // the built-in crew's names can be changed too (their ids stay the same, so their progress stays)
@@ -2668,12 +2667,12 @@ function applyNames() { const N = store.get("who_names", {}) || {}; TY_ACCOUNTS.
 function askCode(id) {
   const p = sitePeople().find(x => x.id === id), box = document.getElementById("who-code"); if (!p || !box) return;
   box.hidden = false;
-  box.innerHTML = `<form class="who-codebox" id="who-codeform"><b>🔒 ${esc(p.name)}'s profile has a code</b><input id="who-codein" type="password" maxlength="30" placeholder="Type the code" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row" style="justify-content:center"><button class="btn go" type="submit">🔓 Open</button><button class="btn" type="button" id="who-codex">Cancel</button></div><p class="soft" id="who-codemsg">Forgot it? Ask Stephanie to reset it.</p></form>`;
+  box.innerHTML = `<form class="who-codebox" id="who-codeform"><b>🔒 ${esc(p.name)}'s profile has a code</b><input id="who-codein" type="password" maxlength="12" placeholder="Type the code" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row" style="justify-content:center"><button class="btn go" type="submit">🔓 Open</button><button class="btn" type="button" id="who-codex">Cancel</button></div><p class="soft" id="who-codemsg">Forgot it? Ask Stephanie to reset it.</p></form>`;
   const inp = document.getElementById("who-codein"); inp.focus(); box.scrollIntoView({ block: "center" });
   document.getElementById("who-codex").addEventListener("click", () => { box.hidden = true; box.innerHTML = ""; });
   document.getElementById("who-codeform").addEventListener("submit", e => {
     e.preventDefault();
-    if (whoHash(id, inp.value) === (store.get("who_code", {}) || {})[id] || whoMaster(inp.value)) return pickWho(id);
+    if (whoHash(id, inp.value) === (store.get("who_code", {}) || {})[id]) return pickWho(id);
     document.getElementById("who-codemsg").textContent = "❌ That code isn't right. Try again!"; inp.value = ""; inp.classList.remove("shake"); void inp.offsetWidth; inp.classList.add("shake"); inp.focus();
   });
 }
@@ -2689,7 +2688,7 @@ function startProfile() {
     <form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>
-    ${id === "emmett" ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>The <b>emergency code</b> is <b>Franklin Rules</b>. Type it into anyone's code box to open their profile, even if they have a code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
+    ${id === "emmett" ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
   </div>`;
   document.getElementById("pf-back").addEventListener("click", showHome);
   document.getElementById("pf-name").addEventListener("submit", e => {
@@ -2741,7 +2740,13 @@ function startWho() {
     <div class="who-code" id="who-code" hidden></div>
     ${L.length < PROF_MAX ? `<form class="who-add" id="who-add"><input id="who-name" maxlength="30" placeholder="Someone new? Type your name" aria-label="New person's name" autocomplete="off"><button class="btn go" type="submit">➕ Add me</button></form>` : ""}
   </div>`;
-  $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => whoHasCode(b.dataset.siteWho) ? askCode(b.dataset.siteWho) : pickWho(b.dataset.siteWho)));
+  let taps = 0, tapId = null, tapT = null;   // one tap waits a moment, so three quick taps can be told apart
+  $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => {
+    const id = b.dataset.siteWho; if (id !== tapId) { taps = 0; tapId = id; }
+    taps++; clearTimeout(tapT);
+    if (taps >= 3) { taps = 0; tapId = null; return pickWho(id); }   // 🤫 three quick taps open any profile, even one with a code (only MR.E is told)
+    tapT = setTimeout(() => { taps = 0; tapId = null; if (!document.getElementById("who-screen")) return; whoHasCode(id) ? askCode(id) : pickWho(id); }, 400);
+  }));
   document.getElementById("who-add")?.addEventListener("submit", e => {
     e.preventDefault(); const n = document.getElementById("who-name").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
     const old = sitePeople().find(p => p.name.toLowerCase() === n.toLowerCase()); if (old) return pickWho(old.id);
@@ -8699,7 +8704,7 @@ function hippoAnswer(qRaw) {
       `🧮 MATH CENTER: Lucky Duck Math is at the bottom, and the glowing portals open the Challenge Lounges.\n\n` +
       `🧱 SKY STACK: double-click the Sound button to jump straight to 100 blocks.\n\n` +
       `💡 MATH HINTS: tap Hint once for a hint, then double-click the empty spot where it was to see every step.\n\n` +
-      (whoSecretOK() ? `🔑 EMERGENCY CODE (only MR.E can see this): type "Franklin Rules" into anyone's code box to open their profile.\n\n` : "") +
+      (whoSecretOK() ? `🔑 SECRET (only MR.E can see this): on the Who are you? screen, tap anyone's name 3 times fast to open their profile, even if it has a code.\n\n` : "") +
       `🦛 Hippo has ${HIPPO_SECRET_COUNT} hidden secrets of its own. Ask "hippo secrets" for clues!`,
       hBig("🤫🎮", "#2e1a4a", "Franklin's secrets")), { wide: true, actions: [
         { heading: "Jump right in:" },
