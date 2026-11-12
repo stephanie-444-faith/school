@@ -358,6 +358,24 @@
   .sd-grid { display: grid; gap: 2px; width: min(100%, 420px); margin: 10px auto; background: #1a1240; padding: 3px; border-radius: 8px; } .sd-c { aspect-ratio: 1; width: 100%; text-align: center; font: 800 1.3rem var(--body); border: 0; border-radius: 3px; background: #fff; color: #1e3a8a; padding: 0; min-width: 0; } .sd-c[readonly] { background: #e8e4ff; color: #1a1240; } .sd-c.br { margin-right: 3px; } .sd-c.bb { margin-bottom: 3px; } .sd-c.bad { background: #ffd6da; color: #c1121f; }
   .hn { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; } .hn-peg { position: relative; height: 170px; border: 2px solid var(--line); border-radius: 12px; background: var(--panel-2); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; padding-bottom: 6px; cursor: pointer; } .hn-peg.sel { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,201,60,.35); } .hn-pole { position: absolute; top: 14px; bottom: 6px; left: 50%; width: 6px; margin-left: -3px; background: #8a5a2b; border-radius: 3px; } .hn-peg i { position: relative; height: 18px; border-radius: 8px; z-index: 1; }
   .lo { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: min(100%, 320px); margin: 12px auto; } .lo-c { aspect-ratio: 1; border-radius: 10px; border: 2px solid var(--line); background: #2a2440; cursor: pointer; } .lo-c.on { background: #ffe066; box-shadow: 0 0 16px #ffd23f; }
+  .lw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+  .lw-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 16px 8px 10px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; cursor: pointer; text-align: center; }
+  .lw-card:hover, .lw-card:focus-visible { border-color: var(--gold); }
+  .lw-rank { position: absolute; top: 6px; left: 9px; font-size: .75rem; color: var(--ink-soft); }
+  .lw-flag { font-size: 1.8rem; line-height: 1.1; }
+  .lw-native { font-size: 1.05rem; color: var(--gold); }
+  .lw-card small { color: var(--ink-soft); font-size: .78rem; }
+  .lw-bar { width: 80%; height: 6px; border-radius: 3px; background: rgba(255,255,255,.12); overflow: hidden; margin-top: 4px; } .lw-bar i { display: block; height: 100%; background: #3ddc84; }
+  .lw-head { display: flex; gap: 12px; align-items: center; margin: 8px 0; } .lw-head .lw-flag { font-size: 2.6rem; } .lw-head h2 { margin: 0; } .lw-head small { color: var(--ink-soft); }
+  .lw-facts { background: var(--panel-2); border-radius: 12px; padding: 8px 12px; margin: 8px 0; } .lw-facts summary { cursor: pointer; font-weight: 800; } .lw-facts p { margin: 6px 0; }
+  .lw-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .lw-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; background: var(--panel-2); } .lw-row > div { flex: 1; min-width: 0; } .lw-row.got { box-shadow: inset 4px 0 0 #3ddc84; }
+  .lw-emo { font-size: 1.5rem; width: 2.4rem; text-align: center; flex: none; }
+  .lw-n { display: block; font-size: 1.25rem; overflow-wrap: anywhere; } .lw-row small { display: block; color: var(--ink-soft); }
+  .lw-big { font-size: 2.4rem; } .lw-fcard small { font-size: .95rem; }
+  .lw-pick select { font: inherit; padding: 6px 8px; border-radius: 10px; margin-left: 6px; max-width: 100%; }
+  .lw-only { background: rgba(255,210,63,.12); border-radius: 10px; padding: 6px 10px; }
+  .lw-opts .chip small { color: var(--ink-soft); }
   .ll-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 170px; margin: 12px 0; border-radius: 20px; border: 3px solid var(--gold); background: linear-gradient(135deg, #3a2470, #24154a); color: var(--ink); font: inherit; cursor: pointer; transition: transform .3s; } .ll-card.flip { background: linear-gradient(135deg, #14966a, #0b5e42); } .ll-card span { font-family: var(--display); font-size: 2rem; } .ll-card small { color: var(--ink-soft); }
   .we-flag { font-size: 5rem; line-height: 1.1; text-align: center; } .we-cont summary { cursor: pointer; font-weight: 800; padding: 6px 0; } .we-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px; font-size: .9rem; }
   .cc-title { font: inherit; font-size: 1.2rem; font-weight: 800; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: #1b1640; color: var(--ink); width: 100%; } .cc-idea { color: var(--gold); font-weight: 700; min-height: 1em; }
@@ -561,7 +579,7 @@
   .item .now b { color: var(--money); }
   .item .btn { margin-top: auto; background: var(--money); color: #06301b; }
   .item .btn:disabled { background: var(--line); color: var(--ink-soft); box-shadow: none; }
-  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--gold); color: #3a2600; font-weight: 700; padding: 10px 18px; border-radius: 99px; z-index: 30; box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--gold); color: #3a2600; font-weight: 700; padding: 10px 18px; border-radius: 99px; z-index: 30; box-shadow: 0 6px 20px rgba(0,0,0,.4); pointer-events: none; }
 
   /* End screen */
   .big { font-family: var(--display); font-size: clamp(2.6rem, 11vw, 4rem); line-height: 1; }
@@ -8755,7 +8773,7 @@ const hFmt = n => Number.isInteger(n) ? fmt(n) : String(Math.round(n * 1000) / 1
 let HIPPO_VOCAB = null;
 function hippoVocab() {
   if (HIPPO_VOCAB) return HIPPO_VOCAB;
-  const known = new Set(), count = new Map(), src = [...document.scripts].map(s => s.textContent).join(" ") + " " + document.body.innerText;
+  const known = new Set(), count = new Map(), src = [...document.scripts].map(s => s.textContent.replace(/\/\*NO_VOCAB\*\/[\s\S]*?\/\*END_NO_VOCAB\*\//g, " ")).join(" ") + " " + document.body.innerText;
   const bump = (w, n) => { if (w.length >= 3 && w.length <= 20) count.set(w, (count.get(w) || 0) + n); };
   for (const w of src.match(/[A-Z]?[a-z]+|[A-Z]+(?![a-z])/g) || []) { const k = w.toLowerCase(); known.add(k); bump(k, 1); }   // any word on the site is left alone
   // words in real sentences (3+ words in a row) count extra, so everyday words beat bits of computer code
@@ -9914,6 +9932,149 @@ function startLanguageLab(lc = "es", cat, mode = "cards") {
   }
 }
 
+// 🌏 Language World: basic words in the 20 most spoken languages on Earth.
+/*NO_VOCAB*/
+const LW_CATS = [["hi", "👋 Hello & manners"], ["me", "🙋 About me"], ["num", "🔢 Numbers"], ["col", "🎨 Colors"], ["fam", "👪 Family"], ["food", "🍎 Food"], ["ani", "🐾 Animals"]];
+const LW_WORDS = "hello👋hi|goodbye🚶hi|good morning🌅hi|good night🌙hi|thank you🙏hi|you're welcome😊hi|please🥺hi|sorry😔hi|yes✅hi|no❌hi|how are you?🙂hi|I'm fine👍hi|what's your name?❓me|my name is …📛me|nice to meet you🤝me|one1️⃣num|two2️⃣num|three3️⃣num|four4️⃣num|five5️⃣num|six6️⃣num|seven7️⃣num|eight8️⃣num|nine9️⃣num|ten🔟num|red🔴col|blue🔵col|green🟢col|yellow🟡col|black⚫col|white⚪col|mother👩fam|father👨fam|brother👦fam|sister👧fam|friend🤗fam|water💧food|food🍽️food|apple🍎food|milk🥛food|dog🐶ani|cat🐱ani|bird🐦ani|fish🐟ani"
+  .split("|").map(s => { const m = s.match(/^(.+?)(\p{Extended_Pictographic}️?⃣?|\d️⃣|🔟)([a-z]+)$/u); return { en: m[1], e: m[2], c: m[3] }; });
+const LW_LANGS = [
+  ["en", "English", "English", "🇬🇧🇺🇸", "1.49 billion", "en-US", 0, "The Latin alphabet: 26 letters", "The UK, the USA, Canada, Australia, India, Nigeria and lots more. Almost every country learns it in school.", "English has borrowed words from hundreds of languages: 'pizza' is from Italian, 'kindergarten' from German and 'shampoo' from Hindi!",
+    "hello|goodbye|good morning|good night|thank you|you're welcome|please|sorry|yes|no|how are you?|I'm fine|what's your name?|my name is …|nice to meet you|one|two|three|four|five|six|seven|eight|nine|ten|red|blue|green|yellow|black|white|mother|father|brother|sister|friend|water|food|apple|milk|dog|cat|bird|fish"],
+  ["zh", "Mandarin Chinese", "中文 (普通话)", "🇨🇳", "1.18 billion", "zh-CN", 0, "Chinese characters (hanzi). Each character is a whole word or part of a word, and there are thousands!", "China, Taiwan and Singapore", "Mandarin has 4 tones. The same sound 'ma' can mean mom (mā), hemp (má), horse (mǎ) or scold (mà)!",
+    "你好~nǐ hǎo|再见~zàijiàn|早上好~zǎoshang hǎo|晚安~wǎn'ān|谢谢~xièxie|不客气~bú kèqi|请~qǐng|对不起~duìbuqǐ|是~shì|不~bù|你好吗？~nǐ hǎo ma?|我很好~wǒ hěn hǎo|你叫什么名字？~nǐ jiào shénme míngzi?|我叫…~wǒ jiào …|很高兴认识你~hěn gāoxìng rènshi nǐ|一~yī|二~èr|三~sān|四~sì|五~wǔ|六~liù|七~qī|八~bā|九~jiǔ|十~shí|红色~hóngsè|蓝色~lánsè|绿色~lǜsè|黄色~huángsè|黑色~hēisè|白色~báisè|妈妈~māma|爸爸~bàba|哥哥~gēge~big brother|姐姐~jiějie~big sister|朋友~péngyou|水~shuǐ|食物~shíwù|苹果~píngguǒ|牛奶~niúnǎi|狗~gǒu|猫~māo|鸟~niǎo|鱼~yú"],
+  ["hi", "Hindi", "हिन्दी", "🇮🇳", "611 million", "hi-IN", 0, "Devanagari. The letters hang from a line across the top!", "India", "Hindi and Urdu sound so alike that speakers can chat with each other, even though they write in totally different scripts.",
+    "नमस्ते~namaste|अलविदा~alvida|सुप्रभात~suprabhat|शुभ रात्रि~shubh ratri|धन्यवाद~dhanyavaad|आपका स्वागत है~aapka swagat hai|कृपया~kripaya|माफ़ कीजिए~maaf kijiye|हाँ~haan|नहीं~nahin|आप कैसे हैं?~aap kaise hain?|मैं ठीक हूँ~main theek hoon|आपका नाम क्या है?~aapka naam kya hai?|मेरा नाम … है~mera naam … hai|आपसे मिलकर खुशी हुई~aapse milkar khushi hui|एक~ek|दो~do|तीन~teen|चार~chaar|पाँच~paanch|छह~chhah|सात~saat|आठ~aath|नौ~nau|दस~das|लाल~laal|नीला~neela|हरा~hara|पीला~peela|काला~kaala|सफ़ेद~safed|माँ~maa|पिता~pita|भाई~bhai|बहन~behen|दोस्त~dost|पानी~paani|खाना~khaana|सेब~seb|दूध~doodh|कुत्ता~kutta|बिल्ली~billi|चिड़िया~chidiya|मछली~machhli"],
+  ["es", "Spanish", "Español", "🇪🇸🇲🇽", "561 million", "es-ES", 0, "The Latin alphabet, plus ñ and upside-down marks like ¿ and ¡", "Spain, Mexico and most of Central and South America: about 20 countries", "Spanish questions start with an upside-down question mark, so you know it's a question before you read it: ¿Cómo estás?",
+    "hola|adiós|buenos días|buenas noches|gracias|de nada|por favor|lo siento|sí|no|¿cómo estás?|estoy bien|¿cómo te llamas?|me llamo …|mucho gusto|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|rojo|azul|verde|amarillo|negro|blanco|madre|padre|hermano|hermana|amigo|agua|comida|manzana|leche|perro|gato|pájaro|pez"],
+  ["ar", "Modern Standard Arabic", "العربية الفصحى", "🇸🇦🇦🇪", "335 million", "ar-SA", 1, "The Arabic script, written from right to left. Most letters join together like cursive.", "About 22 countries in the Middle East and North Africa. It's the Arabic of news, books and school.", "The numbers we use (0 1 2 3…) are called Arabic numerals because they came to Europe through Arabic books!",
+    "مرحبا~marhaban|مع السلامة~ma'a as-salama|صباح الخير~sabah al-khayr|تصبح على خير~tusbih 'ala khayr|شكرا~shukran|عفوا~'afwan|من فضلك~min fadlak|آسف~asif|نعم~na'am|لا~la|كيف حالك؟~kayfa haluk?|أنا بخير~ana bikhayr|ما اسمك؟~ma ismuk?|اسمي …~ismi …|تشرفنا~tasharrafna|واحد~wahid|اثنان~ithnan|ثلاثة~thalatha|أربعة~arba'a|خمسة~khamsa|ستة~sitta|سبعة~sab'a|ثمانية~thamaniya|تسعة~tis'a|عشرة~'ashara|أحمر~ahmar|أزرق~azraq|أخضر~akhdar|أصفر~asfar|أسود~aswad|أبيض~abyad|أم~umm|أب~ab|أخ~akh|أخت~ukht|صديق~sadiq|ماء~ma'|طعام~ta'am|تفاحة~tuffaha|حليب~halib|كلب~kalb|قطة~qitta|طائر~ta'ir|سمكة~samaka"],
+  ["fr", "French", "Français", "🇫🇷", "334 million", "fr-FR", 0, "The Latin alphabet, with accents like é, è, ç and ô", "France, Canada, Belgium, Switzerland and many countries in Africa", "Lots of English words come from French, like 'ballet', 'menu', 'garage' and 'restaurant'.",
+    "bonjour|au revoir|bonjour~~French uses bonjour for good morning too|bonne nuit|merci|de rien|s'il te plaît|désolé|oui|non|comment ça va ?|ça va bien|comment tu t'appelles ?|je m'appelle …|enchanté|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|rouge|bleu|vert|jaune|noir|blanc|mère|père|frère|sœur|ami|eau|nourriture|pomme|lait|chien|chat|oiseau|poisson"],
+  ["bn", "Bengali", "বাংলা", "🇧🇩🇮🇳", "274 million", "bn-IN", 0, "The Bengali script, which also hangs from a line across the top", "Bangladesh and eastern India", "Rabindranath Tagore wrote in Bengali, won the Nobel Prize in 1913, and wrote the national anthems of both India and Bangladesh!",
+    "নমস্কার~nomoshkar|আবার দেখা হবে~abar dekha hobe~see you again|সুপ্রভাত~suprobhat|শুভ রাত্রি~shubho ratri|ধন্যবাদ~dhonnobad|কোনো ব্যাপার না~kono byapar na~no problem|দয়া করে~doya kore|দুঃখিত~dukkhito|হ্যাঁ~hyan|না~na|কেমন আছেন?~kemon achhen?|আমি ভালো আছি~ami bhalo achhi|আপনার নাম কী?~apnar nam ki?|আমার নাম …~amar nam …|আপনার সাথে দেখা হয়ে ভালো লাগলো~apnar shathe dekha hoye bhalo laglo|এক~ek|দুই~dui|তিন~tin|চার~char|পাঁচ~panch|ছয়~chhoy|সাত~shat|আট~at|নয়~noy|দশ~dosh|লাল~lal|নীল~nil|সবুজ~shobuj|হলুদ~holud|কালো~kalo|সাদা~shada|মা~ma|বাবা~baba|ভাই~bhai|বোন~bon|বন্ধু~bondhu|পানি~pani~in India people often say জল (jol)|খাবার~khabar|আপেল~apel|দুধ~dudh|কুকুর~kukur|বিড়াল~biral|পাখি~pakhi|মাছ~machh"],
+  ["pt", "Portuguese", "Português", "🇧🇷🇵🇹", "269 million", "pt-BR", 0, "The Latin alphabet, with marks like ã, ç and é", "Brazil, Portugal, Angola, Mozambique and more", "About 20 times more people speak Portuguese in Brazil than in Portugal!",
+    "olá|tchau|bom dia|boa noite|obrigado|de nada|por favor|desculpa|sim|não|como você está?|estou bem|qual é o seu nome?|meu nome é …|muito prazer|um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|vermelho|azul|verde|amarelo|preto|branco|mãe|pai|irmão|irmã|amigo|água|comida|maçã|leite|cachorro|gato|pássaro|peixe"],
+  ["id", "Indonesian", "Bahasa Indonesia", "🇮🇩", "255 million", "id-ID", 0, "The Latin alphabet, and words are spelled the way they sound", "Indonesia, a country of over 17,000 islands", "To make a plural you can just say the word twice: 'anak' is child and 'anak-anak' is children!",
+    "halo|sampai jumpa|selamat pagi|selamat malam|terima kasih|sama-sama|tolong|maaf|ya|tidak|apa kabar?|kabar baik|siapa nama kamu?|nama saya …|senang bertemu denganmu|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|merah|biru|hijau|kuning|hitam|putih|ibu|ayah|saudara laki-laki|saudara perempuan|teman|air|makanan|apel|susu|anjing|kucing|burung|ikan"],
+  ["ur", "Urdu", "اردو", "🇵🇰", "246 million", "ur-PK", 1, "A flowing, slanted style of the Arabic script called Nastaliq, written right to left", "Pakistan and India", "Spoken Urdu and Hindi are so close they're almost the same language, but Urdu is written right to left and Hindi left to right!",
+    "السلام علیکم~assalam-o-alaikum|خدا حافظ~khuda hafiz|صبح بخیر~subah bakhair|شب بخیر~shab bakhair|شکریہ~shukriya|کوئی بات نہیں~koi baat nahin~no problem|براہ مہربانی~baraye meharbani|معاف کیجیے~maaf kijiye|جی ہاں~ji haan|نہیں~nahin|آپ کیسے ہیں؟~aap kaise hain?|میں ٹھیک ہوں~main theek hoon|آپ کا نام کیا ہے؟~aap ka naam kya hai?|میرا نام … ہے~mera naam … hai|آپ سے مل کر خوشی ہوئی~aap se mil kar khushi hui|ایک~ek|دو~do|تین~teen|چار~chaar|پانچ~paanch|چھ~chhe|سات~saat|آٹھ~aath|نو~nau|دس~das|لال~laal|نیلا~neela|ہرا~hara|پیلا~peela|کالا~kaala|سفید~safed|امی~ammi~mom|ابو~abbu~dad|بھائی~bhai|بہن~behen|دوست~dost|پانی~paani|کھانا~khaana|سیب~saib|دودھ~doodh|کتا~kutta|بلی~billi|پرندہ~parinda|مچھلی~machhli"],
+  ["ru", "Russian", "Русский", "🇷🇺", "210 million", "ru-RU", 0, "The Cyrillic alphabet: 33 letters. Some look like English letters but sound different. Р sounds like R and Н sounds like N!", "Russia and many nearby countries", "Russia is so big that when it's breakfast time on one side, it's dinner time on the other.",
+    "привет~privet|до свидания~do svidaniya|доброе утро~dobroye utro|спокойной ночи~spokoynoy nochi|спасибо~spasibo|не за что~ne za chto|пожалуйста~pozhaluysta|извините~izvinite|да~da|нет~net|как дела?~kak dela?|всё хорошо~vsyo khorosho|как тебя зовут?~kak tebya zovut?|меня зовут …~menya zovut …|приятно познакомиться~priyatno poznakomitsya|один~odin|два~dva|три~tri|четыре~chetyre|пять~pyat|шесть~shest|семь~sem|восемь~vosem|девять~devyat|десять~desyat|красный~krasny|синий~siniy|зелёный~zelyony|жёлтый~zholty|чёрный~chorny|белый~bely|мама~mama|папа~papa|брат~brat|сестра~sestra|друг~drug|вода~voda|еда~yeda|яблоко~yabloko|молоко~moloko|собака~sobaka|кошка~koshka|птица~ptitsa|рыба~ryba"],
+  ["de", "German", "Deutsch", "🇩🇪🇦🇹", "133 million", "de-DE", 0, "The Latin alphabet, plus ä, ö, ü and ß (a double s)", "Germany, Austria and Switzerland", "German sticks words together to make new ones. A glove is a 'Handschuh': a hand shoe!",
+    "hallo|tschüss|guten Morgen|gute Nacht|danke|gern geschehen|bitte|Entschuldigung|ja|nein|wie geht's?|mir geht's gut|wie heißt du?|ich heiße …|freut mich|eins|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|rot|blau|grün|gelb|schwarz|weiß|Mutter|Vater|Bruder|Schwester|Freund|Wasser|Essen|Apfel|Milch|Hund|Katze|Vogel|Fisch"],
+  ["ja", "Japanese", "日本語", "🇯🇵", "126 million", "ja-JP", 0, "Three writing systems at once: hiragana, katakana and kanji", "Japan", "Japanese words like 'emoji', 'karaoke' and 'tsunami' are now used all around the world!",
+    "こんにちは~konnichiwa|さようなら~sayounara|おはようございます~ohayou gozaimasu|おやすみなさい~oyasumi nasai|ありがとう~arigatou|どういたしまして~dou itashimashite|お願いします~onegai shimasu|ごめんなさい~gomen nasai|はい~hai|いいえ~iie|お元気ですか？~ogenki desu ka?|元気です~genki desu|お名前は？~onamae wa?|私の名前は…です~watashi no namae wa … desu|はじめまして~hajimemashite|一~ichi|二~ni|三~san|四~yon|五~go|六~roku|七~nana|八~hachi|九~kyuu|十~juu|赤~aka|青~ao|緑~midori|黄色~kiiro|黒~kuro|白~shiro|お母さん~okaasan|お父さん~otousan|お兄さん~oniisan~big brother|お姉さん~oneesan~big sister|友達~tomodachi|水~mizu|食べ物~tabemono|りんご~ringo|牛乳~gyuunyuu|犬~inu|猫~neko|鳥~tori|魚~sakana"],
+  ["pcm", "Nigerian Pidgin", "Naijá", "🇳🇬", "121 million", "en-NG", 0, "The Latin alphabet", "Nigeria, the country with the most people in Africa", "Nigerian Pidgin mixes English with words from Nigerian languages like Yoruba and Igbo. 'Wahala' means trouble!",
+    "How far!~~hi! (what's up?)|Waka well~~safe travels|Morning o|Sleep well o|Tank you well well|No wahala~~no problem|Abeg|Sorry o|Yes o|No o|How you dey?|I dey fine|Wetin be your name?|My name na …|I happy to meet you|One|Two|Tree|Four|Five|Six|Seven|Eight|Nine|Ten|Red|Blue|Green|Yellow|Black|White|Mama|Papa|Broda|Sista|Padi|Wata|Chop~~food (and to eat!)|Apple|Milk|Dog|Cat|Bird|Fish"],
+  ["arz", "Egyptian Arabic", "مصري", "🇪🇬", "118 million", "ar-EG", 1, "The Arabic script, right to left", "Egypt", "Egyptian Arabic is the Arabic of movies, TV and songs, so people all over the Arab world understand it. In Cairo the letter ق is often just a little catch in the throat: 'qitta' (cat) becomes 'otta'!",
+    "أهلا~ahlan|مع السلامة~ma'a salama|صباح الخير~sabah el-kheir|تصبح على خير~tesbah 'ala kheir|شكرا~shukran|العفو~el-'afw|لو سمحت~law samaht|آسف~aasif|أيوه~aywa|لأ~la'|إزيك؟~izzayak?|أنا كويس~ana kwayyes|اسمك إيه؟~ismak eh?|اسمي …~ismi …|فرصة سعيدة~forsa sa'eeda|واحد~wahed|اتنين~etnein|تلاتة~talata|أربعة~arba'a|خمسة~khamsa|ستة~setta|سبعة~sab'a|تمانية~tamanya|تسعة~tes'a|عشرة~'ashara|أحمر~ahmar|أزرق~azra'|أخضر~akhdar|أصفر~asfar|إسود~eswed|أبيض~abyad|ماما~mama|بابا~baba|أخ~akh|أخت~okht|صاحب~saheb|مية~mayya|أكل~akl|تفاحة~tuffaha|لبن~laban|كلب~kalb|قطة~otta|عصفور~'asfour|سمكة~samaka"],
+  ["mr", "Marathi", "मराठी", "🇮🇳", "99 million", "mr-IN", 0, "Devanagari, the same script as Hindi", "Maharashtra in India, home of Mumbai, India's biggest city", "Marathi is over 1,000 years old, and Mumbai's famous film industry started right where it's spoken.",
+    "नमस्कार~namaskar|पुन्हा भेटू~punha bhetu~see you again|सुप्रभात~suprabhat|शुभ रात्री~shubh ratri|धन्यवाद~dhanyavaad|तुमचे स्वागत आहे~tumche swagat aahe|कृपया~krupaya|माफ करा~maaf kara|हो~ho|नाही~nahi|तुम्ही कसे आहात?~tumhi kase aahat?|मी ठीक आहे~mi theek aahe|तुमचे नाव काय आहे?~tumche naav kaay aahe?|माझे नाव … आहे~maajhe naav … aahe|तुम्हाला भेटून आनंद झाला~tumhala bhetun anand jhala|एक~ek|दोन~don|तीन~teen|चार~chaar|पाच~paach|सहा~saha|सात~saat|आठ~aath|नऊ~nau|दहा~daha|लाल~laal|निळा~nila|हिरवा~hirva|पिवळा~pivla|काळा~kaala|पांढरा~pandhra|आई~aai|बाबा~baba|भाऊ~bhau|बहीण~bahin|मित्र~mitra|पाणी~paani|जेवण~jevan|सफरचंद~safarchand|दूध~doodh|कुत्रा~kutra|मांजर~maanjar|पक्षी~pakshi|मासा~maasa"],
+  ["vi", "Vietnamese", "Tiếng Việt", "🇻🇳", "97 million", "vi-VN", 0, "The Latin alphabet with lots of little marks. The marks show the 6 tones!", "Vietnam", "In Vietnamese, 'ma' can mean ghost, mother, but, tomb, horse or rice seedling, depending on its tone mark!",
+    "xin chào|tạm biệt|chào buổi sáng|chúc ngủ ngon|cảm ơn|không có gì|làm ơn|xin lỗi|vâng|không|bạn khỏe không?|tôi khỏe|bạn tên là gì?|tôi tên là …|rất vui được gặp bạn|một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|đỏ|xanh dương|xanh lá|vàng|đen|trắng|mẹ|bố|anh trai~~big brother|chị gái~~big sister|bạn|nước|thức ăn|táo|sữa|chó|mèo|chim|cá"],
+  ["te", "Telugu", "తెలుగు", "🇮🇳", "96 million", "te-IN", 0, "The Telugu script, with round, curly letters", "Andhra Pradesh and Telangana in southern India", "Almost every Telugu word ends in a vowel sound, so people call it 'the Italian of the East'!",
+    "నమస్కారం~namaskaram|వెళ్ళొస్తాను~vellostanu~I'll go and come back|శుభోదయం~shubhodayam|శుభ రాత్రి~shubha ratri|ధన్యవాదాలు~dhanyavaadaalu|పర్వాలేదు~parvaaledu~it's okay|దయచేసి~dayachesi|క్షమించండి~kshaminchandi|అవును~avunu|కాదు~kaadu|మీరు ఎలా ఉన్నారు?~meeru ela unnaaru?|నేను బాగున్నాను~nenu baagunnaanu|మీ పేరు ఏమిటి?~mee peru emiti?|నా పేరు …~naa peru …|మిమ్మల్ని కలిసినందుకు సంతోషం~mimmalni kalisinanduku santosham|ఒకటి~okati|రెండు~rendu|మూడు~moodu|నాలుగు~naalugu|ఐదు~aidu|ఆరు~aaru|ఏడు~edu|ఎనిమిది~enimidi|తొమ్మిది~tommidi|పది~padi|ఎరుపు~erupu|నీలం~neelam|ఆకుపచ్చ~aakupachcha|పసుపు~pasupu|నలుపు~nalupu|తెలుపు~telupu|అమ్మ~amma|నాన్న~naanna|అన్న~anna~big brother|అక్క~akka~big sister|స్నేహితుడు~snehitudu|నీళ్ళు~neellu|ఆహారం~aahaaram|ఆపిల్~aapil|పాలు~paalu|కుక్క~kukka|పిల్లి~pilli|పక్షి~pakshi|చేప~chepa"],
+  ["sw", "Swahili", "Kiswahili", "🇰🇪🇹🇿", "95 million", "sw-KE", 0, "The Latin alphabet", "Kenya, Tanzania, Uganda and lots of East Africa", "'Hakuna matata' really is Swahili: it means 'no worries'! And 'simba' means lion.",
+    "jambo|kwaheri|habari za asubuhi|usiku mwema|asante|karibu|tafadhali|samahani|ndiyo|hapana|habari yako?|nzuri~~good!|jina lako ni nani?|jina langu ni …|nafurahi kukutana nawe|moja|mbili|tatu|nne|tano|sita|saba|nane|tisa|kumi|nyekundu|bluu|kijani|njano|nyeusi|nyeupe|mama|baba|kaka|dada|rafiki|maji|chakula|tufaha|maziwa|mbwa|paka|ndege|samaki"],
+  ["ha", "Hausa", "Harshen Hausa", "🇳🇬🇳🇪", "94 million", "ha-NG", 0, "The Latin alphabet with special letters like ɓ, ɗ and ƙ", "Northern Nigeria, Niger and across West Africa, where it's a language for trading", "Hausa is a tonal language, so the same spelling can mean different things depending on whether your voice goes up or down!",
+    "sannu|sai an jima~~see you later|ina kwana~~how did you sleep?|sai da safe~~until morning|na gode|babu komai~~it's nothing|don Allah|yi haƙuri|i|a'a|yaya kake?|lafiya lau|mene ne sunanka?|sunana …|na ji daɗin haɗuwa da kai|ɗaya|biyu|uku|huɗu|biyar|shida|bakwai|takwas|tara|goma|ja|shuɗi|kore|rawaya|baƙi|fari|uwa|uba|ɗan'uwa|'yar'uwa|aboki|ruwa|abinci|tuffa|madara|kare|kyanwa|tsuntsu|kifi"]
+].map(([id, name, native, flag, sp, voice, rtl, script, where, fact, w]) => ({ id, name, native, flag, sp, voice, rtl: !!rtl, script, where, fact, w: w.split("|").map(s => { const [n, r = "", h = ""] = s.split("~"); return { n, r, h }; }) }));
+/*END_NO_VOCAB*/
+const lwLang = id => LW_LANGS.find(l => l.id === id);
+const lwKey = L => "lw_" + L.id;
+function lwVoice(L) { const s = window.speechSynthesis; if (!s) return null; const vs = s.getVoices(), want = L.voice.toLowerCase(); return vs.find(v => v.lang.toLowerCase().replace("_", "-") === want) || vs.find(v => v.lang.toLowerCase().startsWith(want.slice(0, 2))) || null; }
+function lwSay(text, L) {
+  try {
+    const s = window.speechSynthesis; if (!s) return toast("🔇 This browser can't talk.");
+    s.cancel(); const vs = s.getVoices(), v = lwVoice(L);
+    if (vs.length && !v) return toast(`🔇 This device doesn't have a ${L.name} voice. Use the sound-it-out spelling!`);
+    const u = new SpeechSynthesisUtterance(text.replace(/…/g, " ")); u.lang = L.voice; if (v) try { u.voice = v; } catch (e) {} u.rate = .8; s.speak(u);
+  } catch (e) {}
+}
+function startLanguageWorld(view = {}) {
+  const S = view;
+  if (!S.lang) {
+    const tab = S.tab || "langs";
+    appScreen("🌏 Language World", `<h2>🌏 Language World</h2><p class="soft">The 20 most spoken languages on Earth. Pick one and start learning!</p>${naTabs([["langs", "🌍 Languages"], ["word", "🔤 One word, every language"]], tab)}<div id="lw"></div>`);
+    bindTabs(t => startLanguageWorld({ tab: t }));
+    const box = document.getElementById("lw");
+    if (tab === "langs") {
+      box.innerHTML = `<div class="lw-grid">${LW_LANGS.map((L, i) => { const n = store.get(lwKey(L), []).length; return `<button class="lw-card" data-lw="${L.id}"><span class="lw-rank">#${i + 1}</span><span class="lw-flag">${L.flag}</span><b>${esc(L.name)}</b><span class="lw-native" dir="auto">${esc(L.native)}</span><small>~${L.sp} speakers</small><span class="lw-bar"><i style="width:${Math.round(n / LW_WORDS.length * 100)}%"></i></span><small>✅ ${n} / ${LW_WORDS.length} words</small></button>`; }).join("")}</div>`;
+      box.querySelectorAll("[data-lw]").forEach(b => b.addEventListener("click", () => startLanguageWorld({ lang: b.dataset.lw })));
+    } else {
+      const wi = S.word ?? 0;
+      box.innerHTML = `<label class="lw-pick">Pick a word: <select id="lw-word">${LW_WORDS.map((w, i) => `<option value="${i}"${i === wi ? " selected" : ""}>${w.e} ${esc(w.en)}</option>`).join("")}</select></label>
+        <div class="lw-list">${LW_LANGS.map(L => { const x = L.w[wi]; return `<div class="lw-row"><span class="lw-emo">${L.flag}</span><div><b class="lw-n" dir="auto" lang="${L.voice}">${esc(x.n)}</b><small>${esc(L.name)}${x.r ? " · " + esc(x.r) : ""}${x.h ? " · " + esc(x.h) : ""}</small></div><button class="btn mini" data-say="${L.id}" aria-label="Hear it">🔊</button></div>`; }).join("")}</div>`;
+      document.getElementById("lw-word").addEventListener("change", e => startLanguageWorld({ tab: "word", word: +e.target.value }));
+      box.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => { const L = lwLang(b.dataset.say); lwSay(L.w[wi].n, L); }));
+    }
+    return;
+  }
+  const L = lwLang(S.lang), tab = S.tab || "learn", cat = S.cat || "all", isEn = L.id === "en";
+  const learned = new Set(store.get(lwKey(L), [])), mark = i => { if (!learned.has(i)) { learned.add(i); store.set(lwKey(L), [...learned]); } };
+  const pool = S.only || LW_WORDS.map((w, i) => i).filter(i => cat === "all" || LW_WORDS[i].c === cat);
+  const say = i => lwSay(L.w[i].n, L), dir = L.rtl ? "rtl" : "auto";
+  const native = i => `<b class="lw-n" dir="${dir}" lang="${L.voice}">${esc(L.w[i].n)}</b>`;
+  const sub = i => [L.w[i].r, isEn ? "" : LW_WORDS[i].en, L.w[i].h].filter(Boolean).map(esc).join(" · ");
+  appScreen(`🌏 Language World · ${L.name}`, `<div class="row"><button class="chip" id="lw-all" type="button">🌏 All languages</button></div>
+    <div class="lw-head"><span class="lw-flag">${L.flag}</span><div><h2>${esc(L.name)}</h2><div class="lw-native" dir="auto">${esc(L.native)}</div><small>~${L.sp} speakers · ✅ ${learned.size} / ${LW_WORDS.length} words learned</small></div></div>
+    <details class="lw-facts"><summary>💡 About ${esc(L.name)}</summary><p><b>✍️ Writing:</b> ${esc(L.script)}</p><p><b>📍 Where:</b> ${esc(L.where)}</p><p><b>🤩 Fun fact:</b> ${esc(L.fact)}</p></details>
+    ${naTabs([["learn", "📖 Learn"], ["cards", "🃏 Flashcards"], ["quiz", "✅ Quiz"]], tab)}
+    ${S.only ? `<p class="lw-only">🎯 Practicing just ${S.only.length} word${S.only.length === 1 ? "" : "s"} <button class="chip" id="lw-everything" type="button">Practice everything</button></p>` : `<div class="na-chips">${[["all", "⭐ All"], ...LW_CATS].map(([k, lab]) => `<button class="chip${k === cat ? " on" : ""}" data-cat="${k}" type="button">${lab}</button>`).join("")}</div>`}
+    <div id="lw"></div>`);
+  document.getElementById("lw-all").addEventListener("click", () => startLanguageWorld());
+  document.getElementById("lw-everything")?.addEventListener("click", () => startLanguageWorld({ lang: L.id, tab }));
+  bindTabs(t => startLanguageWorld({ lang: L.id, tab: t, cat, only: S.only }));
+  $app.querySelectorAll("[data-cat]").forEach(b => b.addEventListener("click", () => startLanguageWorld({ lang: L.id, tab, cat: b.dataset.cat })));
+  const box = document.getElementById("lw");
+  if (tab === "learn") {
+    box.innerHTML = `<p class="soft">Tap 🔊 to hear each word. ${isEn ? "" : "The small letters show how to sound it out."}</p><div class="lw-list">${pool.map(i => `<div class="lw-row${learned.has(i) ? " got" : ""}"><span class="lw-emo">${LW_WORDS[i].e}</span><div>${native(i)}<small>${sub(i) || "&nbsp;"}</small></div><button class="btn mini" data-say="${i}" aria-label="Hear it">🔊</button></div>`).join("")}</div>`;
+    box.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => say(+b.dataset.say)));
+  } else if (tab === "cards") {
+    let k = 0, flip = false; const deck = shuffle(pool.slice());
+    const draw = () => { const i = deck[k];
+      box.innerHTML = `<button class="ll-card lw-fcard${flip ? " flip" : ""}" id="lw-card" type="button">${flip ? `<span class="lw-big">${LW_WORDS[i].e}</span><span>${esc(LW_WORDS[i].en)}</span>${L.w[i].h ? `<small>${esc(L.w[i].h)}</small>` : ""}` : `<span dir="${dir}" lang="${L.voice}">${esc(L.w[i].n)}</span>${L.w[i].r ? `<small>${esc(L.w[i].r)}</small>` : ""}`}<small>${k + 1} of ${deck.length} · tap to flip</small></button>
+        <div class="row"><button class="btn" id="lw-prev" type="button">◀</button><button class="btn gold" id="lw-say" type="button">🔊 Hear it</button><button class="btn" id="lw-next" type="button">▶</button></div>
+        <div class="row"><button class="btn go" id="lw-know" type="button">${learned.has(i) ? "✅ You know this one" : "✅ I know it!"}</button></div>`;
+      document.getElementById("lw-card").addEventListener("click", () => { flip = !flip; draw(); });
+      document.getElementById("lw-say").addEventListener("click", () => say(i));
+      document.getElementById("lw-prev").addEventListener("click", () => { k = (k - 1 + deck.length) % deck.length; flip = false; draw(); });
+      document.getElementById("lw-next").addEventListener("click", () => { k = (k + 1) % deck.length; flip = false; draw(); });
+      document.getElementById("lw-know").addEventListener("click", () => { mark(i); sfx.right(); k = (k + 1) % deck.length; flip = false; draw(); }); };
+    draw();
+  } else {
+    const qs = shuffle(pool.slice()).slice(0, 10), missed = []; let q = 0, sc = 0;
+    const show = () => {
+      if (q >= qs.length) {
+        const perfect = sc === qs.length;
+        box.innerHTML = `<div class="sl-card"><h3>${perfect ? "🏆 Perfect!" : sc >= qs.length * .7 ? "🎉 Great job!" : "💪 Nice try!"}</h3><p>You got <b>${sc} of ${qs.length}</b>.</p>${missed.length ? `<p class="soft">Words to practice:</p><div class="lw-list">${missed.map(i => `<div class="lw-row"><span class="lw-emo">${LW_WORDS[i].e}</span><div>${native(i)}<small>${sub(i)}</small></div><button class="btn mini" data-say="${i}">🔊</button></div>`).join("")}</div><div class="row"><button class="btn gold" id="lw-just" type="button">🎯 Practice just these</button></div>` : ""}<div class="row"><button class="btn go" id="lw-again" type="button">Quiz again</button></div></div>`;
+        box.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => say(+b.dataset.say)));
+        document.getElementById("lw-again").addEventListener("click", () => startLanguageWorld({ lang: L.id, tab: "quiz", cat, only: S.only }));
+        document.getElementById("lw-just")?.addEventListener("click", () => startLanguageWorld({ lang: L.id, tab: "quiz", only: missed.slice() }));
+        return;
+      }
+      const i = qs[q], kind = isEn ? "emoji" : Math.random() < .5 ? "mean" : "say";
+      const all = LW_WORDS.map((w, j) => j), same = j => L.w[j].n.toLowerCase() === L.w[i].n.toLowerCase();
+      const others = shuffle(all.filter(j => !same(j) && LW_WORDS[j].en !== LW_WORDS[i].en)), near = others.filter(j => LW_WORDS[j].c === LW_WORDS[i].c), picks = [...near, ...others.filter(j => !near.includes(j))].slice(0, 3);
+      const opts = shuffle([i, ...picks]);
+      const ask = kind === "emoji" ? `Which word goes with <span class="lw-big">${LW_WORDS[i].e}</span>?` : kind === "mean" ? `What does ${native(i)} mean?${L.w[i].r ? ` <small class="soft">(${esc(L.w[i].r)})</small>` : ""}` : `How do you say <b>“${esc(LW_WORDS[i].en)}”</b> ${LW_WORDS[i].e} in ${esc(L.name)}?`;
+      const label = j => kind === "mean" ? `${LW_WORDS[j].e} ${esc(LW_WORDS[j].en)}` : `<span dir="${dir}" lang="${L.voice}">${esc(L.w[j].n)}</span>${kind === "say" && L.w[j].r ? `<small> ${esc(L.w[j].r)}</small>` : ""}`;
+      box.innerHTML = `<div class="sl-card"><p class="soft">${q + 1} of ${qs.length} · Score ${sc}</p><h3>${ask} <button class="btn mini" id="lw-say" type="button">🔊</button></h3><div class="na-chips lw-opts">${opts.map(j => `<button class="chip" data-o="${j}" type="button">${label(j)}</button>`).join("")}</div><p id="lw-r"></p></div>`;
+      if (kind !== "say") say(i);
+      document.getElementById("lw-say").addEventListener("click", () => say(i));
+      box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => {
+        const j = +b.dataset.o, ok = j === i || same(j);
+        if (ok) { sc++; mark(i); sfx.right(); } else { missed.push(i); sfx.wrong(); }
+        box.querySelectorAll("[data-o]").forEach(x => { x.disabled = true; if (+x.dataset.o === i) x.classList.add("on"); });
+        if (kind === "say") say(i);
+        document.getElementById("lw-r").innerHTML = `${ok ? "✅ Yes!" : "❌ Not quite."} ${native(i)}${L.w[i].r ? ` (${esc(L.w[i].r)})` : ""} ${isEn ? "goes with " + LW_WORDS[i].e : `means <b>${esc(LW_WORDS[i].en)}</b> ${LW_WORDS[i].e}`}. <button class="btn mini" id="lw-n" type="button">Next ▶</button>`;
+        document.getElementById("lw-n").addEventListener("click", () => { q++; show(); });
+      }));
+    };
+    show();
+  }
+}
+
 // 🌍 World Explorer
 function startWorldExplorer(tab = "flags") {
   appScreen("🌍 World Explorer", `<h2>🌍 World Explorer</h2>${naTabs([["flags", "🏳️ Flag quiz"], ["capitals", "🏛️ Capitals quiz"], ["cont", "🗺️ Which continent?"], ["atlas", "📖 Atlas"]], tab)}<div id="we"></div>`);
@@ -9993,6 +10154,7 @@ NEW_APPS.push(
   { id: "pixel", emoji: "🎨", name: "Pixel Art Studio", desc: "Paint pixel pictures like old video games, and save a gallery.", start: () => startPixelArt(), isNew: true },
   { id: "puzzle", emoji: "🧩", name: "Puzzle Room", desc: "Sudoku, Tower of Hanoi and Lights Out brain puzzles.", start: () => startPuzzleRoom(), isNew: true },
   { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab(), isNew: true },
+  { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), isNew: true, added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer(), isNew: true },
   { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
   { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
@@ -18327,7 +18489,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
