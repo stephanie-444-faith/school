@@ -11751,6 +11751,8 @@ function raStyles() {
   .ra .ra-whochip{font:inherit;font-weight:800;font-size:15px;color:#eaf7ee;background:rgba(8,26,18,.75);border:2px solid #3d6b4c;border-radius:999px;padding:7px 14px;cursor:pointer}
   .ra .ra-whochip.on{background:#ffd34d;color:#2a1d00;border-color:#ffd34d;box-shadow:0 0 12px rgba(255,211,77,.45)}
   .ra .ra-whochip.add{border-style:dashed;color:#cfe3d4}
+  .ra .ra-whochip:disabled{opacity:.4;cursor:default}
+  .ra #ra-which{max-height:none}
   .ra .ra-btn{font-family:Bungee,sans-serif;font-size:18px;border:0;border-radius:14px;padding:14px 18px;cursor:pointer;color:#2a1a05;background:var(--ra-gold);box-shadow:0 4px 0 #8a5a0c;width:100%;transition:transform .08s;min-height:0}
   .ra .ra-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8a5a0c}
   .ra .ra-btn.alt{background:#e8e1cc;box-shadow:0 4px 0 #8f8670;font-size:15px}
@@ -11908,6 +11910,7 @@ function startRootArchery() {
       <div class="ra-stat"><b id="ra-sT" style="color:var(--ra-tilde)">0</b><small>Getting there</small></div>
       <div class="ra-stat"><b id="ra-sX" style="color:var(--ra-x)">0</b><small>Not yet</small></div>
     </div>
+    <div class="ra-who"><b>🎯 Which roots?</b><div class="ra-whochips" id="ra-which" role="group" aria-label="Which roots to practice"></div></div>
     <div class="ra-row" style="margin-top:16px"><button class="ra-btn" id="ra-startBtn" type="button">🎯 Shoot 10 arrows</button><button class="ra-btn hot" id="ra-rapidBtn" type="button">⚡ Rapid Fire</button></div>
     <p class="ra-mode">🎯 10 arrows moves roots up your sheet, and the 10th arrow is a 🍎 Golden Apple worth double. ⚡ Rapid Fire: as many bullseyes as you can in 60 seconds (it doesn't change your sheet). Every point is a 🪙 coin for the Arrow Shop.</p>
     <label class="ra-toggle"><input type="checkbox" id="ra-focusX" checked> Aim mostly at my X's and ~'s</label>
@@ -12036,6 +12039,7 @@ function startRootArchery() {
   }
   // 🏠 home
   function renderHome() {
+    renderWhich();
     const g = $("grid"); g.innerHTML = ""; const counts = [0, 0, 0];
     RA_DATA.forEach(d => {
       const lv = raLevelOf(S.pts[d.id]); counts[lv]++;
@@ -12094,19 +12098,33 @@ function startRootArchery() {
   }
   const meaningChoices = d => shuffle([d.m, ...shuffle([...new Set(RA_DATA.map(x => x.m))].filter(m => m !== d.m)).slice(0, 3)]).map(m => ({ label: m, ok: m === d.m }));
   const rootChoices = d => shuffle([d, ...shuffle(RA_DATA.filter(x => x.m !== d.m)).slice(0, 3)]).map(x => ({ label: x.r, ok: x.id === d.id }));
-  function newGame(mode, only) {
+  // 🎯 which roots a round uses: all 30, just the ones I don't know at all (X), the ones I sort of know (~), or both
+  const WHICH = { all: "🌈 All 30", x: "❌ Don't know at all", t: "🤔 Sort of know", xt: "❌🤔 Both" };
+  const whichIds = w => RA_DATA.filter(d => { const l = raLevelOf(S.pts[d.id]); return w === "x" ? l === 0 : w === "t" ? l === 1 : l < 2; }).map(d => d.id);
+  function renderWhich() {
+    const w = WHICH[S.which] ? S.which : "all";
+    $("which").innerHTML = Object.entries(WHICH).map(([k, v]) => { const n = k === "all" ? RA_DATA.length : whichIds(k).length; return `<button class="ra-whochip${k === w ? " on" : ""}" type="button" data-w="${k}" aria-pressed="${k === w}"${n ? "" : " disabled"}>${k === w ? "✓ " : ""}${v}${k === "all" ? "" : ` (${n})`}</button>`; }).join("");
+  }
+  $("which").onclick = e => { const b = e.target.closest("[data-w]"); if (!b || b.disabled) return; S.which = b.dataset.w; save(); renderWhich(); };
+  function whichStart() {   // the roots for a new round (null means all of them)
+    const w = WHICH[S.which] ? S.which : "all"; if (w === "all") return null;
+    const ids = whichIds(w); if (ids.length) return ids;
+    S.which = "all"; save(); renderWhich(); toast("🎉 No roots left there, so here are all 30!"); return null;
+  }
+  const whichMsg = ids => ids && `🎯 Practicing your ${ids.length} ${S.which === "x" ? "don't-know-at-all" : S.which === "t" ? "sort-of-know" : "don't-know and sort-of-know"} root${ids.length === 1 ? "" : "s"}!`;
+  function newGame(mode, only, msg) {
     if (G && G.timer) clearInterval(G.timer);
     lastMode = mode;
     G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: raOwned(S), over: false, only: only && only.length ? only : null };
-    if (G.only) toast(`🎯 Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`);
+    if (G.only) toast(msg || `🎯 Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`);
     $("play").classList.toggle("rapid", mode === "rapid");
     const q = $("quiver"); q.innerHTML = ""; for (let i = 0; i < RA_ROUND; i++) { const el = document.createElement("i"); if (i === RA_ROUND - 1) el.className = "apple"; q.appendChild(el); }
     $("quitBtn").textContent = mode === "rapid" ? "Stop" : "Quit round";
     show("play"); nextQ();
   }
-  function startRound() { newGame("round"); }
+  function startRound() { const ids = whichStart(); newGame("round", ids, whichMsg(ids)); }
   function startRapid() {
-    newGame("rapid"); G.left = RA_RAPID * 1000; G.last = performance.now(); G.lastSec = RA_RAPID; drawClock();
+    { const ids = whichStart(); newGame("rapid", ids, whichMsg(ids)); } G.left = RA_RAPID * 1000; G.last = performance.now(); G.lastSec = RA_RAPID; drawClock();
     const me = G;
     G.timer = naTimer(setInterval(() => {
       if (G !== me || G.over) return clearInterval(me.timer);
@@ -12366,6 +12384,8 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
 .pchip{font:inherit;font-weight:800;font-size:15px;color:#fff;background:#0d1d38;border:2px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
 .pchip.on{background:var(--gold);color:#231a00;border-color:var(--gold);box-shadow:0 0 12px rgba(255,204,51,.45)}
 .pacts{display:flex;gap:14px;flex-wrap:wrap}
+.which{margin:2px 0 4px;font-weight:800;color:var(--soft)}
+.pchip:disabled{opacity:.4;cursor:default}
 .players small{color:#8fa3c4;font-weight:600}
 .addform{display:flex;gap:8px;margin:0 0 12px}
 .addform input{flex:1;min-width:0;font:inherit;font-weight:800;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:#0d1d38;color:#fff}
@@ -12543,6 +12563,7 @@ body[data-sport="football"] .ball-in{width:16px;height:10px;margin:-5px 0 0 -8px
       <div class="stat t"><b id="sT">0</b><small>Getting there</small></div>
       <div class="stat x"><b id="sX">0</b><small>Not yet</small></div>
     </div>
+    <div class="which"><b>🎯 Which roots?</b><div class="pchips" id="whichChips" role="group" aria-label="Which roots to practice"></div></div>
     <div class="row" style="margin-top:16px"><button class="btn" id="startBtn" type="button">🥅 Take 10 shots</button><button class="btn hot" id="clockBtn" type="button">⏱ Shot Clock</button></div>
     <p class="mode" id="tMode">🥅 10 shots moves roots up your sheet, and shot #10 is a 🥇 Golden Goal worth double. ⏱ Shot Clock: as many goals as you can in 60 seconds (it doesn't change your sheet).</p>
     <label class="toggle"><input type="checkbox" id="focusX" checked> Aim mostly at my X's and ~'s</label>
@@ -12833,7 +12854,7 @@ function renderHome() {
   $("best").textContent = S.best ? S.best + " pts" : "—";
   $("cbest").textContent = S.clockBest ? S.clockBest + " " + T.plural : "—";
   $("soundBtn").textContent = "Sound: " + (S.sound ? "on" : "off");
-  renderBag(); renderPlayers();
+  renderBag(); renderPlayers(); renderWhich();
 }
 /* ===== players ===== */
 function renderPlayers() {
@@ -12899,18 +12920,33 @@ function pickRoot() {   // 🎯 "Practice just these" rounds only use the roots 
 }
 const meaningChoices = d => shuffle([d.m, ...shuffle([...new Set(DATA.map(x => x.m))].filter(m => m !== d.m)).slice(0, 3)]).map(m => ({ label: m, ok: m === d.m }));
 const rootChoices = d => shuffle([d, ...shuffle(DATA.filter(x => x.m !== d.m)).slice(0, 3)]).map(x => ({ label: x.r, ok: x.id === d.id }));
-function newGame(mode, only) {
+/* ===== 🎯 which roots a round uses: all 30, just the ones I don't know at all (X), the ones I sort of know (~), or both ===== */
+const WHICH = { all: "🌈 All 30", x: "❌ Don't know at all", t: "🤔 Sort of know", xt: "❌🤔 Both" };
+const whichIds = w => DATA.filter(d => { const l = levelOf(S.pts[d.id]); return w === "x" ? l === 0 : w === "t" ? l === 1 : l < 2; }).map(d => d.id);
+function renderWhich() {
+  const w = WHICH[S.which] ? S.which : "all";
+  $("whichChips").innerHTML = Object.entries(WHICH).map(([k, v]) => { const n = k === "all" ? DATA.length : whichIds(k).length; return \`<button class="pchip\${k === w ? " on" : ""}" type="button" data-w="\${k}" aria-pressed="\${k === w}"\${n ? "" : " disabled"}>\${k === w ? "✓ " : ""}\${v}\${k === "all" ? "" : \` (\${n})\`}</button>\`; }).join("");
+}
+$("whichChips").onclick = e => { const b = e.target.closest("[data-w]"); if (!b || b.disabled) return; S.which = b.dataset.w; save(); renderWhich(); };
+function whichStart() {   // the roots for a new round (null means all of them)
+  const w = WHICH[S.which] ? S.which : "all"; if (w === "all") return null;
+  const ids = whichIds(w); if (ids.length) return ids;
+  S.which = "all"; save(); renderWhich(); toast("🎉 No roots left there, so here are all 30!"); return null;
+}
+const whichMsg = ids => ids && \`🎯 Practicing your \${ids.length} \${S.which === "x" ? "don't-know-at-all" : S.which === "t" ? "sort-of-know" : "don't-know and sort-of-know"} root\${ids.length === 1 ? "" : "s"}!\`;
+const startGame = () => { const ids = whichStart(); newGame("game", ids, whichMsg(ids)); };
+function newGame(mode, only, msg) {
   if (G && G.timer) clearInterval(G.timer);
   lastMode = mode;
   G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false, only: only && only.length ? only : null };
-  if (G.only) toast(\`🎯 Just your \${G.only.length} root\${G.only.length === 1 ? "" : "s"} to practice!\`);
+  if (G.only) toast(msg || \`🎯 Just your \${G.only.length} root\${G.only.length === 1 ? "" : "s"} to practice!\`);
   $("play").classList.toggle("clockmode", mode === "clock");
   $("shots").innerHTML = Array.from({ length: ROUND }, (_, i) => \`<i\${i === ROUND - 1 ? ' class="golden"' : ""}></i>\`).join("");
   $("quitBtn").textContent = mode === "clock" ? "Stop" : "Quit game";
   show("play"); nextQ();
 }
 function startClock() {
-  newGame("clock"); G.left = CLOCK * 1000; G.last = performance.now(); G.lastSec = CLOCK; drawClock();
+  { const ids = whichStart(); newGame("clock", ids, whichMsg(ids)); } G.left = CLOCK * 1000; G.last = performance.now(); G.lastSec = CLOCK; drawClock();
   const me = G;
   G.timer = setInterval(() => {
     if (G !== me || G.over) return clearInterval(me.timer);
@@ -13074,8 +13110,8 @@ function confetti() {
   for (let i = 0; i < 60; i++) { const c = document.createElement("div"); c.className = "confetti"; c.style.left = Math.random() * 100 + "vw"; c.style.background = cols[i % cols.length]; c.style.animationDuration = (1.5 + Math.random() * 2) + "s"; c.style.animationDelay = Math.random() * .5 + "s"; $("fx").appendChild(c); setTimeout(() => c.remove(), 4500); }
 }
 const goHome = () => { if (G) { G.over = true; clearInterval(G.timer); } $("fx").innerHTML = ""; renderHome(); show("home"); };
-$("startBtn").onclick = () => newGame("game"); $("clockBtn").onclick = startClock;
-$("againBtn").onclick = () => lastMode === "clock" ? startClock() : newGame("game");
+$("startBtn").onclick = startGame; $("clockBtn").onclick = startClock;
+$("againBtn").onclick = () => lastMode === "clock" ? startClock() : startGame();
 $("homeBtn").onclick = goHome; $("quitBtn").onclick = goHome;
 // ⌨️ keys 1-4 shoot, Enter goes to the next shot
 document.addEventListener("keydown", e => {
@@ -13735,6 +13771,7 @@ function rhStyles() {
   .rh-chip { font: inherit; font-weight: 800; font-size: 15px; color: #e6f3ff; background: #121a4a; border: 2px solid #34408f; border-radius: 999px; padding: 7px 14px; cursor: pointer; }
   .rh-chip.on { background: #2be4ff; color: #04102a; border-color: #2be4ff; box-shadow: 0 0 14px rgba(43,228,255,.55); }
   .rh-chip.add { border-style: dashed; color: #c6d6ff; }
+  .rh-chip:disabled { opacity: .4; cursor: default; }
   .rh-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 14px; }
   .rh-stat { background: rgba(10,16,52,.85); border: 1px solid #2b3678; border-radius: 12px; padding: 10px 6px; text-align: center; }
   .rh-stat b { display: block; font-family: var(--display); font-size: 1.6rem; } .rh-stat small { color: #b8c6ef; }
@@ -13789,7 +13826,9 @@ function startRootHyper() {
     <p class="rh-sub">Emmett's 30 Greek &amp; Latin roots, with no choices to pick from. <b>Type the answer!</b> Close spelling counts.</p>
     <div class="rh-who" id="rh-who"></div>
     <div class="rh-stats"><div class="rh-stat"><b id="rh-sY" style="color:#3dff9a">0</b><small>Know it</small></div><div class="rh-stat"><b id="rh-sT" style="color:#ffc93c">0</b><small>Getting there</small></div><div class="rh-stat"><b id="rh-sX" style="color:#ff6b85">0</b><small>Not yet</small></div></div>
-    <p class="rh-h">Questions</p>
+    <p class="rh-h">🎯 Which roots?</p>
+    <div class="rh-chips" id="rh-which" role="group" aria-label="Which roots to practice"></div>
+    <p class="rh-h" style="margin-top:12px">Questions</p>
     <div class="rh-chips" id="rh-types">${Object.entries(RH_TYPES).map(([k, v]) => `<button class="rh-chip" type="button" data-qt="${k}">${v}</button>`).join("")}</div>
     <div class="rh-row" style="margin-top:16px"><button class="rh-btn" id="rh-round" type="button">⚡ 20 questions</button><button class="rh-btn hot" id="rh-speed" type="button">⏱ Hyper Speed</button></div>
     <p class="rh-note">⚡ 20 questions moves roots on your root sheet (the same one as 🏹 Root Archery), and roots you miss come back later in the round. ⏱ Hyper Speed: as many right as you can in 60 seconds (it doesn't change your sheet). Fast answers earn ⚡ HYPER bonus points.</p>
@@ -13819,12 +13858,26 @@ function startRootHyper() {
     $("sY").textContent = lv.filter(x => x === 2).length; $("sT").textContent = lv.filter(x => x === 1).length; $("sX").textContent = lv.filter(x => x === 0).length;
     $("best").textContent = H.best ? fmt(H.best) + " pts" : "—"; $("bstreak").textContent = H.bestStreak || "—"; $("sbest").textContent = H.speedBest ? H.speedBest + " right" : "—";
     $("types").querySelectorAll("[data-qt]").forEach(b => { b.classList.toggle("on", b.dataset.qt === H.qt); b.setAttribute("aria-pressed", b.dataset.qt === H.qt); });
+    renderWhich();
     const me = profCur(), L = profList();
     if (SITE_WHO) $("who").hidden = true; else $("who").innerHTML = `<b>👤 Who are you?</b><div class="rh-chips">${L.map(p => `<button class="rh-chip${p.id === me ? " on" : ""}" type="button" data-who="${p.id}" aria-pressed="${p.id === me}">${p.id === me ? "✓ " : ""}${esc(p.name)}</button>`).join("")}${L.length < PROF_MAX ? `<button class="rh-chip add" type="button" id="rh-whoAdd">➕ New player</button>` : ""}</div>`;
     $("who").querySelectorAll("[data-who]").forEach(b => b.addEventListener("click", () => { if (b.dataset.who !== profCur()) profSwitch(PROF_GAME, b.dataset.who); }));
     $("whoAdd")?.addEventListener("click", () => profOpen(true));
   }
   $("types").addEventListener("click", e => { const b = e.target.closest("[data-qt]"); if (!b) return; H.qt = b.dataset.qt; saveH(); home(); });
+  // 🎯 which roots a round uses: all 30, just the ones I don't know at all (X), the ones I sort of know (~), or both
+  const WHICH = { all: "🌈 All 30", x: "❌ Don't know at all", t: "🤔 Sort of know", xt: "❌🤔 Both" };
+  const whichIds = w => { const S = sheet(); return RA_DATA.filter(d => { const l = raLevelOf(S.pts[d.id]); return w === "x" ? l === 0 : w === "t" ? l === 1 : l < 2; }).map(d => d.id); };
+  function renderWhich() {
+    const w = WHICH[H.which] ? H.which : "all";
+    $("which").innerHTML = Object.entries(WHICH).map(([k, v]) => { const n = k === "all" ? RA_DATA.length : whichIds(k).length; return `<button class="rh-chip${k === w ? " on" : ""}" type="button" data-w="${k}" aria-pressed="${k === w}"${n ? "" : " disabled"}>${k === w ? "✓ " : ""}${v}${k === "all" ? "" : ` (${n})`}</button>`; }).join("");
+  }
+  $("which").addEventListener("click", e => { const b = e.target.closest("[data-w]"); if (!b || b.disabled) return; H.which = b.dataset.w; saveH(); renderWhich(); });
+  function whichStart() {
+    const w = WHICH[H.which] ? H.which : "all"; if (w === "all") return null;
+    const ids = whichIds(w); if (ids.length) return ids;
+    H.which = "all"; saveH(); renderWhich(); toast("🎉 No roots left there, so here are all 30!"); return null;
+  }
   $("pick").addEventListener("click", startRootsChooser);
   // pick the next root: X roots come up the most, then ~, then Y. Missed roots come back 3 questions later.
   function nextId() {
@@ -13833,9 +13886,10 @@ function startRootHyper() {
     const S = sheet(), only = G.only, w = RA_DATA.map(d => only && !only.includes(d.id) ? 0 : d.id === G.last && !(only && only.length === 1) ? 0 : [3, 2, 1][raLevelOf(S.pts[d.id])]), tot = w.reduce((a, b) => a + b, 0);
     let r = Math.random() * tot; for (let i = 0; i < w.length; i++) { r -= w[i]; if (r < 0) return i; } return 0;
   }
-  function start(mode, only) {
+  function start(mode, only, quick) {
     G = { mode, n: 0, total: mode === "round" ? 20 : Infinity, score: 0, streak: 0, top: 0, right: 0, misses: [], again: [], last: -1, q: null, locked: false, ends: mode === "speed" ? performance.now() + RA_RAPID * 1000 : 0, only: only && only.length ? only : null };
-    if (G.only) { G.total = Math.min(20, Math.max(6, G.only.length * 3)); toast(`⚡ Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`); }
+    if (G.only && quick) { G.total = Math.min(20, Math.max(6, G.only.length * 3)); toast(`⚡ Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`); }
+    else if (G.only) toast(`🎯 Practicing your ${G.only.length} ${H.which === "x" ? "don't-know-at-all" : H.which === "t" ? "sort-of-know" : "don't-know and sort-of-know"} root${G.only.length === 1 ? "" : "s"}!`);
     show("play"); naAudio();
     if (mode === "speed") { const tick = () => { if (!G || G.mode !== "speed" || !$("bar")) return; const left = Math.max(0, G.ends - performance.now()); $("bar").style.width = (100 * left / (RA_RAPID * 1000)) + "%"; $("count").textContent = `⏱ ${Math.ceil(left / 1000)}s`; if (left <= 0) return end(); naTimer(setTimeout(tick, 200)); }; tick(); }
     ask();
@@ -13909,13 +13963,13 @@ function startRootHyper() {
       <div class="rh-row"><button class="rh-btn" id="rh-again" type="button">⚡ Go again</button><button class="rh-btn alt" id="rh-homeBtn" type="button">🏠 Home</button></div>`;
     show("end"); G = null;
     [523, 659, 784, 1047].forEach((f, k) => naNote(f, .22, "triangle", .12, k * .09));
-    $("again").addEventListener("click", () => start(g.mode)); $("homeBtn").addEventListener("click", home);
-    $("just")?.addEventListener("click", () => start("round", missed));
+    $("again").addEventListener("click", () => start(g.mode, whichStart())); $("homeBtn").addEventListener("click", home);
+    $("just")?.addEventListener("click", () => start("round", missed, true));
     try { $("again").focus({ preventScroll: true }); } catch (e) {}
     window.scrollTo({ top: 0 });
   }
-  $("round").addEventListener("click", () => start("round"));
-  $("speed").addEventListener("click", () => start("speed"));
+  $("round").addEventListener("click", () => start("round", whichStart()));
+  $("speed").addEventListener("click", () => start("speed", whichStart()));
   $("quit").addEventListener("click", () => { if (G && G.n > 0) end(); else { G = null; home(); } });
   home();
 }

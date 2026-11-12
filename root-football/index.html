@@ -77,6 +77,8 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
 .pchip{font:inherit;font-weight:800;font-size:15px;color:#fff;background:#0d1d38;border:2px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
 .pchip.on{background:var(--gold);color:#231a00;border-color:var(--gold);box-shadow:0 0 12px rgba(255,204,51,.45)}
 .pacts{display:flex;gap:14px;flex-wrap:wrap}
+.which{margin:2px 0 4px;font-weight:800;color:var(--soft)}
+.pchip:disabled{opacity:.4;cursor:default}
 .players small{color:#8fa3c4;font-weight:600}
 .addform{display:flex;gap:8px;margin:0 0 12px}
 .addform input{flex:1;min-width:0;font:inherit;font-weight:800;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:#0d1d38;color:#fff}
@@ -254,6 +256,7 @@ body[data-sport="football"] .ball-in{width:16px;height:10px;margin:-5px 0 0 -8px
       <div class="stat t"><b id="sT">0</b><small>Getting there</small></div>
       <div class="stat x"><b id="sX">0</b><small>Not yet</small></div>
     </div>
+    <div class="which"><b>🎯 Which roots?</b><div class="pchips" id="whichChips" role="group" aria-label="Which roots to practice"></div></div>
     <div class="row" style="margin-top:16px"><button class="btn" id="startBtn" type="button">🥅 Take 10 shots</button><button class="btn hot" id="clockBtn" type="button">⏱ Shot Clock</button></div>
     <p class="mode" id="tMode">🥅 10 shots moves roots up your sheet, and shot #10 is a 🥇 Golden Goal worth double. ⏱ Shot Clock: as many goals as you can in 60 seconds (it doesn't change your sheet).</p>
     <label class="toggle"><input type="checkbox" id="focusX" checked> Aim mostly at my X's and ~'s</label>
@@ -544,7 +547,7 @@ function renderHome() {
   $("best").textContent = S.best ? S.best + " pts" : "—";
   $("cbest").textContent = S.clockBest ? S.clockBest + " " + T.plural : "—";
   $("soundBtn").textContent = "Sound: " + (S.sound ? "on" : "off");
-  renderBag(); renderPlayers();
+  renderBag(); renderPlayers(); renderWhich();
 }
 /* ===== players ===== */
 function renderPlayers() {
@@ -610,18 +613,33 @@ function pickRoot() {   // 🎯 "Practice just these" rounds only use the roots 
 }
 const meaningChoices = d => shuffle([d.m, ...shuffle([...new Set(DATA.map(x => x.m))].filter(m => m !== d.m)).slice(0, 3)]).map(m => ({ label: m, ok: m === d.m }));
 const rootChoices = d => shuffle([d, ...shuffle(DATA.filter(x => x.m !== d.m)).slice(0, 3)]).map(x => ({ label: x.r, ok: x.id === d.id }));
-function newGame(mode, only) {
+/* ===== 🎯 which roots a round uses: all 30, just the ones I don't know at all (X), the ones I sort of know (~), or both ===== */
+const WHICH = { all: "🌈 All 30", x: "❌ Don't know at all", t: "🤔 Sort of know", xt: "❌🤔 Both" };
+const whichIds = w => DATA.filter(d => { const l = levelOf(S.pts[d.id]); return w === "x" ? l === 0 : w === "t" ? l === 1 : l < 2; }).map(d => d.id);
+function renderWhich() {
+  const w = WHICH[S.which] ? S.which : "all";
+  $("whichChips").innerHTML = Object.entries(WHICH).map(([k, v]) => { const n = k === "all" ? DATA.length : whichIds(k).length; return `<button class="pchip${k === w ? " on" : ""}" type="button" data-w="${k}" aria-pressed="${k === w}"${n ? "" : " disabled"}>${k === w ? "✓ " : ""}${v}${k === "all" ? "" : ` (${n})`}</button>`; }).join("");
+}
+$("whichChips").onclick = e => { const b = e.target.closest("[data-w]"); if (!b || b.disabled) return; S.which = b.dataset.w; save(); renderWhich(); };
+function whichStart() {   // the roots for a new round (null means all of them)
+  const w = WHICH[S.which] ? S.which : "all"; if (w === "all") return null;
+  const ids = whichIds(w); if (ids.length) return ids;
+  S.which = "all"; save(); renderWhich(); toast("🎉 No roots left there, so here are all 30!"); return null;
+}
+const whichMsg = ids => ids && `🎯 Practicing your ${ids.length} ${S.which === "x" ? "don't-know-at-all" : S.which === "t" ? "sort-of-know" : "don't-know and sort-of-know"} root${ids.length === 1 ? "" : "s"}!`;
+const startGame = () => { const ids = whichStart(); newGame("game", ids, whichMsg(ids)); };
+function newGame(mode, only, msg) {
   if (G && G.timer) clearInterval(G.timer);
   lastMode = mode;
   G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false, only: only && only.length ? only : null };
-  if (G.only) toast(`🎯 Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`);
+  if (G.only) toast(msg || `🎯 Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`);
   $("play").classList.toggle("clockmode", mode === "clock");
   $("shots").innerHTML = Array.from({ length: ROUND }, (_, i) => `<i${i === ROUND - 1 ? ' class="golden"' : ""}></i>`).join("");
   $("quitBtn").textContent = mode === "clock" ? "Stop" : "Quit game";
   show("play"); nextQ();
 }
 function startClock() {
-  newGame("clock"); G.left = CLOCK * 1000; G.last = performance.now(); G.lastSec = CLOCK; drawClock();
+  { const ids = whichStart(); newGame("clock", ids, whichMsg(ids)); } G.left = CLOCK * 1000; G.last = performance.now(); G.lastSec = CLOCK; drawClock();
   const me = G;
   G.timer = setInterval(() => {
     if (G !== me || G.over) return clearInterval(me.timer);
@@ -785,8 +803,8 @@ function confetti() {
   for (let i = 0; i < 60; i++) { const c = document.createElement("div"); c.className = "confetti"; c.style.left = Math.random() * 100 + "vw"; c.style.background = cols[i % cols.length]; c.style.animationDuration = (1.5 + Math.random() * 2) + "s"; c.style.animationDelay = Math.random() * .5 + "s"; $("fx").appendChild(c); setTimeout(() => c.remove(), 4500); }
 }
 const goHome = () => { if (G) { G.over = true; clearInterval(G.timer); } $("fx").innerHTML = ""; renderHome(); show("home"); };
-$("startBtn").onclick = () => newGame("game"); $("clockBtn").onclick = startClock;
-$("againBtn").onclick = () => lastMode === "clock" ? startClock() : newGame("game");
+$("startBtn").onclick = startGame; $("clockBtn").onclick = startClock;
+$("againBtn").onclick = () => lastMode === "clock" ? startClock() : startGame();
 $("homeBtn").onclick = goHome; $("quitBtn").onclick = goHome;
 // ⌨️ keys 1-4 shoot, Enter goes to the next shot
 document.addEventListener("keydown", e => {
