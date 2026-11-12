@@ -12876,6 +12876,7 @@ function raStyles() {
   .ra .ra-tgt.hint{box-shadow:0 4px 0 #b8ab88,0 0 0 4px #ffcf33;animation:raHint .8s ease-in-out infinite alternate}
   @keyframes raHint{to{box-shadow:0 4px 0 #b8ab88,0 0 0 4px #ffcf33,0 0 18px 6px rgba(255,207,51,.75)}}
   .ra .ra-targets{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+  .ra .ra-typeit{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}.ra .ra-typeit input{flex:1 1 220px;max-width:420px;font:inherit;font-size:1.2rem;padding:12px 14px;border-radius:12px;border:3px solid #f2b632;background:#132218;color:#fff}.ra .ra-typeit input:disabled{opacity:.7}.ra .ra-typeit .ra-btn.ghost{background:transparent;border:2px solid rgba(255,255,255,.55);color:#fff}
   .ra .ra-tgt{background:#f6efdc;border:0;border-radius:16px;padding:12px 8px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:inherit;color:var(--ra-ink);box-shadow:0 4px 0 #b8ab88;transition:transform .1s, background .2s;min-width:0;min-height:0}
   .ra .ra-tgt:active{transform:translateY(2px)}
   .ra .ra-tgt .ring{width:62px;height:62px;border-radius:50%;position:relative;background:radial-gradient(circle,var(--ra-gold) 0 17%,var(--ra-red) 17% 36%,var(--ra-blue) 36% 56%,#222 56% 76%,#fff 76% 100%);box-shadow:0 0 0 2px #fff, 0 2px 4px rgba(0,0,0,.3)}
@@ -13154,9 +13155,10 @@ function startRootArchery() {
     if (G && G.timer) clearInterval(G.timer);
     lastMode = mode;
     G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: raOwned(S), over: false, only: only && only.length ? only : null };
-    if (G.only) toast(msg || `🎯 Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`);
+    G.single = mode === "round" && !!G.only && G.only.length === 1; G.len = G.single ? 3 : RA_ROUND;   // 🎯 just this one: 2 normal questions, then type the answer
+    if (G.only) toast(G.single ? `🎯 Just ${up(RA_DATA[G.only[0]].r)}: 2 questions, then type the answer!` : msg || `🎯 Just your ${G.only.length} roots to practice!`);
     $("play").classList.toggle("rapid", mode === "rapid");
-    const q = $("quiver"); q.innerHTML = ""; for (let i = 0; i < RA_ROUND; i++) { const el = document.createElement("i"); if (i === RA_ROUND - 1) el.className = "apple"; q.appendChild(el); }
+    const q = $("quiver"); q.innerHTML = ""; for (let i = 0; i < G.len; i++) { const el = document.createElement("i"); if (i === G.len - 1 && !G.single) el.className = "apple"; q.appendChild(el); }
     $("quitBtn").textContent = mode === "rapid" ? "Stop" : "Quit round";
     show("play"); nextQ();
   }
@@ -13173,18 +13175,18 @@ function startRootArchery() {
   }
   function drawClock() { $("hudArrow").textContent = G.paused ? "⏸ paused" : `⏱ ${Math.max(0, Math.ceil(G.left / 1000))}s`; $("rbar").style.width = Math.max(0, G.left / (RA_RAPID * 10)) + "%"; }
   function hud() {
-    if (G.mode === "round") $("hudArrow").textContent = `Arrow ${Math.min(G.i + 1, RA_ROUND)}/${RA_ROUND}`; else if (G.left != null) drawClock();
+    if (G.mode === "round") $("hudArrow").textContent = G.single ? `Step ${Math.min(G.i + 1, G.len)}/${G.len}` : `Arrow ${Math.min(G.i + 1, RA_ROUND)}/${RA_ROUND}`; else if (G.left != null) drawClock();
     $("hudScore").textContent = G.mode === "rapid" ? `🎯 ${G.hits}` : G.score + " pts";
     $("hudStreak").textContent = G.streak >= 2 ? `🔥 ${G.streak} in a row` : "";
   }
   function nextQ() {
     if (G.over) return;
-    if (G.mode === "round" && G.i >= RA_ROUND) return endRound();
+    if (G.mode === "round" && G.i >= G.len) return endRound();
     const d = pickRoot(); G.recent.push(d.id); if (G.recent.length > 4) G.recent.shift();
     const lv = raLevelOf(S.pts[d.id]);
     // harder question types unlock as a root improves
     const types = lv === 0 ? ["r2m", "r2m", "m2r"] : lv === 1 ? ["r2m", "m2r", "word"] : ["m2r", "word", "word"];
-    const type = types[Math.random() * types.length | 0], apple = G.mode === "round" && G.i === RA_ROUND - 1;
+    const type = G.single ? ["r2m", lv === 0 ? "m2r" : "word", "type"][G.i] : types[Math.random() * types.length | 0], apple = G.mode === "round" && !G.single && G.i === RA_ROUND - 1;
     G.cur = { d, type, clueUsed: false, done: false, apple };
     if (G.mode === "round") [...$("quiver").children].forEach((el, k) => el.classList.toggle("now", k === G.i));
     hud();
@@ -13194,6 +13196,7 @@ function startRootArchery() {
     let choices, clueHTML, label;
     if (type === "r2m") { label = "Root → meaning"; qm.textContent = up(d.r); $("qask").textContent = "What does this root mean?"; choices = meaningChoices(d); clueHTML = `You know these words: <em>${d.ex.join(", ")}</em>`; }
     else if (type === "m2r") { label = "Meaning → root"; qm.textContent = `"${up(d.m)}"`; $("qask").textContent = "Which root means this?"; choices = rootChoices(d); clueHTML = `Think of: <em>${d.ex.join(", ")}</em>`; }
+    else if (type === "type") { label = "✍️ Type it"; qm.textContent = up(d.r); $("qask").textContent = "Now type what this root means:"; choices = []; clueHTML = `Think of: <em>${d.ex.join(", ")}</em>`; }
     else { label = "Mystery word"; const w = d.more[Math.random() * d.more.length | 0]; G.cur.word = w; qm.classList.add("word"); qm.innerHTML = up(w).replace(/\[(.*?)\]/, '<span class="hl">$1</span>'); $("qask").textContent = "The underlined root means…"; choices = meaningChoices(d); clueHTML = `Same root as: <em>${d.ex.join(", ")}</em>`; }
     $("qtype").textContent = apple ? `🍎 Golden Apple · double points · ${label}` : label;
     if (G.mode === "round") {
@@ -13211,6 +13214,12 @@ function startRootArchery() {
     }
     else $("clue").innerHTML = "";
     const t = $("targets"); t.innerHTML = "";
+    if (type === "type") {
+      t.innerHTML = `<form class="ra-typeit" id="ra-typeForm" autocomplete="off"><input id="ra-typeIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="40" placeholder="Type the meaning…" aria-label="Type what this root means"><button class="ra-btn" type="submit">Check ✓</button><button class="ra-btn ghost" type="button" id="ra-typeIdk">I don't know</button></form>`;
+      $("typeForm").onsubmit = e => { e.preventDefault(); const v = $("typeIn").value.trim(); if (v) answerTyped(v); else $("typeIn").focus(); };
+      $("typeIdk").onclick = () => answerTyped("");
+      naTimer(setTimeout(() => $("typeIn")?.focus(), 60));
+    }
     choices.forEach((c, n) => {
       const b = document.createElement("button"); b.type = "button";
       b.className = "ra-tgt" + (type === "m2r" ? " root" : "") + (apple ? " apple" : "");
@@ -13218,6 +13227,13 @@ function startRootArchery() {
       b.onclick = () => shoot(b, c.ok); b.dataset.ok = c.ok ? 1 : ""; t.appendChild(b);
     });
     loadBow();
+  }
+  function answerTyped(v) {   // ✍️ a misspelling still counts, unless it's closer to a different root's meaning (same checker as Root Hyper Practice)
+    if (!G || G.over || G.cur.done) return; G.cur.done = true;
+    const q = rhQuestion(G.cur.d.id, "meaning"), r = v ? rhCheck(v, q.correct, q.wrong) : { yes: false }; G.cur.typed = v; G.cur.typedR = r;
+    $("typeIn").disabled = true; $("typeForm").querySelectorAll("button").forEach(b => b.disabled = true);
+    if (r.yes) sThunk();
+    resolve(null, r.yes);
   }
   function shoot(btn, ok) {
     if (!G || G.over || G.cur.done) return; G.cur.done = true;
@@ -13242,16 +13258,17 @@ function startRootArchery() {
     });
   }
   function resolve(btn, ok) {
-    const { d, type, clueUsed, apple } = G.cur, id = d.id, fb = $("feedback"), [rx, ry] = ringAt(btn), rapid = G.mode === "rapid";
+    const { d, type, clueUsed, apple } = G.cur, id = d.id, fb = $("feedback"), rapid = G.mode === "rapid";
+    const [rx, ry] = btn ? ringAt(btn) : (r => [r.left + r.width / 2, r.top])(($("typeIn") || $("qcard")).getBoundingClientRect());
     if (ok) {
       G.hits++; G.streak++; G.bestStreak = Math.max(G.bestStreak, G.streak);
       let earned = (rapid || !clueUsed ? 10 : 5) + (G.streak >= 3 ? 5 : 0); if (apple) earned *= 2;
-      G.score += earned; btn.classList.add("right");
+      G.score += earned; btn?.classList.add("right");
       burst(rx, ry, apple ? ["#ffd700", "#ff3b30", "#fff3b0"] : skin().trail || ["#f2b632", "#d64533", "#ffffff", "#3f9a5a"], apple ? 32 : G.streak >= 3 ? 26 : 18);
       stamp(rx, ry - 34, apple ? "🍎 GOLDEN!" : streakWord(G.streak), "good"); sHit(apple || G.streak >= 3);
       const p = $("pts"); p.textContent = "+" + earned; p.classList.remove("go"); void p.offsetWidth; p.classList.add("go");
     } else {
-      G.streak = 0; btn.classList.add("wrong"); stamp(rx, ry - 30, "MISS", "bad");
+      G.streak = 0; btn?.classList.add("wrong"); stamp(rx, ry - 30, "MISS", "bad");
       $("qcard").classList.add("ra-shake"); naTimer(setTimeout(() => $("qcard")?.classList.remove("ra-shake"), 300)); sMiss();
       [...$("targets").children].forEach(b => { if (b.dataset.ok) b.classList.add("right"); else if (b !== btn) b.classList.add("dim"); });
     }
@@ -13274,13 +13291,15 @@ function startRootArchery() {
     if (lvB > lvA) naTimer(setTimeout(sFan, 350));
     const wordLine = type === "word" ? `<div class="ra-word">🔎 <b>${up(raPlain(G.cur.word))}</b> has <b>${up(d.r.split(" / ")[0])}</b> in it, so it's about “${d.m}.”</div>` : "";
     let picked = "";   // a miss also tells what the picked answer really means
-    if (!ok) { const pl = btn.querySelector(".lbl").textContent.trim(); if (type === "m2r") { const x = RA_DATA.find(r => up(r.r) === pl); if (x) picked = `❌ You picked <b>${up(x.r)}</b>, which means “${x.m}.”`; } else { const xs = RA_DATA.filter(r => r.m === pl); if (xs.length) picked = `❌ You picked “${pl},” which is what <b>${xs.map(r => up(r.r)).join(" and ")}</b> mean${xs.length === 1 ? "s" : ""}.`; } }
+    if (!btn) picked = !G.cur.typed ? "" : ok ? (G.cur.typedR.exact ? "" : `✍️ You typed “${esc(G.cur.typed)}.” Close enough, it counts!`) : `❌ You typed “${esc(G.cur.typed)}”${G.cur.typedR.oops ? `, which is what ${up(RA_DATA[G.cur.typedR.oops.id].r)} means` : ""}.`;
+    else if (!ok) { const pl = btn.querySelector(".lbl").textContent.trim(); if (type === "m2r") { const x = RA_DATA.find(r => up(r.r) === pl); if (x) picked = `❌ You picked <b>${up(x.r)}</b>, which means “${x.m}.”`; } else { const xs = RA_DATA.filter(r => r.m === pl); if (xs.length) picked = `❌ You picked “${pl},” which is what <b>${xs.map(r => up(r.r)).join(" and ")}</b> mean${xs.length === 1 ? "s" : ""}.`; } }
     const lvLine = lvB > lvA ? `<div class="ra-lvup">⬆️ LEVEL UP! <span class="ra-badge ${RA_LV[lvA].c}">${RA_LV[lvA].t}</span> → <span class="ra-badge ${RA_LV[lvB].c}">${RA_LV[lvB].t}</span> ${up(d.r)}</div>` : lvB < lvA ? `<div class="ra-lvdown">${up(d.r)} slipped back to <span class="ra-badge ${RA_LV[lvB].c}">${RA_LV[lvB].t}</span>. Hit it again and it climbs right back up.</div>` : "";
     const card = $("qcard"); card.classList.remove("fire", "apple"); card.classList.add("done", ok ? "good" : "bad");
     $("explain").innerHTML = `<b class="big">${ok ? (apple ? "🍎 Golden Apple! Double points!" : `🎯 Bullseye!${G.streak >= 3 ? " Streak bonus!" : ""}`) : "Missed: here's the trick"}</b>
       <div class="ra-ans">${up(d.r)} <small>= ${d.m}</small></div>${picked ? `<div class="ra-picked">${picked}</div>` : ""}${wordLine}${lvLine}
-      <button class="ra-btn" id="ra-nextBtn" type="button">${G.i + 1 >= RA_ROUND ? "See score" : "Next arrow ➜"}</button>${explainHTML(d)}`;
+      <button class="ra-btn" id="ra-nextBtn" type="button">${G.i + 1 >= G.len ? "See score" : "Next arrow ➜"}</button>${explainHTML(d)}`;
     $("nextBtn").onclick = () => { if (G.cur.next) return; G.cur.next = true; G.i++; nextQ(); };
+    if (!btn) $("nextBtn").focus();
   }
   function unlocks() {
     const gained = RA_SKINS.filter(k => raOwned(S).includes(k.id) && !G.owned.includes(k.id));
@@ -13297,10 +13316,10 @@ function startRootArchery() {
   }
   function endRound() {
     G.over = true; show("end"); $("endTitle").textContent = "Round over!"; $("endScore").textContent = G.score;
-    const pct = G.hits / RA_ROUND;
+    const pct = G.hits / G.len;
     $("endRank").textContent = pct === 1 ? "🏆 Robin Hood!" : pct >= .8 ? "🎯 Sharpshooter" : pct >= .6 ? "🏹 Archer" : pct >= .4 ? "🌲 Apprentice" : "🎪 Keep practicing!";
-    $("endHits").textContent = `${G.hits} of ${RA_ROUND} bullseyes`;
-    if (G.hits === RA_ROUND) S.perfect = true;
+    $("endHits").textContent = G.single ? `${G.hits} of ${G.len} right` : `${G.hits} of ${RA_ROUND} bullseyes`;
+    if (!G.single && G.hits === RA_ROUND) S.perfect = true;
     if (G.score > S.best) { S.best = G.score; $("endHits").textContent += " · New best!"; }
     S.coins = (S.coins || 0) + G.score; $("endHits").textContent += ` · 🪙 +${fmt(G.score)} coins`;
     save();
@@ -13335,6 +13354,7 @@ function startRootArchery() {
     if (!document.getElementById("ra")) { keyHandler = null; return; }
     if ($("modal").classList.contains("show")) { if (e.key === "Escape" || e.key === "Enter") $("modal").classList.remove("show"); return; }
     if ($("play").classList.contains("ra-hidden") || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.target.closest && e.target.closest("input, textarea")) return;   // typing an answer
     const n = "1234".indexOf(e.key);
     if (e.key.length === 1 && n >= 0) { $("targets").children[n]?.click(); return; }
     if ((e.key === "Enter" || e.key === " ") && $("nextBtn")) { e.preventDefault(); $("nextBtn").click(); }
@@ -13482,6 +13502,7 @@ h1 .stickmoji{display:inline-block;animation:wiggle 2.4s ease-in-out infinite}
 .modal .box{max-height:88vh;overflow-y:auto}
 .tgt.hint{box-shadow:0 4px 0 #9aa8bf,0 0 0 4px #ffcf33;animation:hint .8s ease-in-out infinite alternate}
 @keyframes hint{to{box-shadow:0 4px 0 #9aa8bf,0 0 0 4px #ffcf33,0 0 18px 6px rgba(255,207,51,.75)}}
+.typeit{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;width:100%}.typeit input{flex:1 1 220px;max-width:420px;font:inherit;font-size:1.2rem;padding:12px 14px;border-radius:12px;border:3px solid #ffcc33;background:#0e1830;color:#fff}.typeit input:disabled{opacity:.7}.typeit .btn.ghost{background:transparent;border:2px solid rgba(255,255,255,.55);color:#fff}
 .goals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
 .tgt{background:var(--card);border:0;border-radius:16px;padding:10px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink);box-shadow:0 4px 0 #9aa8bf;transition:transform .1s,background .2s;min-width:0}
 .tgt:active{transform:translateY(2px)}
@@ -13945,6 +13966,25 @@ $("resetBtn").onclick = () => {
   else { b.dataset.sure = 1; b.textContent = "Tap again to reset"; setTimeout(() => { delete b.dataset.sure; b.textContent = "Reset to my sheet"; }, 3000); }
 };
 
+/* ===== ✍️ typed answers: a misspelling still counts, unless it's closer to a different root's meaning ===== */
+const ROOT_SYN = [["star", "stars"], ["hear", "hearing", "listen"], ["self", "myself", "yourself"], ["good", "well", "kind"], ["life", "living", "alive"], ["time"], ["say", "speak", "tell", "word", "words"], ["lead", "make", "bring"], ["give birth", "birth", "born", "create", "beginning"], ["earth", "ground", "land", "world"], ["write", "writing", "draw"], ["law", "right", "justice", "just"], ["thought", "think", "reason", "study", "speech", "word"], ["light", "bright", "shine"], ["hand", "hands"], ["order", "command"], ["send", "sent"], ["all", "every", "everything"], ["feel", "feeling", "suffer", "emotion"], ["love", "loving", "friend"], ["sound", "voice"], ["light"], ["carry"], ["quiet", "rest", "calm", "still"], ["write", "writing"], ["feel", "feeling", "sense"], ["far off", "far", "distant", "far away"], ["earth", "land", "ground"], ["empty"], ["see", "look", "sight"]];
+const tNorm = s => String(s).toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/[^a-z ]+/g, " ").replace(/\\s+/g, " ").trim();
+const tKey = s => s.replace(/igh/g, "i").replace(/ph/g, "f").replace(/ck/g, "k").replace(/qu/g, "kw").replace(/c(?=[aou]|$)/g, "k").replace(/(.)\\1+/g, "$1").replace(/(.)e$/, "$1");
+function tDist(a, b) {
+  const m = a.length, n = b.length; if (!m || !n) return m + n;
+  const d = Array.from({ length: m + 1 }, (_, i) => { const r = new Array(n + 1).fill(0); r[0] = i; return r; }); for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) { d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1); }
+  return d[m][n];
+}
+const T_STOP = new Set(["it", "its", "means", "mean", "meaning", "the", "a", "an", "to", "of", "is", "root", "word", "and", "or"]);
+function typeCheck(typed, id) {
+  const toks = tNorm(typed).split(" ").filter(w => w && !T_STOP.has(w)), tries = [...new Set([toks.join(" "), ...toks])].filter(Boolean);
+  if (!tries.length) return { yes: false };
+  const mine = new Set(ROOT_SYN[id]), good = ROOT_SYN[id], bad = ROOT_SYN.flatMap(L => L.some(x => mine.has(x)) ? [] : L), allow = n => n <= 2 ? 0 : n <= 4 ? 1 : n <= 7 ? 2 : 3;
+  const best = list => { let b = { d: Infinity, s: null }; for (const c of list) for (const x of tries) { const d = Math.min(tDist(x, c), tDist(tKey(x), tKey(c))); if (d < b.d) b = { d, s: c }; } return b; };
+  const ok = best(good), no = best(bad), yes = !!ok.s && ok.d <= allow(ok.s.length) && ok.d <= no.d;
+  return { yes, exact: yes && tries.includes(ok.s), oops: !yes && no.s && no.d < ok.d && no.d <= allow(no.s.length) ? no.s : null };
+}
 /* ===== the game ===== */
 let G = null, lastMode = "game";
 const show = id => { ["home", "play", "end"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0, 0); };
@@ -13977,9 +14017,10 @@ function newGame(mode, only, msg) {
   if (G && G.timer) clearInterval(G.timer);
   lastMode = mode;
   G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false, only: only && only.length ? only : null };
-  if (G.only) toast(msg || \`🎯 Just your \${G.only.length} root\${G.only.length === 1 ? "" : "s"} to practice!\`);
+  G.single = mode === "game" && !!G.only && G.only.length === 1; G.len = G.single ? 3 : ROUND;   // 🎯 just this one: 2 normal questions, then type the answer
+  if (G.only) toast(G.single ? \`🎯 Just \${up(DATA[G.only[0]].r)}: 2 questions, then type the answer!\` : msg || \`🎯 Just your \${G.only.length} roots to practice!\`);
   $("play").classList.toggle("clockmode", mode === "clock");
-  $("shots").innerHTML = Array.from({ length: ROUND }, (_, i) => \`<i\${i === ROUND - 1 ? ' class="golden"' : ""}></i>\`).join("");
+  $("shots").innerHTML = Array.from({ length: G.len }, (_, i) => \`<i\${i === G.len - 1 && !G.single ? ' class="golden"' : ""}></i>\`).join("");
   $("quitBtn").textContent = mode === "clock" ? "Stop" : "Quit game";
   show("play"); nextQ();
 }
@@ -13995,18 +14036,18 @@ function startClock() {
 }
 function drawClock() { $("hudLeft").textContent = G.paused ? "⏸ paused" : \`⏱ \${Math.max(0, Math.ceil(G.left / 1000))}s\`; $("tbar").style.width = Math.max(0, G.left / (CLOCK * 10)) + "%"; }
 function hud() {
-  if (G.mode === "game") $("hudLeft").textContent = \`\${T.shot} \${Math.min(G.i + 1, ROUND)}/\${ROUND}\`; else if (G.left != null) drawClock();
+  if (G.mode === "game") $("hudLeft").textContent = G.single ? \`🎯 Step \${Math.min(G.i + 1, G.len)}/\${G.len}\` : \`\${T.shot} \${Math.min(G.i + 1, ROUND)}/\${ROUND}\`; else if (G.left != null) drawClock();
   $("hudScore").textContent = G.mode === "clock" ? \`\${T.hitIcon} \${G.hits}\` : G.score + " pts";
   $("hudStreak").textContent = G.streak >= 2 ? \`🔥 \${G.streak} in a row\` : "";
 }
 function nextQ() {
   if (G.over) return;
-  if (G.mode === "game" && G.i >= ROUND) return endGame();
+  if (G.mode === "game" && G.i >= G.len) return endGame();
   const d = pickRoot(); G.recent.push(d.id); if (G.recent.length > 4) G.recent.shift();
   const lv = levelOf(S.pts[d.id]);
   // harder question types unlock as a root improves
   const types = lv === 0 ? ["r2m", "r2m", "m2r"] : lv === 1 ? ["r2m", "m2r", "word"] : ["m2r", "word", "word"];
-  const type = types[Math.floor(Math.random() * types.length)], golden = G.mode === "game" && G.i === ROUND - 1;
+  const type = G.single ? ["r2m", lv === 0 ? "m2r" : "word", "type"][G.i] : types[Math.floor(Math.random() * types.length)], golden = G.mode === "game" && !G.single && G.i === ROUND - 1;
   G.cur = { d, type, clueUsed: false, done: false, golden };
   if (G.mode === "game") [...$("shots").children].forEach((el, k) => el.classList.toggle("now", k === G.i));
   hud();
@@ -14016,6 +14057,7 @@ function nextQ() {
   let choices, clueHTML, label;
   if (type === "r2m") { label = "Root → meaning"; qm.textContent = up(d.r); $("qask").textContent = "What does this root mean?"; choices = meaningChoices(d); clueHTML = \`You know these words: <em>\${d.ex.join(", ")}</em>\`; }
   else if (type === "m2r") { label = "Meaning → root"; qm.textContent = \`"\${up(d.m)}"\`; $("qask").textContent = "Which root means this?"; choices = rootChoices(d); clueHTML = \`Think of: <em>\${d.ex.join(", ")}</em>\`; }
+  else if (type === "type") { label = "✍️ Type it"; qm.textContent = up(d.r); $("qask").textContent = "Now type what this root means:"; choices = []; clueHTML = \`Think of: <em>\${d.ex.join(", ")}</em>\`; }
   else { label = "Mystery word"; const w = d.more[Math.floor(Math.random() * d.more.length)]; G.cur.word = w; qm.classList.add("word"); qm.innerHTML = up(w).replace(/\\[(.*?)\\]/, '<span class="hl">$1</span>'); $("qask").textContent = "The underlined root means…"; choices = meaningChoices(d); clueHTML = \`Same root as: <em>\${d.ex.join(", ")}</em>\`; }
   $("qtype").textContent = golden ? \`\${T.golden} · double points · \${label}\` : label;
   if (G.mode === "game") {
@@ -14033,6 +14075,12 @@ function nextQ() {
   }
   else $("clue").innerHTML = "";
   const t = $("goals"); t.innerHTML = "";
+  if (type === "type") {
+    t.innerHTML = \`<form class="typeit" id="typeForm" autocomplete="off"><input id="typeIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="40" placeholder="Type the meaning…" aria-label="Type what this root means"><button class="btn" type="submit">Check ✓</button><button class="btn ghost" type="button" id="typeIdk">I don't know</button></form>\`;
+    $("typeForm").onsubmit = e => { e.preventDefault(); const v = $("typeIn").value.trim(); if (v) answerTyped(v); else $("typeIn").focus(); };
+    $("typeIdk").onclick = () => answerTyped("");
+    setTimeout(() => $("typeIn")?.focus(), 60);
+  }
   choices.forEach((c, n) => {
     const b = document.createElement("button"); b.type = "button";
     b.className = "tgt" + (type === "m2r" ? " root" : "") + (golden ? " golden" : "");
@@ -14040,6 +14088,13 @@ function nextQ() {
     b.onclick = () => shoot(b, c.ok); b.dataset.ok = c.ok ? 1 : ""; t.appendChild(b);
   });
   loadStick();
+}
+function answerTyped(v) {
+  if (!G || G.over || G.cur.done) return; G.cur.done = true;
+  const r = v ? typeCheck(v, G.cur.d.id) : { yes: false }; G.cur.typed = v; G.cur.typedR = r;
+  $("typeIn").disabled = true; $("typeForm").querySelectorAll("button").forEach(b => b.disabled = true);
+  if (r.yes) sSwish(); else if (v) sAww();
+  resolve(null, r.yes, false);
 }
 function shoot(btn, ok) {
   if (!G || G.over || G.cur.done) return; G.cur.done = true;
@@ -14065,17 +14120,18 @@ function shoot(btn, ok) {
   });
 }
 function resolve(btn, ok, wide) {
-  const { d, type, clueUsed, golden } = G.cur, id = d.id, fb = $("feedback"), [gx, gy] = goalAt(btn), clock = G.mode === "clock";
+  const { d, type, clueUsed, golden } = G.cur, id = d.id, fb = $("feedback"), clock = G.mode === "clock";
+  const [gx, gy] = btn ? goalAt(btn) : (r => [r.left + r.width / 2, r.top])(($("typeIn") || $("qcard")).getBoundingClientRect());
   if (ok) {
     G.hits++; G.streak++; G.bestStreak = Math.max(G.bestStreak, G.streak);
     let earned = (clock || !clueUsed ? 10 : 5) + (G.streak >= 3 ? 5 : 0); if (golden) earned *= 2;
-    G.score += earned; btn.classList.add("right");
+    G.score += earned; btn?.classList.add("right");
     burst(gx, gy, golden ? ["#ffd700", "#ff6a13", "#fff3b0"] : ball().trail || ["#ffcc33", "#ff6a13", "#ffffff", "#2fbf71"], golden ? 32 : G.streak >= 3 ? 26 : 18);
     stamp(gx, gy - 36, golden ? T.goldenStamp : streakWord(G.streak), "good");
     sCheer(golden || G.streak >= 3); if (golden || G.streak >= 3) sHorn();
     const p = $("pts"); p.textContent = "+" + earned; p.classList.remove("go"); void p.offsetWidth; p.classList.add("go");
   } else {
-    G.streak = 0; btn.classList.add("wrong"); stamp(gx, gy - 32, wide ? (T.wideSide ? (G.cur.side < 0 ? "WIDE LEFT!" : "WIDE RIGHT!") : T.wide) : T.near[Math.floor(Math.random() * T.near.length)], "bad");
+    G.streak = 0; btn?.classList.add("wrong"); stamp(gx, gy - 32, wide ? (T.wideSide ? (G.cur.side < 0 ? "WIDE LEFT!" : "WIDE RIGHT!") : T.wide) : T.near[Math.floor(Math.random() * T.near.length)], "bad");
     $("qcard").classList.add("shake"); setTimeout(() => $("qcard").classList.remove("shake"), 300);
     [...$("goals").children].forEach(b => { if (b.dataset.ok) b.classList.add("right"); else if (b !== btn) b.classList.add("dim"); });
   }
@@ -14098,13 +14154,15 @@ function resolve(btn, ok, wide) {
   if (lvB > lvA) setTimeout(sFan, 350);
   const wordLine = type === "word" ? \`<div class="word">🔎 <b>\${up(plain(G.cur.word))}</b> has <b>\${up(d.r.split(" / ")[0])}</b> in it, so it's about “\${d.m}.”</div>\` : "";
   let picked = "";   // a miss also tells what the picked answer really means
-  if (!ok) { const pl = btn.querySelector(".lbl").textContent.trim(); if (type === "m2r") { const x = DATA.find(r => up(r.r) === pl); if (x) picked = \`❌ You picked <b>\${up(x.r)}</b>, which means “\${x.m}.”\`; } else { const xs = DATA.filter(r => r.m === pl); if (xs.length) picked = \`❌ You picked “\${pl},” which is what <b>\${xs.map(r => up(r.r)).join(" and ")}</b> mean\${xs.length === 1 ? "s" : ""}.\`; } }
+  if (!btn) picked = !G.cur.typed ? "" : ok ? (G.cur.typedR.exact ? "" : \`✍️ You typed “\${esc(G.cur.typed)}.” Close enough, it counts!\`) : \`❌ You typed “\${esc(G.cur.typed)}”\${G.cur.typedR.oops ? \`, which is the meaning of a different root (“\${esc(G.cur.typedR.oops)}”)\` : ""}.\`;
+  else if (!ok) { const pl = btn.querySelector(".lbl").textContent.trim(); if (type === "m2r") { const x = DATA.find(r => up(r.r) === pl); if (x) picked = \`❌ You picked <b>\${up(x.r)}</b>, which means “\${x.m}.”\`; } else { const xs = DATA.filter(r => r.m === pl); if (xs.length) picked = \`❌ You picked “\${pl},” which is what <b>\${xs.map(r => up(r.r)).join(" and ")}</b> mean\${xs.length === 1 ? "s" : ""}.\`; } }
   const lvLine = lvB > lvA ? \`<div class="lvup">⬆️ LEVEL UP! <span class="badge \${LV[lvA].c}">\${LV[lvA].t}</span> → <span class="badge \${LV[lvB].c}">\${LV[lvB].t}</span> \${up(d.r)}</div>\` : lvB < lvA ? \`<div class="lvdown">\${up(d.r)} slipped back to <span class="badge \${LV[lvB].c}">\${LV[lvB].t}</span>. Score on it again and it climbs right back up.</div>\` : "";
   const card = $("qcard"); card.classList.remove("fire", "golden"); card.classList.add("done", ok ? "good" : "bad");
   $("explain").innerHTML = \`<b class="big">\${ok ? (golden ? \`\${T.golden}! Double points!\` : \`\${T.hit}\${G.streak >= 3 ? " Streak bonus!" : ""}\`) : T.missHead}</b>
     <div class="ans">\${up(d.r)} <small>= \${d.m}</small></div>\${picked ? \`<div class="picked">\${picked}</div>\` : ""}\${wordLine}\${lvLine}
-    <button class="btn" id="nextBtn" type="button">\${G.i + 1 >= ROUND ? "See the score" : T.next}</button>\${explainHTML(d)}\`;
+    <button class="btn" id="nextBtn" type="button">\${G.i + 1 >= G.len ? "See the score" : T.next}</button>\${explainHTML(d)}\`;
   $("nextBtn").onclick = () => { if (G.cur.next) return; G.cur.next = true; G.i++; nextQ(); };
+  if (!btn) $("nextBtn").focus();
 }
 function unlocks() {
   const now = owned(), gained = BALLS.filter(k => now.includes(k.id) && !G.owned.includes(k.id));
@@ -14121,10 +14179,10 @@ function missList() {
 }
 function endGame() {
   G.over = true; show("end"); $("endTitle").textContent = \`\${T.end}, \${curName()}!\`; $("endScore").textContent = G.score;
-  const pct = G.hits / ROUND;
+  const pct = G.hits / G.len;
   $("endRank").textContent = T.ranks[pct === 1 ? 0 : pct >= .8 ? 1 : pct >= .6 ? 2 : pct >= .4 ? 3 : 4];
-  $("endHits").textContent = \`\${G.hits} of \${ROUND} \${T.plural}\`;
-  if (G.hits === ROUND) S.perfect = true;
+  $("endHits").textContent = G.single ? \`\${G.hits} of \${G.len} right\` : \`\${G.hits} of \${ROUND} \${T.plural}\`;
+  if (!G.single && G.hits === ROUND) S.perfect = true;
   if (G.score > S.best) { S.best = G.score; $("endHits").textContent += " · New best!"; }
   save();
   const ups = [], seen = new Set();
@@ -14155,6 +14213,7 @@ $("homeBtn").onclick = goHome; $("quitBtn").onclick = goHome;
 document.addEventListener("keydown", e => {
   if ($("modal").classList.contains("show")) { if (e.key === "Escape" || e.key === "Enter") $("modal").classList.remove("show"); return; }
   if ($("play").classList.contains("hidden") || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("input, textarea")) return;   // typing an answer
   const n = "1234".indexOf(e.key);
   if (e.key.length === 1 && n >= 0) { $("goals").children[n]?.click(); return; }
   if ((e.key === "Enter" || e.key === " ") && $("nextBtn")) { e.preventDefault(); $("nextBtn").click(); }
