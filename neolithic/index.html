@@ -2656,6 +2656,32 @@ document.addEventListener("click", e => {
 /* ---------- 👋 Who are you? Study Arcade asks every time it opens. After that every game and app uses that person, and nothing else asks. ---------- */
 let SITE_WHO = null, SITE_NAME = "";
 const WHO_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵", "🦁", "🐰", "🐶", "🐱", "🐧", "🦉", "🐢", "🦖", "🐬", "🦋", "🐝", "🐻"];
+/* ---------- 🎮 Who can play games: never Stephanie or Shawn, and nobody older than 25. Everyone is asked their age once (it counts up each year).
+   For everyone else, games simply don't show up anywhere, and if a game screen opens some other way it goes straight back to the home screen. ---------- */
+const NO_GAMES_IDS = new Set(["stephenie", "shawn"]);
+const whoAge = id => { const a = (store.get("who_age", {}) || {})[id]; return a && a.age >= 0 ? a.age + Math.floor((Date.now() - (a.at || Date.now())) / 31557600000) : null; };
+const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) <= 25);
+const GAME_HOME_KEYS = () => new Set(["bunny", ...[...INFO_GAME_APPS].map(id => "na-" + id)]);
+const GAME_SCREEN_RX = /^(🎮 Game Room|🏹 Pick a roots game|🏹 Root Archery|⚡ Root Hyper Practice|🥍 |⚽ |🏈 |🏀 |🎵 Name That Tune)/;
+function isGameScreen(lab) {
+  if (document.getElementById("gamesmenu")) return false;
+  return MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab) || GAME_SCREEN_RX.test(lab) || NEW_APPS.some(a => INFO_GAME_APPS.has(a.id) && lab.includes(a.name)) || !!$app.querySelector(".gm-list, .rc-grid, #rl-frame, #hh-frame, #dt-frame");
+}
+function askAge(p) {   // 🎂 asked once per person
+  PROF_GAME = null; PROF_RESTART = null; keyHandler = null;
+  $app.innerHTML = `<div class="panel who-screen" id="who-age"><span class="label">🎂 How old are you?</span>
+    <h1 class="who-h">🎂 How old are you?</h1><p class="soft">Hi, <b>${esc(p.name)}</b>! Type your age. You only have to answer this once.</p>
+    <form class="who-add" id="age-form"><input id="age-in" type="number" inputmode="numeric" min="1" max="120" placeholder="Your age" aria-label="Your age"><button class="btn go" type="submit">That's me!</button></form>
+    <p><button class="chip" id="age-back" type="button">⬅ That's not me</button></p></div>`;
+  const inp = document.getElementById("age-in"); inp.focus();
+  document.getElementById("age-back").addEventListener("click", startWho);
+  document.getElementById("age-form").addEventListener("submit", e => {
+    e.preventDefault(); const n = Math.round(+inp.value);
+    if (!(n >= 1 && n <= 120)) { toast("Type your age: a number from 1 to 120."); inp.focus(); return; }
+    store.set("who_age", { ...(store.get("who_age", {}) || {}), [p.id]: { age: n, at: Date.now() } }); pickWho(p.id);
+  });
+  window.scrollTo({ top: 0 });
+}
 // 👤 each person's profile: a new name, a few words about themselves, and a secret code (saved on every device that syncs)
 const whoHash = (id, code) => aaHash("ctc-code:" + id + ":" + String(code).trim().toLowerCase()).toString(36);
 const whoAbout = id => String((store.get("who_about", {}) || {})[id] || "");
@@ -2682,7 +2708,7 @@ function startProfile() {
   const id = SITE_WHO, has = whoHasCode(id);
   $app.innerHTML = `<div class="panel prof-page">
     <div class="topline"><span class="label">👤 My profile</span><button class="iconbtn" id="pf-back" type="button">Back to menu</button></div>
-    <div class="pf-head"><span class="who-ava" aria-hidden="true">${whoAva(id)}</span><div><h2>${esc(SITE_NAME)}${has ? " 🔒" : ""}</h2><p class="soft">Only ${esc(SITE_NAME)} can change this page.</p></div></div>
+    <div class="pf-head"><span class="who-ava" aria-hidden="true">${whoAva(id)}</span><div><h2>${esc(SITE_NAME)}${has ? " 🔒" : ""}</h2><p class="soft">Only ${esc(SITE_NAME)} can change this page.${whoAge(id) !== null ? ` · 🎂 Age ${whoAge(id)}` : ""}</p></div></div>
     <form class="pf-sec" id="pf-name"><h3>✏️ My name</h3><div class="pf-row"><input id="pf-namein" maxlength="30" value="${esc(SITE_NAME)}" aria-label="Your name" autocomplete="off"><button class="btn go" type="submit">Save</button></div></form>
     <form class="pf-sec" id="pf-about"><h3>💬 About me</h3><textarea id="pf-aboutin" maxlength="200" rows="3" placeholder="Say something about yourself! Like your favorite animal, color or food." aria-label="About me">${esc(whoAbout(id))}</textarea><p class="soft pf-note">Everyone who picks a name can see this. Never write private things like your address, phone number or passwords.</p><div class="pf-row"><button class="btn go" type="submit">Save</button></div></form>
     <form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
@@ -2725,6 +2751,7 @@ function sitePeople() {
 }
 function pickWho(id) {
   const p = sitePeople().find(x => x.id === id); if (!p) return;
+  if (whoAge(id) === null) return askAge(p);   // 🎂 first time: how old are you?
   if (!profBuilt().some(x => x.id === id) && !profExtra("site").some(x => x.id === id)) store.set("prof_site", [...profExtra("site"), p].slice(0, PROF_MAX));   // everyone picked here is on every list
   SITE_WHO = p.id; SITE_NAME = p.name; BG_PICK = store.get("bg_" + p.id, null); tySyncCustom();
   showHome(); window.scrollTo({ top: 0 });
@@ -2820,7 +2847,7 @@ function bindDots() {
   const m = document.getElementById("gamesmenu"), s = m.querySelector("summary"); let taps = 0, tm = null;
   s.addEventListener("click", e => {
     e.preventDefault(); taps++; clearTimeout(tm);
-    if (taps >= 2) { taps = 0; tm = null; startGameRoom(); return; }
+    if (taps >= 2) { taps = 0; tm = null; if (gamesAllowed()) startGameRoom(); else startInfo(); return; }
     tm = setTimeout(() => { taps = 0; tm = null; if (m.isConnected) startInfo(); }, 320);
   });
 }
@@ -2867,7 +2894,7 @@ function startInfo(jump) {
       `<div class="if-one">${btn(() => startHippo(), "🦛 Ask Hippo")}</div>`)}
     ${sec("buttons", "🔘 Buttons you'll see", "",
       row("✕ Exit", "Goes back to the home screen.", "Top left, inside apps", "") +
-      row("👋 Who are you?", "Study Arcade asks who you are each time it opens (MR.E, Colin, Alex, the whole crew, or someone new), and saves everyone's progress separately.", "When Study Arcade opens", "") +
+      row("👋 Who are you?", "Study Arcade asks who you are each time it opens (MR.E, Colin, Alex, the whole crew, or someone new), asks your age the first time, and saves everyone's progress separately.", "When Study Arcade opens", "") +
       row("Sound", "Turns sounds on or off.", "Bottom of the page", "") +
       row("⋯", "Opens this page.", "Top right of the home screen", ""))}
     ${sec("saving", "💾 Saving", "",
@@ -8648,7 +8675,16 @@ function hippoAsk(q) {   // answers the question, fixing misspellings first
   for (const t of tries.slice(0, 12)) { const fq = t.join(""), a = hippoAnswer(fq); if (!a) continue; a.fixedQ = fq; if (!a.loose) return a; loose ||= a; }
   return hippoAnswer(q) || loose;
 }
+// 🎮 people who can't play games get no game answers or game buttons from Hippo
 function hippoAnswer(qRaw) {
+  const a = hippoAnswerAll(qRaw); if (!a || gamesAllowed()) return a;
+  if (a.games || /^(Games|Secret Game Room|Franklin's Secrets|Typing)$/.test(a.topic)) return null;
+  const GRX = /Root Archery|Roots? games|Bunny Hop|Hippo Hoops|Dream Team|Ragdoll|Game Room|game room|random game|Hippopoly|Name That Tune/, b = { ...a };
+  if (b.action && GRX.test(b.action.label)) delete b.action;
+  if (b.actions) b.actions = b.actions.filter(x => !GRX.test(x.label || ""));
+  return b;
+}
+function hippoAnswerAll(qRaw) {
   const q = qRaw.toLowerCase().replace(/[?!]/g, "").replace(/,(?=\d{3})/g, "").trim();
   let m;
   const R = (topic, icon, text, why, pic, action) => ({ topic, icon, text, why, pic, action });
@@ -9011,7 +9047,7 @@ const HOME_CORE = () => [
   { key: "write", id: "write", cls: "dog-btn", emoji: "🐶", name: "Story Starters", desc: "Story ideas to write about, then keep the story going!", start: () => startStories() },
   ...HIPPO_APPS.map((a, i) => ({ key: "happ" + i, emoji: a[0], name: a[1], desc: a[2], start: () => a[3] === "calc" ? startMathCenter() : startHippo(a[3]) })),
 ];
-const homePool = () => [...HOME_CORE(), ...NEW_APPS.map(a => ({ key: "na-" + a.id, emoji: a.emoji, name: a.name, desc: a.desc, start: a.start, added: a.added }))];
+const homePool = () => { const no = gamesAllowed() ? null : GAME_HOME_KEYS(); return [...HOME_CORE(), ...NEW_APPS.map(a => ({ key: "na-" + a.id, emoji: a.emoji, name: a.name, desc: a.desc, start: a.start, added: a.added }))].filter(a => !no || !no.has(a.key)); };
 function homeToday(now = new Date()) {
   const day = aaDay(now), n = HOME_MAX - HOME_PINNED().length, pool = homePool();
   const order = [...pool].sort((a, b) => aaHash(a.key) - aaHash(b.key) || (a.key < b.key ? -1 : 1)), start = (day * n) % order.length;
@@ -9029,12 +9065,12 @@ function bindHomeRow() {
 }
 function startAppApp() {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; PROF_GAME = null;
-  const day = aaDay(), home = new Set(homeToday().map(a => a.key)), extras = [HOME_PINNED()[1], ...HOME_CORE()];
+  const day = aaDay(), home = new Set(homeToday().map(a => a.key)), extras = [HOME_PINNED()[1], ...HOME_CORE()].filter(a => gamesAllowed() || a.key !== "bunny");
   const card = (a, key, attr) => `<button class="aa-card" ${attr}><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${aaSpot(a, day) ? `<em>BRAND NEW</em>` : a.isNew ? `<em>NEW</em>` : ""}${home.has(key) ? `<small class="aa-home">🏠 On the home screen today</small>` : ""}</button>`;
   $app.innerHTML = `<div class="panel appapp">
     <div class="topline"><span class="label">📱 App-App</span><button class="iconbtn" id="aa-home">Back to menu</button></div>
     <h2>📱 The App-App</h2><p class="soft">Every app lives here! The home screen shows ${HOME_MAX} at a time (counting the App-App), and some rotate in and out at midnight. <b id="aa-next"></b></p>
-    <div class="aa-grid">${NEW_APPS.map((a, i) => card(a, "na-" + a.id, `data-app="${i}"`)).join("")}</div>
+    <div class="aa-grid">${NEW_APPS.map((a, i) => gamesAllowed() || !INFO_GAME_APPS.has(a.id) ? card(a, "na-" + a.id, `data-app="${i}"`) : "").join("")}</div>
     <h3>🏠 Home-screen favorites</h3>
     <div class="aa-grid">${extras.map(a => card(a, a.key, `data-homeapp="${a.key}"`)).join("")}</div>
   </div>`;
@@ -9402,7 +9438,8 @@ function startSpaceExplorer(tab = "system") {
 
 // 💰 Money Smart
 function startMoneySmart(tab = "goal") {
-  appScreen("💰 Money Smart", `<h2>💰 Money Smart</h2>${naTabs([["goal", "🐷 Savings goal"], ["needs", "🛒 Needs vs. wants"], ["budget", "📋 Budget game"], ["grow", "🌱 Watch money grow"]], tab)}<div id="ms"></div>`);
+  if (tab === "budget" && !gamesAllowed()) tab = "goal";
+  appScreen("💰 Money Smart", `<h2>💰 Money Smart</h2>${naTabs([["goal", "🐷 Savings goal"], ["needs", "🛒 Needs vs. wants"], ...(gamesAllowed() ? [["budget", "📋 Budget game"]] : []), ["grow", "🌱 Watch money grow"]], tab)}<div id="ms"></div>`);
   bindTabs(startMoneySmart);
   const box = document.getElementById("ms");
   if (tab === "goal") {
@@ -11316,7 +11353,7 @@ let GL_STATE = null;
 function startGrammarLab(unit, tab = "learn") {
   if (!unit) {
     appScreen("📝 Grammar & Reading Lab", `<h2>📝 Grammar &amp; Reading Lab</h2><p class="soft">Learn the 8 parts of speech, sentence types, text structures and text features. Then practice and play!</p>${glWeekLine()}
-      <div class="aa-grid">${Object.entries(GL_UNITS).map(([k, u]) => `<button class="aa-card" data-u="${k}"><i>${u.e}</i><b>${u.name}</b><span>📖 Learn · 🎯 Quiz · ${u.game}</span></button>`).join("")}
+      <div class="aa-grid">${Object.entries(GL_UNITS).map(([k, u]) => `<button class="aa-card" data-u="${k}"><i>${u.e}</i><b>${u.name}</b><span>📖 Learn · 🎯 Quiz${gamesAllowed() ? " · " + u.game : ""}</span></button>`).join("")}
       <button class="aa-card" data-u="notes"><i>📒</i><b>New from the class notes</b><span>Endless quiz on the newest grammar from class</span></button>
       <button class="aa-card" data-u="mix"><i>🔀</i><b>Mix it all up</b><span>Endless quiz with questions from every topic</span></button>
       <button class="aa-card" data-u="speed"><i>⚡</i><b>Speed Round</b><span>Go fast! As many as you can in 90 seconds</span></button>
@@ -11335,7 +11372,8 @@ function startGrammarLab(unit, tab = "learn") {
     return;
   }
   const U = GL_UNITS[unit] || (unit === "notes" ? { e: "📒", name: "New from the class notes" } : { e: "🔀", name: "Mix it all up" });
-  const tabs = unit === "mix" || unit === "notes" ? [["quiz", "🎯 Quiz"]] : [["learn", "📖 Learn"], ["quiz", "🎯 Quiz"], ["game", U.game]];
+  if (tab === "game" && !gamesAllowed()) tab = "learn";
+  const tabs = unit === "mix" || unit === "notes" ? [["quiz", "🎯 Quiz"]] : [["learn", "📖 Learn"], ["quiz", "🎯 Quiz"], ...(gamesAllowed() ? [["game", U.game]] : [])];
   appScreen("📝 Grammar & Reading Lab", `${head}<h2>${U.e} ${U.name}</h2>${naTabs(tabs, tab)}<div id="gl"></div>`);
   bindTabs(t => startGrammarLab(unit, t));
   document.getElementById("gl-back").addEventListener("click", () => startGrammarLab());
@@ -11916,7 +11954,7 @@ function startRootArchery() {
     <p class="ra-sub" id="ra-endHits"></p>
     <div class="ra-panel ra-levelups ra-unlock ra-hidden" id="ra-unlockPanel"><h2>🎁 New arrow unlocked!</h2><div id="ra-unlockList"></div></div>
     <div class="ra-panel ra-levelups ra-hidden" id="ra-lvlPanel"><h2>Level ups</h2><div id="ra-lvlList"></div></div>
-    <div class="ra-panel ra-levelups ra-hidden" id="ra-missPanel"><h2>Practice these</h2><div id="ra-missList"></div></div>
+    <div class="ra-panel ra-levelups ra-hidden" id="ra-missPanel"><h2>Practice these</h2><div id="ra-missList"></div><button class="ra-btn hot" id="ra-justBtn" type="button" style="margin-top:12px;width:100%">🎯 Practice just these</button></div>
     <div class="ra-row" style="margin-top:18px">
       <button class="ra-btn alt" id="ra-homeBtn" type="button">My sheet</button>
       <button class="ra-btn" id="ra-againBtn" type="button">Again!</button>
@@ -12046,8 +12084,9 @@ function startRootArchery() {
   };
   // 🎯 the game
   const show = id => { ["home", "play", "end"].forEach(s => $(s).classList.toggle("ra-hidden", s !== id)); const r = document.getElementById("ra").getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * .5) document.getElementById("ra").scrollIntoView({ block: "start" }); };
-  function pickRoot() {
-    const focus = $("focusX").checked, pool = RA_DATA.filter(d => !G.recent.includes(d.id));
+  function pickRoot() {   // 🎯 "Practice just these" rounds only use the roots that were missed
+    const base = G.only ? RA_DATA.filter(d => G.only.includes(d.id)) : RA_DATA, focus = $("focusX").checked;
+    let pool = base.filter(d => !G.recent.includes(d.id)); if (!pool.length) pool = base.length > 1 ? base.filter(d => d.id !== G.recent[G.recent.length - 1]) : base;
     const w = pool.map(d => focus ? Math.pow(5 - S.pts[d.id], 2) : 1);
     let r = Math.random() * w.reduce((a, b) => a + b, 0);
     for (let i = 0; i < pool.length; i++) { r -= w[i]; if (r <= 0) return pool[i]; }
@@ -12055,10 +12094,11 @@ function startRootArchery() {
   }
   const meaningChoices = d => shuffle([d.m, ...shuffle([...new Set(RA_DATA.map(x => x.m))].filter(m => m !== d.m)).slice(0, 3)]).map(m => ({ label: m, ok: m === d.m }));
   const rootChoices = d => shuffle([d, ...shuffle(RA_DATA.filter(x => x.m !== d.m)).slice(0, 3)]).map(x => ({ label: x.r, ok: x.id === d.id }));
-  function newGame(mode) {
+  function newGame(mode, only) {
     if (G && G.timer) clearInterval(G.timer);
     lastMode = mode;
-    G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: raOwned(S), over: false };
+    G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: raOwned(S), over: false, only: only && only.length ? only : null };
+    if (G.only) toast(`🎯 Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`);
     $("play").classList.toggle("rapid", mode === "rapid");
     const q = $("quiver"); q.innerHTML = ""; for (let i = 0; i < RA_ROUND; i++) { const el = document.createElement("i"); if (i === RA_ROUND - 1) el.className = "apple"; q.appendChild(el); }
     $("quitBtn").textContent = mode === "rapid" ? "Stop" : "Quit round";
@@ -12196,6 +12236,8 @@ function startRootArchery() {
     const misses = [...new Set(G.results.filter(r => !r.ok).map(r => r.id))];
     $("missPanel").classList.toggle("ra-hidden", !misses.length);
     $("missList").innerHTML = misses.map(id => { const d = RA_DATA[id]; return `<div><b>${up(d.r)}</b> = ${d.m} <span style="color:#a9c9b2">(${d.ex.join(", ")})</span></div>`; }).join("");
+    $("justBtn").textContent = `🎯 Practice just ${misses.length === 1 ? "this one" : "these " + misses.length}`;
+    $("justBtn").onclick = () => newGame("round", misses);
   }
   function endRound() {
     G.over = true; show("end"); $("endTitle").textContent = "Round over!"; $("endScore").textContent = G.score;
@@ -12551,7 +12593,7 @@ body[data-sport="football"] .ball-in{width:16px;height:10px;margin:-5px 0 0 -8px
     <p class="sub" id="endHits"></p>
     <div class="panel list unlock hidden" id="unlockPanel"><h2>🎁 New ball unlocked!</h2><div id="unlockList"></div></div>
     <div class="panel list hidden" id="lvlPanel"><h2>Level ups</h2><div id="lvlList"></div></div>
-    <div class="panel list hidden" id="missPanel"><h2>Practice these</h2><div id="missList"></div></div>
+    <div class="panel list hidden" id="missPanel"><h2>Practice these</h2><div id="missList"></div><button class="btn" id="justBtn" type="button" style="margin-top:12px">🎯 Practice just these</button></div>
     <div class="row" style="margin-top:18px"><button class="btn alt" id="homeBtn" type="button">My sheet</button><button class="btn" id="againBtn" type="button">Again!</button></div>
   </section>
 </main>
@@ -12847,8 +12889,9 @@ $("resetBtn").onclick = () => {
 /* ===== the game ===== */
 let G = null, lastMode = "game";
 const show = id => { ["home", "play", "end"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0, 0); };
-function pickRoot() {
-  const focus = $("focusX").checked, pool = DATA.filter(d => !G.recent.includes(d.id));
+function pickRoot() {   // 🎯 "Practice just these" rounds only use the roots that were missed
+  const base = G.only ? DATA.filter(d => G.only.includes(d.id)) : DATA, focus = $("focusX").checked;
+  let pool = base.filter(d => !G.recent.includes(d.id)); if (!pool.length) pool = base.length > 1 ? base.filter(d => d.id !== G.recent[G.recent.length - 1]) : base;
   const w = pool.map(d => focus ? Math.pow(5 - S.pts[d.id], 2) : 1);
   let r = Math.random() * w.reduce((a, b) => a + b, 0);
   for (let i = 0; i < pool.length; i++) { r -= w[i]; if (r <= 0) return pool[i]; }
@@ -12856,10 +12899,11 @@ function pickRoot() {
 }
 const meaningChoices = d => shuffle([d.m, ...shuffle([...new Set(DATA.map(x => x.m))].filter(m => m !== d.m)).slice(0, 3)]).map(m => ({ label: m, ok: m === d.m }));
 const rootChoices = d => shuffle([d, ...shuffle(DATA.filter(x => x.m !== d.m)).slice(0, 3)]).map(x => ({ label: x.r, ok: x.id === d.id }));
-function newGame(mode) {
+function newGame(mode, only) {
   if (G && G.timer) clearInterval(G.timer);
   lastMode = mode;
-  G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false };
+  G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false, only: only && only.length ? only : null };
+  if (G.only) toast(\`🎯 Just your \${G.only.length} root\${G.only.length === 1 ? "" : "s"} to practice!\`);
   $("play").classList.toggle("clockmode", mode === "clock");
   $("shots").innerHTML = Array.from({ length: ROUND }, (_, i) => \`<i\${i === ROUND - 1 ? ' class="golden"' : ""}></i>\`).join("");
   $("quitBtn").textContent = mode === "clock" ? "Stop" : "Quit game";
@@ -12998,6 +13042,8 @@ function missList() {
   const misses = [...new Set(G.results.filter(r => !r.ok).map(r => r.id))];
   $("missPanel").classList.toggle("hidden", !misses.length);
   $("missList").innerHTML = misses.map(id => { const d = DATA[id]; return \`<div><b>\${up(d.r)}</b> = \${d.m} <span style="color:#a9bddb">(\${d.ex.join(", ")})</span></div>\`; }).join("");
+  $("justBtn").textContent = \`🎯 Practice just \${misses.length === 1 ? "this one" : "these " + misses.length}\`;
+  $("justBtn").onclick = () => newGame("game", misses);
 }
 function endGame() {
   G.over = true; show("end"); $("endTitle").textContent = \`\${T.end}, \${curName()}!\`; $("endScore").textContent = G.score;
@@ -13784,11 +13830,12 @@ function startRootHyper() {
   function nextId() {
     const back = G.again.findIndex(a => a.at <= G.n && a.id !== G.last);
     if (back >= 0) return G.again.splice(back, 1)[0].id;
-    const S = sheet(), w = RA_DATA.map(d => d.id === G.last ? 0 : [3, 2, 1][raLevelOf(S.pts[d.id])]), tot = w.reduce((a, b) => a + b, 0);
+    const S = sheet(), only = G.only, w = RA_DATA.map(d => only && !only.includes(d.id) ? 0 : d.id === G.last && !(only && only.length === 1) ? 0 : [3, 2, 1][raLevelOf(S.pts[d.id])]), tot = w.reduce((a, b) => a + b, 0);
     let r = Math.random() * tot; for (let i = 0; i < w.length; i++) { r -= w[i]; if (r < 0) return i; } return 0;
   }
-  function start(mode) {
-    G = { mode, n: 0, total: mode === "round" ? 20 : Infinity, score: 0, streak: 0, top: 0, right: 0, misses: [], again: [], last: -1, q: null, locked: false, ends: mode === "speed" ? performance.now() + RA_RAPID * 1000 : 0 };
+  function start(mode, only) {
+    G = { mode, n: 0, total: mode === "round" ? 20 : Infinity, score: 0, streak: 0, top: 0, right: 0, misses: [], again: [], last: -1, q: null, locked: false, ends: mode === "speed" ? performance.now() + RA_RAPID * 1000 : 0, only: only && only.length ? only : null };
+    if (G.only) { G.total = Math.min(20, Math.max(6, G.only.length * 3)); toast(`⚡ Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`); }
     show("play"); naAudio();
     if (mode === "speed") { const tick = () => { if (!G || G.mode !== "speed" || !$("bar")) return; const left = Math.max(0, G.ends - performance.now()); $("bar").style.width = (100 * left / (RA_RAPID * 1000)) + "%"; $("count").textContent = `⏱ ${Math.ceil(left / 1000)}s`; if (left <= 0) return end(); naTimer(setTimeout(tick, 200)); }; tick(); }
     ask();
@@ -13858,11 +13905,12 @@ function startRootHyper() {
     $("end").innerHTML = `<h1 style="text-align:center"><span class="zap">⚡</span> ${round ? "Round over!" : "Time!"}</h1>
       <div class="rh-big">${fmt(g.score)}</div><p class="rh-rank">${rank}</p>
       <p>${round ? `${g.right} of ${g.total} right` : `${g.right} right in ${RA_RAPID} seconds`} · best streak ${g.top}${rec ? `<br><b style="color:#ffe14d">${rec}</b>` : ""}</p>
-      ${missed.length ? `<p class="rh-h" style="text-align:left;margin-top:14px">🔁 Roots to look at again</p><ul class="rh-miss">${missed.map(i => `<li><b>${up(RA_DATA[i].r)}</b> = ${RA_DATA[i].m} · ${RA_DATA[i].ex.join(", ")}</li>`).join("")}</ul>` : `<p>🎯 You didn't miss a single one!</p>`}
+      ${missed.length ? `<p class="rh-h" style="text-align:left;margin-top:14px">🔁 Roots to look at again</p><ul class="rh-miss">${missed.map(i => `<li><b>${up(RA_DATA[i].r)}</b> = ${RA_DATA[i].m} · ${RA_DATA[i].ex.join(", ")}</li>`).join("")}</ul><div class="rh-row"><button class="rh-btn hot" id="rh-just" type="button">⚡ Practice just ${missed.length === 1 ? "this one" : "these " + missed.length}</button></div>` : `<p>🎯 You didn't miss a single one!</p>`}
       <div class="rh-row"><button class="rh-btn" id="rh-again" type="button">⚡ Go again</button><button class="rh-btn alt" id="rh-homeBtn" type="button">🏠 Home</button></div>`;
     show("end"); G = null;
     [523, 659, 784, 1047].forEach((f, k) => naNote(f, .22, "triangle", .12, k * .09));
     $("again").addEventListener("click", () => start(g.mode)); $("homeBtn").addEventListener("click", home);
+    $("just")?.addEventListener("click", () => start("round", missed));
     try { $("again").focus({ preventScroll: true }); } catch (e) {}
     window.scrollTo({ top: 0 });
   }
@@ -16241,10 +16289,10 @@ function startNameThatTune() {
     chips($("hcats"), NT_TUNE_CATS, "hcat"); chips($("insts"), NT_INST, "inst"); chips($("ccats"), NT_SONG_CATS, "ccat");
     $("bests").textContent = `🏆 Best Hear It round: ${H.bestHear ? fmt(H.bestHear) + " pts" : "—"} · Best Song Clues round: ${H.bestClue ? fmt(H.bestClue) + " pts" : "—"} · Tunes and songs named: ${fmt(H.named || 0)}`;
   }
-  function start(mode) {
+  function start(mode, only) {
     naAudio();
     const pool = mode === "hear" ? NT_TUNES.map((x, i) => i).filter(i => H.hcat === "all" || NT_TUNES[i].cat === H.hcat) : NT_SONGS.map((x, i) => i).filter(i => H.ccat === "all" || NT_SONGS[i].cat === H.ccat);
-    G = { mode, list: shuffle(pool).slice(0, 10), n: 0, score: 0, right: 0, streak: 0, got: [], missed: [] };
+    G = { mode, list: shuffle(only && only.length ? only : pool).slice(0, 10), n: 0, score: 0, right: 0, streak: 0, got: [], missed: [], missIdx: [] };
     G.total = G.list.length; show("play"); ask();
   }
   function hud() {
@@ -16306,7 +16354,7 @@ function startNameThatTune() {
     const res = skip ? { yes: false } : ntMatch(typed, G.cur.forms);
     let pts = 0;
     if (res.yes) { pts = G.mode === "hear" ? NT_STAGE_PTS[G.stage] : Math.max(20, 100 - G.hints * 20); G.score += pts; G.right++; G.streak++; G.got.push(G.cur.t); H.named = (H.named || 0) + 1; saveH(); [523, 659, 784, 1047].forEach((f, k) => naNote(f, .18, "triangle", .12, k * .08)); }
-    else { G.streak = 0; G.missed.push(G.mode === "hear" ? G.cur.t : `${G.cur.t} (${G.cur.a}, ${G.cur.y})`); naNote(220, .25, "sawtooth", .08); naNote(160, .3, "sawtooth", .08, .12); }
+    else { G.streak = 0; G.missIdx.push(G.list[G.n]); G.missed.push(G.mode === "hear" ? G.cur.t : `${G.cur.t} (${G.cur.a}, ${G.cur.y})`); naNote(220, .25, "sawtooth", .08); naNote(160, .3, "sawtooth", .08, .12); }
     G.n++; hud();
     $("card").className = "nt-card " + (res.yes ? "yes" : "no");
     $("card").innerHTML = `<p class="nt-res ${res.yes ? "yes" : "no"}">${res.yes ? (res.exact ? "✅ Yes!" : "✅ Yes! Close enough!") : skip ? "👀 Here's the answer" : "❌ Not quite"}</p>
@@ -16328,10 +16376,11 @@ function startNameThatTune() {
     $("end").innerHTML = `<h1>${hear ? "🎹" : "🧩"} Round over!</h1><div class="nt-big">${fmt(g.score)}</div><p class="nt-rank">${rank}</p>
       <p>${g.right} of ${g.total} named${rec ? `<br><b style="color:#ffe66d">${rec}</b>` : ""}</p>
       ${g.got.length ? `<p class="nt-h" style="text-align:left">✅ You named</p><ul class="nt-list">${g.got.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
-      ${g.missed.length ? `<p class="nt-h" style="text-align:left">🔁 Try these again</p><ul class="nt-list">${g.missed.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+      ${g.missed.length ? `<p class="nt-h" style="text-align:left">🔁 Try these again</p><ul class="nt-list">${g.missed.map(t => `<li>${esc(t)}</li>`).join("")}</ul><div class="nt-row"><button class="nt-btn pink" id="nt-just" type="button">🎵 Just ${g.missed.length === 1 ? "that one" : "these " + g.missed.length} again</button></div>` : ""}
       <div class="nt-row"><button class="nt-btn" id="nt-again" type="button">🎵 Play again</button><button class="nt-btn alt" id="nt-homeBtn" type="button">🏠 Home</button></div>`;
     show("end"); G = null; window.scrollTo({ top: 0 });
     $("again").addEventListener("click", () => start(g.mode)); $("homeBtn").addEventListener("click", home);
+    $("just")?.addEventListener("click", () => start(g.mode, g.missIdx));
     try { $("again").focus({ preventScroll: true }); } catch (e) {}
   }
   $("hear").addEventListener("click", () => start("hear"));
@@ -17896,11 +17945,12 @@ function setScene() {
 new MutationObserver(() => {
   setScene();
   const home = !!document.getElementById("gamesmenu");
-  exitBtn.hidden = home || !!document.getElementById("who-screen");
+  exitBtn.hidden = home || !!document.getElementById("who-screen") || !!document.getElementById("who-age");
   document.body.classList.toggle("has-who", home);
   document.body.classList.toggle("has-exit", !home);
   const lab = home ? "" : ($app.querySelector(".label")?.textContent || "").trim();
   if (home || (lab && !MENU_GAME_RX.test(lab))) IN_MENU_GAME = false;
+  if (!gamesAllowed() && !home && isGameScreen(lab)) { IN_MENU_GAME = false; setTimeout(() => { exitAll(); toast("🚫 That's not available for you."); }, 0); return; }
   emergBtn.hidden = home || !(MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab));
   document.body.classList.toggle("emerg-on", !emergBtn.hidden);
   profChip();

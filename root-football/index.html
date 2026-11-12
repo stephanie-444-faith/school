@@ -304,7 +304,7 @@ body[data-sport="football"] .ball-in{width:16px;height:10px;margin:-5px 0 0 -8px
     <p class="sub" id="endHits"></p>
     <div class="panel list unlock hidden" id="unlockPanel"><h2>🎁 New ball unlocked!</h2><div id="unlockList"></div></div>
     <div class="panel list hidden" id="lvlPanel"><h2>Level ups</h2><div id="lvlList"></div></div>
-    <div class="panel list hidden" id="missPanel"><h2>Practice these</h2><div id="missList"></div></div>
+    <div class="panel list hidden" id="missPanel"><h2>Practice these</h2><div id="missList"></div><button class="btn" id="justBtn" type="button" style="margin-top:12px">🎯 Practice just these</button></div>
     <div class="row" style="margin-top:18px"><button class="btn alt" id="homeBtn" type="button">My sheet</button><button class="btn" id="againBtn" type="button">Again!</button></div>
   </section>
 </main>
@@ -600,8 +600,9 @@ $("resetBtn").onclick = () => {
 /* ===== the game ===== */
 let G = null, lastMode = "game";
 const show = id => { ["home", "play", "end"].forEach(s => $(s).classList.toggle("hidden", s !== id)); window.scrollTo(0, 0); };
-function pickRoot() {
-  const focus = $("focusX").checked, pool = DATA.filter(d => !G.recent.includes(d.id));
+function pickRoot() {   // 🎯 "Practice just these" rounds only use the roots that were missed
+  const base = G.only ? DATA.filter(d => G.only.includes(d.id)) : DATA, focus = $("focusX").checked;
+  let pool = base.filter(d => !G.recent.includes(d.id)); if (!pool.length) pool = base.length > 1 ? base.filter(d => d.id !== G.recent[G.recent.length - 1]) : base;
   const w = pool.map(d => focus ? Math.pow(5 - S.pts[d.id], 2) : 1);
   let r = Math.random() * w.reduce((a, b) => a + b, 0);
   for (let i = 0; i < pool.length; i++) { r -= w[i]; if (r <= 0) return pool[i]; }
@@ -609,10 +610,11 @@ function pickRoot() {
 }
 const meaningChoices = d => shuffle([d.m, ...shuffle([...new Set(DATA.map(x => x.m))].filter(m => m !== d.m)).slice(0, 3)]).map(m => ({ label: m, ok: m === d.m }));
 const rootChoices = d => shuffle([d, ...shuffle(DATA.filter(x => x.m !== d.m)).slice(0, 3)]).map(x => ({ label: x.r, ok: x.id === d.id }));
-function newGame(mode) {
+function newGame(mode, only) {
   if (G && G.timer) clearInterval(G.timer);
   lastMode = mode;
-  G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false };
+  G = { mode, i: 0, score: 0, streak: 0, bestStreak: 0, hits: 0, recent: [], results: [], before: S.pts.slice(), owned: owned(), over: false, only: only && only.length ? only : null };
+  if (G.only) toast(`🎯 Just your ${G.only.length} root${G.only.length === 1 ? "" : "s"} to practice!`);
   $("play").classList.toggle("clockmode", mode === "clock");
   $("shots").innerHTML = Array.from({ length: ROUND }, (_, i) => `<i${i === ROUND - 1 ? ' class="golden"' : ""}></i>`).join("");
   $("quitBtn").textContent = mode === "clock" ? "Stop" : "Quit game";
@@ -751,6 +753,8 @@ function missList() {
   const misses = [...new Set(G.results.filter(r => !r.ok).map(r => r.id))];
   $("missPanel").classList.toggle("hidden", !misses.length);
   $("missList").innerHTML = misses.map(id => { const d = DATA[id]; return `<div><b>${up(d.r)}</b> = ${d.m} <span style="color:#a9bddb">(${d.ex.join(", ")})</span></div>`; }).join("");
+  $("justBtn").textContent = `🎯 Practice just ${misses.length === 1 ? "this one" : "these " + misses.length}`;
+  $("justBtn").onclick = () => newGame("game", misses);
 }
 function endGame() {
   G.over = true; show("end"); $("endTitle").textContent = `${T.end}, ${curName()}!`; $("endScore").textContent = G.score;
