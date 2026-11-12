@@ -721,6 +721,24 @@
   .bg-fab:hover, .bg-fab:focus-visible { border-color: var(--gold); outline: none; transform: scale(1.06); } .bg-fab[hidden] { display: none; }
   .bgsheet { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; justify-content: center; }
   .bgsheet-box { width: min(760px, 100%); max-height: 84vh; overflow-y: auto; background: var(--panel); border: 2px solid var(--line); border-bottom: 0; border-radius: 20px 20px 0 0; padding: 14px 16px 22px; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+  .gal-add { align-items: center; } .gal-paste { min-height: 52px; } .gal-paste.drag { outline: 3px dashed var(--gold); }
+  .gal-bar { margin: 10px 0 4px; } .gal-bar small { color: var(--ink-soft); }
+  .gal-selbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; } .gal-selbar[hidden] { display: none; }
+  .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-top: 10px; }
+  .gal-tile { position: relative; aspect-ratio: 1; padding: 0; border-radius: 12px; overflow: hidden; border: 2px solid var(--line); background: #0b1020; cursor: pointer; }
+  .gal-tile img { width: 100%; height: 100%; object-fit: cover; display: block; } .gal-noth { display: grid; place-items: center; height: 100%; font-size: 2.2rem; }
+  .gal-tile em { position: absolute; left: 4px; bottom: 4px; font-style: normal; font-size: .75rem; background: rgba(0,0,0,.65); color: #fff; padding: 1px 6px; border-radius: 8px; }
+  .gal-check { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.4); color: #fff; font-style: normal; font-weight: 900; display: grid; place-items: center; }
+  .gal-tile.picked { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold); } .gal-tile.picked .gal-check { background: var(--gold); color: #3a2600; }
+  .btn.gal-delbtn { background: #b3263a; color: #fff; } .btn.gal-delbtn:disabled { opacity: .5; }
+  .gal-vbox { max-width: 760px; } .gal-vrow { justify-content: center; margin-top: 8px; }
+  .gal-media { display: grid; place-items: center; background: #000; border-radius: 12px; min-height: 160px; margin: 8px 0; overflow: hidden; } .gal-media img, .gal-media video { max-width: 100%; max-height: 60vh; display: block; }
+  .gal-name { flex: 1; min-width: 0; font: inherit; font-weight: 800; padding: 6px 10px; border-radius: 10px; border: 2px solid var(--line); background: #0b1020; color: var(--ink); }
+  #gd-name { flex: 1 1 100%; }
+  .gd-pal { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; }
+  .gd-canvas { width: 100%; height: auto; aspect-ratio: 900 / 650; background: #fff; border-radius: 12px; touch-action: none; display: block; margin: 8px 0; cursor: crosshair; }
+  .bg-galpick { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; margin: 8px 0; max-height: 240px; overflow: auto; } .bg-galpick[hidden] { display: none; }
+  .bg-galpick button { aspect-ratio: 1; padding: 0; border-radius: 10px; overflow: hidden; border: 2px solid var(--line); background: #0b1020; cursor: pointer; } .bg-galpick img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .bg-add { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; margin: 8px 0 4px; }
   .bg-paste { flex: 1; min-width: 200px; min-height: 52px; border: 3px dashed var(--line); border-radius: 14px; padding: 12px 14px; color: var(--ink-soft); background: var(--panel-2); cursor: text; overflow: hidden; max-height: 80px; }
   .bg-paste:empty::before { content: attr(data-ph); } .bg-paste:focus { border-color: var(--gold); outline: none; }
@@ -2884,7 +2902,7 @@ function bgApplyImg(img) {
 function bgGridHTML(cur, first) {   // first: an extra swatch at the start, like ["", "✨ Each page picks its own"]
   const tile = (v, name, extra = "", pv = `data-pv="${v}"`) => `<div class="bg-tile"><button class="bg-sw${v === cur ? " on" : ""}" type="button" data-bg="${esc(v)}" aria-pressed="${v === cur}"><span class="bg-pv" ${pv}><i></i></span><b>${v === cur ? "✓ " : ""}${name}</b></button>${extra}</div>`;
   const pics = bgImgs().filter(id => bgImg(id));
-  return `<div class="bg-grid">${first ? tile(first[0], first[1], "", `data-pv="@${first[0]}"`) : ""}${pics.map(id => tile("img:" + id, "📷 My picture", `<button class="bg-x" type="button" data-delpic="${id}" title="Remove this picture" aria-label="Remove this picture">✕</button>`, `style="background-image:url('${bgImg(id)}')"`)).join("")}${BG_ALL.map(([id, name]) => tile(id, name)).join("")}</div>`;
+  return `<div class="bg-grid">${first ? tile(first[0], first[1], "", `data-pv="@${first[0]}"`) : ""}${pics.map(id => tile("img:" + id, "📷 My picture", `<button class="bg-x" type="button" data-delpic="${id}" title="Delete this picture" aria-label="Delete this picture">🗑</button>`, `style="background-image:url('${bgImg(id)}')"`)).join("")}${BG_ALL.map(([id, name]) => tile(id, name)).join("")}</div>`;
 }
 function bgFillPreviews(root) {   // borrow each background's real colors and emoji (once), and show them on its swatch
   const keep = document.body.dataset.scene;
@@ -2906,7 +2924,7 @@ function bgFillPreviews(root) {   // borrow each background's real colors and em
 // 📷 a pasted or chosen picture: shrunk to save space, white behind see-through parts, and kept for this person
 async function bgAddPicture(src) {
   if (!SITE_WHO) return null;
-  const list = bgImgs(); if (list.length >= BG_PIC_MAX) { toast(`You can keep ${BG_PIC_MAX} pictures. Remove one first (tap its ✕).`); return null; }
+  const list = bgImgs(); if (list.length >= BG_PIC_MAX) { toast(`You can keep ${BG_PIC_MAX} pictures. Delete one first (tap its 🗑).`); return null; }
   if (typeof src !== "string" && !/^image\//.test(src.type || "")) { toast("That isn't a picture."); return null; }
   const url = typeof src === "string" ? src : URL.createObjectURL(src), img = new Image();
   try { await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = url; }); } catch (e) { toast("That picture couldn't be opened. Try a different one."); return null; } finally { if (typeof src !== "string") URL.revokeObjectURL(url); }
@@ -2931,7 +2949,7 @@ function bgPaste(e, done) {   // Ctrl+V (or Paste) anywhere while a background c
 }
 function bgListenPaste(done) { bgStopPaste(); BG_PASTE = e => bgPaste(e, done); document.addEventListener("paste", BG_PASTE); }
 function bgStopPaste() { if (BG_PASTE) document.removeEventListener("paste", BG_PASTE); BG_PASTE = null; }
-const bgPasteHTML = () => `<div class="bg-add"><div class="bg-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Copy any picture or art, then click or tap here and paste it (Ctrl+V)"></div><label class="btn bg-file">📁 Choose a picture<input type="file" accept="image/*" class="bg-filein" hidden></label></div>`;
+const bgPasteHTML = () => `<div class="bg-add"><div class="bg-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Copy any picture or art, then click or tap here and paste it (Ctrl+V)"></div><label class="btn bg-file">📁 Choose a picture<input type="file" accept="image/*" class="bg-filein" hidden></label><button class="btn bg-galbtn" type="button">🖼️ From My Gallery</button></div><div class="bg-galpick" hidden></div>`;
 function bgBindAdd(root, done) {
   const z = root.querySelector(".bg-paste"), f = root.querySelector(".bg-filein");
   z?.addEventListener("input", () => {   // some phones drop the picture in as an image instead
@@ -2942,15 +2960,23 @@ function bgBindAdd(root, done) {
   z?.addEventListener("dragover", e => e.preventDefault());
   z?.addEventListener("drop", e => { e.preventDefault(); const file = [...(e.dataTransfer?.files || [])].find(x => /^image\//.test(x.type)); if (file) bgAddPicture(file).then(id => id && done(id)); });
   f?.addEventListener("change", () => { const file = f.files[0]; f.value = ""; if (file) bgAddPicture(file).then(id => id && done(id)); });
+  const gb = root.querySelector(".bg-galbtn"), gp = root.querySelector(".bg-galpick");
+  gb?.addEventListener("click", async () => {
+    if (!gp.hidden) { gp.hidden = true; return; }
+    const list = (await galList().catch(() => [])).filter(m => m.kind !== "video" && m.thumb);
+    if (!list.length) { toast("No pictures in your gallery yet. Open 🖼️ My Gallery in App-App to add some!"); return; }
+    gp.innerHTML = list.map(m => `<button type="button" data-galid="${m.id}" title="${esc(m.name)}" aria-label="${esc(m.name)}"><img src="${m.thumb}" alt="" loading="lazy"></button>`).join(""); gp.hidden = false;
+    gp.querySelectorAll("[data-galid]").forEach(b => b.addEventListener("click", async () => { const blob = await galBlob(b.dataset.galid).catch(() => null); if (blob) bgAddPicture(blob).then(id => id && done(id)); else toast("That picture couldn't be opened."); }));
+  });
 }
 function bgBindDel(root, after) {
   root.querySelectorAll("[data-delpic]").forEach(b => b.addEventListener("click", e => {
-    e.stopPropagation(); if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Remove?"; b.classList.add("sure"); return; }
+    e.stopPropagation(); if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Delete?"; b.classList.add("sure"); return; }
     const id = b.dataset.delpic, v = "img:" + id;
     store.set("bg_img_" + SITE_WHO + "_" + id, null); store.set("bg_imgs_" + SITE_WHO, bgImgs().filter(x => x !== id));
     const pp = { ...bgPages() }; Object.keys(pp).forEach(k => { if (pp[k] === v) delete pp[k]; }); store.set("bg_page_" + SITE_WHO, pp);
     if (BG_PICK === v) { BG_PICK = null; store.set("bg_" + SITE_WHO, null); }
-    setScene(); after(); toast("🗑 Picture removed.");
+    setScene(); after(); toast("🗑 Picture deleted.");
   }));
 }
 // 🎨 the corner button: just this page's background
@@ -7596,6 +7622,7 @@ function startDraw() {
         <button class="btn" id="dr-front" disabled>Bring to front</button>
         <button class="btn" id="dr-del" disabled>Delete</button>
         <button class="btn" id="dr-clear">Clear all</button>
+        <button class="btn gold" id="dr-gal" type="button">🖼️ Save to My Gallery</button>
       </div>
       <p class="soft dr-help" id="dr-help"></p>
     </div>`;
@@ -7621,6 +7648,7 @@ function startDraw() {
   document.getElementById("dr-del").addEventListener("click", deleteSel);
   document.getElementById("dr-dup").addEventListener("click", () => { const o = DR.objs[DR.sel]; if (!o) return; pushUndo(); const c = JSON.parse(JSON.stringify(o)); moveObj(c, 30, 30); DR.objs.push(c); DR.sel = DR.objs.length - 1; saveDraw(); syncDrawUi(); drawAll(); });
   document.getElementById("dr-front").addEventListener("click", () => { const o = DR.objs[DR.sel]; if (!o) return; pushUndo(); DR.objs.splice(DR.sel, 1); DR.objs.push(o); DR.sel = DR.objs.length - 1; saveDraw(); drawAll(); });
+  document.getElementById("dr-gal").addEventListener("click", () => { const keep = DR.sel; DR.sel = -1; drawAll(); galSaveCanvas(document.getElementById("dr-cv"), "Drawing Studio art"); DR.sel = keep; drawAll(); });
   const clear = document.getElementById("dr-clear");
   clear.addEventListener("click", () => {
     if (!clear.dataset.armed) { clear.dataset.armed = "1"; clear.textContent = "Tap again to clear"; setTimeout(() => { if (clear.isConnected) { delete clear.dataset.armed; clear.textContent = "Clear all"; } }, 2500); return; }
@@ -9846,7 +9874,7 @@ function startPixelArt() {
     <div class="px-side"><div class="px-pal">${PX_COLORS.map(c => `<button class="px-col${c === color ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="color ${c}"></button>`).join("")}<input type="color" id="px-any" value="#ff6fb5" aria-label="Any color"></div>
     <div class="na-chips"><button class="chip on" data-t="pen">✏️ Pen</button><button class="chip" data-t="erase">🧽 Eraser</button><button class="chip" data-t="fill">🪣 Fill</button></div>
     <div class="na-chips"><button class="chip" id="px-clear">🗑️ Clear</button><button class="chip" id="px-heart">❤️ Heart</button><button class="chip" id="px-smile">🙂 Smiley</button><button class="chip" id="px-mirror">🪞 Mirror</button></div>
-    <h3>🖼️ Gallery</h3><div class="px-gal" id="px-gal"></div><button class="btn gold" id="px-save">💾 Save to gallery</button></div></div>`);
+    <h3>🖼️ Gallery</h3><div class="px-gal" id="px-gal"></div><button class="btn gold" id="px-save">💾 Save to gallery</button> <button class="btn" id="px-mygal" type="button">🖼️ Save to My Gallery</button></div></div>`);
   const cells = [...document.querySelectorAll("#px i")], save = () => store.set("px_cur", grid), paintAll = () => cells.forEach((c, i) => c.style.background = grid[i] || "transparent");
   const fill = (i, from, to) => { if (from === to) return; const st = [i]; while (st.length) { const k = st.pop(); if (k < 0 || k >= N * N || grid[k] !== from) continue; grid[k] = to; const x = k % N; if (x > 0) st.push(k - 1); if (x < N - 1) st.push(k + 1); st.push(k - N, k + N); } };
   const act = i => { if (tool === "fill") fill(i, grid[i], color); else grid[i] = tool === "erase" ? "" : color; paintAll(); save(); };
@@ -9863,6 +9891,7 @@ function startPixelArt() {
   document.getElementById("px-smile").addEventListener("click", () => tpl("smile", "#ffd23f"));
   document.getElementById("px-mirror").addEventListener("click", () => { for (let y = 0; y < N; y++) for (let x = 0; x < N / 2; x++) grid[y * N + (N - 1 - x)] = grid[y * N + x]; paintAll(); save(); });
   const gal = () => { const g = store.get("px_gal", []); document.getElementById("px-gal").innerHTML = g.length ? g.map((art, k) => `<button class="px-thumb" data-k="${k}" title="Open">${art.map(c => `<i style="background:${c || "transparent"}"></i>`).join("")}</button>`).join("") : `<p class="soft">Saved pictures show up here.</p>`; $app.querySelectorAll(".px-thumb").forEach(b => b.addEventListener("click", () => { grid = store.get("px_gal", [])[+b.dataset.k].slice(); paintAll(); save(); })); };
+  document.getElementById("px-mygal").addEventListener("click", () => { const c = document.createElement("canvas"), k = 20; c.width = c.height = N * k; const x = c.getContext("2d"); grid.forEach((col, i) => { if (col) { x.fillStyle = col; x.fillRect((i % N) * k, Math.floor(i / N) * k, k, k); } }); galSaveCanvas(c, "Pixel art"); });
   document.getElementById("px-save").addEventListener("click", () => { const g = store.get("px_gal", []); g.unshift(grid.slice()); store.set("px_gal", g.slice(0, 8)); gal(); sfx.buy(); });
   gal();
 }
@@ -10215,6 +10244,210 @@ function startSlang(tab = "make", vibe) {
   }
 }
 
+// 🖼️ My Gallery: up to 1,000 pictures, drawings and videos for each person.
+// Kept in this device's own storage (IndexedDB), because videos are far too big for the regular saves.
+// "meta" holds the small info and thumbnail for each item (one list per person), "blobs" holds the files themselves.
+const GAL_MAX = 1000, GAL_VIDEO_MAX = 150 * 1024 * 1024;
+let GAL_DB = null, GAL_PASTE = null;
+function galOpen() {
+  if (GAL_DB) return GAL_DB;
+  GAL_DB = new Promise((ok, no) => {
+    let r; try { r = indexedDB.open("sa_gallery", 1); } catch (e) { return no(e); }
+    r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains("meta")) d.createObjectStore("meta", { keyPath: "id" }).createIndex("who", "who"); if (!d.objectStoreNames.contains("blobs")) d.createObjectStore("blobs", { keyPath: "id" }); };
+    r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); r.onblocked = () => no(new Error("blocked"));
+  });
+  GAL_DB.catch(() => { GAL_DB = null; });
+  return GAL_DB;
+}
+const galReq = r => new Promise((ok, no) => { r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+const galWho = () => SITE_WHO || "guest";
+async function galList() { const d = await galOpen(); return (await galReq(d.transaction("meta").objectStore("meta").index("who").getAll(galWho()))).sort((a, b) => b.at - a.at); }
+async function galCount() { const d = await galOpen(); return galReq(d.transaction("meta").objectStore("meta").index("who").count(galWho())); }
+async function galBlob(id) { const d = await galOpen(), r = await galReq(d.transaction("blobs").objectStore("blobs").get(id)); return r ? r.blob : null; }
+function galTx(stores, fn) { return galOpen().then(d => new Promise((ok, no) => { const t = d.transaction(stores, "readwrite"); fn(t); t.oncomplete = () => ok(); t.onerror = () => no(t.error); t.onabort = () => no(t.error || new Error("abort")); })); }
+const galPut = (meta, blob) => galTx(["meta", "blobs"], t => { t.objectStore("meta").put(meta); t.objectStore("blobs").put({ id: meta.id, blob }); });
+const galDelete = ids => galTx(["meta", "blobs"], t => ids.forEach(id => { t.objectStore("meta").delete(id); t.objectStore("blobs").delete(id); }));
+const galRename = (m, name) => galTx(["meta"], t => t.objectStore("meta").put({ ...m, name }));
+const galLoadImg = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+function galShrink(el, w, h, max, type = "image/jpeg", q = .75) {
+  if (!w || !h) return null;
+  const s = Math.min(1, max / Math.max(w, h)), c = document.createElement("canvas"); c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(h * s));
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(el, 0, 0, c.width, c.height);
+  return type === "canvas" ? c : c.toDataURL(type, q);
+}
+async function galVideoInfo(url) {
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+  await new Promise(ok => { v.onloadeddata = ok; v.onerror = ok; setTimeout(ok, 6000); });
+  try { if (v.duration > 0) { v.currentTime = Math.min(1, v.duration / 3); await new Promise(ok => { v.onseeked = ok; setTimeout(ok, 3000); }); } } catch (e) {}
+  let thumb = null; try { thumb = galShrink(v, v.videoWidth, v.videoHeight, 320); } catch (e) {}
+  return { thumb, w: v.videoWidth || 0, h: v.videoHeight || 0, dur: isFinite(v.duration) ? v.duration : 0 };
+}
+// adds one file; resolves {meta} or {err}
+async function galAdd(file, kind, name) {
+  const isV = /^video\//.test(file.type || ""), isI = /^image\//.test(file.type || "");
+  if (!isV && !isI) return { err: "That isn't a picture or a video." };
+  let n; try { n = await galCount(); } catch (e) { return { err: "This browser won't let the gallery save here. (Private windows can't save.)" }; }
+  if (n >= GAL_MAX) return { err: `Your gallery is full (${GAL_MAX.toLocaleString()} things). Delete some to make room.` };
+  if (isV && file.size > GAL_VIDEO_MAX) return { err: "That video is too big (over 150 MB). Try a shorter one." };
+  const url = URL.createObjectURL(file); let info = { thumb: null, w: 0, h: 0 }, blob = file;
+  try {
+    if (isV) info = await galVideoInfo(url);
+    else {
+      const img = await galLoadImg(url), w = img.naturalWidth, h = img.naturalHeight;
+      info = { thumb: galShrink(img, w, h, 320), w, h };
+      if ((file.size > 3e6 || Math.max(w, h) > 3000) && !/gif|svg/.test(file.type)) {   // big photos are shrunk a little so 1,000 of them fit
+        const c = galShrink(img, w, h, 2400, "canvas"); blob = await new Promise(ok => c.toBlob(ok, "image/jpeg", .88)) || file;
+        const s = Math.min(1, 2400 / Math.max(w, h)); info.w = Math.round(w * s); info.h = Math.round(h * s);
+      }
+    }
+  } catch (e) { if (isI) { URL.revokeObjectURL(url); return { err: "That picture couldn't be opened. Try a different one." }; } }
+  URL.revokeObjectURL(url);
+  const base = (file.name || "").replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 60);
+  const meta = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8), who: galWho(), kind: kind || (isV ? "video" : "picture"), name: name || base || (kind === "drawing" ? "My drawing" : isV ? "My video" : "My picture"), type: blob.type, size: blob.size, ...info, at: Date.now() };
+  try { await galPut(meta, blob); } catch (e) { return { err: /quota/i.test((e && (e.name + e.message)) || "") ? "This device is out of space for the gallery. Delete some videos to make room." : "That couldn't be saved. Try again." }; }
+  try { navigator.storage?.persist?.(); } catch (e) {}
+  return { meta };
+}
+async function galAddMany(files, kind) {
+  let ok = 0, last = "";
+  for (const f of files) { const r = await galAdd(f, kind); if (r.meta) ok++; else { last = r.err; if (/full|space|won't let/.test(r.err)) break; } }
+  if (ok) { sfx.buy(); toast(`🖼️ Added ${ok} to your gallery!${last ? " " + last : ""}`); } else if (last) toast(last);
+  return ok;
+}
+// "Save to My Gallery" from the drawing apps
+async function galSaveCanvas(canvas, name) {
+  const c = document.createElement("canvas"); c.width = canvas.width; c.height = canvas.height;
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(canvas, 0, 0);
+  const blob = await new Promise(ok => c.toBlob(ok, "image/png"));
+  const r = blob ? await galAdd(blob, "drawing", name) : { err: "That drawing couldn't be saved." };
+  if (r.meta) { sfx.buy(); toast("🖼️ Saved to My Gallery!"); } else toast(r.err);
+  return r;
+}
+const galDur = s => s ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "";
+const galSize = b => b >= 1073741824 ? (b / 1073741824).toFixed(1) + " GB" : b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB";
+const GAL_KINDS = [["all", "⭐ All"], ["picture", "📷 Pictures"], ["drawing", "🎨 Drawings"], ["video", "🎬 Videos"]];
+function startGallery(filter = "all") {
+  appScreen("🖼️ My Gallery", `<h2>🖼️ My Gallery</h2><p class="soft">Keep up to ${GAL_MAX.toLocaleString()} pictures, drawings and videos. They're saved on this device.</p>
+    <div class="row gal-add"><label class="btn gold">📁 Add pictures or videos<input type="file" id="gal-file" accept="image/*,video/*" multiple hidden></label><button class="btn" id="gal-draw" type="button">✏️ New drawing</button></div>
+    <div class="bg-paste gal-paste" id="gal-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Or paste a picture here (Ctrl+V), or drop files here"></div>
+    <div class="gal-bar"><b id="gal-count">…</b><small id="gal-space"></small></div>
+    <div class="na-chips">${GAL_KINDS.map(([k, l]) => `<button class="chip${k === filter ? " on" : ""}" data-kind="${k}" type="button">${l}</button>`).join("")}<button class="chip" id="gal-sel" type="button">☑️ Select</button></div>
+    <div class="gal-selbar" id="gal-selbar" hidden><button class="btn gal-delbtn" id="gal-delsel" type="button" disabled>🗑 Delete selected</button><button class="chip" id="gal-all" type="button">Select all</button><button class="chip" id="gal-cancel" type="button">Cancel</button></div>
+    <div class="gal-grid" id="gal-grid"><p class="soft">Opening your gallery…</p></div>`);
+  let items = [], shown = [], selecting = false; const picked = new Set();
+  const $g = id => document.getElementById("gal-" + id);
+  const load = async () => {
+    try { items = await galList(); } catch (e) { $g("grid").innerHTML = `<p class="soft">😕 This browser won't let the gallery save here. (Private windows can't save pictures.)</p>`; return; }
+    if (!$g("grid")) return;
+    $g("count").textContent = `${items.length.toLocaleString()} / ${GAL_MAX.toLocaleString()} saved`;
+    try { const est = await navigator.storage?.estimate?.(); if (est && est.usage != null && $g("space")) $g("space").textContent = ` · using ${galSize(est.usage)}${est.quota ? ` of about ${galSize(est.quota)} on this device` : ""}`; } catch (e) {}
+    draw();
+  };
+  const draw = () => {
+    shown = items.filter(m => filter === "all" || m.kind === filter);
+    $g("grid").innerHTML = shown.length ? shown.map(m => `<button class="gal-tile${picked.has(m.id) ? " picked" : ""}" data-id="${m.id}" type="button" aria-label="${esc(m.name)}">${m.thumb ? `<img src="${m.thumb}" alt="" loading="lazy">` : `<span class="gal-noth">${m.kind === "video" ? "🎬" : "🖼️"}</span>`}${m.kind === "video" ? `<em>🎬 ${galDur(m.dur)}</em>` : m.kind === "drawing" ? "<em>🎨</em>" : ""}${selecting ? `<i class="gal-check">${picked.has(m.id) ? "✓" : ""}</i>` : ""}</button>`).join("")
+      : `<p class="soft">${items.length ? "Nothing here yet in this group." : "Your gallery is empty. Add pictures or videos, paste a picture, or make a drawing!"}</p>`;
+    $g("grid").querySelectorAll("[data-id]").forEach(b => b.addEventListener("click", () => { const id = b.dataset.id; if (selecting) { picked.has(id) ? picked.delete(id) : picked.add(id); syncSel(); draw(); } else galView(shown, shown.findIndex(m => m.id === id), load); }));
+  };
+  const syncSel = () => { $g("selbar").hidden = !selecting; $g("sel").classList.toggle("on", selecting); $g("delsel").disabled = !picked.size; $g("delsel").textContent = picked.size ? `🗑 Delete ${picked.size} selected` : "🗑 Delete selected"; delete $g("delsel").dataset.sure; };
+  $app.querySelectorAll("[data-kind]").forEach(b => b.addEventListener("click", () => { filter = b.dataset.kind; $app.querySelectorAll("[data-kind]").forEach(x => x.classList.toggle("on", x === b)); draw(); }));
+  $g("sel").addEventListener("click", () => { selecting = !selecting; picked.clear(); syncSel(); draw(); });
+  $g("cancel").addEventListener("click", () => { selecting = false; picked.clear(); syncSel(); draw(); });
+  $g("all").addEventListener("click", () => { shown.forEach(m => picked.add(m.id)); syncSel(); draw(); });
+  $g("delsel").addEventListener("click", async () => {
+    const b = $g("delsel"); if (!picked.size) return;
+    if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Tap again to delete ${picked.size} for good`; return; }
+    const n = picked.size; await galDelete([...picked]).catch(() => toast("Those couldn't be deleted. Try again.")); picked.clear(); selecting = false; syncSel(); toast(`🗑 Deleted ${n}.`); load();
+  });
+  $g("file").addEventListener("change", async e => { const fs = [...e.target.files]; e.target.value = ""; if (fs.length) { $g("count").textContent = `Adding ${fs.length}…`; await galAddMany(fs); load(); } });
+  $g("draw").addEventListener("click", () => startGalleryDraw());
+  const z = $g("paste");
+  const addFromHtml = html => { const m = (html || "").match(/<img[^>]+src="(data:image\/[^"]+)"/i); if (!m) return false; fetch(m[1]).then(r => r.blob()).then(bl => galAddMany([bl])).then(load); return true; };
+  z.addEventListener("input", () => { const im = z.querySelector("img"), s = im?.getAttribute("src") || ""; z.innerHTML = ""; if (/^data:image\//.test(s)) addFromHtml(`<img src="${s}">`); else if (im) toast("That picture can't be pasted here. Save it, then use 📁 Add pictures."); });
+  z.addEventListener("keydown", e => { if (!(e.ctrlKey || e.metaKey) && e.key.length === 1) e.preventDefault(); });
+  z.addEventListener("dragover", e => { e.preventDefault(); z.classList.add("drag"); });
+  z.addEventListener("dragleave", () => z.classList.remove("drag"));
+  z.addEventListener("drop", async e => { e.preventDefault(); z.classList.remove("drag"); const fs = [...(e.dataTransfer?.files || [])]; if (fs.length) { await galAddMany(fs); load(); } });
+  if (GAL_PASTE) document.removeEventListener("paste", GAL_PASTE);
+  GAL_PASTE = e => {
+    if (!document.getElementById("gal-grid")) { document.removeEventListener("paste", GAL_PASTE); GAL_PASTE = null; return; }
+    if (document.getElementById("bg-sheet")) return;   // the background chooser handles its own pastes
+    const fs = [...(e.clipboardData?.items || [])].filter(i => i.kind === "file" && /^(image|video)\//.test(i.type)).map(i => i.getAsFile()).filter(Boolean);
+    if (fs.length) { e.preventDefault(); galAddMany(fs).then(load); return; }
+    if (addFromHtml(e.clipboardData?.getData("text/html"))) e.preventDefault();
+    else if (e.target?.closest?.("#gal-paste")) { e.preventDefault(); toast("📋 Copy a picture first, then paste it here."); }
+  };
+  document.addEventListener("paste", GAL_PASTE);
+  load();
+}
+// the big view: look, play, rename, use as a background, delete
+function galView(list, i, after) {
+  document.getElementById("gal-view")?.remove();
+  const box = document.createElement("div"); box.id = "gal-view"; box.className = "bgsheet gal-view"; let url = null;
+  const close = () => { if (url) URL.revokeObjectURL(url); box.remove(); document.removeEventListener("keydown", key); };
+  const key = e => { if (e.key === "Escape") close(); else if (e.key === "ArrowLeft" && e.target.tagName !== "INPUT") show(i - 1); else if (e.key === "ArrowRight" && e.target.tagName !== "INPUT") show(i + 1); };
+  const show = async k => {
+    if (!list.length) return close();
+    i = (k + list.length) % list.length; const m = list[i];
+    if (url) { URL.revokeObjectURL(url); url = null; }
+    box.innerHTML = `<div class="bgsheet-box gal-vbox" role="dialog" aria-label="${esc(m.name)}">
+      <div class="prof-head"><input class="gal-name" id="gv-name" value="${esc(m.name)}" maxlength="60" aria-label="Name"><button class="iconbtn" id="gv-x" type="button">✕ Close</button></div>
+      <div class="gal-media" id="gv-media"><p class="soft">Loading…</p></div>
+      <small class="soft">${m.kind === "video" ? "🎬 Video" : m.kind === "drawing" ? "🎨 Drawing" : "📷 Picture"} · ${new Date(m.at).toLocaleDateString()} · ${galSize(m.size)}${m.w ? ` · ${m.w}×${m.h}` : ""} · ${i + 1} of ${list.length}</small>
+      <div class="row gal-vrow"><button class="btn" id="gv-prev" type="button" aria-label="Previous">◀</button><button class="btn" id="gv-next" type="button" aria-label="Next">▶</button>
+        ${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}
+        <button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button></div>
+    </div>`;
+    const $v = id => box.querySelector("#gv-" + id);
+    $v("x").addEventListener("click", close); $v("prev").addEventListener("click", () => show(i - 1)); $v("next").addEventListener("click", () => show(i + 1));
+    $v("name").addEventListener("change", async e => { const name = e.target.value.trim().slice(0, 60) || m.name; m.name = name; await galRename(m, name).catch(() => {}); toast("✏️ Renamed!"); after && after(); });
+    $v("del").addEventListener("click", async () => {
+      const b = $v("del"); if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to delete for good"; return; }
+      await galDelete([m.id]).catch(() => toast("That couldn't be deleted. Try again.")); list.splice(i, 1); toast("🗑 Deleted."); after && after(); if (list.length) show(i); else close();
+    });
+    const useBg = async where => {
+      const blob = await galBlob(m.id); if (!blob) return toast("That picture couldn't be opened.");
+      const id = await bgAddPicture(blob); if (!id) return;
+      if (where === "home") { const pp = { ...bgPages(), home: "img:" + id }; store.set("bg_page_" + SITE_WHO, pp); toast("🏠 It's your home screen background now!"); }
+      else { BG_PICK = "img:" + id; store.set("bg_" + SITE_WHO, BG_PICK); toast("🌈 It's your background everywhere now!"); }
+      setScene();
+    };
+    $v("home")?.addEventListener("click", () => useBg("home")); $v("every")?.addEventListener("click", () => useBg("every"));
+    const blob = await galBlob(m.id).catch(() => null), media = $v("media"); if (!media || list[i] !== m) return;
+    if (!blob) { media.innerHTML = `<p class="soft">😕 This one couldn't be opened.</p>`; return; }
+    url = URL.createObjectURL(blob);
+    media.innerHTML = m.kind === "video" ? `<video src="${url}" controls playsinline autoplay></video>` : `<img src="${url}" alt="${esc(m.name)}">`;
+    const v = media.querySelector("video"); if (v) v.addEventListener("error", () => { media.insertAdjacentHTML("beforeend", `<p class="soft">This video's format can't play in this browser.</p>`); });
+  };
+  box.addEventListener("click", e => { if (e.target === box) close(); });
+  document.addEventListener("keydown", key);
+  document.body.appendChild(box); show(i);
+}
+// ✏️ a simple sketchpad that saves straight to the gallery
+const GAL_INK = ["#000000", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#ffffff"];
+function startGalleryDraw() {
+  appScreen("🖼️ My Gallery · New drawing", `<div class="row"><button class="chip" id="gd-back" type="button">🖼️ Back to my gallery</button></div><h2>✏️ New drawing</h2>
+    <div class="gd-pal">${GAL_INK.map((c, k) => `<button class="px-col${k === 0 ? " on" : ""}" data-ink="${c}" style="background:${c}" type="button" aria-label="color ${c}"></button>`).join("")}<input type="color" id="gd-any" value="#00c2c7" aria-label="Any color"></div>
+    <div class="na-chips"><button class="chip" data-size="4" type="button">✏️ Thin</button><button class="chip on" data-size="10" type="button">🖍️ Medium</button><button class="chip" data-size="24" type="button">🖌️ Thick</button><button class="chip" id="gd-erase" type="button">🧽 Eraser</button><button class="chip" id="gd-undo" type="button">↩️ Undo</button><button class="chip" id="gd-clear" type="button">🗑️ Clear</button></div>
+    <canvas id="gd-cv" class="gd-canvas" width="900" height="650"></canvas>
+    <div class="row"><input class="gal-name" id="gd-name" maxlength="60" placeholder="Name your drawing" aria-label="Name your drawing"><button class="btn gold" id="gd-save" type="button">💾 Save to My Gallery</button></div>`);
+  const cv = document.getElementById("gd-cv"), x = cv.getContext("2d"), undo = [];
+  let ink = GAL_INK[0], size = 10, erase = false, down = false, last = null;
+  x.fillStyle = "#fff"; x.fillRect(0, 0, cv.width, cv.height); x.lineCap = x.lineJoin = "round";
+  const pt = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; };
+  cv.addEventListener("pointerdown", e => { e.preventDefault(); cv.setPointerCapture?.(e.pointerId); down = true; undo.push(x.getImageData(0, 0, cv.width, cv.height)); if (undo.length > 25) undo.shift(); last = pt(e); x.beginPath(); x.fillStyle = erase ? "#fff" : ink; x.arc(last[0], last[1], size / 2, 0, Math.PI * 2); x.fill(); });
+  cv.addEventListener("pointermove", e => { if (!down) return; const p = pt(e); x.strokeStyle = erase ? "#fff" : ink; x.lineWidth = size; x.beginPath(); x.moveTo(last[0], last[1]); x.lineTo(p[0], p[1]); x.stroke(); last = p; });
+  const up = () => { down = false; }; cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up); cv.addEventListener("pointerleave", up);
+  $app.querySelectorAll("[data-ink]").forEach(b => b.addEventListener("click", () => { ink = b.dataset.ink; erase = false; document.getElementById("gd-erase").classList.remove("on"); $app.querySelectorAll("[data-ink]").forEach(y => y.classList.toggle("on", y === b)); }));
+  document.getElementById("gd-any").addEventListener("input", e => { ink = e.target.value; erase = false; document.getElementById("gd-erase").classList.remove("on"); });
+  $app.querySelectorAll("[data-size]").forEach(b => b.addEventListener("click", () => { size = +b.dataset.size; $app.querySelectorAll("[data-size]").forEach(y => y.classList.toggle("on", y === b)); }));
+  document.getElementById("gd-erase").addEventListener("click", e => { erase = !erase; e.currentTarget.classList.toggle("on", erase); });
+  document.getElementById("gd-undo").addEventListener("click", () => { const d = undo.pop(); if (d) x.putImageData(d, 0, 0); });
+  document.getElementById("gd-clear").addEventListener("click", () => { undo.push(x.getImageData(0, 0, cv.width, cv.height)); x.fillStyle = "#fff"; x.fillRect(0, 0, cv.width, cv.height); });
+  document.getElementById("gd-back").addEventListener("click", () => startGallery());
+  document.getElementById("gd-save").addEventListener("click", async () => { const r = await galSaveCanvas(cv, document.getElementById("gd-name").value.trim().slice(0, 60) || "My drawing"); if (r.meta) startGallery("drawing"); });
+}
+
 // 🌍 World Explorer
 function startWorldExplorer(tab = "flags") {
   appScreen("🌍 World Explorer", `<h2>🌍 World Explorer</h2>${naTabs([["flags", "🏳️ Flag quiz"], ["capitals", "🏛️ Capitals quiz"], ["cont", "🗺️ Which continent?"], ["atlas", "📖 Atlas"]], tab)}<div id="we"></div>`);
@@ -10296,6 +10529,7 @@ NEW_APPS.push(
   { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab(), isNew: true },
   { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), isNew: true, added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
   { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), isNew: true, added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
+  { id: "gallery", emoji: "🖼️", name: "My Gallery", desc: "Save up to 1,000 pictures, drawings and videos, make new drawings, use them as backgrounds, and delete what you don't want.", start: () => startGallery(), isNew: true, added: "2026-11-12", kw: "gallery|my gallery|my pictures|my photos|my videos|my drawings|photo album" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer(), isNew: true },
   { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
   { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
@@ -18630,7 +18864,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
