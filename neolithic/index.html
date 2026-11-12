@@ -675,6 +675,19 @@
   .who-ava { font-size: 2.4rem; line-height: 1; }
   .who-add { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .who-add input { flex: 1; min-width: 200px; max-width: 360px; font: inherit; padding: 12px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
+  body.bg-img { background: #101018 var(--bgimg) center / cover no-repeat fixed !important; }
+  body.bg-img::before, body.bg-img::after { display: none !important; }
+  .bg-fab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); z-index: 55; width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); background: rgba(24,14,60,.78); color: #fff; font-size: 1.45rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.45); }
+  .bg-fab:hover, .bg-fab:focus-visible { border-color: var(--gold); outline: none; transform: scale(1.06); } .bg-fab[hidden] { display: none; }
+  .bgsheet { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; justify-content: center; }
+  .bgsheet-box { width: min(760px, 100%); max-height: 84vh; overflow-y: auto; background: var(--panel); border: 2px solid var(--line); border-bottom: 0; border-radius: 20px 20px 0 0; padding: 14px 16px 22px; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+  .bg-add { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; margin: 8px 0 4px; }
+  .bg-paste { flex: 1; min-width: 200px; min-height: 52px; border: 3px dashed var(--line); border-radius: 14px; padding: 12px 14px; color: var(--ink-soft); background: var(--panel-2); cursor: text; overflow: hidden; max-height: 80px; }
+  .bg-paste:empty::before { content: attr(data-ph); } .bg-paste:focus { border-color: var(--gold); outline: none; }
+  .bg-file { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .bg-tile { position: relative; display: flex; } .bg-tile .bg-sw { flex: 1; }
+  .bg-x { position: absolute; top: 4px; right: 4px; border: 0; border-radius: 99px; padding: 3px 8px; font: inherit; font-size: .8rem; font-weight: 800; background: rgba(0,0,0,.65); color: #fff; cursor: pointer; } .bg-x.sure { background: var(--bad); }
+  .bg-pages { display: grid; gap: 6px; margin: 6px 0 4px; } .bg-pagerow { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px; background: var(--panel-2); }
   .bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
   .bg-sw { display: flex; flex-direction: column; gap: 6px; padding: 6px 6px 10px; border-radius: 14px; border: 3px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; text-align: center; }
   .bg-sw:hover { border-color: var(--gold); }
@@ -2813,31 +2826,147 @@ const BG_ALL = [...BG_MADE, ...BG_MORE.map(b => [b[0], b[1]])];
   body[data-scene="${id}"]::after { display: none; }`; }).join("\n");
   document.head.appendChild(st);
 })();
-function startBackgrounds() {
-  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
-  const cur = BG_PICK || "";
-  $app.innerHTML = `<div class="panel bgpage">
-    <div class="topline"><span class="label">🎨 Choose a background</span><button class="iconbtn" id="bg-back" type="button">Back to info</button></div>
-    <h2>🎨 Choose a background</h2>
-    <p class="soft">Tap one to try it. It shows on every page except the home screen and a few picker pages, and it's saved just for <b>${esc(SITE_NAME || "you")}</b>.</p>
-    <div class="bg-grid">${[["", "✨ Each page picks its own"], ...BG_ALL].map(([id, name]) => `<button class="bg-sw${id === cur ? " on" : ""}" type="button" data-bg="${id}" aria-pressed="${id === cur}"><span class="bg-pv" data-pv="${id}"><i></i></span><b>${id === cur ? "✓ " : ""}${name}</b></button>`).join("")}</div>
-  </div>`;
-  // little previews: borrow each background's real colors and emoji
+// 🎨 Backgrounds: an "everywhere" background, any page can have its own (even the home screen), and people can use their own pasted pictures.
+// Saved for each person: bg_<who> (everywhere), bg_page_<who> (page → background), bg_imgs_<who> (picture ids) and bg_img_<who>_<id> (each picture).
+const BG_PIC_MAX = 12;
+let BG_PASTE = null, BG_CUR_IMG = null;
+const BG_PV = {};   // previews, worked out once per background
+const bgName = v => !v ? "✨ Each page picks its own" : v === "inherit" ? "↩ Normal" : v.startsWith("img:") ? "📷 My picture" : (BG_ALL.find(b => b[0] === v) || [, v])[1];
+const bgImgs = () => (SITE_WHO && store.get("bg_imgs_" + SITE_WHO, [])) || [];
+const bgImg = id => SITE_WHO ? store.get("bg_img_" + SITE_WHO + "_" + id, null) : null;
+const bgPages = () => (SITE_WHO && store.get("bg_page_" + SITE_WHO, {})) || {};
+function bgPageKey() { if (document.getElementById("gamesmenu")) return "home"; const lab = ($app.querySelector(".label")?.textContent || "").trim(); return lab ? lab.replace(/ ·.*| \d.*/, "") : null; }
+const bgPageName = k => k === "home" ? "🏠 Home screen" : k;
+function bgApplyImg(img) {
+  if (img) { if (BG_CUR_IMG !== img) { document.body.style.setProperty("--bgimg", `url("${img}")`); BG_CUR_IMG = img; } document.body.classList.add("bg-img"); }
+  else if (BG_CUR_IMG) { document.body.classList.remove("bg-img"); document.body.style.removeProperty("--bgimg"); BG_CUR_IMG = null; }
+}
+function bgGridHTML(cur, first) {   // first: an extra swatch at the start, like ["", "✨ Each page picks its own"]
+  const tile = (v, name, extra = "", pv = `data-pv="${v}"`) => `<div class="bg-tile"><button class="bg-sw${v === cur ? " on" : ""}" type="button" data-bg="${esc(v)}" aria-pressed="${v === cur}"><span class="bg-pv" ${pv}><i></i></span><b>${v === cur ? "✓ " : ""}${name}</b></button>${extra}</div>`;
+  const pics = bgImgs().filter(id => bgImg(id));
+  return `<div class="bg-grid">${first ? tile(first[0], first[1], "", `data-pv="@${first[0]}"`) : ""}${pics.map(id => tile("img:" + id, "📷 My picture", `<button class="bg-x" type="button" data-delpic="${id}" title="Remove this picture" aria-label="Remove this picture">✕</button>`, `style="background-image:url('${bgImg(id)}')"`)).join("")}${BG_ALL.map(([id, name]) => tile(id, name)).join("")}</div>`;
+}
+function bgFillPreviews(root) {   // borrow each background's real colors and emoji (once), and show them on its swatch
   const keep = document.body.dataset.scene;
-  $app.querySelectorAll("[data-pv]").forEach(el => {
+  root.querySelectorAll("[data-pv]").forEach(el => {
     const id = el.dataset.pv;
-    if (!id) { el.style.backgroundImage = "conic-gradient(from 200deg, #79c2f2, #ffcf70, #ff70a6, #9d4edd, #38b000, #79c2f2)"; el.firstChild.textContent = "🌼🌌🍕"; return; }
-    if (id === "default") delete document.body.dataset.scene; else document.body.dataset.scene = id;
-    const cs = getComputedStyle(document.body), be = getComputedStyle(document.body, "::before");
-    el.style.backgroundColor = cs.backgroundColor; el.style.backgroundImage = cs.backgroundImage;
-    if (be.backgroundImage && be.backgroundImage !== "none") { el.firstChild.style.backgroundImage = be.backgroundImage; el.firstChild.style.backgroundSize = "150px 136px"; }
+    if (id.startsWith("@")) { el.style.backgroundImage = "conic-gradient(from 200deg, #79c2f2, #ffcf70, #ff70a6, #9d4edd, #38b000, #79c2f2)"; el.firstChild.textContent = id === "@" ? "🌼🌌🍕" : "↩"; return; }
+    if (!BG_PV[id]) {
+      if (id === "default") delete document.body.dataset.scene; else document.body.dataset.scene = id;
+      const wasImg = document.body.classList.contains("bg-img"); document.body.classList.remove("bg-img");
+      const cs = getComputedStyle(document.body), be = getComputedStyle(document.body, "::before");
+      BG_PV[id] = { c: cs.backgroundColor, bg: cs.backgroundImage, emo: be.backgroundImage && be.backgroundImage !== "none" ? be.backgroundImage : "" };
+      if (wasImg) document.body.classList.add("bg-img");
+    }
+    const v = BG_PV[id]; el.style.backgroundColor = v.c; el.style.backgroundImage = v.bg;
+    if (v.emo) { el.firstChild.style.backgroundImage = v.emo; el.firstChild.style.backgroundSize = "150px 136px"; }
   });
   if (keep) document.body.dataset.scene = keep; else delete document.body.dataset.scene;
-  $app.querySelectorAll("[data-bg]").forEach(b => b.addEventListener("click", () => {
-    BG_PICK = b.dataset.bg || null; if (SITE_WHO) store.set("bg_" + SITE_WHO, BG_PICK);
-    $app.querySelectorAll("[data-bg]").forEach(x => { const on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on); const t = x.querySelector("b"); t.textContent = (on ? "✓ " : "") + t.textContent.replace(/^✓ /, ""); });
-    setScene(); toast(`🎨 ${b.querySelector("b").textContent.replace(/^✓ /, "")}`);
+}
+// 📷 a pasted or chosen picture: shrunk to save space, white behind see-through parts, and kept for this person
+async function bgAddPicture(src) {
+  if (!SITE_WHO) return null;
+  const list = bgImgs(); if (list.length >= BG_PIC_MAX) { toast(`You can keep ${BG_PIC_MAX} pictures. Remove one first (tap its ✕).`); return null; }
+  if (typeof src !== "string" && !/^image\//.test(src.type || "")) { toast("That isn't a picture."); return null; }
+  const url = typeof src === "string" ? src : URL.createObjectURL(src), img = new Image();
+  try { await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = url; }); } catch (e) { toast("That picture couldn't be opened. Try a different one."); return null; } finally { if (typeof src !== "string") URL.revokeObjectURL(url); }
+  let max = 1400, q = .82, data = "";
+  for (let k = 0; k < 7; k++) {
+    const s = Math.min(1, max / Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height)), c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round((img.naturalWidth || img.width) * s)); c.height = Math.max(1, Math.round((img.naturalHeight || img.height) * s));
+    const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+    data = c.toDataURL("image/jpeg", q); if (data.length < 550000) break; max = Math.round(max * .8); q = Math.max(.5, q - .07);
+  }
+  const id = Date.now().toString(36) + rnd(10, 99);
+  store.set("bg_img_" + SITE_WHO + "_" + id, data); store.set("bg_imgs_" + SITE_WHO, [...list, id]);
+  return id;
+}
+function bgPaste(e, done) {   // Ctrl+V (or Paste) anywhere while a background chooser is open
+  const item = [...(e.clipboardData?.items || [])].find(i => i.kind === "file" && /^image\//.test(i.type));
+  const inZone = e.target?.closest?.(".bg-paste");
+  if (item) { e.preventDefault(); bgAddPicture(item.getAsFile()).then(id => id && done(id)); return; }
+  const html = e.clipboardData?.getData("text/html") || "", m = html.match(/<img[^>]+src="(data:image\/[^"]+)"/i);
+  if (m) { e.preventDefault(); bgAddPicture(m[1]).then(id => id && done(id)); return; }
+  if (inZone) { e.preventDefault(); toast(/<img/i.test(html) ? "That picture can't be pasted here. Save it, then use 📁 Choose a picture." : "📋 Copy a picture first, then paste it here."); }
+}
+function bgListenPaste(done) { bgStopPaste(); BG_PASTE = e => bgPaste(e, done); document.addEventListener("paste", BG_PASTE); }
+function bgStopPaste() { if (BG_PASTE) document.removeEventListener("paste", BG_PASTE); BG_PASTE = null; }
+const bgPasteHTML = () => `<div class="bg-add"><div class="bg-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Copy any picture or art, then click or tap here and paste it (Ctrl+V)"></div><label class="btn bg-file">📁 Choose a picture<input type="file" accept="image/*" class="bg-filein" hidden></label></div>`;
+function bgBindAdd(root, done) {
+  const z = root.querySelector(".bg-paste"), f = root.querySelector(".bg-filein");
+  z?.addEventListener("input", () => {   // some phones drop the picture in as an image instead
+    const im = z.querySelector("img"), s = im?.getAttribute("src") || ""; z.innerHTML = "";
+    if (/^data:image\//.test(s)) bgAddPicture(s).then(id => id && done(id)); else if (im) toast("That picture can't be pasted here. Save it, then use 📁 Choose a picture.");
+  });
+  z?.addEventListener("keydown", e => { if (!(e.ctrlKey || e.metaKey) && e.key.length === 1) e.preventDefault(); });
+  z?.addEventListener("dragover", e => e.preventDefault());
+  z?.addEventListener("drop", e => { e.preventDefault(); const file = [...(e.dataTransfer?.files || [])].find(x => /^image\//.test(x.type)); if (file) bgAddPicture(file).then(id => id && done(id)); });
+  f?.addEventListener("change", () => { const file = f.files[0]; f.value = ""; if (file) bgAddPicture(file).then(id => id && done(id)); });
+}
+function bgBindDel(root, after) {
+  root.querySelectorAll("[data-delpic]").forEach(b => b.addEventListener("click", e => {
+    e.stopPropagation(); if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Remove?"; b.classList.add("sure"); return; }
+    const id = b.dataset.delpic, v = "img:" + id;
+    store.set("bg_img_" + SITE_WHO + "_" + id, null); store.set("bg_imgs_" + SITE_WHO, bgImgs().filter(x => x !== id));
+    const pp = { ...bgPages() }; Object.keys(pp).forEach(k => { if (pp[k] === v) delete pp[k]; }); store.set("bg_page_" + SITE_WHO, pp);
+    if (BG_PICK === v) { BG_PICK = null; store.set("bg_" + SITE_WHO, null); }
+    setScene(); after(); toast("🗑 Picture removed.");
   }));
+}
+// 🎨 the corner button: just this page's background
+function bgFab() {
+  let f = document.getElementById("bg-fab");
+  if (!f) { f = document.createElement("button"); f.id = "bg-fab"; f.type = "button"; f.className = "bg-fab"; f.title = "Change this page's background"; f.setAttribute("aria-label", "Change this page's background"); f.textContent = "🎨"; f.addEventListener("click", openBgSheet); document.body.appendChild(f); }
+  const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
+  f.hidden = !SITE_WHO || !bgPageKey() || !!document.getElementById("who-screen") || !!document.getElementById("who-age") || !!document.querySelector(".bgpage") || MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab);
+}
+function closeBgSheet() { document.getElementById("bg-sheet")?.remove(); bgStopPaste(); }
+function openBgSheet() {
+  const key = bgPageKey(); if (!SITE_WHO || !key) return;
+  closeBgSheet();
+  const name = bgPageName(key), box = document.createElement("div"); box.id = "bg-sheet"; box.className = "bgsheet";
+  const set = v => { const pp = { ...bgPages() }; if (v === "inherit") delete pp[key]; else pp[key] = v; store.set("bg_page_" + SITE_WHO, pp); setScene(); render(); };
+  const render = () => {
+    const cur = bgPages()[key] || "inherit";
+    box.innerHTML = `<div class="bgsheet-box" role="dialog" aria-label="Background for this page">
+      <div class="prof-head"><b>🎨 Background for: ${esc(name)}</b><button class="iconbtn" id="bgs-x" type="button">✕ Close</button></div>
+      <p class="soft">Pick one just for this page, or use your own picture or art.</p>
+      ${bgPasteHTML()}
+      ${bgGridHTML(cur, ["inherit", key === "home" ? "↩ Normal home screen" : "↩ Normal for this page"])}
+    </div>`;
+    bgFillPreviews(box);
+    box.querySelector("#bgs-x").addEventListener("click", closeBgSheet);
+    box.querySelectorAll("[data-bg]").forEach(b => b.addEventListener("click", () => { const v = b.dataset.bg; set(v); toast(`🎨 ${name}: ${v === "inherit" ? "back to normal" : bgName(v)}`); }));
+    bgBindAdd(box, added); bgBindDel(box, render);
+  };
+  const added = id => { set("img:" + id); toast("📷 Your picture is this page's background!"); };
+  box.addEventListener("click", e => { if (e.target === box) closeBgSheet(); });
+  box.addEventListener("keydown", e => { if (e.key === "Escape") closeBgSheet(); });
+  document.body.appendChild(box); render(); bgListenPaste(added);
+  box.querySelector("#bgs-x").focus();
+}
+// 🎨 the "Choose a background" page: the everywhere background, my pictures, and the pages that have their own
+function startBackgrounds() {
+  stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
+  $app.innerHTML = `<div class="panel bgpage">
+    <div class="topline"><span class="label">🎨 Choose a background</span><button class="iconbtn" id="bg-back" type="button">Back to info</button></div>
+    <div id="bg-wrap"></div>
+  </div>`;
+  const wrap = document.getElementById("bg-wrap");
+  const render = () => {
+    const cur = BG_PICK || "", pp = bgPages(), keys = Object.keys(pp);
+    wrap.innerHTML = `<h2>🎨 Choose a background</h2>
+      <p class="soft">Your everywhere background shows on every page except the home screen and a few picker pages, and it's saved just for <b>${esc(SITE_NAME || "you")}</b>. <b>Tip:</b> tap the 🎨 button in the corner of any page (even the home screen) to give just that page its own background.</p>
+      <h3>📷 My pictures and art</h3><p class="soft">Paste or choose a picture to make it your everywhere background (up to ${BG_PIC_MAX}). Your pictures show at the start of the list below.</p>${bgPasteHTML()}
+      ${keys.length ? `<h3>📄 Pages with their own background</h3><div class="bg-pages">${keys.map(k => `<div class="bg-pagerow"><span><b>${esc(bgPageName(k))}</b> · ${esc(bgName(pp[k]))}</span><button class="chip" type="button" data-reset="${esc(k)}">↩ Reset</button></div>`).join("")}</div>` : ""}
+      <h3>🌈 Everywhere background</h3>${bgGridHTML(cur, ["", "✨ Each page picks its own"])}`;
+    bgFillPreviews(wrap);
+    wrap.querySelectorAll("[data-bg]").forEach(b => b.addEventListener("click", () => { BG_PICK = b.dataset.bg || null; if (SITE_WHO) store.set("bg_" + SITE_WHO, BG_PICK); setScene(); render(); toast(`🎨 ${bgName(BG_PICK)}`); }));
+    wrap.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", () => { const p2 = { ...bgPages() }; delete p2[b.dataset.reset]; store.set("bg_page_" + SITE_WHO, p2); render(); toast("↩ That page is back to normal."); }));
+    bgBindAdd(wrap, added); bgBindDel(wrap, render);
+  };
+  const added = id => { BG_PICK = "img:" + id; store.set("bg_" + SITE_WHO, BG_PICK); setScene(); render(); toast("📷 Your picture is your everywhere background!"); };
+  render(); bgListenPaste(added);
   document.getElementById("bg-back").addEventListener("click", () => startInfo());
   window.scrollTo({ top: 0 });
 }
@@ -2895,6 +3024,7 @@ function startInfo(jump) {
     ${sec("buttons", "🔘 Buttons you'll see", "",
       row("✕ Exit", "Goes back to the home screen.", "Top left, inside apps", "") +
       row("👋 Who are you?", "Study Arcade asks who you are each time it opens (MR.E, Colin, Alex, the whole crew, or someone new), asks your age the first time, and saves everyone's progress separately.", "When Study Arcade opens", "") +
+      row("🎨 Background button", "Gives just the page you're on its own background (even the home screen), or one of your own pictures or art.", "Bottom right corner", "") +
       row("Sound", "Turns sounds on or off.", "Bottom of the page", "") +
       row("⋯", "Opens this page.", "Top right of the home screen", ""))}
     ${sec("saving", "💾 Saving", "",
@@ -8715,7 +8845,7 @@ function hippoAnswerAll(qRaw) {
   if (/\b(type|typing|keyboard|touch typ\w*|wpm|words per minute)\b/.test(q) && /\b(how|learn|teach|get better|faster|practice|improve|good|help|where)\b/.test(q))
     return R("Typing", "⌨️", "Learn to type with Bunny Hop Typing!", "Bunny Hop Typing has a Training Ground with a color-coded keyboard that shows which finger presses each key. Then race across platforms by typing words, earn carrots, and try to become Speed Champion!", hBig("🐰⌨️", "#e8f7e8", "Bunny Hop Typing"), { label: "🐰 Go to Bunny Hop Typing", fn: () => startBunny() });
   // 📱 the App-App and its apps
-  if (/\b(change|pick|choose|set|new|switch)\b.*\bbackgrounds?\b|^backgrounds?$/.test(q)) return R("Backgrounds", "🎨", "🎨 Pick a background!", `There are ${BG_ALL.length} to choose from, like Pizza Party, Deep Sea, Dino Land and Starry Night. You can also find them by tapping the ⋯ on the home screen.`, hBig("🎨🌈", "#2e1a4a", "backgrounds"), { label: "🎨 Choose a background", fn: () => startBackgrounds() });
+  if (/\b(change|pick|choose|set|new|switch)\b.*\bbackgrounds?\b|^backgrounds?$/.test(q)) return R("Backgrounds", "🎨", "🎨 Pick a background!", `There are ${BG_ALL.length} to choose from, like Pizza Party, Deep Sea, Dino Land and Starry Night. You can also tap 🎨 in the corner of any page to change just that page, or use your own picture.`, hBig("🎨🌈", "#2e1a4a", "backgrounds"), { label: "🎨 Choose a background", fn: () => startBackgrounds() });
   if (/\b(app ?app|new apps?|newest apps?)\b/.test(q)) return R("App-App", "📱", "📱 The App-App has every app!", `Today's home screen: ${homeToday().map(a => a.emoji + " " + a.name).join(", ")}. Some apps rotate in and out of the home screen at midnight, and every app always stays in the App-App.`, hBig("📱✨", "#2e1a4a", "App-App"), { label: "📱 Open the App-App", fn: () => startAppApp() });
   if (/\b(learn(ing)? (to |how to )?code|coding|code lab|html|python|programming|javascript)\b/.test(q)) return R("Code Lab", "💻", "💻 Learn to code in the Code Lab!", "It has step-by-step lessons for HTML (making websites, with a live preview) and Python (real programming, even turtle drawing and games). It's in the App-App.", hBig("💻🐍", "#0b2a1a", "Code Lab"), { label: "💻 Open the Code Lab", fn: () => startCodeLab() });
   if (/\b(ai studio|use ai|using ai|prompts?|prompting|artificial intelligence|chatbot|chat ?gpt|claude)\b/.test(q)) return R("AI Studio", "🤖", "🤖 Learn to use AI in the AI Studio!", "Lessons on what AI is, staying safe, and writing great prompts, plus a Prompt Builder, a prompt challenge, and a project where AI helps you make your own game. It's in the App-App.", hBig("🤖✨", "#1a1050", "AI Studio"), { label: "🤖 Open the AI Studio", fn: () => startAIStudio() });
@@ -17993,7 +18123,11 @@ function setScene() {
   SCREEN_LAST = screenId;
   const hit = lab && SCENES.find(([re]) => re.test(lab));
   let sc = hit ? hit[1] : "";
-  if (BG_PICK && !document.getElementById("gamesmenu") && !BG_KEEP.test(lab)) sc = BG_PICK === "default" ? "" : BG_PICK;
+  const home = !!document.getElementById("gamesmenu"), pageKey = home ? "home" : screenId || null;
+  let pick = (pageKey && bgPages()[pageKey]) || (BG_PICK && !home && !BG_KEEP.test(lab) ? BG_PICK : null), img = null;
+  if (pick && pick.startsWith("img:")) { img = bgImg(pick.slice(4)); if (!img) pick = null; }
+  if (img) sc = ""; else if (pick) sc = pick === "default" ? "" : pick;
+  bgApplyImg(img);
   if (document.body.dataset.scene !== sc) { if (sc) document.body.dataset.scene = sc; else delete document.body.dataset.scene; }
 }
 new MutationObserver(() => {
@@ -18007,7 +18141,7 @@ new MutationObserver(() => {
   if (!gamesAllowed() && !home && isGameScreen(lab)) { IN_MENU_GAME = false; setTimeout(() => { exitAll(); toast("🚫 That's not available for you."); }, 0); return; }
   emergBtn.hidden = home || !(MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab));
   document.body.classList.toggle("emerg-on", !emergBtn.hidden);
-  profChip();
+  profChip(); bgFab(); if (!document.querySelector(".bgpage")) closeBgSheet();
 }).observe($app, { childList: true });
 
 applyNames();
