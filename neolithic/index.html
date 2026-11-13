@@ -14812,7 +14812,7 @@ const ROOT_SPORT_INFO = { lacrosse: ["🥍", "Root Lacrosse"], basketball: ["�
 const RH_SYN = [["star", "stars"], ["hear", "hearing", "listen"], ["self", "myself", "yourself"], ["good", "well", "kind"], ["life", "living", "alive"], ["time"], ["say", "speak", "tell", "word", "words"], ["lead", "make", "bring"], ["give birth", "birth", "born", "create", "beginning"], ["earth", "ground", "land", "world"], ["write", "writing", "draw"], ["law", "right", "justice", "just"], ["thought", "think", "reason", "study", "speech", "word"], ["light", "bright", "shine"], ["hand", "hands"], ["order", "command"], ["send", "sent"], ["all", "every", "everything"], ["feel", "feeling", "suffer", "emotion"], ["love", "loving", "friend"], ["sound", "voice"], ["light"], ["carry"], ["quiet", "rest", "calm", "still"], ["write", "writing"], ["feel", "feeling", "sense"], ["far off", "far", "distant", "far away"], ["earth", "land", "ground"], ["empty"], ["see", "look", "sight"]];
 const RH_ROOTS = RA_DATA.map(d => [...raToks(d), ...({ 0: ["astro"], 5: ["chron"] }[d.id] || [])]);
 const RH_STOP = new Set(["it", "its", "means", "mean", "meaning", "the", "a", "an", "to", "of", "is", "root", "word", "and", "or"]);
-const RH_TYPES = { mix: "🔀 Mixed", meaning: "🔤 Root → meaning", root: "💬 Meaning → root", word: "🧩 Word → root" };
+const RH_TYPES = { mix: "🔀 Mixed", meaning: "🔤 Root → meaning", root: "💬 Meaning → root", word: "🧩 Word → root", rootword: "🌱 Root → word" };
 const rhNorm = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ").trim();
 const rhKey = s => s.replace(/igh/g, "i").replace(/ph/g, "f").replace(/ck/g, "k").replace(/qu/g, "kw").replace(/c(?=[aou]|$)/g, "k").replace(/(.)\1+/g, "$1").replace(/(.)e$/, "$1");   // sounds-alike spelling
 function rhDist(a, b) {   // how many letters you'd have to add, drop, change or swap
@@ -14834,8 +14834,36 @@ function rhCheck(typed, correct, wrong) {
   const yes = !!ok.c && ok.d <= rhAllow(ok.c.s.length) && ok.d <= bad.d;
   return { yes, exact: yes && tries.includes(ok.c.s), spelled: ok.c?.s, id: yes ? ok.c.id : null, oops: !yes && bad.c && bad.d < ok.d && bad.d <= rhAllow(bad.c.s.length) ? bad.c : null };
 }
+// 🌱 Root → word: type any real word that has the root in it. Words from each root's list always count; so does any dictionary word
+// that really uses the root (each root has a rule, so look-alikes like "master" for ASTER or "duck" for DUC don't count). Close spelling counts too.
+/*NO_VOCAB*/
+const RH_WORDS = ["asteroid astronomy astronaut disaster asterisk astronomer astrology astral astrophysics disastrous", "audible audience auditorium audition audio audit auditory inaudible audiobook auditor", "automatic autopsy autobiography autopilot automobile autograph autonomy automation automated autocorrect", "benefit benign beneficial benefactor benevolent beneficiary benediction", "biography biology biome antibiotic biodegradable biologist autobiography biosphere symbiosis microbiology bionic biofuel", "chronic synchronize chronological chronicle anachronism chronometer synchronized", "dictate diction predict contradict dictionary verdict prediction dictator dictation edict jurisdiction", "deduce produce educate introduce conductor reduce product production conduct induce duct aqueduct abduct education introduction", "gene generate genesis generation genealogy genetic generous genius gender oxygen hydrogen generator genre progeny indigenous", "geography geology geometry geothermal geode geologist geographer", "autograph graph paragraph graphic biography photograph telegraph calligraphy graphite autobiography photography", "jury justice injustice jurisdiction justify juror injury perjury justification", "logic obloquy logical monologue dialogue biology geology apology prologue catalog analogy technology epilogue logo", "lucid translucent lucidity elucidate translucence", "manual manure manicure manufacture manipulate manuscript manage manner maneuver manifest emancipate", "demand recommend command mandatory mandate commander commandment commend", "missile transmission transmit submit mission admit commit permit emit omit dismiss promise permission intermission missionary emission", "omnivorous omnipotent omnipresent omniscient omnivore omnibus", "empathy pathetic sympathy telepathy apathy pathos sympathetic empathetic", "philosophy bibliophile philanthropy philadelphia audiophile philosopher philharmonic", "phonics telephone symphony microphone headphones saxophone xylophone megaphone phonetic earphones smartphone phone", "photograph photon photosynthesis photocopy photobomb photography photographer photo", "export portable transport import porter report support deport teleport transportation important portfolio", "acquit tranquil quiet tranquility acquittal quit requiem quietly", "ascribe script describe prescription scribble subscribe inscription manuscript transcript scribe description prescribe", "resent sensitive sensation consent sentiment sense sensible nonsense sentence dissent sensor sentimental", "telecast telephone telescope television teleport telegraph telepathy telecommute", "terrain territory terrarium extraterrestrial mediterranean terrace terrier subterranean terrestrial", "evacuate vacate vacuum vacant vacation vacancy evacuation", "visible video vision supervise evidence visit visual invisible television revise provide advise evident visor vista envision"].map(s => s.split(" "));
+/*END_NO_VOCAB*/
+const RH_WORD_RX = [/^(astro|astral|aster)|disast|asteri/, /audi/, /^auto/, /^bene(?!ath)|^benign/, /bio/, /chron/, /dict/, /duc(?!k)/, /^gen|ogen|genous|progen|degener|regener|engend/, /^geo/, /graph/, /^jur|^jus|injur|injus|perjur|abjur/, /logue|logy|logic|logist|^logo|ologi|analog|catalog|dialog|prolog|epilog|apolog|eulog/, /luci|lucen/, /^manu|^mani(cure|pul|fest)|^manag|^manacl|^maneuv|^manner|emancip/, /mand|commend/, /^(trans|sub|ad|com|per|e|o|re|inter|dis)(mit|miss)|^(mission|missile|missive)|^(pro|pre|compro)mis/, /omni/, /path(y|ies|etic|os|olog|ic)/, /phil/, /phon/, /phot/, /(ex|im|trans|re|sup|de|com|dis|tele)port|portab|^porter|portfolio/, /quiet|tranquil|acquit|^quit|requie|quiesc/, /scrib|script/, /sens|sentim|sentien|sentenc|consent|dissent|(^|[^p])resent|assent/, /^tele/, /terr(?!ib|if|or)/, /vac(?!cin)/, /vis(i|u|ta|or|e)|vid(e|eo)/];
+const RH_WORD_NO = [/^astern|^astring/, null, null, null, null, null, null, null, /^genie|genocid|genital/, null, null, /^jurass/, /^logs?$|logg|clog|blog|slog|flog/, /lucifer/, null, /amander|ymander|mandarin|mandolin|mandibl|mandrake|mandrill/, /^mitt|^miss(ed|es|ing|y|us)?$|promisc/, null, /psycho|sociopath/, null, /sipho/, null, null, null, null, /sensei/, null, /deterr|terrapin/, null, /divid|devis|visc|vivid|avid/];
+const RH_WORD_SETS = [];
+function rhWordSet(id) {   // every word that counts for a root (worked out once)
+  if (RH_WORD_SETS[id]) return RH_WORD_SETS[id];
+  const set = new Set(RH_WORDS[id].concat(RA_DATA[id].ex, RA_DATA[id].more.map(w => raPlain(w).toLowerCase())).map(w => w.toLowerCase()));
+  try { for (const w of sgDict().all) if (RH_WORD_RX[id].test(w) && !(RH_WORD_NO[id] && RH_WORD_NO[id].test(w))) set.add(w); } catch (e) {}
+  return RH_WORD_SETS[id] = set;
+}
+const rhMarkRoot = (w, id) => { const t = [...RH_ROOTS[id]].sort((a, b) => b.length - a.length).find(x => w.includes(x)); return t ? esc(w.toUpperCase()).replace(t.toUpperCase(), `<mark class="rh-mk">${t.toUpperCase()}</mark>`) : esc(w.toUpperCase()); };
+function rhWordCheck(typed, id) {
+  const toks = rhNorm(typed).split(" ").filter(w => w.length >= 2); if (!toks.length) return { yes: false };
+  const set = rhWordSet(id), real = w => { try { return sgDict().all.has(w); } catch (e) { return false; } };
+  const hit = toks.find(w => set.has(w)); if (hit) return { yes: true, exact: true, id, note: `✅ ${rhMarkRoot(hit, id)} has ${RA_DATA[id].r.toUpperCase()} in it!` };
+  for (const w of toks) {   // a misspelled word from the list still counts (but a real, different word doesn't)
+    if (real(w)) continue;
+    let best = null, bd = Infinity; for (const c of set) { if (Math.abs(c.length - w.length) > 3) continue; const d = Math.min(rhDist(w, c), rhDist(rhKey(w), rhKey(c))); if (d < bd) { bd = d; best = c; } }
+    if (best && bd <= rhAllow(best.length)) return { yes: true, exact: false, spelled: best, id, note: `✅ ${rhMarkRoot(best, id)} has ${RA_DATA[id].r.toUpperCase()} in it!` };
+  }
+  const w = toks.join(" "), other = toks.length === 1 ? RA_DATA.filter(x => x.id !== id && rhWordSet(x.id).has(w)).map(x => x.id) : [];
+  return { yes: false, oopsText: other.length ? `${rhMarkRoot(w, other[0])} uses ${other.map(j => `${RA_DATA[j].r.toUpperCase()} (“${RA_DATA[j].m}”)`).join(" and ")}, not ${RA_DATA[id].r.toUpperCase()}.` : real(w) ? `“${esc(w)}” doesn't use the root ${RA_DATA[id].r.toUpperCase()}.` : `“${esc(w)}” isn't a word I know with ${RA_DATA[id].r.toUpperCase()} in it.` };
+}
 function rhQuestion(id, type) {
   const d = RA_DATA[id], up = s => s.toUpperCase();
+  if (type === "rootword") return { id, type, ask: `Type a word that has the root <b>${up(d.r)}</b> in it <small class="rh-hint">(${up(d.r)} means “${d.m}”)</small>`, ph: "Type a word with this root…", answer: `🌱 Some words with ${up(d.r)}: ${RH_WORDS[id].slice(0, 6).map(w => rhMarkRoot(w, id)).join(", ")}`, check: typed => rhWordCheck(typed, id) };
   if (type === "meaning") {
     const mine = new Set(RH_SYN[id]);
     return { id, type, ask: `What does the root <b>${up(d.r)}</b> mean?`, ph: "Type what it means…", answer: `${up(d.r)} means “${d.m}”.`,
@@ -14998,7 +15026,7 @@ function startRootHyper() {
   }
   function ask() {
     if (G.mode === "round" && G.n >= G.total) return end();
-    const id = nextId(), type = H.qt === "mix" ? ["meaning", "root", "word"][rnd(0, 2)] : H.qt;
+    const id = nextId(), type = H.qt === "mix" ? ["meaning", "root", "word", "rootword"][rnd(0, 3)] : H.qt;
     G.q = rhQuestion(id, type); G.last = id; G.locked = false; G.t0 = performance.now(); hud();
     $("card").className = "rh-card";
     $("card").innerHTML = `<div class="rh-kind">${RH_TYPES[type]}</div><div class="rh-ask">${G.q.ask}</div>
@@ -15013,7 +15041,7 @@ function startRootHyper() {
     const typed = $("in").value;
     if (!skip && !rhNorm(typed)) { $("in").classList.remove("shake"); void $("in").offsetWidth; $("in").classList.add("shake"); focusIn(); return; }
     G.locked = true;
-    const q = G.q, d = RA_DATA[q.id], secs = (performance.now() - G.t0) / 1000, res = skip ? { yes: false } : rhCheck(typed, q.correct, q.wrong);
+    const q = G.q, d = RA_DATA[q.id], secs = (performance.now() - G.t0) / 1000, res = skip ? { yes: false } : q.check ? q.check(typed) : rhCheck(typed, q.correct, q.wrong);
     let pts = 0, lvMsg = "";
     if (res.yes) {
       const hyper = secs < 4; pts = 10 + (hyper ? 5 : secs < 8 ? 2 : 0) + Math.min(G.streak, 10);
@@ -15030,11 +15058,11 @@ function startRootHyper() {
       if (after !== before) lvMsg = `${after > before ? "⬆" : "⬇"} ${up(RA_DATA[rid].r)} is now <b>${RA_LV[after].t}</b> on your root sheet`;
     }
     G.n++; hud();
-    const oops = res.oops ? (q.type === "meaning" ? `“${esc(res.oops.s)}” is what ${RA_DATA.filter((x, j) => RH_SYN[j].includes(res.oops.s)).map(x => up(x.r)).join(" and ")} means.` : `${up(res.oops.s)} is a different root: ${up(RA_DATA[res.oops.id].r)} means “${RA_DATA[res.oops.id].m}”.`) : "";
+    const oops = res.oopsText || (res.oops ? (q.type === "meaning" ? `“${esc(res.oops.s)}” is what ${RA_DATA.filter((x, j) => RH_SYN[j].includes(res.oops.s)).map(x => up(x.r)).join(" and ")} means.` : `${up(res.oops.s)} is a different root: ${up(RA_DATA[res.oops.id].r)} means “${RA_DATA[res.oops.id].m}”.`) : "");
     $("card").className = "rh-card " + (res.yes ? "yes" : "no");
     $("card").innerHTML = `<p class="rh-res ${res.yes ? "yes" : "no"}">${res.yes ? (res.exact ? "✅ Yes!" : "✅ Yes! Close enough!") : skip ? "👀 Here's the answer" : "❌ Not quite"}</p>
       ${skip ? "" : `<p class="rh-you">You typed: <b>${esc(typed.trim())}</b></p>`}
-      ${res.yes && !res.exact ? `<p class="rh-spell">✏️ It's spelled “${esc(q.type === "meaning" ? res.spelled : up(res.spelled))}”.</p>` : ""}
+      ${res.yes && !res.exact ? `<p class="rh-spell">✏️ It's spelled “${esc(q.type === "meaning" || q.type === "rootword" ? res.spelled : up(res.spelled))}”.</p>` : ""}${res.note ? `<p class="rh-ans">${res.note}</p>` : ""}
       <p class="rh-ans">${q.answer}</p>
       ${oops ? `<p class="rh-oops">🔎 ${oops}</p>` : ""}
       ${pts ? `<span class="rh-pts${secs < 4 ? " hyper" : ""}">+${pts}${secs < 4 ? " ⚡ HYPER!" : ""}</span>` : ""}
