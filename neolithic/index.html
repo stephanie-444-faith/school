@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-<style>
+<style id="sa-style">
   /* Layout: game-show screen. Money HUD pinned on top, question in the middle, big colored answer tiles below.
      Deliberately single-theme (dark, like a classroom game on a projector). */
   :root {
@@ -764,6 +764,16 @@
   .fl-exp { background: #fff8ec; color: #3b1410; border-radius: 14px; padding: 12px 14px; margin-top: 10px; border: 3px solid #2f9a58; } .fl-exp.bad { border-color: #c0394c; } .fl-exp .big { font-size: 1.15rem; } .fl-ans { font-size: 1.4rem; font-weight: 800; margin: 6px 0; }
   .fl-steps { text-align: left; line-height: 2.1; margin: 6px 0 10px; padding-left: 22px; } .fl-steps small { color: #8a6a4a; } .fl-lvup { color: #1d6b3c; font-weight: 800; margin-bottom: 8px; } .fl-lvdown { color: #8a2433; font-weight: 700; margin-bottom: 8px; }
   .fl-play .chip { color: #fff8ec; } .fl-end { text-align: center; } .fl-endscore { font-size: 3rem; font-weight: 900; color: var(--gold); }
+  .save-state[role="button"] { cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; } .save-state[role="button"]::before { content: "💾 "; }
+  .ss-steps { line-height: 1.8; } .ss-btns { flex-wrap: wrap; } .ss-size { font-size: .9rem; }
+  .ss-code { width: 100%; height: 280px; box-sizing: border-box; font: 12px/1.4 ui-monospace, monospace; background: #0b1020; color: #b8f7c8; border: 2px solid var(--line); border-radius: 12px; padding: 10px; white-space: pre; }
+  .ss-past h3 { margin-top: 0; } .ss-find { display: block; width: 100%; box-sizing: border-box; font: inherit; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line); background: #0b1020; color: var(--ink); margin: 8px 0; }
+  .pl-list { display: flex; flex-direction: column; gap: 6px; } .pl-day { background: rgba(0,0,0,.18); border-radius: 12px; padding: 6px 10px; } .pl-day summary { cursor: pointer; font-weight: 800; }
+  .pl-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid rgba(255,255,255,.08); } .pl-row > span { flex: 1; min-width: 0; font-size: .92rem; } .pl-row[hidden], .pl-day[hidden] { display: none; }
+  .pl-wrap { position: fixed; inset: 0; z-index: 300; background: #000; display: flex; flex-direction: column; }
+  .pl-bar { flex: none; display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: #1b1033; color: #fff; border-bottom: 3px solid #ffd23f; min-height: 44px; } .pl-bar span { font-size: .85rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pl-exit { flex: none; border: 0; border-radius: 99px; padding: 8px 14px; font: inherit; font-weight: 800; background: #ffd23f; color: #3a2600; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,.4); }
+  .pl-frame { flex: 1; width: 100%; border: 0; background: #fff; } body.pl-on { overflow: hidden; }
   .gal-people { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
   .gal-person { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 8px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; cursor: pointer; } .gal-person span { font-size: 2rem; } .gal-person small { color: var(--ink-soft); } .gal-person:hover { border-color: var(--gold); }
   .gal-tile u { position: absolute; text-decoration: none; font-size: .72rem; font-weight: 800; background: rgba(0,0,0,.7); color: #fff; padding: 1px 6px; border-radius: 8px; }
@@ -1278,6 +1288,8 @@
 <footer><span class="save-state saving" id="save-state" role="status">Connecting save…</span> · <button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
 
 <script>
+// 💾 remember this page's own code (for "Save the Site"): this script, and the page markup as it was before anything changed it
+const SA_SCRIPT = document.currentScript, SA_BOOT_BODY = [...document.body.childNodes].filter(n => n.nodeType === 1 ? !/^(SCRIPT|STYLE|LINK|META|TITLE)$/.test(n.nodeName) && !n.id?.startsWith("claude") : false).map(n => n.outerHTML).join("\n");
 /* ---------- Study content (from the study guide) ---------- */
 const VOCAB = [
   { t: "canal", d: "A human-made waterway that carries water to crops or is used for travel.", why: "Canals let farmers irrigate fields far from the river, which helped them grow a surplus." },
@@ -2561,10 +2573,11 @@ async function cloudFlush() {
 function showSaveState() {
   const el = document.getElementById("save-state");
   if (!el) return;
+  if (!el.dataset.go) { el.dataset.go = 1; el.setAttribute("role", "button"); el.tabIndex = 0; el.addEventListener("click", () => { exitAll?.(); startSaveSite(); }); el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } }); }
   const busy = pending.size > 0;
   el.className = "save-state " + (saveState === "cloud" ? (busy ? "saving" : "ok") : saveState === "connecting" ? "saving" : "warn");
   el.textContent = saveState === "cloud" ? (busy ? "Saving…" : "✓ Progress saved") : saveState === "connecting" ? "Connecting save…" : "Saved on this device only";
-  el.title = saveState === "local" ? "Your progress is saved in this browser. To also save it online, open the page while signed in to Claude, with Contributor access or higher." : "";
+  el.title = (saveState === "local" ? "Your progress is saved in this browser. To also save it online, open the page while signed in to Claude, with Contributor access or higher. " : "") + "Tap to save a copy of the whole site.";
 }
 // Connect to the cloud save, merge it with this browser's saves, and keep them in sync.
 async function cloudConnect() {
@@ -11309,6 +11322,72 @@ function flRound(topic, T, box, skills, only) {
 }
 function flStamp(el, txt, good) { const r = el.getBoundingClientRect(), s = document.createElement("div"); s.className = "fl-stamp " + (good ? "good" : "bad"); s.textContent = txt; s.style.left = (r.left + r.width / 2 + scrollX) + "px"; s.style.top = (r.top + 10 + scrollY) + "px"; document.body.appendChild(s); setTimeout(() => s.remove(), 1100); }
 
+// 💾 Save the Site: the whole Study Arcade as one HTML file to copy, download or put on any web host (so it works without Claude),
+// and ⏪ Past lives: play any older version of the site (rebuilt from past-lives.json, which holds the first version plus every change after it).
+const SA_HEAD = `<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Study Arcade</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">`;
+function saExport() {
+  const css = document.getElementById("sa-style"), js = SA_SCRIPT ? SA_SCRIPT.textContent : "";
+  if (!css || !js) return null;
+  return `<!doctype html>\n<html lang="en">\n<head>\n${SA_HEAD}\n${css.outerHTML}\n</head>\n<body>\n${SA_BOOT_BODY}\n<script>${js}<\/script>\n</body>\n</html>\n`;
+}
+function saDownload(text, name) {
+  try { const url = URL.createObjectURL(new Blob([text], { type: "text/html" })), a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000); return true; } catch (e) { return false; }
+}
+async function saCopy(text, ta) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  try { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); if (document.execCommand("copy")) return true; } catch (e) {}
+  return false;
+}
+let PL_DATA = null, PL_LAST = null;
+async function plLoad() { if (PL_DATA) return PL_DATA; const r = await fetch("past-lives.json", { cache: "no-cache" }); if (!r.ok) throw new Error("missing"); return PL_DATA = await r.json(); }
+function plBuild(idx) {   // put a past version back together: start from the first one and add each change in order
+  const V = PL_DATA.versions; let lines, from = 1;
+  if (PL_LAST && PL_LAST.idx <= idx) { lines = PL_LAST.lines; from = PL_LAST.idx + 1; } else lines = V[0].base.slice();
+  for (let i = from; i <= idx; i++) { const out = []; let p = 0; for (const [at, del, ins] of V[i].ops) { for (; p < at; p++) out.push(lines[p]); for (const l of ins) out.push(l); p = at + del; } for (; p < lines.length; p++) out.push(lines[p]); lines = out; }
+  PL_LAST = { idx, lines }; return lines.join("\n");
+}
+// a past life runs in a sealed box with pretend storage, so it can never mess up the present site's saves
+const PL_SHIM = `<script>(function(){var m={},s={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null},get length(){return Object.keys(m).length}};["localStorage","sessionStorage"].forEach(function(n){try{Object.defineProperty(window,n,{value:s,configurable:true})}catch(e){}});})();<\/script>`;
+function plPlay(idx) {
+  const v = PL_DATA.versions[idx], html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${PL_SHIM}</head><body>${plBuild(idx)}</body></html>`;
+  document.getElementById("pl-wrap")?.remove();
+  const w = document.createElement("div"); w.id = "pl-wrap"; w.className = "pl-wrap";
+  w.innerHTML = `<div class="pl-bar"><button class="pl-exit" id="pl-exit" type="button">✕ Exit past life</button><span>⏪ Past life #${idx + 1} · ${esc(new Date(v.date + "T12:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }))} · ${esc(v.msg)}</span></div><iframe class="pl-frame" id="pl-frame" title="An older Study Arcade" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>`;
+  document.body.appendChild(w); document.body.classList.add("pl-on");
+  document.getElementById("pl-frame").srcdoc = html;
+  const exit = () => { w.remove(); document.body.classList.remove("pl-on"); document.removeEventListener("keydown", key, true); toast("⏩ Back to the present!"); };
+  const key = e => { if (e.key === "Escape") exit(); };
+  document.getElementById("pl-exit").addEventListener("click", exit); document.addEventListener("keydown", key, true);
+  document.getElementById("pl-exit").focus();
+}
+function startSaveSite() {
+  const text = saExport(), mb = text ? (new Blob([text]).size / 1048576).toFixed(1) : "?", lines = text ? text.split("\n").length.toLocaleString() : "?";
+  appScreen("💾 Save the Site", `<h2>💾 Save the Study Arcade</h2>
+    <p class="soft">Here's the whole Study Arcade as one HTML file. Put it on any web host (or just open it in a browser) and you can play it whenever you want, even without Claude!</p>
+    <ol class="ss-steps"><li>Tap <b>📋 Copy all the code</b> (or <b>⬇️ Download</b>).</li><li>Paste it into a new file called <b>index.html</b>, or into an HTML host like GitHub Pages, Netlify Drop or CodePen.</li><li>Open it in any web browser. That's it!</li></ol>
+    <div class="row ss-btns"><button class="btn gold" id="ss-copy" type="button">📋 Copy all the code</button><button class="btn" id="ss-dl" type="button">⬇️ Download index.html</button><button class="btn" id="ss-show" type="button">👀 Show the code</button></div>
+    <p class="soft ss-size">📦 ${mb} MB · ${lines} lines of code. In your own copy, progress saves in that browser. A few things need Claude (Hippo's AI answers, Ask Claude and the online save), and the rest works anywhere.</p>
+    <textarea class="ss-code" id="ss-code" readonly hidden spellcheck="false" aria-label="The Study Arcade's code"></textarea>
+    <div class="sl-card ss-past"><h3>⏪ Past lives</h3><p>Travel back in time and play any older version of the Study Arcade, all the way back to the very first one! A big ✕ Exit button in the top-left corner brings you back to now.</p>
+      <button class="btn go" id="ss-pastbtn" type="button">⏪ Show the past lives</button><div id="ss-past"></div></div>`);
+  const ta = document.getElementById("ss-code");
+  if (!text) { document.getElementById("ss-copy").disabled = document.getElementById("ss-dl").disabled = document.getElementById("ss-show").disabled = true; toast("The code couldn't be gathered on this page."); }
+  document.getElementById("ss-copy").addEventListener("click", async () => { if (await saCopy(text, ta)) { sfx.buy(); toast("📋 Copied the whole site! Paste it into index.html."); } else { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); toast("Press Ctrl+C (or ⌘+C) to copy the selected code."); } });
+  document.getElementById("ss-dl").addEventListener("click", () => { if (saDownload(text, "index.html")) toast("⬇️ Downloading index.html… (if nothing happens, use 📋 Copy instead)"); else toast("This page can't download files. Use 📋 Copy instead."); });
+  document.getElementById("ss-show").addEventListener("click", e => { const b = e.currentTarget; if (ta.hidden) { ta.value = text; ta.hidden = false; b.textContent = "🙈 Hide the code"; } else { ta.hidden = true; b.textContent = "👀 Show the code"; } });
+  document.getElementById("ss-pastbtn").addEventListener("click", async e => {
+    const b = e.currentTarget, box = document.getElementById("ss-past"); b.disabled = true; b.textContent = "⏳ Opening the time machine…";
+    try { await plLoad(); } catch (err) { box.innerHTML = `<p class="soft">😕 The past lives couldn't be loaded here. They live next to the main Study Arcade page, so they only work there.</p>`; b.disabled = false; b.textContent = "⏪ Try again"; return; }
+    if (!document.getElementById("ss-past")) return;
+    b.hidden = true; const V = PL_DATA.versions, fmtD = d => new Date(d + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+    const groups = []; for (let i = V.length - 1; i >= 0; i--) { const g = groups[groups.length - 1]; if (g && g.date === V[i].date) g.items.push(i); else groups.push({ date: V[i].date, items: [i] }); }
+    box.innerHTML = `<p class="soft">${V.length} past lives, from ${fmtD(V[0].date)} to ${fmtD(V[V.length - 1].date)}. The newest is at the top.</p><input class="ss-find" id="ss-find" placeholder="🔍 Find a past life (like “Hippo” or “Rummikub”)" autocomplete="off">
+      <div class="pl-list" id="pl-list">${groups.map(g => `<details class="pl-day"${g === groups[0] ? " open" : ""}><summary>📅 ${esc(fmtD(g.date))} <small>(${g.items.length})</small></summary>${g.items.map(i => `<div class="pl-row" data-txt="${esc(V[i].msg.toLowerCase())}"><span><b>#${i + 1}</b> ${esc(V[i].msg)}</span><button class="btn mini" data-play="${i}" type="button">▶ Play</button></div>`).join("")}</details>`).join("")}</div>`;
+    box.querySelectorAll("[data-play]").forEach(x => x.addEventListener("click", () => { x.textContent = "⏳"; setTimeout(() => { plPlay(+x.dataset.play); x.textContent = "▶ Play"; }, 30); }));
+    document.getElementById("ss-find").addEventListener("input", ev => { const q = ev.target.value.trim().toLowerCase(); box.querySelectorAll(".pl-row").forEach(r => r.hidden = !!q && !r.dataset.txt.includes(q)); box.querySelectorAll(".pl-day").forEach(d => { const any = [...d.querySelectorAll(".pl-row")].some(r => !r.hidden); d.hidden = !any; if (q && any) d.open = true; }); });
+  });
+}
+
 // 🌍 World Explorer
 function startWorldExplorer(tab = "flags") {
   appScreen("🌍 World Explorer", `<h2>🌍 World Explorer</h2>${naTabs([["flags", "🏳️ Flag quiz"], ["capitals", "🏛️ Capitals quiz"], ["cont", "🗺️ Which continent?"], ["atlas", "📖 Atlas"]], tab)}<div id="we"></div>`);
@@ -11392,6 +11471,7 @@ NEW_APPS.push(
   { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), isNew: true, added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
   { id: "gallery", emoji: "🖼️", name: "My Gallery", desc: "Save up to 1,000 pictures, drawings and videos, make new drawings, use them as backgrounds, and delete what you don't want.", start: () => startGallery(), isNew: true, added: "2026-11-12", kw: "gallery|my gallery|my pictures|my photos|my videos|my drawings|photo album" },
   { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), isNew: true, added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
+  { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude), and travel to its past lives to play any older version.", start: () => startSaveSite(), isNew: true, added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer(), isNew: true },
   { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
   { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
@@ -19815,7 +19895,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🍕 Fraction & Decimal Lab/, "chalk"], [/^🎞️ Moving Art/, "art"], [/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^💾 Save the Site/, "library"], [/^🍕 Fraction & Decimal Lab/, "chalk"], [/^🎞️ Moving Art/, "art"], [/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
