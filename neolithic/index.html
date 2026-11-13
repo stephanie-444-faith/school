@@ -729,6 +729,41 @@
   .ma-bar { justify-content: center; } .ma-emo { display: inline-flex; gap: 4px; align-items: center; } .ma-emo input { width: 3.4em; font-size: 1.2rem; text-align: center; padding: 4px; border-radius: 10px; border: 2px solid var(--line); background: #0b1020; color: var(--ink); }
   .ma-frames { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0; } .ma-lab { display: flex; align-items: center; gap: 6px; margin: 6px 0; flex-wrap: wrap; }
   .ma-selbox { background: var(--panel-2); border: 2px solid var(--gold); border-radius: 12px; padding: 10px 12px; margin-top: 10px; } .ma-selbox label { display: inline-flex; align-items: center; gap: 6px; margin: 6px 12px 4px 0; }
+  .fl-fr { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.05; margin: 0 2px; font-weight: 800; }
+  .fl-fr > span:first-child { border-bottom: 2px solid currentColor; padding: 0 3px 1px; } .fl-fr > span:last-child { padding: 1px 3px 0; }
+  .fl-mx { display: inline-flex; align-items: center; gap: 1px; white-space: nowrap; }
+  .fl-hero { text-align: center; padding: 14px; border-radius: 18px; color: #fff8ec; background: radial-gradient(circle at 20% 0%, rgba(255,210,63,.25), transparent 55%), linear-gradient(160deg, #7a1f1f, #3b1410); border: 3px solid #f2b632; margin-bottom: 10px; }
+  .fl-hero h2 { margin: 4px 0; } .fl-hero p { margin: 6px 0; } .fl-tiny { font-size: .85rem; opacity: .85; }
+  .fl-stats { display: flex; justify-content: center; gap: 10px; margin: 10px 0; } .fl-stats div { background: rgba(0,0,0,.28); border-radius: 12px; padding: 8px 14px; min-width: 76px; } .fl-stats b { display: block; font-size: 1.6rem; } .fl-stats small { opacity: .85; }
+  .fl-big { font-size: 1.15rem; padding: 12px 22px; }
+  .fl-learn .fl-ex { font-size: 1.05rem; line-height: 2; } .fl-learn svg { display: block; margin: 6px 0; max-width: 100%; height: auto; }
+  .fl-tab { border-collapse: collapse; } .fl-tab td { padding: 4px 10px; border: 1px solid rgba(255,255,255,.2); }
+  .fl-vert { display: inline-block; font: 700 1.15rem ui-monospace, monospace; background: #fff8ec; color: #3b1410; border-radius: 10px; padding: 8px 14px; margin: 6px 0; line-height: 1.35; }
+  .fl-maker input { width: 4.5em; font: inherit; font-size: 1.1rem; padding: 6px 8px; border-radius: 10px; border: 2px solid var(--line); background: #0b1020; color: var(--ink); margin-left: 6px; }
+  .fl-mrow { font-size: 1.3rem; margin: 10px 0; } .fl-big2 { font-size: 1.6rem; font-weight: 800; color: var(--gold); } .fl-pics svg { margin: 4px 8px 4px 0; vertical-align: middle; }
+  .fl-cheat h3 { margin: 12px 0 4px; } .fl-cheat p { margin: 0 0 6px; line-height: 1.7; }
+  .fl-sheet { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; } .fl-skill { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 8px 12px; flex-wrap: wrap; } .fl-skill > span:first-child { flex: 1; min-width: 150px; font-weight: 700; }
+  .fl-badge { font-size: .8rem; font-weight: 800; border-radius: 99px; padding: 2px 10px; white-space: nowrap; } .fl-badge.x { background: #5c1a26; color: #ffb3c0; } .fl-badge.t { background: #5c4a12; color: #ffe08a; } .fl-badge.y { background: #154d2c; color: #a6f5c3; }
+  .fl-pips { display: inline-flex; gap: 3px; } .fl-pips i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.18); } .fl-pips i.on { background: #ffd23f; }
+  .fl-h { font-weight: 800; margin: 10px 0 4px; }
+  .fl-play { position: relative; border-radius: 18px; padding: 12px; color: #3b1410; background: radial-gradient(circle at 80% 0%, rgba(255,210,63,.35), transparent 50%), repeating-conic-gradient(#c8372d 0 25%, #f4ead8 0 50%) 0 0 / 44px 44px; border: 3px solid #f2b632; box-shadow: inset 0 0 0 2000px rgba(59,20,16,.55); }
+  .fl-hud { display: flex; justify-content: space-between; gap: 8px; color: #fff8ec; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,.5); }
+  .fl-dots { display: flex; gap: 4px; margin: 8px 0; } .fl-dots i { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,.3); } .fl-dots i.gold { background: rgba(255,210,63,.55); } .fl-dots i.now { outline: 2px solid #fff; } .fl-dots i.hit { background: #3ddc84; } .fl-dots i.miss { background: #ff5a6e; }
+  .fl-card { background: #fff8ec; border-radius: 16px; padding: 14px; text-align: center; box-shadow: 0 6px 0 #d9c3a0; transition: transform .1s; } .fl-card.gold { box-shadow: 0 0 0 4px #ffd23f, 0 6px 0 #b8860b; } .fl-card.fire { box-shadow: 0 0 0 3px #ff7a1a, 0 6px 0 #d9c3a0; } .fl-card.shake { animation: rhShake .3s; }
+  .fl-type { font-size: .78rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #a0522d; } .fl-ask { font-size: clamp(1.3rem, 5vw, 1.9rem); font-weight: 800; margin: 8px 0; } .fl-ask small { font-size: .6em; font-weight: 600; color: #8a6a4a; }
+  .fl-model svg { max-width: 100%; height: auto; } .fl-clue { margin-top: 6px; font-weight: 700; color: #5a3a1a; } .fl-play .fl-clue .chip { color: #3b1410; background: #ffe9b8; border-color: #e2b45a; }
+  .fl-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 4px; }
+  .fl-box { position: relative; min-height: 78px; border-radius: 12px; border: 3px solid #a87a3c; background: linear-gradient(#f2d39a, #e1b46a); color: #3b1410; font: inherit; font-size: 1.35rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 0 #8a5a24; padding: 16px 8px 8px; transition: transform .1s; }
+  .fl-box:hover:not(:disabled) { transform: translateY(-2px); } .fl-box .fl-lid { position: absolute; left: 6px; right: 6px; top: 5px; height: 6px; border-radius: 3px; background: #c8372d; } .fl-box small { position: absolute; right: 8px; bottom: 4px; font-size: .7rem; opacity: .55; }
+  .fl-box.gold { border-color: #ffd23f; } .fl-box.right { background: linear-gradient(#b9f5cf, #6fdc98); border-color: #2f9a58; } .fl-box.wrong { background: linear-gradient(#ffc2c9, #ff8a98); border-color: #c0394c; } .fl-box.dim { opacity: .45; }
+  .fl-peel { text-align: center; color: #fff8ec; } .fl-peel span { display: inline-block; font-size: 2.4rem; animation: flBob 1.4s ease-in-out infinite; } .fl-peel small { display: block; opacity: .85; }
+  @keyframes flBob { 50% { transform: translateY(-6px) rotate(-8deg); } }
+  .fl-fly { position: fixed; z-index: 80; font-size: 2.2rem; pointer-events: none; transition: transform .4s cubic-bezier(.3,.7,.4,1); }
+  .fl-stamp { position: absolute; z-index: 81; transform: translate(-50%, -100%); font-weight: 900; font-size: 1.2rem; padding: 2px 10px; border-radius: 10px; pointer-events: none; animation: flStamp 1.1s ease-out forwards; } .fl-stamp.good { background: #2f9a58; color: #fff; } .fl-stamp.bad { background: #c0394c; color: #fff; }
+  @keyframes flStamp { 0% { opacity: 0; transform: translate(-50%, -60%) scale(.6); } 15% { opacity: 1; transform: translate(-50%, -100%) scale(1.1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -160%); } }
+  .fl-exp { background: #fff8ec; color: #3b1410; border-radius: 14px; padding: 12px 14px; margin-top: 10px; border: 3px solid #2f9a58; } .fl-exp.bad { border-color: #c0394c; } .fl-exp .big { font-size: 1.15rem; } .fl-ans { font-size: 1.4rem; font-weight: 800; margin: 6px 0; }
+  .fl-steps { text-align: left; line-height: 2.1; margin: 6px 0 10px; padding-left: 22px; } .fl-steps small { color: #8a6a4a; } .fl-lvup { color: #1d6b3c; font-weight: 800; margin-bottom: 8px; } .fl-lvdown { color: #8a2433; font-weight: 700; margin-bottom: 8px; }
+  .fl-play .chip { color: #fff8ec; } .fl-end { text-align: center; } .fl-endscore { font-size: 3rem; font-weight: 900; color: var(--gold); }
   .gal-people { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
   .gal-person { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 8px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; cursor: pointer; } .gal-person span { font-size: 2rem; } .gal-person small { color: var(--ink-soft); } .gal-person:hover { border-color: var(--gold); }
   .gal-tile u { position: absolute; text-decoration: none; font-size: .72rem; font-weight: 800; background: rgba(0,0,0,.7); color: #fff; padding: 1px 6px; border-radius: 8px; }
@@ -3102,7 +3137,8 @@ function startInfo(jump) {
       row("Ratios &amp; Rates", "Practice ratios, rates and unit rates, one part at a time.", "Math Center", "") +
       row("4th Grade Challenge Lounge", "Harder 4th-grade problems for kids who love a challenge.", "Math Center → Challenge Lounge", "") +
       row("The glowing portal", "Opens the Challenge Classroom.", "Math Center → the portal", "") +
-      row("🦆 Lucky Duck Math", "Fractions, big numbers, patterns, story problems, coins and more.", "Math Center → at the very bottom", "") +
+      row("🦆 Lucky Duck Math", "Fractions, big numbers, patterns, story problems, coins and more.", "Math Center → near the bottom", "") +
+      row("🍕 Fraction & Decimal Lab", "Turn fractions into decimals, and add, subtract, multiply and divide them. Learn how, then play Pizza Toss.", "Math Center → at the very bottom, under Lucky Duck Math", btn(() => startFractionLab(), "Go")) +
       `<div class="if-one">${btn(startMathCenter, "🧮 Open the Math Center")}</div>`)}
     ${sec("apps", "📱 Apps", "Every app lives in the <b>📱 App-App</b> (the first button on the home screen). The home screen shows 8 apps at a time, and they change at midnight. ⭐ means it's on the home screen today.",
       apps.map(a => row(`${a.emoji} ${esc(a.name)}${today.has(a.key) ? ` <em class="if-today">⭐ home screen today</em>` : ""}`, esc(INFO_DESC[a.key] || a.desc), "📱 App-App", btn(a.start, "Go"))).join("") +
@@ -8920,6 +8956,7 @@ function hippoAnswerAll(qRaw) {
   if (/^(what|whats|what's) (is |are )?(grammar|parts of speech|text structures?|text features?)\b/.test(q)) { const ga = NEW_APPS.find(x => x.id === "grammar"); return R("Grammar", "📝", "Grammar is the set of rules for how words, sentences, and punctuation fit together.", "It includes the 8 parts of speech (noun, pronoun, verb, adjective, adverb, preposition, conjunction, interjection), sentence types (simple, compound, complex, compound-complex), text structures, and text features. You can learn and practice all of it in the 📝 Grammar & Reading Lab!", hBig("📝", "#f1ecff", "Grammar"), { label: "📝 Open the Grammar & Reading Lab", fn: () => ga.start() }); }
   // 🏹 Greek & Latin roots from Emmett's sheet ("what does the root bio mean", "which root means star", "what roots are in photograph")
   if (/\broots?\b/.test(q) && !/\b(square|cube|cubed|plants?|trees?|hair)\b|root (canal|beer)/.test(q)) { const ra = raRootAnswer(q); if (ra) return R(...ra); }
+  if (/\bfraction (and |& )?decimal lab\b|\bfractions? lab\b|\bdecimals? lab\b|\bpizza toss\b/.test(q)) return R("Fraction & Decimal Lab", "🍕", "🍕 The Fraction & Decimal Lab is at the very bottom of the 🧮 Math Center, under Lucky Duck Math!", "Learn how to turn fractions into decimals, and how to add, subtract, multiply and divide fractions and decimals. Then practice with 🍕 Pizza Toss, and watch your skills go from ❌ to ✅.", hBig("🍕", "#b5462b", "Fraction Lab"), { label: "🍕 Open the Fraction & Decimal Lab", fn: () => startFractionLab() });
   if (/\blucky ?duck\b|\bduck math\b/.test(q)) return R("Lucky Duck Math", "🦆", "🦆 Lucky Duck Math is at the bottom of the 🧮 Math Center!", "A math buddy with fractions, big numbers, patterns, story problems, coins, making change, measuring, and adding, subtracting and multiplying. Get hints or see every step, and earn feathers to dress up Lucky Duck in the Duck shop.", hBig("🦆", "#0E7C86", "Lucky Duck Math"), { label: "🦆 Open Lucky Duck Math", fn: () => startLuckyDuck() });
   { const app = q.length < 60 && !/^(what|why|how|who|when|where) (is|are|was|do|does|did)\b/.test(q) && appSearch(q), on = app && homeToday().some(a => a.key === "na-" + app.id); if (app) return R(app.name, app.emoji, `${app.emoji} ${app.name} is in the 📱 App-App!`, on ? `${app.desc} It's on the home screen today, too!` : app.desc, hBig(app.emoji, "#2e1a4a", app.name), { label: `${app.emoji} Open ${app.name}`, fn: () => app.start() }); }
   // ➗ newer math and facts (checked first so the general patterns don't grab them)
@@ -10912,6 +10949,365 @@ function startMovingArt() {
   syncScene(); renderPanel(); setTool("move"); requestAnimationFrame(loop);
   maLoad().then(async data => { if (!document.getElementById("ma-cv")) return; if (data && data.items) { await restore(data); syncScene(); renderPanel(); drawSel(); } loaded = true; });
 }
+
+/* ---------- 🍕 Fraction & Decimal Lab: math helpers and question makers ---------- */
+const flR = (a, b) => a + Math.floor(Math.random() * (b - a + 1)), flPick = a => a[Math.floor(Math.random() * a.length)];
+const flGcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a || 1; };
+const flLcm = (a, b) => a / flGcd(a, b) * b;
+const flN = d => { let n; do n = flR(1, d - 1); while (flGcd(n, d) !== 1); return n; };   // a top that makes a fraction in simplest form
+const flF = (n, d) => { if (d < 0) { n = -n; d = -d; } const g = flGcd(n, d); return [n / g, d / g]; };   // simplest form
+const flKey = f => { const [n, d] = flF(f[0], f[1]); return n + "/" + d; };
+const flStack = (n, d) => `<span class="fl-fr"><span>${n}</span><span>${d}</span></span>`;
+// a fraction as a stacked fraction (a mixed number when it's more than 1, unless asked not to)
+function flHTML(f, mixed = true) {
+  const [n, d] = f; if (d === 1) return `${n}`; const w = Math.trunc(n / d), r = n % d;
+  if (r === 0) return `${w}`;
+  return mixed && w ? `<span class="fl-mx">${w}${flStack(r, d)}</span>` : flStack(n, d);
+}
+const flMixHTML = (w, n, d) => w ? `<span class="fl-mx">${w}${flStack(n, d)}</span>` : flStack(n, d);   // exactly as written (not simplified)
+// decimals are kept as whole numbers of ten-thousandths so the computer never makes rounding mistakes
+const FL_S = 10000;
+const flD = v => { const neg = v < 0; v = Math.abs(Math.round(v)); const w = Math.floor(v / FL_S), f = String(v % FL_S).padStart(4, "0").replace(/0+$/, ""); return (neg ? "-" : "") + w + (f ? "." + f : ""); };
+const flPlaces = v => { const s = flD(v); return s.includes(".") ? s.split(".")[1].length : 0; };
+function flChoices(ans, cands, near) {   // the answer plus 3 different wrong answers ({k: key, h: html})
+  const out = [ans], seen = new Set([ans.k]);
+  for (const c of cands) { if (out.length >= 4) break; if (c && !seen.has(c.k)) { seen.add(c.k); out.push(c); } }
+  for (let t = 0; out.length < 4 && t < 60; t++) { const c = near(t); if (c && !seen.has(c.k)) { seen.add(c.k); out.push(c); } }
+  return out.sort(() => Math.random() - .5);
+}
+const flFc = f => { if (!f || f[1] <= 0 || f[0] <= 0 || !isFinite(f[0]) || !isFinite(f[1])) return null; const s = flF(f[0], f[1]); return { k: s[0] + "/" + s[1], h: flHTML(s) }; };
+const flNearF = ans => t => { const [n, d] = ans, o = [[n + 1, d], [n + 2, d], [Math.max(1, n - 1), d], [n, d + 1], [n, d + 2], [n, Math.max(2, d - 1)], [n * 2 + 1, d * 2], [n + d, d], [n, d * 2], [n + 3, d + 1]]; return flFc(o[t % o.length]); };
+const flDc = v => (v == null || v <= 0 || !isFinite(v)) ? null : { k: flD(v), h: flD(v) };
+// pictures: a fraction bar and a pizza
+function flBar(n, d, col = "#ff8c42") {
+  if (d > 12 || n > 24) return ""; const bars = Math.max(1, Math.ceil(n / d)), W = 220, H = 24;
+  let s = `<svg class="fl-bar" viewBox="0 0 ${W + 4} ${bars * (H + 6)}" width="${W + 4}" height="${bars * (H + 6)}" aria-hidden="true">`;
+  for (let b = 0; b < bars; b++) for (let i = 0; i < d; i++) { const k = b * d + i; s += `<rect x="${2 + i * W / d}" y="${2 + b * (H + 6)}" width="${W / d}" height="${H}" fill="${k < n ? col : "#fff7ea"}" stroke="#7a4a22" stroke-width="2"/>`; }
+  return s + "</svg>";
+}
+function flPie(n, d) {
+  if (d > 16 || n > d * 3) return ""; const pies = Math.max(1, Math.ceil(n / d)), r = 34; let s = `<svg class="fl-pie" viewBox="0 0 ${pies * 78} 76" width="${pies * 78}" height="76" aria-hidden="true">`;
+  for (let p = 0; p < pies; p++) { const cx = 38 + p * 78, cy = 38; s += `<circle cx="${cx}" cy="${cy}" r="${r + 3}" fill="#e2a65a"/>`;
+    for (let i = 0; i < d; i++) { const k = p * d + i, a0 = -Math.PI / 2 + i * 2 * Math.PI / d, a1 = a0 + 2 * Math.PI / d, x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+      s += d === 1 ? `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${k < n ? "#ffd23f" : "#fff3d6"}" stroke="#b5462b" stroke-width="2"/>` : `<path d="M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="${k < n ? "#ffd23f" : "#fff3d6"}" stroke="#b5462b" stroke-width="2"/>`;
+      if (k < n && d > 1) { const am = (a0 + a1) / 2; s += `<circle cx="${(cx + r * .55 * Math.cos(am)).toFixed(1)}" cy="${(cy + r * .55 * Math.sin(am)).toFixed(1)}" r="${Math.max(2.5, 6 - d * .3)}" fill="#d64533"/>`; } } }
+  return s + "</svg>";
+}
+const flVert = (a, b, op, res) => { const L = [a, b, res].map(x => x.length), w = Math.max(...L) + 2; return `<pre class="fl-vert">${a.padStart(w)}\n${op} ${b.padStart(w - 2)}\n${"─".repeat(w)}\n${res.padStart(w)}</pre>`; };
+const flPad = (s, places) => { const [w, f = ""] = s.split("."); return places ? w + "." + f.padEnd(places, "0") : w; };
+// the 10 skills on the sheet
+const FL_SKILLS = { cfd: ["🔄", "Fraction → decimal"], cdf: ["🔄", "Decimal → fraction"], af: ["➕", "Adding fractions"], ad: ["➕", "Adding decimals"], sf: ["➖", "Subtracting fractions"], sd: ["➖", "Subtracting decimals"], mf: ["✖️", "Multiplying fractions"], md: ["✖️", "Multiplying decimals"], df: ["➗", "Dividing fractions"], dd: ["➗", "Dividing decimals"] };
+const FL_TOPICS = { conv: { e: "🔄", name: "Fractions ↔ Decimals", sk: ["cfd", "cdf"] }, add: { e: "➕", name: "Adding", sk: ["af", "ad"] }, sub: { e: "➖", name: "Subtracting", sk: ["sf", "sd"] }, mul: { e: "✖️", name: "Multiplying", sk: ["mf", "md"] }, div: { e: "➗", name: "Dividing", sk: ["df", "dd"] } };
+// make one question for a skill at a level (0 = new, 1 = getting there, 2 = know it)
+function flMake(sk, lv) {
+  const q = FL_GEN[sk](lv); q.sk = sk; return q;
+}
+const FL_REPEAT = { "1/3": "0.333…", "2/3": "0.666…", "1/6": "0.1666…", "5/6": "0.8333…", "1/9": "0.111…", "2/9": "0.222…", "4/9": "0.444…", "5/9": "0.555…", "7/9": "0.777…", "8/9": "0.888…" };
+const FL_GEN = {
+  cfd(lv) {   // fraction → decimal
+    let n, d, w = 0;
+    if (lv === 0) { d = flPick([10, 100, 2, 4, 5, 10]); n = flR(1, d - 1); }
+    else if (lv === 1) { d = flPick([8, 20, 25, 50, 4, 5]); n = flR(1, d - 1); }
+    else if (Math.random() < .45) { d = flPick([3, 6, 9]); n = flR(1, d - 1); }
+    else { d = flPick([2, 4, 5, 8, 10]); n = flR(1, d - 1); w = flR(1, 3); }
+    [n, d] = (d === 100 || d === 10) && !w ? [n, d] : flF(n, d); if (d === 1) { n = 1; d = 2; }
+    const key = n + "/" + d, rep = FL_REPEAT[key], v = rep ? null : Math.round((w * d + n) * FL_S / d);
+    const ask = `What is ${flMixHTML(w, n, d)} as a decimal?`;
+    if (rep) {
+      const wrong = [`0.${n}`, `0.${n}${d}`, `${n}.${d}`, `0.${d}`, FL_REPEAT[flPick(Object.keys(FL_REPEAT))]].map(s => ({ k: s, h: s }));
+      return { ask, ans: rep, choices: flChoices({ k: rep, h: rep }, wrong.filter(c => c.k !== rep), t => { const k = flPick(Object.keys(FL_REPEAT)); return { k: FL_REPEAT[k], h: FL_REPEAT[k] }; }),
+        hint: `Divide the top by the bottom: ${n} ÷ ${d}. Does it ever stop?`, model: flPie(n, d),
+        steps: [`Divide the top by the bottom: ${n} ÷ ${d} = ${rep}`, `The last digit repeats forever, so we write the dots (…) or a little line over it.`] };
+    }
+    const ans = flD(v), mult = 100 % d === 0 ? 100 / d : 1000 % d === 0 ? 1000 / d : 0, base = 100 % d === 0 ? 100 : 1000;
+    const steps = w ? [`The whole number ${w} stays in front of the decimal point.`] : [];
+    if (d === 10 || d === 100) steps.push(`The bottom is ${d}, so the top goes in the ${d === 10 ? "tenths" : "hundredths"} place: ${flStack(n, d)} = ${flD(Math.round(n * FL_S / d))}`);
+    else if (mult) steps.push(`Make the bottom ${base}: multiply the top and the bottom by ${mult}.`, `${flStack(n, d)} = ${flStack(n * mult, base)} = ${flD(Math.round(n * FL_S / d))}`);
+    else steps.push(`Divide the top by the bottom: ${n} ÷ ${d} = ${flD(Math.round(n * FL_S / d))}`);
+    if (w) steps.push(`So ${flMixHTML(w, n, d)} = ${w} + ${flD(Math.round(n * FL_S / d))} = ${ans}`);
+    const wrong = [w ? null : { k: `${n}.${d}`, h: `${n}.${d}` }, flDc(v * 10), flDc(v / 10), n < 10 ? flDc(w * FL_S + n * 1000) : null, flDc(w * FL_S + Math.round(d * FL_S / Math.max(1, n)) % FL_S)];
+    return { ask, ans, choices: flChoices({ k: ans, h: ans }, wrong, t => flDc(v + flPick([-1, 1]) * flPick([1000, 100, 500, 250]))), hint: mult ? `Can you make the bottom ${base}?` : `Divide the top by the bottom: ${n} ÷ ${d}`, model: flBar(n, d) || flPie(n, d), steps };
+  },
+  cdf(lv) {   // decimal → fraction
+    let f, w = 0;
+    if (lv === 0) f = flPick([[1, 2], [1, 4], [3, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 10], [3, 10], [7, 10], [9, 10]]);
+    else if (lv === 1) { const h = flPick([4, 6, 8, 12, 15, 24, 35, 45, 55, 65, 85, 95, 2, 5, 16, 36, 48, 64]); f = flF(h, 100); }
+    else { f = flPick([[1, 8], [3, 8], [5, 8], [7, 8], [1, 20], [3, 25], [1, 50], [1, 2], [1, 4], [3, 4]]); if (Math.random() < .5) w = flR(1, 3); }
+    const [n, d] = f, v = Math.round((w * d + n) * FL_S / d), dec = flD(v), places = flPlaces(v), base = 10 ** places, top = Math.round((v % FL_S) * base / FL_S), ans = [w * d + n, d];
+    const steps = [`${dec} has ${places} decimal place${places === 1 ? "" : "s"}, so it's ${top} ${["", "tenths", "hundredths", "thousandths"][places]}: ${flStack(top, base)}`];
+    const g = flGcd(top, base); if (g > 1) steps.push(`Simplify: divide the top and the bottom by ${g}: ${flStack(top, base)} = ${flStack(n, d)}`);
+    if (w) steps.push(`Put the whole number ${w} in front: ${dec} = ${flHTML(ans)}`);
+    const wrong = [flFc([w * top * 10 + top, base]), flFc([top, base * 10]), top > 1 ? flFc([1, top]) : null, flFc([w * d + d - n, d]), flFc([w * (n + 1) + n, d + 1])];
+    return { ask: `Which fraction is the same as <b>${dec}</b>? <small>(simplest form)</small>`, ans: flKey(ans), choices: flChoices(flFc(ans), wrong, flNearF(ans)), hint: `Read it out loud: ${dec} is ${top} ${["", "tenths", "hundredths", "thousandths"][places]}.`, model: flBar(n, d), steps };
+  },
+  af(lv) { return flAddSub(lv, 1); }, sf(lv) { return flAddSub(lv, -1); },
+  mf(lv) {
+    let A, B, kind;
+    if (lv === 0) { if (Math.random() < .5) { const k = flR(2, 6), d = flR(3, 9), n = flN(d); A = { w: k, n: 0, d: 1 }; B = { w: 0, n, d }; kind = "whole"; } else { A = { w: 0, n: 1, d: flR(2, 6) }; B = { w: 0, n: 1, d: flR(2, 6) }; kind = "unit"; } }
+    else if (lv === 1) { const d1 = flR(2, 9), d2 = flR(2, 9); A = { w: 0, n: flN(d1), d: d1 }; B = { w: 0, n: flN(d2), d: d2 }; kind = "frac"; }
+    else { const d1 = flPick([2, 3, 4]), d2 = flR(2, 6); A = { w: flR(1, 2), n: flN(d1), d: d1 }; B = { w: Math.random() < .5 ? 1 : 0, n: flN(d2), d: d2 }; kind = "mixed"; }
+    const fa = flImp(A), fb = flImp(B), ans = flF(fa[0] * fb[0], fa[1] * fb[1]);
+    const steps = [];
+    if (kind === "whole") steps.push(`Write the whole number as a fraction: ${A.w} = ${flStack(A.w, 1)}`);
+    if (kind === "mixed") steps.push(`Turn mixed numbers into improper fractions first: ${[A, B].filter(x => x.w).map(x => `${flMixHTML(x.w, x.n, x.d)} = ${flStack(...flImp(x))}`).join(", ")}`);
+    steps.push(`Multiply the tops: ${fa[0]} × ${fb[0]} = ${fa[0] * fb[0]}. Multiply the bottoms: ${fa[1]} × ${fb[1]} = ${fa[1] * fb[1]}.`, `${flStack(fa[0] * fb[0], fa[1] * fb[1])}${flSimpSteps(fa[0] * fb[0], fa[1] * fb[1])}`);
+    const wrong = [flFc([fa[0] * fb[1], fa[1] * fb[0]]), flFc([fa[0] * fb[0], fa[1] + fb[1]]), flFc([fa[0] * fb[1] + fb[0] * fa[1], fa[1] * fb[1]]), kind === "whole" ? flFc([B.n, A.w * B.d]) : null];
+    return { ask: `${flOpHTML(A)} × ${flOpHTML(B)} = ?`, ans: flKey(ans), choices: flChoices(flFc(ans), wrong, flNearF(ans)), hint: kind === "whole" ? `Think: ${A.w} groups of ${flStack(B.n, B.d)}` : "Multiply top × top and bottom × bottom.", model: kind === "whole" ? flBar(A.w * B.n, B.d) : "", steps };
+  },
+  df(lv) {
+    let A, B, kind;
+    if (lv === 0) { if (Math.random() < .6) { A = { w: flR(2, 5), n: 0, d: 1 }; B = { w: 0, n: 1, d: flR(2, 5) }; kind = "howmany"; } else { A = { w: 0, n: 1, d: flR(2, 5) }; B = { w: flR(2, 4), n: 0, d: 1 }; kind = "byWhole"; } }
+    else if (lv === 1) { const d1 = flR(2, 9), d2 = flR(2, 9); A = { w: 0, n: flN(d1), d: d1 }; B = { w: 0, n: flN(d2), d: d2 }; kind = "frac"; }
+    else { const d1 = flPick([2, 3, 4]), d2 = flR(2, 6); A = { w: flR(1, 3), n: flN(d1), d: d1 }; B = { w: 0, n: flN(d2), d: d2 }; kind = "mixed"; }
+    const fa = flImp(A), fb = flImp(B), ans = flF(fa[0] * fb[1], fa[1] * fb[0]);
+    const steps = [];
+    if (kind === "howmany") steps.push(`How many ${flStack(1, B.d)}s fit in ${A.w}? Each whole has ${B.d} of them, so ${A.w} × ${B.d} = ${A.w * B.d}.`);
+    if (kind === "mixed") steps.push(`Turn the mixed number into an improper fraction: ${flMixHTML(A.w, A.n, A.d)} = ${flStack(...fa)}`);
+    steps.push(`Keep, Change, Flip! Keep ${flStack(...fa)}, change ÷ to ×, and flip ${flStack(...fb)} to ${flStack(fb[1], fb[0])}.`, `${flStack(...fa)} × ${flStack(fb[1], fb[0])} = ${flStack(fa[0] * fb[1], fa[1] * fb[0])}${flSimpSteps(fa[0] * fb[1], fa[1] * fb[0])}`);
+    const wrong = [flFc([fa[0] * fb[0], fa[1] * fb[1]]), flFc([fa[1] * fb[0], fa[0] * fb[1]]), kind === "howmany" ? flFc([A.w, B.d]) : flFc([fa[0] * fb[1] + 1, fa[1] * fb[0]]), flFc([fa[0] + fb[1], fa[1] + fb[0]])];
+    return { ask: `${flOpHTML(A)} ÷ ${flOpHTML(B)} = ?`, ans: flKey(ans), choices: flChoices(flFc(ans), wrong, flNearF(ans)), hint: kind === "howmany" ? `How many ${flStack(1, B.d)}s fit in ${A.w}?` : "Keep, Change, Flip!", model: kind === "howmany" ? flBar(A.w * B.d, B.d, "#7ec8f2") : "", steps };
+  },
+  ad(lv) { return flDecAddSub(lv, 1); }, sd(lv) { return flDecAddSub(lv, -1); },
+  md(lv) {
+    let a, pa, b, pb;
+    if (lv === 0) { a = flR(2, 9); pa = 1; b = flR(2, 9); pb = 0; }
+    else if (lv === 1) { a = flR(2, 9); pa = 1; b = flR(2, 9); pb = 1; }
+    else { if (Math.random() < .5) { a = flPick([125, 25, 75, 15, 45, 12]); pa = 2; b = flR(2, 9); pb = 1; } else { a = flR(11, 39); pa = 1; b = flR(11, 25); pb = 1; } }
+    const A = a * FL_S / 10 ** pa, B = b * FL_S / 10 ** pb, v = Math.round(a * b * FL_S / 10 ** (pa + pb)), ans = flD(v), as = flD(A), bs = flD(B);
+    const steps = [`Multiply like whole numbers (ignore the dots for now): ${a} × ${b} = ${a * b}`, `Count the decimal places in the problem: ${pa} + ${pb} = ${pa + pb}.`, `Put ${pa + pb} decimal place${pa + pb === 1 ? "" : "s"} in the answer: ${ans}`];
+    const wrong = [flDc(v * 10), flDc(v / 10), flDc(v / 100), flDc(A + B), flDc(v * 100)];
+    return { ask: `${as} × ${bs} = ?`, ans, choices: flChoices({ k: ans, h: ans }, wrong, t => flDc(v + flPick([-1, 1]) * 10 ** flR(2, 4))), hint: `Multiply ${a} × ${b}, then count the decimal places.`, model: "", steps };
+  },
+  dd(lv) {
+    let q, qp, k, kp;   // answer q (with qp places) and the number we divide by, k (with kp places)
+    if (lv === 0) { q = flR(11, 49); qp = 1; k = flR(2, 6); kp = 0; }
+    else if (lv === 1) { q = flR(2, 12); qp = 0; k = flR(2, 9); kp = 1; }
+    else if (Math.random() < .5) { q = flR(11, 39); qp = 1; k = flPick([5, 2, 4]); kp = 1; } else { q = flR(4, 15); qp = 0; k = flR(2, 9); kp = 2; }
+    const Q = q * FL_S / 10 ** qp, K = k * FL_S / 10 ** kp, V = Math.round(Q * K / FL_S), ans = flD(Q), vs = flD(V), ks = flD(K);
+    const steps = kp ? [`Make the number you divide by a whole number: move both decimal points ${kp} place${kp === 1 ? "" : "s"} to the right.`, `${vs} ÷ ${ks} → ${flD(V * 10 ** kp)} ÷ ${k}`, `${flD(V * 10 ** kp)} ÷ ${k} = ${ans}`] : [`Divide like whole numbers, and keep the decimal point in the same spot: ${vs} ÷ ${k} = ${ans}`];
+    steps.push(`Check it: ${ans} × ${ks} = ${vs} ✓`);
+    const wrong = [flDc(Q * 10), flDc(Q / 10), flDc(Math.round(V * K / FL_S)), flDc(Q * 100)];
+    return { ask: `${vs} ÷ ${ks} = ?`, ans, choices: flChoices({ k: ans, h: ans }, wrong, t => flDc(Q + flPick([-1, 1]) * 10 ** flR(3, 4))), hint: kp ? `Move both decimal points ${kp} place${kp === 1 ? "" : "s"} so you divide by a whole number.` : `Divide ${flD(V).replace(".", "")} ÷ ${k} and keep the decimal point in place.`, model: "", steps };
+  }
+};
+const flImp = x => [x.w * x.d + x.n, x.d];
+const flOpHTML = x => x.n === 0 ? `${x.w}` : flMixHTML(x.w, x.n, x.d);
+function flSimpSteps(n, d) {
+  const [a, b] = flF(n, d); let s = "";
+  if (b === 1) return ` = ${a}${a !== n ? ` <small>(${n} ÷ ${d} = ${a})</small>` : ""}`;
+  if (a !== n) s += ` = ${flStack(a, b)} <small>(simplified by dividing by ${n / a})</small>`;
+  if (a > b) s += ` = ${flHTML([a, b])} <small>(a mixed number)</small>`;
+  return s;
+}
+function flAddSub(lv, sign) {
+  const add = sign > 0; let A, B, kind;
+  for (let t = 0; t < 60; t++) {
+    if (lv === 0) { const d = flR(3, 12); A = { w: 0, n: flR(1, d - 1), d }; B = { w: 0, n: flR(1, d - 1), d }; kind = "same"; }
+    else if (lv === 1) { const d1 = flPick([2, 3, 4, 5]), d2 = d1 * flPick([2, 3]); A = { w: 0, n: flN(d1), d: d1 }; B = { w: 0, n: flN(d2), d: d2 }; if (Math.random() < .5) [A, B] = [B, A]; kind = "multiple"; }
+    else if (Math.random() < .5) { let d1, d2; do { d1 = flPick([2, 3, 4, 5, 6, 8, 10]); d2 = flPick([3, 4, 5, 6, 8, 10, 12]); } while (d1 === d2 || d1 % d2 === 0 || d2 % d1 === 0); A = { w: 0, n: flN(d1), d: d1 }; B = { w: 0, n: flN(d2), d: d2 }; kind = "unlike"; }
+    else { const d1 = flPick([2, 3, 4, 5, 6, 8]), d2 = flPick([2, 3, 4, 6, 8, 12].filter(x => x % d1 === 0 || d1 % x === 0)); A = { w: flR(1, 4), n: flN(d1), d: d1 }; B = { w: flR(1, 3), n: flN(d2), d: d2 }; kind = "mixednum"; }
+    let fa = flImp(A), fb = flImp(B);
+    if (!add && fa[0] * fb[1] < fb[0] * fa[1]) { [A, B] = [B, A]; fa = flImp(A); fb = flImp(B); }
+    if (fa[0] * fb[1] + sign * fb[0] * fa[1] > 0) break;
+  }
+  const fa = flImp(A), fb = flImp(B), L = flLcm(fa[1], fb[1]), na = fa[0] * L / fa[1], nb = fb[0] * L / fb[1], top = na + sign * nb, ans = flF(top, L), op = add ? "+" : "−", word = add ? "Add" : "Subtract";
+  const steps = [];
+  if (kind === "mixednum") steps.push(`Turn the mixed numbers into improper fractions: ${flMixHTML(A.w, A.n, A.d)} = ${flStack(...fa)} and ${flMixHTML(B.w, B.n, B.d)} = ${flStack(...fb)}`);
+  if (fa[1] === fb[1]) steps.push(`The bottoms are the same (${L}), so just ${word.toLowerCase()} the tops: ${fa[0]} ${op} ${fb[0]} = ${top}. Keep the bottom.`);
+  else steps.push(`The bottoms are different, so find a common bottom (a common denominator): ${L}.`, `Change each fraction: ${flStack(...fa)} = ${flStack(na, L)} and ${flStack(...fb)} = ${flStack(nb, L)}`, `${word} the tops: ${na} ${op} ${nb} = ${top}, so it's ${flStack(top, L)}`);
+  const simp = flSimpSteps(top, L); if (simp) steps.push(`${flStack(top, L)}${simp}`);
+  const wrong = [flFc([fa[0] + sign * fb[0], fa[1] + (add ? fb[1] : -fb[1]) || fa[1] * 2]), flFc([fa[0] + sign * fb[0], Math.max(fa[1], fb[1])]), flFc([top + 1, L]), flFc([Math.max(1, top - 1), L]), kind === "mixednum" ? flFc([top + L, L]) : null];
+  return { ask: `${flOpHTML(A)} ${op} ${flOpHTML(B)} = ?`, ans: flKey(ans), choices: flChoices(flFc(ans), wrong, flNearF(ans)), hint: fa[1] === fb[1] ? `The bottoms match! Just ${word.toLowerCase()} the tops.` : `Find a common bottom first. Try ${L}.`, model: kind === "same" && fa[1] <= 12 && add ? flBar(fa[0], fa[1]) + flBar(fb[0], fb[1], "#7ec8f2") : "", steps };
+}
+function flDecAddSub(lv, sign) {
+  const add = sign > 0; let a, pa, b, pb;
+  if (lv === 0) { a = flR(1, 9); b = flR(1, 9); pa = pb = 1; if (!add && a < b) [a, b] = [b, a]; if (!add && a === b) a++; }
+  else if (lv === 1) { a = flR(11, 59); pa = 1; b = flR(5, 95); pb = 2; if (Math.random() < .5) { [a, b] = [b, a]; [pa, pb] = [pb, pa]; } }
+  else { a = flR(101, 999); pa = 2; b = flR(101, 999); pb = Math.random() < .5 ? 2 : 1; if (pb === 1) b = flR(11, 99); }
+  let A = a * FL_S / 10 ** pa, B = b * FL_S / 10 ** pb; if (!add && A <= B) { [A, B] = [B, A]; [a, b] = [b, a]; [pa, pb] = [pb, pa]; }
+  const v = A + sign * B, P = Math.max(pa, pb), as = flD(A), bs = flD(B), ans = flD(v), op = add ? "+" : "−";
+  const aP = flPad(as, P), bP = flPad(bs, P), rP = flPad(ans, P);
+  const steps = [`Line up the decimal points${pa !== pb ? " (add a zero so both have the same number of decimal places)" : ""}, then ${add ? "add" : "subtract"} like whole numbers:${flVert(aP, bP, add ? "+" : "−", rP)}`];
+  if (rP !== ans) steps.push(`${rP} = ${ans}`);
+  const mis = (() => { const x = +String(a), y = +String(b), r = x + sign * y; return r > 0 ? flDc(r * FL_S / 10 ** P) : null; })();   // the dots not lined up
+  const wrong = [pa !== pb ? mis : null, flDc(v + 1000), flDc(v - 1000), flDc(v + FL_S), flDc(v - FL_S), flDc(v + 100)];
+  return { ask: `${as} ${op} ${bs} = ?`, ans, choices: flChoices({ k: ans, h: ans }, wrong, t => flDc(v + flPick([-1, 1]) * flPick([1000, 100, FL_S]))), hint: "Line up the decimal points first!", model: "", steps };
+}
+// 📖 the lessons for each topic: [emoji, title, explanation (HTML), picture/example (HTML)]
+const FL_LEARN = {
+  conv: [
+    ["🔟", "What a decimal is", `A decimal is another way to write a fraction whose bottom is 10, 100 or 1000. The first place after the dot is <b>tenths</b>, then <b>hundredths</b>, then <b>thousandths</b>.`, `0.3 = 3 tenths = ${flStack(3, 10)} ${flBar(3, 10)}<br>0.07 = 7 hundredths = ${flStack(7, 100)}`],
+    ["➗", "Fraction → decimal: divide!", `A fraction bar means <b>divide</b>. Divide the top by the bottom. Shortcut: if you can make the bottom 10, 100 or 1000, just read it!`, `${flStack(3, 4)} → 3 ÷ 4 = <b>0.75</b><br>Or: ${flStack(3, 4)} = ${flStack(75, 100)} = <b>0.75</b> (×25 on top and bottom) ${flPie(3, 4)}`],
+    ["🗣️", "Decimal → fraction: read it out loud", `Say the decimal the long way, write it as a fraction, then simplify (divide the top and bottom by the same number).`, `0.75 is “seventy-five hundredths” → ${flStack(75, 100)} → divide by 25 → <b>${flStack(3, 4)}</b>`],
+    ["⭐", "Ones to remember", `These come up all the time. Learn them and you'll be super fast!`, `<table class="fl-tab"><tr><td>${flStack(1, 2)} = 0.5</td><td>${flStack(1, 4)} = 0.25</td><td>${flStack(3, 4)} = 0.75</td></tr><tr><td>${flStack(1, 5)} = 0.2</td><td>${flStack(1, 8)} = 0.125</td><td>${flStack(1, 10)} = 0.1</td></tr><tr><td>${flStack(1, 3)} = 0.333…</td><td>${flStack(2, 3)} = 0.666…</td><td>${flStack(1, 100)} = 0.01</td></tr></table>`],
+    ["🔁", "Repeating decimals", `Some fractions never stop when you divide. The digits repeat forever, so we write dots (…) or a little line over the repeating part.`, `${flStack(1, 3)} → 1 ÷ 3 = 0.3333… = 0.3̅ ${flPie(1, 3)}`],
+    ["🔢", "Mixed numbers", `The whole number stays in front of the decimal point. Only change the fraction part.`, `<span class="fl-mx">2${flStack(1, 4)}</span> = 2 + 0.25 = <b>2.25</b>`]
+  ],
+  add: [
+    ["🟰", "Same bottoms: add the tops", `When the bottoms (denominators) are the same, add the tops and keep the bottom.`, `${flStack(2, 7)} + ${flStack(3, 7)} = <b>${flStack(5, 7)}</b>${flBar(2, 7)}${flBar(3, 7, "#7ec8f2")}`],
+    ["🔀", "Different bottoms: find a common one", `You can only add same-size pieces. Change both fractions so they have the same bottom (a common denominator), then add the tops.`, `${flStack(1, 2)} + ${flStack(1, 3)} → ${flStack(3, 6)} + ${flStack(2, 6)} = <b>${flStack(5, 6)}</b>${flBar(3, 6)}${flBar(2, 6, "#7ec8f2")}`],
+    ["⚠️", "Never add the bottoms!", `A very common mistake: adding the tops AND the bottoms. Half a pizza plus a third of a pizza is NOT two fifths!`, `${flStack(1, 2)} + ${flStack(1, 3)} ≠ ${flStack(2, 5)} ❌ &nbsp; It's ${flStack(5, 6)} ✅`],
+    ["✂️", "Simplify and make mixed numbers", `Divide the top and bottom by the same number to simplify. If the top is bigger than the bottom, make it a mixed number.`, `${flStack(6, 8)} = <b>${flStack(3, 4)}</b> &nbsp;·&nbsp; ${flStack(7, 4)} = <b><span class="fl-mx">1${flStack(3, 4)}</span></b> ${flPie(7, 4)}`],
+    ["🔢", "Mixed numbers", `Add the whole numbers, add the fractions, then put them together (or turn them into improper fractions first).`, `<span class="fl-mx">1${flStack(1, 2)}</span> + <span class="fl-mx">2${flStack(1, 4)}</span> → 3 and ${flStack(2, 4)} + ${flStack(1, 4)} = <b><span class="fl-mx">3${flStack(3, 4)}</span></b>`],
+    ["📍", "Adding decimals: line up the dots", `Write the numbers so the decimal points line up. Add zeros so they have the same number of places, then add like whole numbers.`, `${flVert("2.50", "0.75", "+", "3.25")}`]
+  ],
+  sub: [
+    ["🟰", "Same bottoms: subtract the tops", `Subtract the tops and keep the bottom.`, `${flStack(5, 8)} − ${flStack(2, 8)} = <b>${flStack(3, 8)}</b>${flBar(5, 8)}`],
+    ["🔀", "Different bottoms: common denominator", `Make the bottoms the same first, then subtract the tops.`, `${flStack(3, 4)} − ${flStack(1, 3)} → ${flStack(9, 12)} − ${flStack(4, 12)} = <b>${flStack(5, 12)}</b>`],
+    ["🏦", "Borrowing with mixed numbers", `If the top fraction is too small, borrow 1 whole from the whole number and turn it into a fraction.`, `<span class="fl-mx">3${flStack(1, 4)}</span> − <span class="fl-mx">1${flStack(3, 4)}</span> → <span class="fl-mx">2${flStack(5, 4)}</span> − <span class="fl-mx">1${flStack(3, 4)}</span> = <span class="fl-mx">1${flStack(2, 4)}</span> = <b><span class="fl-mx">1${flStack(1, 2)}</span></b>`],
+    ["📍", "Subtracting decimals: line up and add zeros", `Line up the decimal points. Add zeros to the end so both numbers have the same number of places. Then subtract like whole numbers.`, `${flVert("7.20", "3.45", "−", "3.75")}`],
+    ["✅", "Check it", `Add your answer back to the number you took away. You should get the number you started with!`, `3.75 + 3.45 = 7.20 ✅`]
+  ],
+  mul: [
+    ["✖️", "Top × top, bottom × bottom", `Multiplying fractions is the easiest one! Multiply the tops, multiply the bottoms, then simplify.`, `${flStack(2, 3)} × ${flStack(3, 4)} = ${flStack(6, 12)} = <b>${flStack(1, 2)}</b>`],
+    ["🧺", "A whole number times a fraction", `Write the whole number over 1. Or think of it as groups: 3 × ${flStack(2, 5)} means 3 groups of ${flStack(2, 5)}.`, `3 × ${flStack(2, 5)} = ${flStack(3, 1)} × ${flStack(2, 5)} = ${flStack(6, 5)} = <b><span class="fl-mx">1${flStack(1, 5)}</span></b>${flBar(6, 5)}`],
+    ["✂️", "Shortcut: cancel first", `If a top and a bottom (even across from each other) share a number, divide them both before you multiply. Smaller numbers!`, `${flStack(4, 9)} × ${flStack(3, 8)} → cancel 4 & 8 (÷4) and 3 & 9 (÷3) → ${flStack(1, 3)} × ${flStack(1, 2)} = <b>${flStack(1, 6)}</b>`],
+    ["🔢", "Mixed numbers", `Turn mixed numbers into improper fractions first, then multiply.`, `<span class="fl-mx">1${flStack(1, 2)}</span> × ${flStack(2, 3)} = ${flStack(3, 2)} × ${flStack(2, 3)} = ${flStack(6, 6)} = <b>1</b>`],
+    ["📍", "Multiplying decimals: count the places", `Multiply like whole numbers. Then count the decimal places in BOTH numbers, and put that many places in the answer.`, `0.4 × 0.6 → 4 × 6 = 24 → 1 + 1 = 2 places → <b>0.24</b>`],
+    ["🤔", "Why does it get smaller?", `Multiplying by a fraction less than 1 means taking PART of something, so the answer is smaller than you started with.`, `Half of 8 is 4: 8 × ${flStack(1, 2)} = 4`]
+  ],
+  div: [
+    ["🍕", "What dividing by a fraction means", `${"3 ÷"} ${flStack(1, 4)} asks: how many quarters fit in 3 wholes? Each whole has 4 quarters, so 3 wholes have 12.`, `3 ÷ ${flStack(1, 4)} = <b>12</b>${flBar(12, 4, "#7ec8f2")}`],
+    ["🔄", "Keep, Change, Flip!", `Keep the first fraction, change ÷ to ×, and flip the second fraction upside down. Then multiply!`, `${flStack(2, 3)} ÷ ${flStack(1, 4)} → ${flStack(2, 3)} × ${flStack(4, 1)} = ${flStack(8, 3)} = <b><span class="fl-mx">2${flStack(2, 3)}</span></b>`],
+    ["🧩", "A fraction divided by a whole number", `Write the whole number over 1, then Keep, Change, Flip. Sharing half a pizza with 3 people gives each person a sixth.`, `${flStack(1, 2)} ÷ 3 = ${flStack(1, 2)} × ${flStack(1, 3)} = <b>${flStack(1, 6)}</b>`],
+    ["🔢", "Mixed numbers", `Turn mixed numbers into improper fractions first, then Keep, Change, Flip.`, `<span class="fl-mx">1${flStack(1, 2)}</span> ÷ ${flStack(3, 4)} = ${flStack(3, 2)} × ${flStack(4, 3)} = ${flStack(12, 6)} = <b>2</b>`],
+    ["📍", "Dividing decimals: move the dots", `Make the number you divide BY a whole number by moving its decimal point to the right. Move the other number's point the same number of places.`, `3.6 ÷ 0.4 → 36 ÷ 4 = <b>9</b>`],
+    ["✅", "Check it", `Multiply your answer by the number you divided by. You should get the number you started with!`, `9 × 0.4 = 3.6 ✅`]
+  ]
+};
+const FL_CHEAT = `<h3>🔄 Fractions ↔ Decimals</h3><p>Fraction → decimal: divide the top by the bottom (or make the bottom 10, 100 or 1000). Decimal → fraction: read it (0.75 = ${flStack(75, 100)}), then simplify.</p>
+  <h3>➕ ➖ Adding &amp; subtracting</h3><p>Fractions: get the SAME bottom, then add or subtract the tops. Keep the bottom. Never add the bottoms! Decimals: line up the decimal points.</p>
+  <h3>✖️ Multiplying</h3><p>Fractions: top × top, bottom × bottom, then simplify. Decimals: multiply like whole numbers, then count the decimal places.</p>
+  <h3>➗ Dividing</h3><p>Fractions: Keep, Change, Flip! Decimals: move both decimal points until you divide by a whole number.</p>
+  <h3>✂️ Always</h3><p>Simplify your answer, and turn top-heavy fractions into mixed numbers (${flStack(7, 4)} = <span class="fl-mx">1${flStack(3, 4)}</span>).</p>`;
+const FL_LV = [{ t: "❌ Not yet", c: "x" }, { t: "🤔 Getting there", c: "t" }, { t: "✅ Know it", c: "y" }];
+const flLevelOf = p => p >= 4 ? 2 : p >= 2 ? 1 : 0;
+const flGet = () => { const S = Object.assign({ pts: {}, best: 0, perfect: false, which: "both", rounds: 0 }, store.get("fl_v1", {})); Object.keys(FL_SKILLS).forEach(k => { if (S.pts[k] == null) S.pts[k] = 0; }); return S; };
+function flSheetHTML(keys) {
+  const S = flGet(); return `<div class="fl-sheet">${keys.map(k => { const lv = flLevelOf(S.pts[k]); return `<div class="fl-skill"><span>${FL_SKILLS[k][0]} ${FL_SKILLS[k][1]}</span><span class="fl-badge ${FL_LV[lv].c}">${FL_LV[lv].t}</span><span class="fl-pips">${[0, 1, 2, 3].map(i => `<i class="${i < S.pts[k] ? "on" : ""}"></i>`).join("")}</span></div>`; }).join("")}</div>`;
+}
+function flBack() { const back = document.getElementById("na-back"); if (!back) return; const nb = back.cloneNode(false); nb.textContent = "Back to Math Center"; back.replaceWith(nb); nb.addEventListener("click", () => { naCleanup(); startMathCenter(); }); }
+function startFractionLab(topic, tab = "learn") {
+  PROF_GAME = null; PROF_RESTART = null;
+  const S = flGet(), all = Object.keys(FL_SKILLS), lvs = all.map(k => flLevelOf(S.pts[k]));
+  if (!topic) {
+    appScreen("🍕 Fraction & Decimal Lab", `<div class="fl-hero"><h2>🍕 Fraction &amp; Decimal Lab</h2><p>Turn fractions into decimals, and add, subtract, multiply and divide them both. Learn how, then play 🍕 Pizza Toss to practice!</p>
+      <div class="fl-stats"><div><b style="color:#3ddc84">${lvs.filter(x => x === 2).length}</b><small>Know it</small></div><div><b style="color:#ffc93c">${lvs.filter(x => x === 1).length}</b><small>Getting there</small></div><div><b style="color:#ff6b85">${lvs.filter(x => x === 0).length}</b><small>Not yet</small></div></div>
+      <div class="row"><button class="btn gold fl-big" id="fl-playall" type="button">🍕 Pizza Toss: everything</button></div><p class="fl-tiny">Best round: ${S.best ? fmt(S.best) + " pts" : "—"}${S.perfect ? " · 🏆 Perfect round!" : ""}</p></div>
+      <div class="aa-grid">${Object.entries(FL_TOPICS).map(([k, t]) => `<button class="aa-card" data-t="${k}" type="button"><i>${t.e}</i><b>${t.name}</b><span>📖 Learn · 🍕 Pizza Toss · ${t.sk.map(s => FL_LV[flLevelOf(S.pts[s])].t.split(" ")[0]).join(" ")}</span></button>`).join("")}
+        <button class="aa-card" data-t="mix" type="button"><i>🔀</i><b>Mix it all up</b><span>Pizza Toss with every kind of question</span></button>
+        <button class="aa-card" data-t="sheet" type="button"><i>📊</i><b>My skills sheet</b><span>See what you know: ❌ → 🤔 → ✅</span></button>
+        <button class="aa-card" data-t="cheat" type="button"><i>📋</i><b>Cheat sheet</b><span>All the rules on one page</span></button></div>`);
+    flBack();
+    document.getElementById("fl-playall").addEventListener("click", () => startFractionLab("mix", "play"));
+    $app.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => startFractionLab(b.dataset.t, b.dataset.t === "mix" ? "play" : "learn")));
+    return;
+  }
+  const head = `<div class="row"><button class="chip" id="fl-up" type="button">⬅ All topics</button></div>`;
+  if (topic === "sheet" || topic === "cheat") {
+    appScreen("🍕 Fraction & Decimal Lab", `${head}<h2>${topic === "sheet" ? "📊 My skills sheet" : "📋 Cheat sheet"}</h2>${topic === "sheet" ? `<p class="soft">Every right answer moves a skill up (❌ Not yet → 🤔 Getting there → ✅ Know it). A miss moves it back a little. Questions get harder as you get better!</p>${flSheetHTML(all)}` : `<div class="sl-card fl-cheat">${FL_CHEAT}</div>`}`);
+    flBack(); document.getElementById("fl-up").addEventListener("click", () => startFractionLab()); return;
+  }
+  const T = FL_TOPICS[topic] || { e: "🔀", name: "Mix it all up", sk: all };
+  const tabs = topic === "mix" ? [["play", "🍕 Pizza Toss"]] : [["learn", "📖 Learn"], ["play", "🍕 Pizza Toss"]];
+  appScreen("🍕 Fraction & Decimal Lab", `${head}<h2>${T.e} ${T.name}</h2>${naTabs(tabs, tab)}<div id="fl-box"></div>`);
+  flBack(); bindTabs(t => startFractionLab(topic, t)); document.getElementById("fl-up").addEventListener("click", () => startFractionLab());
+  const box = document.getElementById("fl-box");
+  if (tab === "learn") {
+    box.innerHTML = (topic === "conv" ? `<div class="sl-card fl-maker"><h3>🧪 Fraction maker</h3><p class="soft">Change the top and bottom and watch it turn into a decimal!</p><div class="row"><label>Top <input type="number" id="fl-mn" min="0" max="24" value="3"></label><label>Bottom <input type="number" id="fl-md" min="1" max="24" value="4"></label></div><div id="fl-mout"></div></div>` : "")
+      + FL_LEARN[topic].map(([e, t, body, ex]) => `<div class="sl-card gl-learn fl-learn"><h3>${e} ${esc(t)}</h3><p>${body}</p><div class="gl-ex fl-ex">✏️ ${ex}</div></div>`).join("")
+      + `<div class="row"><button class="btn gold" id="fl-go" type="button">🍕 Practice with Pizza Toss</button></div>`;
+    document.getElementById("fl-go").addEventListener("click", () => startFractionLab(topic, "play"));
+    if (topic === "conv") {
+      const show = () => { let n = Math.max(0, Math.min(24, Math.round(+document.getElementById("fl-mn").value || 0))), d = Math.max(1, Math.min(24, Math.round(+document.getElementById("fl-md").value || 1)));
+        const [sn, sd] = flF(n, d), dec = n % d === 0 ? String(n / d) : FL_REPEAT[sn + "/" + sd] || (sd.toString().replace(/2|5/g, "").length === 0 || /^(1|2|4|5|8|10|16|20)$/.test(String(sd)) ? flD(Math.round(n * FL_S / d)) : (n / d).toFixed(4) + "…");
+        document.getElementById("fl-mout").innerHTML = `<div class="fl-mrow"><span class="fl-big2">${flStack(n, d)}</span> = <span class="fl-big2">${dec}</span> = <span class="fl-big2">${+(n / d * 100).toFixed(1)}%</span></div>${sn !== n ? `<p>Simplest form: ${flHTML([sn, sd])}</p>` : n > d ? `<p>As a mixed number: ${flHTML([n, d])}</p>` : ""}<div class="fl-pics">${flPie(n, d) || ""}${flBar(n, d) || ""}</div>`; };
+      ["fl-mn", "fl-md"].forEach(id => document.getElementById(id).addEventListener("input", show)); show();
+    }
+    return;
+  }
+  flPlaySetup(topic, T, box);
+}
+// 🍕 Pizza Toss setup: pick fractions, decimals or both, then 10 tosses
+function flPlaySetup(topic, T, box) {
+  const S = flGet(), ops = topic !== "conv", w = ["f", "d", "both"].includes(S.which) ? S.which : "both";
+  box.innerHTML = `<div class="fl-setup">${ops ? `<p class="fl-h">Which numbers?</p><div class="na-chips">${[["f", "🍕 Fractions"], ["d", "🔢 Decimals"], ["both", "🍕🔢 Both"]].map(([k, l]) => `<button class="chip${k === w ? " on" : ""}" data-w="${k}" type="button">${l}</button>`).join("")}</div>` : ""}
+    <p class="fl-h">Your skills</p>${flSheetHTML(T.sk)}
+    <div class="row"><button class="btn gold fl-big" id="fl-start" type="button">🍕 Start 10 tosses</button></div>
+    <p class="soft">Toss the slice into the box with the right answer! 💡 The coach's tip gives half points. Toss #10 is a 🌟 Golden Pizza worth double. Skills you don't know yet come up more.</p></div>`;
+  box.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => { const S2 = flGet(); S2.which = b.dataset.w; store.set("fl_v1", S2); flPlaySetup(topic, T, box); }));
+  const pool = () => { const wh = flGet().which; return T.sk.filter(k => !ops || wh === "both" || (wh === "f" ? !/d$/.test(k) || k === "cdf" : /d$/.test(k) && k !== "cfd") || topic === "conv"); };
+  document.getElementById("fl-start").addEventListener("click", () => flRound(topic, T, box, pool()));
+}
+function flRound(topic, T, box, skills, only) {
+  const S = flGet(), ROUND = 10;
+  const G = { i: 0, score: 0, streak: 0, best: 0, hits: 0, results: [], before: { ...S.pts }, skills: only || skills, over: false, q: null };
+  box.innerHTML = `<div class="fl-play" id="fl-play">
+    <div class="fl-hud"><span id="fl-n"></span><span id="fl-st"></span><span id="fl-sc">0 pts</span></div>
+    <div class="fl-dots" id="fl-dots">${Array.from({ length: ROUND }, (_, i) => `<i${i === ROUND - 1 ? ' class="gold"' : ""}></i>`).join("")}</div>
+    <div class="fl-card" id="fl-card"></div>
+    <div class="fl-boxes" id="fl-boxes"></div>
+    <div class="fl-peel"><span id="fl-slice">🍕</span><small>Tap a box to toss! (Keys 1–4 work too.)</small></div>
+    <div id="fl-explain" aria-live="polite"></div>
+    <div class="row"><button class="chip" id="fl-quit" type="button">⏹ Stop</button></div></div>`;
+  if (only) toast(`🎯 Just your ${only.length} skill${only.length === 1 ? "" : "s"} to practice!`);
+  const $f = id => document.getElementById("fl-" + id);
+  $f("quit").addEventListener("click", () => startFractionLab(topic === "mix" ? "mix" : topic, "play"));
+  const pick = () => { const S2 = flGet(), w = G.skills.map(k => [3, 2, 1][flLevelOf(S2.pts[k])] * (G.q && G.q.sk === k && G.skills.length > 1 ? .4 : 1)); let r = Math.random() * w.reduce((a, b) => a + b, 0); for (let i = 0; i < w.length; i++) { r -= w[i]; if (r <= 0) return G.skills[i]; } return G.skills[0]; };
+  const hud = () => { $f("n").textContent = `🍕 Toss ${Math.min(G.i + 1, ROUND)}/${ROUND}`; $f("st").textContent = G.streak >= 2 ? `🔥 ${G.streak} in a row` : ""; $f("sc").textContent = `${fmt(G.score)} pts`; };
+  const next = () => {
+    if (G.i >= ROUND) return end();
+    const sk = pick(), lv = flLevelOf(flGet().pts[sk]), q = flMake(sk, lv), gold = G.i === ROUND - 1; G.q = q; q.gold = gold; q.tip = false; q.done = false;
+    [...$f("dots").children].forEach((d, k) => d.classList.toggle("now", k === G.i)); hud();
+    $f("card").className = "fl-card" + (gold ? " gold" : G.streak >= 3 ? " fire" : "");
+    $f("card").innerHTML = `<div class="fl-type">${gold ? "🌟 Golden Pizza · double points · " : ""}${FL_SKILLS[sk][0]} ${FL_SKILLS[sk][1]}</div><div class="fl-ask">${q.ask}</div>${q.model ? `<div class="fl-model">${q.model}</div>` : ""}<div class="fl-clue" id="fl-clue"><button class="chip" id="fl-tip" type="button">💡 Coach's tip (half points)</button></div>`;
+    $f("tip").addEventListener("click", () => { if (q.done) return; q.tip = true; $f("clue").innerHTML = `💡 ${q.hint}`; });
+    $f("explain").innerHTML = "";
+    $f("boxes").innerHTML = q.choices.map((c, k) => `<button class="fl-box${gold ? " gold" : ""}" type="button" data-k="${esc(c.k)}"><span class="fl-lid"></span><span class="fl-val">${c.h}</span><small>${k + 1}</small></button>`).join("");
+    $f("boxes").querySelectorAll(".fl-box").forEach(b => b.addEventListener("click", () => toss(b)));
+  };
+  const toss = b => {
+    const q = G.q; if (!q || q.done) return; q.done = true;
+    $f("boxes").querySelectorAll(".fl-box").forEach(x => x.disabled = true);
+    const ok = b.dataset.k === q.ans, from = $f("slice").getBoundingClientRect(), to = b.getBoundingClientRect(), fly = document.createElement("span");
+    fly.className = "fl-fly"; fly.textContent = "🍕"; fly.style.left = from.left + "px"; fly.style.top = from.top + "px"; document.body.appendChild(fly);
+    tone(520, .06, "triangle", .05);
+    requestAnimationFrame(() => { fly.style.transform = `translate(${to.left + to.width / 2 - from.left - 16}px, ${to.top + to.height * .35 - from.top}px) rotate(540deg) scale(.8)`; });
+    setTimeout(() => { fly.remove(); if (!document.getElementById("fl-play")) return; resolve(b, ok); }, 420);
+  };
+  const resolve = (b, ok) => {
+    const q = G.q, S2 = flGet(), lvA = flLevelOf(S2.pts[q.sk]);
+    if (ok) { G.hits++; G.streak++; G.best = Math.max(G.best, G.streak); let pts = (q.tip ? 5 : 10) + (G.streak >= 3 ? 5 : 0); if (q.gold) pts *= 2; G.score += pts; sfx.right(); b.classList.add("right"); flStamp(b, q.gold ? "🌟 GOLDEN!" : G.streak >= 3 ? "🔥 ON FIRE!" : "🍕 DELIVERED!", true); S2.pts[q.sk] = Math.min(4, S2.pts[q.sk] + (q.tip ? 1 : 2)); }
+    else { G.streak = 0; sfx.wrong(); b.classList.add("wrong"); flStamp(b, "SPLAT!", false); $f("boxes").querySelectorAll(".fl-box").forEach(x => { if (x.dataset.k === q.ans) x.classList.add("right"); else if (x !== b) x.classList.add("dim"); }); S2.pts[q.sk] = Math.max(0, S2.pts[q.sk] - 2); $f("card").classList.add("shake"); setTimeout(() => $f("card")?.classList.remove("shake"), 300); }
+    store.set("fl_v1", S2); G.results.push({ sk: q.sk, ok }); $f("dots").children[G.i].className = ok ? "hit" : "miss"; hud();
+    const lvB = flLevelOf(S2.pts[q.sk]), right = q.choices.find(c => c.k === q.ans).h;
+    $f("explain").innerHTML = `<div class="fl-exp ${ok ? "good" : "bad"}"><b class="big">${ok ? (q.gold ? "🌟 Golden Pizza! Double points!" : `✅ Right!${G.streak >= 3 ? " Streak bonus!" : ""}`) : "❌ Not quite. Here's how:"}</b>
+      <div class="fl-ans">${q.ask.replace(" = ?", "").replace(/^What is (.+) as a decimal\?$/, "$1").replace(/^Which fraction is the same as (.+)\? <small>.*<\/small>$/, "$1")} = ${right}</div>
+      <ol class="fl-steps">${q.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+      ${lvB > lvA ? `<div class="fl-lvup">⬆️ LEVEL UP! ${FL_SKILLS[q.sk][1]}: <span class="fl-badge ${FL_LV[lvB].c}">${FL_LV[lvB].t}</span></div>` : lvB < lvA ? `<div class="fl-lvdown">${FL_SKILLS[q.sk][1]} slipped back to <span class="fl-badge ${FL_LV[lvB].c}">${FL_LV[lvB].t}</span>. Get it right again and it climbs back!</div>` : ""}
+      <button class="btn gold" id="fl-next" type="button">${G.i + 1 >= ROUND ? "See the score" : "Next toss ➜"}</button></div>`;
+    const nx = $f("next"); nx.focus({ preventScroll: true }); nx.addEventListener("click", () => { G.i++; next(); });
+    $f("explain").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+  const end = () => {
+    G.over = true; const S2 = flGet(), pct = G.hits / ROUND; S2.rounds = (S2.rounds || 0) + 1;
+    const newBest = G.score > (S2.best || 0); if (newBest) S2.best = G.score; if (G.hits === ROUND) S2.perfect = true; store.set("fl_v1", S2);
+    const ups = [...new Set(G.results.map(r => r.sk))].filter(k => flLevelOf(S2.pts[k]) > flLevelOf(G.before[k])), misses = [...new Set(G.results.filter(r => !r.ok).map(r => r.sk))];
+    keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); document.getElementById("fl-again")?.click(); } };
+    box.innerHTML = `<div class="fl-end"><h2>${pct === 1 ? "🏆 Math Master!" : pct >= .8 ? "🍕 Head Chef!" : pct >= .6 ? "👨‍🍳 Pizza Pro" : pct >= .4 ? "🧑‍🍳 Apprentice" : "🍞 Keep practicing!"}</h2>
+      <div class="fl-endscore">${fmt(G.score)} <small>pts</small></div><p>${G.hits} of ${ROUND} delivered${newBest ? " · 🎉 New best!" : ""} · best streak ${G.best}</p>
+      ${ups.length ? `<div class="sl-card"><h3>⬆️ Level ups</h3>${ups.map(k => `<div>${FL_SKILLS[k][0]} ${FL_SKILLS[k][1]}: <span class="fl-badge ${FL_LV[flLevelOf(S2.pts[k])].c}">${FL_LV[flLevelOf(S2.pts[k])].t}</span></div>`).join("")}</div>` : ""}
+      ${misses.length ? `<div class="sl-card"><h3>Practice these</h3>${misses.map(k => `<div>${FL_SKILLS[k][0]} ${FL_SKILLS[k][1]}</div>`).join("")}<button class="btn gold" id="fl-just" type="button">🎯 Practice just ${misses.length === 1 ? "this one" : "these " + misses.length}</button></div>` : ""}
+      <div class="row"><button class="btn go" id="fl-again" type="button">🍕 Play again</button><button class="btn" id="fl-learn" type="button">📖 Learn</button></div></div>`;
+    if (pct >= .8) sfx.buy();
+    document.getElementById("fl-again").addEventListener("click", () => flRound(topic, T, box, skills));
+    document.getElementById("fl-just")?.addEventListener("click", () => flRound(topic, T, box, skills, misses));
+    document.getElementById("fl-learn").addEventListener("click", () => startFractionLab(topic === "mix" ? "conv" : topic, "learn"));
+  };
+  keyHandler = e => { if (!document.getElementById("fl-play")) return; if (/^[1-4]$/.test(e.key) && G.q && !G.q.done) { $f("boxes").children[+e.key - 1]?.click(); } else if (e.key === "Enter" && document.getElementById("fl-next")) { e.preventDefault(); document.getElementById("fl-next").click(); } };
+  next();
+}
+function flStamp(el, txt, good) { const r = el.getBoundingClientRect(), s = document.createElement("div"); s.className = "fl-stamp " + (good ? "good" : "bad"); s.textContent = txt; s.style.left = (r.left + r.width / 2 + scrollX) + "px"; s.style.top = (r.top + 10 + scrollY) + "px"; document.body.appendChild(s); setTimeout(() => s.remove(), 1100); }
 
 // 🌍 World Explorer
 function startWorldExplorer(tab = "flags") {
@@ -17934,11 +18330,13 @@ function startMathCenter() {
       <span class="label">Math practice level</span><div class="chips">${chipRow(MATH_LEVELS, "mlevel")}</div>
       <span class="label">📏 Ratios & Rates (MCPS 6/7 Accelerated Math · MP1 · Unit 2: Introducing Ratios and Rates)</span><div class="chips">${chipRow(RATIO_PARTS, "rpart")}</div>
       <span class="label">🦆 More math</span><div class="aa-grid"><button class="aa-card" id="mc-duck"><i>🦆</i><b>Lucky Duck Math</b><span>A math buddy: fractions, big numbers, patterns, story problems, coins, measuring, and adding, subtracting and multiplying. Earn feathers to dress up Lucky Duck!</span></button></div>
+      <span class="label">🍕 Fractions &amp; Decimals</span><div class="aa-grid"><button class="aa-card" id="mc-frac"><i>🍕</i><b>Fraction &amp; Decimal Lab</b><span>Turn fractions into decimals, and add, subtract, multiply and divide them both. Learn how step by step, then practice with 🍕 Pizza Toss!</span></button></div>
     </div>`;
   bindHippoCalc();
   document.getElementById("hip-calc-x").hidden = true;
   document.getElementById("mc-home").addEventListener("click", showHome);
   document.getElementById("mc-duck").addEventListener("click", startLuckyDuck);
+  document.getElementById("mc-frac").addEventListener("click", () => startFractionLab());
   $app.querySelectorAll("[data-mlevel]").forEach(b => b.addEventListener("click", () => {
     choice.subject = "math"; choice.mlevel = b.dataset.mlevel; store.set("subject", "math"); store.set("mlevel", choice.mlevel);
     startStudy();
@@ -19417,7 +19815,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🎞️ Moving Art/, "art"], [/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🍕 Fraction & Decimal Lab/, "chalk"], [/^🎞️ Moving Art/, "art"], [/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
