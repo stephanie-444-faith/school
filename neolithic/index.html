@@ -724,6 +724,11 @@
   .bg-fab:hover, .bg-fab:focus-visible { border-color: var(--gold); outline: none; transform: scale(1.06); } .bg-fab[hidden] { display: none; }
   .bgsheet { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; justify-content: center; }
   .bgsheet-box { width: min(760px, 100%); max-height: 84vh; overflow-y: auto; background: var(--panel); border: 2px solid var(--line); border-bottom: 0; border-radius: 20px 20px 0 0; padding: 14px 16px 22px; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
+  .ma-stage { position: relative; margin: 8px 0; } #ma-cv { width: 100%; height: auto; aspect-ratio: 8 / 5; display: block; border-radius: 14px; touch-action: none; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.35); cursor: crosshair; }
+  .ma-tip { position: absolute; left: 8px; top: 8px; max-width: 80%; background: rgba(0,0,0,.6); color: #fff; font-size: .8rem; font-weight: 700; padding: 3px 9px; border-radius: 8px; pointer-events: none; }
+  .ma-bar { justify-content: center; } .ma-emo { display: inline-flex; gap: 4px; align-items: center; } .ma-emo input { width: 3.4em; font-size: 1.2rem; text-align: center; padding: 4px; border-radius: 10px; border: 2px solid var(--line); background: #0b1020; color: var(--ink); }
+  .ma-frames { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0; } .ma-lab { display: flex; align-items: center; gap: 6px; margin: 6px 0; flex-wrap: wrap; }
+  .ma-selbox { background: var(--panel-2); border: 2px solid var(--gold); border-radius: 12px; padding: 10px 12px; margin-top: 10px; } .ma-selbox label { display: inline-flex; align-items: center; gap: 6px; margin: 6px 12px 4px 0; }
   .gal-people { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
   .gal-person { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 8px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; cursor: pointer; } .gal-person span { font-size: 2rem; } .gal-person small { color: var(--ink-soft); } .gal-person:hover { border-color: var(--gold); }
   .gal-tile u { position: absolute; text-decoration: none; font-size: .72rem; font-weight: 800; background: rgba(0,0,0,.7); color: #fff; padding: 1px 6px; border-radius: 8px; }
@@ -10348,8 +10353,8 @@ let GAL_DB = null, GAL_PASTE = null;
 function galOpen() {
   if (GAL_DB) return GAL_DB;
   GAL_DB = new Promise((ok, no) => {
-    let r; try { r = indexedDB.open("sa_gallery", 1); } catch (e) { return no(e); }
-    r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains("meta")) d.createObjectStore("meta", { keyPath: "id" }).createIndex("who", "who"); if (!d.objectStoreNames.contains("blobs")) d.createObjectStore("blobs", { keyPath: "id" }); };
+    let r; try { r = indexedDB.open("sa_gallery", 2); } catch (e) { return no(e); }
+    r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains("meta")) d.createObjectStore("meta", { keyPath: "id" }).createIndex("who", "who"); if (!d.objectStoreNames.contains("blobs")) d.createObjectStore("blobs", { keyPath: "id" }); if (!d.objectStoreNames.contains("art")) d.createObjectStore("art", { keyPath: "id" }); };
     r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); r.onblocked = () => no(new Error("blocked"));
   });
   GAL_DB.catch(() => { GAL_DB = null; });
@@ -10605,6 +10610,300 @@ function startGalleryDraw() {
   document.getElementById("gd-save").addEventListener("click", async () => { const r = await galSaveCanvas(cv, document.getElementById("gd-name").value.trim().slice(0, 60) || "My drawing"); if (r.meta) startGallery("drawing"); });
 }
 
+// 🎞️ Moving Art: art that moves. Animals that really run (a zebra gallops, fish swim, birds flap), rivers that flow, weather,
+// and flipbook frames you draw yourself. Saved for each person on this device; "Save video" puts it in My Gallery.
+const MA_W = 800, MA_H = 500;
+const MA_THINGS = [["zebra", "🦓", "Zebra"], ["horse", "🐎", "Horse"], ["fish", "🐟", "Fish"], ["bird", "🐦", "Bird"], ["butterfly", "🦋", "Butterfly"], ["cloud", "☁️", "Cloud"], ["tree", "🌳", "Tree"], ["sun", "☀️", "Sun"]];
+const MA_SCENES = [["savanna", "🌾 Savanna"], ["valley", "🏞️ Green valley"], ["ocean", "🌊 Ocean"], ["night", "🌙 Night sky"], ["snow", "❄️ Snowy"], ["blank", "⬜ Blank"]];
+const MA_FX = [["rain", "🌧️ Rain"], ["snow", "❄️ Snow"], ["sparkle", "✨ Sparkles"], ["leaves", "🍂 Falling leaves"]];
+const MA_MOTION = { zebra: "across", horse: "across", fish: "across", bird: "across", butterfly: "across", cloud: "across", tree: "still", sun: "still", emoji: "across" };
+const MA_SIZE = { zebra: 180, horse: 180, fish: 70, bird: 56, butterfly: 50, cloud: 130, tree: 170, sun: 90, emoji: 70 };
+const MA_SPEED = { zebra: 120, horse: 130, fish: 60, bird: 90, butterfly: 50, cloud: 20, tree: 0, sun: 0, emoji: 70 };
+const maName = it => it.type === "river" ? "🌊 River" : it.type === "emoji" ? `${it.e} Emoji` : (([, e, n]) => `${e} ${n}`)(MA_THINGS.find(t => t[0] === it.type) || ["", "❓", "Thing"]);
+const maLoad = () => galOpen().then(d => galReq(d.transaction("art").objectStore("art").get("cur_" + galWho()))).then(r => r && r.data).catch(() => null);
+const maStore = data => galTx(["art"], t => t.objectStore("art").put({ id: "cur_" + galWho(), data, at: Date.now() })).catch(() => {});
+function maRR(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
+// 🦓🐎 a zebra or horse, facing right, galloping (ph = where the legs are in their swing)
+function maHorse(c, ph, s, zebra) {
+  const body = zebra ? "#fbfbfb" : "#a0602f", dark = zebra ? "#1c1c1c" : "#4b2a13", lw = Math.max(1.5, s * .012);
+  const bw = s * .6, bh = s * .26, legL = s * .36, legW = s * .072, by = -Math.abs(Math.sin(ph)) * s * .025;
+  c.lineWidth = lw; c.strokeStyle = "#1c1c1c"; c.lineJoin = "round"; c.lineCap = "round";
+  const leg = (x, p, far) => {
+    const a = Math.sin(ph + p) * .55, k = Math.max(0, Math.sin(ph + p + 1.3)) * .8;
+    c.save(); c.translate(x, by + bh * .2); c.rotate(a);
+    c.fillStyle = far ? (zebra ? "#d6d6d6" : "#7b4520") : body;
+    maRR(c, -legW / 2, 0, legW, legL * .55, legW * .45); c.fill(); c.stroke();
+    if (zebra) { c.fillStyle = dark; c.fillRect(-legW / 2 + lw, legL * .2, legW - lw * 2, legL * .07); c.fillRect(-legW / 2 + lw, legL * .36, legW - lw * 2, legL * .07); }
+    c.translate(0, legL * .5); c.rotate(-k);
+    c.fillStyle = far ? (zebra ? "#d6d6d6" : "#7b4520") : body;
+    maRR(c, -legW * .42, 0, legW * .84, legL * .48, legW * .35); c.fill(); c.stroke();
+    if (zebra) { c.fillStyle = dark; c.fillRect(-legW * .42 + lw, legL * .14, legW * .84 - lw * 2, legL * .06); c.fillRect(-legW * .42 + lw, legL * .28, legW * .84 - lw * 2, legL * .06); }
+    c.fillStyle = "#222"; maRR(c, -legW * .5, legL * .44, legW, legL * .1, 3); c.fill();
+    c.restore();
+  };
+  leg(-bw * .3, Math.PI * .6, true); leg(bw * .3, Math.PI * 1.6, true);
+  c.save(); c.translate(-bw * .47, by - bh * .22); c.rotate(.55 + Math.sin(ph * 1.3) * .3); c.strokeStyle = zebra ? "#444" : dark; c.lineWidth = lw * 1.6;   // tail with a tuft
+  c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(-s * .04, s * .08, -s * .03, s * .17); c.stroke(); c.fillStyle = dark; c.beginPath(); c.ellipse(-s * .03, s * .2, s * .022, s * .05, .2, 0, Math.PI * 2); c.fill(); c.restore();
+  const neck = () => { c.beginPath(); c.moveTo(bw * .22, by - bh * .3); c.quadraticCurveTo(bw * .38, by - bh * 1.1, bw * .5, by - bh * 1.45); c.lineTo(bw * .66, by - bh * 1.2); c.quadraticCurveTo(bw * .55, by - bh * .6, bw * .46, by + bh * .1); c.closePath(); };
+  c.fillStyle = body; neck(); c.fill();
+  if (zebra) { c.save(); neck(); c.clip(); c.fillStyle = dark; for (let i = 0; i < 5; i++) { const yy = by - bh * (1.35 - i * .3); c.beginPath(); c.moveTo(bw * .2, yy); c.lineTo(bw * .7, yy - bh * .18); c.lineTo(bw * .7, yy - bh * .07); c.lineTo(bw * .2, yy + bh * .1); c.closePath(); c.fill(); } c.restore(); }
+  neck(); c.stroke();
+  c.fillStyle = body; c.beginPath(); c.ellipse(0, by, bw / 2, bh / 2, 0, 0, Math.PI * 2); c.fill();
+  if (zebra) { c.save(); c.beginPath(); c.ellipse(0, by, bw / 2, bh / 2, 0, 0, Math.PI * 2); c.clip(); c.fillStyle = dark;
+    for (let i = -4; i <= 4; i++) { const sx = i * bw * .105; c.beginPath(); c.moveTo(sx - bw * .025, by - bh / 2); c.quadraticCurveTo(sx + bw * .06, by - bh * .05, sx - bw * .01, by + bh / 2); c.lineTo(sx + bw * .035, by + bh / 2); c.quadraticCurveTo(sx + bw * .11, by - bh * .05, sx + bw * .03, by - bh / 2); c.closePath(); c.fill(); }
+    c.restore(); }
+  c.beginPath(); c.ellipse(0, by, bw / 2, bh / 2, 0, 0, Math.PI * 2); c.stroke();
+  c.fillStyle = dark; for (let i = 0; i < 6; i++) { const u = i / 5, mx = bw * (.25 + .27 * u), my = by - bh * (.45 + .95 * u) + Math.sin(ph * 2 + i) * s * .006; c.beginPath(); c.ellipse(mx - s * .015, my - s * .012, s * .022, s * .042, -.7, 0, Math.PI * 2); c.fill(); }   // mane
+  c.save(); c.translate(bw * .58, by - bh * 1.38); c.rotate(.85 + Math.sin(ph) * .06);   // head, tipped down like a real zebra's
+  const head = () => { c.beginPath(); c.ellipse(s * .085, s * .01, s * .135, s * .064, 0, 0, Math.PI * 2); };
+  c.fillStyle = body; head(); c.fill();
+  if (zebra) { c.save(); head(); c.clip(); c.fillStyle = dark; for (let i = 0; i < 4; i++) c.fillRect(s * (-.02 + i * .045), -s * .07, s * .018, s * .14); c.restore(); }
+  head(); c.stroke();
+  c.fillStyle = zebra ? "#2a2a2a" : "#3a200e"; c.beginPath(); c.ellipse(s * .19, s * .016, s * .05, s * .052, 0, 0, Math.PI * 2); c.fill();
+  c.fillStyle = "#fff"; c.beginPath(); c.arc(s * .05, -s * .018, s * .02, 0, Math.PI * 2); c.fill(); c.fillStyle = "#111"; c.beginPath(); c.arc(s * .054, -s * .016, s * .013, 0, Math.PI * 2); c.fill();
+  c.fillStyle = body; c.beginPath(); c.moveTo(-s * .03, -s * .04); c.lineTo(-s * .02, -s * .125); c.lineTo(s * .02, -s * .045); c.closePath(); c.fill(); c.stroke();
+  c.restore();
+  leg(-bw * .36, 0, false); leg(bw * .34, Math.PI, false);
+}
+function maFish(c, ph, s) {
+  const w = s, h = s * .55;
+  c.save(); c.translate(-w * .36, 0); c.rotate(Math.sin(ph * 2.4) * .4); c.fillStyle = "#ff8c1a"; c.beginPath(); c.moveTo(4, 0); c.lineTo(-w * .3, -h * .45); c.lineTo(-w * .22, 0); c.lineTo(-w * .3, h * .45); c.closePath(); c.fill(); c.restore();
+  c.fillStyle = "#ff9f2e"; c.beginPath(); c.ellipse(0, 0, w * .42, h * .42, 0, 0, Math.PI * 2); c.fill();
+  c.save(); c.beginPath(); c.ellipse(0, 0, w * .42, h * .42, 0, 0, Math.PI * 2); c.clip(); c.fillStyle = "#fff"; c.fillRect(-w * .05, -h, w * .08, h * 2); c.fillRect(w * .16, -h, w * .06, h * 2); c.restore();
+  c.fillStyle = "#e86f00"; c.beginPath(); c.moveTo(-w * .05, -h * .38); c.quadraticCurveTo(w * .05, -h * .75 - Math.sin(ph * 2) * h * .08, w * .14, -h * .36); c.closePath(); c.fill();
+  c.fillStyle = "#fff"; c.beginPath(); c.arc(w * .26, -h * .08, w * .065, 0, Math.PI * 2); c.fill(); c.fillStyle = "#111"; c.beginPath(); c.arc(w * .28, -h * .08, w * .033, 0, Math.PI * 2); c.fill();
+}
+function maBird(c, ph, s) {
+  const f = Math.sin(ph * 2.6);
+  c.strokeStyle = "#23233a"; c.lineWidth = Math.max(2, s * .09); c.lineCap = "round"; c.lineJoin = "round";
+  c.beginPath(); c.moveTo(-s * .55, -f * s * .38); c.quadraticCurveTo(-s * .25, -s * .14 - f * s * .18, 0, 0); c.quadraticCurveTo(s * .25, -s * .14 - f * s * .18, s * .55, -f * s * .38); c.stroke();
+  c.fillStyle = "#3a6fd8"; c.beginPath(); c.ellipse(0, s * .03, s * .14, s * .09, 0, 0, Math.PI * 2); c.fill();
+  c.fillStyle = "#ffb000"; c.beginPath(); c.moveTo(s * .13, s * .02); c.lineTo(s * .22, s * .04); c.lineTo(s * .13, s * .07); c.closePath(); c.fill();
+}
+function maButterfly(c, ph, s) {
+  const k = .25 + .75 * Math.abs(Math.cos(ph * 3));
+  c.save(); c.scale(k, 1);
+  [[-1, "#ff5fa2"], [1, "#ff5fa2"]].forEach(([d]) => { c.fillStyle = "#ff5fa2"; c.beginPath(); c.ellipse(d * s * .24, -s * .14, s * .24, s * .2, d * .4, 0, Math.PI * 2); c.fill(); c.fillStyle = "#ffd23f"; c.beginPath(); c.ellipse(d * s * .2, s * .15, s * .16, s * .13, -d * .4, 0, Math.PI * 2); c.fill(); c.fillStyle = "#fff"; c.beginPath(); c.arc(d * s * .26, -s * .16, s * .06, 0, Math.PI * 2); c.fill(); });
+  c.restore();
+  c.fillStyle = "#3b2a1a"; c.beginPath(); c.ellipse(0, 0, s * .05, s * .3, 0, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = "#3b2a1a"; c.lineWidth = 2; c.beginPath(); c.moveTo(0, -s * .28); c.lineTo(-s * .1, -s * .45); c.moveTo(0, -s * .28); c.lineTo(s * .1, -s * .45); c.stroke();
+}
+function maCloud(c, ph, s) { c.fillStyle = "rgba(255,255,255,.95)"; [[-.3, .05, .22], [-.08, -.08, .3], [.2, .02, .24], [.38, .1, .16], [-.45, .14, .14]].forEach(([x, y, r]) => { c.beginPath(); c.arc(x * s, y * s, r * s, 0, Math.PI * 2); c.fill(); }); c.fillRect(-s * .45, s * .05, s * .85, s * .23); }
+function maTree(c, ph, s) {
+  c.fillStyle = "#7a4a22"; maRR(c, -s * .06, -s * .1, s * .12, s * .5, 4); c.fill();
+  c.save(); c.translate(0, -s * .1); c.rotate(Math.sin(ph * .8) * .05);
+  [["#2f8f3a", 0, -s * .25, s * .28], ["#3aa547", -s * .18, -s * .12, s * .2], ["#3aa547", s * .18, -s * .12, s * .2], ["#46b956", 0, -s * .42, s * .2]].forEach(([col, x, y, r]) => { c.fillStyle = col; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); });
+  c.restore();
+}
+function maSun(c, ph, s) {
+  c.save(); c.rotate(ph * .25); c.strokeStyle = "#ffb000"; c.lineWidth = s * .06; c.lineCap = "round";
+  for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, r1 = s * .38, r2 = s * (.5 + .05 * Math.sin(ph * 2 + i)); c.beginPath(); c.moveTo(Math.cos(a) * r1, Math.sin(a) * r1); c.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); c.stroke(); }
+  c.restore(); c.fillStyle = "#ffd23f"; c.beginPath(); c.arc(0, 0, s * .32, 0, Math.PI * 2); c.fill();
+}
+const MA_DRAW = { zebra: (c, p, s) => maHorse(c, p, s, true), horse: (c, p, s) => maHorse(c, p, s, false), fish: maFish, bird: maBird, butterfly: maButterfly, cloud: maCloud, tree: maTree, sun: maSun };
+// the world behind everything
+function maScene(c, scene, T) {
+  const g = (a, b, y0 = 0, y1 = MA_H) => { const gr = c.createLinearGradient(0, y0, 0, y1); gr.addColorStop(0, a); gr.addColorStop(1, b); return gr; };
+  if (scene === "blank") { c.fillStyle = "#fff"; c.fillRect(0, 0, MA_W, MA_H); return; }
+  if (scene === "night") { c.fillStyle = g("#0b1036", "#283c86"); c.fillRect(0, 0, MA_W, MA_H); for (let i = 0; i < 70; i++) { const x = (i * 137.5) % MA_W, y = (i * 59.3) % (MA_H * .7), a = .4 + .6 * Math.abs(Math.sin(T * 1.5 + i)); c.fillStyle = `rgba(255,255,230,${a})`; c.fillRect(x, y, 2.5, 2.5); }
+    c.fillStyle = "#fff6c8"; c.beginPath(); c.arc(660, 90, 42, 0, Math.PI * 2); c.fill(); c.fillStyle = "#283c86"; c.beginPath(); c.arc(680, 78, 38, 0, Math.PI * 2); c.fill();
+    c.fillStyle = "#14204d"; c.beginPath(); c.moveTo(0, 420); for (let x = 0; x <= MA_W; x += 40) c.lineTo(x, 400 + Math.sin(x * .02) * 18); c.lineTo(MA_W, MA_H); c.lineTo(0, MA_H); c.fill(); return; }
+  if (scene === "ocean") { c.fillStyle = g("#7ec8f2", "#d9f1ff", 0, 230); c.fillRect(0, 0, MA_W, 230); c.fillStyle = g("#2a8fd8", "#0a4b8c", 220, MA_H); c.fillRect(0, 220, MA_W, MA_H - 220);
+    for (let r = 0; r < 6; r++) { const y = 240 + r * 45; c.strokeStyle = `rgba(255,255,255,${.5 - r * .06})`; c.lineWidth = 3; c.beginPath(); for (let x = 0; x <= MA_W; x += 10) c.lineTo(x, y + Math.sin(x * .03 + T * (1.6 - r * .15) + r) * 6); c.stroke(); } return; }
+  if (scene === "snow") { c.fillStyle = g("#b9d7f2", "#eef6ff", 0, 330); c.fillRect(0, 0, MA_W, 330); c.fillStyle = "#fbfdff"; c.beginPath(); c.moveTo(0, 340); for (let x = 0; x <= MA_W; x += 40) c.lineTo(x, 320 + Math.sin(x * .015) * 22); c.lineTo(MA_W, MA_H); c.lineTo(0, MA_H); c.fill(); return; }
+  const sav = scene === "savanna";
+  c.fillStyle = g(sav ? "#ffcf8a" : "#8fd3ff", sav ? "#fff1cf" : "#e3f6ff", 0, 300); c.fillRect(0, 0, MA_W, 300);
+  if (sav) { c.fillStyle = "#ffb13b"; c.beginPath(); c.arc(640, 110, 50, 0, Math.PI * 2); c.fill(); }
+  c.fillStyle = sav ? "#d9a24a" : "#7cc46b"; c.beginPath(); c.moveTo(0, 300); for (let x = 0; x <= MA_W; x += 50) c.lineTo(x, 270 + Math.sin(x * .012 + 1) * 30); c.lineTo(MA_W, MA_H); c.lineTo(0, MA_H); c.fill();
+  c.fillStyle = sav ? "#e8b85c" : "#5fb14f"; c.fillRect(0, 320, MA_W, MA_H - 320);
+  c.strokeStyle = sav ? "#b9862f" : "#3f8f35"; c.lineWidth = 2; for (let i = 0; i < 60; i++) { const x = (i * 97) % MA_W, y = 340 + (i * 53) % 150, sw = Math.sin(T * 2 + i) * 3; c.beginPath(); c.moveTo(x, y); c.lineTo(x - 4 + sw, y - 12); c.moveTo(x, y); c.lineTo(x + 4 + sw, y - 14); c.stroke(); }
+}
+// a river: a wide blue band along the path you drew, with ripples flowing along it
+function maRiver(c, it, T) {
+  const p = it.path; if (!p || p.length < 2) return;
+  const line = () => { c.beginPath(); c.moveTo(p[0][0], p[0][1]); for (let i = 1; i < p.length; i++) c.lineTo(p[i][0], p[i][1]); };
+  c.save(); c.lineCap = c.lineJoin = "round";
+  line(); c.strokeStyle = "#8a6a3a"; c.lineWidth = it.w + 14; c.stroke();
+  line(); c.strokeStyle = "#2f86d6"; c.lineWidth = it.w; c.stroke();
+  line(); c.strokeStyle = "#5fb0f0"; c.lineWidth = it.w * .55; c.stroke();
+  const flow = T * (it.sp || 60);
+  [[.12, [18, 34], 0, .75], [.08, [10, 46], 17, .55], [.06, [6, 60], 31, .45]].forEach(([wf, dash, off, a]) => { line(); c.setLineDash(dash); c.lineDashOffset = -(flow + off); c.strokeStyle = `rgba(255,255,255,${a})`; c.lineWidth = Math.max(2, it.w * wf); c.stroke(); });
+  c.restore();
+}
+function maFx(c, fx, T) {
+  if (fx.rain) { c.strokeStyle = "rgba(180,210,255,.75)"; c.lineWidth = 2; c.beginPath(); for (let i = 0; i < 140; i++) { const x = ((i * 61.7) % MA_W + T * 90) % MA_W, y = ((i * 37.3) % MA_H + T * 520) % (MA_H + 30) - 30; c.moveTo(x, y); c.lineTo(x - 5, y + 16); } c.stroke(); }
+  if (fx.snow) { c.fillStyle = "rgba(255,255,255,.95)"; for (let i = 0; i < 90; i++) { const y = ((i * 41.9) % MA_H + T * (35 + i % 5 * 8)) % (MA_H + 10) - 5, x = (i * 89.3) % MA_W + Math.sin(T * 1.3 + i) * 14; c.beginPath(); c.arc(x, y, 2 + i % 3, 0, Math.PI * 2); c.fill(); } }
+  if (fx.sparkle) { for (let i = 0; i < 30; i++) { const a = Math.max(0, Math.sin(T * 2.2 + i * 1.7)), x = (i * 173.3) % MA_W, y = (i * 97.1) % MA_H, r = 4 + 6 * a; if (a < .05) continue; c.fillStyle = `rgba(255,240,150,${a})`; c.beginPath(); c.moveTo(x, y - r); c.lineTo(x + r * .3, y - r * .3); c.lineTo(x + r, y); c.lineTo(x + r * .3, y + r * .3); c.lineTo(x, y + r); c.lineTo(x - r * .3, y + r * .3); c.lineTo(x - r, y); c.lineTo(x - r * .3, y - r * .3); c.closePath(); c.fill(); } }
+  if (fx.leaves) { for (let i = 0; i < 24; i++) { const y = ((i * 71.3) % MA_H + T * (40 + i % 4 * 10)) % (MA_H + 20) - 10, x = (i * 113.7) % MA_W + Math.sin(T + i) * 30; c.save(); c.translate(x, y); c.rotate(T * 2 + i); c.fillStyle = ["#e8711a", "#d64533", "#f2b632"][i % 3]; c.beginPath(); c.ellipse(0, 0, 9, 5, 0, 0, Math.PI * 2); c.fill(); c.restore(); } }
+}
+// where a thing is right now (T = seconds playing)
+function maPos(it, T) {
+  if (it.mo === "path" && it.path && it.path.length > 1) {
+    const p = it.path.concat([it.path[0]]); let L = 0; const seg = []; for (let i = 1; i < p.length; i++) { const d = Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); seg.push(d); L += d; }
+    if (!L || !it.sp) return { x: p[0][0], y: p[0][1], dir: it.dir || 1 };
+    let d = (T * it.sp) % L; for (let i = 0; i < seg.length; i++) { if (d <= seg[i] || i === seg.length - 1) { const u = seg[i] ? d / seg[i] : 0, a = p[i], b = p[i + 1]; return { x: a[0] + (b[0] - a[0]) * u, y: a[1] + (b[1] - a[1]) * u, dir: b[0] < a[0] - .5 ? -1 : b[0] > a[0] + .5 ? 1 : (it.dir || 1) }; } d -= seg[i]; }
+  }
+  if (it.mo === "across" && it.sp) { const span = MA_W + it.s * 1.6, raw = it.x + it.s * .8 + (it.dir || 1) * T * it.sp; return { x: ((raw % span) + span) % span - it.s * .8, y: it.y, dir: it.dir || 1 }; }
+  return { x: it.x, y: it.y, dir: it.dir || 1 };
+}
+const maDistSeg = (px, py, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy, u = L ? Math.max(0, Math.min(1, ((px - a[0]) * dx + (py - a[1]) * dy) / L)) : 0; return Math.hypot(px - a[0] - u * dx, py - a[1] - u * dy); };
+function startMovingArt() {
+  appScreen("🎞️ Moving Art", `<h2>🎞️ Moving Art</h2><p class="soft">Make art that moves! A zebra running 🦓, a river flowing 🌊, birds flying, rain falling, or draw your own flipbook frames.</p>
+    <div class="na-chips" id="ma-scenes">${MA_SCENES.map(([k, l]) => `<button class="chip" data-scene="${k}" type="button">${l}</button>`).join("")}</div>
+    <div class="ma-stage"><canvas id="ma-cv" width="${MA_W}" height="${MA_H}" aria-label="Your moving art"></canvas><div class="ma-tip" id="ma-tip"></div></div>
+    <div class="row ma-bar"><button class="btn go" id="ma-play" type="button">⏸ Pause</button><button class="btn gold" id="ma-rec" type="button">🎬 Save video to My Gallery</button><button class="btn" id="ma-new" type="button">🆕 Start over</button></div>
+    ${naTabs([["add", "🦓 Moving things"], ["draw", "✏️ Draw frames"], ["fx", "✨ Weather"]], "add")}
+    <div id="ma-panel"></div><div id="ma-sel"></div>`);
+  const cv = document.getElementById("ma-cv"), c = cv.getContext("2d"), $m = id => document.getElementById("ma-" + id);
+  const blankFrame = () => { const f = document.createElement("canvas"); f.width = MA_W; f.height = MA_H; return f; };
+  const starter = () => ({ scene: "savanna", fps: 6, onion: true, fx: {}, frames: [null], items: [
+    { id: 1, type: "river", path: [[-20, 395], [120, 375], [260, 410], [400, 385], [540, 420], [680, 392], [820, 405]], w: 46, sp: 60 },
+    { id: 2, type: "zebra", x: 120, y: 290, s: 185, sp: 120, mo: "across", dir: 1 },
+    { id: 3, type: "bird", x: 400, y: 90, s: 56, sp: 90, mo: "across", dir: -1 },
+    { id: 4, type: "cloud", x: 200, y: 70, s: 130, sp: 18, mo: "across", dir: 1 }] });
+  let P = starter(), FR = [blankFrame()], cur = 0, playing = true, T = 0, last = performance.now(), tab = "add", tool = "move", sel = null, ink = GAL_INK[0], size = 8, recording = false, drag = null, saveT = null, undo = [], nextId = 10, loaded = false;
+  const save = () => { if (!loaded) return; clearTimeout(saveT); saveT = setTimeout(() => maStore({ ...P, frames: FR.map(f => f.dataset.ink ? f.toDataURL("image/png") : null) }), 700); };
+  const setTip = () => { $m("tip").textContent = tool === "draw" ? "✏️ Draw on frame " + (cur + 1) : tool === "erase" ? "🧽 Erase on frame " + (cur + 1) : tool === "river" ? "🌊 Drag to draw a river" : tool === "path" ? `✏️ Drag to draw where the ${maName(sel || {}).split(" ").pop().toLowerCase()} goes` : tool.startsWith("place:") ? "👆 Tap where it goes" : "👆 Tap a thing to change or move it"; };
+  const setTool = t => { tool = t; setTip(); $app.querySelectorAll("[data-tool]").forEach(b => b.classList.toggle("on", b.dataset.tool === t)); };
+  const setPlay = on => { playing = on; $m("play").textContent = on ? "⏸ Pause" : "▶ Play"; };
+  // ---- drawing every frame
+  const loop = now => {
+    if (!document.getElementById("ma-cv")) return;
+    const dt = Math.min(.1, (now - last) / 1000); last = now; if (playing) T += dt;
+    maScene(c, P.scene, T);
+    P.items.filter(it => it.type === "river").forEach(it => maRiver(c, it, T));
+    const fi = playing && FR.length > 1 ? Math.floor(T * P.fps) % FR.length : cur;
+    if (!playing && P.onion && tab === "draw" && cur > 0) { c.globalAlpha = .3; c.drawImage(FR[cur - 1], 0, 0); c.globalAlpha = 1; }
+    c.drawImage(FR[fi], 0, 0);
+    P.items.filter(it => it.type !== "river").map(it => [it, maPos(it, T)]).sort((a, b) => a[1].y - b[1].y).forEach(([it, p]) => {
+      c.save(); c.translate(p.x, p.y); if (p.dir < 0) c.scale(-1, 1);
+      const ph = it.mo === "still" || !it.sp ? T * 4 : T * (2.5 + it.sp / 28);
+      if (it.type === "emoji") { c.font = `${it.s}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(it.e, 0, -Math.abs(Math.sin(ph)) * it.s * .12); }
+      else MA_DRAW[it.type]?.(c, ph, it.s);
+      c.restore();
+      if (sel === it && !recording) { c.save(); c.setLineDash([8, 6]); c.strokeStyle = "#ffd23f"; c.lineWidth = 3; c.beginPath(); c.arc(p.x, p.y, it.s * .6, 0, Math.PI * 2); c.stroke(); c.restore(); }
+    });
+    if (sel && sel.type === "river" && !recording) { const pp = sel.path; c.save(); c.setLineDash([8, 6]); c.strokeStyle = "#ffd23f"; c.lineWidth = 3; c.beginPath(); c.moveTo(pp[0][0], pp[0][1]); pp.forEach(q => c.lineTo(q[0], q[1])); c.stroke(); c.restore(); }
+    if (sel && sel.mo === "path" && sel.path && !recording && !playing) { c.save(); c.setLineDash([4, 6]); c.strokeStyle = "rgba(255,255,255,.8)"; c.lineWidth = 2; c.beginPath(); sel.path.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); c.stroke(); c.restore(); }
+    if (drag && drag.pts && (tool === "river" || tool === "path")) { c.save(); c.strokeStyle = tool === "river" ? "rgba(47,134,214,.7)" : "#ffd23f"; c.lineWidth = tool === "river" ? 40 : 4; c.lineCap = c.lineJoin = "round"; c.beginPath(); drag.pts.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.stroke(); c.restore(); }
+    maFx(c, P.fx, T);
+    requestAnimationFrame(loop);
+  };
+  // ---- touching the picture
+  const pt = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * MA_W / r.width, (e.clientY - r.top) * MA_H / r.height]; };
+  const hit = (x, y) => { const things = P.items.filter(it => it.type !== "river").map(it => [it, maPos(it, T)]).filter(([it, p]) => Math.hypot(p.x - x, p.y - y) < it.s * .55).sort((a, b) => b[1].y - a[1].y); if (things.length) return things[0][0]; return P.items.filter(it => it.type === "river").find(it => it.path.some((q, i) => i && maDistSeg(x, y, it.path[i - 1], q) < it.w / 2 + 8)) || null; };
+  cv.addEventListener("pointerdown", e => {
+    e.preventDefault(); cv.setPointerCapture?.(e.pointerId); const [x, y] = pt(e);
+    if (tool === "draw" || tool === "erase") { setPlay(false); const f = FR[cur], x2 = f.getContext("2d"); undo.push([cur, x2.getImageData(0, 0, MA_W, MA_H)]); if (undo.length > 20) undo.shift(); drag = { ink: true, last: [x, y] }; x2.globalCompositeOperation = tool === "erase" ? "destination-out" : "source-over"; x2.fillStyle = ink; x2.beginPath(); x2.arc(x, y, (tool === "erase" ? size * 2.5 : size) / 2, 0, Math.PI * 2); x2.fill(); f.dataset.ink = 1; return; }
+    if (tool === "river" || tool === "path") { drag = { pts: [[x, y]] }; return; }
+    if (tool.startsWith("place:")) {
+      const type = tool.slice(6), e2 = ($m("emoji")?.value || "").trim() || "🦄";
+      const it = { id: nextId++, type, x, y, s: MA_SIZE[type], sp: MA_SPEED[type], mo: MA_MOTION[type], dir: 1 }; if (type === "emoji") it.e = [...e2].slice(0, 2).join("");
+      if (it.mo === "across") it.x = x - (T * it.sp) % (MA_W + it.s * 1.6);   // so it shows up right where you tapped
+      P.items.push(it); sel = it; setTool("move"); drawSel(); save(); sfx.buy(); return;
+    }
+    const h = hit(x, y); sel = h; drawSel();
+    if (h) drag = { it: h, x, y, base: h.type === "river" || h.mo === "path" ? h.path.map(q => q.slice()) : [h.x, h.y] };
+  });
+  cv.addEventListener("pointermove", e => {
+    if (!drag) return; const [x, y] = pt(e);
+    if (drag.ink) { const x2 = FR[cur].getContext("2d"); x2.strokeStyle = ink; x2.lineWidth = tool === "erase" ? size * 2.5 : size; x2.lineCap = x2.lineJoin = "round"; x2.beginPath(); x2.moveTo(drag.last[0], drag.last[1]); x2.lineTo(x, y); x2.stroke(); drag.last = [x, y]; return; }
+    if (drag.pts) { const l = drag.pts[drag.pts.length - 1]; if (Math.hypot(x - l[0], y - l[1]) > 8) drag.pts.push([x, y]); return; }
+    if (drag.it) { const dx = x - drag.x, dy = y - drag.y, it = drag.it; if (it.type === "river" || it.mo === "path") it.path = drag.base.map(q => [q[0] + dx, q[1] + dy]); else { it.x = drag.base[0] + dx; it.y = drag.base[1] + dy; } }
+  });
+  const up = () => {
+    if (!drag) return;
+    if (drag.ink) { FR[cur].getContext("2d").globalCompositeOperation = "source-over"; save(); }
+    else if (drag.pts) {
+      if (drag.pts.length < 3) toast(tool === "river" ? "🌊 Drag a longer line to make a river." : "✏️ Drag a longer path.");
+      else if (tool === "river") { const it = { id: nextId++, type: "river", path: drag.pts, w: 46, sp: 60 }; P.items.unshift(it); sel = it; setTool("move"); drawSel(); save(); sfx.buy(); }
+      else if (sel) { sel.path = drag.pts; sel.mo = "path"; setTool("move"); drawSel(); save(); setPlay(true); toast("✏️ Now it follows your path!"); }
+    }
+    else if (drag.it) save();
+    drag = null;
+  };
+  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  // ---- the panels
+  const renderPanel = () => {
+    const box = $m("panel");
+    if (tab === "add") box.innerHTML = `<p class="soft">Tap a thing, then tap the picture to put it there. It moves by itself! Tap it again to draw its own path, change its speed or size.</p>
+      <div class="na-chips ma-things">${MA_THINGS.map(([k, e, n]) => `<button class="chip" data-tool="place:${k}" type="button">${e} ${n}</button>`).join("")}<span class="ma-emo"><input id="ma-emoji" maxlength="8" placeholder="🦄" aria-label="Any emoji"><button class="chip" data-tool="place:emoji" type="button">Add emoji</button></span></div>
+      <div class="row"><button class="btn" data-tool="river" type="button">🌊 Draw a river</button><button class="btn" data-tool="move" type="button">👆 Pick &amp; move</button></div>`;
+    else if (tab === "draw") box.innerHTML = `<div class="gd-pal">${GAL_INK.map(cl => `<button class="px-col${cl === ink ? " on" : ""}" data-ink="${cl}" style="background:${cl}" type="button" aria-label="color ${cl}"></button>`).join("")}<input type="color" id="ma-any" value="#00c2c7" aria-label="Any color"></div>
+      <div class="na-chips"><button class="chip" data-tool="draw" type="button">✏️ Draw</button><button class="chip" data-tool="erase" type="button">🧽 Eraser</button>${[[4, "Thin"], [8, "Medium"], [18, "Thick"]].map(([n, l]) => `<button class="chip${n === size ? " on" : ""}" data-size="${n}" type="button">${l}</button>`).join("")}<button class="chip" id="ma-undo" type="button">↩️ Undo</button><button class="chip" id="ma-clearf" type="button">🧹 Clear frame</button></div>
+      <div class="ma-frames"><button class="btn mini" id="ma-prev" type="button" aria-label="Previous frame">◀</button><b id="ma-fno"></b><button class="btn mini" id="ma-next" type="button" aria-label="Next frame">▶</button><button class="btn mini" id="ma-addf" type="button">➕ New frame</button><button class="btn mini gal-delbtn" id="ma-delf" type="button">🗑 Delete frame</button></div>
+      <label class="ma-lab">🐢 Speed <input type="range" id="ma-fps" min="1" max="12" value="${P.fps}"> 🐇 <span id="ma-fpsv"></span></label>
+      <label class="ma-lab"><input type="checkbox" id="ma-onion"${P.onion ? " checked" : ""}> 👻 See the last frame faintly while you draw</label>
+      <p class="soft">How to make a flipbook: draw something, tap ➕ New frame (it copies your drawing), move it a little, and do it again. Then press ▶ Play!</p>`;
+    else box.innerHTML = `<p class="soft">Add weather and sparkles on top of everything.</p><div class="na-chips">${MA_FX.map(([k, l]) => `<button class="chip${P.fx[k] ? " on" : ""}" data-fx="${k}" type="button">${l}</button>`).join("")}</div>`;
+    box.querySelectorAll("[data-tool]").forEach(b => b.addEventListener("click", () => { setTool(b.dataset.tool); if (b.dataset.tool.startsWith("place:")) { sel = null; drawSel(); } }));
+    box.querySelectorAll("[data-ink]").forEach(b => b.addEventListener("click", () => { ink = b.dataset.ink; box.querySelectorAll("[data-ink]").forEach(y => y.classList.toggle("on", y === b)); setTool("draw"); }));
+    $m("any")?.addEventListener("input", e => { ink = e.target.value; setTool("draw"); });
+    box.querySelectorAll("[data-size]").forEach(b => b.addEventListener("click", () => { size = +b.dataset.size; box.querySelectorAll("[data-size]").forEach(y => y.classList.toggle("on", y === b)); if (tool !== "erase") setTool("draw"); }));
+    box.querySelectorAll("[data-fx]").forEach(b => b.addEventListener("click", () => { P.fx[b.dataset.fx] = !P.fx[b.dataset.fx]; b.classList.toggle("on", !!P.fx[b.dataset.fx]); save(); }));
+    if (tab === "draw") {
+      const fno = () => { $m("fno").textContent = `Frame ${cur + 1} of ${FR.length}`; $m("fpsv").textContent = `${P.fps} a second`; setTip(); };
+      $m("prev").addEventListener("click", () => { setPlay(false); cur = (cur - 1 + FR.length) % FR.length; fno(); });
+      $m("next").addEventListener("click", () => { setPlay(false); cur = (cur + 1) % FR.length; fno(); });
+      $m("addf").addEventListener("click", () => { if (FR.length >= 30) return toast("That's 30 frames, the most you can have."); setPlay(false); const f = blankFrame(); f.getContext("2d").drawImage(FR[cur], 0, 0); if (FR[cur].dataset.ink) f.dataset.ink = 1; FR.splice(cur + 1, 0, f); cur++; fno(); save(); setTool("draw"); });
+      $m("delf").addEventListener("click", e => { const b = e.currentTarget; if (FR.length === 1) { FR[0] = blankFrame(); save(); return toast("🧹 Frame cleared."); } if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to delete"; return; } FR.splice(cur, 1); cur = Math.min(cur, FR.length - 1); delete b.dataset.sure; b.textContent = "🗑 Delete frame"; fno(); save(); });
+      $m("undo").addEventListener("click", () => { const u = undo.pop(); if (!u || !FR[u[0]]) return; FR[u[0]].getContext("2d").putImageData(u[1], 0, 0); cur = u[0]; fno(); save(); });
+      $m("clearf").addEventListener("click", () => { const x2 = FR[cur].getContext("2d"); undo.push([cur, x2.getImageData(0, 0, MA_W, MA_H)]); x2.clearRect(0, 0, MA_W, MA_H); delete FR[cur].dataset.ink; save(); });
+      $m("fps").addEventListener("input", e => { P.fps = +e.target.value; fno(); save(); });
+      $m("onion").addEventListener("change", e => { P.onion = e.target.checked; save(); });
+      fno(); if (!["draw", "erase"].includes(tool)) setTool("draw");
+    } else if (tool === "draw" || tool === "erase") setTool("move");
+    $app.querySelectorAll("[data-tool]").forEach(b => b.classList.toggle("on", b.dataset.tool === tool));
+  };
+  const drawSel = () => {
+    const box = $m("sel"); if (!sel || !P.items.includes(sel)) { sel = null; box.innerHTML = ""; return; }
+    const it = sel, river = it.type === "river";
+    box.innerHTML = `<div class="ma-selbox"><b>${esc(maName(it))}</b>
+      <label>${river ? "🌊 Flow" : "💨 Speed"} <input type="range" id="ma-sp" min="0" max="${river ? 200 : 320}" value="${it.sp || 0}"></label>
+      <label>${river ? "↔️ Width" : "📏 Size"} <input type="range" id="ma-sz" min="${river ? 14 : 24}" max="${river ? 120 : 320}" value="${river ? it.w : it.s}"></label>
+      <div class="na-chips">${river ? "" : `<button class="chip${it.mo === "across" ? " on" : ""}" data-mo="across" type="button">➡️ Go across</button><button class="chip${it.mo === "path" ? " on" : ""}" data-mo="path" type="button">✏️ Draw its path</button><button class="chip${it.mo === "still" ? " on" : ""}" data-mo="still" type="button">⏸ Stay here</button><button class="chip" id="ma-flip" type="button">↔️ Turn around</button>`}<button class="chip" id="ma-front" type="button">⬆️ ${river ? "To back" : "Copy"}</button><button class="btn mini gal-delbtn" id="ma-delit" type="button">🗑 Delete</button></div></div>`;
+    $m("sp").addEventListener("input", e => { const p = maPos(it, T); it.sp = +e.target.value; if (it.mo === "across") it.x = p.x - (it.dir || 1) * T * it.sp; save(); });
+    $m("sz").addEventListener("input", e => { if (river) it.w = +e.target.value; else it.s = +e.target.value; save(); });
+    box.querySelectorAll("[data-mo]").forEach(b => b.addEventListener("click", () => {
+      const p = maPos(it, T), m = b.dataset.mo;
+      if (m === "path") { setTool("path"); toast(`✏️ Drag on the picture to draw where it goes!`); return; }
+      it.mo = m; it.x = m === "across" ? p.x - (it.dir || 1) * T * (it.sp || 0) : p.x; it.y = p.y; if (m === "across" && !it.sp) it.sp = MA_SPEED[it.type] || 80; drawSel(); save();
+    }));
+    $m("flip")?.addEventListener("click", () => { const p = maPos(it, T); it.dir = -(it.dir || 1); if (it.mo === "across") it.x = p.x - it.dir * T * (it.sp || 0); save(); });
+    $m("front").addEventListener("click", () => { if (river) { P.items.splice(P.items.indexOf(it), 1); P.items.unshift(it); toast("🌊 Moved to the back."); } else { const p = maPos(it, T), cp = { ...JSON.parse(JSON.stringify(it)), id: nextId++, mo: it.mo === "path" ? "across" : it.mo, y: p.y + 30 }; cp.x = cp.mo === "across" ? p.x + 40 - (cp.dir || 1) * T * (cp.sp || 0) : p.x + 40; delete cp.path; P.items.push(cp); sel = cp; drawSel(); toast("📋 Copied!"); } save(); });
+    $m("delit").addEventListener("click", e => { const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to delete"; return; } P.items.splice(P.items.indexOf(it), 1); sel = null; drawSel(); save(); toast("🗑 Deleted."); });
+  };
+  const syncScene = () => $app.querySelectorAll("[data-scene]").forEach(b => b.classList.toggle("on", b.dataset.scene === P.scene));
+  $app.querySelectorAll("[data-scene]").forEach(b => b.addEventListener("click", () => { P.scene = b.dataset.scene; syncScene(); save(); }));
+  bindTabs(t => { tab = t; $app.querySelectorAll("[data-tab]").forEach(b => b.classList.toggle("on", b.dataset.tab === t)); renderPanel(); });
+  $m("play").addEventListener("click", () => setPlay(!playing));
+  $m("new").addEventListener("click", e => { const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to start over"; return; } delete b.dataset.sure; b.textContent = "🆕 Start over"; P = { ...starter(), items: [], scene: "valley" }; FR = [blankFrame()]; cur = 0; sel = null; undo = []; T = 0; setPlay(true); syncScene(); renderPanel(); drawSel(); save(); toast("🆕 A fresh picture!"); });
+  // 🎬 record a few seconds of the moving picture as a video for My Gallery
+  $m("rec").addEventListener("click", async () => {
+    if (recording) return;
+    const types = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm", "video/mp4"], mt = window.MediaRecorder && cv.captureStream ? types.find(t => MediaRecorder.isTypeSupported(t)) : null;
+    if (!mt) return toast("This browser can't record videos. Try Chrome or Edge.");
+    const secs = Math.min(10, Math.max(5, Math.ceil(FR.length / P.fps * 2))), b = $m("rec"), sel0 = sel; recording = true; sel = null; drawSel(); setPlay(true);
+    const stream = cv.captureStream(30), r = new MediaRecorder(stream, { mimeType: mt, videoBitsPerSecond: 2500000 }), parts = [];
+    r.ondataavailable = e => { if (e.data && e.data.size) parts.push(e.data); };
+    const done = new Promise(ok => { r.onstop = ok; }); r.start(250);
+    for (let k = secs; k > 0; k--) { if (!document.getElementById("ma-rec")) break; b.textContent = `🔴 Recording… ${k}`; await new Promise(ok => setTimeout(ok, 1000)); }
+    r.stop(); await done; stream.getTracks().forEach(t => t.stop()); recording = false;
+    if (!document.getElementById("ma-rec")) return;
+    b.textContent = "🎬 Save video to My Gallery"; sel = sel0 && P.items.includes(sel0) ? sel0 : null; drawSel();
+    const blob = new Blob(parts, { type: mt.split(";")[0] }), ext = /mp4/.test(mt) ? "mp4" : "webm";
+    const res = await galAdd(new File([blob], `Moving art.${ext}`, { type: blob.type }), "video", "Moving art");
+    if (res.meta) { sfx.buy(); toast("🎬 Saved to My Gallery! Everyone can see it there."); } else toast(res.err);
+  });
+  const restore = data => {
+    P = { ...starter(), ...data, fx: { ...(data.fx || {}) } }; nextId = Math.max(10, ...P.items.map(i => i.id || 0)) + 1;
+    FR = (data.frames && data.frames.length ? data.frames : [null]).map(() => blankFrame());
+    return Promise.all((data.frames || []).map((u, i) => u ? galLoadImg(u).then(img => { FR[i].getContext("2d").drawImage(img, 0, 0); FR[i].dataset.ink = 1; }).catch(() => {}) : null));
+  };
+  syncScene(); renderPanel(); setTool("move"); requestAnimationFrame(loop);
+  maLoad().then(async data => { if (!document.getElementById("ma-cv")) return; if (data && data.items) { await restore(data); syncScene(); renderPanel(); drawSel(); } loaded = true; });
+}
+
 // 🌍 World Explorer
 function startWorldExplorer(tab = "flags") {
   appScreen("🌍 World Explorer", `<h2>🌍 World Explorer</h2>${naTabs([["flags", "🏳️ Flag quiz"], ["capitals", "🏛️ Capitals quiz"], ["cont", "🗺️ Which continent?"], ["atlas", "📖 Atlas"]], tab)}<div id="we"></div>`);
@@ -10687,6 +10986,7 @@ NEW_APPS.push(
   { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), isNew: true, added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
   { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), isNew: true, added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
   { id: "gallery", emoji: "🖼️", name: "My Gallery", desc: "Save up to 1,000 pictures, drawings and videos, make new drawings, use them as backgrounds, and delete what you don't want.", start: () => startGallery(), isNew: true, added: "2026-11-12", kw: "gallery|my gallery|my pictures|my photos|my videos|my drawings|photo album" },
+  { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), isNew: true, added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer(), isNew: true },
   { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
   { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
@@ -19108,7 +19408,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^🎞️ Moving Art/, "art"], [/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
