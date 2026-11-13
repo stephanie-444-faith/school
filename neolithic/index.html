@@ -720,8 +720,8 @@
   .who-add input { flex: 1; min-width: 200px; max-width: 360px; font: inherit; padding: 12px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
   body.bg-img { background: #101018 var(--bgimg) center / cover no-repeat fixed !important; }
   body.bg-img::before, body.bg-img::after { display: none !important; }
-  .bg-fab { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); z-index: 55; width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); background: rgba(24,14,60,.78); color: #fff; font-size: 1.45rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.45); }
-  .bg-fab:hover, .bg-fab:focus-visible { border-color: var(--gold); outline: none; transform: scale(1.06); } .bg-fab[hidden] { display: none; }
+  .bg-fab { position: fixed; left: 12px; top: calc(env(safe-area-inset-top, 0px) + 8px); z-index: 55; width: 40px; height: 40px; padding: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); background: rgba(24,14,60,.82); color: #fff; font-size: 1.2rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.45); }
+  .bg-fab:hover, .bg-fab:focus-visible { border-color: var(--gold); outline: none; transform: scale(1.06); } .bg-fab[hidden] { display: none; } .bg-fab.in-corner { position: static; flex: none; width: 38px; height: 38px; }
   .bgsheet { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; justify-content: center; }
   .bgsheet-box { width: min(760px, 100%); max-height: 84vh; overflow-y: auto; background: var(--panel); border: 2px solid var(--line); border-bottom: 0; border-radius: 20px 20px 0 0; padding: 14px 16px 22px; box-shadow: 0 -10px 40px rgba(0,0,0,.5); }
   .ma-stage { position: relative; margin: 8px 0; } #ma-cv { width: 100%; height: auto; aspect-ratio: 8 / 5; display: block; border-radius: 14px; touch-action: none; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.35); cursor: crosshair; }
@@ -736,7 +736,7 @@
   .gal-owner { flex: 1; min-width: 0; overflow-wrap: anywhere; } .gal-rated { margin: 6px 0 0; font-size: .92rem; color: var(--ink-soft); }
   .gal-stars { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 8px; } .gal-stars button { font-size: 1.8rem; line-height: 1; background: none; border: 0; color: #6b6585; cursor: pointer; padding: 2px; } .gal-stars button.on { color: #ffd23f; text-shadow: 0 0 8px rgba(255,210,63,.6); } .gal-stars small { color: var(--ink-soft); margin-left: 6px; }
   .gal-taken, .bg-credit { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); z-index: 75; background: rgba(24,14,60,.88); color: #fff; font-weight: 800; font-size: .9rem; padding: 6px 12px; border-radius: 99px; border: 2px solid var(--gold); pointer-events: none; }
-  .bg-credit { z-index: 54; bottom: calc(env(safe-area-inset-bottom, 0px) + 72px); }
+  .bg-credit { z-index: 54; }
   .gal-add { align-items: center; } .gal-paste { min-height: 52px; } .gal-paste.drag { outline: 3px dashed var(--gold); }
   .gal-bar { margin: 10px 0 4px; } .gal-bar small { color: var(--ink-soft); }
   .gal-selbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; } .gal-selbar[hidden] { display: none; }
@@ -2996,11 +2996,20 @@ function bgBindDel(root, after) {
   }));
 }
 // 🎨 the corner button: just this page's background
+// 🎨 lives in the top-left corner: next to Switch person and my profile on the home screen, and next to ✕ Exit everywhere else
 function bgFab() {
   let f = document.getElementById("bg-fab");
   if (!f) { f = document.createElement("button"); f.id = "bg-fab"; f.type = "button"; f.className = "bg-fab"; f.title = "Change this page's background"; f.setAttribute("aria-label", "Change this page's background"); f.textContent = "🎨"; f.addEventListener("click", openBgSheet); document.body.appendChild(f); }
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
   f.hidden = !SITE_WHO || !bgPageKey() || !!document.getElementById("who-screen") || !!document.getElementById("who-age") || !!document.querySelector(".bgpage") || MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab);
+  const corner = document.getElementById("gamesmenu") && document.querySelector(".who-corner");
+  if (corner) { if (f.parentNode !== corner) corner.appendChild(f); f.classList.add("in-corner"); f.style.left = ""; }
+  else {
+    if (f.parentNode !== document.body) document.body.appendChild(f);
+    f.classList.remove("in-corner");
+    const ex = document.getElementById("exit-all"), r = ex && !ex.hidden ? ex.getBoundingClientRect() : null;
+    f.style.left = (r && r.width ? Math.round(r.right + 8) : 12) + "px";
+  }
 }
 function closeBgSheet() { document.getElementById("bg-sheet")?.remove(); bgStopPaste(); }
 function openBgSheet() {
