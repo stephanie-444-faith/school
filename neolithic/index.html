@@ -712,6 +712,7 @@
   .pf-secret { border: 2px dashed var(--gold); border-radius: 14px; padding: 12px 14px; margin-top: 18px; } .pf-secret p { margin: 0; }
   .who-h { font-family: var(--display); font-size: 2.2rem; margin: 6px 0 4px; }
   .who-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 16px 0; }
+  .who-guest { border-style: dashed; } .who-guest small { color: var(--ink-soft); font-size: .78rem; }
   .who-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 10px; border-radius: 18px; border: 3px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; transition: transform .1s, border-color .1s; }
   .who-btn:hover, .who-btn:focus-visible { border-color: var(--gold); transform: translateY(-2px); outline: none; }
   .who-btn b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; overflow-wrap: anywhere; }
@@ -2794,7 +2795,9 @@ const WHO_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵
 /* ---------- 🎮 Who can play games: never Stephanie or Shawn, and nobody older than 25. Everyone is asked their age once (it counts up each year).
    For everyone else, games simply don't show up anywhere, and if a game screen opens some other way it goes straight back to the home screen. ---------- */
 const NO_GAMES_IDS = new Set(["stephenie", "shawn"]);
-const whoAge = id => { const a = (store.get("who_age", {}) || {})[id]; return a && a.age >= 0 ? a.age + Math.floor((Date.now() - (a.at || Date.now())) / 31557600000) : null; };
+// 👤 the Guest account is for visitors: it can't have a code, its name stays "Guest", and its age is asked every time someone picks it
+let GUEST_AGE = null;
+const whoAge = id => { if (id === "guest") return GUEST_AGE; const a = (store.get("who_age", {}) || {})[id]; return a && a.age >= 0 ? a.age + Math.floor((Date.now() - (a.at || Date.now())) / 31557600000) : null; };
 const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) <= 25);
 const GAME_HOME_KEYS = () => new Set(["bunny", ...[...INFO_GAME_APPS].map(id => "na-" + id)]);
 const GAME_SCREEN_RX = /^(🎮 Game Room|🏹 Pick a roots game|🏹 Root Archery|⚡ Root Hyper Practice|🥍 |⚽ |🏈 |🏀 |🎵 Name That Tune)/;
@@ -2805,7 +2808,7 @@ function isGameScreen(lab) {
 function askAge(p) {   // 🎂 asked once per person
   PROF_GAME = null; PROF_RESTART = null; keyHandler = null;
   $app.innerHTML = `<div class="panel who-screen" id="who-age"><span class="label">🎂 How old are you?</span>
-    <h1 class="who-h">🎂 How old are you?</h1><p class="soft">Hi, <b>${esc(p.name)}</b>! Type your age. You only have to answer this once.</p>
+    <h1 class="who-h">🎂 How old are you?</h1><p class="soft">Hi, <b>${esc(p.name)}</b>! Type your age. ${p.id === "guest" ? "Guests answer this each time." : "You only have to answer this once."}</p>
     <form class="who-add" id="age-form"><input id="age-in" type="number" inputmode="numeric" min="1" max="120" placeholder="Your age" aria-label="Your age"><button class="btn go" type="submit">That's me!</button></form>
     <p><button class="chip" id="age-back" type="button">⬅ That's not me</button></p></div>`;
   const inp = document.getElementById("age-in"); inp.focus();
@@ -2813,16 +2816,17 @@ function askAge(p) {   // 🎂 asked once per person
   document.getElementById("age-form").addEventListener("submit", e => {
     e.preventDefault(); const n = Math.round(+inp.value);
     if (!(n >= 1 && n <= 120)) { toast("Type your age: a number from 1 to 120."); inp.focus(); return; }
-    store.set("who_age", { ...(store.get("who_age", {}) || {}), [p.id]: { age: n, at: Date.now() } }); pickWho(p.id);
+    if (p.id === "guest") GUEST_AGE = n; else store.set("who_age", { ...(store.get("who_age", {}) || {}), [p.id]: { age: n, at: Date.now() } });
+    pickWho(p.id);
   });
   window.scrollTo({ top: 0 });
 }
 // 👤 each person's profile: a new name, a few words about themselves, and a secret code (saved on every device that syncs)
 const whoHash = (id, code) => aaHash("ctc-code:" + id + ":" + String(code).trim().toLowerCase()).toString(36);
 const whoAbout = id => String((store.get("who_about", {}) || {})[id] || "");
-const whoHasCode = id => !!(store.get("who_code", {}) || {})[id];
+const whoHasCode = id => id !== "guest" && !!(store.get("who_code", {}) || {})[id];
 const whoSecretOK = () => SITE_WHO === "emmett" && whoHasCode("emmett");   // MR.E sees the secret once his own profile is locked
-const whoAva = id => { const i = sitePeople().findIndex(p => p.id === id); return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
+const whoAva = id => { if (id === "guest") return "👤"; const i = sitePeople().findIndex(p => p.id === id); return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
 // the built-in crew's names can be changed too (their ids stay the same, so their progress stays)
 function applyNames() { const N = store.get("who_names", {}) || {}; TY_ACCOUNTS.forEach(a => { if (a.custom) return; if (a.baseName == null) a.baseName = a.name; a.name = N[a.id] || a.baseName; }); if (SITE_WHO) SITE_NAME = (sitePeople().find(p => p.id === SITE_WHO) || { name: SITE_NAME }).name; }
 function askCode(id) {
@@ -2843,16 +2847,16 @@ function startProfile() {
   const id = SITE_WHO, has = whoHasCode(id);
   $app.innerHTML = `<div class="panel prof-page">
     <div class="topline"><span class="label">👤 My profile</span><button class="iconbtn" id="pf-back" type="button">Back to menu</button></div>
-    <div class="pf-head"><span class="who-ava" aria-hidden="true">${whoAva(id)}</span><div><h2>${esc(SITE_NAME)}${has ? " 🔒" : ""}</h2><p class="soft">Only ${esc(SITE_NAME)} can change this page.${whoAge(id) !== null ? ` · 🎂 Age ${whoAge(id)}` : ""}</p></div></div>
-    <form class="pf-sec" id="pf-name"><h3>✏️ My name</h3><div class="pf-row"><input id="pf-namein" maxlength="30" value="${esc(SITE_NAME)}" aria-label="Your name" autocomplete="off"><button class="btn go" type="submit">Save</button></div></form>
+    <div class="pf-head"><span class="who-ava" aria-hidden="true">${whoAva(id)}</span><div><h2>${esc(SITE_NAME)}${has ? " 🔒" : ""}</h2><p class="soft">${id === "guest" ? "The account for visitors." : `Only ${esc(SITE_NAME)} can change this page.`}${whoAge(id) !== null ? ` · 🎂 Age ${whoAge(id)}` : ""}</p></div></div>
+    ${id === "guest" ? `<div class="pf-sec pf-guest"><h3>👤 Guest account</h3><p>This account is for visitors. <b>Guests can't make a code</b>, and the name stays “Guest” because lots of different people use it.</p><p class="soft">Want your own name and a code? Tap <b>🔄 Switch person</b> and add your name on the <b>Who are you?</b> screen.</p></div>` : `<form class="pf-sec" id="pf-name"><h3>✏️ My name</h3><div class="pf-row"><input id="pf-namein" maxlength="30" value="${esc(SITE_NAME)}" aria-label="Your name" autocomplete="off"><button class="btn go" type="submit">Save</button></div></form>`}
     <form class="pf-sec" id="pf-about"><h3>💬 About me</h3><textarea id="pf-aboutin" maxlength="200" rows="3" placeholder="Say something about yourself! Like your favorite animal, color or food." aria-label="About me">${esc(whoAbout(id))}</textarea><p class="soft pf-note">Everyone who picks a name can see this. Never write private things like your address, phone number or passwords.</p><div class="pf-row"><button class="btn go" type="submit">Save</button></div></form>
-    <form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
+    ${id === "guest" ? "" : `<form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
-      <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>
+      <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>`}
     ${id === "emmett" ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
   </div>`;
   document.getElementById("pf-back").addEventListener("click", showHome);
-  document.getElementById("pf-name").addEventListener("submit", e => {
+  document.getElementById("pf-name")?.addEventListener("submit", e => {
     e.preventDefault(); const n = document.getElementById("pf-namein").value.replace(/\s+/g, " ").trim().slice(0, 30);
     if (!n) return toast("Type a name first.");
     if (n === SITE_NAME) return toast("That's already your name!");
@@ -2864,8 +2868,8 @@ function startProfile() {
     e.preventDefault(); const t = document.getElementById("pf-aboutin").value.replace(/\s+/g, " ").trim().slice(0, 200);
     store.set("who_about", { ...(store.get("who_about", {}) || {}), [id]: t }); toast(t ? "💬 Saved!" : "💬 About me cleared.");
   });
-  document.getElementById("pf-code").addEventListener("submit", e => {
-    e.preventDefault(); const a = document.getElementById("pf-code1").value.trim(), b = document.getElementById("pf-code2").value.trim();
+  document.getElementById("pf-code")?.addEventListener("submit", e => {
+    e.preventDefault(); if (id === "guest") return toast("Guests can't make a code."); const a = document.getElementById("pf-code1").value.trim(), b = document.getElementById("pf-code2").value.trim();
     if (!/^[a-z0-9]{3,12}$/i.test(a)) return toast("Use 3 to 12 letters or numbers.");
     if (a !== b) return toast("The two codes don't match.");
     store.set("who_code", { ...(store.get("who_code", {}) || {}), [id]: whoHash(id, a) }); toast("🔒 Code saved! Remember it."); startProfile();
@@ -2885,20 +2889,20 @@ function sitePeople() {
   return out.slice(0, PROF_MAX);
 }
 function pickWho(id) {
-  const p = sitePeople().find(x => x.id === id); if (!p) return;
+  const p = id === "guest" ? { id: "guest", name: "Guest" } : sitePeople().find(x => x.id === id); if (!p) return;
   if (whoAge(id) === null) return askAge(p);   // 🎂 first time: how old are you?
-  if (!profBuilt().some(x => x.id === id) && !profExtra("site").some(x => x.id === id)) store.set("prof_site", [...profExtra("site"), p].slice(0, PROF_MAX));   // everyone picked here is on every list
+  if (id !== "guest" && !profBuilt().some(x => x.id === id) && !profExtra("site").some(x => x.id === id)) store.set("prof_site", [...profExtra("site"), p].slice(0, PROF_MAX));   // everyone picked here is on every list
   SITE_WHO = p.id; SITE_NAME = p.name; BG_PICK = store.get("bg_" + p.id, null); tySyncCustom();
   showHome(); window.scrollTo({ top: 0 });
 }
 function startWho() {
-  PROF_GAME = null; PROF_RESTART = null; keyHandler = null;
+  PROF_GAME = null; PROF_RESTART = null; keyHandler = null; GUEST_AGE = null;
   const L = sitePeople();
   $app.innerHTML = `<div class="panel who-screen" id="who-screen">
     <span class="label">👋 Who are you?</span>
     <h1 class="who-h">👋 Who are you?</h1>
     <p class="soft">Tap your name. Study Arcade saves everyone's progress separately.</p>
-    <div class="who-grid">${L.map(p => { const ab = whoAbout(p.id); return `<button class="who-btn" type="button" data-site-who="${esc(p.id)}"><span class="who-ava" aria-hidden="true">${whoAva(p.id)}</span><b>${esc(p.name)}${whoHasCode(p.id) ? " 🔒" : ""}</b>${ab ? `<small class="who-about">${esc(ab.length > 60 ? ab.slice(0, 58) + "…" : ab)}</small>` : ""}</button>`; }).join("")}</div>
+    <div class="who-grid">${L.map(p => { const ab = whoAbout(p.id); return `<button class="who-btn" type="button" data-site-who="${esc(p.id)}"><span class="who-ava" aria-hidden="true">${whoAva(p.id)}</span><b>${esc(p.name)}${whoHasCode(p.id) ? " 🔒" : ""}</b>${ab ? `<small class="who-about">${esc(ab.length > 60 ? ab.slice(0, 58) + "…" : ab)}</small>` : ""}</button>`; }).join("")}<button class="who-btn who-guest" type="button" data-site-who="guest"><span class="who-ava" aria-hidden="true">👤</span><b>Guest</b><small>For visitors · no code</small></button></div>
     <div class="who-code" id="who-code" hidden></div>
     ${L.length < PROF_MAX ? `<form class="who-add" id="who-add"><input id="who-name" maxlength="30" placeholder="Someone new? Type your name" aria-label="New person's name" autocomplete="off"><button class="btn go" type="submit">➕ Add me</button></form>` : ""}
   </div>`;
@@ -11330,7 +11334,8 @@ function saExport() {
   if (!css || !js) return null;
   return `<!doctype html>\n<html lang="en">\n<head>\n${SA_HEAD}\n${css.outerHTML}\n</head>\n<body>\n${SA_BOOT_BODY}\n<script>${js}<\/script>\n</body>\n</html>\n`;
 }
-function saDownload(text, name) {
+async function saDownload(text, name) {
+  try { const dl = window.claude && claude.use ? await claude.use("downloads") : null; if (dl) { await dl.save({ filename: name, data: new Blob([text], { type: "text/html" }) }); return "saved"; } } catch (e) { if (e && e.code === "declined") return "declined"; if (e && e.code === "rate_limited") return "busy"; }
   try { const url = URL.createObjectURL(new Blob([text], { type: "text/html" })), a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000); return true; } catch (e) { return false; }
 }
 async function saCopy(text, ta) {
@@ -11373,7 +11378,7 @@ function startSaveSite() {
   const ta = document.getElementById("ss-code");
   if (!text) { document.getElementById("ss-copy").disabled = document.getElementById("ss-dl").disabled = document.getElementById("ss-show").disabled = true; toast("The code couldn't be gathered on this page."); }
   document.getElementById("ss-copy").addEventListener("click", async () => { if (await saCopy(text, ta)) { sfx.buy(); toast("📋 Copied the whole site! Paste it into index.html."); } else { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); toast("Press Ctrl+C (or ⌘+C) to copy the selected code."); } });
-  document.getElementById("ss-dl").addEventListener("click", () => { if (saDownload(text, "index.html")) toast("⬇️ Downloading index.html… (if nothing happens, use 📋 Copy instead)"); else toast("This page can't download files. Use 📋 Copy instead."); });
+  document.getElementById("ss-dl").addEventListener("click", async () => { const r = await saDownload(text, "index.html"); toast(r === "saved" ? "⬇️ index.html is saved!" : r === "declined" ? "Okay, nothing was downloaded." : r === "busy" ? "A download box is already open." : r ? "⬇️ Downloading index.html… (if nothing happens, use 📋 Copy instead)" : "This page can't download files. Use 📋 Copy instead."); });
   document.getElementById("ss-show").addEventListener("click", e => { const b = e.currentTarget; if (ta.hidden) { ta.value = text; ta.hidden = false; b.textContent = "🙈 Hide the code"; } else { ta.hidden = true; b.textContent = "👀 Show the code"; } });
   document.getElementById("ss-pastbtn").addEventListener("click", async e => {
     const b = e.currentTarget, box = document.getElementById("ss-past"); b.disabled = true; b.textContent = "⏳ Opening the time machine…";
