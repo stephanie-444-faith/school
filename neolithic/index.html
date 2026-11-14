@@ -1678,6 +1678,20 @@
   .mod-ppl { display: grid; gap: 6px; } .mod-p { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; }
   .mod-p small { display: block; color: var(--ink-soft); overflow-wrap: anywhere; } .mod-p .mod-btns { grid-column: 1 / -1; margin: 0; }
   .mod-editf { display: grid; gap: 8px; margin: 12px 0; padding: 10px; border: 2px solid var(--gold); border-radius: 12px; } .mod-editf input, .mod-editf textarea { font: inherit; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); }
+  .dc-opts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; } .dc-opts > span { font-weight: 700; min-width: 3.5em; }
+  .dc-steps { display: flex; align-items: center; gap: 10px; } .dc-steps b { font-size: 1.4rem; min-width: 1.5em; text-align: center; }
+  .dc-tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 16px 0 8px; min-height: 84px; }
+  .dc-die { position: relative; width: 72px; height: 72px; border-radius: 16px; border: 3px solid #d9d9e8; background: #fff; color: #1b1b2f; display: grid; place-items: center; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,.35); padding: 6px; font: inherit; }
+  .dc-die.d4, .dc-die.d8, .dc-die.d10, .dc-die.d12, .dc-die.d20, .dc-die.d100 { background: linear-gradient(145deg, #ffe08a, #ffb84d); border-color: #e09a2e; }
+  .dc-die.d20 { background: linear-gradient(145deg, #b9a4ff, #7b5cff); color: #fff; border-color: #5a3fd6; } .dc-die.d100 { background: linear-gradient(145deg, #8fe3c0, #2fb17c); color: #08301f; border-color: #1f8a5d; }
+  .dc-die.kept { outline: 4px solid var(--money); outline-offset: 2px; } .dc-die small { position: absolute; bottom: -20px; left: 0; right: 0; font-size: .7rem; color: var(--money); font-weight: 800; }
+  .dc-die.spin { animation: dcSpin .12s linear infinite; } @keyframes dcSpin { 0% { transform: rotate(-12deg) scale(.95); } 50% { transform: rotate(12deg) scale(1.05); } 100% { transform: rotate(-12deg) scale(.95); } }
+  .dc-pips { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); width: 100%; height: 100%; gap: 2px; } .dc-pips i { border-radius: 50%; margin: 3px; } .dc-pips i.on { background: #1b1b2f; }
+  .dc-num { font-family: var(--display); font-size: 1.8rem; line-height: 1; }
+  .dc-total { text-align: center; font-size: 1.3rem; margin: 14px 0 6px; } .dc-total b { font-family: var(--display); font-size: 2rem; color: var(--gold); } .dc-total small { color: var(--ink-soft); font-size: .85rem; }
+  .dc-go { justify-content: center; gap: 10px; flex-wrap: wrap; } .dc-go [hidden] { display: none; }
+  .dc-hist { margin: 4px 0; padding-left: 1.4em; display: grid; gap: 3px; } .dc-hist small { color: var(--ink-soft); }
+  @media (prefers-reduced-motion: reduce) { .dc-die.spin { animation: none; } }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -21646,6 +21660,54 @@ function startLeaderboards(group) {
 }
 INFO_GAME_APPS.add("leaderboards");   // it's about games, so people who can't play games don't see it
 NEW_APPS.push({ id: "leaderboards", emoji: "🏆", name: "Leaderboards", desc: "See the top 10 players in the community for every game, like typing speed, Bunny Hop and Turbo Keys Rally.", start: () => startLeaderboards(), kw: "leaderboards?|leader boards?|high scores?|top scores?|top 10|rankings?|who's the best|wpm" });
+/* ---------- 🎲 Dice: roll 1 to 10 dice with 4 to 100 sides, keep the ones you like, and see your history */
+const DC_SIDES = [4, 6, 8, 10, 12, 20, 100];
+const DC_PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };   // spots on a 3×3 grid
+let DC = null;
+const dcCfg = () => { const c = store.get("dice_cfg", null) || {}; return { n: Math.min(10, Math.max(1, +c.n || 2)), sides: DC_SIDES.includes(+c.sides) ? +c.sides : 6 }; };
+const dcRoll1 = s => { const a = new Uint32Array(1); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : (a[0] = Math.floor(Math.random() * 4294967296)); return 1 + (a[0] % s); };
+const dcFace = (v, s) => s === 6 ? `<span class="dc-pips">${Array.from({ length: 9 }, (_, i) => `<i${DC_PIPS[v].includes(i) ? ' class="on"' : ""}></i>`).join("")}</span>` : `<span class="dc-num">${v}</span>`;
+function startDice() {
+  const c = dcCfg();
+  if (!DC || DC.sides !== c.sides || DC.vals.length !== c.n) DC = { sides: c.sides, vals: Array.from({ length: c.n }, () => dcRoll1(c.sides)), keep: new Set(), hist: DC ? DC.hist : [], rolled: false };
+  appScreen("🎲 Dice", `<h2>🎲 Dice</h2><p class="soft">Pick how many dice and how many sides, then roll! Tap a die to keep it before you roll again.</p>
+    <div class="dc-opts"><span>Dice:</span><div class="dc-steps"><button class="chip" id="dc-less" type="button" aria-label="Fewer dice">➖</button><b id="dc-n">${c.n}</b><button class="chip" id="dc-more" type="button" aria-label="More dice">➕</button></div></div>
+    <div class="dc-opts"><span>Sides:</span><div class="na-chips">${DC_SIDES.map(s => `<button class="chip${s === c.sides ? " on" : ""}" data-sides="${s}" type="button">d${s}</button>`).join("")}</div></div>
+    <div class="dc-tray" id="dc-tray"></div>
+    <div class="dc-total" id="dc-total"></div>
+    <div class="row dc-go"><button class="btn go" id="dc-roll" type="button">🎲 Roll!</button><button class="chip" id="dc-free" type="button">Let go of kept dice</button></div>
+    <h3>🕘 Last rolls</h3><ol class="dc-hist" id="dc-hist"></ol>`);
+  const draw = (spin) => {
+    document.getElementById("dc-tray").innerHTML = DC.vals.map((v, i) => `<button class="dc-die d${DC.sides}${DC.keep.has(i) ? " kept" : ""}${spin && !DC.keep.has(i) ? " spin" : ""}" data-die="${i}" type="button" aria-label="Die ${i + 1}: ${v}${DC.keep.has(i) ? ", kept" : ""}">${dcFace(v, DC.sides)}${DC.keep.has(i) ? `<small>kept</small>` : ""}</button>`).join("");
+    const sum = DC.vals.reduce((a, b) => a + b, 0);
+    document.getElementById("dc-total").innerHTML = DC.rolled ? `Total: <b>${sum}</b>${DC.vals.length > 1 ? ` <small>(${DC.vals.join(" + ")})</small>` : ""}` : `<small>Press Roll!</small>`;
+    document.getElementById("dc-free").hidden = !DC.keep.size;
+    document.getElementById("dc-hist").innerHTML = DC.hist.length ? DC.hist.map(h => `<li><b>${h.total}</b> <small>${h.n}d${h.s}: ${h.vals.join(", ")}</small></li>`).join("") : `<li class="soft">No rolls yet.</li>`;
+    document.querySelectorAll("[data-die]").forEach(b => b.addEventListener("click", () => { const i = +b.dataset.die; if (DC.keep.has(i)) DC.keep.delete(i); else DC.keep.add(i); draw(false); }));
+  };
+  const setCfg = (n, sides) => { store.set("dice_cfg", { n, sides }); DC = null; startDice(); };
+  document.getElementById("dc-less").addEventListener("click", () => c.n > 1 && setCfg(c.n - 1, c.sides));
+  document.getElementById("dc-more").addEventListener("click", () => c.n < 10 && setCfg(c.n + 1, c.sides));
+  $app.querySelectorAll("[data-sides]").forEach(b => b.addEventListener("click", () => setCfg(c.n, +b.dataset.sides)));
+  document.getElementById("dc-free").addEventListener("click", () => { DC.keep.clear(); draw(false); });
+  let rolling = false;
+  const roll = () => {
+    if (rolling) return; rolling = true;
+    let k = 0; const free = DC.vals.map((_, i) => !DC.keep.has(i));
+    const tick = () => {
+      DC.vals = DC.vals.map((v, i) => free[i] ? dcRoll1(DC.sides) : v); draw(true); naNote(200 + Math.random() * 300, .05, "square", .04);
+      if (++k < 8) return naTimer(setTimeout(tick, 60));
+      DC.rolled = true; draw(false); rolling = false;
+      const total = DC.vals.reduce((a, b) => a + b, 0); DC.hist.unshift({ total, n: DC.vals.length, s: DC.sides, vals: DC.vals.slice() }); DC.hist = DC.hist.slice(0, 20); draw(false);
+      naNote(660, .12, "triangle", .08);
+    };
+    tick();
+  };
+  document.getElementById("dc-roll").addEventListener("click", roll);
+  keyHandler = e => { if ((e.key === " " || e.key === "Enter") && !/INPUT|TEXTAREA|BUTTON/.test(e.target.tagName)) { e.preventDefault(); roll(); } };
+  draw(false);
+}
+NEW_APPS.push({ id: "dice", emoji: "🎲", name: "Dice", desc: "Roll 1 to 10 dice with 4, 6, 8, 10, 12, 20 or 100 sides. Keep the dice you like and roll the rest.", start: () => startDice(), kw: "dice|die|roll the dice|roll a die|d20|d6|dice roller" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
