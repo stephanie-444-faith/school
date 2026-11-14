@@ -1324,6 +1324,72 @@
   .sv-why { border-radius: 14px; padding: 12px 14px; border: 2px solid var(--line); background: var(--panel-2); display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
   .sv-why.ok { border-color: var(--money); } .sv-why.no { border-color: var(--bad); } .sv-why p { margin: 0; }
   .sv-done { align-items: center; text-align: center; } .sv-big { font-family: var(--display); font-size: 3rem; margin: 0; color: var(--gold); }
+  /* 🏎️ Turbo Keys Rally */
+  .tk-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .tk-head h2 { margin: 0; }
+  .tk-coins { background: var(--gold); color: #3a2600; font-weight: 800; border-radius: 999px; padding: 5px 14px; white-space: nowrap; }
+  .tk-sub { font-family: var(--display); font-size: 1.05rem; margin: 16px 0 8px; }
+  .tk-car-e { display: inline-block; line-height: 1; }
+  .tk-rainbow { animation: tk-rainbow 2.4s linear infinite; }
+  @keyframes tk-rainbow { from { filter: sepia(1) saturate(5) hue-rotate(0deg); } to { filter: sepia(1) saturate(5) hue-rotate(360deg); } }
+  .tk-peek { display: flex; align-items: center; gap: 14px; background: var(--panel-2); border: 2px solid var(--line); border-radius: 16px; padding: 12px 16px; margin: 6px 0 4px; }
+  .tk-peek > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .tk-peek b { font-family: var(--display); font-weight: 400; font-size: 1.2rem; }
+  .tk-peek small { color: var(--ink-soft); }
+  .tk-big { font-size: 3rem; }
+  .tk-mid { font-size: 2.4rem; }
+  .tk-link { background: none; border: 0; padding: 0; color: var(--gold); font: inherit; text-decoration: underline; cursor: pointer; }
+  .tk-lvls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  .tk-lvl { text-align: left; border: 3px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; font: inherit; cursor: pointer; }
+  .tk-lvl b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; }
+  .tk-lvl small { color: var(--ink-soft); font-size: .8rem; }
+  .tk-lvl[aria-pressed="true"] { border-color: var(--gold); background: rgba(255, 201, 60, .14); }
+  .tk-start { display: block; width: 100%; margin: 16px 0 6px; }
+  .tk-tip { font-size: .9rem; }
+  .tk-track { position: relative; background: #24243a; border: 3px solid #12121f; border-radius: 16px; overflow: hidden; margin: 8px 0 10px; }
+  .tk-lane { position: relative; height: 52px; border-bottom: 2px dashed rgba(255, 255, 255, .22); }
+  .tk-lane:last-of-type { border-bottom: 0; }
+  .tk-lane.tk-me { background: rgba(255, 201, 60, .12); box-shadow: inset 4px 0 0 var(--gold); }
+  .tk-lname { position: absolute; left: 8px; top: 3px; font-size: .7rem; font-weight: 700; color: #d8d3f5; white-space: nowrap; z-index: 1; pointer-events: none; }
+  .tk-lname i { font-style: normal; color: var(--gold); }
+  .tk-racer { position: absolute; left: 0; bottom: 3px; width: 44px; text-align: center; font-size: 30px; line-height: 1; transition: left .12s linear; z-index: 2; }
+  .tk-racer.tk-zoom { animation: tk-zoom .45s ease-out; }
+  @keyframes tk-zoom { 0% { filter: drop-shadow(0 0 0 transparent); } 40% { filter: drop-shadow(-14px 0 6px #ffb200) drop-shadow(-24px 0 8px #ff5a00); } 100% { filter: drop-shadow(0 0 0 transparent); } }
+  .tk-finish { position: absolute; right: 0; top: 0; bottom: 0; width: 10px; background: repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / 10px 10px; opacity: .9; }
+  .tk-count { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 3.4rem; color: #fff; background: rgba(10, 8, 30, .55); text-shadow: 0 4px 0 rgba(0, 0, 0, .5); z-index: 3; }
+  .tk-count.tk-go { color: var(--money); }
+  .tk-count[hidden] { display: none; }
+  .tk-hud { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; font-weight: 800; }
+  .tk-hud > span { background: var(--panel-2); border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .tk-turbo { margin-left: auto; padding: 8px 14px; }
+  .tk-turbo:disabled { opacity: .45; }
+  .tk-text { background: var(--panel-2); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 1.2rem; line-height: 1.75; letter-spacing: .01em; color: var(--ink); overflow-wrap: break-word; user-select: none; -webkit-user-select: none; }
+  .tk-text .tk-ok { color: var(--money); }
+  .tk-text .tk-bad { background: var(--bad); color: #fff; border-radius: 3px; }
+  .tk-text .tk-cur { background: rgba(255, 201, 60, .25); box-shadow: inset 0 -3px 0 var(--gold); border-radius: 2px; }
+  .tk-in { display: block; width: 100%; box-sizing: border-box; margin-top: 10px; font: inherit; font-size: 1.25rem; padding: 12px 14px; border-radius: 12px; border: 3px solid var(--line); background: var(--panel); color: var(--ink); }
+  .tk-in:focus { outline: none; border-color: var(--gold); }
+  .tk-in.tk-err { border-color: var(--bad); background: rgba(255, 96, 112, .12); }
+  .tk-row { justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .tk-leave { flex-direction: row; padding: 8px 14px; }
+  .tk-result { text-align: center; background: var(--panel-2); border: 3px solid var(--line); border-radius: 18px; padding: 16px 14px; margin-top: 12px; }
+  .tk-result.tk-p1 { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(255, 201, 60, .2); }
+  .tk-medal { font-size: 3rem; line-height: 1; }
+  .tk-result h3 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; margin: 6px 0 10px; }
+  .tk-res-grid, .tk-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+  .tk-res-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tk-res-grid > div, .tk-stats > div { background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 10px 6px; display: flex; flex-direction: column; gap: 2px; text-align: center; }
+  .tk-res-grid b, .tk-stats b { font-family: var(--display); font-weight: 400; font-size: 1.5rem; color: var(--gold); }
+  .tk-res-grid small, .tk-stats small { color: var(--ink-soft); font-size: .78rem; }
+  .tk-best { color: var(--gold); font-weight: 800; margin: 10px 0 0; }
+  .tk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+  .tk-card { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; background: var(--panel-2); border: 3px solid var(--line); border-radius: 14px; padding: 12px 6px 10px; }
+  .tk-card.tk-on { border-color: var(--money); }
+  .tk-card b { font-size: .88rem; line-height: 1.2; }
+  .tk-card .btn { padding: 7px 12px; font-size: .9rem; }
+  .tk-card .btn:disabled { opacity: .5; }
+  .tk-tag { font-size: .82rem; font-weight: 800; color: var(--money); padding: 7px 0; }
+  .tk-recent { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -18590,6 +18656,290 @@ function startSurvival(tab = "lost") {
   }
 }
 NEW_APPS.push({ id: "survival", emoji: "🏕️", name: "Survival Guide", desc: "What to do if you're lost, safe water, shelter, fire safety, first aid, weather and wild animals, plus a kit checklist and a quiz.", start: () => startSurvival(), kw: "survival|survive|wilderness|lost in the woods|first aid|emergency kit|camping safety" });
+/* ---------- 🏎️ Turbo Keys Rally: type the sentences to drive your car, race 3 bots, win coins, and spend them on cars and paint in the garage. ---------- */
+const TK_CARS = [
+  { id: "red", e: "🚗", name: "Red Rocket", price: 0 },
+  { id: "trail", e: "🚙", name: "Trail Buddy", price: 60 },
+  { id: "cab", e: "🚕", name: "Sunny Cab", price: 100 },
+  { id: "patrol", e: "🚓", name: "Patrol Pal", price: 150 },
+  { id: "pickup", e: "🛻", name: "Pickup Pete", price: 200 },
+  { id: "van", e: "🚐", name: "Road Trip Van", price: 260 },
+  { id: "bus", e: "🚌", name: "Zoom Bus", price: 320 },
+  { id: "fire", e: "🚒", name: "Firefly Truck", price: 400 },
+  { id: "tractor", e: "🚜", name: "Turbo Tractor", price: 480 },
+  { id: "lap", e: "🏎️", name: "Lightning Lap", price: 600 },
+  { id: "rocket", e: "🚀", name: "Rocket Kart", price: 900, rot: 45 },
+  { id: "ufo", e: "🛸", name: "Saucer Cruiser", price: 1300, noflip: true },
+  { id: "turtle", e: "🐢", name: "Shell Speeder", price: 1800 },
+  { id: "dragon", e: "🐉", name: "Dragon Drift", price: 2500 }
+];
+const TK_PAINTS = [   // sepia first turns any car the same tan color, so each paint comes out the same color on every car
+  { id: "none", name: "Factory", price: 0, f: "" },
+  { id: "ocean", name: "Ocean Blue", price: 80, f: "sepia(1) saturate(4) hue-rotate(175deg)" },
+  { id: "lime", name: "Lime Zing", price: 80, f: "sepia(1) saturate(5) hue-rotate(50deg) brightness(1.1)" },
+  { id: "grape", name: "Grape Soda", price: 120, f: "sepia(1) saturate(4) hue-rotate(235deg)" },
+  { id: "cherry", name: "Cherry Red", price: 120, f: "sepia(1) saturate(6) hue-rotate(-40deg)" },
+  { id: "gold", name: "Gold Rush", price: 200, f: "sepia(1) saturate(4) hue-rotate(-8deg) brightness(1.15)" },
+  { id: "ghost", name: "Ghost Mode", price: 250, f: "grayscale(1) brightness(1.5) opacity(.75)" },
+  { id: "rainbow", name: "Rainbow Shift", price: 500, f: "" }   // animated (see .tk-rainbow)
+];
+const TK_LEVELS = { easy: { name: "Easy", emoji: "🐢", wpm: 15, mult: 1 }, medium: { name: "Medium", emoji: "🐇", wpm: 25, mult: 1.3 }, hard: { name: "Hard", emoji: "🐆", wpm: 40, mult: 1.7 }, pro: { name: "Pro", emoji: "🚀", wpm: 60, mult: 2.2 } };
+const TK_BOTS = [["Zippy Zebra", "🦓"], ["Captain Cog", "🤖"], ["Rusty Rover", "🐶"], ["Lola Lightning", "⚡"], ["Sir Speedsalot", "🎩"], ["Pixel Pete", "👾"], ["Nina Nitro", "🔥"], ["Bolt the Bear", "🐻"], ["Comet Kim", "☄️"], ["Wally Wheels", "🐳"], ["Dot Dasher", "🐞"], ["Gizmo Gus", "🦊"]];
+const TK_TEXTS = [
+  "The little robot rolled down the hill and waved at every bird it passed on the way to school.",
+  "A green frog jumped onto a lily pad, looked at the sky, and decided today was a great day to swim.",
+  "Our class built a volcano out of clay. When we added the baking soda, it bubbled all over the table.",
+  "The wind pushed the kite higher and higher until it looked like a tiny red star in the sky.",
+  "Penguins cannot fly, but they are amazing swimmers. They zoom through icy water to catch fish.",
+  "My dog likes to chase his tail in circles until he gets dizzy and flops down on the rug.",
+  "Mars is called the red planet because its dirt is full of rusty iron.",
+  "The pizza came out of the oven hot and bubbly, with extra cheese stretching from every slice.",
+  "A cheetah can run faster than a car on a city street, but only for a short sprint.",
+  "We packed snacks, a map, and a flashlight, then set off to explore the trail by the river.",
+  "The octopus changed colors to hide against the rocks, and the hungry shark swam right past it.",
+  "Every winter the geese fly south in a big V shape, honking to cheer each other on.",
+  "Thunder rumbled across the valley, and the rain came down so hard the street turned into a river.",
+  "The baker woke up before the sun to make warm bread, sweet rolls, and cinnamon buns for the town.",
+  "A good friend listens, shares, and helps you get back up when you fall down.",
+  "The astronaut floated in the space station and watched the Earth spin slowly below the window.",
+  "Bees visit flowers to collect nectar, and they carry pollen from plant to plant as they go.",
+  "The soccer ball curved past the goalie and into the net, and the whole crowd jumped up and cheered.",
+  "Desert plants like the cactus store water inside their thick stems so they can survive long dry months.",
+  "The treehouse had a rope ladder, a secret door, and a window that looked out over the whole park.",
+  "Practice a little every day and your fingers will learn where every key lives on the keyboard.",
+  "Whales sing long songs under the sea, and other whales can hear them from very far away.",
+  "The race car zoomed around the track, took the last turn at top speed, and crossed the finish line first.",
+  "Volcanoes can build whole islands when hot lava cools and hardens in the ocean.",
+  "A rainbow appears when sunlight shines through raindrops and splits into many bright colors.",
+  "The owl sat quietly in the old oak tree, watching the moonlit field for a midnight snack."
+];
+const TK_STREAK = 20;   // letters in a row (no mistakes) to earn one Turbo
+const TK_DEF = () => ({ coins: 0, owned: ["red"], car: "red", paints: ["none"], paint: "none", level: "easy", races: 0, wins: 0, podiums: 0, best: 0, accSum: 0, recent: [] });
+const tkLoad = () => { const d = store.get("tk_save", null); return { ...TK_DEF(), ...(d && typeof d === "object" ? d : {}) }; };
+const tkSave = d => store.set("tk_save", d);
+const tkCar = id => TK_CARS.find(c => c.id === id) || TK_CARS[0];
+const tkPaint = id => TK_PAINTS.find(p => p.id === id) || TK_PAINTS[0];
+const tkCarHTML = (carId, paintId = "none", cls = "") => {
+  const c = tkCar(carId), p = tkPaint(paintId), tf = c.rot ? `rotate(${c.rot}deg)` : c.noflip ? "none" : "scaleX(-1)";
+  return `<span class="tk-car-e${cls ? " " + cls : ""}${p.id === "rainbow" ? " tk-rainbow" : ""}" style="transform:${tf};${p.f ? `filter:${p.f};` : ""}" aria-hidden="true">${c.e}</span>`;
+};
+const tkOrd = n => n + ({ 1: "st", 2: "nd", 3: "rd" }[n] || "th");
+const tkMedal = n => ({ 1: "🥇", 2: "🥈", 3: "🥉" }[n] || "🏅");
+const tkLeft = p => `calc((100% - 50px) * ${Math.max(0, Math.min(1, p)).toFixed(4)})`;
+const tkCoinsShow = d => { const el = document.getElementById("tk-coins"); if (el) el.textContent = `🪙 ${d.coins}`; };
+const tkSegEnd = R => { const sp = R.text.indexOf(" ", R.done); return sp === -1 ? R.len : sp + 1; };   // the word you're on, plus the space after it
+let TK_R = null, TK_LAST_TEXT = -1;
+
+function startTurboKeys(tab = "race") {
+  TK_R = null;
+  const d = tkLoad();
+  appScreen("🏎️ Turbo Keys Rally", `<div class="tk-head"><h2>🏎️ Turbo Keys Rally</h2><span class="tk-coins" id="tk-coins">🪙 ${d.coins}</span></div>${naTabs([["race", "🏁 Race"], ["garage", "🚗 Garage"], ["stats", "📊 Stats"]], tab)}<div id="tk"></div>`);
+  bindTabs(t => startTurboKeys(t));
+  if (tab === "garage") tkGarage(); else if (tab === "stats") tkStats(); else tkLobby();
+}
+
+function tkLobby() {
+  const d = tkLoad(), box = document.getElementById("tk"); if (!box) return;
+  TK_R = null;
+  box.innerHTML = `<div class="tk-lobby">
+    <div class="tk-peek">${tkCarHTML(d.car, d.paint, "tk-big")}<div><b>${esc(tkCar(d.car).name)}</b><small>${d.paint !== "none" ? esc(tkPaint(d.paint).name) + " paint · " : ""}<button class="tk-link" id="tk-to-garage" type="button">change car</button></small></div></div>
+    <p class="soft">Type the sentence as fast and as carefully as you can. Every letter you get right pushes your car toward the finish line. Beat the bots to win coins!</p>
+    <div class="tk-sub">Pick your bots</div>
+    <div class="tk-lvls">${Object.entries(TK_LEVELS).map(([k, L]) => `<button class="tk-lvl" type="button" data-lvl="${k}" aria-pressed="${d.level === k}"><b>${L.emoji} ${L.name}</b><small>about ${L.wpm} words a minute · coins ×${L.mult}</small></button>`).join("")}</div>
+    <button class="btn go tk-start" id="tk-start" type="button">🏁 Start race</button>
+    <p class="soft tk-tip">⚡ Get ${TK_STREAK} letters in a row right to earn a Turbo. Press Enter (or tap ⚡ Turbo) to zoom past a whole word!</p>
+  </div>`;
+  box.querySelectorAll("[data-lvl]").forEach(b => b.addEventListener("click", () => {
+    const d2 = tkLoad(); d2.level = b.dataset.lvl; tkSave(d2);
+    box.querySelectorAll("[data-lvl]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  }));
+  document.getElementById("tk-to-garage").addEventListener("click", () => startTurboKeys("garage"));
+  document.getElementById("tk-start").addEventListener("click", tkRace);
+  keyHandler = e => { if (e.key === "Enter" && !e.target.closest?.("input, textarea, button, select")) { e.preventDefault(); tkRace(); } };
+}
+
+function tkRace() {
+  const d = tkLoad(), L = TK_LEVELS[d.level] || TK_LEVELS.easy, box = document.getElementById("tk"); if (!box) return;
+  let ti; do { ti = Math.floor(Math.random() * TK_TEXTS.length); } while (TK_TEXTS.length > 1 && ti === TK_LAST_TEXT);
+  TK_LAST_TEXT = ti;
+  const text = TK_TEXTS[ti], names = [...TK_BOTS].sort(() => Math.random() - .5).slice(0, 3), pool = TK_CARS.filter(c => c.id !== d.car).sort(() => Math.random() - .5);
+  const R = TK_R = {
+    text, len: text.length, done: 0, v: "", ok: 0, go: false, over: false, t0: 0, last: 0, keys: 0, good: 0, streak: 0, turbo: 0, level: d.level, L, finished: [],
+    bots: names.map(([name, icon], i) => ({ name, icon, car: pool[i].id, paint: Math.random() < .4 ? TK_PAINTS[1 + Math.floor(Math.random() * 5)].id : "none", wpm: L.wpm * (.85 + Math.random() * .3), mult: 1, pos: 0, done: null }))
+  };
+  const racers = [{ name: "You", icon: "⭐", car: d.car, paint: d.paint, me: true }, ...R.bots];
+  box.innerHTML = `<div class="tk-race">
+    <div class="tk-track" id="tk-track">
+      ${racers.map((r, i) => `<div class="tk-lane${r.me ? " tk-me" : ""}"><span class="tk-lname">${r.icon} ${esc(r.name)}<i id="tk-place-${i}"></i></span><span class="tk-racer" id="tk-car-${i}">${tkCarHTML(r.car, r.paint)}</span><span class="tk-finish" aria-hidden="true"></span></div>`).join("")}
+      <div class="tk-count" id="tk-count" aria-live="assertive">3</div>
+    </div>
+    <div class="tk-hud"><span id="tk-wpm">0 WPM</span><span id="tk-acc">🎯 100%</span><button class="btn gold tk-turbo" id="tk-turbo" type="button" disabled>⚡ Turbo (0)</button></div>
+    <div class="tk-text" id="tk-text"></div>
+    <input id="tk-in" class="tk-in" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="Get ready…" aria-label="Type the sentence here" readonly>
+    <div class="row tk-row" id="tk-leave-row"><button class="chip tk-leave" id="tk-leave" type="button">🏳️ Leave race</button></div>
+    <div id="tk-result"></div>
+  </div>`;
+  const inp = document.getElementById("tk-in"), cnt = document.getElementById("tk-count");
+  const alive = () => TK_R === R && !!document.getElementById("tk-track");
+  tkDraw();
+  let n = 3; naNote(523, .15, "square", .08);
+  const tick = () => {
+    if (!alive()) return;
+    if (--n > 0) { cnt.textContent = n; naNote(523, .15, "square", .08); naTimer(setTimeout(tick, 700)); return; }
+    cnt.textContent = "GO!"; cnt.classList.add("tk-go"); naNote(1047, .35, "square", .1);
+    R.go = true; R.t0 = R.last = performance.now(); inp.readOnly = false; inp.placeholder = "Type here!"; inp.focus({ preventScroll: true });
+    naTimer(setTimeout(() => { cnt.hidden = true; }, 650));
+    const iv = naTimer(setInterval(() => { if (!alive() || tkTick(R)) clearInterval(iv); }, 100));
+  };
+  naTimer(setTimeout(tick, 700));
+  inp.addEventListener("input", tkInput);
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); tkTurbo(); } });
+  inp.addEventListener("paste", e => e.preventDefault());
+  ["tk-track", "tk-text"].forEach(id => document.getElementById(id).addEventListener("pointerdown", () => { if (R.go && !R.over) naTimer(setTimeout(() => inp.focus({ preventScroll: true }), 0)); }));
+  document.getElementById("tk-turbo").addEventListener("click", () => { tkTurbo(); if (!R.over) inp.focus({ preventScroll: true }); });
+  document.getElementById("tk-leave").addEventListener("click", tkLobby);
+  keyHandler = e => { if (R.go && !R.over && e.target !== inp && e.key.length === 1 && !e.ctrlKey && !e.metaKey) inp.focus({ preventScroll: true }); };
+}
+
+function tkInput() {
+  const R = TK_R, inp = document.getElementById("tk-in"); if (!R || !inp) return;
+  if (!R.go || R.over) { inp.value = ""; return; }
+  const v = inp.value.replace(/[‘’]/g, "'").replace(/[“”]/g, '"'), seg = R.text.slice(R.done, tkSegEnd(R));
+  for (let i = R.v.length; i < v.length; i++) {   // count each new key press: right or wrong?
+    R.keys++;
+    if (v.slice(0, i + 1) === seg.slice(0, i + 1)) {
+      R.good++; R.streak++;
+      if (R.streak % TK_STREAK === 0 && R.turbo < 3) { R.turbo++; naNote(1318, .12, "triangle", .08); }
+    } else { R.streak = 0; naNote(150, .12, "sawtooth", .05); }
+  }
+  R.v = v;
+  if (v === seg) {   // word finished (with its space): lock it in
+    R.done += seg.length; R.v = ""; inp.value = ""; naNote(784, .05, "square", .03);
+    if (R.done >= R.len) return tkFinish();
+  }
+  tkDraw();
+}
+
+function tkDraw() {
+  const R = TK_R, el = document.getElementById("tk-text"), inp = document.getElementById("tk-in"); if (!R || !el) return;
+  const seg = R.text.slice(R.done, tkSegEnd(R)); let m = 0;
+  while (m < R.v.length && R.v[m] === seg[m]) m++;
+  const okEnd = R.done + m, badEnd = Math.min(R.len, R.done + R.v.length);
+  R.ok = okEnd;
+  el.innerHTML = [...R.text].map((ch, i) => { const c = i < okEnd ? "tk-ok" : i < badEnd ? "tk-bad" : i === okEnd && !R.over ? "tk-cur" : ""; return c ? `<span class="${c}">${esc(ch)}</span>` : esc(ch); }).join("");
+  if (inp) inp.classList.toggle("tk-err", m < R.v.length);
+  const me = document.getElementById("tk-car-0"); if (me) me.style.left = tkLeft(okEnd / R.len);
+  tkHud(R);
+}
+
+function tkHud(R) {
+  const w = document.getElementById("tk-wpm"); if (!w) return;
+  const secs = R.go ? ((R.over ? R.endT : performance.now()) - R.t0) / 1000 : 0;
+  w.textContent = `${secs > 1.5 ? Math.round(R.ok / 5 / (secs / 60)) : 0} WPM`;
+  document.getElementById("tk-acc").textContent = `🎯 ${R.keys ? Math.round(R.good / R.keys * 100) : 100}%`;
+  const t = document.getElementById("tk-turbo"); t.textContent = `⚡ Turbo (${R.turbo})`; t.disabled = R.turbo < 1 || !R.go || R.over;
+}
+
+function tkMark(i, place) { const el = document.getElementById("tk-place-" + i); if (el) el.textContent = ` ${tkMedal(place)} ${tkOrd(place)}`; }
+
+function tkTick(R) {   // moves the bots; returns true when there's nothing left to animate
+  const now = performance.now(), dt = Math.min(.5, (now - R.last) / 1000); R.last = now;
+  if (typeof PAUSED !== "undefined" && PAUSED) { R.t0 += dt * 1000; return false; }
+  R.bots.forEach((b, i) => {
+    if (b.done === null) {
+      if (Math.random() < .07) b.mult = .8 + Math.random() * .4;   // bots speed up and slow down a little, like real typists
+      b.pos += b.wpm * 5 / 60 * b.mult * dt;
+      if (b.pos >= R.len) { b.pos = R.len; b.done = now; R.finished.push(i + 1); tkMark(i + 1, R.finished.length); }
+    }
+    const car = document.getElementById("tk-car-" + (i + 1)); if (car) car.style.left = tkLeft(b.pos / R.len);
+  });
+  if (!R.over) tkHud(R);
+  return R.over && R.bots.every(b => b.done !== null);
+}
+
+function tkTurbo() {
+  const R = TK_R; if (!R || !R.go || R.over || R.turbo < 1) return;
+  R.turbo--; R.done = tkSegEnd(R); R.v = "";
+  const inp = document.getElementById("tk-in"); if (inp) inp.value = "";
+  naNote(392, .1, "sawtooth", .07); naNote(784, .22, "sawtooth", .07, .08);
+  const me = document.getElementById("tk-car-0"); if (me) { me.classList.remove("tk-zoom"); void me.offsetWidth; me.classList.add("tk-zoom"); }
+  if (R.done >= R.len) return tkFinish();
+  tkDraw();
+}
+
+function tkFinish() {
+  const R = TK_R; if (!R || R.over) return;
+  R.over = true; R.endT = performance.now(); R.ok = R.len;
+  const secs = Math.max(1, (R.endT - R.t0) / 1000);
+  R.finished.push(0); const place = R.finished.length; tkMark(0, place);
+  const wpm = Math.round(R.len / 5 / (secs / 60)), acc = R.keys ? Math.round(R.good / R.keys * 100) : 100;
+  const bonus = acc >= 98 ? 20 : acc >= 95 ? 15 : acc >= 90 ? 8 : 0, coins = Math.round(([0, 50, 30, 20, 10][place] + bonus) * R.L.mult);
+  const d = tkLoad(), best = wpm > d.best;
+  d.coins += coins; d.races++; if (place === 1) d.wins++; if (place <= 3) d.podiums++;
+  d.best = Math.max(d.best, wpm); d.accSum += acc;
+  d.recent = [{ place, wpm, acc, level: R.level, at: Date.now() }, ...(d.recent || [])].slice(0, 8);
+  tkSave(d); tkCoinsShow(d);
+  tkDraw();
+  const inp = document.getElementById("tk-in"); if (inp) { inp.value = ""; inp.readOnly = true; inp.placeholder = "Finished!"; inp.blur(); }
+  document.getElementById("tk-leave-row")?.remove();
+  if (place === 1) [784, 988, 1175, 1568].forEach((f, i) => naNote(f, .25, "triangle", .12, i * .13)); else naNote(660, .3, "triangle", .1);
+  const cheer = place === 1 ? "Fastest fingers on the track!" : place === 2 ? "So close! One more race?" : acc < 90 ? "Slow down a tiny bit and aim for fewer mistakes: careful typing is fast typing." : "Keep practicing and you'll pass them!";
+  const res = document.getElementById("tk-result");
+  res.innerHTML = `<div class="tk-result tk-p${place}">
+    <div class="tk-medal" aria-hidden="true">${tkMedal(place)}</div><h3>${place === 1 ? "You won!" : `${tkOrd(place)} place`}</h3>
+    <div class="tk-res-grid"><div><b>${wpm}</b><small>words per minute</small></div><div><b>${acc}%</b><small>accuracy</small></div><div><b>+${coins} 🪙</b><small>coins${bonus ? ` (incl. +${Math.round(bonus * R.L.mult)} accuracy bonus)` : ""}</small></div></div>
+    ${best ? `<p class="tk-best">⭐ Your best speed ever!</p>` : ""}<p class="soft">${cheer}</p>
+    <div class="row tk-row"><button class="btn go" id="tk-again" type="button">🏁 Race again</button><button class="btn" id="tk-garage" type="button">🚗 Garage</button></div>
+  </div>`;
+  document.getElementById("tk-again").addEventListener("click", tkRace);
+  document.getElementById("tk-garage").addEventListener("click", () => startTurboKeys("garage"));
+  res.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  keyHandler = e => { if (e.key === "Enter" && !e.target.closest?.("input, textarea, button, select")) { e.preventDefault(); tkRace(); } };
+}
+
+function tkGarage() {
+  const d = tkLoad(), box = document.getElementById("tk"); if (!box) return;
+  keyHandler = null;
+  const card = (look, name, state) => `<div class="tk-card${state.on ? " tk-on" : ""}">${look}<b>${esc(name)}</b>${state.btn}</div>`;
+  box.innerHTML = `<p class="soft">Win races to earn 🪙 coins, then buy a car or a paint job. Tap <b>Drive</b> on any car you own.</p>
+    <div class="tk-sub">🚗 Cars</div>
+    <div class="tk-grid">${TK_CARS.map(c => { const own = d.owned.includes(c.id), on = d.car === c.id; return card(tkCarHTML(c.id, on ? d.paint : "none", "tk-mid"), c.name, { on, btn: on ? `<span class="tk-tag">✅ Driving</span>` : own ? `<button class="btn" type="button" data-drive="${c.id}">Drive</button>` : `<button class="btn gold" type="button" data-buy="${c.id}"${d.coins < c.price ? " disabled" : ""}>🪙 ${c.price}</button>` }); }).join("")}</div>
+    <div class="tk-sub">🎨 Paint for your ${esc(tkCar(d.car).name)}</div>
+    <div class="tk-grid">${TK_PAINTS.map(p => { const own = d.paints.includes(p.id), on = d.paint === p.id; return card(tkCarHTML(d.car, p.id, "tk-mid"), p.name, { on, btn: on ? `<span class="tk-tag">✅ On</span>` : own ? `<button class="btn" type="button" data-usepaint="${p.id}">Use</button>` : `<button class="btn gold" type="button" data-buypaint="${p.id}"${d.coins < p.price ? " disabled" : ""}>🪙 ${p.price}</button>` }); }).join("")}</div>`;
+  const redo = () => { tkCoinsShow(tkLoad()); tkGarage(); };
+  box.querySelectorAll("[data-drive]").forEach(b => b.addEventListener("click", () => { const d2 = tkLoad(); d2.car = b.dataset.drive; tkSave(d2); naNote(660, .1, "triangle", .08); redo(); }));
+  box.querySelectorAll("[data-usepaint]").forEach(b => b.addEventListener("click", () => { const d2 = tkLoad(); d2.paint = b.dataset.usepaint; tkSave(d2); naNote(660, .1, "triangle", .08); redo(); }));
+  box.querySelectorAll("[data-buy]").forEach(b => b.addEventListener("click", () => {
+    const d2 = tkLoad(), c = tkCar(b.dataset.buy); if (d2.owned.includes(c.id) || d2.coins < c.price) return;
+    d2.coins -= c.price; d2.owned.push(c.id); d2.car = c.id; tkSave(d2);
+    [880, 1320].forEach((f, i) => naNote(f, .15, "triangle", .1, i * .09)); toast(`🚗 You bought the ${c.name}! It's your car now.`); redo();
+  }));
+  box.querySelectorAll("[data-buypaint]").forEach(b => b.addEventListener("click", () => {
+    const d2 = tkLoad(), p = tkPaint(b.dataset.buypaint); if (d2.paints.includes(p.id) || d2.coins < p.price) return;
+    d2.coins -= p.price; d2.paints.push(p.id); d2.paint = p.id; tkSave(d2);
+    [880, 1320].forEach((f, i) => naNote(f, .15, "triangle", .1, i * .09)); toast(`🎨 ${p.name} paint is on!`); redo();
+  }));
+}
+
+function tkStats() {
+  const d = tkLoad(), box = document.getElementById("tk"); if (!box) return;
+  keyHandler = null;
+  const avg = d.races ? Math.round(d.accSum / d.races) : 0;
+  box.innerHTML = `<div class="tk-stats">
+      <div><b>${d.best}</b><small>best words per minute</small></div><div><b>${d.races}</b><small>races</small></div>
+      <div><b>${d.wins}</b><small>wins 🥇</small></div><div><b>${d.podiums}</b><small>top-3 finishes</small></div>
+      <div><b>${d.races ? avg + "%" : "–"}</b><small>average accuracy</small></div><div><b>${d.owned.length}/${TK_CARS.length}</b><small>cars owned</small></div>
+    </div>
+    <div class="tk-sub">Recent races</div>
+    ${d.recent.length ? `<ul class="tk-recent">${d.recent.map(r => `<li>${tkMedal(r.place)} ${tkOrd(r.place)} · <b>${r.wpm}</b> WPM · ${r.acc}% · ${esc(TK_LEVELS[r.level]?.name || "")} bots</li>`).join("")}</ul>` : `<p class="soft">No races yet. Go win one!</p>`}
+    <p class="soft">💡 Words per minute counts every 5 letters (spaces too) as one word.</p>`;
+}
+
+// It's a game: hidden from people who can't play games, listed with the other games, and in the App-App.
+INFO_GAME_APPS.add("turbokeys");
+HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Turbo Keys Rally", "🏎️", "turbo keys rally|turbo keys|typing race|race typing|car typing", "Type fast to drive your car, race bots, and buy cars with your coins.", () => startTurboKeys()]);
+MORE_GAMES.push({ id: "turbokeys", name: "Turbo Keys Rally", desc: "Type to drive! Race 3 bots, win coins, and buy cars and paint.", start: () => startTurboKeys() });
+NEW_APPS.push({ id: "turbokeys", emoji: "🏎️", name: "Turbo Keys Rally", desc: "Type fast to drive! Race 3 bots, win coins, and buy cars and paint in your garage.", start: () => startTurboKeys(), kw: "turbo keys rally|turbo keys|typing race|race typing|car typing|typing cars" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
