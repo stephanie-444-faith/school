@@ -2828,6 +2828,7 @@ function showHome() {
   if (!SITE_WHO) return startWho();   // 👋 first, who are you?
   PROF_GAME = null; PROF_RESTART = null;
   keyHandler = null;
+  try { naCleanup(); hippoHush(); } catch (e) {}   // stop the last app's timers so nothing keeps running after ✕ Exit
   stopSlope();
   stopArchers();
   stopMini();
