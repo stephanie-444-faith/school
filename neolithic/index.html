@@ -1528,6 +1528,11 @@
   .bb-gem { display: block; border-radius: 4px; }
   .bb-float { position: fixed; z-index: 9999; display: grid; pointer-events: none; filter: drop-shadow(0 8px 10px rgba(0,0,0,.45)); }
   .bb-float .bb-gem { border-radius: 6px; }
+  .px-savebox { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; } .px-savebox .gal-name { flex: 1 1 160px; min-width: 0; }
+  .px-gal2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; }
+  .px-thumb2 { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; min-width: 0; }
+  .px-thumb2 img { width: 100%; aspect-ratio: 1; object-fit: contain; image-rendering: pixelated; border-radius: 6px; background: #fff; }
+  .px-thumb2 small { font-size: .72rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -10196,17 +10201,35 @@ function startMoneySmart(tab = "goal") {
     box.querySelectorAll("input").forEach(x => x.addEventListener("input", draw)); draw();
   }
 }
-// 🎨 Pixel Art Studio
+// 🎨 Pixel art (a tab in the 🎨 Art Gallery)
 const PX_COLORS = ["#000000", "#ffffff", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#9aa5b1", "#00c2c7"];
 const PX_TEMPLATES = { heart: ["..........", ".XX....XX.", "XXXX..XXXX", "XXXXXXXXXX", "XXXXXXXXXX", ".XXXXXXXX.", "..XXXXXX..", "...XXXX...", "....XX....", ".........."], smile: ["..XXXXXX..", ".X......X.", "X..X..X..X", "X........X", "X.X....X.X", "X..XXXX..X", ".X......X.", "..XXXXXX..", "..........", ".........."] };
+const ART_TABS = [["mine", "🖼️ My gallery"], ["pixel", "🟥 Pixel art"], ["draw", "✏️ Draw"], ["everyone", "👀 Everyone's art"]];   // 🎨 Art Gallery: pixel art and the gallery in one app
+async function pxSave(grid, name, quiet) {   // a pixel picture goes into My Gallery, and remembers its pixels so you can keep painting it
+  const N = Math.round(Math.sqrt(grid.length)) || 16, k = 20, c = document.createElement("canvas"); c.width = c.height = N * k;
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
+  grid.forEach((col, i) => { if (col) { x.fillStyle = col; x.fillRect((i % N) * k, Math.floor(i / N) * k, k, k); } });
+  const blob = await new Promise(ok => c.toBlob(ok, "image/png")), r = blob ? await galAdd(blob, "drawing", name || "Pixel art") : { err: "That picture couldn't be saved." };
+  if (r.meta) { r.meta.px = grid.slice(); await galSaveMeta(r.meta).catch(() => {}); }
+  if (!quiet) { if (r.meta) { sfx.buy(); toast("🖼️ Saved to My Gallery!"); } else toast(r.err); }
+  return r;
+}
+async function pxMigrate() {   // pictures from the old Pixel Art gallery move into My Gallery, once
+  const old = store.get("px_gal", []) || []; if (!old.length || store.get("px_moved", false)) return 0;
+  let n = 0; for (const g of old.slice().reverse()) { const r = await pxSave(g, "Pixel art", true); if (r.meta) n++; else break; }
+  if (n === old.length) { store.set("px_moved", true); store.set("px_gal", []); }
+  return n;
+}
 function startPixelArt() {
   const N = 16; let grid = store.get("px_cur", null) || Array(N * N).fill(""), color = PX_COLORS[2], tool = "pen", down = false;
-  appScreen("🎨 Pixel Art Studio", `<h2>🎨 Pixel Art Studio</h2><p class="soft">Tap or drag to paint pixels. Video game characters used to be made exactly like this!</p>
+  appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, "pixel")}<p class="soft">Tap or drag to paint pixels, then save your picture to My Gallery.</p>
     <div class="px-wrap"><div class="px-grid" id="px" style="grid-template-columns:repeat(${N},1fr)">${grid.map((c, i) => `<i data-i="${i}" style="background:${c || "transparent"}"></i>`).join("")}</div>
     <div class="px-side"><div class="px-pal">${PX_COLORS.map(c => `<button class="px-col${c === color ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="color ${c}"></button>`).join("")}<input type="color" id="px-any" value="#ff6fb5" aria-label="Any color"></div>
     <div class="na-chips"><button class="chip on" data-t="pen">✏️ Pen</button><button class="chip" data-t="erase">🧽 Eraser</button><button class="chip" data-t="fill">🪣 Fill</button></div>
     <div class="na-chips"><button class="chip" id="px-clear">🗑️ Clear</button><button class="chip" id="px-heart">❤️ Heart</button><button class="chip" id="px-smile">🙂 Smiley</button><button class="chip" id="px-mirror">🪞 Mirror</button></div>
-    <h3>🖼️ Gallery</h3><div class="px-gal" id="px-gal"></div><button class="btn gold" id="px-save">💾 Save to gallery</button> <button class="btn" id="px-mygal" type="button">🖼️ Save to My Gallery</button></div></div>`);
+    <div class="px-savebox"><input class="gal-name" id="px-name" maxlength="60" placeholder="Name your pixel art" aria-label="Name your pixel art"><button class="btn gold" id="px-mygal" type="button">💾 Save to My Gallery</button></div>
+    <h3>🟥 Your pixel art</h3><div class="px-gal2" id="px-gal"><p class="soft">Opening…</p></div></div></div>`);
+  bindTabs(t => startGallery("all", t));
   const cells = [...document.querySelectorAll("#px i")], save = () => store.set("px_cur", grid), paintAll = () => cells.forEach((c, i) => c.style.background = grid[i] || "transparent");
   const fill = (i, from, to) => { if (from === to) return; const st = [i]; while (st.length) { const k = st.pop(); if (k < 0 || k >= N * N || grid[k] !== from) continue; grid[k] = to; const x = k % N; if (x > 0) st.push(k - 1); if (x < N - 1) st.push(k + 1); st.push(k - N, k + N); } };
   const act = i => { if (tool === "fill") fill(i, grid[i], color); else grid[i] = tool === "erase" ? "" : color; paintAll(); save(); };
@@ -10222,10 +10245,15 @@ function startPixelArt() {
   document.getElementById("px-heart").addEventListener("click", () => tpl("heart", "#e63946"));
   document.getElementById("px-smile").addEventListener("click", () => tpl("smile", "#ffd23f"));
   document.getElementById("px-mirror").addEventListener("click", () => { for (let y = 0; y < N; y++) for (let x = 0; x < N / 2; x++) grid[y * N + (N - 1 - x)] = grid[y * N + x]; paintAll(); save(); });
-  const gal = () => { const g = store.get("px_gal", []); document.getElementById("px-gal").innerHTML = g.length ? g.map((art, k) => `<button class="px-thumb" data-k="${k}" title="Open">${art.map(c => `<i style="background:${c || "transparent"}"></i>`).join("")}</button>`).join("") : `<p class="soft">Saved pictures show up here.</p>`; $app.querySelectorAll(".px-thumb").forEach(b => b.addEventListener("click", () => { grid = store.get("px_gal", [])[+b.dataset.k].slice(); paintAll(); save(); })); };
-  document.getElementById("px-mygal").addEventListener("click", () => { const c = document.createElement("canvas"), k = 20; c.width = c.height = N * k; const x = c.getContext("2d"); grid.forEach((col, i) => { if (col) { x.fillStyle = col; x.fillRect((i % N) * k, Math.floor(i / N) * k, k, k); } }); galSaveCanvas(c, "Pixel art"); });
-  document.getElementById("px-save").addEventListener("click", () => { const g = store.get("px_gal", []); g.unshift(grid.slice()); store.set("px_gal", g.slice(0, 8)); gal(); sfx.buy(); });
-  gal();
+  let mine = [];
+  const gal = async () => {
+    try { mine = (await galList()).filter(m => Array.isArray(m.px)).slice(0, 30); } catch (e) { mine = null; }
+    const box = document.getElementById("px-gal"); if (!box) return;
+    box.innerHTML = mine === null ? `<p class="soft">😕 This browser won't let pictures save here.</p>` : mine.length ? mine.map((m, k) => `<button class="px-thumb2" data-k="${k}" type="button" title="Keep painting ${esc(m.name)}"><img src="${m.thumb || ""}" alt=""><small>${esc(m.name)}</small></button>`).join("") : `<p class="soft">Pixel pictures you save show up here (and in My Gallery). Tap one to keep painting it.</p>`;
+    box.querySelectorAll("[data-k]").forEach(b => b.addEventListener("click", () => { const m = mine[+b.dataset.k]; grid = m.px.slice(); paintAll(); save(); document.getElementById("px-name").value = m.name; toast("🟥 Keep painting!"); }));
+  };
+  document.getElementById("px-mygal").addEventListener("click", async e => { const b = e.currentTarget; b.disabled = true; await pxSave(grid, document.getElementById("px-name").value.trim().slice(0, 60)); b.disabled = false; gal(); });
+  pxMigrate().then(n => { if (n) toast(`🖼️ Moved ${n} pixel picture${n === 1 ? "" : "s"} into My Gallery!`); gal(); });
 }
 
 // 🧩 Puzzle Room
@@ -10765,7 +10793,9 @@ function bgCredit(id) {
 }
 function bgCreditSet(id, from) { if (!id || !from || !SITE_WHO) return; store.set("bg_from_" + SITE_WHO, { ...(store.get("bg_from_" + SITE_WHO, {}) || {}), [id]: from }); }
 function startGallery(filter = "all", tab = "mine", person = null) {
-  appScreen("🖼️ My Gallery", `<h2>🖼️ My Gallery</h2>${naTabs([["mine", "🖼️ My gallery"], ["everyone", "👀 Everyone's art"]], tab)}<div id="gal-body"></div>`);
+  if (tab === "pixel") return startPixelArt();
+  if (tab === "draw") return startGalleryDraw();
+  appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, tab)}<div id="gal-body"></div>`);
   bindTabs(t => startGallery("all", t));
   const body = document.getElementById("gal-body"), me = galWho();
   if (tab === "everyone" && !person) {
@@ -10786,7 +10816,7 @@ function startGallery(filter = "all", tab = "mine", person = null) {
        <div class="na-chips">${GAL_KINDS.map(([k, l]) => `<button class="chip${k === filter ? " on" : ""}" data-kind="${k}" type="button">${l}</button>`).join("")}<button class="chip" id="gal-top" type="button">🏆 Top rated</button></div>
        <div class="gal-grid" id="gal-grid"><p class="soft">Opening…</p></div>`
     : `<p class="soft">Keep up to ${GAL_MAX.toLocaleString()} pictures, drawings and videos. They're saved on this device.</p>
-    <div class="row gal-add"><label class="btn gold">📁 Add pictures or videos<input type="file" id="gal-file" accept="image/*,video/*" multiple hidden></label><button class="btn" id="gal-draw" type="button">✏️ New drawing</button></div>
+    <div class="row gal-add"><label class="btn gold">📁 Add pictures or videos<input type="file" id="gal-file" accept="image/*,video/*" multiple hidden></label><button class="btn" id="gal-draw" type="button">✏️ New drawing</button><button class="btn" id="gal-px" type="button">🟥 Pixel art</button></div>
     <div class="bg-paste gal-paste" id="gal-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Or paste a picture here (Ctrl+V), or drop files here"></div>
     <div class="gal-bar"><b id="gal-count">…</b><small id="gal-space"></small></div>
     <div class="na-chips">${GAL_KINDS.map(([k, l]) => `<button class="chip${k === filter ? " on" : ""}" data-kind="${k}" type="button">${l}</button>`).join("")}<button class="chip" id="gal-sel" type="button">☑️ Select</button></div>
@@ -10843,7 +10873,8 @@ function startGallery(filter = "all", tab = "mine", person = null) {
     else if (e.target?.closest?.("#gal-paste")) { e.preventDefault(); toast("📋 Copy a picture first, then paste it here."); }
   };
   document.addEventListener("paste", GAL_PASTE);
-  load();
+  document.getElementById("gal-px")?.addEventListener("click", () => startPixelArt());
+  pxMigrate().then(n => { if (n) toast(`🖼️ Moved ${n} pixel picture${n === 1 ? "" : "s"} into My Gallery!`); }).catch(() => {}).then(() => load());
 }
 // the big view: look, play, and (for my things) rename, keep private, use as a background, delete; (for other people's things) rate and take
 function galView(list, i, after) {
@@ -10863,7 +10894,7 @@ function galView(list, i, after) {
       ${mine ? `<p class="gal-rated">${galStarsTxt(m)}${raters ? `: ${raters}` : ""}${(m.takenBy || []).length ? ` · 📥 Taken by ${m.takenBy.map(w => esc(galName(w))).join(", ")}` : ""}</p>`
         : `<div class="gal-stars" role="group" aria-label="Your rating"><span>Your stars:</span>${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= myStars ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}">★</button>`).join("")}<small id="gv-avg">${galStarsTxt(m)}</small></div>`}
       <div class="row gal-vrow"><button class="btn" id="gv-prev" type="button" aria-label="Previous">◀</button><button class="btn" id="gv-next" type="button" aria-label="Next">▶</button>
-        ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
+        ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Keep painting</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
           : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>`}</div>
     </div>${mine && m.from ? `<div class="gal-taken">📥 Taken from ${esc(galName(m.from))}</div>` : ""}`;
     const $v = id => box.querySelector("#gv-" + id);
@@ -10883,6 +10914,7 @@ function galView(list, i, after) {
         setScene();
       };
       $v("home")?.addEventListener("click", () => useBg("home")); $v("every")?.addEventListener("click", () => useBg("every"));
+      $v("px")?.addEventListener("click", () => { store.set("px_cur", m.px.slice()); close(); startPixelArt(); });
     } else {
       box.querySelectorAll("[data-star]").forEach(b => b.addEventListener("click", async () => {
         const n = +b.dataset.star; m.rates = { ...(m.rates || {}), [me]: n }; await galSaveMeta(m).catch(() => {});
@@ -10904,7 +10936,7 @@ function galView(list, i, after) {
 // ✏️ a simple sketchpad that saves straight to the gallery
 const GAL_INK = ["#000000", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#ffffff"];
 function startGalleryDraw() {
-  appScreen("🖼️ My Gallery · New drawing", `<div class="row"><button class="chip" id="gd-back" type="button">🖼️ Back to my gallery</button></div><h2>✏️ New drawing</h2>
+  appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, "draw")}<h3>✏️ New drawing</h3>
     <div class="gd-pal">${GAL_INK.map((c, k) => `<button class="px-col${k === 0 ? " on" : ""}" data-ink="${c}" style="background:${c}" type="button" aria-label="color ${c}"></button>`).join("")}<input type="color" id="gd-any" value="#00c2c7" aria-label="Any color"></div>
     <div class="na-chips"><button class="chip" data-size="4" type="button">✏️ Thin</button><button class="chip on" data-size="10" type="button">🖍️ Medium</button><button class="chip" data-size="24" type="button">🖌️ Thick</button><button class="chip" id="gd-erase" type="button">🧽 Eraser</button><button class="chip" id="gd-undo" type="button">↩️ Undo</button><button class="chip" id="gd-clear" type="button">🗑️ Clear</button></div>
     <canvas id="gd-cv" class="gd-canvas" width="900" height="650"></canvas>
@@ -10922,7 +10954,7 @@ function startGalleryDraw() {
   document.getElementById("gd-erase").addEventListener("click", e => { erase = !erase; e.currentTarget.classList.toggle("on", erase); });
   document.getElementById("gd-undo").addEventListener("click", () => { const d = undo.pop(); if (d) x.putImageData(d, 0, 0); });
   document.getElementById("gd-clear").addEventListener("click", () => { undo.push(x.getImageData(0, 0, cv.width, cv.height)); x.fillStyle = "#fff"; x.fillRect(0, 0, cv.width, cv.height); });
-  document.getElementById("gd-back").addEventListener("click", () => startGallery());
+  bindTabs(t => startGallery("all", t));
   document.getElementById("gd-save").addEventListener("click", async () => { const r = await galSaveCanvas(cv, document.getElementById("gd-name").value.trim().slice(0, 60) || "My drawing"); if (r.meta) startGallery("drawing"); });
 }
 
@@ -11767,12 +11799,11 @@ NEW_APPS.push(
   { id: "science", emoji: "🔬", name: "Science Lab", desc: "Sink or float, color mixing, a volcano and a plant you grow.", start: () => startScienceLab() },
   { id: "space", emoji: "🌌", name: "Space Explorer", desc: "Watch the planets orbit, find your weight on Mars, and take a space quiz.", start: () => startSpaceExplorer() },
   { id: "money", emoji: "💰", name: "Money Smart", desc: "Savings goals, needs vs. wants, a budget game and growing money.", start: () => startMoneySmart() },
-  { id: "pixel", emoji: "🎨", name: "Pixel Art Studio", desc: "Paint pixel pictures like old video games, and save a gallery.", start: () => startPixelArt() },
   { id: "puzzle", emoji: "🧩", name: "Puzzle Room", desc: "Sudoku, Tower of Hanoi and Lights Out brain puzzles.", start: () => startPuzzleRoom() },
   { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab() },
   { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
   { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
-  { id: "gallery", emoji: "🖼️", name: "My Gallery", desc: "Save up to 1,000 pictures, drawings and videos, make new drawings, use them as backgrounds, and delete what you don't want.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|my pictures|my photos|my videos|my drawings|photo album" },
+  { id: "gallery", emoji: "🎨", name: "Art Gallery", desc: "Paint pixel art and drawings, keep up to 1,000 pictures, drawings and videos, see everyone's art, and use any of it as a background.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|art gallery|art studio|my pictures|my photos|my videos|my drawings|photo album|pixel art|pixel|pixels|draw|drawing" },
   { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
   { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude), and travel to its past lives to play any older version.", start: () => startSaveSite(), added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer() },
@@ -18658,7 +18689,7 @@ function startNameThatTune() {
 NEW_APPS.push({ id: "tune", emoji: "🎵", name: "Name That Tune", desc: "Hear a real melody and name it, or name famous songs from clues. About 100 tunes and over 1,400 songs!", start: () => startNameThatTune(), added: "2026-11-11", kw: "name that tune|name the tune|guess the song|guess that song|song quiz|music quiz" });
 
 // 🎮 people who can't play games don't see games (or the time machine) in app descriptions either
-[["pixel", "Paint pixel pictures one square at a time, and save a gallery."], ["money", "Savings goals, needs vs. wants, making a budget, and growing money."], ["grammar", "The 8 parts of speech, sentence types, text structures and text features: learn and quiz."], ["savesite", "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude)."]].forEach(([id, plain]) => {
+[["money", "Savings goals, needs vs. wants, making a budget, and growing money."], ["grammar", "The 8 parts of speech, sentence types, text structures and text features: learn and quiz."], ["savesite", "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude)."]].forEach(([id, plain]) => {
   const a = NEW_APPS.find(x => x.id === id); if (!a) return; const full = a.desc; Object.defineProperty(a, "desc", { get: () => gamesAllowed() ? full : plain, configurable: true });
 });
 /* ---------- 🏕️ Survival Guide: staying safe outdoors (lost, water, shelter, fire, first aid, weather, wild animals), a kit checklist and a quiz ---------- */
@@ -20288,7 +20319,7 @@ function appSearch(q) {
 // 🔤 Misspelled app names still find the app (a missing, extra, swapped or wrong letter or two).
 // (Don't write misspelled examples in comments here: every word on the page counts as a real word for Hippo's spell checker.)
 // The app's whole name has to show up (words next to each other, misspellings allowed), or one of its special words below.
-const APP_FUZZY = { code: ["coding"], music: ["piano"], pixel: ["pixel"], puzzle: ["sudoku"], comic: ["comic", "comics"], hippopoly: ["hippopoly", "monopoly"], bship: ["battleship"], rummi: ["rummikub"], check: ["checkers"], yahtzee: ["yahtzee"], mancala: ["mancala"], chess: ["chess"], memorizer: ["memorizer", "memoriser", "memorize", "memorise"], grammar: ["grammar"], roots: ["archery"], wheel: ["spinner"] };
+const APP_FUZZY = { code: ["coding"], music: ["piano"], gallery: ["pixel", "gallery"], puzzle: ["sudoku"], comic: ["comic", "comics"], hippopoly: ["hippopoly", "monopoly"], bship: ["battleship"], rummi: ["rummikub"], check: ["checkers"], yahtzee: ["yahtzee"], mancala: ["mancala"], chess: ["chess"], memorizer: ["memorizer", "memoriser", "memorize", "memorise"], grammar: ["grammar"], roots: ["archery"], wheel: ["spinner"] };
 const APP_STOP = ["the", "and", "of", "a", "an", "app", "game", "play", "open", "please", "i", "want", "to"];
 function appFuzzy(q) {
   const V = hippoVocab(), tol = n => n <= 3 ? 0 : n <= 5 ? 1 : n <= 8 ? 2 : n <= 12 ? 3 : 4;
@@ -21816,7 +21847,7 @@ document.addEventListener("click", e => {
 }, true);
 // Show the button everywhere except the main page (the main page is the one with the games menu).
 // 🎨 pick the page's background from what's on screen
-const SCENES = [[/^💾 Save the Site/, "library"], [/^🍕 Fraction & Decimal Lab/, "chalk"], [/^🎞️ Moving Art/, "art"], [/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Pixel Art/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
+const SCENES = [[/^💾 Save the Site/, "library"], [/^🍕 Fraction & Decimal Lab/, "chalk"], [/^🎞️ Moving Art/, "art"], [/^🖼️ My Gallery/, "art"], [/^😎 Slang Generator/, "disco"], [/^🌏 Language World/, "rainbow"], [/^🎵 Name That Tune/, "disco"], [/^⚡ Root Hyper Practice/, "galaxy"], [/^🎮 Game Room/, "arcade"], [/^ℹ️ Where to find everything/, "library"], [/^🏹 Pick a roots game/, "meadow"], [/^🥍 Root Lacrosse/, "galaxy"], [/^🏀 Root Basketball|^🏀 Hippo Hoops/, "arcade"], [/^⚽ Root Soccer|^⚽ Soccer Dream Team|^🏈 Root Football|^🏈 Football Dream Team/, "field"], [/^🥍 Lacrosse Dream Team/, "galaxy"], [/^🎡 Wheel Spinner/, "rainbow"], [/^🏹 Root Archery/, "meadow"], [/^🦆 Lucky Duck/, "river"], [/^📝 Grammar/, "notebook"], [/^🧠 The Memorizer/, "notebook"], [/^♟️ Chess/, "castle"], [/^🃏 Uno|^🐟 Go Fish|^🀄 Rummikub/, "cards"], [/^🚢 Battleship/, "ocean"], [/^🎓 Head of the Class/, "classroom"], [/^⛀ Checkers|^🎲 Yahtzee/, "arcade"], [/^🥣 Mancala/, "savanna"], [/^⬜ Dots and Boxes/, "notebook"], [/Hippopoly/, "money"], [/^Dig It Up/, "cave"], [/^Cash Race/, "money"], [/^Slope City/, "city"], [/^Drawing Studio/, "art"], [/^Ragdoll Archers/, "castle"], [/^Neon Snake/, "matrix"], [/^Sky Stack|^Sky Hopper/, "sky"], [/^2048/, "candy"], [/^Memory Match/, "cards"], [/^Minesweeper/, "field"], [/^Brick Breaker/, "retro"], [/^Galaxy Defender/, "galaxy"], [/^Whack-a-Mole/, "garden"], [/^Connect Four/, "ocean"], [/^Simon Says/, "disco"], [/^Pong/, "arcade"], [/^Rodeo Stampede/, "savanna"], [/^Bunny Hop/, "meadow"], [/^Story Starters/, "notebook"], [/Ask Hippo/, "river"], [/^📖/, "library"], [/^Social Studies|^Timeline|^Focus Question/, "ancient"], [/^Math/, "chalk"], [/^🧮 Math Center/, "chalk"], [/^📱 App-App/, "apps"], [/^🎹 Music Maker/, "disco"], [/^🔬 Science Lab/, "lab"], [/^🌌 Space Explorer/, "galaxy"], [/^💰 Money Smart/, "money"], [/^🎨 Art Gallery/, "art"], [/^🧩 Puzzle Room/, "cards"], [/^🗣️ Language Lab/, "rainbow"], [/^🌍 World Explorer/, "ocean"], [/^💬 Comic Creator/, "notebook"], [/^🧘 Calm Corner/, "sky"], [/^💻 Code Lab/, "code"], [/^🤖 AI Studio/, "ai"], [/^Ratios/, "graph"], [/^🏆 4th Grade/, "lounge"], [/^🏫|^🌍/, "classroom"], [/^Science/, "lab"], [/^Health/, "health"], [/^Reading/, "library"], [/^Art/, "art"], [/^Mix it up/, "rainbow"]];
 let SCREEN_LAST = null;
 function setScene() {
   const lab = document.getElementById("gamesmenu") ? "" : ($app.querySelector(".label")?.textContent || "").trim();
