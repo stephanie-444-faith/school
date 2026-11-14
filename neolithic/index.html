@@ -1635,6 +1635,24 @@
   .gp-check { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 800; background: rgba(0,0,0,.45); color: #fff; border: 2px solid #fff; }
   .gp-item.on .gp-check { background: var(--gold); color: #3a2600; }
   .gp-go { flex-wrap: wrap; gap: 8px; }
+  .who-newbox { display: grid; gap: 8px; margin: 14px 0 0; padding: 14px 16px; border-radius: 16px; background: #1e6fd9; border: 3px solid #5aa0ff; color: #fff; }
+  .who-newbox label { font-family: var(--display); font-size: 1.15rem; }
+  .who-newrow { display: flex; gap: 8px; flex-wrap: wrap; } .who-newrow input { flex: 1 1 180px; min-width: 0; font: inherit; padding: 12px 14px; border-radius: 99px; border: 0; background: #fff; color: #10203a; }
+  .who-find { display: block; width: 100%; box-sizing: border-box; margin: 14px 0 0; font: inherit; padding: 11px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
+  .who-none { margin: 10px 0 0; } .who-grid .who-btn[hidden] { display: none; }
+  .who-img { width: 1em; height: 1em; border-radius: 50%; object-fit: cover; vertical-align: middle; display: inline-block; }
+  .who-me .who-img { width: 1.3em; height: 1.3em; vertical-align: -.3em; }
+  .su-dots { display: flex; gap: 6px; justify-content: center; margin: 6px 0 2px; } .su-dots i { width: 28px; height: 6px; border-radius: 99px; background: var(--line); } .su-dots i.on { background: var(--gold); } .su-dots i.done { background: var(--money); }
+  .su-in { display: block; width: 100%; box-sizing: border-box; margin: 8px 0; font: inherit; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
+  .su-msg { min-height: 1.2em; color: var(--gold); font-weight: 700; } .su-btns { gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+  .pic-top { display: flex; align-items: center; gap: 12px; } .pic-now { font-size: 3.2rem; line-height: 1; } .pic-top p { margin: 0; }
+  .pic-emojis { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; margin: 10px 0; }
+  .pic-emo { font-size: 1.6rem; padding: 4px; border-radius: 10px; border: 2px solid var(--line); background: var(--panel-2); cursor: pointer; } .pic-emo.on { border-color: var(--gold); }
+  .pic-ways { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; } .pic-ways .btn { padding: 10px 14px; font-size: .95rem; }
+  .pic-paste { min-height: 44px; }
+  .pic-drawbox { display: grid; gap: 8px; justify-items: center; margin: 8px 0; } .pic-cv { width: min(256px, 100%); aspect-ratio: 1; border-radius: 12px; touch-action: none; background: #fff; }
+  .pic-inks { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .pic-artgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; } .pic-art { padding: 0; border: 2px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; cursor: pointer; } .pic-art img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3124,7 +3142,7 @@ function showHome() {
   const chipRow = (obj, key) => Object.entries(obj).map(([k, v]) => `<button class="chip" data-${key}="${k}" aria-pressed="${choice[key] === k}"><b>${v.name}</b><span>${v.desc}</span></button>`).join("");
   const ss = choice.subject === "ss";
   $app.innerHTML = `
-    <div class="who-corner"><button class="who-switch" id="who-switch" type="button" title="Tell Study Arcade who you are">🔄 Switch person</button><button class="who-me" id="who-me" type="button" title="Change your name, say things about yourself, or add a code">${whoAva(SITE_WHO)} ${esc(SITE_NAME)}</button></div>
+    <div class="who-corner"><button class="who-switch" id="who-switch" type="button" title="Tell Study Arcade who you are">🔄 Switch person</button><button class="who-me" id="who-me" type="button" title="Change your name, say things about yourself, or add a code">${whoAvaHTML(SITE_WHO)} ${esc(SITE_NAME)}</button></div>
     <div class="topbar">
       <div class="emoji-row">
       ${homeRowHTML()}
@@ -3228,7 +3246,7 @@ const whoAbout = id => id === "guest" ? "" : String((store.get("who_about", {}) 
 const whoHasCode = id => id !== "guest" && !!(store.get("who_code", {}) || {})[id];
 const whoSecretOK = () => SITE_WHO === "emmett" && whoHasCode("emmett");   // MR.E sees the secret once his own profile is locked
 const WHO_AVA_FIXED = { shawn: "🐧" }, WHO_AVA_NAMES = [[/^xander\b/i, "🐢"]];   // Shawn is a penguin, Xander is a turtle
-const whoAva = id => { if (id === "guest") return "👤"; if (WHO_AVA_FIXED[id]) return WHO_AVA_FIXED[id]; const people = sitePeople(), i = people.findIndex(p => p.id === id), nm = (people[i] || {}).name || ""; const byName = WHO_AVA_NAMES.find(([rx]) => rx.test(nm)); if (byName) return byName[1]; return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
+const whoAva = id => { if (id === "guest") return "👤"; const pk = String((store.get("who_pic", {}) || {})[id] || ""); if (pk.startsWith("e:")) return pk.slice(2); if (WHO_AVA_FIXED[id]) return WHO_AVA_FIXED[id]; const people = sitePeople(), i = people.findIndex(p => p.id === id), nm = (people[i] || {}).name || ""; const byName = WHO_AVA_NAMES.find(([rx]) => rx.test(nm)); if (byName) return byName[1]; return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
 // the built-in crew's names can be changed too (their ids stay the same, so their progress stays)
 function applyNames() { const N = store.get("who_names", {}) || {}; TY_ACCOUNTS.forEach(a => { if (a.custom) return; if (a.baseName == null) a.baseName = a.name; a.name = N[a.id] || a.baseName; }); if (SITE_WHO) SITE_NAME = (sitePeople().find(p => p.id === SITE_WHO) || { name: SITE_NAME }).name; }
 function askCode(id) {
@@ -3249,8 +3267,9 @@ function startProfile() {
   const id = SITE_WHO, has = whoHasCode(id);
   $app.innerHTML = `<div class="panel prof-page">
     <div class="topline"><span class="label">👤 My profile</span><button class="iconbtn" id="pf-back" type="button">Back to menu</button></div>
-    <div class="pf-head"><span class="who-ava" aria-hidden="true">${whoAva(id)}</span><div><h2>${esc(SITE_NAME)}${has ? " 🔒" : ""}</h2><p class="soft">${id === "guest" ? "The account for visitors." : `Only ${esc(SITE_NAME)} can change this page.`}${whoAge(id) !== null ? ` · 🎂 Age ${whoAge(id)}` : ""}</p></div></div>
+    <div class="pf-head"><span class="who-ava" aria-hidden="true" id="pf-ava">${whoAvaHTML(id)}</span><div><h2>${esc(SITE_NAME)}${has ? " 🔒" : ""}</h2><p class="soft">${id === "guest" ? "The account for visitors." : `Only ${esc(SITE_NAME)} can change this page.`}${whoAge(id) !== null ? ` · 🎂 Age ${whoAge(id)}` : ""}</p></div></div>
     ${id === "guest" ? `<div class="pf-sec pf-guest"><h3>👤 Guest account</h3><p>This account is for visitors. <b>Guests can't enter any information</b>: no name, no code and no “About me”. Your age is asked every time you pick Guest, and it's never saved.</p><p class="soft">Want your own name, a code and an About me? Tap <b>🔄 Switch person</b> and add your name on the <b>Who are you?</b> screen.</p></div>` : `<form class="pf-sec" id="pf-name"><h3>✏️ My name</h3><div class="pf-row"><input id="pf-namein" maxlength="30" value="${esc(SITE_NAME)}" aria-label="Your name" autocomplete="off"><button class="btn go" type="submit">Save</button></div></form>`}
+    ${id === "guest" ? "" : `<div class="pf-sec" id="pf-pic"><h3>🖼️ My picture</h3><div id="pf-picbox"></div><p><button class="chip" type="button" id="pf-picauto">🎲 Let the computer pick</button></p></div>`}
     ${id === "guest" ? "" : `<form class="pf-sec" id="pf-about"><h3>💬 About me</h3><textarea id="pf-aboutin" maxlength="200" rows="3" placeholder="Say something about yourself! Like your favorite animal, color or food." aria-label="About me">${esc(whoAbout(id))}</textarea><p class="soft pf-note">Everyone who picks a name can see this. Never write private things like your address, phone number or passwords.</p><div class="pf-row"><button class="btn go" type="submit">Save</button></div></form>`}
     ${id === "guest" ? "" : `<form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
@@ -3266,6 +3285,9 @@ function startProfile() {
     store.set("who_names", { ...(store.get("who_names", {}) || {}), [id]: n }); applyNames(); tySyncCustom(); SITE_NAME = n;
     toast(`✏️ Your name is now ${n}!`); startProfile();
   });
+  const picBox = document.getElementById("pf-picbox"), picDone = () => { const a = document.getElementById("pf-ava"); if (a) a.innerHTML = whoAvaHTML(id); };
+  if (picBox) whoPicPicker(picBox, whoPicGet(id), v => { whoPicSet(id, v); picDone(); toast("🖼️ Picture saved!"); });
+  document.getElementById("pf-picauto")?.addEventListener("click", () => { whoPicSet(id, ""); picDone(); whoPicPicker(picBox, "", v => { whoPicSet(id, v); picDone(); toast("🖼️ Picture saved!"); }); toast("🎲 The computer picked one for you."); });
   document.getElementById("pf-about")?.addEventListener("submit", e => {
     e.preventDefault(); if (id === "guest") return; const t = document.getElementById("pf-aboutin").value.replace(/\s+/g, " ").trim().slice(0, 200);
     store.set("who_about", { ...(store.get("who_about", {}) || {}), [id]: t }); toast(t ? "💬 Saved!" : "💬 About me cleared.");
@@ -3298,6 +3320,110 @@ function pickWho(id) {
   SITE_WHO = p.id; SITE_NAME = p.name; BG_PICK = store.get("bg_" + p.id, null); tySyncCustom();
   showHome(); window.scrollTo({ top: 0 });
 }
+/* ---------- 🖼️ Profile pictures: an emoji, art from the Art Gallery, a drawing, or any picture (made 128×128). Saved for each person in "who_pic". */
+const PIC_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵", "🦁", "🐰", "🐶", "🐱", "🐧", "🦉", "🐢", "🦖", "🐬", "🦋", "🐝", "🐻", "🐳", "🦈", "🐲", "🦩", "🐞", "🦕", "🐹", "🦔", "🐺", "🦜", "🌟", "🌈", "🚀", "⚽", "🏀", "🎸", "🍕", "🌻", "🍩", "💎"];
+const whoPicGet = id => id === "guest" ? "" : String((store.get("who_pic", {}) || {})[id] || "");
+const whoPicSet = (id, v) => { if (id === "guest") return; const m = { ...(store.get("who_pic", {}) || {}) }; if (v) m[id] = v; else delete m[id]; store.set("who_pic", m); };
+const whoAvaHTML = id => { const p = whoPicGet(id); return /^data:image\//.test(p) ? `<img class="who-img" src="${p}" alt="">` : whoAva(id); };
+const picHTML = v => /^data:image\//.test(v) ? `<img class="who-img" src="${v}" alt="">` : /^e:/.test(v) ? v.slice(2) : "❔";
+async function picFromSource(src) {   // any picture → a 128×128 square (cut from the middle)
+  const img = await galLoadImg(src), w = img.naturalWidth, h = img.naturalHeight; if (!w || !h) return "";
+  const s = Math.min(w, h), c = document.createElement("canvas"); c.width = c.height = 128;
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, 128, 128); x.drawImage(img, (w - s) / 2, (h - s) / 2, s, s, 0, 0, 128, 128);
+  return c.toDataURL("image/jpeg", .82);
+}
+async function picFromFile(file) { if (!file || !/^image\//.test(file.type || "")) return ""; const u = URL.createObjectURL(file); try { return await picFromSource(u); } catch (e) { return ""; } finally { URL.revokeObjectURL(u); } }
+// the picker: onPick(value) gets "e:🐢" or a picture (data URL)
+function whoPicPicker(box, cur, onPick) {
+  let val = cur || "";
+  const draw = () => {
+    box.innerHTML = `<div class="pic-top"><span class="pic-now" id="pic-now">${val ? picHTML(val) : "❔"}</span><p class="soft">${val ? "That's your picture!" : "Pick an emoji, or use a picture or art."}</p></div>
+      <div class="pic-emojis">${PIC_EMOJI.map(e => `<button type="button" class="pic-emo${val === "e:" + e ? " on" : ""}" data-pe="${e}" aria-label="${e}">${e}</button>`).join("")}</div>
+      <div class="pic-ways"><label class="btn">📁 Upload a picture<input type="file" id="pic-file" accept="image/*" hidden></label><button class="btn" type="button" id="pic-draw">✏️ Draw one</button><button class="btn" type="button" id="pic-art">🖼️ From the Art Gallery</button></div>
+      <div class="bg-paste pic-paste" id="pic-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Or paste a picture here (like one you copied from the internet)"></div>
+      <div id="pic-extra"></div>`;
+    const set = v => { if (!v) return toast("That picture couldn't be used. Try a different one."); val = v; onPick(v); draw(); };
+    box.querySelectorAll("[data-pe]").forEach(b => b.addEventListener("click", () => set("e:" + b.dataset.pe)));
+    box.querySelector("#pic-file").addEventListener("change", async e => { const f = e.target.files[0]; e.target.value = ""; if (f) set(await picFromFile(f)); });
+    const paste = box.querySelector("#pic-paste");
+    paste.addEventListener("paste", async e => { e.preventDefault(); const f = [...(e.clipboardData?.items || [])].find(i => i.kind === "file" && /^image\//.test(i.type)); if (f) return set(await picFromFile(f.getAsFile())); const m = (e.clipboardData?.getData("text/html") || "").match(/<img[^>]+src="(data:image\/[^"]+)"/i); if (m) return set(await picFromSource(m[1]).catch(() => "")); toast("📋 Copy a picture first, then paste it here."); });
+    paste.addEventListener("input", () => { paste.textContent = ""; });
+    box.querySelector("#pic-draw").addEventListener("click", () => {
+      const ex = box.querySelector("#pic-extra"), inks = ["#000000", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#ffffff"];
+      ex.innerHTML = `<div class="pic-drawbox"><canvas id="pic-cv" width="256" height="256" class="pic-cv"></canvas><div class="pic-inks">${inks.map((c, k) => `<button type="button" class="px-col${k === 0 ? " on" : ""}" data-ink="${c}" style="background:${c}" aria-label="color ${c}"></button>`).join("")}</div><div class="row"><button class="btn" type="button" id="pic-clear">🧽 Start over</button><button class="btn go" type="button" id="pic-use">✔ Use my drawing</button></div></div>`;
+      const cv = ex.querySelector("#pic-cv"), x = cv.getContext("2d"); let ink = inks[0], down = false, last = null;
+      x.fillStyle = "#fff"; x.fillRect(0, 0, 256, 256); x.lineCap = x.lineJoin = "round"; x.lineWidth = 10;
+      const pt = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * 256 / r.width, (e.clientY - r.top) * 256 / r.height]; };
+      cv.addEventListener("pointerdown", e => { e.preventDefault(); down = true; last = pt(e); x.fillStyle = ink; x.beginPath(); x.arc(last[0], last[1], 5, 0, 7); x.fill(); });
+      cv.addEventListener("pointermove", e => { if (!down) return; const p = pt(e); x.strokeStyle = ink; x.beginPath(); x.moveTo(last[0], last[1]); x.lineTo(p[0], p[1]); x.stroke(); last = p; });
+      window.addEventListener("pointerup", () => { down = false; });
+      ex.querySelectorAll("[data-ink]").forEach(b => b.addEventListener("click", () => { ink = b.dataset.ink; ex.querySelectorAll("[data-ink]").forEach(y => y.classList.toggle("on", y === b)); }));
+      ex.querySelector("#pic-clear").addEventListener("click", () => { x.fillStyle = "#fff"; x.fillRect(0, 0, 256, 256); });
+      ex.querySelector("#pic-use").addEventListener("click", async () => set(await picFromSource(cv.toDataURL("image/png")).catch(() => "")));
+    });
+    box.querySelector("#pic-art").addEventListener("click", async () => {
+      const ex = box.querySelector("#pic-extra"); ex.innerHTML = `<p class="soft">Opening the Art Gallery…</p>`;
+      let all = []; try { const d = await galOpen(); all = (await galReq(d.transaction("meta").objectStore("meta").getAll())).filter(m => m.thumb && m.kind !== "video" && (!m.private || m.who === SITE_WHO)).sort((a, b) => b.at - a.at).slice(0, 60); } catch (e) {}
+      ex.innerHTML = all.length ? `<p class="soft">Tap any art or picture to use it.</p><div class="pic-artgrid">${all.map((m, k) => `<button type="button" class="pic-art" data-pa="${k}" title="${esc(m.name)}"><img src="${m.thumb}" alt="${esc(m.name)}"></button>`).join("")}</div>` : `<p class="soft">There's no art in the Art Gallery yet. You can draw one instead!</p>`;
+      ex.querySelectorAll("[data-pa]").forEach(b => b.addEventListener("click", async () => set(await picFromSource(all[+b.dataset.pa].thumb).catch(() => ""))));
+    });
+  };
+  draw();
+}
+/* ---------- ✨ Joining: name and age are needed; a code, a picture and "about me" are up to you */
+function startSignup(name = "") {
+  PROF_GAME = null; PROF_RESTART = null; keyHandler = null;
+  const SU = { name: name.replace(/\s+/g, " ").trim().slice(0, 30), age: "", code: "", code2: "", pic: "", about: "" };
+  const STEPS = ["name", "age", "code", "pic", "about"];
+  let step = 0;
+  const show = () => {
+    const s = STEPS[step], dots = STEPS.map((x, i) => `<i class="${i < step ? "done" : i === step ? "on" : ""}"></i>`).join("");
+    const body = {
+      name: `<h1 class="who-h">✨ What's your name?</h1><p class="soft">This is the name everyone will see. <b>You need one.</b></p><input class="su-in" id="su-in" maxlength="30" placeholder="Your name" value="${esc(SU.name)}" autocomplete="off"><p class="su-msg" id="su-msg"></p>`,
+      age: `<h1 class="who-h">🎂 How old are you?</h1><p class="soft">We ask so we know which parts of the Study Arcade are right for you. <b>You need to answer this.</b></p><input class="su-in" id="su-in" type="number" inputmode="numeric" min="1" max="120" placeholder="Your age" value="${esc(SU.age)}"><p class="su-msg" id="su-msg"></p>`,
+      code: `<h1 class="who-h">🔒 Want a password?</h1><p class="soft">A password (code) keeps other people out of your profile. Use 3 to 12 letters or numbers. <b>You don't have to make one.</b></p><input class="su-in" id="su-in" type="password" maxlength="12" placeholder="Password" value="${esc(SU.code)}" autocomplete="off" autocapitalize="off" spellcheck="false"><input class="su-in" id="su-in2" type="password" maxlength="12" placeholder="Type it again" value="${esc(SU.code2)}" autocomplete="off" autocapitalize="off" spellcheck="false"><p class="su-msg" id="su-msg"></p>`,
+      pic: `<h1 class="who-h">🖼️ Pick a profile picture</h1><p class="soft">Use an emoji, art you make, or a picture. <b>If you skip this, the computer picks one for you.</b></p><div class="su-pic" id="su-pic"></div>`,
+      about: `<h1 class="who-h">💬 Say something about you</h1><p class="soft">Everyone can see this under your name, like your favorite animal, color or food. <b>You don't have to.</b></p><textarea class="su-in" id="su-in" maxlength="200" rows="3" placeholder="Something about you">${esc(SU.about)}</textarea><p class="su-msg" id="su-msg"></p>`
+    }[s];
+    const optional = ["code", "pic", "about"].includes(s), last = step === STEPS.length - 1;
+    $app.innerHTML = `<div class="panel who-screen su" id="su-screen"><span class="label">✨ Join the Study Arcade · step ${step + 1} of ${STEPS.length}</span><div class="su-dots">${dots}</div>
+      <form id="su-form">${body}<div class="row su-btns">${step ? `<button class="btn" type="button" id="su-back">⬅ Back</button>` : `<button class="btn" type="button" id="su-back">⬅ Cancel</button>`}${optional ? `<button class="btn" type="button" id="su-skip">${s === "pic" ? "Skip: pick one for me" : "Skip"}</button>` : ""}<button class="btn go" type="submit">${last ? "🎉 Finish" : "Next ➡"}</button></div></form></div>`;
+    const inp = document.getElementById("su-in"), msg = t => { const m = document.getElementById("su-msg"); if (m) m.textContent = t; };
+    if (s === "pic") whoPicPicker(document.getElementById("su-pic"), SU.pic, v => { SU.pic = v; });
+    inp?.focus();
+    document.getElementById("su-back").addEventListener("click", () => { if (step) { save(); step--; show(); } else startWho(); });
+    document.getElementById("su-skip")?.addEventListener("click", () => { if (s === "code") { SU.code = SU.code2 = ""; } if (s === "pic") SU.pic = ""; if (s === "about") SU.about = ""; next(); });
+    function save() { if (!inp) return; if (s === "name") SU.name = inp.value; if (s === "age") SU.age = inp.value; if (s === "code") { SU.code = inp.value; SU.code2 = document.getElementById("su-in2").value; } if (s === "about") SU.about = inp.value; }
+    function next() { if (last) return finish(); step++; show(); }
+    document.getElementById("su-form").addEventListener("submit", e => {
+      e.preventDefault(); save();
+      if (s === "name") {
+        const n = SU.name.replace(/\s+/g, " ").trim().slice(0, 30); SU.name = n;
+        if (!n) return msg("Type your name to keep going.");
+        const old = sitePeople().find(p => p.name.toLowerCase() === n.toLowerCase());
+        if (old) { document.getElementById("su-msg").innerHTML = `Someone already has the name <b>${esc(old.name)}</b>. Is that you? <button class="chip" type="button" id="su-old">Yes, that's me</button> Or pick a different name.`; document.getElementById("su-old").addEventListener("click", () => whoHasCode(old.id) ? (startWho(), askCode(old.id)) : pickWho(old.id)); return; }
+      }
+      if (s === "age") { const a = Math.round(+SU.age); if (!(a >= 1 && a <= 120)) return msg("Type your age: a number from 1 to 120."); SU.age = String(a); }
+      if (s === "code" && (SU.code || SU.code2)) {
+        if (!/^[a-z0-9]{3,12}$/i.test(SU.code.trim())) return msg("Use 3 to 12 letters or numbers (no spaces), or tap Skip.");
+        if (SU.code.trim().toLowerCase() !== SU.code2.trim().toLowerCase()) return msg("The two passwords don't match. Type them again.");
+      }
+      next();
+    });
+    window.scrollTo({ top: 0 });
+  };
+  const finish = () => {
+    const name = SU.name, old = sitePeople().find(p => p.name.toLowerCase() === name.toLowerCase()); if (old) { step = 0; return show(); }
+    const id = "p" + Date.now().toString(36) + rnd(100, 999);
+    store.set("prof_site", [...profExtra("site"), { id, name }].slice(0, PROF_MAX));
+    store.set("who_age", { ...(store.get("who_age", {}) || {}), [id]: { age: +SU.age, at: Date.now() } });
+    if (SU.code.trim()) store.set("who_code", { ...(store.get("who_code", {}) || {}), [id]: whoHash(id, SU.code) });
+    if (SU.pic) whoPicSet(id, SU.pic);
+    const ab = SU.about.replace(/\s+/g, " ").trim().slice(0, 200); if (ab) store.set("who_about", { ...(store.get("who_about", {}) || {}), [id]: ab });
+    pickWho(id); toast(`👋 Welcome, ${name}!`);
+  };
+  show();
+}
 function startWho() {
   PROF_GAME = null; PROF_RESTART = null; keyHandler = null; GUEST_AGE = null;
   const L = sitePeople();
@@ -3305,10 +3431,12 @@ function startWho() {
     <span class="label">👋 Who are you?</span>
     <h1 class="who-h">👋 Who are you?</h1>
     <p class="soft">Tap your name. Study Arcade saves everyone's progress separately.</p>
+    ${L.length < PROF_MAX ? `<form class="who-newbox" id="who-add"><label for="who-name">✨ Someone new? Type your name</label><div class="who-newrow"><input id="who-name" maxlength="30" placeholder="Your name" aria-label="Someone new? Type your name" autocomplete="off"><button class="btn go" type="submit">➕ Join</button></div></form>` : ""}
     <button class="who-btn who-guest" type="button" data-site-who="guest"><span class="who-ava" aria-hidden="true">👤</span><b>Guest</b><small>For visitors · no code</small></button>
-    <div class="who-grid">${L.map(p => { const ab = whoAbout(p.id); return `<button class="who-btn" type="button" data-site-who="${esc(p.id)}"><span class="who-ava" aria-hidden="true">${whoAva(p.id)}</span><b>${esc(p.name)}${whoHasCode(p.id) ? " 🔒" : ""}</b>${ab ? `<small class="who-about">${esc(ab.length > 60 ? ab.slice(0, 58) + "…" : ab)}</small>` : ""}</button>`; }).join("")}</div>
+    <input class="who-find" id="who-find" type="search" placeholder="🔎 Find your name" aria-label="Find your name" autocomplete="off">
+    <p class="soft who-none" id="who-none" hidden>Nobody has that name yet. Are you someone new? Type your name in the blue box.</p>
+    <div class="who-grid">${L.map(p => { const ab = whoAbout(p.id); return `<button class="who-btn" type="button" data-site-who="${esc(p.id)}" data-who-name="${esc(p.name.toLowerCase())}"><span class="who-ava" aria-hidden="true">${whoAvaHTML(p.id)}</span><b>${esc(p.name)}${whoHasCode(p.id) ? " 🔒" : ""}</b>${ab ? `<small class="who-about">${esc(ab.length > 60 ? ab.slice(0, 58) + "…" : ab)}</small>` : ""}</button>`; }).join("")}</div>
     <div class="who-code" id="who-code" hidden></div>
-    ${L.length < PROF_MAX ? `<form class="who-add" id="who-add"><input id="who-name" maxlength="30" placeholder="Someone new? Type your name" aria-label="New person's name" autocomplete="off"><button class="btn go" type="submit">➕ Add me</button></form>` : ""}
   </div>`;
   let taps = 0, tapId = null, tapT = null;   // one tap waits a moment, so three quick taps can be told apart
   $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => {
@@ -3318,9 +3446,14 @@ function startWho() {
     tapT = setTimeout(() => { taps = 0; tapId = null; if (!document.getElementById("who-screen")) return; whoHasCode(id) ? askCode(id) : pickWho(id); }, 400);
   }));
   document.getElementById("who-add")?.addEventListener("submit", e => {
-    e.preventDefault(); const n = document.getElementById("who-name").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) return;
-    const old = sitePeople().find(p => p.name.toLowerCase() === n.toLowerCase()); if (old) return pickWho(old.id);
-    const id = "p" + Date.now().toString(36) + rnd(100, 999); store.set("prof_site", [...profExtra("site"), { id, name: n }].slice(0, PROF_MAX)); pickWho(id); toast(`👋 Welcome, ${n}!`);
+    e.preventDefault(); const n = document.getElementById("who-name").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) { toast("Type your name first."); return; }
+    const old = sitePeople().find(p => p.name.toLowerCase() === n.toLowerCase()); if (old) return whoHasCode(old.id) ? askCode(old.id) : pickWho(old.id);
+    startSignup(n);
+  });
+  document.getElementById("who-find").addEventListener("input", e => {   // 🔎 find your name
+    const q = e.target.value.trim().toLowerCase(); let shown = 0;
+    $app.querySelectorAll(".who-grid [data-who-name]").forEach(b => { const ok = !q || b.dataset.whoName.includes(q); b.hidden = !ok; if (ok) shown++; });
+    document.getElementById("who-none").hidden = shown > 0;
   });
 }
 /* ---------- 🎨 Backgrounds: pick one, and it shows on every page except the home screen and the pages where you pick a game (saved for each person) ---------- */
@@ -9712,7 +9845,7 @@ function hippoCalcHTML(hidden) {
 }
 function bindHippoCalc() {
   let calcExpr = "", calcJustDone = false;
-  const calcShow = () => { document.getElementById("hip-calc-expr").textContent = calcExpr || " "; let v = "0"; if (calcExpr) { const r = hippoCalcEval(calcExpr); v = r === null ? "…" : r; } document.getElementById("hip-calc-val").textContent = v; };
+  const calcShow = () => { if (!document.getElementById("hip-calc-val")) return; document.getElementById("hip-calc-expr").textContent = calcExpr || " "; let v = "0"; if (calcExpr) { const r = hippoCalcEval(calcExpr); v = r === null ? "…" : r; } document.getElementById("hip-calc-val").textContent = v; };
   const openCalc = (pre = "") => { const c = document.getElementById("hip-calc"); c.hidden = false; calcExpr = pre; calcJustDone = false; calcShow(); c.scrollIntoView({ behavior: "smooth", block: "center" }); };
   document.getElementById("hip-calc-x").addEventListener("click", () => { document.getElementById("hip-calc").hidden = true; });
   document.querySelectorAll(".hip-key").forEach(b => b.addEventListener("click", () => {
@@ -10979,7 +11112,7 @@ function startGallery(filter = "all", tab = "mine", person = null) {
       try { for (const p of ppl) { const d = await galOpen(), n = await galReq(d.transaction("meta").objectStore("meta").index("who").count(p.id)); if (n) rows.push([p, n]); } }
       catch (e) { body.innerHTML = `<p class="soft">😕 This browser won't let the gallery open here.</p>`; return; }
       const box = document.getElementById("gal-people"); if (!box) return;
-      box.innerHTML = rows.length ? rows.map(([p, n]) => `<button class="gal-person" data-who="${esc(p.id)}" type="button"><span>${whoAva(p.id)}</span><b>${esc(p.name)}</b><small>${n.toLocaleString()} thing${n === 1 ? "" : "s"}</small></button>`).join("") : `<p class="soft">Nobody else has saved anything yet. When they do, it shows up here!</p>`;
+      box.innerHTML = rows.length ? rows.map(([p, n]) => `<button class="gal-person" data-who="${esc(p.id)}" type="button"><span>${whoAvaHTML(p.id)}</span><b>${esc(p.name)}</b><small>${n.toLocaleString()} thing${n === 1 ? "" : "s"}</small></button>`).join("") : `<p class="soft">Nobody else has saved anything yet. When they do, it shows up here!</p>`;
       box.querySelectorAll("[data-who]").forEach(b => b.addEventListener("click", () => startGallery("all", "everyone", b.dataset.who)));
     })();
     return;
