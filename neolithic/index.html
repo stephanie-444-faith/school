@@ -1657,6 +1657,16 @@
   .tk-hub { display: grid; gap: 10px; margin: 12px 0; } @media (min-width: 640px) { .tk-hub { grid-template-columns: 1fr 1fr; } }
   .tk-hubbtn { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 18px 14px; border-radius: 18px; border: 3px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
   .tk-hubbtn:hover, .tk-hubbtn:focus-visible { border-color: var(--gold); outline: none; } .tk-hubbtn span { font-size: 3rem; line-height: 1; } .tk-hubbtn b { font-family: var(--display); font-weight: 400; font-size: 1.3rem; } .tk-hubbtn small { color: var(--ink-soft); }
+  .lb-boards { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin: 10px 0; }
+  .lb-pick { display: grid; justify-items: center; gap: 2px; padding: 10px 6px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; text-align: center; min-width: 0; }
+  .lb-pick.on { border-color: var(--gold); } .lb-pick span { font-size: 1.6rem; line-height: 1; } .lb-pick b { font-size: .9rem; } .lb-pick small { font-size: .74rem; color: var(--ink-soft); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-card { border: 2px solid var(--gold); border-radius: 18px; padding: 12px 14px; background: var(--panel-2); margin: 8px 0; }
+  .lb-card h3 { margin: 2px 0; font-family: var(--display); font-weight: 400; font-size: 1.35rem; } .lb-card > p { margin: 2px 0 8px; }
+  .lb-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .lb-list li { display: grid; grid-template-columns: 44px auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); }
+  .lb-list li.me { border-color: var(--money); box-shadow: 0 0 0 2px var(--money) inset; }
+  .lb-rank { font-weight: 800; font-size: 1.15rem; text-align: center; } .lb-ava { font-size: 1.5rem; line-height: 1; } .lb-list b { overflow-wrap: anywhere; } .lb-val { font-weight: 700; color: var(--gold); text-align: right; font-size: .9rem; }
+  .lb-empty { text-align: center; font-size: 1.05rem; padding: 12px 0; } .lb-mine { margin: 10px 0 2px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -2922,7 +2932,7 @@ const store = {
   }
 };
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -3745,10 +3755,11 @@ const roomEmergHTML = id => `<div class="room-emerg-row"><button class="room-eme
 const bindRoomEmerg = id => document.getElementById(id)?.addEventListener("click", emergencyGrammar);
 // 🎮 The Game Room: double-tap the ⋯ on the home screen. It has the same games as Hippo's "franklin rules" room, on its own page.
 function startGameRoom() {
+  setTimeout(() => document.getElementById("gr-lb")?.addEventListener("click", () => startLeaderboards()), 0);
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); HIPPO_SONG_STOP?.(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
   $app.innerHTML = `<div class="panel groom">
     <div class="topline"><span class="label">🎮 Game Room</span><button class="iconbtn" id="gr-home" type="button">Back to menu</button></div>
-    <div class="hip-card wide"><div class="hip-diagram">${hBig("🎮🔓", "#2e1a4a", "secret game room")}</div><div class="hip-text"><small class="hip-topic">🔓 Secret Game Room</small><b>🔓 The secret game room is open.</b><p>Every game in one place. Pick one!</p></div>
+    <div class="hip-card wide"><div class="hip-diagram">${hBig("🎮🔓", "#2e1a4a", "secret game room")}</div><div class="hip-text"><small class="hip-topic">🔓 Secret Game Room</small><b>🔓 The secret game room is open.</b><p>Every game in one place. Pick one!</p><p><button class="btn gold" id="gr-lb" type="button">🏆 Leaderboards</button></p></div>
       <div class="hip-games">${roomEmergHTML("gr-emerg")}${gamesMenuHTML()}</div></div>
   </div>`;
   bindGamesMenu(); bindRoomEmerg("gr-emerg");
@@ -21466,6 +21477,65 @@ INFO_GAME_APPS.add("globe");
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Globe Detective", "🌐", "globe detective|geoguesser|geoguessr|guess the place|guess the location|map guessing|map game|where in the world", "Read clues about a mystery place, drop a pin on the world map, and see how close you got.", () => startGlobeDetective()]);
 MORE_GAMES.push({ id: "globe", name: "Globe Detective", desc: "Read the clues, drop a pin on the world map, and see how close you get!", start: () => startGlobeDetective() });
 NEW_APPS.push({ id: "globe", emoji: "🌐", name: "Globe Detective", desc: "Read clues about a mystery place, drop a pin on the world map, and score up to 25,000 points.", start: () => startGlobeDetective(), kw: "globe detective|geoguesser|geoguessr|geo guesser|map guessing|guess the place|guess the location|where in the world|world map game" });
+/* ---------- 🏆 Leaderboards: the top 10 players for every game, for everyone in the Study Arcade community (scores sync between devices) */
+const lbRaw = k => { if (k in MEM) return MEM[k]; try { const v = localStorage.getItem("ctc-" + k); return v == null ? null : JSON.parse(v); } catch (e) { return null; } };
+const lbGet = (k, id) => lbRaw(id === "emmett" ? k : k + "@" + id);   // MR.E's saves have no "@name" ending
+const lbNum = v => typeof v === "number" && isFinite(v) && v > 0 ? v : null;
+const lbBest = (id, g) => { const b = lbGet("best", id); return b && typeof b === "object" ? lbNum(b[g]) : null; };
+const lbTy = id => { try { return tyLoad(id); } catch (e) { return null; } };
+const lbTk = id => { const d = lbGet("tk_save", id); return d && typeof d === "object" ? d : null; };
+const lbSecs = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+const LB_GROUPS = [["typing", "⌨️ Typing"], ["arcade", "🕹️ Arcade"], ["more", "🎯 More games"]];
+const LB_BOARDS = [
+  { id: "wpm", g: "typing", e: "⚡", name: "Fastest typing", unit: v => `${v} WPM`, get: id => lbNum(Math.max((lbTy(id) || {}).topWpm || 0, (lbTk(id) || {}).best || 0)), note: "Best words per minute in Bunny Hop Typing or Turbo Keys Rally" },
+  { id: "bunny", g: "typing", e: "🐰", name: "Bunny Hop Typing", unit: v => `${v} words`, get: id => { const a = lbTy(id); return a && a.best ? lbNum(Math.max(0, ...Object.values(a.best).filter(x => typeof x === "number"))) : null; }, note: "Most words typed in one run" },
+  { id: "turbo", g: "typing", e: "🏎️", name: "Turbo Keys Rally", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbNum((lbTk(id) || {}).wins), note: "Races won" },
+  { id: "dig", g: "arcade", e: "⛏️", name: "Dig It Up", low: true, unit: v => `${lbSecs(v)} fastest win`, get: id => lbBest(id, "dig") },
+  { id: "slope", g: "arcade", e: "🏙️", name: "Slope City", unit: v => `${fmt(v)} m`, get: id => lbBest(id, "slope") },
+  { id: "archers", g: "arcade", e: "🏹", name: "Ragdoll Archers", unit: v => `${v} archers beaten`, get: id => lbBest(id, "archers") },
+  { id: "snake", g: "arcade", e: "🐍", name: "Neon Snake", unit: v => `${v} points`, get: id => lbBest(id, "snake") },
+  { id: "stack", g: "arcade", e: "🧱", name: "Sky Stack", unit: v => `${v} points`, get: id => lbBest(id, "stack") },
+  { id: "g2048", g: "arcade", e: "🔢", name: "2048", unit: v => `${fmt(v)} points`, get: id => lbBest(id, "g2048") },
+  { id: "memory", g: "arcade", e: "🃏", name: "Memory Match", low: true, unit: v => `${v} moves`, get: id => lbBest(id, "memory") },
+  { id: "mines", g: "arcade", e: "💣", name: "Minesweeper", low: true, unit: v => `${v} seconds`, get: id => lbBest(id, "mines") },
+  { id: "bricks", g: "arcade", e: "🧱", name: "Brick Breaker", unit: v => `${fmt(v)} points`, get: id => lbBest(id, "bricks") },
+  { id: "hopper", g: "arcade", e: "🐦", name: "Sky Hopper", unit: v => `${v} points`, get: id => lbBest(id, "hopper") },
+  { id: "galaxy", g: "arcade", e: "🚀", name: "Galaxy Defender", unit: v => `${fmt(v)} points`, get: id => lbBest(id, "galaxy") },
+  { id: "whack", g: "arcade", e: "🔨", name: "Whack-a-Mole", unit: v => `${v} points`, get: id => lbBest(id, "whack") },
+  { id: "simon", g: "arcade", e: "🔴", name: "Simon Says", unit: v => `${v} in a row`, get: id => lbBest(id, "simon") },
+  { id: "rodeo", g: "arcade", e: "🤠", name: "Rodeo Stampede", unit: v => `${fmt(v)} m`, get: id => lbBest(id, "rodeo") },
+  { id: "blocks", g: "arcade", e: "🧩", name: "Block Burst Puzzle", unit: v => `${fmt(v)} points`, get: id => lbBest(id, "blocks") },
+  { id: "claim", g: "arcade", e: "🟩", name: "Color Claim", unit: v => `${v}% of the map`, get: id => lbBest(id, "claim") },
+  { id: "connect4", g: "more", e: "🔴", name: "Connect Four", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "connect4") },
+  { id: "pong", g: "more", e: "🏓", name: "Pong", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "pong") },
+  { id: "globe", g: "more", e: "🌐", name: "Globe Detective", unit: v => `${fmt(v)} points`, get: id => { const b = lbGet("glb_best", id); return lbNum(Math.max(lbBest(id, "globe") || 0, b && typeof b === "object" ? Math.max(0, ...Object.values(b).filter(x => typeof x === "number")) : 0)); }, note: "Best game in any area" },
+  { id: "pool", g: "more", e: "🎱", name: "Pool Hall", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => { const s = lbGet("pool_stats", id); return s && typeof s === "object" ? lbNum(Object.entries(s).filter(([k]) => k.startsWith("w_")).reduce((t, [, v]) => t + (+v || 0), 0)) : null; }, note: "Wins against the computer" },
+  { id: "rarch", g: "more", e: "🎯", name: "Root Archery", unit: v => `${fmt(v)} points`, get: id => lbNum((lbGet("ra_v1", id) || {}).best) },
+  { id: "hoops", g: "more", e: "🏀", name: "Hippo Hoops", unit: v => `${fmt(v)} points`, get: id => lbBest(id, "hoops") }
+];
+function lbRows(bd) {
+  const rows = sitePeople().filter(p => p.id !== "guest").map(p => ({ p, v: (() => { try { return bd.get(p.id); } catch (e) { return null; } })() })).filter(r => r.v != null);
+  rows.sort((a, b) => (bd.low ? a.v - b.v : b.v - a.v) || a.p.name.localeCompare(b.p.name));
+  let rank = 0, last = null; rows.forEach((r, i) => { if (r.v !== last) { rank = i + 1; last = r.v; } r.rank = rank; });
+  return rows;
+}
+let LB_SEL = "wpm";
+function startLeaderboards(group) {
+  if (group && LB_GROUPS.some(g => g[0] === group)) { const first = LB_BOARDS.find(b => b.g === group); if (first && (LB_BOARDS.find(b => b.id === LB_SEL) || {}).g !== group) LB_SEL = first.id; }
+  const sel = LB_BOARDS.find(b => b.id === LB_SEL) || LB_BOARDS[0], grp = sel.g, rows = lbRows(sel), top = rows.slice(0, 10), mine = rows.find(r => r.p.id === SITE_WHO);
+  const medal = n => ({ 1: "🥇", 2: "🥈", 3: "🥉" }[n] || `#${n}`);
+  appScreen("🏆 Leaderboards", `<h2>🏆 Leaderboards</h2><p class="soft">The top 10 players in the whole Study Arcade community for every game. Play to get on the board!</p>
+    ${naTabs(LB_GROUPS, grp)}
+    <div class="lb-boards">${LB_BOARDS.filter(b => b.g === grp).map(b => { const lead = lbRows(b)[0]; return `<button class="lb-pick${b.id === sel.id ? " on" : ""}" data-lb="${b.id}" type="button"><span>${b.e}</span><b>${esc(b.name)}</b><small>${lead ? `👑 ${esc(lead.p.name)}` : "No scores yet"}</small></button>`; }).join("")}</div>
+    <div class="lb-card"><h3>${sel.e} ${esc(sel.name)}</h3><p class="soft">${esc(sel.note || (sel.low ? "Lowest is best" : "Best score"))}</p>
+      ${top.length ? `<ol class="lb-list">${top.map(r => `<li class="${r.p.id === SITE_WHO ? "me" : ""}"><span class="lb-rank">${medal(r.rank)}</span><span class="lb-ava">${whoAvaHTML(r.p.id)}</span><b>${esc(r.p.name)}${r.p.id === SITE_WHO ? " (you)" : ""}</b><span class="lb-val">${esc(sel.unit(r.v))}</span></li>`).join("")}</ol>` : `<p class="lb-empty">Nobody has a score here yet. Be the first! 🏁</p>`}
+      ${mine && mine.rank > 10 ? `<p class="lb-mine">Your rank: <b>#${mine.rank}</b> with ${esc(sel.unit(mine.v))}. Keep going!</p>` : mine ? "" : top.length ? `<p class="soft">You're not on this board yet. Play to get a score!</p>` : ""}
+    </div>`);
+  bindTabs(g => { const first = LB_BOARDS.find(b => b.g === g); if (first) LB_SEL = first.id; startLeaderboards(); });
+  $app.querySelectorAll("[data-lb]").forEach(b => b.addEventListener("click", () => { LB_SEL = b.dataset.lb; startLeaderboards(); }));
+}
+INFO_GAME_APPS.add("leaderboards");   // it's about games, so people who can't play games don't see it
+NEW_APPS.push({ id: "leaderboards", emoji: "🏆", name: "Leaderboards", desc: "See the top 10 players in the community for every game, like typing speed, Bunny Hop and Turbo Keys Rally.", start: () => startLeaderboards(), kw: "leaderboards?|leader boards?|high scores?|top scores?|top 10|rankings?|who's the best|wpm" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
