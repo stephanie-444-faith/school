@@ -1505,6 +1505,29 @@
   .hpz-fav p { margin: 0; overflow-wrap: anywhere; } .hpz-emo { font-size: 1.8rem; } .hpz-favbtns { display: flex; gap: 4px; }
   .linklike { background: none; border: 0; padding: 0; color: var(--gold); text-decoration: underline; font: inherit; cursor: pointer; }
 /* 🟩 Color Claim uses the shared game stage (.slope-stage/.mini-stage) and the shared arrow pad (.dpad), so it needs no extra styles. */
+  /* 🧱 Block Burst Puzzle */
+  .g-board.bb-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 12px 8px; width: 100%; max-width: 440px; }
+  .bb-board { position: relative; display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; width: min(100%, 360px); aspect-ratio: 1; padding: 6px; border-radius: 14px; background: #120e33; box-shadow: inset 0 0 0 2px rgba(255,255,255,.08), 0 6px 18px rgba(0,0,0,.35); touch-action: none; }
+  .bb-cell { border-radius: 6px; background: rgba(255,255,255,.06); box-shadow: inset 0 1px 0 rgba(255,255,255,.05); transition: transform .12s; }
+  .bb-cell.on, .bb-gem { background: linear-gradient(145deg, color-mix(in srgb, var(--bb-c) 70%, #fff) 0%, var(--bb-c) 45%, color-mix(in srgb, var(--bb-c) 75%, #000) 100%); box-shadow: inset 0 2px 0 rgba(255,255,255,.5), inset 0 -3px 0 rgba(0,0,0,.28), 0 1px 2px rgba(0,0,0,.35); }
+  .bb-cell.ghost:not(.on) { background: color-mix(in srgb, var(--bb-c) 45%, transparent); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--bb-c) 80%, #fff); }
+  .bb-cell.burst { animation: bb-burst .26s ease-out forwards; }
+  @keyframes bb-burst { 0% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.18); filter: brightness(1.8); } 100% { transform: scale(.2); opacity: 0; } }
+  .bb-board.shake { animation: bb-shake .3s; }
+  @keyframes bb-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  .bb-msg { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%) scale(.8); padding: 6px 14px; border-radius: 99px; background: rgba(10,8,30,.82); color: #fff; font-family: var(--display); font-size: 1.1rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; }
+  .bb-msg.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .bb-msg.big { color: var(--gold); font-size: 1.35rem; }
+  .bb-tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: min(100%, 360px); }
+  .bb-slot { display: flex; align-items: center; justify-content: center; min-height: 104px; border-radius: 12px; background: rgba(255,255,255,.05); border: 2px solid transparent; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .bb-slot.sel { border-color: var(--gold); background: rgba(255,201,60,.12); }
+  .bb-slot.stuck { opacity: .4; }
+  .bb-slot.dragging .bb-piece { opacity: .25; }
+  .bb-slot:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .bb-piece { display: grid; gap: 2px; pointer-events: none; }
+  .bb-gem { display: block; border-radius: 4px; }
+  .bb-float { position: fixed; z-index: 9999; display: grid; pointer-events: none; filter: drop-shadow(0 8px 10px rgba(0,0,0,.45)); }
+  .bb-float .bb-gem { border-radius: 6px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -20121,6 +20144,137 @@ function startColorClaim() {
 }
 MORE_GAMES.push({ id: "claim", name: "Color Claim", desc: "Draw loops to claim land, cut off the bots' trails, and paint the map your color!", start: () => startColorClaim() });
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Color Claim", "🟩", "color claim|colour claim|territory game|claim land|land grab|paper io|paperio|paper\\.io", "Draw loops to claim land, cut off the bots' trails, and paint the map your color.", () => startColorClaim()]);
+/* ---------- 🧱 Block Burst Puzzle: drop blocks on an 8×8 board, fill rows and columns to burst them ---------- */
+const BB_SHAPES = [
+  ["1"], ["11"], ["1", "1"], ["111"], ["1", "1", "1"], ["1111"], ["1", "1", "1", "1"], ["11111"], ["1", "1", "1", "1", "1"],
+  ["11", "11"], ["111", "111", "111"], ["111", "111"], ["11", "11", "11"],
+  ["10", "11"], ["01", "11"], ["11", "10"], ["11", "01"],
+  ["100", "111"], ["001", "111"], ["111", "100"], ["111", "001"], ["10", "10", "11"], ["01", "01", "11"], ["11", "10", "10"], ["11", "01", "01"],
+  ["111", "010"], ["010", "111"], ["10", "11", "10"], ["01", "11", "01"],
+  ["110", "011"], ["011", "110"], ["10", "11", "01"], ["01", "11", "10"],
+  ["100", "100", "111"], ["001", "001", "111"], ["111", "100", "100"], ["111", "001", "001"]
+];
+const BB_COLORS = ["#ff4f6d", "#ffb020", "#ffe14d", "#3ddc84", "#2ec5ff", "#6c7bff", "#c46bff", "#ff7ad9"];
+function startBlockBurst() {
+  const { board } = gameShell("Block Burst Puzzle", "Drag a block onto the board, or tap a block and then tap the board.<br>Fill a whole row or column to BURST it! Burst again soon for a combo.<br>The round ends when none of your blocks fit. Keys: 1–3 pick, arrows move, Enter drops.", true);
+  board.classList.add("bb-wrap");
+  const N = 8;
+  board.innerHTML = `<div class="bb-board" id="bb-board">${Array.from({ length: N * N }, (_, i) => `<div class="bb-cell" data-i="${i}"></div>`).join("")}<div class="bb-msg" id="bb-msg"></div></div><div class="bb-tray" id="bb-tray"></div>`;
+  const $b = document.getElementById("bb-board"), $t = document.getElementById("bb-tray"), cells = [...$b.querySelectorAll(".bb-cell")];
+  const piece = () => {
+    let pool = BB_SHAPES; if (!hard()) pool = pool.concat(BB_SHAPES.slice(0, 5), BB_SHAPES.slice(9, 10), BB_SHAPES.slice(13, 17));   // Easy: more small, friendly blocks
+    else pool = pool.slice(1);
+    const rows = pool[rnd(0, pool.length - 1)], cl = [];
+    rows.forEach((row, r) => [...row].forEach((ch, c) => { if (ch === "1") cl.push([r, c]); }));
+    return { cells: cl, h: rows.length, w: rows[0].length, color: rnd(0, BB_COLORS.length - 1) };
+  };
+  const fits = (p, r, c) => p.cells.every(([dr, dc]) => { const rr = r + dr, cc = c + dc; return rr >= 0 && cc >= 0 && rr < N && cc < N && !M.bb.grid[rr * N + cc]; });
+  const anyFit = p => { for (let r = 0; r <= N - p.h; r++) for (let c = 0; c <= N - p.w; c++) if (fits(p, r, c)) return true; return false; };
+  const gem = col => `--bb-c:${BB_COLORS[col]}`;
+  const say = (t, big) => { const m = document.getElementById("bb-msg"); if (!m) return; m.textContent = t; m.className = "bb-msg show" + (big ? " big" : ""); clearTimeout(M.bb.msgT); M.bb.msgT = setTimeout(() => { if (m.isConnected) m.className = "bb-msg"; }, 1100); };
+  const score = () => { document.getElementById("m-score").textContent = `Score ${M.bb.score} · Best ${store.get("best", {})[bestKey("blocks")] || 0}`; };
+  function render() {
+    const g = M.bb.grid;
+    cells.forEach((el, i) => { el.className = "bb-cell" + (g[i] ? " on" : ""); el.style.cssText = g[i] ? gem(g[i] - 1) : ""; });
+    $t.innerHTML = M.bb.tray.map((p, k) => `<div class="bb-slot${M.bb.sel === k ? " sel" : ""}${p && !anyFit(p) ? " stuck" : ""}" data-slot="${k}" role="button" tabindex="0" aria-label="Block ${k + 1}">${p ? `<div class="bb-piece" style="grid-template-columns:repeat(${p.w},1fr);grid-template-rows:repeat(${p.h},1fr);width:${p.w * 18}px;height:${p.h * 18}px">${p.cells.map(([r, c]) => `<i class="bb-gem" style="grid-row:${r + 1};grid-column:${c + 1};${gem(p.color)}"></i>`).join("")}</div>` : ""}</div>`).join("");
+    $t.querySelectorAll("[data-slot]").forEach(s => s.addEventListener("pointerdown", grab));
+    score();
+  }
+  const ghost = (p, r, c) => { cells.forEach(el => el.classList.remove("ghost")); if (!p || r == null || !fits(p, r, c)) return; p.cells.forEach(([dr, dc]) => { const el = cells[(r + dr) * N + c + dc]; el.classList.add("ghost"); el.style.cssText = gem(p.color); }); };
+  // ---- placing and bursting ----
+  function place(k, r, c) {
+    const bb = M.bb, p = bb.tray[k]; if (!p || !fits(p, r, c) || bb.busy) return false;
+    p.cells.forEach(([dr, dc]) => { bb.grid[(r + dr) * N + c + dc] = p.color + 1; });
+    bb.tray[k] = null; bb.sel = null; bb.score += p.cells.length;
+    tone([392, 523], .05, "triangle", .05);
+    const full = new Set(); let lines = 0;
+    for (let i = 0; i < N; i++) {
+      if ([...Array(N)].every((_, j) => bb.grid[i * N + j])) { lines++; for (let j = 0; j < N; j++) full.add(i * N + j); }
+      if ([...Array(N)].every((_, j) => bb.grid[j * N + i])) { lines++; for (let j = 0; j < N; j++) full.add(j * N + i); }
+    }
+    if (lines) {
+      bb.combo++; bb.miss = 0;
+      const gain = Math.round(lines * 10 * (1 + (lines - 1) * .5) * bb.combo);
+      bb.score += gain;
+      render(); full.forEach(i => cells[i].classList.add("burst"));
+      bb.busy = true;
+      say(`${lines > 1 ? lines + " lines! " : ""}${bb.combo > 1 ? "Combo ×" + bb.combo + "! " : ""}+${gain}`, lines > 1 || bb.combo > 1);
+      tone([660, 880, 1175].slice(0, Math.min(3, lines + 1)), .07, "square", .05);
+      setTimeout(() => {
+        if (!M || M.bb !== bb) return;
+        full.forEach(i => { bb.grid[i] = 0; }); bb.busy = false;
+        if (bb.grid.every(v => !v)) { bb.score += 300; say("✨ All clear! +300", true); sfx.buy(); }
+        after();
+      }, 260);
+    } else { if (++bb.miss >= 3) bb.combo = 0; after(); }
+    return true;
+  }
+  function after() {
+    const bb = M.bb;
+    if (bb.tray.every(p => !p)) bb.tray = [piece(), piece(), piece()];
+    render();
+    const left = bb.tray.filter(Boolean);
+    if (!left.some(anyFit)) {
+      const r = record("blocks", bb.score);
+      setTimeout(() => { if (M && M.bb === bb) overScreen("No more room!", bb.score, r.nb ? "Your best score ever!" : `Best: ${r.best}`, go); }, 450);
+      bb.over = true;
+    }
+  }
+  // ---- dragging (mouse and touch), tapping, and keys ----
+  const pitch = () => { const a = cells[0].getBoundingClientRect(), b2 = cells[1].getBoundingClientRect(); return { size: a.width, step: b2.left - a.left, x0: a.left, y0: a.top }; };
+  function grab(e) {
+    const bb = M && M.bb; if (!bb || !M.running || bb.busy || bb.over) return;
+    const k = +e.currentTarget.dataset.slot, p = bb.tray[k]; if (!p) return;
+    e.preventDefault();
+    const P = pitch(), lift = e.pointerType === "touch" ? P.step * 1.6 : 0;
+    const fl = document.createElement("div"); fl.className = "bb-float";
+    fl.style.cssText = `grid-template-columns:repeat(${p.w},${P.size}px);grid-template-rows:repeat(${p.h},${P.size}px);gap:${P.step - P.size}px`;
+    fl.innerHTML = p.cells.map(([r, c]) => `<i class="bb-gem" style="grid-row:${r + 1};grid-column:${c + 1};${gem(p.color)}"></i>`).join("");
+    document.body.appendChild(fl); const src = e.currentTarget; src.classList.add("dragging");
+    const w = p.w * P.step, h = p.h * P.step, sx = e.clientX, sy = e.clientY; let moved = false, target = null;
+    const pos = (x, y) => {
+      const left = x - w / 2, top = y - h / 2 - lift; fl.style.left = left + "px"; fl.style.top = top + "px";
+      const Q = pitch(), c = Math.round((left - Q.x0) / Q.step), r = Math.round((top - Q.y0) / Q.step);
+      target = fits(p, r, c) ? [r, c] : null; ghost(p, ...(target || [null, null]));
+    };
+    pos(sx, sy);
+    const mv = ev => { if (!M || M.bb !== bb) return up(ev, true); if (Math.hypot(ev.clientX - sx, ev.clientY - sy) > 6) moved = true; pos(ev.clientX, ev.clientY); };
+    const up = (ev, gone) => {
+      window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up);
+      fl.remove(); src.classList.remove("dragging"); if (gone || !M || M.bb !== bb) return; ghost(null);
+      if (!moved) { bb.sel = bb.sel === k ? null : k; render(); return; }   // a tap picks the block
+      if (target) place(k, ...target); else render();
+    };
+    window.addEventListener("pointermove", mv); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+  }
+  const centerOn = (p, r, c) => [Math.max(0, Math.min(N - p.h, r - (p.h >> 1))), Math.max(0, Math.min(N - p.w, c - (p.w >> 1)))];
+  $b.addEventListener("click", e => {
+    const bb = M && M.bb, el = e.target.closest(".bb-cell"); if (!bb || !el || bb.sel == null || !M.running) return;
+    const p = bb.tray[bb.sel], i = +el.dataset.i, [r, c] = centerOn(p, (i / N) | 0, i % N);
+    if (!place(bb.sel, r, c)) { $b.classList.remove("shake"); void $b.offsetWidth; $b.classList.add("shake"); tone([200], .08, "sawtooth", .04); }
+  });
+  $b.addEventListener("pointermove", e => { const bb = M && M.bb, el = e.target.closest(".bb-cell"); if (!bb || !el || bb.sel == null || e.pointerType === "touch") return; const p = bb.tray[bb.sel], i = +el.dataset.i; ghost(p, ...centerOn(p, (i / N) | 0, i % N)); });
+  M.kd = e => {
+    const bb = M && M.bb; if (!bb || !M.running || bb.over) return;
+    if (/^[1-3]$/.test(e.key)) { const k = +e.key - 1; if (bb.tray[k]) { bb.sel = k; bb.cur = bb.cur || [3, 3]; render(); ghost(bb.tray[k], ...centerOn(bb.tray[k], ...bb.cur)); } e.preventDefault(); return; }
+    if (bb.sel == null) return;
+    const d = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key], p = bb.tray[bb.sel];
+    if (d) { e.preventDefault(); bb.cur = [Math.max(0, Math.min(N - 1, bb.cur[0] + d[0])), Math.max(0, Math.min(N - 1, bb.cur[1] + d[1]))]; ghost(p, ...centerOn(p, ...bb.cur)); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (!place(bb.sel, ...centerOn(p, ...bb.cur))) tone([200], .08, "sawtooth", .04); }
+    if (e.key === "Escape") { bb.sel = null; ghost(null); render(); }
+  };
+  window.addEventListener("keydown", M.kd);
+  function go() {
+    M.bb = { grid: Array(N * N).fill(0), tray: [piece(), piece(), piece()], score: 0, combo: 0, miss: 0, sel: null, cur: [3, 3], busy: false, over: false };
+    M.running = true; document.getElementById("m-over").hidden = true; render();
+  }
+  M.bbPlace = (k, r, c) => place(k, r, c); M.bbRender = () => render();   // let tests place blocks and redraw
+  M.bb = { grid: Array(N * N).fill(0), tray: [null, null, null], score: 0, combo: 0, miss: 0, sel: null, busy: false, over: true };
+  render();
+  document.getElementById("m-go").addEventListener("click", go);
+}
+MORE_GAMES.push({ id: "blocks", name: "Block Burst Puzzle", desc: "Drop blocks on the board and fill rows and columns to burst them. Chain bursts for combos!", start: () => startBlockBurst() });
+HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Block Burst Puzzle", "🧱", "block burst puzzle|block burst|block puzzle|blocks? game|block blast|blockblast", "Drop blocks on an 8×8 board and fill rows and columns to burst them.", () => startBlockBurst()]);
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
@@ -21595,7 +21749,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // 🚨 Emergency button: only in the games under the 3 dots. One tap stops the game and jumps straight into a round of Root Archery.
 const emergBtn = document.getElementById("emerg");
-const MENU_GAME_RX = /^(🐰 |🏀 )?(Bunny Hop|Dig It Up|Cash Race|Slope City|Drawing Studio|Ragdoll Archers|Neon Snake|Sky Stack|2048|Memory Match|Minesweeper|Brick Breaker|Sky Hopper|Galaxy Defender|Whack-a-Mole|Connect Four|Simon Says|Pong|Rodeo Stampede|Hippo Hoops|Color Claim)\b/;
+const MENU_GAME_RX = /^(🐰 |🏀 )?(Bunny Hop|Dig It Up|Cash Race|Slope City|Drawing Studio|Ragdoll Archers|Neon Snake|Sky Stack|2048|Memory Match|Minesweeper|Brick Breaker|Sky Hopper|Galaxy Defender|Whack-a-Mole|Connect Four|Simon Says|Pong|Rodeo Stampede|Hippo Hoops|Color Claim|Block Burst Puzzle)\b/;
 let IN_MENU_GAME = false;   // set when a game is opened from a games menu (Cash Race and Dig It Up play screens have no title)
 document.addEventListener("click", e => { if (e.target.closest?.(".gm-item, [data-more]")) IN_MENU_GAME = true; }, true);
 function emergencyGrammar() {
