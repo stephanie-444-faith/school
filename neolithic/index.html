@@ -1470,6 +1470,26 @@
   .tmr-status { margin: 8px 0; color: var(--ink-soft); font-size: .9rem; }
   .tmr-btns { display: flex; flex-wrap: wrap; gap: 6px; }
   .tmr-btns .btn.bad { background: var(--bad); color: #fff; }
+  .pl8-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
+  .pl8-wrap h2 { margin: 0; }
+  .pl8-bar { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .pl8-rec { margin: 0; text-align: center; }
+  .pl8-how { width: 100%; max-width: 520px; }
+  .pl8-hud { width: 100%; max-width: 520px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
+  .pl8-pl { min-width: 0; border: 2px solid var(--line); border-radius: 12px; padding: 6px 8px; background: var(--panel-2); }
+  .pl8-pl.on { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255, 200, 60, .25); }
+  .pl8-pl.win { border-color: var(--money); }
+  .pl8-pl b { display: block; font-size: .92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pl8-pl small { color: var(--ink-soft); font-size: .78rem; }
+  .pl8-dots { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 4px; }
+  .pl8-dot { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 8px; font-weight: 800; color: #111; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35); }
+  .pl8-dot.gone { opacity: .22; }
+  .pl8-msg { min-height: 1.4em; margin: 0; text-align: center; font-weight: 700; }
+  .pl8-cv { display: block; width: min(100%, max(230px, calc((100vh - 240px) * .532))); aspect-ratio: 568 / 1068; touch-action: none; border-radius: 22px; cursor: crosshair; box-shadow: 0 10px 26px rgba(0, 0, 0, .35); }
+  .pl8-ctl { display: flex; align-items: center; gap: 6px; width: 100%; max-width: 420px; }
+  .pl8-pw { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; font-weight: 700; }
+  .pl8-pw input { flex: 1; min-width: 0; accent-color: var(--gold); }
+  .pl8-shoot { width: 100%; max-width: 420px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -11556,7 +11576,8 @@ function plNoGamesScript() {
   const extra = ["Bunny Hop Typing", "Cash Race", "Mystery Game", "Root Hyper Practice", "Root Basketball", "Root Soccer", "Root Football", "Root Lacrosse", "Hippo Hoops", "Dream Team", "Game Room", "Training Ground", "Carrot Champion", "Speed Champion"];
   const names = [...new Set([...menu, ...screens, ...apps, ...extra].map(s => s.trim()).filter(s => s.length > 2 && !/^(Bunny|Uno)$/.test(s)))];
   const exact = [...new Set([...names, "Uno", "Bunny"])];   // short names only count as a whole title
-  const fns = ["startDig", "startGame", "startSlope", "startDraw", "startArchers", "startMini", "startMystery", "startSnake", "startStack", "startBunny", "bunnyLobby", "startMore", "startGameRoom", "startHippopoly", "startUno", "startBattleship", "startRummikub", "startCheckers", "startChess", "startYahtzee", "startMancala", "startGoFish", "startDots", "startNameThatTune", "startRootArchery", "startRootHyper", "startRootsChooser", "startRootSport", "startHippoHoops", "startDreamTeam", "startPuzzleRoom", "startHeadClass", "startRodeo", "start2048", "startMemory", "startMines", "startBricks", "startHopper", "startGalaxy", "startWhack", "startConnect4", "startSimon", "startPong", "startRagdollSecret", "startTurboKeys", "startGlobeDetective"];
+  const fns = ["startDig", "startGame", "startSlope", "startDraw", "startArchers", "startMini", "startMystery", "startSnake", "startStack", "startBunny", "bunnyLobby", "startMore", "startGameRoom", "startHippopoly", "startUno", "startBattleship", "startRummikub", "startCheckers", "startChess", "startYahtzee", "startMancala", "startGoFish", "startDots", "startNameThatTune", "startRootArchery", "startRootHyper", "startRootsChooser", "startRootSport", "startHippoHoops", "startDreamTeam", "startPuzzleRoom", "startHeadClass", "startRodeo", "start2048", "startMemory", "startMines", "startBricks", "startHopper", "startGalaxy", "startWhack", "startConnect4", "startSimon", "startPong", "startRagdollSecret", "startTurboKeys", "startGlobeDetective", "startPool"];
+  NEW_APPS.filter(a => INFO_GAME_APPS.has(a.id)).concat(MORE_GAMES).forEach(a => { const m = String(a.start || "").match(/\b(start[A-Z]\w*)\(/); if (m && !fns.includes(m[1])) fns.push(m[1]); });   // every game added later is blocked too
   const code = `(function(){
 var NAMES=${JSON.stringify(names)},EXACT=${JSON.stringify(exact)},FNS=${JSON.stringify(fns)};
 var q=function(s){return s.replace(/[.*+?^\${}()|[\\]\\\\]/g,"\\\\$&")};
@@ -19430,6 +19451,307 @@ function startTimer() {
   total(); tmrList(); naTimer(setInterval(tmrTick, 41));
 }
 NEW_APPS.push({ id: "timer", emoji: "⏱️", name: "Timer", desc: "Set a timer for any time from 0 milliseconds up to 20 years. It keeps counting when you leave.", start: () => startTimer(), kw: "timer|timers|countdown|count down|alarm|set a timer|egg timer|stopwatch" });
+/* ---------- 🎱 Pool Hall: 8-ball pool against the computer or a friend on the same device ---------- */
+const PL8_W = 500, PL8_H = 1000, PL8_R = 11.5, PL8_RAIL = 34, PL8_DT = 1 / 480, PL8_MAXV = 2900;
+const PL8_TW = PL8_W + 2 * PL8_RAIL, PL8_TH = PL8_H + 2 * PL8_RAIL;
+const PL8_COLORS = ["#f6f2e6", "#f2c21b", "#1f5fd1", "#d8262c", "#6a2fa8", "#f07d14", "#13853a", "#8a2a1a", "#121212"];
+const pl8Color = n => PL8_COLORS[n > 8 ? n - 8 : n];
+const pl8Type = n => n === 0 ? "cue" : n === 8 ? "eight" : n < 8 ? "solids" : "stripes";
+const PL8_GROUP = { solids: "● Solids (1–7)", stripes: "◐ Stripes (9–15)" };
+const PL8_CM = 3.2 * PL8_R, PL8_SM = 2.4 * PL8_R;   // how far the corner and side pocket openings reach along the rails
+const PL8_POCKETS = [[-0.35, -0.35, 1.9, 0], [1, -0.35, 1.9, 0], [-0.6, .5, 1.75, 1], [1, .5, 1.75, 1], [-0.35, 1, 1.9, 0], [1, 1, 1.9, 0]].map(([x, y, r, side]) => ({
+  x: x === 1 ? PL8_W + (side ? 0.6 : 0.35) * PL8_R : x * PL8_R, y: y === 1 ? PL8_H + 0.35 * PL8_R : y === .5 ? PL8_H / 2 : y * PL8_R, r: r * PL8_R, side: !!side }));
+let PL8 = null, PL8_RUN = 0, PL8_FRAMES = 0;
+
+function pl8Free(x, y, skip) {
+  const R = PL8_R; if (x < R || x > PL8_W - R || y < R || y > PL8_H - R) return false;
+  return PL8.balls.every(b => b === skip || b.down || (b.x - x) ** 2 + (b.y - y) ** 2 >= (2 * R + 0.5) ** 2);
+}
+function pl8Spot(b, x, y) {   // put a ball on a spot, sliding along the table until it's free
+  for (let i = 0; i < 400; i++) { const yy = y - i * 3 * (i % 2 ? 1 : -1) * 0.5, xx = x + (i % 7) * 0.5; if (pl8Free(xx, yy, b)) { b.x = xx; b.y = yy; b.vx = b.vy = 0; b.down = false; return; } }
+  b.x = x; b.y = y; b.vx = b.vy = 0; b.down = false;
+}
+function pl8Rack() {
+  const R = PL8_R, gap = 2 * R + 0.2, fx = PL8_W / 2, fy = PL8_H * 0.25, sh = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const solids = sh([1, 2, 3, 4, 5, 6, 7]), stripes = sh([9, 10, 11, 12, 13, 14, 15]), order = Array(15);
+  order[4] = 8; order[10] = solids.pop(); order[14] = stripes.pop();
+  const rest = sh([...solids, ...stripes]); for (let i = 0; i < 15; i++) if (order[i] === undefined) order[i] = rest.pop();
+  const balls = [{ n: 0, x: PL8_W / 2, y: PL8_H * 0.75, vx: 0, vy: 0, down: false }]; let i = 0;
+  for (let r = 0; r < 5; r++) for (let k = 0; k <= r; k++) balls.push({ n: order[i++], x: fx + (k - r / 2) * gap, y: fy - r * gap * Math.sin(Math.PI / 3), vx: 0, vy: 0, down: false });
+  return balls;
+}
+const pl8Cue = () => PL8.balls[0];
+const pl8Still = G => G.balls.every(b => b.down || (b.vx === 0 && b.vy === 0));
+const pl8Left = (G, grp) => G.balls.filter(b => !b.down && pl8Type(b.n) === grp).length;
+const pl8Name = i => PL8.mode === "cpu" ? (i ? "🤖 Computer" : "You") : "Player " + (i + 1);
+
+function pl8Clack(v, low) {
+  const G = PL8; if (!G || G.turbo) return; const t = performance.now(); if (t - (G.clackAt || 0) < 35) return; G.clackAt = t;
+  if (low) naNote(180, .18, "sine", .2); else naNote(1500 + Math.random() * 400, .045, "square", Math.min(.1, .02 + v / 30000));
+}
+function pl8Pocket(G, b) { b.down = true; b.vx = b.vy = 0; G.shot.pocketed.push(b.n); pl8Clack(0, true); }
+function pl8Step(G, dt) {
+  const R = PL8_R, W = PL8_W, H = PL8_H, B = G.balls.filter(b => !b.down);
+  for (const b of B) { b.x += b.vx * dt; b.y += b.vy * dt; }
+  for (let i = 0; i < B.length; i++) for (let j = i + 1; j < B.length; j++) {
+    const a = B[i], b = B[j], dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy;
+    if (d2 >= 4 * R * R || d2 === 0) continue;
+    const d = Math.sqrt(d2), nx = dx / d, ny = dy / d, over = (2 * R - d) / 2;
+    a.x -= nx * over; a.y -= ny * over; b.x += nx * over; b.y += ny * over;
+    const rel = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
+    if (rel > 0) {
+      const j2 = rel * (1 + 0.95) / 2; a.vx -= j2 * nx; a.vy -= j2 * ny; b.vx += j2 * nx; b.vy += j2 * ny;
+      if (G.shot.firstHit === null && (a.n === 0 || b.n === 0)) G.shot.firstHit = a.n === 0 ? b.n : a.n;
+      pl8Clack(rel);
+    }
+  }
+  for (const b of B) {
+    if (b.down) continue;
+    if (PL8_POCKETS.some(p => (b.x - p.x) ** 2 + (b.y - p.y) ** 2 < p.r * p.r)) { pl8Pocket(G, b); continue; }
+    const cornerY = b.y < PL8_CM || b.y > H - PL8_CM, side = Math.abs(b.y - H / 2) < PL8_SM, cornerX = b.x < PL8_CM || b.x > W - PL8_CM;
+    if (!cornerY && !side) { if (b.x < R) { b.x = R; b.vx = Math.abs(b.vx) * .78; } else if (b.x > W - R) { b.x = W - R; b.vx = -Math.abs(b.vx) * .78; } }
+    if (!cornerX) { if (b.y < R) { b.y = R; b.vy = Math.abs(b.vy) * .78; } else if (b.y > H - R) { b.y = H - R; b.vy = -Math.abs(b.vy) * .78; } }
+    if (b.x < -R || b.x > W + R || b.y < -R || b.y > H + R) pl8Pocket(G, b);   // slipped through a pocket opening
+  }
+  for (const b of B) {
+    if (b.down) continue; const s = Math.hypot(b.vx, b.vy); if (!s) continue;
+    const ns = s - (110 + 0.55 * s) * dt;
+    if (ns < 3) b.vx = b.vy = 0; else { b.vx *= ns / s; b.vy *= ns / s; }
+  }
+}
+
+function pl8Shoot(angle, power) {
+  const G = PL8; if (!G || G.winner !== null || G.phase === "moving" || G.phase === "over") return;
+  const c = pl8Cue(), v = Math.max(.04, Math.min(1, power)) * PL8_MAXV;
+  c.vx = Math.cos(angle) * v; c.vy = Math.sin(angle) * v;
+  G.shot = { firstHit: null, pocketed: [] }; G.phase = "moving"; G.inHand = false; G.shots++;
+  pl8Clack(v); pl8Hud();
+}
+function pl8EndShot() {
+  const G = PL8, s = G.shot, me = G.turn, other = 1 - me, pk = s.pocketed, scratch = pk.includes(0), wasBreak = G.isBreak;
+  G.isBreak = false;
+  let myG = G.groups[me];
+  const clearedBefore = myG ? pl8Left(G, myG) + pk.filter(n => pl8Type(n) === myG).length === 0 : false;
+  const fh = s.firstHit;
+  let foul = scratch || fh === null, why = scratch ? "Scratch! The white ball went in." : fh === null ? "Foul: the white ball didn't hit any ball." : "";
+  if (!foul && !wasBreak) {
+    if (!myG && fh === 8) { foul = true; why = "Foul: you can't hit the 8-ball first yet."; }
+    else if (myG && !clearedBefore && pl8Type(fh) !== myG) { foul = true; why = `Foul: hit one of your ${myG} first.`; }
+    else if (myG && clearedBefore && fh !== 8) { foul = true; why = "Foul: you have to hit the 8-ball first now."; }
+  }
+  if (pk.includes(8)) {
+    if (wasBreak) { pl8Spot(G.balls.find(b => b.n === 8), PL8_W / 2, PL8_H * 0.25); why = (why ? why + " " : "") + "The 8 went in on the break, so it goes back on its spot."; }
+    else return pl8Finish(clearedBefore && !foul ? me : other, clearedBefore && !foul ? `${pl8Name(me)} sank the 8-ball!` : scratch ? `${pl8Name(me)} scratched on the 8-ball.` : `${pl8Name(me)} sank the 8-ball too early.`);
+  }
+  if (!myG && !foul) {
+    const first = pk.find(n => n !== 0 && n !== 8);
+    if (first !== undefined) { myG = pl8Type(first); G.groups[me] = myG; G.groups[other] = myG === "solids" ? "stripes" : "solids"; }
+  }
+  const mine = myG ? pk.filter(n => pl8Type(n) === myG).length : 0;
+  if (scratch) pl8Spot(pl8Cue(), PL8_W / 2, PL8_H * 0.75);
+  if (!foul && mine > 0) {
+    G.msg = `${G.groups[me] && !G.lastGroups ? `${pl8Name(me)} ${me === 0 && G.mode === "cpu" ? "are" : "is"} ${G.groups[me]}! ` : ""}Nice shot! ${pl8Name(me)} ${me === 0 && G.mode === "cpu" ? "go" : "goes"} again.`;
+  } else {
+    G.turn = other;
+    G.msg = foul ? `${why} Ball in hand for ${pl8Name(other)}.` : `${pk.length ? "Nothing of yours went in." : "Missed!"} ${pl8Name(other)}'s turn.`;
+    G.inHand = foul;
+  }
+  G.lastGroups = !!G.groups[0];
+  pl8NextTurn();
+}
+function pl8Finish(winner, why) {
+  const G = PL8; G.winner = winner; G.phase = "over";
+  G.msg = `${why} ${winner === 0 && G.mode === "cpu" ? "🏆 You win!" : G.mode === "cpu" ? "🤖 The computer wins!" : `🏆 ${pl8Name(winner)} wins!`}`;
+  if (G.mode === "cpu" && !G.autoBoth) { const st = store.get("pool_stats", {}); const k = (winner === 0 ? "w_" : "l_") + G.lvl; st[k] = (st[k] || 0) + 1; store.set("pool_stats", st); }
+  if (!G.turbo) { if (winner === 0 || G.mode === "two") [523, 659, 784, 1047].forEach((f, i) => naNote(f, .3, "triangle", .2, i * .12)); else naNote(196, .5, "sine", .2); }
+  pl8Hud();
+}
+function pl8NextTurn() {
+  const G = PL8;
+  if (G.mode === "cpu" && G.turn === 1 || G.autoBoth) { G.phase = "cpu"; G.cpuAt = performance.now() + (G.turbo ? 0 : 1100); pl8CpuPlan(); }
+  else G.phase = G.inHand ? "place" : "aim";
+  pl8Hud();
+}
+
+/* 🤖 the computer looks for the easiest straight-in shot */
+function pl8SegClear(ax, ay, bx, by, skip) {
+  const dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy || 1, lim = (2 * PL8_R - .5) ** 2;
+  return PL8.balls.every(b => { if (b.down || skip.includes(b)) return true; let t = ((b.x - ax) * dx + (b.y - ay) * dy) / L2; t = Math.max(0, Math.min(1, t)); return (ax + t * dx - b.x) ** 2 + (ay + t * dy - b.y) ** 2 >= lim; });
+}
+function pl8Targets(G) {
+  const grp = G.groups[G.turn], live = G.balls.filter(b => !b.down && b.n !== 0);
+  if (!grp) return live.filter(b => b.n !== 8);
+  const mine = live.filter(b => pl8Type(b.n) === grp); return mine.length ? mine : live.filter(b => b.n === 8);
+}
+function pl8BestShot(G, cx, cy) {
+  const R = PL8_R, c = pl8Cue(); let best = null;
+  for (const t of pl8Targets(G)) for (const p of PL8_POCKETS) {
+    const qx = p.x + (PL8_W / 2 - p.x) * (p.side ? .02 : .015), qy = p.y + (PL8_H / 2 - p.y) * (p.side ? 0 : .008);
+    let ux = qx - t.x, uy = qy - t.y; const d2 = Math.hypot(ux, uy); ux /= d2; uy /= d2;
+    if (p.side && Math.abs(ux) < .45) continue;
+    const gx = t.x - ux * 2 * R, gy = t.y - uy * 2 * R; if (gx < R || gx > PL8_W - R || gy < R || gy > PL8_H - R) continue;
+    let vx = gx - cx, vy = gy - cy; const d1 = Math.hypot(vx, vy); if (d1 < 1) continue; vx /= d1; vy /= d1;
+    const cos = vx * ux + vy * uy; if (cos < .22) continue;
+    if (!pl8SegClear(cx, cy, gx, gy, [c, t]) || !pl8SegClear(t.x, t.y, qx, qy, [c, t])) continue;
+    const score = cos ** 1.6 * 1000 / (d1 + 1.4 * d2 + 150);
+    if (!best || score > best.score) best = { score, angle: Math.atan2(vy, vx), power: Math.min(.93, (500 + (d1 + d2 * 1.35) / Math.pow(cos, .6)) / PL8_MAXV) };
+  }
+  return best;
+}
+function pl8CpuPlan() {
+  const G = PL8, c = pl8Cue();
+  if (G.isBreak) { G.plan = { angle: -Math.PI / 2 + (Math.random() - .5) * .02, power: .95 }; G.angle = G.plan.angle; G.power = G.plan.power; return; }
+  if (G.inHand) {   // ball in hand: try spots and keep the one with the best shot
+    let bestPos = null, bestS = -1;
+    for (let i = 0; i < 70; i++) { const x = PL8_R + Math.random() * (PL8_W - 2 * PL8_R), y = PL8_R + Math.random() * (PL8_H - 2 * PL8_R); if (!pl8Free(x, y, c)) continue; const s = pl8BestShot(G, x, y); if (s && s.score > bestS) { bestS = s.score; bestPos = [x, y]; } }
+    if (bestPos) { c.x = bestPos[0]; c.y = bestPos[1]; }
+    G.inHand = false;
+  }
+  let shot = pl8BestShot(G, c.x, c.y);
+  if (!shot) {   // no clean pot: tap the nearest ball you're allowed to hit
+    const ts = pl8Targets(G).sort((a, b) => Math.hypot(a.x - c.x, a.y - c.y) - Math.hypot(b.x - c.x, b.y - c.y));
+    const t = ts.find(t => pl8SegClear(c.x, c.y, t.x, t.y, [c, t])) || ts[0];
+    shot = t ? { angle: Math.atan2(t.y - c.y, t.x - c.x), power: .42 } : { angle: Math.random() * 6.28, power: .4 };
+  }
+  const err = { easy: .06, medium: .022, hard: .006 }[G.lvl] || .022;
+  G.plan = { angle: shot.angle + (Math.random() + Math.random() - 1) * err, power: shot.power };
+  G.angle = G.plan.angle; G.power = G.plan.power;
+}
+
+/* 🎨 drawing */
+function pl8Guide(G) {
+  const R = PL8_R, c = pl8Cue(), dx = Math.cos(G.angle), dy = Math.sin(G.angle); let best = Infinity, hit = null;
+  for (const b of G.balls) {
+    if (b === c || b.down) continue;
+    const fx = b.x - c.x, fy = b.y - c.y, t = fx * dx + fy * dy; if (t <= 0) continue;
+    const d2 = fx * fx + fy * fy - t * t; if (d2 > 4 * R * R) continue;
+    const th = t - Math.sqrt(4 * R * R - d2); if (th < best) { best = th; hit = b; }
+  }
+  const tx = dx > 0 ? (PL8_W - R - c.x) / dx : dx < 0 ? (R - c.x) / dx : Infinity, ty = dy > 0 ? (PL8_H - R - c.y) / dy : dy < 0 ? (R - c.y) / dy : Infinity, tw = Math.max(0, Math.min(tx, ty));
+  if (hit && best < tw) { const gx = c.x + dx * best, gy = c.y + dy * best, ox = hit.x - gx, oy = hit.y - gy, ol = Math.hypot(ox, oy) || 1; return { gx, gy, hit, ox: ox / ol, oy: oy / ol }; }
+  return { gx: c.x + dx * tw, gy: c.y + dy * tw, hit: null };
+}
+function pl8Ball(ctx, b) {
+  const R = PL8_R, col = pl8Color(b.n);
+  ctx.save(); ctx.beginPath(); ctx.arc(b.x, b.y, R, 0, Math.PI * 2); ctx.clip();
+  if (b.n > 8) { ctx.fillStyle = PL8_COLORS[0]; ctx.fillRect(b.x - R, b.y - R, 2 * R, 2 * R); ctx.fillStyle = col; ctx.fillRect(b.x - R, b.y - R * .55, 2 * R, R * 1.1); }
+  else { ctx.fillStyle = col; ctx.fillRect(b.x - R, b.y - R, 2 * R, 2 * R); }
+  if (b.n > 0) {
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(b.x, b.y, R * .5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#111"; ctx.font = `800 ${b.n > 9 ? R * .62 : R * .72}px system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(b.n, b.x, b.y + R * .04);
+  }
+  const g = ctx.createRadialGradient(b.x - R * .4, b.y - R * .45, R * .1, b.x, b.y, R * 1.1);
+  g.addColorStop(0, "rgba(255,255,255,.6)"); g.addColorStop(.35, "rgba(255,255,255,0)"); g.addColorStop(1, "rgba(0,0,0,.35)");
+  ctx.fillStyle = g; ctx.fillRect(b.x - R, b.y - R, 2 * R, 2 * R); ctx.restore();
+}
+function pl8Draw() {
+  const cv = document.getElementById("pl8-cv"), G = PL8; if (!cv || !G) return;
+  const dpr = window.devicePixelRatio || 1, need = Math.max(100, Math.round(cv.clientWidth * dpr));
+  if (cv.width !== need) { cv.width = need; cv.height = Math.round(need * PL8_TH / PL8_TW); }
+  const ctx = cv.getContext("2d"), k = cv.width / PL8_TW, R = PL8_R, W = PL8_W, H = PL8_H, A = PL8_RAIL;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.setTransform(k, 0, 0, k, A * k, A * k);
+  const wood = ctx.createLinearGradient(-A, 0, W + A, 0); wood.addColorStop(0, "#5a3115"); wood.addColorStop(.5, "#8a5126"); wood.addColorStop(1, "#5a3115");
+  ctx.fillStyle = wood; ctx.beginPath(); ctx.roundRect(-A, -A, W + 2 * A, H + 2 * A, 26); ctx.fill();
+  ctx.fillStyle = "#0f5a31"; ctx.fillRect(-9, -9, W + 18, H + 18);
+  const felt = ctx.createRadialGradient(W / 2, H / 2, 60, W / 2, H / 2, H * .7); felt.addColorStop(0, "#23905a"); felt.addColorStop(1, "#17713f");
+  ctx.fillStyle = felt; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(255,240,200,.85)"; for (let i = 1; i < 4; i++) for (const [x, y] of [[W * i / 4, -A / 2], [W * i / 4, H + A / 2]]) { ctx.beginPath(); ctx.arc(x, y, 3, 0, 7); ctx.fill(); }
+  for (let i = 1; i < 8; i++) if (i !== 4) for (const x of [-A / 2, W + A / 2]) { ctx.beginPath(); ctx.arc(x, H * i / 8, 3, 0, 7); ctx.fill(); }
+  ctx.strokeStyle = "rgba(255,255,255,.12)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, H * .75); ctx.lineTo(W, H * .75); ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,.25)"; ctx.beginPath(); ctx.arc(W / 2, H * .25, 3, 0, 7); ctx.fill();
+  ctx.fillStyle = "#050505"; for (const p of PL8_POCKETS) { ctx.beginPath(); ctx.arc(p.x, p.y, p.side ? R * 1.75 : R * 1.95, 0, 7); ctx.fill(); }
+  const c = pl8Cue(), aiming = (G.phase === "aim" || G.phase === "cpu") && !c.down;
+  if (aiming && (G.phase === "aim" || G.mode === "two" || !G.turbo)) {
+    const gd = pl8Guide(G);
+    ctx.setLineDash([8, 7]); ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(gd.gx, gd.gy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = "rgba(255,255,255,.8)"; ctx.beginPath(); ctx.arc(gd.gx, gd.gy, R, 0, 7); ctx.stroke();
+    if (gd.hit) { ctx.strokeStyle = "rgba(255,214,64,.95)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gd.hit.x, gd.hit.y); ctx.lineTo(gd.hit.x + gd.ox * 120, gd.hit.y + gd.oy * 120); ctx.stroke(); }
+  }
+  for (const b of G.balls) if (!b.down) pl8Ball(ctx, b);
+  if (G.phase === "place" && !c.down) { ctx.strokeStyle = "rgba(255,214,64,.9)"; ctx.lineWidth = 2.5; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(c.x, c.y, R + 7, 0, 7); ctx.stroke(); ctx.setLineDash([]); }
+  if (aiming && G.winner === null) {   // the cue stick, pulled back by the power
+    const dx = Math.cos(G.angle), dy = Math.sin(G.angle), back = R + 8 + G.power * 70, sx = c.x - dx * back, sy = c.y - dy * back, ex = sx - dx * 360, ey = sy - dy * 360;
+    const st = ctx.createLinearGradient(sx, sy, ex, ey); st.addColorStop(0, "#f3e6c8"); st.addColorStop(.04, "#3a7bd5"); st.addColorStop(.06, "#e9c891"); st.addColorStop(.7, "#a8692f"); st.addColorStop(1, "#3b1f0d");
+    ctx.strokeStyle = st; ctx.lineWidth = 7; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.lineCap = "butt";
+  }
+}
+function pl8Hud() {
+  const G = PL8, box = document.getElementById("pl8-hud"); if (!box || !G) return;
+  const dots = grp => (grp === "solids" ? [1, 2, 3, 4, 5, 6, 7] : [9, 10, 11, 12, 13, 14, 15]).map(n => { const down = G.balls.find(b => b.n === n).down, col = pl8Color(n);
+    return `<span class="pl8-dot${down ? " gone" : ""}" style="background:${n > 8 ? `linear-gradient(${PL8_COLORS[0]} 26%, ${col} 26% 74%, ${PL8_COLORS[0]} 74%)` : col}">${n}</span>`; }).join("");
+  box.innerHTML = [0, 1].map(i => { const grp = G.groups[i], on = G.turn === i && G.winner === null, done = grp && pl8Left(G, grp) === 0;
+    return `<div class="pl8-pl${on ? " on" : ""}${G.winner === i ? " win" : ""}"><b>${on ? "🎯 " : ""}${G.winner === i ? "🏆 " : ""}${esc(pl8Name(i))}</b><small>${grp ? PL8_GROUP[grp] : "Open table"}</small>${grp ? `<div class="pl8-dots">${dots(grp)}${done ? `<span class="pl8-dot" style="background:#121212;color:#fff">8</span>` : ""}</div>` : ""}</div>`; }).join("");
+  const msg = document.getElementById("pl8-msg");
+  if (msg) msg.textContent = G.phase === "cpu" ? "🤖 The computer is lining up a shot…" : G.phase === "place" ? `✋ Ball in hand: drag the white ball anywhere, then tap ✔ Done.` : G.msg || (G.isBreak ? `${pl8Name(G.turn)} ${G.turn === 0 && G.mode === "cpu" ? "break" : "breaks"}! Drag on the table to aim, then shoot.` : "");
+  const shoot = document.getElementById("pl8-shoot"), done = document.getElementById("pl8-done"), again = document.getElementById("pl8-again");
+  if (shoot) { shoot.hidden = G.phase === "place" || G.phase === "over"; shoot.disabled = G.phase !== "aim"; }
+  if (done) done.hidden = G.phase !== "place";
+  if (again) again.hidden = G.phase !== "over";
+  const pw = document.getElementById("pl8-power"); if (pw && document.activeElement !== pw) pw.value = Math.round(G.power * 100);
+}
+
+function startPool() {
+  const mode = store.get("pool_mode", "cpu"), lvl = store.get("pool_lvl", "medium"), st = store.get("pool_stats", {});
+  const rec = `${st["w_" + lvl] || 0} win${st["w_" + lvl] === 1 ? "" : "s"} · ${st["l_" + lvl] || 0} loss${st["l_" + lvl] === 1 ? "" : "es"}`;
+  appScreen("🎱 Pool Hall", `<div class="pl8-wrap"><h2>🎱 Pool Hall</h2>
+    <div class="pl8-bar"><button class="chip${mode === "cpu" ? " on" : ""}" data-pl8mode="cpu">🤖 vs Computer</button><button class="chip${mode === "two" ? " on" : ""}" data-pl8mode="two">👥 2 Players</button>
+      ${mode === "cpu" ? CG_LVLS.map(([k, l]) => `<button class="chip${k === lvl ? " on" : ""}" data-pl8lvl="${k}">${l}</button>`).join("") : ""}<button class="chip" id="pl8-rerack">🔄 Rack again</button></div>
+    <div class="pl8-hud" id="pl8-hud"></div><p class="pl8-msg" id="pl8-msg"></p>
+    <canvas class="pl8-cv" id="pl8-cv" aria-label="Pool table"></canvas>
+    <div class="pl8-ctl"><button class="chip" id="pl8-left" aria-label="Aim a little left">◀</button><label class="pl8-pw">💪<input type="range" id="pl8-power" min="5" max="100" value="60" aria-label="Power"></label><button class="chip" id="pl8-right" aria-label="Aim a little right">▶</button></div>
+    <button class="btn go pl8-shoot" id="pl8-shoot">🎱 Shoot!</button><button class="btn gold pl8-shoot" id="pl8-done" hidden>✔ Done</button><button class="btn go pl8-shoot" id="pl8-again" hidden>🔄 Play again</button>
+    ${mode === "cpu" ? `<p class="soft pl8-rec">Your record on ${esc((CG_LVLS.find(x => x[0] === lvl) || ["", lvl])[1])}: ${rec}</p>` : ""}
+    <details class="sl-card pl8-how"><summary><b>📜 How it works</b></summary><p>Drag on the table to aim: the dotted line shows where the white ball goes, and the yellow line shows where the ball you hit will roll. Pick your power, then tap <b>Shoot</b>. The first ball you sink decides your group: <b>solids (1–7)</b> or <b>stripes (9–15)</b>. Sink all of yours, then sink the <b>8-ball</b> to win. Sink the 8 too early and you lose! If the white ball falls in a pocket (a scratch), or you hit the wrong ball first, the other player gets <b>ball in hand</b> and can put the white ball anywhere.</p></details></div>`);
+  PL8 = { mode, lvl, balls: pl8Rack(), turn: 0, groups: [null, null], phase: "aim", angle: -Math.PI / 2, power: .85, shot: { firstHit: null, pocketed: [] }, msg: "", winner: null, inHand: false, isBreak: true, shots: 0, turbo: false, autoBoth: false, lastGroups: false };
+  const run = ++PL8_RUN, cv = document.getElementById("pl8-cv");
+  $app.querySelectorAll("[data-pl8mode]").forEach(b => b.addEventListener("click", () => { store.set("pool_mode", b.dataset.pl8mode); startPool(); }));
+  $app.querySelectorAll("[data-pl8lvl]").forEach(b => b.addEventListener("click", () => { store.set("pool_lvl", b.dataset.pl8lvl); startPool(); }));
+  document.getElementById("pl8-rerack").addEventListener("click", startPool);
+  document.getElementById("pl8-again").addEventListener("click", startPool);
+  document.getElementById("pl8-shoot").addEventListener("click", () => { if (PL8.phase === "aim") pl8Shoot(PL8.angle, PL8.power); });
+  document.getElementById("pl8-done").addEventListener("click", () => { if (PL8.phase === "place") { PL8.inHand = false; PL8.phase = "aim"; PL8.msg = ""; pl8Hud(); } });
+  document.getElementById("pl8-power").addEventListener("input", e => { PL8.power = +e.target.value / 100; });
+  const nudge = d => { if (PL8.phase === "aim") PL8.angle += d; };
+  document.getElementById("pl8-left").addEventListener("click", () => nudge(-Math.PI / 360));
+  document.getElementById("pl8-right").addEventListener("click", () => nudge(Math.PI / 360));
+  const toTable = e => { const r = cv.getBoundingClientRect(), s = PL8_TW / r.width; return [(e.clientX - r.left) * s - PL8_RAIL, (e.clientY - r.top) * s - PL8_RAIL]; };
+  let dragging = false;
+  const act = e => {
+    const G = PL8, [x, y] = toTable(e), c = pl8Cue();
+    if (G.phase === "aim") { if (Math.hypot(x - c.x, y - c.y) > PL8_R * .5) G.angle = Math.atan2(y - c.y, x - c.x); }
+    else if (G.phase === "place") { const cx = Math.max(PL8_R, Math.min(PL8_W - PL8_R, x)), cy = Math.max(PL8_R, Math.min(PL8_H - PL8_R, y)); if (pl8Free(cx, cy, c)) { c.x = cx; c.y = cy; } }
+  };
+  cv.addEventListener("pointerdown", e => { dragging = true; try { cv.setPointerCapture(e.pointerId); } catch (x) {} act(e); e.preventDefault(); });
+  cv.addEventListener("pointermove", e => { if (dragging) act(e); });
+  cv.addEventListener("pointerup", () => { dragging = false; });
+  cv.addEventListener("pointercancel", () => { dragging = false; });
+  keyHandler = e => {
+    const G = PL8; if (!G || e.target.tagName === "INPUT" && e.target.type !== "range") return;
+    if (G.phase !== "aim") return; const big = e.shiftKey ? 6 : 1;
+    if (e.key === "ArrowLeft") { G.angle -= big * Math.PI / 360; e.preventDefault(); }
+    else if (e.key === "ArrowRight") { G.angle += big * Math.PI / 360; e.preventDefault(); }
+    else if (e.key === "ArrowUp") { G.power = Math.min(1, G.power + .05); pl8Hud(); e.preventDefault(); }
+    else if (e.key === "ArrowDown") { G.power = Math.max(.05, G.power - .05); pl8Hud(); e.preventDefault(); }
+    else if (e.key === " " || e.key === "Enter") { pl8Shoot(G.angle, G.power); e.preventDefault(); }
+  };
+  pl8Hud();
+  let last = performance.now(), acc = 0;
+  const tick = now => {
+    if (run !== PL8_RUN || !cv.isConnected) return;
+    const G = PL8; PL8_FRAMES++;
+    if (G.phase === "moving") {
+      if (G.turbo) { let n = 0; while (!pl8Still(G) && n++ < 400000) pl8Step(G, PL8_DT); }
+      else { acc += Math.min(.05, (now - last) / 1000); while (acc >= PL8_DT && G.phase === "moving") { pl8Step(G, PL8_DT); acc -= PL8_DT; } }
+      if (pl8Still(G)) { acc = 0; pl8EndShot(); }
+    }
+    if (G.phase === "cpu" && now >= G.cpuAt) pl8Shoot(G.plan.angle, G.plan.power);
+    last = now; pl8Draw(); requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+INFO_GAME_APPS.add("pool");   // 🎮 a game: hidden from anyone who can't have games
+HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Pool Hall", "🎱", "pool hall|pool|billiards|8 ball|eight ball|snooker", "Play 8-ball pool against the computer or a friend: aim, pick your power, and sink your balls before the 8.", () => startPool()]);
+NEW_APPS.push({ id: "pool", emoji: "🎱", name: "Pool Hall", desc: "8-ball pool: aim with a guide line, sink solids or stripes, and beat the computer or a friend.", start: () => startPool(), kw: "pool|billiards|8 ball|eight ball|snooker" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
