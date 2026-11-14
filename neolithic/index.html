@@ -1446,6 +1446,30 @@
   .ft-li-t b { overflow-wrap: anywhere; }
   .ft-li-t small { color: var(--ink-soft); }
   .ft-copybox { width: 100%; min-height: 150px; font: inherit; font-size: .85rem; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); padding: 10px; }
+  .tmr-set { display: grid; gap: 10px; }
+  .tmr-name { display: flex; flex-direction: column; gap: 4px; font-weight: 700; }
+  .tmr-name input, .tmr-units input { font: inherit; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); min-width: 0; width: 100%; }
+  .tmr-units { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  @media (min-width: 640px) { .tmr-units { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  .tmr-units label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .tmr-units span { font-size: .8rem; font-weight: 700; color: var(--ink-soft); }
+  .tmr-units input { font-variant-numeric: tabular-nums; text-align: center; font-size: 1.1rem; }
+  .tmr-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tmr-presets .chip { padding: 6px 10px; }
+  .tmr-total { margin: 0; color: var(--ink-soft); overflow-wrap: anywhere; } .tmr-total b { color: var(--ink); } .tmr-total.bad { color: var(--bad); font-weight: 700; }
+  .tmr-list { display: grid; gap: 10px; }
+  .tmr-card { border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; background: var(--panel-2); min-width: 0; }
+  .tmr-card.done { border-color: var(--money); }
+  .tmr-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 10px; }
+  .tmr-top b { font-family: var(--display); font-weight: 400; font-size: 1.2rem; overflow-wrap: anywhere; } .tmr-top small { color: var(--ink-soft); }
+  .tmr-left { font-family: var(--display); font-size: clamp(1.6rem, 8vw, 2.6rem); font-variant-numeric: tabular-nums; line-height: 1.15; margin: 6px 0; overflow-wrap: anywhere; }
+  .tmr-left small { font-size: .55em; color: var(--ink-soft); }
+  .tmr-card.done .tmr-left { color: var(--money); }
+  .tmr-bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; } .tmr-bar i { display: block; height: 100%; background: var(--gold); border-radius: 99px; }
+  .tmr-card.done .tmr-bar i { background: var(--money); }
+  .tmr-status { margin: 8px 0; color: var(--ink-soft); font-size: .9rem; }
+  .tmr-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tmr-btns .btn.bad { background: var(--bad); color: #fff; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -19300,6 +19324,112 @@ function ftLines() {   // draws the lines between parents, partners and children
   svg.innerHTML = s;
 }
 NEW_APPS.push({ id: "family", emoji: "🌳", name: "Family Tree", desc: "Put in your family tree and see how everyone is related to you: parents, grandparents, cousins and more.", start: () => startFamilyTree(), kw: "family tree|family|ancestors|relatives|grandparents|cousins" });
+/* ---------- ⏱️ Timer: set any time from 0 milliseconds up to 20 years. Timers are saved with their end time, so they keep counting when you leave (or close the site) and ring when they're done. */
+const TMR_DAY = 86400000, TMR_MAX_COUNT = 20;
+const tmrAddYears = (base, n) => { const d = new Date(base); d.setFullYear(d.getFullYear() + n); return d.getTime(); };   // real calendar years (leap years count)
+const tmrMax = (base = Date.now()) => tmrAddYears(base, 20) - base;
+const TMR_UNITS = [["y", "Years", 0, 20], ["d", "Days", TMR_DAY, 7305], ["h", "Hours", 3600000, 99999], ["m", "Minutes", 60000, 99999], ["s", "Seconds", 1000, 99999], ["ms", "Milliseconds", 1, 999999]];
+const TMR_PRESETS = [["0 ms", 0], ["1 second", 1000], ["10 seconds", 10000], ["1 minute", 60000], ["5 minutes", 300000], ["15 minutes", 900000], ["1 hour", 3600000], ["1 day", 86400000], ["1 week", 7 * 86400000], ["1 year", "1y"], ["20 years", "20y"]];
+let TMR_GUEST = [], TMR_FORM = { label: "", y: 0, d: 0, h: 0, m: 5, s: 0, ms: 0 }, TMR_WATCH = null, TMR_SURE = null;
+const tmrLoad = () => SITE_WHO === "guest" ? TMR_GUEST : (store.get("tmr_list", []) || []).filter(t => t && typeof t.dur === "number");
+const tmrSave = L => { if (SITE_WHO === "guest") TMR_GUEST = L; else store.set("tmr_list", L); };
+const tmrLeft = t => t.state === "run" ? Math.max(0, t.end - Date.now()) : t.state === "pause" ? t.left : t.state === "done" ? 0 : t.dur;
+function tmrParts(ms, base = Date.now()) {   // whole calendar years first (counted from base), then days, hours, minutes, seconds, milliseconds
+  ms = Math.max(0, Math.round(ms)); const out = { y: 0 }, end = base + ms;
+  while (out.y < 25 && tmrAddYears(base, out.y + 1) <= end) out.y++;
+  ms = end - tmrAddYears(base, out.y);
+  for (const [k, , size] of TMR_UNITS.slice(1)) { out[k] = Math.floor(ms / size); ms -= out[k] * size; }
+  return out;
+}
+function tmrFmt(ms) {
+  const p = tmrParts(ms), z = (n, k = 2) => String(n).padStart(k, "0");
+  return (p.y ? p.y + "y " : "") + (p.y || p.d ? p.d + "d " : "") + `${z(p.h)}:${z(p.m)}:${z(p.s)}<small>.${z(p.ms, 3)}</small>`;
+}
+function tmrWords(ms, base = Date.now()) {
+  if (ms <= 0) return "0 milliseconds";
+  const p = tmrParts(ms, base), names = { y: "year", d: "day", h: "hour", m: "minute", s: "second", ms: "millisecond" };
+  return TMR_UNITS.filter(([k]) => p[k]).map(([k]) => `${p[k].toLocaleString()} ${names[k]}${p[k] === 1 ? "" : "s"}`).join(", ");
+}
+const tmrWhen = ms => new Date(ms).toLocaleString([], { weekday: "short", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit" });
+const tmrFormTotal = (base = Date.now()) => tmrAddYears(base, Math.max(0, Math.floor(+TMR_FORM.y || 0))) - base + TMR_UNITS.slice(1).reduce((s, [k, , size]) => s + Math.max(0, Math.floor(+TMR_FORM[k] || 0)) * size, 0);
+function tmrRing(t) {
+  [0, .3, .6, 1.2, 1.5, 1.8].forEach((w, i) => naNote(i % 3 === 2 ? 1320 : 990, .22, "square", .12, w));
+  toast(`⏰ ${t.label || "Your timer"} is done!`);
+}
+function tmrCheck() {   // marks finished timers as done and rings them, even when the Timer app isn't open
+  if (!SITE_WHO) return;
+  const L = tmrLoad(), now = Date.now(); let changed = false;
+  L.forEach(t => { if (t.state === "run" && t.end <= now) { t.state = "done"; t.doneAt = t.end; changed = true; tmrRing(t); } });
+  if (changed) { tmrSave(L); if (document.getElementById("tmr-list")) tmrList(); }
+}
+function tmrWatchStart() { if (!TMR_WATCH) TMR_WATCH = setInterval(tmrCheck, 250); }
+tmrWatchStart();
+function tmrCardHTML(t) {
+  const left = tmrLeft(t), pct = t.dur ? Math.min(100, 100 - left / t.dur * 100) : 100, sure = TMR_SURE === t.id;
+  const status = t.state === "run" ? `⏰ Rings ${esc(tmrWhen(t.end))}` : t.state === "pause" ? "⏸ Paused" : t.state === "done" ? `✅ Done${t.doneAt ? " at " + esc(tmrWhen(t.doneAt)) : ""}` : "Ready";
+  return `<div class="tmr-card${t.state === "done" ? " done" : ""}" data-tmr="${t.id}">
+    <div class="tmr-top"><b>${esc(t.label || "Timer")}</b><small>${esc(tmrWords(t.dur, t.made || t.end - t.dur))}</small></div>
+    <div class="tmr-left" data-tmr-left="${t.id}">${tmrFmt(left)}</div>
+    <div class="tmr-bar"><i data-tmr-bar="${t.id}" style="width:${pct}%"></i></div>
+    <p class="tmr-status" data-tmr-status="${t.id}">${status}</p>
+    <div class="tmr-btns">
+      ${t.state === "run" ? `<button class="btn" data-tmr-act="pause">⏸ Pause</button>` : t.state === "pause" ? `<button class="btn go" data-tmr-act="resume">▶ Resume</button>` : t.state === "ready" ? `<button class="btn go" data-tmr-act="resume">▶ Start</button>` : ""}
+      <button class="btn" data-tmr-act="restart">🔁 ${t.state === "done" ? "Again" : "Restart"}</button>
+      <button class="btn${sure ? " bad" : ""}" data-tmr-act="remove">${sure ? "Tap again to remove" : "🗑 Remove"}</button>
+    </div></div>`;
+}
+function tmrList() {
+  const box = document.getElementById("tmr-list"); if (!box) return;
+  const L = tmrLoad();
+  box.innerHTML = L.length ? L.map(tmrCardHTML).join("") : `<p class="soft">No timers yet. Pick a time above and press ▶ Start.</p>`;
+  box.querySelectorAll("[data-tmr-act]").forEach(b => b.addEventListener("click", () => {
+    const id = b.closest("[data-tmr]").dataset.tmr, act = b.dataset.tmrAct, L = tmrLoad(), t = L.find(x => x.id === id); if (!t) return;
+    if (act !== "remove") TMR_SURE = null;
+    if (act === "pause") { t.left = Math.max(0, t.end - Date.now()); t.state = "pause"; }
+    else if (act === "resume") { const left = t.state === "pause" ? t.left : t.dur; t.end = Date.now() + left; t.state = "run"; delete t.doneAt; }
+    else if (act === "restart") { t.end = Date.now() + t.dur; t.state = "run"; delete t.doneAt; delete t.left; }
+    else if (act === "remove") { if (TMR_SURE !== id) { TMR_SURE = id; return tmrList(); } TMR_SURE = null; L.splice(L.indexOf(t), 1); }
+    tmrSave(L); tmrList(); tmrCheck();
+  }));
+}
+function tmrTick() {   // updates the numbers on screen many times a second
+  const L = tmrLoad();
+  L.forEach(t => {
+    const el = document.querySelector(`[data-tmr-left="${t.id}"]`); if (!el) return;
+    const left = tmrLeft(t); el.innerHTML = tmrFmt(left);
+    const bar = document.querySelector(`[data-tmr-bar="${t.id}"]`); if (bar) bar.style.width = (t.dur ? Math.min(100, 100 - left / t.dur * 100) : 100) + "%";
+  });
+}
+function startTimer() {
+  TMR_SURE = null;
+  appScreen("⏱️ Timer", `<h2>⏱️ Timer</h2><p class="soft">Set a timer for any amount of time, from 0 milliseconds all the way up to 20 years. Timers keep counting even when you leave, and ring when they're done.</p>
+    <div class="sl-card tmr-set">
+      <label class="tmr-name">Name (optional)<input id="tmr-label" maxlength="30" placeholder="Like: Pizza, Homework, My 30th birthday" value="${esc(TMR_FORM.label)}"></label>
+      <div class="tmr-units">${TMR_UNITS.map(([k, name, , max]) => `<label><span>${name}</span><input type="number" inputmode="numeric" min="0" max="${max}" step="1" data-tmr-unit="${k}" value="${+TMR_FORM[k] || 0}" aria-label="${name}"></label>`).join("")}</div>
+      <div class="tmr-presets">${TMR_PRESETS.map(([n, ms]) => `<button class="chip" data-tmr-preset="${ms}">${n}</button>`).join("")}</div>
+      <p class="tmr-total" id="tmr-total"></p>
+      <div class="row"><button class="btn go" id="tmr-start">▶ Start</button><button class="btn" id="tmr-clear">↺ Clear</button></div>
+    </div>
+    <h3>Your timers</h3><div id="tmr-list" class="tmr-list"></div>`);
+  const total = () => {
+    const ms = tmrFormTotal(), el = document.getElementById("tmr-total"), go = document.getElementById("tmr-start"), full = tmrLoad().length >= TMR_MAX_COUNT;
+    if (ms > tmrMax()) { el.innerHTML = `⚠️ That's more than 20 years! The longest timer is 20 years.`; el.className = "tmr-total bad"; go.disabled = true; }
+    else { el.innerHTML = `⏱️ <b>${esc(tmrWords(ms))}</b>${ms ? ` · rings ${esc(tmrWhen(Date.now() + ms))}` : " · rings right away"}${full ? `<br>You have ${TMR_MAX_COUNT} timers. Remove one to add another.` : ""}`; el.className = "tmr-total"; go.disabled = full; }
+  };
+  const fill = v => { const p = typeof v === "string" ? { y: parseInt(v), d: 0, h: 0, m: 0, s: 0, ms: 0 } : tmrParts(v); TMR_UNITS.forEach(([k]) => { TMR_FORM[k] = p[k]; const i = $app.querySelector(`[data-tmr-unit="${k}"]`); if (i) i.value = p[k]; }); total(); };
+  $app.querySelectorAll("[data-tmr-unit]").forEach(i => i.addEventListener("input", () => { TMR_FORM[i.dataset.tmrUnit] = Math.max(0, Math.floor(+i.value || 0)); total(); }));
+  document.getElementById("tmr-label").addEventListener("input", e => { TMR_FORM.label = e.target.value; });
+  $app.querySelectorAll("[data-tmr-preset]").forEach(b => b.addEventListener("click", () => fill(/y$/.test(b.dataset.tmrPreset) ? b.dataset.tmrPreset : +b.dataset.tmrPreset)));
+  document.getElementById("tmr-clear").addEventListener("click", () => { TMR_FORM.label = ""; document.getElementById("tmr-label").value = ""; fill(0); });
+  document.getElementById("tmr-start").addEventListener("click", () => {
+    const now = Date.now(), ms = tmrFormTotal(now), L = tmrLoad(); if (ms > tmrMax(now) || L.length >= TMR_MAX_COUNT) return total();
+    naAudio();   // unlock sound now, so the ring can play later
+    L.unshift({ id: "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), label: TMR_FORM.label.trim().slice(0, 30), dur: ms, made: now, end: now + ms, state: "run" });
+    tmrSave(L); tmrList(); tmrCheck(); total();
+  });
+  total(); tmrList(); naTimer(setInterval(tmrTick, 41));
+}
+NEW_APPS.push({ id: "timer", emoji: "⏱️", name: "Timer", desc: "Set a timer for any time from 0 milliseconds up to 20 years. It keeps counting when you leave.", start: () => startTimer(), kw: "timer|timers|countdown|count down|alarm|set a timer|egg timer|stopwatch" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
