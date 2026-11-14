@@ -1619,6 +1619,9 @@
   .glb-list { padding-left: 22px; margin: 8px 0; }
   .glb-list li { margin: 4px 0; overflow-wrap: anywhere; }
   @media (max-width: 480px) { .glb-scene { height: 140px; } .glb-things { font-size: 2rem; } .glb-modes { grid-template-columns: 1fr 1fr; } }
+  .tmr-find { display: grid; gap: 6px; margin: 6px 0 10px; } .tmr-find input { font: inherit; padding: 9px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); min-width: 0; width: 100%; }
+  .tmr-ren { display: flex; gap: 6px; flex: 1 1 200px; min-width: 0; } .tmr-ren input { flex: 1; min-width: 0; font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); } .tmr-ren .btn { padding: 6px 12px; font-size: .95rem; }
+  .tmr-more { justify-self: center; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -19858,12 +19861,12 @@ function ftLines() {   // draws the lines between parents, partners and children
 }
 NEW_APPS.push({ id: "family", emoji: "🌳", name: "Family Tree", desc: "Build your family tree with dates, places, photos and stories, see how anyone is related, and share it with family.", start: () => startFamilyTree(), kw: "family tree|family|ancestors|relatives|grandparents|cousins|genealogy|gedcom" });
 /* ---------- ⏱️ Timer: set any time from 0 milliseconds up to 20 years. Timers are saved with their end time, so they keep counting when you leave (or close the site) and ring when they're done. */
-const TMR_DAY = 86400000, TMR_MAX_COUNT = 20;
+const TMR_DAY = 86400000, TMR_MAX_COUNT = 1000, TMR_PAGE = 50;
 const tmrAddYears = (base, n) => { const d = new Date(base); d.setFullYear(d.getFullYear() + n); return d.getTime(); };   // real calendar years (leap years count)
 const tmrMax = (base = Date.now()) => tmrAddYears(base, 20) - base;
 const TMR_UNITS = [["y", "Years", 0, 20], ["d", "Days", TMR_DAY, 7305], ["h", "Hours", 3600000, 99999], ["m", "Minutes", 60000, 99999], ["s", "Seconds", 1000, 99999], ["ms", "Milliseconds", 1, 999999]];
 const TMR_PRESETS = [["0 ms", 0], ["1 second", 1000], ["10 seconds", 10000], ["1 minute", 60000], ["5 minutes", 300000], ["15 minutes", 900000], ["1 hour", 3600000], ["1 day", 86400000], ["1 week", 7 * 86400000], ["1 year", "1y"], ["20 years", "20y"]];
-let TMR_GUEST = [], TMR_FORM = { label: "", y: 0, d: 0, h: 0, m: 5, s: 0, ms: 0 }, TMR_WATCH = null, TMR_SURE = null;
+let TMR_GUEST = [], TMR_FORM = { label: "", y: 0, d: 0, h: 0, m: 5, s: 0, ms: 0 }, TMR_WATCH = null, TMR_SURE = null, TMR_EDIT = null, TMR_FIND = "", TMR_SHOW = "all", TMR_MORE = TMR_PAGE, TMR_VIEW = [];
 const tmrLoad = () => SITE_WHO === "guest" ? TMR_GUEST : (store.get("tmr_list", []) || []).filter(t => t && typeof t.dur === "number");
 const tmrSave = L => { if (SITE_WHO === "guest") TMR_GUEST = L; else store.set("tmr_list", L); };
 const tmrLeft = t => t.state === "run" ? Math.max(0, t.end - Date.now()) : t.state === "pause" ? t.left : t.state === "done" ? 0 : t.dur;
@@ -19901,23 +19904,33 @@ function tmrCardHTML(t) {
   const left = tmrLeft(t), pct = t.dur ? Math.min(100, 100 - left / t.dur * 100) : 100, sure = TMR_SURE === t.id;
   const status = t.state === "run" ? `⏰ Rings ${esc(tmrWhen(t.end))}` : t.state === "pause" ? "⏸ Paused" : t.state === "done" ? `✅ Done${t.doneAt ? " at " + esc(tmrWhen(t.doneAt)) : ""}` : "Ready";
   return `<div class="tmr-card${t.state === "done" ? " done" : ""}" data-tmr="${t.id}">
-    <div class="tmr-top"><b>${esc(t.label || "Timer")}</b><small>${esc(tmrWords(t.dur, t.made || t.end - t.dur))}</small></div>
+    <div class="tmr-top">${TMR_EDIT === t.id ? `<form class="tmr-ren" data-tmr-ren="${t.id}"><input maxlength="30" value="${esc(t.label || "")}" placeholder="Name this timer" aria-label="Timer name"><button class="btn go" type="submit">✔ Save</button></form>` : `<b>${esc(t.label || "Timer")}</b>`}<small>${esc(tmrWords(t.dur, t.made || t.end - t.dur))}</small></div>
     <div class="tmr-left" data-tmr-left="${t.id}">${tmrFmt(left)}</div>
     <div class="tmr-bar"><i data-tmr-bar="${t.id}" style="width:${pct}%"></i></div>
     <p class="tmr-status" data-tmr-status="${t.id}">${status}</p>
     <div class="tmr-btns">
       ${t.state === "run" ? `<button class="btn" data-tmr-act="pause">⏸ Pause</button>` : t.state === "pause" ? `<button class="btn go" data-tmr-act="resume">▶ Resume</button>` : t.state === "ready" ? `<button class="btn go" data-tmr-act="resume">▶ Start</button>` : ""}
       <button class="btn" data-tmr-act="restart">🔁 ${t.state === "done" ? "Again" : "Restart"}</button>
+      <button class="btn" data-tmr-act="rename">✏️ Rename</button>
       <button class="btn${sure ? " bad" : ""}" data-tmr-act="remove">${sure ? "Tap again to remove" : "🗑 Remove"}</button>
     </div></div>`;
 }
+const tmrMatch = t => (TMR_SHOW === "all" || t.state === TMR_SHOW || (TMR_SHOW === "pause" && t.state === "ready")) && (!TMR_FIND || (t.label || "timer").toLowerCase().includes(TMR_FIND) || tmrWords(t.dur, t.made || t.end - t.dur).toLowerCase().includes(TMR_FIND));
 function tmrList() {
   const box = document.getElementById("tmr-list"); if (!box) return;
-  const L = tmrLoad();
-  box.innerHTML = L.length ? L.map(tmrCardHTML).join("") : `<p class="soft">No timers yet. Pick a time above and press ▶ Start.</p>`;
+  const L = tmrLoad(), found = L.filter(tmrMatch); TMR_VIEW = found.slice(0, TMR_MORE);
+  const info = document.getElementById("tmr-count");
+  if (info) info.textContent = L.length ? `${L.length.toLocaleString()} timer${L.length === 1 ? "" : "s"} (you can have up to ${TMR_MAX_COUNT.toLocaleString()})${TMR_FIND || TMR_SHOW !== "all" ? ` · ${found.length.toLocaleString()} match${found.length === 1 ? "es" : ""}`.replace("matches", "match").replace(/ match$/, found.length === 1 ? " match" : " matches") : ""}` : "";
+  box.innerHTML = !L.length ? `<p class="soft">No timers yet. Pick a time above and press ▶ Start.</p>` : !found.length ? `<p class="soft">No timers match that. Try a different word.</p>`
+    : TMR_VIEW.map(tmrCardHTML).join("") + (found.length > TMR_VIEW.length ? `<button class="btn tmr-more" id="tmr-more">⬇️ Show more (${(found.length - TMR_VIEW.length).toLocaleString()} left)</button>` : "");
+  document.getElementById("tmr-more")?.addEventListener("click", () => { TMR_MORE += TMR_PAGE; tmrList(); });
+  box.querySelectorAll("[data-tmr-ren]").forEach(f => { const inp = f.querySelector("input"); inp.focus(); inp.select();
+    f.addEventListener("submit", e => { e.preventDefault(); const L = tmrLoad(), t = L.find(x => x.id === f.dataset.tmrRen); if (t) { t.label = inp.value.trim().slice(0, 30); tmrSave(L); toast("✏️ Renamed!"); } TMR_EDIT = null; tmrList(); });
+    inp.addEventListener("keydown", e => { if (e.key === "Escape") { TMR_EDIT = null; tmrList(); } }); });
   box.querySelectorAll("[data-tmr-act]").forEach(b => b.addEventListener("click", () => {
     const id = b.closest("[data-tmr]").dataset.tmr, act = b.dataset.tmrAct, L = tmrLoad(), t = L.find(x => x.id === id); if (!t) return;
     if (act !== "remove") TMR_SURE = null;
+    if (act === "rename") { TMR_EDIT = id; return tmrList(); }
     if (act === "pause") { t.left = Math.max(0, t.end - Date.now()); t.state = "pause"; }
     else if (act === "resume") { const left = t.state === "pause" ? t.left : t.dur; t.end = Date.now() + left; t.state = "run"; delete t.doneAt; }
     else if (act === "restart") { t.end = Date.now() + t.dur; t.state = "run"; delete t.doneAt; delete t.left; }
@@ -19925,16 +19938,15 @@ function tmrList() {
     tmrSave(L); tmrList(); tmrCheck();
   }));
 }
-function tmrTick() {   // updates the numbers on screen many times a second
-  const L = tmrLoad();
-  L.forEach(t => {
+function tmrTick() {   // updates the numbers on screen many times a second (only the timers being shown)
+  TMR_VIEW.forEach(t => {
     const el = document.querySelector(`[data-tmr-left="${t.id}"]`); if (!el) return;
     const left = tmrLeft(t); el.innerHTML = tmrFmt(left);
     const bar = document.querySelector(`[data-tmr-bar="${t.id}"]`); if (bar) bar.style.width = (t.dur ? Math.min(100, 100 - left / t.dur * 100) : 100) + "%";
   });
 }
 function startTimer() {
-  TMR_SURE = null;
+  TMR_SURE = null; TMR_EDIT = null; TMR_MORE = TMR_PAGE;
   appScreen("⏱️ Timer", `<h2>⏱️ Timer</h2><p class="soft">Set a timer for any amount of time, from 0 milliseconds all the way up to 20 years. Timers keep counting even when you leave, and ring when they're done.</p>
     <div class="sl-card tmr-set">
       <label class="tmr-name">Name (optional)<input id="tmr-label" maxlength="30" placeholder="Like: Pizza, Homework, My 30th birthday" value="${esc(TMR_FORM.label)}"></label>
@@ -19943,11 +19955,15 @@ function startTimer() {
       <p class="tmr-total" id="tmr-total"></p>
       <div class="row"><button class="btn go" id="tmr-start">▶ Start</button><button class="btn" id="tmr-clear">↺ Clear</button></div>
     </div>
-    <h3>Your timers</h3><div id="tmr-list" class="tmr-list"></div>`);
+    <h3>Your timers</h3>
+    <div class="tmr-find"><input id="tmr-find" type="search" placeholder="🔎 Search your timers" aria-label="Search your timers" value="${esc(TMR_FIND)}"><div class="na-chips">${[["all", "All"], ["run", "⏰ Running"], ["pause", "⏸ Paused"], ["done", "✅ Done"]].map(([k, l]) => `<button class="chip${TMR_SHOW === k ? " on" : ""}" data-tmr-show="${k}">${l}</button>`).join("")}</div><small class="soft" id="tmr-count"></small></div>
+    <div id="tmr-list" class="tmr-list"></div>`);
+  document.getElementById("tmr-find").addEventListener("input", e => { TMR_FIND = e.target.value.trim().toLowerCase(); TMR_MORE = TMR_PAGE; tmrList(); });
+  $app.querySelectorAll("[data-tmr-show]").forEach(b => b.addEventListener("click", () => { TMR_SHOW = b.dataset.tmrShow; TMR_MORE = TMR_PAGE; $app.querySelectorAll("[data-tmr-show]").forEach(x => x.classList.toggle("on", x === b)); tmrList(); }));
   const total = () => {
     const ms = tmrFormTotal(), el = document.getElementById("tmr-total"), go = document.getElementById("tmr-start"), full = tmrLoad().length >= TMR_MAX_COUNT;
     if (ms > tmrMax()) { el.innerHTML = `⚠️ That's more than 20 years! The longest timer is 20 years.`; el.className = "tmr-total bad"; go.disabled = true; }
-    else { el.innerHTML = `⏱️ <b>${esc(tmrWords(ms))}</b>${ms ? ` · rings ${esc(tmrWhen(Date.now() + ms))}` : " · rings right away"}${full ? `<br>You have ${TMR_MAX_COUNT} timers. Remove one to add another.` : ""}`; el.className = "tmr-total"; go.disabled = full; }
+    else { el.innerHTML = `⏱️ <b>${esc(tmrWords(ms))}</b>${ms ? ` · rings ${esc(tmrWhen(Date.now() + ms))}` : " · rings right away"}${full ? `<br>You have ${TMR_MAX_COUNT.toLocaleString()} timers. Remove one to add another.` : ""}`; el.className = "tmr-total"; go.disabled = full; }
   };
   const fill = v => { const p = typeof v === "string" ? { y: parseInt(v), d: 0, h: 0, m: 0, s: 0, ms: 0 } : tmrParts(v); TMR_UNITS.forEach(([k]) => { TMR_FORM[k] = p[k]; const i = $app.querySelector(`[data-tmr-unit="${k}"]`); if (i) i.value = p[k]; }); total(); };
   $app.querySelectorAll("[data-tmr-unit]").forEach(i => i.addEventListener("input", () => { TMR_FORM[i.dataset.tmrUnit] = Math.max(0, Math.floor(+i.value || 0)); total(); }));
@@ -19962,7 +19978,7 @@ function startTimer() {
   });
   total(); tmrList(); naTimer(setInterval(tmrTick, 41));
 }
-NEW_APPS.push({ id: "timer", emoji: "⏱️", name: "Timer", desc: "Set a timer for any time from 0 milliseconds up to 20 years. It keeps counting when you leave.", start: () => startTimer(), kw: "timer|timers|countdown|count down|alarm|set a timer|egg timer|stopwatch" });
+NEW_APPS.push({ id: "timer", emoji: "⏱️", name: "Timer", desc: "Set up to 1,000 timers, each from 0 milliseconds up to 20 years. Name them, search them, and they keep counting when you leave.", start: () => startTimer(), kw: "timer|timers|countdown|count down|alarm|set a timer|egg timer|stopwatch" });
 /* ---------- 🎱 Pool Hall: 8-ball pool against the computer or a friend on the same device ---------- */
 const PL8_W = 500, PL8_H = 1000, PL8_R = 11.5, PL8_RAIL = 34, PL8_DT = 1 / 480, PL8_MAXV = 2900;
 const PL8_TW = PL8_W + 2 * PL8_RAIL, PL8_TH = PL8_H + 2 * PL8_RAIL;
