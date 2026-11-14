@@ -1504,6 +1504,7 @@
   .hpz-fav { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
   .hpz-fav p { margin: 0; overflow-wrap: anywhere; } .hpz-emo { font-size: 1.8rem; } .hpz-favbtns { display: flex; gap: 4px; }
   .linklike { background: none; border: 0; padding: 0; color: var(--gold); text-decoration: underline; font: inherit; cursor: pointer; }
+/* 🟩 Color Claim uses the shared game stage (.slope-stage/.mini-stage) and the shared arrow pad (.dpad), so it needs no extra styles. */
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -2937,7 +2938,7 @@ if (!SUBJECTS[choice.subject] && !["g4", "crf"].includes(choice.subject)) choice
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
 
-const moreBest = (id, v) => v == null ? "" : ["connect4", "pong"].includes(id) ? `Wins: ${v}` : id === "memory" ? `Best ${v} moves` : id === "mines" ? `Best ${v}s` : id === "rodeo" ? `Best ${fmt(v)} m` : `Best ${v}`;
+const moreBest = (id, v) => v == null ? "" : ["connect4", "pong"].includes(id) ? `Wins: ${v}` : id === "memory" ? `Best ${v} moves` : id === "mines" ? `Best ${v}s` : id === "rodeo" ? `Best ${fmt(v)} m` : id === "claim" ? `Best ${v}%` : `Best ${v}`;
 function showHome() {
   if (!SITE_WHO) return startWho();   // 👋 first, who are you?
   PROF_GAME = null; PROF_RESTART = null;
@@ -19911,6 +19912,215 @@ function startHappy(tab) {
   });
 }
 NEW_APPS.push({ id: "happy", emoji: "☀️", name: "Happy Phrases", desc: "Cheerful words to start your day, keep going in the middle, and end your day happy.", start: () => startHappy(), kw: "happy phrases?|happy words|good morning|good night|cheer me up|motivation|motivational|encourage(ment)?|positive|affirmations?" });
+/* ---------- 🟩 Color Claim: leave your land to draw a trail, loop back to claim everything inside. Cross a trail to knock its owner out! ---------- */
+const CC_BOTS = [["Rosie", "#ff5d8f"], ["Bolt", "#4da3ff"], ["Mango", "#ffb020"], ["Pixel", "#b06cff"], ["Zigzag", "#00d2c6"]];
+function startColorClaim() {
+  const { cv, stage } = gameShell("Color Claim", "Leave your land to draw a trail, then come back home to claim everything inside the loop!<br>Cross a bot's trail to knock it out, but don't let anyone touch YOUR trail, and never cross your own.<br>Arrow keys or WASD, swipe, or tap the arrows.");
+  const N = 60, W = 480, H = 480, CS = 20, VIEW = W / CS;
+  document.getElementById("m-pad").innerHTML = `<div class="dpad"><button class="btn" data-d="0,-1" aria-label="Up">▲</button><button class="btn" data-d="-1,0" aria-label="Left">◀</button><button class="btn" data-d="1,0" aria-label="Right">▶</button><button class="btn" data-d="0,1" aria-label="Down">▼</button></div>`;
+  M.rs = () => {
+    const w = Math.min(stage.clientWidth, W), h = w * H / W, dpr = window.devicePixelRatio || 1;
+    cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + "px"; cv.style.height = h + "px";
+    M.ctx = cv.getContext("2d"); M.ctx.setTransform(dpr * w / W, 0, 0, dpr * w / W, 0, 0);
+    draw();
+  };
+  window.addEventListener("resize", M.rs);
+  const at = (x, y) => y * N + x, inside = (x, y) => x >= 0 && y >= 0 && x < N && y < N;
+  const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  // ---- controls ----
+  const turn = (dx, dy) => { const me = M.cc && M.cc.P[0]; if (!me || !me.alive || !M.running) return; const last = me.q.at(-1) || [me.dx, me.dy]; if (last[0] === dx && last[1] === dy) return; if (me.trail.length && last[0] === -dx && last[1] === -dy) return; if (me.q.length < 2) me.q.push([dx, dy]); };
+  M.kd = e => {
+    const k = { ArrowUp: [0, -1], w: [0, -1], ArrowDown: [0, 1], s: [0, 1], ArrowLeft: [-1, 0], a: [-1, 0], ArrowRight: [1, 0], d: [1, 0] }[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+    if (k && M.running) { e.preventDefault(); turn(...k); }
+  };
+  window.addEventListener("keydown", M.kd);
+  swipe(cv, d => turn(...{ left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] }[d]));
+  document.querySelectorAll("#m-pad [data-d]").forEach(b => b.addEventListener("pointerdown", e => { e.preventDefault(); turn(...b.dataset.d.split(",").map(Number)); }));
+  // ---- the world ----
+  const home = (p, cx, cy) => { for (let y = cy - 2; y <= cy + 2; y++) for (let x = cx - 2; x <= cx + 2; x++) if (inside(x, y)) { M.cc.own[at(x, y)] = p.id; } };
+  const freeSpot = () => {
+    const { trl, P } = M.cc;
+    for (let tries = 0; tries < 400; tries++) {
+      const x = rnd(4, N - 5), y = rnd(4, N - 5); let ok = true;
+      for (let yy = y - 3; yy <= y + 3 && ok; yy++) for (let xx = x - 3; xx <= x + 3; xx++) if (trl[at(xx, yy)]) { ok = false; break; }
+      if (ok && P.every(q => !q.alive || Math.abs(q.x - x) + Math.abs(q.y - y) > 9)) return [x, y];
+    }
+    return [rnd(4, N - 5), rnd(4, N - 5)];
+  };
+  const spawn = (p, x, y) => {
+    if (x == null) [x, y] = freeSpot();
+    Object.assign(p, { x, y, px: x, py: y, alive: true, trail: [], q: [], acc: 0, plan: null, goHome: false });
+    const d = DIRS[rnd(0, 3)]; p.dx = d[0]; p.dy = d[1]; if (p.id === 1) { p.dx = 0; p.dy = 0; }
+    home(p, x, y);
+  };
+  const clearTrail = p => { p.trail.forEach(i => { if (M.cc.trl[i] === p.id) M.cc.trl[i] = 0; }); p.trail = []; };
+  const knockOut = (p, by) => {
+    if (!p.alive) return;
+    const { own } = M.cc;
+    p.alive = false; clearTrail(p);
+    for (let i = 0; i < own.length; i++) if (own[i] === p.id) own[i] = 0;
+    if (p.id === 1) return lose(by);
+    p.back = M.cc.t + 3;   // bots come back after 3 seconds
+    if (by && by.id === 1) { M.cc.kos++; msg(`💥 You knocked out ${p.name}!`); tone([660, 990], .08, "square", .05); }
+  };
+  // Claim: the trail becomes land, then every square the outside can't reach without crossing this player's land is theirs too.
+  const claim = p => {
+    const { own, trl } = M.cc, id = p.id;
+    p.trail.forEach(i => { own[i] = id; if (trl[i] === id) trl[i] = 0; }); p.trail = [];
+    const seen = new Uint8Array(N * N), q = [];
+    for (let k = 0; k < N; k++) for (const [x, y] of [[k, 0], [k, N - 1], [0, k], [N - 1, k]]) { const i = at(x, y); if (own[i] !== id && !seen[i]) { seen[i] = 1; q.push(i); } }
+    while (q.length) { const i = q.pop(), x = i % N, y = (i / N) | 0; for (const [dx, dy] of DIRS) { const nx = x + dx, ny = y + dy; if (!inside(nx, ny)) continue; const j = at(nx, ny); if (!seen[j] && own[j] !== id) { seen[j] = 1; q.push(j); } } }
+    let got = 0; for (let i = 0; i < own.length; i++) if (!seen[i] && own[i] !== id) { own[i] = id; got++; }
+    if (id === 1) tone([523, 784], .07, "triangle", .05);
+    return got;
+  };
+  // ---- bots ----
+  const nearestHomeStep = p => {   // breadth-first search to the closest square of our own land, never over our own trail
+    const { own, trl } = M.cc, start = at(p.x, p.y), prev = new Int32Array(N * N).fill(-1), q = [start]; prev[start] = start;
+    for (let h = 0; h < q.length; h++) {
+      const i = q[h], x = i % N, y = (i / N) | 0;
+      if (i !== start && own[i] === p.id) { let j = i; while (prev[j] !== start) j = prev[j]; return [(j % N) - p.x, ((j / N) | 0) - p.y]; }
+      for (const [dx, dy] of DIRS) { const nx = x + dx, ny = y + dy; if (!inside(nx, ny)) continue; const j = at(nx, ny); if (prev[j] === -1 && trl[j] !== p.id) { prev[j] = i; q.push(j); } }
+    }
+    return null;
+  };
+  const safe = (p, dx, dy) => { const nx = p.x + dx, ny = p.y + dy; return inside(nx, ny) && M.cc.trl[at(nx, ny)] !== p.id && !(p.trail.length && dx === -p.dx && dy === -p.dy); };
+  const botThink = p => {
+    const { own, P } = M.cc, me = P[0], onLand = own[at(p.x, p.y)] === p.id, hardMode = hard();
+    // 🎯 Hard bots chase your trail when it's close
+    if (hardMode && me.alive && me.trail.length && p.trail.length < 10) {
+      let best = null, bd = 7;
+      for (const i of me.trail) { const d = Math.abs(i % N - p.x) + Math.abs(((i / N) | 0) - p.y); if (d < bd) { bd = d; best = i; } }
+      if (best != null) { const tx = best % N - p.x, ty = ((best / N) | 0) - p.y; const opts = [[Math.sign(tx), 0], [0, Math.sign(ty)]].filter(([dx, dy]) => (dx || dy) && safe(p, dx, dy)); if (opts.length) { [p.dx, p.dy] = opts[0]; return; } }
+    }
+    // 🏃 head home when the trail gets long, when you come close, or when the loop is done
+    const danger = me.alive && p.trail.some(i => Math.abs(i % N - me.x) + Math.abs(((i / N) | 0) - me.y) < 4);
+    if (!onLand && (p.trail.length > (hardMode ? 26 : 18) || danger || p.goHome)) { const s = nearestHomeStep(p); if (s) { [p.dx, p.dy] = s; return; } }
+    if (onLand && !p.trail.length && (!p.plan || p.goHome)) {   // plan a loop: out, sideways, then home
+      const d = DIRS[rnd(0, 3)], side = rnd(0, 1) ? [d[1], -d[0]] : [-d[1], d[0]];
+      p.plan = { legs: [[d, rnd(3, hardMode ? 11 : 8)], [side, rnd(3, hardMode ? 10 : 7)]], leg: 0, n: 0 }; p.goHome = false;
+    }
+    if (p.plan) {
+      const L = p.plan.legs[p.plan.leg];
+      if (L) { [p.dx, p.dy] = L[0]; if (!onLand && ++p.plan.n >= L[1]) { p.plan.leg++; p.plan.n = 0; if (p.plan.leg >= p.plan.legs.length) { p.goHome = true; p.plan = null; } } }
+    }
+    if (!safe(p, p.dx, p.dy)) {   // turn away from walls and our own trail
+      const opts = DIRS.filter(([dx, dy]) => safe(p, dx, dy));
+      if (opts.length) [p.dx, p.dy] = opts[rnd(0, opts.length - 1)];
+      if (onLand) p.plan = null;
+    }
+  };
+  // ---- one move for one player ----
+  const stepPlayer = p => {
+    const { own, trl, P } = M.cc;
+    if (p.id === 1 && p.q.length) { const d = p.q.shift(); if (!(p.trail.length && d[0] === -p.dx && d[1] === -p.dy)) { p.dx = d[0]; p.dy = d[1]; } }
+    if (p.id !== 1) botThink(p);
+    p.px = p.x; p.py = p.y;
+    if (!p.dx && !p.dy) return;
+    const nx = p.x + p.dx, ny = p.y + p.dy;
+    if (!inside(nx, ny)) return;   // the wall stops you
+    const i = at(nx, ny), t = trl[i];
+    p.x = nx; p.y = ny;
+    if (t) { const owner = P[t - 1]; if (owner === p) return knockOut(p, p); knockOut(owner, p); }
+    if (own[i] === p.id) { if (p.trail.length) claim(p); }
+    else if (trl[i] !== p.id) { trl[i] = p.id; p.trail.push(i); }
+  };
+  // ---- messages, score, ending ----
+  const msg = t => { M.cc.msg = t; M.cc.msgT = 2.2; };
+  const counts = () => { const c = new Array(M.cc.P.length + 1).fill(0); for (const v of M.cc.own) if (v) c[v]++; return c; };
+  const pct = n => Math.round(n / (N * N) * 1000) / 10;
+  function lose(by) {
+    const cc = M.cc, best = Math.round(cc.peak);
+    const r = record("claim", best);
+    const why = !by ? "The bots took all your land!" : by.id !== 1 ? `${by.name} crossed your trail!` : "You crossed your own trail!";
+    overScreen("You're out!", best + "%", `${why} Biggest land: ${best}% · ${r.nb ? "Your best ever!" : `Best: ${r.best}%`}`, go);
+  }
+  function win() {
+    const cc = M.cc, best = Math.round(cc.peak), r = record("claim", best);
+    sfx.buy();
+    overScreen("You claimed the map! 🏆", best + "%", `${cc.kos} knockouts · ${r.nb ? "Your best ever!" : `Best: ${r.best}%`}`, go);
+  }
+  // ---- drawing ----
+  function draw() {
+    const c = M.ctx; if (!c) return;
+    c.fillStyle = "#0d0a24"; c.fillRect(0, 0, W, H);
+    const cc = M.cc; if (!cc) return;
+    const me = cc.P[0], f = Math.min(1, me.acc * cc.speed[0]);
+    const mx = me.px + (me.x - me.px) * f, my = me.py + (me.y - me.py) * f;
+    const camX = Math.max(0, Math.min(N - VIEW, mx + .5 - VIEW / 2)), camY = Math.max(0, Math.min(N - VIEW, my + .5 - VIEW / 2));
+    const x0 = Math.floor(camX), y0 = Math.floor(camY), ox = (camX - x0) * CS, oy = (camY - y0) * CS;
+    for (let y = y0; y <= Math.min(N - 1, y0 + VIEW); y++) for (let x = x0; x <= Math.min(N - 1, x0 + VIEW); x++) {
+      const i = at(x, y), sx = (x - x0) * CS - ox, sy = (y - y0) * CS - oy, o = cc.own[i], t = cc.trl[i];
+      c.fillStyle = (x + y) % 2 ? "#15113a" : "#181441"; c.fillRect(sx, sy, CS, CS);
+      if (o) { c.fillStyle = cc.P[o - 1].color; c.globalAlpha = .62; c.fillRect(sx, sy, CS, CS); c.globalAlpha = 1; }
+      if (t) { c.fillStyle = cc.P[t - 1].color; c.globalAlpha = .95; c.fillRect(sx + 4, sy + 4, CS - 8, CS - 8); c.globalAlpha = 1; }
+    }
+    // walls
+    c.strokeStyle = "#ff4d6d"; c.lineWidth = 4; c.strokeRect(-camX * CS, -camY * CS, N * CS, N * CS);
+    // players
+    cc.P.forEach((p, k) => {
+      if (!p.alive) return;
+      const g = Math.min(1, p.acc * cc.speed[k]), rx = (p.px + (p.x - p.px) * g - camX) * CS, ry = (p.py + (p.y - p.py) * g - camY) * CS;
+      if (rx < -CS || ry < -CS || rx > W || ry > H) return;
+      c.fillStyle = "rgba(0,0,0,.35)"; c.fillRect(rx + 2, ry + 3, CS, CS);
+      c.fillStyle = p.color; c.fillRect(rx - 1, ry - 1, CS + 2, CS + 2);
+      c.strokeStyle = "#fff"; c.lineWidth = 2; c.strokeRect(rx - 1, ry - 1, CS + 2, CS + 2);
+      c.fillStyle = "#fff"; c.fillRect(rx + 5, ry + 6, 3, 3); c.fillRect(rx + 12, ry + 6, 3, 3);   // little eyes
+      c.font = "bold 12px system-ui, sans-serif"; c.textAlign = "center"; c.fillStyle = "#fff"; c.fillText(p.name, rx + CS / 2, ry - 6); c.textAlign = "left";
+    });
+    // minimap
+    const mm = 72, mk = mm / N, mxp = W - mm - 8, myp = H - mm - 8;
+    c.fillStyle = "rgba(0,0,0,.55)"; c.fillRect(mxp - 2, myp - 2, mm + 4, mm + 4);
+    for (let y = 0; y < N; y += 2) for (let x = 0; x < N; x += 2) { const o = cc.own[at(x, y)]; if (o) { c.fillStyle = cc.P[o - 1].color; c.fillRect(mxp + x * mk, myp + y * mk, mk * 2, mk * 2); } }
+    c.strokeStyle = "#fff"; c.lineWidth = 1; c.strokeRect(mxp + camX * mk, myp + camY * mk, VIEW * mk, VIEW * mk);
+    // scoreboard
+    const cnt = counts(), rows = cc.P.map((p, k) => [p, cnt[k + 1]]).filter(([p]) => p.alive).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    c.fillStyle = "rgba(0,0,0,.5)"; c.fillRect(W - 150, 6, 144, 18 + rows.length * 17);
+    c.font = "bold 12px system-ui, sans-serif"; c.fillStyle = "#ffc93c"; c.fillText("🏆 Most land", W - 142, 20);
+    rows.forEach(([p, n], k) => { c.fillStyle = p.color; c.fillRect(W - 142, 27 + k * 17, 10, 10); c.fillStyle = "#fff"; c.font = (p.id === 1 ? "bold " : "") + "12px system-ui, sans-serif"; c.fillText(`${p.name} ${pct(n)}%`, W - 126, 36 + k * 17); });
+    c.fillStyle = "rgba(0,0,0,.5)"; c.fillRect(6, 6, 150, 26);
+    c.font = "bold 15px system-ui, sans-serif"; c.fillStyle = "#fff"; c.fillText(`🟩 You: ${pct(cnt[1])}%  🎯 ${cc.goal}%`, 12, 24);
+    if (cc.msgT > 0) { c.font = "bold 16px system-ui, sans-serif"; c.textAlign = "center"; c.fillStyle = "rgba(0,0,0,.6)"; c.fillRect(W / 2 - 150, H - 120, 300, 28); c.fillStyle = "#fff"; c.fillText(cc.msg, W / 2, H - 100); c.textAlign = "left"; }
+    if (M.running && !me.dx && !me.dy) { c.font = "bold 16px system-ui, sans-serif"; c.textAlign = "center"; c.fillStyle = "#fff"; c.fillText("Pick a direction to start moving!", W / 2, H / 2 + 50); c.textAlign = "left"; }
+  }
+  // ---- the loop ----
+  function tick(dt) {
+    const cc = M.cc; cc.t += dt; if (cc.msgT > 0) cc.msgT -= dt;
+    cc.P.forEach((p, k) => {
+      if (!M || !M.running) return;
+      if (!p.alive) { if (k && cc.t >= p.back) spawn(p); return; }
+      p.acc += dt;
+      const per = 1 / cc.speed[k];
+      while (p.acc >= per && p.alive && M && M.running) { p.acc -= per; stepPlayer(p); }
+    });
+    if (!M || !M.running) return;
+    const cnt = counts();
+    cc.P.forEach((p, k) => { if (p.alive && !cnt[k + 1] && k) knockOut(p, null); });
+    if (!cnt[1] && cc.P[0].alive) return knockOut(cc.P[0], null);
+    const mine = pct(cnt[1]); cc.peak = Math.max(cc.peak, mine);
+    document.getElementById("m-score").textContent = `${mine}% · Best ${store.get("best", {})[bestKey("claim")] ?? 0}%`;
+    if (mine >= cc.goal) win();
+  }
+  function go() {
+    const nb = hard() ? 5 : 3;
+    M.cc = { own: new Int8Array(N * N), trl: new Int8Array(N * N), P: [], t: 0, peak: 0, kos: 0, msg: "", msgT: 0, goal: hard() ? 50 : 40, speed: [] };
+    const me = { id: 1, name: "You", color: "#2ee86b" };
+    M.cc.P.push(me); M.cc.speed.push(8);
+    CC_BOTS.slice(0, nb).forEach(([name, color], k) => { M.cc.P.push({ id: k + 2, name, color }); M.cc.speed.push(hard() ? 7.5 : 6); });
+    spawn(me, N >> 1, N >> 1);
+    M.cc.P.slice(1).forEach(p => spawn(p));
+    M.running = true; document.getElementById("m-over").hidden = true;
+    msg("Leave your land, then loop back home!");
+    M.last = performance.now(); cancelAnimationFrame(M.raf);
+    const loop = t => { if (!M || !M.running) return; const dt = Math.min(.05, PAUSED ? 0 : (t - M.last) / 1000); M.last = t; tick(dt); if (!M) return; draw(); if (M.running) M.raf = requestAnimationFrame(loop); };
+    M.raf = requestAnimationFrame(loop);
+  }
+  M.ccTick = dt => tick(dt);   // lets tests move time forward
+  M.cc = null; M.rs();
+  document.getElementById("m-go").addEventListener("click", go);
+}
+MORE_GAMES.push({ id: "claim", name: "Color Claim", desc: "Draw loops to claim land, cut off the bots' trails, and paint the map your color!", start: () => startColorClaim() });
+HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Color Claim", "🟩", "color claim|colour claim|territory game|claim land|land grab|paper io|paperio|paper\\.io", "Draw loops to claim land, cut off the bots' trails, and paint the map your color.", () => startColorClaim()]);
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
@@ -21385,7 +21595,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // 🚨 Emergency button: only in the games under the 3 dots. One tap stops the game and jumps straight into a round of Root Archery.
 const emergBtn = document.getElementById("emerg");
-const MENU_GAME_RX = /^(🐰 |🏀 )?(Bunny Hop|Dig It Up|Cash Race|Slope City|Drawing Studio|Ragdoll Archers|Neon Snake|Sky Stack|2048|Memory Match|Minesweeper|Brick Breaker|Sky Hopper|Galaxy Defender|Whack-a-Mole|Connect Four|Simon Says|Pong|Rodeo Stampede|Hippo Hoops)\b/;
+const MENU_GAME_RX = /^(🐰 |🏀 )?(Bunny Hop|Dig It Up|Cash Race|Slope City|Drawing Studio|Ragdoll Archers|Neon Snake|Sky Stack|2048|Memory Match|Minesweeper|Brick Breaker|Sky Hopper|Galaxy Defender|Whack-a-Mole|Connect Four|Simon Says|Pong|Rodeo Stampede|Hippo Hoops|Color Claim)\b/;
 let IN_MENU_GAME = false;   // set when a game is opened from a games menu (Cash Race and Dig It Up play screens have no title)
 document.addEventListener("click", e => { if (e.target.closest?.(".gm-item, [data-more]")) IN_MENU_GAME = true; }, true);
 function emergencyGrammar() {
