@@ -2795,7 +2795,7 @@ const WHO_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵
 /* ---------- 🎮 Who can play games: never Stephanie or Shawn, and nobody older than 25. Everyone is asked their age once (it counts up each year).
    For everyone else, games simply don't show up anywhere, and if a game screen opens some other way it goes straight back to the home screen. ---------- */
 const NO_GAMES_IDS = new Set(["stephenie", "shawn"]);
-// 👤 the Guest account is for visitors: it can't have a code, its name stays "Guest", and its age is asked every time someone picks it
+// 👤 the Guest account is for visitors: its age is asked every time someone picks it (and never saved), and a guest can't enter any information: no name, no code, no About me
 let GUEST_AGE = null;
 const whoAge = id => { if (id === "guest") return GUEST_AGE; const a = (store.get("who_age", {}) || {})[id]; return a && a.age >= 0 ? a.age + Math.floor((Date.now() - (a.at || Date.now())) / 31557600000) : null; };
 const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) <= 25);
@@ -2823,7 +2823,7 @@ function askAge(p) {   // 🎂 asked once per person
 }
 // 👤 each person's profile: a new name, a few words about themselves, and a secret code (saved on every device that syncs)
 const whoHash = (id, code) => aaHash("ctc-code:" + id + ":" + String(code).trim().toLowerCase()).toString(36);
-const whoAbout = id => String((store.get("who_about", {}) || {})[id] || "");
+const whoAbout = id => id === "guest" ? "" : String((store.get("who_about", {}) || {})[id] || "");
 const whoHasCode = id => id !== "guest" && !!(store.get("who_code", {}) || {})[id];
 const whoSecretOK = () => SITE_WHO === "emmett" && whoHasCode("emmett");   // MR.E sees the secret once his own profile is locked
 const whoAva = id => { if (id === "guest") return "👤"; const i = sitePeople().findIndex(p => p.id === id); return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
@@ -2848,8 +2848,8 @@ function startProfile() {
   $app.innerHTML = `<div class="panel prof-page">
     <div class="topline"><span class="label">👤 My profile</span><button class="iconbtn" id="pf-back" type="button">Back to menu</button></div>
     <div class="pf-head"><span class="who-ava" aria-hidden="true">${whoAva(id)}</span><div><h2>${esc(SITE_NAME)}${has ? " 🔒" : ""}</h2><p class="soft">${id === "guest" ? "The account for visitors." : `Only ${esc(SITE_NAME)} can change this page.`}${whoAge(id) !== null ? ` · 🎂 Age ${whoAge(id)}` : ""}</p></div></div>
-    ${id === "guest" ? `<div class="pf-sec pf-guest"><h3>👤 Guest account</h3><p>This account is for visitors. <b>Guests can't make a code</b>, and the name stays “Guest” because lots of different people use it.</p><p class="soft">Want your own name and a code? Tap <b>🔄 Switch person</b> and add your name on the <b>Who are you?</b> screen.</p></div>` : `<form class="pf-sec" id="pf-name"><h3>✏️ My name</h3><div class="pf-row"><input id="pf-namein" maxlength="30" value="${esc(SITE_NAME)}" aria-label="Your name" autocomplete="off"><button class="btn go" type="submit">Save</button></div></form>`}
-    <form class="pf-sec" id="pf-about"><h3>💬 About me</h3><textarea id="pf-aboutin" maxlength="200" rows="3" placeholder="Say something about yourself! Like your favorite animal, color or food." aria-label="About me">${esc(whoAbout(id))}</textarea><p class="soft pf-note">Everyone who picks a name can see this. Never write private things like your address, phone number or passwords.</p><div class="pf-row"><button class="btn go" type="submit">Save</button></div></form>
+    ${id === "guest" ? `<div class="pf-sec pf-guest"><h3>👤 Guest account</h3><p>This account is for visitors. <b>Guests can't enter any information</b>: no name, no code and no “About me”. Your age is asked every time you pick Guest, and it's never saved.</p><p class="soft">Want your own name, a code and an About me? Tap <b>🔄 Switch person</b> and add your name on the <b>Who are you?</b> screen.</p></div>` : `<form class="pf-sec" id="pf-name"><h3>✏️ My name</h3><div class="pf-row"><input id="pf-namein" maxlength="30" value="${esc(SITE_NAME)}" aria-label="Your name" autocomplete="off"><button class="btn go" type="submit">Save</button></div></form>`}
+    ${id === "guest" ? "" : `<form class="pf-sec" id="pf-about"><h3>💬 About me</h3><textarea id="pf-aboutin" maxlength="200" rows="3" placeholder="Say something about yourself! Like your favorite animal, color or food." aria-label="About me">${esc(whoAbout(id))}</textarea><p class="soft pf-note">Everyone who picks a name can see this. Never write private things like your address, phone number or passwords.</p><div class="pf-row"><button class="btn go" type="submit">Save</button></div></form>`}
     ${id === "guest" ? "" : `<form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>`}
@@ -2864,8 +2864,8 @@ function startProfile() {
     store.set("who_names", { ...(store.get("who_names", {}) || {}), [id]: n }); applyNames(); tySyncCustom(); SITE_NAME = n;
     toast(`✏️ Your name is now ${n}!`); startProfile();
   });
-  document.getElementById("pf-about").addEventListener("submit", e => {
-    e.preventDefault(); const t = document.getElementById("pf-aboutin").value.replace(/\s+/g, " ").trim().slice(0, 200);
+  document.getElementById("pf-about")?.addEventListener("submit", e => {
+    e.preventDefault(); if (id === "guest") return; const t = document.getElementById("pf-aboutin").value.replace(/\s+/g, " ").trim().slice(0, 200);
     store.set("who_about", { ...(store.get("who_about", {}) || {}), [id]: t }); toast(t ? "💬 Saved!" : "💬 About me cleared.");
   });
   document.getElementById("pf-code")?.addEventListener("submit", e => {
@@ -2890,7 +2890,8 @@ function sitePeople() {
 }
 function pickWho(id) {
   const p = id === "guest" ? { id: "guest", name: "Guest" } : sitePeople().find(x => x.id === id); if (!p) return;
-  if (whoAge(id) === null) return askAge(p);   // 🎂 first time: how old are you?
+  if (whoAge(id) === null) return askAge(p);   // 🎂 first time: how old are you? (a guest is asked every time)
+  if (id === "guest") { const ab = { ...(store.get("who_about", {}) || {}) }, nm = { ...(store.get("who_names", {}) || {}) }, cd = { ...(store.get("who_code", {}) || {}) }; if ("guest" in ab) { delete ab.guest; store.set("who_about", ab); } if ("guest" in nm) { delete nm.guest; store.set("who_names", nm); } if ("guest" in cd) { delete cd.guest; store.set("who_code", cd); } }
   if (id !== "guest" && !profBuilt().some(x => x.id === id) && !profExtra("site").some(x => x.id === id)) store.set("prof_site", [...profExtra("site"), p].slice(0, PROF_MAX));   // everyone picked here is on every list
   SITE_WHO = p.id; SITE_NAME = p.name; BG_PICK = store.get("bg_" + p.id, null); tySyncCustom();
   showHome(); window.scrollTo({ top: 0 });
