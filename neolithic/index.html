@@ -1667,6 +1667,17 @@
   .lb-list li.me { border-color: var(--money); box-shadow: 0 0 0 2px var(--money) inset; }
   .lb-rank { font-weight: 800; font-size: 1.15rem; text-align: center; } .lb-ava { font-size: 1.5rem; line-height: 1; } .lb-list b { overflow-wrap: anywhere; } .lb-val { font-weight: 700; color: var(--gold); text-align: right; font-size: .9rem; }
   .lb-empty { text-align: center; font-size: 1.05rem; padding: 12px 0; } .lb-mine { margin: 10px 0 2px; }
+  .who-report { text-align: center; margin: 14px 0 0; }
+  .rp-lab { display: grid; gap: 4px; font-weight: 700; margin: 8px 0; } .rp-lab select, .rp-lab textarea { font: inherit; font-weight: 400; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); }
+  .rp-what { display: grid; gap: 6px; margin: 6px 0; } .rp-what label { display: flex; gap: 8px; align-items: center; }
+  .rp-preview { padding: 8px 10px; border-radius: 10px; background: var(--panel-2); overflow-wrap: anywhere; } .rp-pic { font-size: 1.6rem; vertical-align: middle; }
+  .rp-count { display: inline-block; min-width: 1.4em; padding: 0 6px; border-radius: 99px; background: var(--bad); color: #fff; font-size: .85rem; text-align: center; }
+  .pf-lock { border: 2px solid var(--gold); } .pf-muted { opacity: .65; } .pf-mutenote { color: var(--gold); font-weight: 700; margin: 6px 0 0; }
+  .pf-mod h4 { margin: 14px 0 6px; } .mod-rep { border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; margin: 6px 0; background: var(--panel-2); } .mod-rep p { margin: 4px 0; overflow-wrap: anywhere; }
+  .mod-quote { font-style: italic; } .mod-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; } .chip.bad { border-color: var(--bad); color: var(--bad); }
+  .mod-ppl { display: grid; gap: 6px; } .mod-p { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; }
+  .mod-p small { display: block; color: var(--ink-soft); overflow-wrap: anywhere; } .mod-p .mod-btns { grid-column: 1 / -1; margin: 0; }
+  .mod-editf { display: grid; gap: 8px; margin: 12px 0; padding: 10px; border: 2px solid var(--gold); border-radius: 12px; } .mod-editf input, .mod-editf textarea { font: inherit; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -2932,7 +2943,7 @@ const store = {
   }
 };
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -3288,9 +3299,19 @@ function startProfile() {
     ${id === "guest" ? "" : `<form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>`}
-    ${id === "emmett" ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
+    ${id === "emmett" ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. To change anything on their account, you'll have to type your own code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
   </div>`;
   document.getElementById("pf-back").addEventListener("click", showHome);
+  { const lockedBySecret = WHO_BY_SECRET === id && id !== "emmett", head = $app.querySelector(".pf-head");
+    if (lockedBySecret) {   // 🔐 someone else's account, opened with the secret taps: nothing can change until MR.E types his code
+      $app.querySelectorAll(".pf-sec").forEach(s => s.inert = true);
+      head?.insertAdjacentHTML("afterend", `<form class="pf-sec pf-lock" id="pf-lock"><h3>🔐 This is ${esc(SITE_NAME)}'s account</h3><p class="soft">To change anything here, MR.E has to type his code.</p><div class="pf-row"><input id="pf-lockin" type="password" maxlength="12" placeholder="MR.E's code" aria-label="MR.E's code" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn go" type="submit">🔓 Unlock</button></div><p class="su-msg" id="pf-lockmsg"></p></form>`);
+      document.getElementById("pf-lock").addEventListener("submit", e => { e.preventDefault(); if (!modCodeOK(document.getElementById("pf-lockin").value)) { document.getElementById("pf-lockmsg").textContent = whoHasCode("emmett") ? "That's not MR.E's code." : "MR.E needs a code on his own profile first."; return; } document.getElementById("pf-lock").remove(); $app.querySelectorAll(".pf-sec").forEach(s => s.inert = false); toast("🔓 Unlocked until you leave this page."); });
+    } else if (whoMuted(id)) {   // 🔇 MR.E turned off writing for this person
+      ["pf-name", "pf-about"].forEach(f => { const el = document.getElementById(f); if (el) { el.inert = true; el.classList.add("pf-muted"); el.insertAdjacentHTML("beforeend", `<p class="pf-mutenote">🔇 MR.E turned off writing for you, so you can't change this right now.</p>`); } });
+    }
+    if (id === "emmett" && !lockedBySecret) { $app.querySelector(".prof-page").insertAdjacentHTML("beforeend", `<div class="pf-sec pf-mod" id="pf-mod"></div>`); modPanel(document.getElementById("pf-mod")); }
+  }
   document.getElementById("pf-name")?.addEventListener("submit", e => {
     e.preventDefault(); const n = document.getElementById("pf-namein").value.replace(/\s+/g, " ").trim().slice(0, 30);
     if (!n) return toast("Type a name first.");
@@ -3324,7 +3345,8 @@ function sitePeople() {
   profExtra("site").forEach(add);
   const keys = new Set(Object.keys(MEM)); try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith("ctc-prof_")) keys.add(k.slice(4)); } } catch (e) {}
   [...keys].filter(k => /^prof_(?!cur_|site$)[^@]+$/.test(k)).forEach(k => profExtra(k.slice(5)).forEach(add));
-  return out.slice(0, PROF_MAX);
+  const hid = whoHiddenSet();   // people MR.E deleted
+  return out.filter(p => !hid.has(p.id)).slice(0, PROF_MAX);
 }
 function pickWho(id) {
   const p = id === "guest" ? { id: "guest", name: "Guest" } : sitePeople().find(x => x.id === id); if (!p) return;
@@ -3438,8 +3460,93 @@ function startSignup(name = "") {
   };
   show();
 }
+/* ---------- 🚩 Reports: anyone can report something someone wrote, their name, their picture or their art. Reports go to MR.E,
+   who can clear it, change it, stop someone from writing, or delete them, but only after typing his code again (no shortcuts). */
+let WHO_BY_SECRET = null;   // set when MR.E opens someone's profile with the secret triple tap: their account stays locked until he types his code
+const whoMuted = id => !!(store.get("who_mute", {}) || {})[id];
+const whoHiddenSet = () => new Set(store.get("who_hidden", []) || []);
+const modCodeOK = code => whoHasCode("emmett") && (store.get("who_code", {}) || {}).emmett === whoHash("emmett", String(code || ""));
+const RP_WHAT = { about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery" };
+function reportSend(r) {
+  const L = store.get("who_reports", []) || [];
+  L.unshift({ id: "r" + Date.now().toString(36) + rnd(100, 999), at: Date.now(), by: SITE_WHO || "", ...r });
+  store.set("who_reports", L.slice(0, 300));
+  toast("🚩 Sent to MR.E. Thank you for telling!");
+}
+function reportSheet(preset) {   // preset: { on, what, text, art } skips the choosing (used by the Art Gallery)
+  document.getElementById("rp-sheet")?.remove();
+  const ppl = sitePeople().filter(p => p.id !== SITE_WHO);
+  const box = document.createElement("div"); box.id = "rp-sheet"; box.className = "bgsheet";
+  box.innerHTML = `<div class="bgsheet-box rp-box" role="dialog" aria-label="Report something"><div class="prof-head"><b class="subj-title">🚩 Report something</b><button class="iconbtn" id="rp-x" type="button">✕ Close</button></div>
+    <p class="soft">If someone wrote, named or made something mean, unkind or not okay, tell MR.E. He'll look at it.</p>
+    ${preset ? `<p><b>${esc(RP_WHAT[preset.what] || "")}</b> by <b>${esc(galName(preset.on))}</b>${preset.text ? `: “${esc(preset.text)}”` : ""}</p>`
+      : `<label class="rp-lab">Who?<select id="rp-who">${ppl.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("")}</select></label>
+         <div class="rp-what">${["about", "name", "pic"].map((k, i) => `<label><input type="radio" name="rp-what" value="${k}"${i === 0 ? " checked" : ""}> ${RP_WHAT[k]}</label>`).join("")}</div>
+         <p class="rp-preview" id="rp-preview"></p>`}
+    <label class="rp-lab">What's wrong? (you don't have to say)<textarea id="rp-note" maxlength="150" rows="2" placeholder="Like: it's mean, or it's a bad word"></textarea></label>
+    <div class="row"><button class="btn go" id="rp-send" type="button">🚩 Send to MR.E</button></div></div>`;
+  const pick = () => { if (preset) return preset; const on = box.querySelector("#rp-who").value, what = box.querySelector('[name="rp-what"]:checked').value; const p = sitePeople().find(x => x.id === on) || { name: on }; return { on, what, text: what === "about" ? whoAbout(on) : what === "name" ? p.name : "" }; };
+  const prev = () => { const el = box.querySelector("#rp-preview"); if (!el) return; const r = pick(); el.innerHTML = r.what === "pic" ? `Their picture: <span class="rp-pic">${whoAvaHTML(r.on)}</span>` : r.text ? `“${esc(r.text)}”` : `<span class="soft">They haven't written anything there.</span>`; };
+  box.querySelectorAll("#rp-who, [name='rp-what']").forEach(x => x.addEventListener("change", prev)); prev();
+  box.querySelector("#rp-x").addEventListener("click", () => box.remove());
+  box.addEventListener("click", e => { if (e.target === box) box.remove(); });
+  box.querySelector("#rp-send").addEventListener("click", () => { const r = pick(); if (!r.on) return; reportSend({ ...r, note: box.querySelector("#rp-note").value.trim().slice(0, 150) }); box.remove(); });
+  document.body.appendChild(box);
+}
+// 🛡️ MR.E's moderation panel (inside his profile). It opens only after he types his code, and closes when he leaves the page.
+function modPanel(box) {
+  if (!box) return;
+  const n = (store.get("who_reports", []) || []).length;
+  if (!whoHasCode("emmett")) { box.innerHTML = `<h3>🚩 Reports${n ? ` (${n})` : ""}</h3><p class="soft">Add a code to your profile first. Then you'll type it here every time you look after reports or change someone's account.</p>`; return; }
+  box.innerHTML = `<h3>🚩 Reports and people${n ? ` <span class="rp-count">${n}</span>` : ""}</h3><p class="soft">To see reports or change anyone's account, type your code again. (No shortcuts!)</p>
+    <form class="pf-row" id="mod-unlock"><input id="mod-code" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn go" type="submit">🔓 Open</button></form><p class="su-msg" id="mod-msg"></p>`;
+  box.querySelector("#mod-unlock").addEventListener("submit", e => { e.preventDefault(); if (!modCodeOK(box.querySelector("#mod-code").value)) { box.querySelector("#mod-msg").textContent = "That's not your code. Try again."; return; } modOpen(box); });
+}
+function modOpen(box) {
+  const reps = store.get("who_reports", []) || [], hidden = whoHiddenSet(), mute = store.get("who_mute", {}) || {};
+  const all = profBuilt().concat(profExtra("site")).filter((p, i, a) => a.findIndex(x => x.id === p.id) === i);
+  const ppl = sitePeople().filter(p => p.id !== "emmett"), gone = all.filter(p => hidden.has(p.id));
+  const nm = id => galName(id) || "someone", when = t => new Date(t).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  box.innerHTML = `<h3>🛡️ Reports and people <small class="soft">(open until you leave this page)</small></h3>
+    <h4>🚩 Reports (${reps.length})</h4>
+    ${reps.length ? reps.map(r => `<div class="mod-rep" data-rep="${r.id}"><p><b>${esc(r.by ? nm(r.by) : "Someone")}</b> reported <b>${esc(nm(r.on))}</b> · ${esc(RP_WHAT[r.what] || r.what)} · <small>${when(r.at)}</small></p>
+      ${r.text ? `<p class="mod-quote">“${esc(r.text)}”</p>` : ""}${r.what === "pic" ? `<p>Picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="soft">Why: ${esc(r.note)}</p>` : ""}
+      <div class="mod-btns">${r.what === "about" ? `<button class="chip" data-act="clearabout" data-on="${r.on}">🧹 Clear what they wrote</button><button class="chip" data-act="editabout" data-on="${r.on}">✏️ Change it</button>` : ""}
+        ${r.what === "name" ? `<button class="chip" data-act="editname" data-on="${r.on}">✏️ Change their name</button>` : ""}${r.what === "pic" ? `<button class="chip" data-act="clearpic" data-on="${r.on}">🧹 Remove the picture</button>` : ""}
+        ${r.what === "art" && r.art ? `<button class="chip" data-act="delart" data-art="${r.art}">🗑 Delete the art</button>` : ""}
+        <button class="chip" data-act="${mute[r.on] ? "unmute" : "mute"}" data-on="${r.on}">${mute[r.on] ? "🔊 Let them write again" : "🔇 Stop them from writing"}</button>
+        ${r.on !== "emmett" ? `<button class="chip bad" data-act="del" data-on="${r.on}">🚫 Delete this person</button>` : ""}<button class="chip" data-act="done" data-rep="${r.id}">✅ Done</button></div></div>`).join("") : `<p class="soft">No reports. 🎉</p>`}
+    <h4>👥 Everyone</h4>
+    <div class="mod-ppl">${ppl.map(p => `<div class="mod-p"><span class="rp-pic">${whoAvaHTML(p.id)}</span><div><b>${esc(p.name)}</b>${mute[p.id] ? " 🔇" : ""}<small>${esc(whoAbout(p.id) || "(nothing written)")}</small></div>
+      <div class="mod-btns"><button class="chip" data-act="editname" data-on="${p.id}">✏️ Name</button><button class="chip" data-act="editabout" data-on="${p.id}">✏️ About</button><button class="chip" data-act="${mute[p.id] ? "unmute" : "mute"}" data-on="${p.id}">${mute[p.id] ? "🔊" : "🔇"}</button><button class="chip bad" data-act="del" data-on="${p.id}">🚫</button></div></div>`).join("")}</div>
+    ${gone.length ? `<h4>🗑 Deleted people</h4><div class="mod-btns">${gone.map(p => `<button class="chip" data-act="undel" data-on="${p.id}">↩️ Bring back ${esc(p.name)}</button>`).join("")}</div>` : ""}
+    <div id="mod-edit"></div>`;
+  const again = () => modOpen(box);
+  box.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", async () => {
+    const act = b.dataset.act, on = b.dataset.on;
+    if (act === "done") { store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.id !== b.dataset.rep)); toast("✅ Report done."); return again(); }
+    if (act === "clearabout") { const m = { ...(store.get("who_about", {}) || {}) }; delete m[on]; store.set("who_about", m); toast(`🧹 Cleared what ${nm(on)} wrote.`); return again(); }
+    if (act === "clearpic") { whoPicSet(on, ""); toast(`🧹 Removed ${nm(on)}'s picture.`); return again(); }
+    if (act === "mute" || act === "unmute") { const m = { ...(store.get("who_mute", {}) || {}) }; if (act === "mute") m[on] = true; else delete m[on]; store.set("who_mute", m); toast(act === "mute" ? `🔇 ${nm(on)} can't change their name or write about themselves now.` : `🔊 ${nm(on)} can write again.`); return again(); }
+    if (act === "delart") { await galDelete([b.dataset.art]).catch(() => {}); store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.art !== b.dataset.art)); toast("🗑 Art deleted."); return again(); }
+    if (act === "del") { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Tap again to delete ${nm(on)}`; return; }
+      const h2 = whoHiddenSet(); h2.add(on); store.set("who_hidden", [...h2]); ["who_about", "who_pic", "who_code"].forEach(k => { const m = { ...(store.get(k, {}) || {}) }; delete m[k === "who_pic" ? on : on]; store.set(k, m); });
+      store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.on !== on)); toast(`🚫 ${nm(on)} was deleted.`); return again(); }
+    if (act === "undel") { const h2 = whoHiddenSet(); h2.delete(on); store.set("who_hidden", [...h2]); toast(`↩️ ${nm(on)} is back.`); return again(); }
+    if (act === "editabout" || act === "editname") {
+      const ed = box.querySelector("#mod-edit"), isName = act === "editname", cur = isName ? nm(on) : whoAbout(on);
+      ed.innerHTML = `<form class="mod-editf"><b>✏️ ${isName ? "Change the name of" : "Change what this person wrote:"} ${esc(nm(on))}</b>${isName ? `<input maxlength="30" value="${esc(cur)}">` : `<textarea maxlength="200" rows="3">${esc(cur)}</textarea>`}<div class="row"><button class="btn go" type="submit">💾 Save</button><button class="btn" type="button" data-x>Cancel</button></div></form>`;
+      const f = ed.querySelector("form"), inp = f.querySelector("input, textarea"); inp.focus(); ed.scrollIntoView({ block: "center" });
+      f.querySelector("[data-x]").addEventListener("click", () => { ed.innerHTML = ""; });
+      f.addEventListener("submit", e => { e.preventDefault(); const v = inp.value.replace(/\s+/g, " ").trim().slice(0, isName ? 30 : 200);
+        if (isName) { if (!v) return toast("Type a name."); if (sitePeople().some(p => p.id !== on && p.name.toLowerCase() === v.toLowerCase())) return toast(`Someone is already named ${v}.`); store.set("who_names", { ...(store.get("who_names", {}) || {}), [on]: v }); applyNames(); tySyncCustom(); toast(`✏️ Their name is now ${v}.`); }
+        else { const m = { ...(store.get("who_about", {}) || {}) }; if (v) m[on] = v; else delete m[on]; store.set("who_about", m); toast("✏️ Changed."); }
+        again(); });
+    }
+  }));
+}
 function startWho() {
-  PROF_GAME = null; PROF_RESTART = null; keyHandler = null; GUEST_AGE = null;
+  PROF_GAME = null; PROF_RESTART = null; keyHandler = null; GUEST_AGE = null; WHO_BY_SECRET = null;
   const L = sitePeople();
   $app.innerHTML = `<div class="panel who-screen" id="who-screen">
     <span class="label">👋 Who are you?</span>
@@ -3451,12 +3558,14 @@ function startWho() {
     <p class="soft who-none" id="who-none" hidden>Nobody has that name yet. Are you someone new? Type your name in the blue box.</p>
     <div class="who-grid">${L.map(p => { const ab = whoAbout(p.id); return `<button class="who-btn" type="button" data-site-who="${esc(p.id)}" data-who-name="${esc(p.name.toLowerCase())}"><span class="who-ava" aria-hidden="true">${whoAvaHTML(p.id)}</span><b>${esc(p.name)}${whoHasCode(p.id) ? " 🔒" : ""}</b>${ab ? `<small class="who-about">${esc(ab.length > 60 ? ab.slice(0, 58) + "…" : ab)}</small>` : ""}</button>`; }).join("")}</div>
     <div class="who-code" id="who-code" hidden></div>
+    <p class="who-report"><button class="linklike" id="who-rp" type="button">🚩 Report something someone wrote</button></p>
   </div>`;
+  document.getElementById("who-rp").addEventListener("click", () => reportSheet());
   let taps = 0, tapId = null, tapT = null;   // one tap waits a moment, so three quick taps can be told apart
   $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => {
     const id = b.dataset.siteWho; if (id !== tapId) { taps = 0; tapId = id; }
     taps++; clearTimeout(tapT);
-    if (taps >= 3) { taps = 0; tapId = null; return pickWho(id); }   // 🤫 three quick taps open any profile, even one with a code (only MR.E is told)
+    if (taps >= 3) { taps = 0; tapId = null; WHO_BY_SECRET = id; return pickWho(id); }   // their account stays locked until MR.E types his code   // 🤫 three quick taps open any profile, even one with a code (only MR.E is told)
     tapT = setTimeout(() => { taps = 0; tapId = null; if (!document.getElementById("who-screen")) return; whoHasCode(id) ? askCode(id) : pickWho(id); }, 400);
   }));
   document.getElementById("who-add")?.addEventListener("submit", e => {
@@ -11217,7 +11326,7 @@ function galView(list, i, after) {
         : `<div class="gal-stars" role="group" aria-label="Your rating"><span>Your stars:</span>${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= myStars ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}">★</button>`).join("")}<small id="gv-avg">${galStarsTxt(m)}</small></div>`}
       <div class="row gal-vrow"><button class="btn" id="gv-prev" type="button" aria-label="Previous">◀</button><button class="btn" id="gv-next" type="button" aria-label="Next">▶</button>
         ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Keep painting</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
-          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>`}</div>
+          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button><button class="btn" id="gv-report" type="button">🚩 Report</button>`}</div>
     </div>${mine && m.from ? `<div class="gal-taken">📥 Taken from ${esc(galName(m.from))}</div>` : ""}`;
     const $v = id => box.querySelector("#gv-" + id);
     $v("x").addEventListener("click", close); $v("prev").addEventListener("click", () => show(i - 1)); $v("next").addEventListener("click", () => show(i + 1));
@@ -11244,6 +11353,7 @@ function galView(list, i, after) {
         box.querySelectorAll("[data-star]").forEach(x => x.classList.toggle("on", +x.dataset.star <= n)); box.querySelector("#gv-avg").textContent = galStarsTxt(m);
         tone([523, 659, 784].slice(0, Math.min(3, n)), .06, "triangle", .05); toast(`⭐ You gave it ${n} star${n === 1 ? "" : "s"}!`); after && after();
       }));
+      $v("report")?.addEventListener("click", () => reportSheet({ on: m.who, what: "art", text: m.name, art: m.id }));
       $v("take").addEventListener("click", async () => { const b = $v("take"); b.disabled = true; if (await galTake(m)) b.textContent = "📥 Taken!"; else b.disabled = false; });
     }
     const blob = await galBlob(m.id).catch(() => null), media = $v("media"); if (!media || list[i] !== m) return;
