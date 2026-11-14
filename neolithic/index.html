@@ -1571,6 +1571,54 @@
   .px-thumb2 { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; min-width: 0; }
   .px-thumb2 img { width: 100%; aspect-ratio: 1; object-fit: contain; image-rendering: pixelated; border-radius: 6px; background: #fff; }
   .px-thumb2 small { font-size: .72rem; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* 🌐 Globe Detective */
+  .glb-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .glb-head h2 { margin: 6px 0; }
+  .glb-total { font-family: var(--display); color: var(--gold); background: var(--panel-2); border: 2px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .glb-modes { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .glb-mode span { font-size: .8rem; }
+  .glb-meta { margin: 4px 0 8px; }
+  .glb-scene { position: relative; height: 150px; border-radius: 16px; overflow: hidden; border: 2px solid var(--line); }
+  .glb-sea-band { position: absolute; left: 0; right: 0; top: 52%; height: 10%; background: linear-gradient(#2f9fd8, #57b8e6); }
+  .glb-things { position: absolute; left: 0; right: 0; bottom: 37%; display: flex; justify-content: space-around; align-items: flex-end; font-size: 2.4rem; line-height: 1; pointer-events: none; }
+  .glb-things span { transform: translateY(calc(var(--i) * 6px)); filter: drop-shadow(0 3px 2px rgba(0,0,0,.25)); }
+  .glb-sign { position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); max-width: calc(100% - 20px); background: #fdf6e3; color: #3b2a12; border: 3px solid #8a5a2b; border-radius: 8px; padding: 2px 10px; box-shadow: 0 3px 0 rgba(0,0,0,.3); text-align: center; overflow-wrap: anywhere; }
+  .glb-sign b { font-size: .95rem; }
+  .glb-clues { display: grid; gap: 8px; margin: 10px 0 4px; }
+  .glb-clue { display: flex; gap: 10px; align-items: flex-start; background: var(--panel-2); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+  .glb-clue i { font-style: normal; font-size: 1.5rem; line-height: 1.2; }
+  .glb-clue small { color: var(--ink-soft); font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+  .glb-clue p { margin: 2px 0 0; }
+  .glb-clue > div { min-width: 0; }
+  .glb-fresh { border-color: var(--gold); animation: glbPop .35s ease-out; }
+  @keyframes glbPop { from { transform: scale(.96); opacity: .4; } to { transform: none; opacity: 1; } }
+  .glb-row { gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+  .glb-row[hidden] { display: none; }
+  .glb-mapbox { width: 100%; max-height: 62vh; overflow: auto; border-radius: 14px; border: 2px solid var(--line); background: #10305a; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  .glb-map { display: block; width: 100%; height: auto; cursor: crosshair; touch-action: manipulation; }
+  .glb-sea { fill: #17457a; }
+  .glb-grid line { stroke: rgba(255,255,255,.10); stroke-width: .3; }
+  .glb-eq { stroke: rgba(255,201,60,.35); stroke-width: .35; stroke-dasharray: 2 1.5; }
+  .glb-landg polygon { fill: #5fbf72; stroke: #2f7d46; stroke-width: .3; stroke-linejoin: round; }
+  .glb-lakes polygon { fill: #17457a; stroke: #2f7d46; stroke-width: .2; }
+  .glb-pin circle { fill: var(--bad); stroke: #fff; }
+  .glb-pin .glb-pin-dot { fill: #fff; stroke: none; }
+  .glb-real circle { fill: var(--gold); stroke: #1a1240; }
+  .glb-real text { fill: #1a1240; font-weight: 700; }
+  .glb-line { stroke: #fff; }
+  .glb-zoom { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 10px 0 6px; }
+  .glb-zoom > span { color: var(--ink-soft); font-weight: 700; font-size: .85rem; margin-right: 2px; }
+  .glb-zoom .chip { padding: 4px 10px; border-width: 2px; font-size: .85rem; flex-direction: row; color: var(--ink); }
+  .glb-zoom .chip.on { background: var(--gold); color: #1a1240; border-color: var(--gold); }
+  .glb-tip { margin: 6px 0; font-size: .9rem; }
+  .glb-result h3, .glb-final h3 { margin-top: 0; }
+  .glb-place { font-size: 1.15rem; margin: 4px 0; }
+  .glb-pts { font-family: var(--display); font-size: 1.6rem; color: var(--money); margin: 6px 0; }
+  .glb-big { font-family: var(--display); font-size: 2.4rem; color: var(--gold); margin: 6px 0; }
+  .glb-big small { font-size: 1rem; color: var(--ink-soft); }
+  .glb-list { padding-left: 22px; margin: 8px 0; }
+  .glb-list li { margin: 4px 0; overflow-wrap: anywhere; }
+  @media (max-width: 480px) { .glb-scene { height: 140px; } .glb-things { font-size: 2rem; } .glb-modes { grid-template-columns: 1fr 1fr; } }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -20701,6 +20749,306 @@ function startBlockBurst() {
 }
 MORE_GAMES.push({ id: "blocks", name: "Block Burst Puzzle", desc: "Drop blocks on the board and fill rows and columns to burst them. Chain bursts for combos!", start: () => startBlockBurst() });
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Block Burst Puzzle", "🧱", "block burst puzzle|block burst|block puzzle|blocks? game|block blast|blockblast", "Drop blocks on an 8×8 board and fill rows and columns to burst them.", () => startBlockBurst()]);
+/* ---------- 🌐 Globe Detective: you're dropped somewhere on Earth. Read the clues, drop a pin on the world map, and see how close you got. 5 rounds, up to 25,000 points. ---------- */
+/*NO_VOCAB*/
+// Simplified land outlines as "lon lat lon lat ..." (equirectangular: x = longitude, y = -latitude)
+const GLB_LAND = [
+  // North America
+  "-168 65.6 -166 68.9 -156.8 71.3 -148 70.3 -141 69.7 -133 69.5 -125 70 -115 68.7 -108 68.3 -98 67.8 -94 68.9 -90 68.6 -85 69.8 -86.5 64 -90.5 63.5 -94.5 60.5 -93.2 58.8 -88.5 56.8 -85 55.2 -82.3 55.1 -80.5 51.6 -79 54.5 -77 58.5 -78 62.3 -73.5 62.2 -70 61 -69.5 58.8 -65.5 60.3 -64 59.6 -61.5 56.5 -57.5 54.2 -55.7 52.2 -59.5 50.4 -66.5 50.2 -69.5 48.3 -71 47 -66.5 49.1 -64.3 48.9 -64.8 47.8 -64.5 46.2 -61 45.7 -60 46.2 -63.5 44.5 -65.8 43.5 -67 44.8 -70.2 43.6 -70.6 42.6 -70 41.7 -71.5 41.4 -74 40.6 -74.2 39.5 -75 38.8 -76 37.2 -75.5 35.2 -77 34.6 -78.5 33.8 -81.1 32 -81.4 30.4 -80.6 28.4 -80.1 26.5 -80.4 25.2 -81.2 25.4 -81.8 26.2 -82.7 27.8 -83.6 29.8 -84.5 30 -86 30.4 -88 30.4 -89.3 29 -90.5 29.3 -93.8 29.7 -95.5 29 -97.3 27.6 -97.4 25.9 -97.8 22.5 -97.2 20.5 -96 19.2 -94.6 18.2 -92 18.6 -90.4 19.6 -90.3 21 -87.1 21.5 -87.5 19 -88.3 16.5 -88.9 15.9 -86 15.9 -83.3 15 -83.6 12.5 -83.7 11 -82.2 9.3 -79.6 9.6 -77.4 8.7 -77.9 7.2 -78.9 8.4 -79.5 9 -80.4 7.4 -82.3 8.2 -83.6 8.4 -85.9 9.9 -87.6 13.1 -89.8 13.5 -91.9 14.4 -94.5 16.1 -96.4 15.7 -99.9 16.8 -102.2 17.9 -105.5 20.5 -105.3 21.5 -106.4 23.2 -108.9 25.6 -110.9 27.9 -112.8 30.2 -114.7 31.6 -113.2 29.2 -112.2 27.5 -110.5 24.2 -109.9 22.9 -112 24.7 -114.5 27.6 -115.8 30.4 -117.1 32.5 -118.4 34 -120.6 34.6 -121.9 36.6 -122.5 37.8 -123.8 39.8 -124.4 40.4 -124.1 42.5 -124 46.2 -124.7 48.4 -123 49 -125.5 50.5 -127.5 51 -128 52.5 -130.3 54.3 -131 55.5 -133.5 57.2 -136 58.2 -139.5 59.5 -143 60 -146.5 60.8 -151.8 59.3 -153.5 58.5 -156.5 56.9 -161 55.5 -164.5 54.6 -161.5 56 -158 57.5 -157.2 58.8 -161.8 58.7 -162.2 59.9 -165.3 60.6 -165 62.5 -164.6 63.1 -161 63.5 -161 64.5 -163.8 64.6 -166.2 64.6",
+  // Arctic islands of Canada, and Greenland
+  "-80 73.7 -76 72.6 -71 71 -68 70.4 -66.5 68.2 -62 66.6 -63.4 65 -65.4 62.5 -68 63.3 -71.5 63.3 -77.5 64.5 -73 65.5 -74 67.5 -79 69.5 -86 70.1 -89.7 71.7 -85 73.3",
+  "-119 71.6 -117.5 73.2 -112 73.6 -105 73.1 -101 72 -101.5 70.2 -104.5 68.6 -110 68.5 -114.5 69.2 -117.5 69.9",
+  "-80 76.3 -76 78.8 -72.5 79.5 -66 80.5 -61 82.3 -70 83 -85 82.5 -92 81 -95.5 79.5 -90 77.5 -84 76.4",
+  "-84.5 65.6 -81.5 64.3 -83.5 62.8 -87.2 63.6 -86.5 65.2",
+  "-73 78.5 -66 81 -55 82.3 -35 83.5 -20 82.5 -12 81.5 -18 77 -19 72 -22 70.2 -26 68.5 -32 68 -38 65.6 -42 61.5 -44 60 -48 61 -51.5 64.2 -54 67 -53.5 70 -56 73 -59 75.8 -66 76.2",
+  // Caribbean
+  "-84.9 21.9 -82.4 23.1 -80 23.1 -77.3 21.7 -75.6 21 -74.1 20.2 -77.5 19.9 -78.5 21.5 -81.6 22.1 -84 21.9",
+  "-74.4 18.4 -72.8 19.9 -69.9 19.7 -68.3 18.6 -70 18.2 -71.7 17.6",
+  "-78.3 18.4 -76.3 18.4 -76.2 17.9 -77.2 17.7 -78.3 18.2",
+  // South America
+  "-77.4 8.7 -76 9.5 -75.5 10.5 -73 11.3 -71.6 12.4 -71.1 11 -68.5 10.6 -66 10.6 -62.5 10.7 -61 10 -60.8 8.5 -58 6.8 -55 6 -52 5 -51 4.2 -50 1.8 -50 0 -48.5 -1.2 -44.3 -2.5 -41.5 -2.9 -38.5 -3.7 -35.2 -5.6 -34.9 -8 -35.7 -9.6 -38.5 -13 -39 -17.6 -40.3 -20.3 -41.9 -22.9 -43.2 -23 -46.3 -24 -48.5 -26 -48.6 -28.5 -50.5 -31 -52.4 -33.5 -54.9 -34.9 -56.3 -34.9 -58.4 -34.6 -57.3 -36.3 -57.5 -38.2 -62 -39 -62.2 -40.7 -65 -41 -63.6 -42.6 -65.3 -44 -67.5 -46.5 -65.8 -47.8 -69 -50.5 -68.4 -52.4 -69 -54 -66.5 -55 -68.3 -55.6 -67.3 -55.9 -71 -55 -74.5 -52.8 -75.5 -48 -74 -44 -73.6 -41.8 -73.6 -37.2 -71.6 -33 -71.5 -29.9 -70.6 -23.6 -70.3 -18.4 -71.5 -17.2 -76.2 -14 -77 -12 -79 -8.1 -81.2 -6 -81.3 -4.3 -80 -2.2 -80.9 -1 -80 0.8 -78.9 1.6 -77.5 4 -77.4 7 -77.9 7.2",
+  // Europe and Asia
+  "-8.9 37 -9.5 38.8 -8.9 40.2 -8.7 41.6 -9.3 43 -8.2 43.7 -5.8 43.6 -3.8 43.5 -1.8 43.4 -1.2 44.7 -1.2 46.2 -2.5 47.3 -4.8 48.4 -3 48.8 -1.6 48.7 -1.9 49.7 -1.2 49.4 0.2 49.5 1.6 50.9 2.5 51.1 3.6 51.5 4.5 52.5 4.8 53 6.8 53.4 8.6 53.9 8.6 55.4 8.1 56.6 8.6 57.1 10.6 57.7 10.5 56.6 10.9 56.4 9.9 55.3 10.2 54.5 11 54 12.5 54.4 14.2 53.9 16.5 54.5 18.7 54.6 19.6 54.4 21.2 55.2 21 56.5 21.6 57.4 22.6 57.7 24.1 57 24.4 58.3 23.5 58.9 24.7 59.5 26.5 59.6 28 59.5 30.2 59.9 28.8 60.5 27 60.5 25 60.2 23 59.8 21.4 60.6 21.5 61.6 21.2 63 23 64 24.6 64.9 25.4 65.3 24.2 65.8 22.2 65.6 21.3 64.9 20.8 64 19.4 63.5 18 62.6 17.3 61.8 17.2 60.7 18.6 60.1 18.9 59.4 18.1 59.3 17 58.5 16.6 57.9 16.4 56.6 15.8 56.1 14.5 56 14.2 55.4 12.9 55.4 12.9 55.9 12.4 56.5 11.9 57.7 11.3 58.5 11.1 59.1 10.7 59.9 10.2 59 9.5 58.9 8 58.1 6.6 58.1 5.6 58.7 5.2 59.6 5 60.6 5 61.6 5.6 62.3 7 62.8 8.6 63.4 10.5 64.3 12 65.5 13.4 66.7 14.8 67.8 16.1 68.6 18 69.5 19.8 70 22 70.4 23.9 70.8 25.8 71.1 28.5 70.9 31.1 70.3 33.1 69.4 36.5 69.1 41 67.8 39.5 66.1 35.5 66.4 33 66.7 34.8 64.5 37.5 63.9 40.5 64.6 41.5 65.8 43.8 66.3 44.2 68.4 46.5 67.8 53.5 68.5 58 68.8 60.5 69.8 64.5 69.5 66.5 69 67.5 70.8 69.5 73.4 73 71 72.5 67.5 75 68.5 74.5 72.5 80.5 73.5 86.5 74.6 95 76 104.3 77.7 107 76.8 113.5 75.7 112 73.7 118.5 73.4 124.5 73.8 128.9 72.9 131.5 71.3 139.8 72.4 146 72.3 152.5 70.8 159.7 70.8 166 69.8 170.5 70.1 176 69.6 180 68.9 180 65 178.6 64.5 177.5 62.6 173.5 61.7 170.3 60 166.5 59.9 163.5 59.8 163.2 57.8 162.7 56.2 160 54 158.6 52.9 156.7 50.9 155.6 52.5 155.8 55 156.8 57.8 159 61 160.4 61.8 158 61.9 155 59.3 151.3 59.4 148 59.3 143.2 59.3 140.7 58 137.5 54.5 135.3 54.2 139 54 141.4 53.2 140.5 51 140.2 48.5 138.5 46.6 135.8 44 133 42.8 131.9 43.1 130.7 42.3 129.8 41 128.4 38.6 129.4 36 129.1 35.1 127.6 34.7 126.3 34.4 126.5 35.9 126.6 37.4 125.2 37.8 124.6 38.5 125.1 39.6 124.4 39.9 122.3 40.5 121.1 38.8 121.3 40.9 119.7 39.9 117.9 38.9 118.7 37.6 119.4 37.2 120.7 37.8 122.5 37.4 120.4 36.1 119.3 35 120.9 32.4 121.9 31 121.9 29.9 121.4 28.2 119.6 25.6 118.1 24.5 116.5 23 114.2 22.3 112 21.7 110.5 21.3 110.2 20.3 109.7 21.5 108.3 21.6 106.8 20.6 105.8 19 106.5 17.6 108.3 15.9 109.3 13.5 109.1 11.6 107.2 10.4 106.2 9.6 104.8 8.6 104.9 10.3 103.6 10.6 102.4 12.2 100.9 12.7 100.5 13.5 99.9 12.5 99.2 10.3 100.3 8.3 101.2 7 102.2 6.2 103.4 4.6 103.4 3.4 104.2 1.4 103.5 1.3 102 2.3 100.7 3.9 100.3 5.4 99.6 6.6 98.3 8.1 98.6 10.2 98.5 12.8 97.7 16.3 96.9 16.5 94.3 16 94.5 17.6 93.8 19.5 92.3 21 91.8 22.5 90.6 22 89 21.7 87 21.4 86.3 19.9 84.9 19.3 82.3 16.6 80.2 15 80.3 13.1 79.8 11.3 79.3 10.3 78.2 8.9 77.5 8.1 76.4 9.6 75.3 11.8 74.7 13.5 73.5 16 72.8 19 72.8 20.5 72.5 21.6 71.5 20.8 69.3 22.3 70 22.9 68.4 23.6 67 24.8 66.6 25.4 64 25.3 61.6 25.2 58.7 25.6 57.3 25.9 56.6 27.1 55.7 26.7 54.5 26.6 52.5 27.4 51.3 28.2 50.4 29.8 49 30.3 48 29.9 48.4 28.3 49.7 26.9 50.2 25.9 50.8 24.8 51.6 24.2 53 24.1 54.6 24.4 55.9 25.6 56.3 26.2 56.4 24.8 57.8 23.8 58.6 23.6 59.8 22.5 58.8 20.5 57.8 19 56.6 18 55.2 17.2 52.2 15.7 49 14.2 46.5 13.4 45 12.8 43.4 12.7 42.7 15.4 42.5 16.8 40.8 19.6 39.1 21.6 38.4 23.6 37.2 25 36.4 26.4 35.2 28.1 35 29.5 34.5 31.5 34.9 32.8 35.5 33.9 35.9 35.2 36.2 36.6 34.6 36.8 32.8 36.1 30.6 36.8 29.1 36.6 27.4 37.1 26.4 38.3 26.9 39.3 26.2 40 27.5 40.4 29 41.1 31.4 41.1 33.4 42 35.2 42 36.9 41.3 38.4 40.9 41.5 41.5 41.6 42.6 39.8 43.5 38.1 44.4 37.3 45.2 36.6 45.4 35.4 45.1 33.6 44.5 32.5 45.4 33.6 46.1 31.6 46.6 30.7 46.4 29.7 45.2 28.7 44.2 27.9 43.2 27.7 42.4 28.1 41.6 29 41.2 26.6 40.6 25 40.9 23.7 40.7 22.9 40.6 23.4 39.6 22.9 38.9 24 38.2 23.2 37.6 23 36.5 22.4 36.5 21.7 36.9 21.3 37.6 21.1 38.3 20.7 38.9 20.1 39.5 19.4 40.4 19.5 41.2 19.4 42 18.5 42.4 17.5 43 16.4 43.5 15.2 44.2 14.3 45.2 13.6 45.6 12.3 45.3 12.4 44.3 13.6 43.5 14.7 42.1 16.1 41.9 17.9 40.6 18.5 40.1 17.2 39.4 16.6 38.4 15.7 37.9 16.1 38.9 15.6 40.1 14.3 40.8 13 41.3 12.2 41.8 11.1 42.4 10.5 43 10.2 43.9 8.9 44.4 7.5 43.8 6.2 43.1 4.9 43.4 3.2 43.2 3.2 42 2.2 41.4 0.9 41 -0.3 39.5 0.2 38.7 -0.7 37.6 -2.1 36.8 -4.4 36.7 -5.6 36 -6.4 36.8 -7.4 37.2",
+  "-180 68.9 -175.5 67.7 -171.8 66.9 -169.7 66.1 -171 65.4 -172.5 64.4 -175 64.8 -178.5 65.5 -180 65",
+  // Islands of Europe and the Arctic
+  "-5.7 50.1 -3.5 50.3 -1 50.7 1.4 51.2 1.7 52.6 0.3 53.3 -0.1 54.1 -1.6 55.6 -2.1 57.1 -1.8 57.6 -3.1 58.6 -5 58.6 -5.8 57.5 -5.6 56.3 -4.9 55.7 -5.1 54.8 -3.4 54.9 -3.2 54 -3 53.4 -4.6 53.3 -4.2 52.6 -5.2 51.9 -3.2 51.4 -4.2 51.2 -5 50.6",
+  "-6 55.2 -5.5 54.5 -6 53.3 -6.4 52.2 -8.5 51.6 -10.3 51.8 -9.5 53.2 -10 53.4 -10 54.2 -8.5 54.4 -8.2 55.2 -7 55.3",
+  "-22.7 63.8 -21 63.8 -18 63.4 -15 64.2 -13.5 65.1 -14.5 66.3 -16 66.5 -18 66.2 -20 66.1 -22.5 66.4 -24.3 65.6 -22.5 65 -24 64.8 -22 64.4",
+  "11 78.5 16 80 27 80 22 78 17 76.5",
+  "52 71.5 56 74.5 62 76.5 69 77 60 75 54 72.5 55 70.6",
+  "8.6 41 9.6 42.8 9.4 41.4 9.6 39.2 8.4 39 8.2 40.8",
+  "12.4 38.1 15.6 38.3 15.1 36.7 12.4 37.8",
+  "23.5 35.5 26.3 35.3 25 34.9 23.5 35.2",
+  // Africa and islands
+  "-5.8 35.8 -2 35.1 1 36.5 3 36.8 8 36.9 10.3 37.2 11 37 10.2 36 11.1 35.2 10 33.8 11.5 33.1 13.2 32.9 15.3 32.3 19 30.3 20.1 32.1 22 32.9 25 31.7 29.9 31.2 32.3 31.3 34.2 31.3 34.9 29.5 34.2 27.8 32.6 29.9 33.8 27.2 35.5 23.9 37.2 21 37.2 19.6 38.5 18 39.5 15.6 41.7 13.5 43.3 11.8 43.1 11.6 44.5 10.4 45 10.4 51.3 11.8 51 10.4 49.5 6.5 47.6 4 45.3 2 42.5 -0.5 41.5 -1.7 39.6 -4 39.3 -6.8 40.4 -10.5 40.6 -15 37 -17.9 34.8 -19.8 35.5 -24 32.6 -25.9 32.4 -28.6 31 -29.9 28 -32.7 25.6 -33.9 22 -34.2 20 -34.8 18.5 -34.3 18.4 -33.9 17.9 -31.5 16.5 -28.6 15.2 -26.6 14.5 -22.9 11.8 -17.3 12.5 -13.5 13.2 -8.8 12.2 -6 11.8 -4.8 9.3 -1 9.5 2.5 9.7 4 8.5 4.5 6 4.3 5 5.8 3.4 6.4 1.2 6.1 -1.9 4.7 -4 5.2 -7.5 4.4 -10.8 6.5 -13.2 8.5 -15 11 -17.5 14.7 -16.5 16.5 -16.1 19.8 -17 21 -15.9 23.7 -13 27.5 -9.6 30.4 -9.8 31.5 -7.6 33.6 -6.8 34 -6 35.5",
+  "49.3 -12 50.4 -15.5 49.5 -17.5 48.6 -20 47 -25.1 45.2 -25.6 43.6 -23.4 44.3 -20 44.4 -16.5 46.3 -15.7 47.8 -14 48.8 -12.6",
+  // Islands of Asia
+  "79.9 9.8 81.9 7.5 81.6 6.4 80.6 5.9 79.8 6.9 79.8 8.2",
+  "121.5 25.3 121.9 24.6 120.9 22 120.1 23 120.6 24.5",
+  "108.6 19.2 110.5 20.1 111 19.6 109.6 18.2 108.7 18.5",
+  "141.7 45.4 143.5 44.1 145.3 44.3 145.6 43.3 143.2 41.9 140.7 41.7 139.9 42.6 141.5 43.6",
+  "140.9 41.5 141.5 40.5 142 39.5 141 38.3 140.9 36.9 140.8 35.7 139.8 35 139.1 35.2 138.8 34.6 137 34.6 136.8 34.3 135.8 33.5 135.1 34.3 135.4 34.6 134 34.7 132.5 34.3 130.9 34 131.4 34.4 132.8 35.5 134.5 35.6 136 35.9 136.8 37.3 137.3 36.8 139 37.9 139.9 39.9 140 40.8 140.5 41.2",
+  "130.9 33.9 131.7 33.2 131.4 31.5 130.7 31 130.2 31.4 129.8 32.7 130 33.6",
+  "132.6 33.9 134.7 34.2 134.2 33.3 133 32.7 132.4 33.4",
+  "142 46 143.5 46.5 143 49.5 144 49 142.8 54.3 142.2 53.6 141.7 51 142 47.5",
+  "120.6 18.5 122.3 18.5 122.2 16 121.6 14.2 124.2 13 123.7 12.6 122 13.8 120.6 13.8 120.4 16",
+  "122 11.8 124.5 12.5 125.7 11 124 9.6 122.3 9.6",
+  "122 7 123.6 8.6 125.6 9.8 126.6 7.3 125.4 5.6 124 6.5",
+  "95.3 5.6 97.5 5.2 100.4 2.2 103.8 -1 106 -3 105.9 -5.8 104.5 -5.8 102.3 -4 100.3 -0.9 98.7 1.7 96 3.5",
+  "105.2 -6.8 106.8 -6.1 108.5 -6.4 110.4 -6.9 112.7 -7.2 114.4 -7.8 114.6 -8.7 111 -8.2 108 -7.8 105.4 -6.9",
+  "109 1.5 111.4 2.6 113 3.2 115.5 5 116.9 7 119.3 5.3 118 4.4 117.9 1.9 118.9 1 116.9 -1.3 116.4 -3.8 114.6 -4 110.3 -3 110.1 -1.2 109 0.3",
+  "120.7 1.3 124.8 1.5 121.5 0.4 123.3 -0.9 121.3 -1.5 123.2 -4.6 121.5 -4.8 120.5 -2.7 120.4 -5.5 119.5 -5.5 119 -3.5 119.7 -0.5",
+  "114.5 -8.2 119 -8.3 123 -8.1 123 -8.7 119 -8.9 115 -8.8",
+  "124 -9.3 127 -8.3 125 -10.2 123.5 -10.3",
+  "131.3 -0.8 134.2 -0.9 135.5 -3.3 138 -1.6 141 -2.6 144.5 -3.8 146.1 -5.8 147.5 -6.1 147.6 -8 150.2 -10.5 148 -10.2 146.5 -8.8 144.3 -7.7 143 -9.2 141 -9.1 139 -8.1 138 -8.4 137.6 -5.2 135 -4.4 133.5 -4 132 -2.8",
+  // Australia, New Zealand and the Pacific
+  "113.4 -22 114.1 -21.8 116.7 -20.6 121 -19.5 122.2 -18 123.5 -16.5 125 -14.5 127 -13.9 129.5 -14.9 130.5 -12.4 132.6 -11.5 135 -12.2 136.9 -12.2 136.6 -13.2 135.5 -14.8 137.8 -16.3 140.8 -17.4 141.6 -12.6 142.5 -10.7 143.5 -14 145.4 -15 146.1 -18.5 148.8 -20.3 150.8 -22.6 153.1 -25.8 153.6 -28.6 152.5 -32.4 151.2 -33.9 150 -37.4 147.6 -38 146.3 -39.1 144.9 -37.8 143.5 -38.8 140.5 -38 138.5 -35.6 137.8 -32.6 135.9 -34.7 134.2 -32.9 131.2 -31.5 128 -32.2 124 -33.9 121.9 -33.9 117.9 -35 115.1 -34.3 115.7 -32 114.9 -29.5 113.3 -26.2 113.7 -24.5",
+  "144.7 -40.7 148.3 -40.9 148.2 -42.2 147.1 -43.5 146 -43.6 145.2 -42.2",
+  "172.7 -34.4 174.4 -35.6 175.9 -37.4 178.5 -37.7 177.9 -39.1 176.9 -39.6 174.8 -41.3 174.6 -39.9 173.8 -39.2 174.6 -37.8 174.2 -36.4",
+  "172.7 -40.5 174.3 -41.7 173.2 -43 172.8 -43.8 171.2 -44.4 170.6 -45.9 169 -46.6 166.5 -46 168.2 -44 170.5 -42.9 171.4 -41.8 172.1 -40.8",
+  "177.3 -17.4 178.6 -17.3 178.7 -18.2 177.5 -18.2",
+  "-155.9 20.2 -155 19.7 -155.6 18.9 -156 19.7",
+  "-158.3 21.6 -157.7 21.3 -158.1 21.3"
+];
+const GLB_LAKES = [
+  "47 44.5 49.5 46.5 53 46.8 53.5 44 51.2 41.7 53.9 40.6 54 37.3 50 37.4 49 38.5 49.5 40.5 47.5 42.5",
+  "-92 46.7 -84.5 46.5 -84.8 47.9 -88 48.8 -90 48",
+  "-87.8 41.7 -86.5 42 -85.6 45.8 -87 46 -88 44.5",
+  "-84.6 45.8 -82.4 43 -81.7 45 -80 45.9 -84 46.2",
+  "-83.4 41.7 -78.9 42.9 -82 42.4",
+  "-79.8 43.3 -76.2 43.5 -76.5 44.2 -79.4 43.6",
+  "31.6 -0.3 33.9 0.1 34.1 -1.1 33.3 -2.6 31.8 -2"
+];
+// Places: n name, c country, cc flag code, la/lo latitude/longitude, ct continent, b scene, e scene things,
+// s sign, sl sign language, d drive side, m money, w weather and nature, f food, h landmark hint, x fun fact, lm famous landmark
+const GLB_PLACES = [
+  { n: "Paris", c: "France", cc: "fr", la: 48.857, lo: 2.352, ct: "Europe", b: "city", e: "🏢🌳🚲", s: "Bienvenue !", sl: "French", d: "R", m: "Euro (€)", w: "Mild weather with some rainy days. Pigeons, and chestnut trees along wide streets.", f: "Croissants, baguettes and cheese", h: "A tall iron tower that was built for a world's fair in 1889.", x: "The Eiffel Tower grows about 15 cm taller in summer, because metal expands in the heat.", lm: 1 },
+  { n: "London", c: "United Kingdom", cc: "gb", la: 51.507, lo: -0.128, ct: "Europe", b: "city", e: "🏢🚌🌧️", s: "Mind the gap", sl: "English", d: "L", m: "Pound sterling (£)", w: "Cool and drizzly a lot of the year. Squirrels, foxes and ravens.", f: "Fish and chips", h: "A giant clock tower beside a river, home of a famous huge bell.", x: "\"Big Ben\" is really the name of the bell inside the tower, not the tower itself.", lm: 1 },
+  { n: "Rome", c: "Italy", cc: "it", la: 41.903, lo: 12.496, ct: "Europe", b: "city", e: "🏛️🌲🛵", s: "Benvenuti!", sl: "Italian", d: "R", m: "Euro (€)", w: "Hot, dry summers and mild winters. Umbrella-shaped pine trees.", f: "Pasta, pizza and gelato", h: "A huge, ancient stone arena where gladiators once fought.", x: "People toss about 3,000 euros in coins into the Trevi Fountain every day, and the money goes to charity.", lm: 1 },
+  { n: "Barcelona", c: "Spain", cc: "es", la: 41.387, lo: 2.169, ct: "Europe", b: "coast", e: "🌴🏖️🏢", s: "Benvinguts · Bienvenidos", sl: "Catalan and Spanish", d: "R", m: "Euro (€)", w: "Sunny and warm by the sea. Palm trees and wild green parrots.", f: "Paella and tapas", h: "A giant church with tall, spiky towers that has been under construction since 1882.", x: "The Sagrada Família was designed by Antoni Gaudí, and builders are still finishing it.", lm: 1 },
+  { n: "Amsterdam", c: "Netherlands", cc: "nl", la: 52.368, lo: 4.904, ct: "Europe", b: "city", e: "🚲🌷🏘️", s: "Welkom!", sl: "Dutch", d: "R", m: "Euro (€)", w: "Cool, windy and often rainy. Tulips, herons and ducks.", f: "Stroopwafels (syrup waffle cookies) and cheese", h: "More than 100 km of canals, and narrow tall houses beside them.", x: "The Netherlands has more bicycles than people!" },
+  { n: "Berlin", c: "Germany", cc: "de", la: 52.52, lo: 13.405, ct: "Europe", b: "city", e: "🏢🌳🚋", s: "Willkommen!", sl: "German", d: "R", m: "Euro (€)", w: "Cold winters and warm summers. Linden trees line the streets.", f: "Pretzels and currywurst", h: "A famous gate with a chariot on top, and a wall that once split the city in two.", x: "The Berlin Wall divided the city for 28 years, from 1961 to 1989.", lm: 1 },
+  { n: "Athens", c: "Greece", cc: "gr", la: 37.984, lo: 23.728, ct: "Europe", b: "city", e: "🏛️🫒🐈", s: "Καλώς ήρθατε", sl: "Greek", d: "R", m: "Euro (€)", w: "Hot, sunny and dry. Olive trees, and cats everywhere.", f: "Gyros, feta cheese and olives", h: "An ancient marble temple for the goddess Athena, on a rocky hill.", x: "The Parthenon was finished about 2,450 years ago.", lm: 1 },
+  { n: "Reykjavík", c: "Iceland", cc: "is", la: 64.147, lo: -21.943, ct: "Europe", b: "snow", e: "🏘️🌋♨️", s: "Velkomin!", sl: "Icelandic", d: "R", m: "Icelandic króna", w: "Cold and windy, with almost no trees. Puffins, moss and hot springs.", f: "Skyr (a thick yogurt) and lamb soup", h: "Volcanoes, geysers and the northern lights.", x: "Iceland has no mosquitoes at all." },
+  { n: "Moscow", c: "Russia", cc: "ru", la: 55.756, lo: 37.617, ct: "Europe", b: "snow", e: "⛪🌲❄️", s: "Добро пожаловать", sl: "Russian", d: "R", m: "Ruble (₽)", w: "Very cold, snowy winters. Birch trees with white bark.", f: "Borscht (beet soup) and blini (thin pancakes)", h: "A church with colorful onion-shaped domes beside a huge square.", x: "In old Russian, the word for \"red\" in Red Square also meant \"beautiful\".", lm: 1 },
+  { n: "Zermatt", c: "Switzerland", cc: "ch", la: 46.021, lo: 7.749, ct: "Europe", b: "mountain", e: "🏔️🐄🛖", s: "Willkommen · Bienvenue · Benvenuti", sl: "German, French and Italian (the country has 4 languages)", d: "R", m: "Swiss franc", w: "Snowy mountains, cows wearing bells, and edelweiss flowers.", f: "Cheese fondue and chocolate", h: "A pointy, pyramid-shaped mountain peak, 4,478 m tall.", x: "Cars that burn gas aren't allowed in Zermatt; people use electric taxis and trains.", lm: 1 },
+  { n: "Bergen", c: "Norway", cc: "no", la: 60.391, lo: 5.322, ct: "Europe", b: "coast", e: "🏘️⛰️⛵", s: "Velkommen!", sl: "Norwegian", d: "R", m: "Norwegian krone", w: "Rainy and cool, with deep sea inlets called fjords. Moose in the forests.", f: "Salmon and brown cheese (brunost)", h: "Colorful wooden houses along an old harbor wharf.", x: "Bergen is one of the rainiest cities in Europe, with rain on more than 200 days a year." },
+  { n: "Lisbon", c: "Portugal", cc: "pt", la: 38.722, lo: -9.139, ct: "Europe", b: "coast", e: "🚋🏘️⛵", s: "Bem-vindo!", sl: "Portuguese", d: "R", m: "Euro (€)", w: "Sunny and mild, on steep hills by the ocean. Purple jacaranda trees.", f: "Pastel de nata (custard tarts) and sardines", h: "Old yellow trams climbing steep hills, and a riverside tower from the age of explorers.", x: "Lisbon is one of the oldest cities in western Europe." },
+  { n: "Istanbul", c: "Turkey", cc: "tr", la: 41.008, lo: 28.978, ct: "Europe", b: "city", e: "🕌⛴️🐈", s: "Hoş geldiniz!", sl: "Turkish", d: "R", m: "Turkish lira (₺)", w: "Hot summers and rainy winters. Seagulls, street cats and tulips.", f: "Kebabs, baklava and Turkish delight", h: "A huge city split between two continents by a narrow strait of water.", x: "Istanbul is in both Europe and Asia.", lm: 1 },
+  { n: "Prague", c: "Czechia", cc: "cz", la: 50.076, lo: 14.438, ct: "Europe", b: "city", e: "🏰⛪🌉", s: "Vítejte!", sl: "Czech", d: "R", m: "Czech koruna", w: "Cold winters and warm summers, by a winding river.", f: "Goulash with dumplings", h: "A medieval clock that shows the sun and moon, and a castle on a hill.", x: "Prague's astronomical clock, from 1410, is the oldest of its kind still working." },
+  { n: "Cliffs of Moher", c: "Ireland", cc: "ie", la: 52.972, lo: -9.431, ct: "Europe", b: "coast", e: "🐑🌿🌊", s: "Fáilte!", sl: "Irish", d: "L", m: "Euro (€)", w: "Rainy and very green. Sheep in fields, and puffins nesting on cliffs.", f: "Irish stew and soda bread", h: "Tall sea cliffs facing the Atlantic Ocean.", x: "The Cliffs of Moher rise up to 214 m above the ocean." },
+  { n: "Tokyo", c: "Japan", cc: "jp", la: 35.676, lo: 139.65, ct: "Asia", b: "city", e: "🏙️🌸🚄", s: "ようこそ", sl: "Japanese", d: "L", m: "Yen (¥)", w: "Hot, humid summers. Cherry blossoms in spring.", f: "Sushi and ramen", h: "A huge snowy volcano you can see on clear days, and a famous busy crosswalk.", x: "Tokyo is the biggest city area in the world, with about 37 million people.", lm: 1 },
+  { n: "Beijing", c: "China", cc: "cn", la: 39.904, lo: 116.407, ct: "Asia", b: "city", e: "🏯🏢🚲", s: "欢迎", sl: "Chinese", d: "R", m: "Yuan (¥)", w: "Cold, dry winters and hot summers.", f: "Peking duck and dumplings", h: "An ancient palace called the Forbidden City, and a wall thousands of kilometers long nearby.", x: "The Forbidden City has nearly 9,000 rooms.", lm: 1 },
+  { n: "Seoul", c: "South Korea", cc: "kr", la: 37.567, lo: 126.978, ct: "Asia", b: "city", e: "🏯🏙️⛰️", s: "환영합니다", sl: "Korean", d: "R", m: "Won (₩)", w: "Cold winters and hot summers, with mountains around the city.", f: "Kimchi and bibimbap", h: "Palaces with curved roofs among skyscrapers.", x: "The Korean alphabet, Hangul, was invented in 1443 by King Sejong." },
+  { n: "Bangkok", c: "Thailand", cc: "th", la: 13.756, lo: 100.502, ct: "Asia", b: "city", e: "🛕🛶🌺", s: "ยินดีต้อนรับ", sl: "Thai", d: "L", m: "Baht (฿)", w: "Hot and humid all year, with a rainy monsoon season. Orchids and elephants.", f: "Pad thai and mango sticky rice", h: "Golden temples and markets where people sell food from boats.", x: "Bangkok's full official name is one of the longest place names in the world." },
+  { n: "Mumbai", c: "India", cc: "in", la: 19.076, lo: 72.878, ct: "Asia", b: "coast", e: "🏙️🛺🌴", s: "स्वागत है", sl: "Hindi", d: "L", m: "Rupee (₹)", w: "Hot, with heavy monsoon rains in summer. Palm trees by the sea.", f: "Vada pav (a spicy potato burger) and curry", h: "A huge stone arch beside the sea, built in 1924.", x: "India makes more movies every year than any other country." },
+  { n: "Agra", c: "India", cc: "in", la: 27.175, lo: 78.042, ct: "Asia", b: "grass", e: "🕌🐒🌳", s: "धन्यवाद", sl: "Hindi (it means \"thank you\")", d: "L", m: "Rupee (₹)", w: "Very hot summers on flat plains beside a river. Monkeys and peacocks.", f: "Petha (a sweet candy) and curry", h: "A white marble tomb with a big dome, built by an emperor for his wife.", x: "About 20,000 workers built the Taj Mahal over roughly 20 years.", lm: 1 },
+  { n: "Dubai", c: "United Arab Emirates", cc: "ae", la: 25.205, lo: 55.271, ct: "Asia", b: "desert", e: "🏙️🐪🌴", s: "مرحبا", sl: "Arabic", d: "R", m: "Dirham", w: "Very hot desert. Camels and date palms.", f: "Dates and shawarma", h: "The tallest building in the world.", x: "The Burj Khalifa is 828 m tall.", lm: 1 },
+  { n: "Ha Long Bay", c: "Vietnam", cc: "vn", la: 20.91, lo: 107.184, ct: "Asia", b: "coast", e: "⛰️⛵🌫️", s: "Chào mừng!", sl: "Vietnamese", d: "R", m: "Đồng (₫)", w: "Hot, humid summers and misty winters.", f: "Phở (noodle soup)", h: "Thousands of limestone islands rising out of green water.", x: "Ha Long Bay has about 1,600 islands and islets.", lm: 1 },
+  { n: "Singapore", c: "Singapore", cc: "sg", la: 1.352, lo: 103.82, ct: "Asia", b: "city", e: "🏙️🌺🌳", s: "Welcome · 欢迎 · Selamat datang · வரவேற்கிறோம்", sl: "English, Chinese, Malay and Tamil", d: "L", m: "Singapore dollar", w: "Hot and rainy almost every day, very close to the equator. Orchids and otters.", f: "Chicken rice and chili crab", h: "Giant metal \"supertrees\" in a garden, and a lion statue that spouts water.", x: "Singapore is a city that is also a whole country." },
+  { n: "Mount Everest", c: "Nepal", cc: "np", la: 27.988, lo: 86.925, ct: "Asia", b: "snow", e: "🏔️🐃🏳️", s: "नमस्ते", sl: "Nepali", d: "L", m: "Nepalese rupee", w: "Freezing cold, with thin air. Yaks, snow leopards and prayer flags.", f: "Momos (dumplings) and dal bhat (lentils and rice)", h: "The tallest mountain on Earth.", x: "Mount Everest is 8,849 m tall.", lm: 1 },
+  { n: "Petra", c: "Jordan", cc: "jo", la: 30.329, lo: 35.444, ct: "Asia", b: "desert", e: "🏜️🐪🐴", s: "أهلاً وسهلاً", sl: "Arabic", d: "R", m: "Jordanian dinar", w: "Hot, dry desert canyons. Camels and donkeys.", f: "Mansaf (lamb with rice and yogurt sauce)", h: "A city carved right into pink sandstone cliffs.", x: "Petra was carved more than 2,000 years ago by the Nabataean people.", lm: 1 },
+  { n: "Bali", c: "Indonesia", cc: "id", la: -8.507, lo: 115.263, ct: "Asia", b: "jungle", e: "🌴🛕🐒", s: "Selamat datang!", sl: "Indonesian", d: "L", m: "Rupiah", w: "Hot, wet and tropical. Monkeys and green rice terraces.", f: "Nasi goreng (fried rice)", h: "An island with thousands of temples, often called the \"Island of the Gods\".", x: "Indonesia is made of more than 17,000 islands." },
+  { n: "Ulaanbaatar", c: "Mongolia", cc: "mn", la: 47.886, lo: 106.906, ct: "Asia", b: "grass", e: "🛖🐎🌾", s: "Тавтай морилно уу", sl: "Mongolian", d: "R", m: "Tögrög (₮)", w: "Extremely cold winters on wide grasslands. Wild horses and round felt tents called gers.", f: "Buuz (steamed dumplings)", h: "A giant steel statue of Genghis Khan on a horse stands nearby.", x: "Ulaanbaatar is the coldest national capital city in the world." },
+  { n: "Hong Kong", c: "China", cc: "hk", la: 22.319, lo: 114.169, ct: "Asia", b: "city", e: "🏙️⛴️⛰️", s: "歡迎", sl: "Chinese (Cantonese)", d: "L", m: "Hong Kong dollar", w: "Hot and humid, with typhoons. Green mountains beside the harbor.", f: "Dim sum", h: "A harbor full of skyscrapers with a nightly light show.", x: "Hong Kong has more skyscrapers than any other city." },
+  { n: "Angkor Wat", c: "Cambodia", cc: "kh", la: 13.412, lo: 103.867, ct: "Asia", b: "jungle", e: "🛕🌳🐘", s: "សូមស្វាគមន៍", sl: "Khmer", d: "R", m: "Riel (US dollars are used too)", w: "Hot, with monsoon rains. Giant trees growing over old stone.", f: "Fish amok (fish curry steamed in banana leaves)", h: "The largest religious monument in the world, with towers shaped like lotus buds.", x: "Angkor Wat is pictured on Cambodia's flag.", lm: 1 },
+  { n: "Taipei", c: "Taiwan", cc: "tw", la: 25.033, lo: 121.565, ct: "Asia", b: "city", e: "🏙️⛰️🛵", s: "歡迎光臨", sl: "Chinese", d: "R", m: "Taiwan dollar", w: "Hot and humid, with typhoons and green mountains.", f: "Bubble tea and beef noodle soup", h: "A skyscraper shaped like stacked boxes that was once the tallest in the world.", x: "Bubble tea was invented in Taiwan in the 1980s." },
+  { n: "Giza", c: "Egypt", cc: "eg", la: 29.979, lo: 31.134, ct: "Africa", b: "desert", e: "🏜️🐪🌴", s: "مرحباً بكم", sl: "Arabic", d: "R", m: "Egyptian pound", w: "Hot, and it almost never rains. Camels, and palm trees along a great river.", f: "Koshari (rice, lentils and pasta)", h: "Three giant stone pyramids and a statue with a lion's body.", x: "The Great Pyramid was the tallest thing people had built for about 3,800 years.", lm: 1 },
+  { n: "Marrakech", c: "Morocco", cc: "ma", la: 31.63, lo: -7.981, ct: "Africa", b: "desert", e: "🕌🌴🐪", s: "مرحبا · ⴰⵏⵙⵓⴼ · Bienvenue", sl: "Arabic, Tamazight and French", d: "R", m: "Moroccan dirham", w: "Hot and dry, with snowy mountains nearby. Orange trees and date palms.", f: "Tagine, couscous and mint tea", h: "A busy square full of storytellers, inside red city walls.", x: "Marrakech is called the \"Red City\" because of its red walls." },
+  { n: "Maasai Mara", c: "Kenya", cc: "ke", la: -1.5, lo: 35.15, ct: "Africa", b: "savanna", e: "🦁🦓🌳", s: "Karibu!", sl: "Swahili", d: "L", m: "Kenyan shilling", w: "Warm grassy plains with rainy seasons. Lions, zebras and wildebeest.", f: "Ugali (cornmeal) and nyama choma (grilled meat)", h: "Every year a giant animal migration crosses a river full of crocodiles here.", x: "More than a million wildebeest travel through this area every year.", lm: 1 },
+  { n: "Cape Town", c: "South Africa", cc: "za", la: -33.925, lo: 18.424, ct: "Africa", b: "coast", e: "🐧⛰️🌊", s: "Welcome · Welkom · Wamkelekile", sl: "English, Afrikaans and Xhosa", d: "L", m: "Rand (R)", w: "Mild and windy, with dry summers. Penguins on the beach and protea flowers.", f: "Braai (barbecue) and bobotie", h: "A mountain with a flat top like a table, right above the city.", x: "South Africa has 12 official languages.", lm: 1 },
+  { n: "Mount Kilimanjaro", c: "Tanzania", cc: "tz", la: -3.067, lo: 37.356, ct: "Africa", b: "mountain", e: "🏔️🐘🌳", s: "Jambo! Karibu!", sl: "Swahili", d: "L", m: "Tanzanian shilling", w: "Hot at the bottom and snowy at the top. Elephants and coffee plants.", f: "Chapati and pilau rice", h: "The tallest mountain in Africa, with snow close to the equator.", x: "Kilimanjaro is 5,895 m tall and is a sleeping volcano.", lm: 1 },
+  { n: "Victoria Falls", c: "Zambia", cc: "zm", la: -17.924, lo: 25.857, ct: "Africa", b: "jungle", e: "💦🦛🌳", s: "Welcome! Stay behind the railing", sl: "English", d: "L", m: "Zambian kwacha", w: "Hot, with a rainy season. Hippos, crocodiles and baobab trees.", f: "Nshima (a thick cornmeal porridge)", h: "A giant waterfall that locals call \"The Smoke That Thunders\".", x: "Victoria Falls is about 1.7 km wide.", lm: 1 },
+  { n: "Lagos", c: "Nigeria", cc: "ng", la: 6.524, lo: 3.379, ct: "Africa", b: "city", e: "🏙️🌴🚌", s: "Ẹ kú àbọ̀!", sl: "Yoruba", d: "R", m: "Naira (₦)", w: "Hot and humid, with a long rainy season. Palm trees.", f: "Jollof rice", h: "Africa's biggest city, home of a huge film industry called Nollywood.", x: "Nigeria has the most people of any country in Africa." },
+  { n: "Dakar", c: "Senegal", cc: "sn", la: 14.717, lo: -17.468, ct: "Africa", b: "coast", e: "🌊🌳🛶", s: "Bienvenue · Dalal ak jamm", sl: "French and Wolof", d: "R", m: "West African CFA franc", w: "Hot, with a dry season and a rainy season. Baobab trees.", f: "Thieboudienne (fish and rice)", h: "A giant bronze statue stands on a hill above the ocean.", x: "Dakar is the westernmost city on the African mainland." },
+  { n: "Avenue of the Baobabs", c: "Madagascar", cc: "mg", la: -20.251, lo: 44.418, ct: "Africa", b: "savanna", e: "🌳🦎🐒", s: "Tonga soa!", sl: "Malagasy", d: "R", m: "Ariary", w: "Hot, with a long dry season. Lemurs and chameleons.", f: "Romazava (meat and greens stew) with rice", h: "A dirt road lined with giant trees that look like they're growing upside down.", x: "About 90% of the animals and plants here live nowhere else on Earth." },
+  { n: "Addis Ababa", c: "Ethiopia", cc: "et", la: 9.005, lo: 38.764, ct: "Africa", b: "mountain", e: "⛰️☕🌳", s: "እንኳን ደህና መጡ", sl: "Amharic", d: "R", m: "Birr", w: "Cool and pleasant, high up in the mountains.", f: "Injera (spongy flatbread) with spicy stews", h: "The country where coffee was first discovered.", x: "Ethiopia has its own calendar, about 7 to 8 years behind the one most countries use." },
+  { n: "Sossusvlei", c: "Namibia", cc: "na", la: -24.728, lo: 15.288, ct: "Africa", b: "desert", e: "🏜️🦌🌵", s: "Welcome · Welkom", sl: "English and Afrikaans", d: "L", m: "Namibian dollar", w: "Very dry, with giant red sand dunes. Oryx with long straight horns.", f: "Biltong (dried meat)", h: "Some of the tallest sand dunes in the world, glowing red at sunrise.", x: "The Namib is thought to be the oldest desert on Earth." },
+  { n: "New York City", c: "United States", cc: "us", la: 40.713, lo: -74.006, ct: "North America", b: "city", e: "🏙️🚕🐿️", s: "WALK · DON'T WALK", sl: "English", d: "R", m: "US dollar ($)", w: "Cold, snowy winters and hot summers. Squirrels and pigeons.", f: "Pizza slices and bagels", h: "A giant green statue holding a torch in the harbor.", x: "The Statue of Liberty was a gift from France in 1886.", lm: 1 },
+  { n: "Grand Canyon", c: "United States", cc: "us", la: 36.107, lo: -112.113, ct: "North America", b: "desert", e: "🏜️🌵🦅", s: "Stay on the trail", sl: "English", d: "R", m: "US dollar ($)", w: "Hot, dry summers and snowy winters on the rim. Condors, cactus and pine trees.", f: "Navajo fry bread", h: "A giant canyon carved by the Colorado River.", x: "The Grand Canyon is more than 1.6 km (a mile) deep.", lm: 1 },
+  { n: "Honolulu", c: "United States (Hawaii)", cc: "us", la: 21.307, lo: -157.858, ct: "North America", b: "coast", e: "🌺🐢🏄", s: "Aloha!", sl: "Hawaiian", d: "R", m: "US dollar ($)", w: "Warm all year, with beaches. Sea turtles and hibiscus flowers.", f: "Poke (raw fish salad) and shave ice", h: "Islands made by volcanoes in the middle of the Pacific Ocean.", x: "The Hawaiian alphabet has just 13 letters." },
+  { n: "Mexico City", c: "Mexico", cc: "mx", la: 19.433, lo: -99.133, ct: "North America", b: "city", e: "🏙️🌵🌮", s: "¡Bienvenidos!", sl: "Spanish", d: "R", m: "Mexican peso ($)", w: "Mild and high up in the mountains, with rainy summer afternoons. Axolotls live in its canals.", f: "Tacos and tamales", h: "A huge city built on top of an old Aztec city that stood in a lake.", x: "Parts of Mexico City sink tens of centimeters every year." },
+  { n: "Chichén Itzá", c: "Mexico", cc: "mx", la: 20.684, lo: -88.568, ct: "North America", b: "jungle", e: "🛕🦎🌴", s: "¡Bienvenidos! · Welcome", sl: "Spanish and English", d: "R", m: "Mexican peso ($)", w: "Hot and humid jungle. Iguanas and water-filled sinkholes called cenotes.", f: "Cochinita pibil (slow-roasted pork)", h: "A stepped Maya pyramid where a shadow snake appears on the stairs twice a year.", x: "The pyramid El Castillo has 365 steps, one for each day of the year.", lm: 1 },
+  { n: "Toronto", c: "Canada", cc: "ca", la: 43.653, lo: -79.383, ct: "North America", b: "city", e: "🏙️🍁🦝", s: "Welcome · Bienvenue", sl: "English and French", d: "R", m: "Canadian dollar ($)", w: "Very cold, snowy winters. Maple trees and raccoons.", f: "Poutine (fries with gravy and cheese curds)", h: "A very tall, needle-like tower beside a big lake.", x: "The CN Tower is 553 m tall." },
+  { n: "Banff", c: "Canada", cc: "ca", la: 51.178, lo: -115.571, ct: "North America", b: "mountain", e: "🏔️🫎🌲", s: "Welcome · Bienvenue", sl: "English and French", d: "R", m: "Canadian dollar ($)", w: "Snowy mountains and pine forests. Bears, elk and moose.", f: "Maple syrup treats", h: "Bright turquoise lakes fed by glaciers in the Rocky Mountains.", x: "Banff was the country's very first national park, in 1885." },
+  { n: "Havana", c: "Cuba", cc: "cu", la: 23.114, lo: -82.367, ct: "North America", b: "coast", e: "🚗🌴🏘️", s: "¡Bienvenidos!", sl: "Spanish", d: "R", m: "Cuban peso", w: "Hot and humid, with hurricanes. Tall royal palm trees.", f: "Ropa vieja (shredded beef) with rice and beans", h: "Colorful old 1950s cars cruising along a seaside wall.", x: "Thousands of American cars from the 1950s still drive on the island's roads." },
+  { n: "Yellowstone", c: "United States", cc: "us", la: 44.428, lo: -110.589, ct: "North America", b: "forest", e: "🦬🌲♨️", s: "Stay on the boardwalk", sl: "English", d: "R", m: "US dollar ($)", w: "Cold, snowy winters. Bison, wolves and steaming hot springs.", f: "Huckleberry ice cream", h: "A famous geyser that shoots water into the air about every hour or two.", x: "Yellowstone was the first national park in the whole world, in 1872.", lm: 1 },
+  { n: "Ilulissat", c: "Greenland", cc: "gl", la: 69.22, lo: -51.099, ct: "North America", b: "snow", e: "🧊🐕🐋", s: "Tikilluarit!", sl: "Greenlandic", d: "R", m: "Danish krone", w: "Freezing, with icebergs, whales and sled dogs.", f: "Suaasat (a hearty soup) and dried fish", h: "A fjord packed with giant icebergs from a fast-moving glacier.", x: "Greenland is the biggest island in the world." },
+  { n: "San Francisco", c: "United States", cc: "us", la: 37.775, lo: -122.419, ct: "North America", b: "coast", e: "🌁🦭🚋", s: "Welcome · Bienvenidos", sl: "English and Spanish", d: "R", m: "US dollar ($)", w: "Cool and foggy summers. Sea lions, and giant redwood trees nearby.", f: "Sourdough bread and clam chowder", h: "A big red-orange bridge that often peeks out of the fog.", x: "The Golden Gate Bridge's color is called \"International Orange\".", lm: 1 },
+  { n: "Kingston", c: "Jamaica", cc: "jm", la: 18.018, lo: -76.81, ct: "North America", b: "coast", e: "🌴🎶🐦", s: "Wah gwaan!", sl: "Jamaican Patois", d: "L", m: "Jamaican dollar", w: "Hot and tropical, with hurricanes. Hummingbirds and mountains.", f: "Jerk chicken, and ackee and saltfish", h: "The birthplace of reggae music, below the Blue Mountains.", x: "The national bird is a hummingbird called the doctor bird." },
+  { n: "Denali", c: "United States (Alaska)", cc: "us", la: 63.069, lo: -151.007, ct: "North America", b: "snow", e: "🏔️🫎🐻", s: "Watch for moose", sl: "English", d: "R", m: "US dollar ($)", w: "Very cold. Moose, grizzly bears and caribou.", f: "Wild salmon", h: "The tallest mountain in North America.", x: "Denali is 6,190 m tall." },
+  { n: "Panama Canal", c: "Panama", cc: "pa", la: 8.997, lo: -79.592, ct: "North America", b: "jungle", e: "🚢🦥🌴", s: "¡Bienvenidos!", sl: "Spanish", d: "R", m: "Balboa and US dollar", w: "Hot and rainy rainforest. Sloths and toucans.", f: "Sancocho (chicken soup)", h: "A canal with giant water locks that lift ships between two oceans.", x: "Ships save about 13,000 km by using the canal instead of sailing around South America.", lm: 1 },
+  { n: "Rio de Janeiro", c: "Brazil", cc: "br", la: -22.907, lo: -43.173, ct: "South America", b: "coast", e: "🏖️⛰️🐒", s: "Bem-vindo!", sl: "Portuguese", d: "R", m: "Real (R$)", w: "Hot and sunny, with beaches. Little marmoset monkeys and palm trees.", f: "Feijoada (bean stew) and pão de queijo (cheese bread)", h: "A giant statue with open arms on top of a mountain.", x: "The Christ the Redeemer statue is 30 m tall, not counting its base.", lm: 1 },
+  { n: "Machu Picchu", c: "Peru", cc: "pe", la: -13.163, lo: -72.545, ct: "South America", b: "mountain", e: "⛰️🦙🌫️", s: "Bienvenidos · Rimaykullayki", sl: "Spanish and Quechua", d: "R", m: "Sol", w: "Cool and misty, high in the mountains. Llamas and alpacas.", f: "Ceviche, and lots of kinds of potatoes", h: "A hidden stone city of the Incas, high in the Andes.", x: "Peru grows about 4,000 kinds of potatoes.", lm: 1 },
+  { n: "Buenos Aires", c: "Argentina", cc: "ar", la: -34.604, lo: -58.382, ct: "South America", b: "city", e: "🏙️💃🌳", s: "¡Bienvenidos!", sl: "Spanish", d: "R", m: "Argentine peso ($)", w: "Mild and humid. Purple jacaranda trees in spring.", f: "Asado (barbecue), empanadas and dulce de leche", h: "A city famous for tango dancing, with a tall white obelisk on a super-wide avenue.", x: "Avenida 9 de Julio is one of the widest streets in the world." },
+  { n: "Manaus", c: "Brazil", cc: "br", la: -3.119, lo: -60.022, ct: "South America", b: "jungle", e: "🌳🐬🦜", s: "Bem-vindo!", sl: "Portuguese", d: "R", m: "Real (R$)", w: "Hot, humid rainforest where it rains a lot. Jaguars, piranhas and pink river dolphins.", f: "Açaí berries and tacacá (a shrimp soup)", h: "Two rivers of different colors meet here and flow side by side without mixing.", x: "This is the biggest city in the middle of the world's largest rainforest." },
+  { n: "Galápagos Islands", c: "Ecuador", cc: "ec", la: -0.74, lo: -90.313, ct: "South America", b: "coast", e: "🐢🦎🌋", s: "¡Bienvenidos!", sl: "Spanish", d: "R", m: "US dollar ($)", w: "Warm, dry volcanic islands. Giant tortoises, marine iguanas and blue-footed boobies.", f: "Ceviche", h: "Islands that helped Charles Darwin form his ideas about evolution.", x: "Giant tortoises here can live for more than 100 years.", lm: 1 },
+  { n: "Torres del Paine", c: "Chile", cc: "cl", la: -50.942, lo: -73.407, ct: "South America", b: "mountain", e: "🏔️🦙🦅", s: "¡Bienvenidos!", sl: "Spanish", d: "R", m: "Chilean peso ($)", w: "Cold and very windy, with glaciers. Guanacos and condors.", f: "Empanadas", h: "Three granite towers of rock in a windy national park at the bottom of the world.", x: "This country is about 4,300 km long but on average only about 177 km wide." },
+  { n: "Iguazú Falls", c: "Argentina", cc: "ar", la: -25.695, lo: -54.437, ct: "South America", b: "jungle", e: "💦🦜🦋", s: "¡Bienvenidos! · Bem-vindo!", sl: "Spanish and Portuguese", d: "R", m: "Argentine peso and Brazilian real", w: "Hot and humid forest. Coatis, toucans and clouds of butterflies.", f: "Chipá (cheese bread)", h: "About 275 waterfalls on the border of two countries; the biggest is called the Devil's Throat.", x: "Iguazú Falls is wider than Victoria Falls, because it's made of so many falls.", lm: 1 },
+  { n: "Cartagena", c: "Colombia", cc: "co", la: 10.391, lo: -75.479, ct: "South America", b: "coast", e: "🏘️🦜🌴", s: "¡Bienvenidos!", sl: "Spanish", d: "R", m: "Colombian peso ($)", w: "Hot and humid by the Caribbean Sea. Iguanas and parrots.", f: "Arepas (corn cakes)", h: "A colorful old town inside thick stone walls by the sea.", x: "Colombia has more kinds of birds than any other country." },
+  { n: "Easter Island", c: "Chile", cc: "cl", la: -27.113, lo: -109.35, ct: "South America", b: "grass", e: "🗿🌋🌊", s: "Iorana!", sl: "Rapa Nui", d: "R", m: "Chilean peso ($)", w: "Warm, windy and grassy, far out in the ocean.", f: "Fresh tuna and sweet potatoes", h: "Almost 1,000 giant stone heads stand on this island.", x: "This is one of the most remote islands where people live.", lm: 1 },
+  { n: "Sydney", c: "Australia", cc: "au", la: -33.869, lo: 151.209, ct: "Oceania", b: "coast", e: "🏖️🦘🦜", s: "G'day!", sl: "English", d: "L", m: "Australian dollar ($)", w: "Warm and sunny, with beaches. Kangaroos, cockatoos and gum trees.", f: "Meat pies, pavlova and Vegemite toast", h: "A building with roofs shaped like sails, next to a big arch bridge.", x: "The Sydney Opera House roof is covered with more than 1 million tiles.", lm: 1 },
+  { n: "Uluru", c: "Australia", cc: "au", la: -25.344, lo: 131.037, ct: "Oceania", b: "desert", e: "🏜️🦘🌾", s: "Palya!", sl: "Pitjantjatjara (an Aboriginal language)", d: "L", m: "Australian dollar ($)", w: "Very hot red desert. Kangaroos and spiky spinifex grass.", f: "Damper (campfire bread)", h: "A giant red rock in the middle of the desert that glows at sunset.", x: "Uluru is sacred to the Anangu people, and it's about 348 m high.", lm: 1 },
+  { n: "Great Barrier Reef", c: "Australia", cc: "au", la: -16.92, lo: 145.77, ct: "Oceania", b: "coast", e: "🐠🐢🪸", s: "G'day, mate!", sl: "English", d: "L", m: "Australian dollar ($)", w: "Hot, humid tropics. Clownfish, sea turtles and crocodiles.", f: "Barramundi (a fish)", h: "The largest coral reef system on Earth.", x: "The Great Barrier Reef is more than 2,300 km long.", lm: 1 },
+  { n: "Rotorua", c: "New Zealand", cc: "nz", la: -38.137, lo: 176.25, ct: "Oceania", b: "forest", e: "♨️🌿🥝", s: "Kia ora!", sl: "Māori", d: "L", m: "New Zealand dollar ($)", w: "Mild, with steaming geysers and bubbling mud. Kiwi birds and giant ferns.", f: "Hāngī (food cooked in an earth oven)", h: "Steaming geysers and mud pools that smell like eggs.", x: "This country has about 5 sheep for every person." },
+  { n: "Queenstown", c: "New Zealand", cc: "nz", la: -45.031, lo: 168.663, ct: "Oceania", b: "mountain", e: "🏔️🦜🛶", s: "Haere mai · Welcome", sl: "Māori and English", d: "L", m: "New Zealand dollar ($)", w: "Cold winters, snowy mountains and deep lakes. Mountain parrots called keas.", f: "Fish and chips by the lake", h: "The \"adventure capital of the world\", where bungee jumping took off.", x: "The world's first full-time bungee jumping site opened here in 1988." },
+  { n: "Fiji", c: "Fiji", cc: "fj", la: -18.125, lo: 178.45, ct: "Oceania", b: "coast", e: "🏝️🥥🐠", s: "Bula!", sl: "Fijian", d: "L", m: "Fijian dollar ($)", w: "Warm and tropical, with cyclones. Coral reefs and coconut palms.", f: "Kokoda (fish in coconut milk)", h: "More than 300 islands in the South Pacific.", x: "About 110 of Fiji's roughly 330 islands have people living on them." },
+  { n: "Port Moresby", c: "Papua New Guinea", cc: "pg", la: -9.444, lo: 147.18, ct: "Oceania", b: "jungle", e: "🌴🦜🌊", s: "Welkam!", sl: "Tok Pisin", d: "L", m: "Kina", w: "Hot and humid, near rainforests. Birds-of-paradise and tree kangaroos.", f: "Mumu (a feast cooked in an earth oven) and sago", h: "A country where people speak more than 800 languages.", x: "Papua New Guinea has more languages than any other country." },
+  { n: "Tahiti", c: "French Polynesia", cc: "pf", la: -17.651, lo: -149.426, ct: "Oceania", b: "coast", e: "🏝️🌺🐠", s: "Ia ora na!", sl: "Tahitian", d: "R", m: "CFP franc", w: "Warm and tropical, with black sand beaches.", f: "Poisson cru (raw fish in coconut milk)", h: "Tall green volcanic peaks and blue lagoons in the middle of the Pacific.", x: "Many beaches here have black sand made from volcanic rock." }
+];
+/*END_NO_VOCAB*/
+const GLB_MODES = [["world", "🌍 Whole world"], ["lm", "🏛️ Famous landmarks"], ["Europe", "🇪🇺 Europe"], ["Asia", "🐼 Asia"], ["Africa", "🦁 Africa"], ["North America", "🦅 North America"], ["South America", "🦜 South America"], ["Oceania", "🦘 Oceania"]];
+const GLB_SKY = { city: ["#8fcaff", "#e3f3ff", "#8b909b"], coast: ["#79ccff", "#dff5ff", "#f1d58f"], desert: ["#ffc96b", "#fff1c9", "#dfa24f"], mountain: ["#86c0ff", "#eaf5ff", "#7d9270"], jungle: ["#9fe0ad", "#e8fbe9", "#2f8f46"], snow: ["#bfe0ff", "#ffffff", "#e8f2f8"], savanna: ["#ffc883", "#fff0cf", "#c9a64a"], forest: ["#a3d4ff", "#eaf6ff", "#4b8a49"], grass: ["#98d4ff", "#e9f6ff", "#7cbc58"] };
+const GLB_W = 360, GLB_TOP = 84, GLB_BOT = -58;   // map shows latitude 84°N to 58°S
+const glbPts = s => { const a = s.trim().split(/\s+/).map(Number), out = []; for (let i = 0; i < a.length; i += 2) out.push(a[i] + "," + (-a[i + 1])); return out.join(" "); };
+const glbKm = (la1, lo1, la2, lo2) => { const r = Math.PI / 180, dla = (la2 - la1) * r, dlo = (lo2 - lo1) * r, q = Math.sin(dla / 2) ** 2 + Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin(dlo / 2) ** 2; return 2 * 6371 * Math.asin(Math.min(1, Math.sqrt(q))); };
+const glbMax = clues => 5000 - 250 * (clues - 1);   // 1 clue: up to 5000, all 5 clues: up to 4000
+const glbScore = (km, clues) => km < 25 ? glbMax(clues) : Math.round(glbMax(clues) * Math.exp(-km / 2000));
+const glbFmt = n => Math.round(n).toLocaleString("en-US");
+let GLB_SVG_CACHE = null;
+function glbMapSVG() {
+  if (!GLB_SVG_CACHE) {
+    const grid = [];
+    for (let lo = -150; lo <= 150; lo += 30) grid.push(`<line x1="${lo}" y1="${-GLB_TOP}" x2="${lo}" y2="${-GLB_BOT}"/>`);
+    for (let la = -30; la <= 60; la += 30) grid.push(`<line x1="-180" y1="${-la}" x2="180" y2="${-la}"/>`);
+    GLB_SVG_CACHE = `<rect class="glb-sea" x="-180" y="${-GLB_TOP}" width="${GLB_W}" height="${GLB_TOP - GLB_BOT}"/><g class="glb-grid">${grid.join("")}</g>`
+      + `<line class="glb-eq" x1="-180" y1="0" x2="180" y2="0"/><g class="glb-landg">${GLB_LAND.map(p => `<polygon points="${glbPts(p)}"/>`).join("")}</g>`
+      + `<g class="glb-lakes">${GLB_LAKES.map(p => `<polygon points="${glbPts(p)}"/>`).join("")}</g>`;
+  }
+  return `<svg class="glb-map" id="glb-map" viewBox="-180 ${-GLB_TOP} ${GLB_W} ${GLB_TOP - GLB_BOT}" role="img" aria-label="World map: tap to drop your pin">${GLB_SVG_CACHE}<g id="glb-marks"></g></svg>`;
+}
+function glbScene(p) {
+  const [s1, s2, g] = GLB_SKY[p.b] || GLB_SKY.grass, things = [...p.e];
+  return `<div class="glb-scene" style="background: linear-gradient(${s1}, ${s2} 62%, ${g} 62%)">
+    ${p.b === "coast" ? `<div class="glb-sea-band"></div>` : ""}
+    <div class="glb-things">${things.map((t, i) => `<span style="--i:${i}">${t}</span>`).join("")}</div>
+    <div class="glb-sign"><b>${esc(p.s)}</b></div>
+  </div>`;
+}
+function glbClues(p) {
+  return [
+    ["🪧", "The sign", `It says <b>“${esc(p.s)}”</b>. That's ${esc(p.sl)}.`],
+    ["🌦️", "Weather and nature", esc(p.w)],
+    ["🚗", "Roads and money", `Cars drive on the <b>${p.d === "L" ? "left" : "right"}</b>. People pay with the <b>${esc(p.m)}</b>.`],
+    ["🍽️", "Food", `People here love <b>${esc(p.f)}</b>.`],
+    ["🏛️", "Landmark hint", esc(p.h)]
+  ];
+}
+function startGlobeDetective(mode) {
+  keyHandler = null;
+  const bests = store.get("glb_best", {});
+  if (mode === undefined) {
+    appScreen("🌐 Globe Detective", `<div class="glb-head"><h2>🌐 Globe Detective</h2></div>
+      <p class="soft">🕵️ You've been dropped somewhere on Earth! Read the clues, tap the map where you think you are, and press <b>Guess</b>. 5 rounds, up to 5,000 points each. The fewer clues you open, the more points you can win.</p>
+      <div class="sl-card"><h3>Where should we search?</h3><div class="na-chips glb-modes">${GLB_MODES.map(([id, lab]) => `<button class="chip glb-mode" data-mode="${esc(id)}" type="button"><b>${lab}</b><span>${bests[id] ? `Best ${glbFmt(bests[id])}` : "No score yet"}</span></button>`).join("")}</div></div>
+      <p class="soft">📍 ${GLB_PLACES.length} real places on 6 continents.</p>`);
+    $app.querySelectorAll("[data-mode]").forEach(b => b.addEventListener("click", () => startGlobeDetective(b.dataset.mode)));
+    return;
+  }
+  const pool = GLB_PLACES.filter(p => mode === "world" || (mode === "lm" ? p.lm : p.ct === mode));
+  const rounds = shuffle(pool).slice(0, 5), results = [];
+  let r = 0, clues = 1, pin = null, done = false, zoom = 1, real = null;
+  const modeName = (GLB_MODES.find(m => m[0] === mode) || GLB_MODES[0])[1];
+  appScreen("🌐 Globe Detective", `<div class="glb-head"><h2>🌐 Globe Detective</h2><span class="glb-total" id="glb-total">0 pts</span></div><div id="glb"></div>`);
+  const box = document.getElementById("glb");
+  const total = () => results.reduce((s, x) => s + x.pts, 0);
+  const marks = () => document.getElementById("glb-marks");
+  const toMap = (svg, cx, cy) => { const m = svg.getScreenCTM(); if (!m) return null; const pt = svg.createSVGPoint();
+    if (Number.isInteger(cx) && Number.isInteger(cy)) { cx += .5; cy += .5; }   // mouse clicks come in whole pixels: use the middle of the pixel
+    pt.x = cx; pt.y = cy; const q = pt.matrixTransform(m.inverse()); return { lo: Math.max(-180, Math.min(180, q.x)), la: Math.max(GLB_BOT, Math.min(GLB_TOP, -q.y)) }; };
+  const setZoom = z => {
+    const mb = document.getElementById("glb-mapbox"), svg = document.getElementById("glb-map"); if (!mb || !svg) return;
+    const fx = (mb.scrollLeft + mb.clientWidth / 2) / mb.scrollWidth, fy = (mb.scrollTop + mb.clientHeight / 2) / mb.scrollHeight;
+    zoom = z; svg.style.width = (zoom * 100) + "%";
+    const focus = pin && zoom > 1 ? { x: (pin.lo + 180) / GLB_W, y: (GLB_TOP - pin.la) / (GLB_TOP - GLB_BOT) } : { x: fx, y: fy };
+    mb.scrollLeft = focus.x * mb.scrollWidth - mb.clientWidth / 2; mb.scrollTop = focus.y * mb.scrollHeight - mb.clientHeight / 2;
+    $app.querySelectorAll("[data-zoom]").forEach(b => b.classList.toggle("on", +b.dataset.zoom === zoom)); paint();
+  };
+  const paint = () => {   // markers keep the same size on screen at every zoom
+    const g = marks(), svg = document.getElementById("glb-map"); if (!g || !svg) return;
+    const k = GLB_W / (svg.getBoundingClientRect().width || 320), f = n => +(n * k).toFixed(3);
+    let out = "";
+    if (pin && real) { let tlo = real.lo; if (tlo - pin.lo > 180) tlo -= 360; else if (pin.lo - tlo > 180) tlo += 360;   // the short way across the date line
+      out += `<line class="glb-line" x1="${pin.lo}" y1="${-pin.la}" x2="${tlo}" y2="${-real.la}" stroke-width="${f(2)}" stroke-dasharray="${f(6)} ${f(4)}"/>`; }
+    if (pin) out += `<g class="glb-pin" transform="translate(${pin.lo} ${-pin.la})"><circle r="${f(7)}" stroke-width="${f(2)}"/><circle class="glb-pin-dot" r="${f(2.5)}"/></g>`;
+    if (real) out += `<g class="glb-real" transform="translate(${real.lo} ${-real.la})"><circle r="${f(9)}" stroke-width="${f(1.5)}"/><text y="${f(4)}" text-anchor="middle" font-size="${f(12)}">★</text></g>`;
+    g.innerHTML = out;
+  };
+  const round = () => {
+    const p = rounds[r]; clues = 1; pin = null; real = null; done = false;
+    box.innerHTML = `<p class="soft glb-meta">Round <b>${r + 1}</b> of ${rounds.length} · ${modeName} · Can win up to <b id="glb-max">${glbFmt(glbMax(clues))}</b></p>
+      ${glbScene(p)}
+      <div class="glb-clues" id="glb-clues"></div>
+      <div class="row glb-row"><button class="btn mini" id="glb-more" type="button">🔎 Show another clue</button></div>
+      <div class="glb-zoom" role="group" aria-label="Map size"><span>🗺️ Map size</span>${[1, 2, 3].map(z => `<button class="chip glb-z${z === zoom ? " on" : ""}" data-zoom="${z}" type="button" aria-label="Zoom ${z} times">${z === 1 ? "🌍" : "🔍"} ${z}×</button>`).join("")}</div>
+      <div class="glb-mapbox" id="glb-mapbox">${glbMapSVG()}</div>
+      <p class="soft glb-tip" id="glb-tip">👆 Tap the map to drop your pin. Use 🔍 to zoom in, then scroll the map.</p>
+      <div class="row glb-row" id="glb-guessrow"><button class="btn go" id="glb-guess" type="button" disabled>📍 Guess</button></div>
+      <div id="glb-res"></div>`;
+    const showClues = () => {
+      const list = glbClues(p).slice(0, clues);
+      document.getElementById("glb-clues").innerHTML = list.map(([ic, t, body], i) => `<div class="glb-clue${i === clues - 1 && i ? " glb-fresh" : ""}"><i>${ic}</i><div><small>Clue ${i + 1} · ${t}</small><p>${body}</p></div></div>`).join("");
+      document.getElementById("glb-max").textContent = glbFmt(glbMax(clues));
+      const more = document.getElementById("glb-more"); more.disabled = clues >= 5 || done; more.textContent = clues >= 5 ? "🔎 That's every clue" : `🔎 Show another clue (−250 max)`;
+    };
+    showClues();
+    document.getElementById("glb-more").addEventListener("click", () => { if (clues < 5 && !done) { clues++; naNote(740, .08, "triangle", .06); showClues(); } });
+    const svg = document.getElementById("glb-map"); setZoom(zoom);
+    svg.addEventListener("click", e => {
+      if (done) return; const q = toMap(svg, e.clientX, e.clientY); if (!q) return;
+      pin = q; paint(); naNote(520, .06, "sine", .07);
+      document.getElementById("glb-guess").disabled = false; document.getElementById("glb-tip").textContent = "📍 Pin dropped! Tap somewhere else to move it, or press Guess.";
+    });
+    $app.querySelectorAll("[data-zoom]").forEach(b => b.addEventListener("click", () => setZoom(+b.dataset.zoom)));
+    document.getElementById("glb-guess").addEventListener("click", guess);
+    keyHandler = e => { if (e.key === "Enter" && pin && !done) { e.preventDefault(); guess(); } };
+  };
+  const guess = () => {
+    if (!pin || done) return; done = true;
+    const p = rounds[r], km = glbKm(pin.la, pin.lo, p.la, p.lo), pts = glbScore(km, clues);
+    results.push({ p, km, pts, clues });
+    document.getElementById("glb-total").textContent = `${glbFmt(total())} pts`;
+    real = { la: p.la, lo: p.lo }; paint();
+    document.getElementById("glb-guessrow").hidden = true; document.getElementById("glb-more").disabled = true;
+    const tip = document.getElementById("glb-tip"); tip.textContent = "★ = the real place · ● = your pin";
+    const great = pts >= 4000, good = pts >= 2000;
+    (great ? [660, 880, 1320] : good ? [660, 880] : [440, 330]).forEach((f, i) => naNote(f, .14, "triangle", .09, i * .1));
+    const last = r === rounds.length - 1;
+    document.getElementById("glb-res").innerHTML = `<div class="sl-card glb-result">
+      <h3>${great ? "🎯 Amazing detective work!" : good ? "👏 Nice guess!" : km < 6000 ? "🙂 Not bad!" : "😅 Far away this time!"}</h3>
+      <p class="glb-place">${flagOf(p.cc)} <b>${esc(p.n)}</b>, ${esc(p.c)}</p>
+      <p>Your pin was <b>${glbFmt(km)} km</b> (${glbFmt(km * 0.621371)} miles) away, using ${clues} clue${clues > 1 ? "s" : ""}.</p>
+      <p class="glb-pts">+${glbFmt(pts)} points</p>
+      <p class="soft">💡 ${esc(p.x)}</p>
+      <button class="btn go" id="glb-next" type="button">${last ? "🏁 See my final score" : "➡️ Next place"}</button></div>`;
+    document.getElementById("glb-res").scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const next = () => { if (last) finish(); else { r++; round(); window.scrollTo?.({ top: 0 }); } };
+    document.getElementById("glb-next").addEventListener("click", next);
+    keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); next(); } };
+  };
+  const finish = () => {
+    keyHandler = null;
+    const sc = total(), b = store.get("glb_best", {}), old = b[mode] || 0, isBest = sc > old;
+    if (isBest) { b[mode] = sc; store.set("glb_best", b); }
+    const gb = store.get("best", {}); if (!(gb.globe >= sc)) { gb.globe = sc; store.set("best", gb); }   // shows in the games list
+    const stars = sc >= 20000 ? "🌟🌟🌟" : sc >= 12000 ? "🌟🌟" : sc >= 5000 ? "🌟" : "";
+    box.innerHTML = `<div class="sl-card glb-final"><h3>🏁 Case closed! ${stars}</h3>
+      <p class="glb-big">${glbFmt(sc)} <small>/ 25,000</small></p>
+      <p>${isBest ? `🏆 That's your best score in ${esc(modeName)}!` : `Your best in ${esc(modeName)} is ${glbFmt(old)}.`}</p>
+      <ol class="glb-list">${results.map(x => `<li>${flagOf(x.p.cc)} <b>${esc(x.p.n)}</b> · ${glbFmt(x.km)} km · <b>${glbFmt(x.pts)}</b> pts</li>`).join("")}</ol>
+      <div class="row glb-row"><button class="btn go" id="glb-again" type="button">🔁 Search again</button><button class="btn" id="glb-modesbtn" type="button">🗺️ Pick a different area</button></div></div>`;
+    document.getElementById("glb-again").addEventListener("click", () => startGlobeDetective(mode));
+    document.getElementById("glb-modesbtn").addEventListener("click", () => startGlobeDetective());
+    if (isBest) [523, 659, 784, 1047].forEach((f, i) => naNote(f, .18, "triangle", .1, i * .12));
+  };
+  round();
+}
+
+// It's a game: hidden from people who can't play games, listed with the other games, and in the App-App.
+INFO_GAME_APPS.add("globe");
+HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Globe Detective", "🌐", "globe detective|geoguesser|geoguessr|guess the place|guess the location|map guessing|map game|where in the world", "Read clues about a mystery place, drop a pin on the world map, and see how close you got.", () => startGlobeDetective()]);
+MORE_GAMES.push({ id: "globe", name: "Globe Detective", desc: "Read the clues, drop a pin on the world map, and see how close you get!", start: () => startGlobeDetective() });
+NEW_APPS.push({ id: "globe", emoji: "🌐", name: "Globe Detective", desc: "Read clues about a mystery place, drop a pin on the world map, and score up to 25,000 points.", start: () => startGlobeDetective(), kw: "globe detective|geoguesser|geoguessr|geo guesser|map guessing|guess the place|guess the location|where in the world|world map game" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
