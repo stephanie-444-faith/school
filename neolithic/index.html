@@ -227,7 +227,6 @@
   .gl-week span { font-weight: 600; opacity: .8; font-size: .9em; }
   .ld-frame { display: block; width: calc(100% + 40px); margin: 0 -20px -20px; height: max(620px, calc(100vh - 150px)); border: 0; border-radius: 0 0 18px 18px; background: #F6FBFA; }
   .aa-card .aa-home { font-size: .75rem; font-weight: 800; color: var(--gold); }
-  .home-new { position: absolute; top: -6px; right: -8px; font-style: normal; font-size: 9px; font-weight: 800; line-height: 1.4; background: var(--bad); color: #fff; border-radius: 99px; padding: 0 5px; }
   .prof-chip { position: fixed; top: 12px; right: 12px; z-index: 40; border: 0; border-radius: 999px; padding: 8px 14px; font-weight: 800; background: rgba(20, 14, 40, .88); color: #fff; box-shadow: 0 4px 14px rgba(0, 0, 0, .3); max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .prof-chip span { opacity: .7; }
   body.emerg-on .prof-chip { top: 62px; }
@@ -304,7 +303,6 @@
   .rc-card.fb .rc-art { animation-delay: -.3s; }
   .hh-frame { height: max(480px, calc(min(100vw - 40px, 1000px) * .5625 + 170px)); }
   @media (prefers-reduced-motion: reduce) { .rc-art { animation: none; } }
-  .aa-card em { position: absolute; top: 10px; right: 10px; font-style: normal; font-size: .7rem; font-weight: 800; background: var(--bad); color: #fff; border-radius: 999px; padding: 2px 8px; }
   .aa-card.small { flex-direction: row; align-items: center; } .aa-card.small i { font-size: 1.6rem; }
   .cl-steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .cl-step { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); font-weight: 800; }
   .cl-step.done { background: #14966a; border-color: #14966a; } .cl-step.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,201,60,.35); }
@@ -2730,7 +2728,7 @@ function showHome() {
       ${homeRowHTML()}
       </div>
       <div class="hero">
-        <span class="label">Practice, then play</span>
+        <span class="label">${gamesAllowed() ? "Practice, then play" : "Practice makes perfect"}</span>
         <h1>Study <span>Arcade</span></h1>
         <p class="soft">👋 Hi, ${esc(SITE_NAME)}! Tap a subject to start studying.</p>
       </div>
@@ -2792,13 +2790,13 @@ document.addEventListener("click", e => {
 /* ---------- 👋 Who are you? Study Arcade asks every time it opens. After that every game and app uses that person, and nothing else asks. ---------- */
 let SITE_WHO = null, SITE_NAME = "";
 const WHO_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵", "🦁", "🐰", "🐶", "🐱", "🐧", "🦉", "🐢", "🦖", "🐬", "🦋", "🐝", "🐻"];
-/* ---------- 🎮 Who can play games: never Stephanie or Shawn, and nobody older than 25. Everyone is asked their age once (it counts up each year).
+/* ---------- 🎮 Who can play games: never Stephanie or Shawn, and nobody 25 or older. People who can't play games don't see any sign that games exist for anyone else. Everyone is asked their age once (it counts up each year).
    For everyone else, games simply don't show up anywhere, and if a game screen opens some other way it goes straight back to the home screen. ---------- */
 const NO_GAMES_IDS = new Set(["stephenie", "shawn"]);
 // 👤 the Guest account is for visitors: its age is asked every time someone picks it (and never saved), and a guest can't enter any information: no name, no code, no About me
 let GUEST_AGE = null;
 const whoAge = id => { if (id === "guest") return GUEST_AGE; const a = (store.get("who_age", {}) || {})[id]; return a && a.age >= 0 ? a.age + Math.floor((Date.now() - (a.at || Date.now())) / 31557600000) : null; };
-const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) <= 25);
+const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) < 25);
 const GAME_HOME_KEYS = () => new Set(["bunny", ...[...INFO_GAME_APPS].map(id => "na-" + id)]);
 const GAME_SCREEN_RX = /^(🎮 Game Room|🏹 Pick a roots game|🏹 Root Archery|⚡ Root Hyper Practice|🥍 |⚽ |🏈 |🏀 |🎵 Name That Tune)/;
 function isGameScreen(lab) {
@@ -3156,7 +3154,7 @@ function startInfo(jump) {
       row("4th Grade Challenge Lounge", "Harder 4th-grade problems for kids who love a challenge.", "Math Center → Challenge Lounge", "") +
       row("The glowing portal", "Opens the Challenge Classroom.", "Math Center → the portal", "") +
       row("🦆 Lucky Duck Math", "Fractions, big numbers, patterns, story problems, coins and more.", "Math Center → near the bottom", "") +
-      row("🍕 Fraction & Decimal Lab", "Turn fractions into decimals, and add, subtract, multiply and divide them. Learn how, then play Pizza Toss.", "Math Center → at the very bottom, under Lucky Duck Math", btn(() => startFractionLab(), "Go")) +
+      row("🍕 Fraction & Decimal Lab", "Turn fractions into decimals, and add, subtract, multiply and divide them. Learn how, then " + (gamesAllowed() ? "play" : "practice with") + " Pizza Toss.", "Math Center → at the very bottom, under Lucky Duck Math", btn(() => startFractionLab(), "Go")) +
       `<div class="if-one">${btn(startMathCenter, "🧮 Open the Math Center")}</div>`)}
     ${sec("apps", "📱 Apps", "Every app lives in the <b>📱 App-App</b> (the first button on the home screen). The home screen shows 8 apps at a time, and they change at midnight. ⭐ means it's on the home screen today.",
       apps.map(a => row(`${a.emoji} ${esc(a.name)}${today.has(a.key) ? ` <em class="if-today">⭐ home screen today</em>` : ""}`, esc(INFO_DESC[a.key] || a.desc), "📱 App-App", btn(a.start, "Go"))).join("") +
@@ -9333,7 +9331,7 @@ function homeToday(now = new Date()) {
   for (let i = 0; pick.length < n && i < order.length; i++) { const a = order[(start + i) % order.length]; if (!pick.some(p => p.key === a.key)) pick.push(a); }
   return [...HOME_PINNED(), ...pick.sort((a, b) => aaSpot(b, day) - aaSpot(a, day))];
 }
-const homeRowHTML = () => homeToday().map(a => `<button class="bunny-btn${a.cls ? " " + a.cls : ""}"${a.id ? ` id="${a.id}"` : ""} data-home="${a.key}" type="button" aria-label="${esc(a.name)}" title="${esc(a.name + ": " + a.desc)}">${a.emoji}${aaSpot(a) ? `<i class="home-new">NEW</i>` : ""}</button>`).join("");
+const homeRowHTML = () => homeToday().map(a => `<button class="bunny-btn${a.cls ? " " + a.cls : ""}"${a.id ? ` id="${a.id}"` : ""} data-home="${a.key}" type="button" aria-label="${esc(a.name)}" title="${esc(a.name + ": " + a.desc)}">${a.emoji}</button>`).join("");
 function bindHomeRow() {
   const all = [...HOME_PINNED(), ...homePool()];
   $app.querySelectorAll("[data-home]").forEach(b => b.addEventListener("click", () => all.find(a => a.key === b.dataset.home)?.start()));
@@ -9344,7 +9342,7 @@ function bindHomeRow() {
 function startAppApp() {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; PROF_GAME = null;
   const day = aaDay(), home = new Set(homeToday().map(a => a.key)), extras = [HOME_PINNED()[1], ...HOME_CORE()].filter(a => gamesAllowed() || a.key !== "bunny");
-  const card = (a, key, attr) => `<button class="aa-card" ${attr}><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${aaSpot(a, day) ? `<em>BRAND NEW</em>` : a.isNew ? `<em>NEW</em>` : ""}${home.has(key) ? `<small class="aa-home">🏠 On the home screen today</small>` : ""}</button>`;
+  const card = (a, key, attr) => `<button class="aa-card" ${attr}><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${home.has(key) ? `<small class="aa-home">🏠 On the home screen today</small>` : ""}</button>`;
   $app.innerHTML = `<div class="panel appapp">
     <div class="topline"><span class="label">📱 App-App</span><button class="iconbtn" id="aa-home">Back to menu</button></div>
     <h2>📱 The App-App</h2><p class="soft">Every app lives here! The home screen shows ${HOME_MAX} at a time (counting the App-App), and some rotate in and out at midnight. <b id="aa-next"></b></p>
@@ -9499,7 +9497,7 @@ function startCodeLab(track, lesson) {
         <button class="aa-card" data-tr="html"><i>🌐</i><b>HTML: build websites</b><span>Make real web pages with headings, colors, lists, links and buttons. See your page change as you type!</span><small>✅ ${n("code_html")} / ${HTML_LESSONS.length} lessons</small></button>
         <button class="aa-card" data-tr="css"><i>🎨</i><b>CSS: style websites</b><span>Colors, fonts, borders, circles, boxes side by side and hover magic.</span><small>✅ ${n("code_css")} / ${CSS_LESSONS.length} lessons</small></button>
         <button class="aa-card" data-tr="js"><i>⚡</i><b>JavaScript: make websites think</b><span>The language that runs inside every web browser: variables, choices, loops, lists and functions.</span><small>✅ ${n("code_js")} / ${JS_LESSONS.length} lessons</small></button>
-        <button class="aa-card" data-tr="py"><i>🐍</i><b>Python: real programming</b><span>The language scientists and game makers use. Math, variables, loops, turtle drawing and your own games!</span><small>✅ ${n("code_py")} / ${PY_LESSONS.length} lessons</small></button>
+        <button class="aa-card" data-tr="py"><i>🐍</i><b>Python: real programming</b><span>${gamesAllowed() ? `The language scientists and game makers use. Math, variables, loops, turtle drawing and your own games!` : `The language scientists and inventors use. Math, variables, loops, turtle drawing and your own programs!`}</span><small>✅ ${n("code_py")} / ${PY_LESSONS.length} lessons</small></button>
         <button class="aa-card" data-tr="robot"><i>🤖</i><b>Robot Code</b><span>Program a robot with commands to get it through mazes to the star. Use as few blocks as you can!</span><small>✅ ${rb} / ${ROBOT_LEVELS.length} levels</small></button>
         <button class="aa-card" data-tr="binary"><i>0️⃣1️⃣</i><b>Binary: how computers count</b><span>Computers only use 0s and 1s. Flip the switches to make numbers!</span><small>✅ ${bn} / ${BIN_GOALS.length} challenges</small></button>
       </div>
@@ -9697,22 +9695,24 @@ const AI_KID_FRAME = p => `You are a friendly helper on a website where kids lea
 function aiErrText(e) { const c = e && e.code; return c === "not_granted" ? "AI isn't turned on for this page. (A grown-up can allow it when asked.)" : c === "rate_limited" ? "Too many questions at once! Wait a minute and try again." : c === "cancelled" ? "Stopped." : "The AI couldn't answer right now. Try again in a bit."; }
 function startAIStudio(view) {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
+  const GAME_L = AI_LESSONS.findIndex(l => /game/i.test(l.t));
+  if (!gamesAllowed() && (view === "game" || view === "l" + GAME_L)) view = null;
   const seen = store.get("ai_seen", []);
   if (!view) {
     $app.innerHTML = `<div class="panel aistudio">
       <div class="topline"><span class="label">🤖 AI Studio</span><button class="iconbtn" id="ai-back">Back to App-App</button></div>
       <h2>🤖 AI Studio</h2><p class="soft">Learn to use AI like a pro: to learn, create and build cool things, safely.</p>
-      <h3>📘 Lessons</h3><div class="aa-grid">${AI_LESSONS.map((l, i) => `<button class="aa-card small" data-l="${i}"><i>${l.e}</i><b>${seen.includes(i) ? "✅ " : ""}${l.t}</b></button>`).join("")}</div>
+      <h3>📘 Lessons</h3><div class="aa-grid">${AI_LESSONS.map((l, i) => !gamesAllowed() && i === GAME_L ? "" : `<button class="aa-card small" data-l="${i}"><i>${l.e}</i><b>${seen.includes(i) ? "✅ " : ""}${l.t}</b></button>`).join("")}</div>
       <h3>🛠️ Projects</h3><div class="aa-grid">
         <button class="aa-card" id="ai-build"><i>🧪</i><b>Prompt Builder</b><span>Build a great prompt step by step, see its score, and try it on a real AI.</span></button>
         <button class="aa-card" id="ai-quiz"><i>🏅</i><b>Better Prompt Challenge</b><span>Can you spot the better prompt? 6 rounds.</span></button>
-        <button class="aa-card" id="ai-game"><i>🎮</i><b>Make a game with AI</b><span>Describe a game, let AI write the code, then play it in the Code Lab!</span></button>
+        ${gamesAllowed() ? `<button class="aa-card" id="ai-game"><i>🎮</i><b>Make a game with AI</b><span>Describe a game, let AI write the code, then play it in the Code Lab!</span></button>` : ""}
       </div></div>`;
     document.getElementById("ai-back").addEventListener("click", startAppApp);
     $app.querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => startAIStudio("l" + b.dataset.l)));
     document.getElementById("ai-build").addEventListener("click", () => startAIStudio("build"));
     document.getElementById("ai-quiz").addEventListener("click", () => startAIStudio("quiz"));
-    document.getElementById("ai-game").addEventListener("click", () => startAIStudio("game"));
+    document.getElementById("ai-game")?.addEventListener("click", () => startAIStudio("game"));
     return;
   }
   const back = `<button class="iconbtn" id="ai-up">AI Studio home</button>`;
@@ -11209,7 +11209,7 @@ function startFractionLab(topic, tab = "learn") {
   PROF_GAME = null; PROF_RESTART = null;
   const S = flGet(), all = Object.keys(FL_SKILLS), lvs = all.map(k => flLevelOf(S.pts[k]));
   if (!topic) {
-    appScreen("🍕 Fraction & Decimal Lab", `<div class="fl-hero"><h2>🍕 Fraction &amp; Decimal Lab</h2><p>Turn fractions into decimals, and add, subtract, multiply and divide them both. Learn how, then play 🍕 Pizza Toss to practice!</p>
+    appScreen("🍕 Fraction & Decimal Lab", `<div class="fl-hero"><h2>🍕 Fraction &amp; Decimal Lab</h2><p>Turn fractions into decimals, and add, subtract, multiply and divide them both. Learn how, then ${gamesAllowed() ? "play 🍕 Pizza Toss to practice" : "practice with 🍕 Pizza Toss"}!</p>
       <div class="fl-stats"><div><b style="color:#3ddc84">${lvs.filter(x => x === 2).length}</b><small>Know it</small></div><div><b style="color:#ffc93c">${lvs.filter(x => x === 1).length}</b><small>Getting there</small></div><div><b style="color:#ff6b85">${lvs.filter(x => x === 0).length}</b><small>Not yet</small></div></div>
       <div class="row"><button class="btn gold fl-big" id="fl-playall" type="button">🍕 Pizza Toss: everything</button></div><p class="fl-tiny">Best round: ${S.best ? fmt(S.best) + " pts" : "—"}${S.perfect ? " · 🏆 Perfect round!" : ""}</p></div>
       <div class="aa-grid">${Object.entries(FL_TOPICS).map(([k, t]) => `<button class="aa-card" data-t="${k}" type="button"><i>${t.e}</i><b>${t.name}</b><span>📖 Learn · 🍕 Pizza Toss · ${t.sk.map(s => FL_LV[flLevelOf(S.pts[s])].t.split(" ")[0]).join(" ")}</span></button>`).join("")}
@@ -11345,6 +11345,7 @@ async function saCopy(text, ta) {
   return false;
 }
 let PL_DATA = null, PL_LAST = null;
+const PL_SKIP_DATES = new Set(["2026-11-06"]);   // these versions don't exist in the time machine
 async function plLoad() { if (PL_DATA) return PL_DATA; const r = await fetch("past-lives.json", { cache: "no-cache" }); if (!r.ok) throw new Error("missing"); return PL_DATA = await r.json(); }
 function plBuild(idx) {   // put a past version back together: start from the first one and add each change in order
   const V = PL_DATA.versions; let lines, from = 1;
@@ -11355,7 +11356,8 @@ function plBuild(idx) {   // put a past version back together: start from the fi
 // a past life runs in a sealed box with pretend storage, so it can never mess up the present site's saves
 const PL_SHIM = `<script>(function(){var m={},s={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null},get length(){return Object.keys(m).length}};["localStorage","sessionStorage"].forEach(function(n){try{Object.defineProperty(window,n,{value:s,configurable:true})}catch(e){}});})();<\/script>`;
 function plPlay(idx) {
-  const v = PL_DATA.versions[idx], html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${PL_SHIM}</head><body>${plBuild(idx)}</body></html>`;
+  if (!gamesAllowed() || PL_SKIP_DATES.has(PL_DATA.versions[idx]?.date)) return;   // old versions have games in them
+  const v = PL_DATA.versions[idx], html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${PL_SHIM}<style>.home-new, .aa-card em { display: none !important; }</style></head><body>${plBuild(idx)}</body></html>`;
   document.getElementById("pl-wrap")?.remove();
   const w = document.createElement("div"); w.id = "pl-wrap"; w.className = "pl-wrap";
   w.innerHTML = `<div class="pl-bar"><button class="pl-exit" id="pl-exit" type="button">✕ Exit past life</button><span>⏪ Past life #${idx + 1} · ${esc(new Date(v.date + "T12:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }))} · ${esc(v.msg)}</span></div><iframe class="pl-frame" id="pl-frame" title="An older Study Arcade" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>`;
@@ -11374,20 +11376,20 @@ function startSaveSite() {
     <div class="row ss-btns"><button class="btn gold" id="ss-copy" type="button">📋 Copy all the code</button><button class="btn" id="ss-dl" type="button">⬇️ Download index.html</button><button class="btn" id="ss-show" type="button">👀 Show the code</button></div>
     <p class="soft ss-size">📦 ${mb} MB · ${lines} lines of code. In your own copy, progress saves in that browser. A few things need Claude (Hippo's AI answers, Ask Claude and the online save), and the rest works anywhere.</p>
     <textarea class="ss-code" id="ss-code" readonly hidden spellcheck="false" aria-label="The Study Arcade's code"></textarea>
-    <div class="sl-card ss-past"><h3>⏪ Past lives</h3><p>Travel back in time and play any older version of the Study Arcade, all the way back to the very first one! A big ✕ Exit button in the top-left corner brings you back to now.</p>
-      <button class="btn go" id="ss-pastbtn" type="button">⏪ Show the past lives</button><div id="ss-past"></div></div>`);
+    ${gamesAllowed() ? `<div class="sl-card ss-past"><h3>⏪ Past lives</h3><p>Travel back in time and play any older version of the Study Arcade, all the way back to the very first one! A big ✕ Exit button in the top-left corner brings you back to now.</p>
+      <button class="btn go" id="ss-pastbtn" type="button">⏪ Show the past lives</button><div id="ss-past"></div></div>` : ""}`);
   const ta = document.getElementById("ss-code");
   if (!text) { document.getElementById("ss-copy").disabled = document.getElementById("ss-dl").disabled = document.getElementById("ss-show").disabled = true; toast("The code couldn't be gathered on this page."); }
   document.getElementById("ss-copy").addEventListener("click", async () => { if (await saCopy(text, ta)) { sfx.buy(); toast("📋 Copied the whole site! Paste it into index.html."); } else { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); toast("Press Ctrl+C (or ⌘+C) to copy the selected code."); } });
   document.getElementById("ss-dl").addEventListener("click", async () => { const r = await saDownload(text, "index.html"); toast(r === "saved" ? "⬇️ index.html is saved!" : r === "declined" ? "Okay, nothing was downloaded." : r === "busy" ? "A download box is already open." : r ? "⬇️ Downloading index.html… (if nothing happens, use 📋 Copy instead)" : "This page can't download files. Use 📋 Copy instead."); });
   document.getElementById("ss-show").addEventListener("click", e => { const b = e.currentTarget; if (ta.hidden) { ta.value = text; ta.hidden = false; b.textContent = "🙈 Hide the code"; } else { ta.hidden = true; b.textContent = "👀 Show the code"; } });
-  document.getElementById("ss-pastbtn").addEventListener("click", async e => {
+  document.getElementById("ss-pastbtn")?.addEventListener("click", async e => {
     const b = e.currentTarget, box = document.getElementById("ss-past"); b.disabled = true; b.textContent = "⏳ Opening the time machine…";
     try { await plLoad(); } catch (err) { box.innerHTML = `<p class="soft">😕 The past lives couldn't be loaded here. They live next to the main Study Arcade page, so they only work there.</p>`; b.disabled = false; b.textContent = "⏪ Try again"; return; }
     if (!document.getElementById("ss-past")) return;
     b.hidden = true; const V = PL_DATA.versions, fmtD = d => new Date(d + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" });
-    const groups = []; for (let i = V.length - 1; i >= 0; i--) { const g = groups[groups.length - 1]; if (g && g.date === V[i].date) g.items.push(i); else groups.push({ date: V[i].date, items: [i] }); }
-    box.innerHTML = `<p class="soft">${V.length} past lives, from ${fmtD(V[0].date)} to ${fmtD(V[V.length - 1].date)}. The newest is at the top.</p><input class="ss-find" id="ss-find" placeholder="🔍 Find a past life (like “Hippo” or “Rummikub”)" autocomplete="off">
+    const groups = []; for (let i = V.length - 1; i >= 0; i--) { if (PL_SKIP_DATES.has(V[i].date)) continue; const g = groups[groups.length - 1]; if (g && g.date === V[i].date) g.items.push(i); else groups.push({ date: V[i].date, items: [i] }); }
+    box.innerHTML = `<p class="soft">${V.filter(v => !PL_SKIP_DATES.has(v.date)).length} past lives, from ${fmtD(V[0].date)} to ${fmtD(V[V.length - 1].date)}. The newest is at the top.</p><input class="ss-find" id="ss-find" placeholder="🔍 Find a past life (like “Hippo” or “Rummikub”)" autocomplete="off">
       <div class="pl-list" id="pl-list">${groups.map(g => `<details class="pl-day"${g === groups[0] ? " open" : ""}><summary>📅 ${esc(fmtD(g.date))} <small>(${g.items.length})</small></summary>${g.items.map(i => `<div class="pl-row" data-txt="${esc(V[i].msg.toLowerCase())}"><span><b>#${i + 1}</b> ${esc(V[i].msg)}</span><button class="btn mini" data-play="${i}" type="button">▶ Play</button></div>`).join("")}</details>`).join("")}</div>`;
     box.querySelectorAll("[data-play]").forEach(x => x.addEventListener("click", () => { x.textContent = "⏳"; setTimeout(() => { plPlay(+x.dataset.play); x.textContent = "▶ Play"; }, 30); }));
     document.getElementById("ss-find").addEventListener("input", ev => { const q = ev.target.value.trim().toLowerCase(); box.querySelectorAll(".pl-row").forEach(r => r.hidden = !!q && !r.dataset.txt.includes(q)); box.querySelectorAll(".pl-day").forEach(d => { const any = [...d.querySelectorAll(".pl-row")].some(r => !r.hidden); d.hidden = !any; if (q && any) d.open = true; }); });
@@ -11466,21 +11468,21 @@ function startCalmCorner(tab = "breathe") {
   }
 }
 NEW_APPS.push(
-  { id: "music", emoji: "🎹", name: "Music Maker", desc: "Play piano, learn songs note by note, and make your own beats.", start: () => startMusicMaker(), isNew: true },
-  { id: "science", emoji: "🔬", name: "Science Lab", desc: "Sink or float, color mixing, a volcano and a plant you grow.", start: () => startScienceLab(), isNew: true },
-  { id: "space", emoji: "🌌", name: "Space Explorer", desc: "Watch the planets orbit, find your weight on Mars, and take a space quiz.", start: () => startSpaceExplorer(), isNew: true },
-  { id: "money", emoji: "💰", name: "Money Smart", desc: "Savings goals, needs vs. wants, a budget game and growing money.", start: () => startMoneySmart(), isNew: true },
-  { id: "pixel", emoji: "🎨", name: "Pixel Art Studio", desc: "Paint pixel pictures like old video games, and save a gallery.", start: () => startPixelArt(), isNew: true },
-  { id: "puzzle", emoji: "🧩", name: "Puzzle Room", desc: "Sudoku, Tower of Hanoi and Lights Out brain puzzles.", start: () => startPuzzleRoom(), isNew: true },
-  { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab(), isNew: true },
-  { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), isNew: true, added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
-  { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), isNew: true, added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
-  { id: "gallery", emoji: "🖼️", name: "My Gallery", desc: "Save up to 1,000 pictures, drawings and videos, make new drawings, use them as backgrounds, and delete what you don't want.", start: () => startGallery(), isNew: true, added: "2026-11-12", kw: "gallery|my gallery|my pictures|my photos|my videos|my drawings|photo album" },
-  { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), isNew: true, added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
-  { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude), and travel to its past lives to play any older version.", start: () => startSaveSite(), isNew: true, added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
-  { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer(), isNew: true },
-  { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator(), isNew: true },
-  { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner(), isNew: true }
+  { id: "music", emoji: "🎹", name: "Music Maker", desc: "Play piano, learn songs note by note, and make your own beats.", start: () => startMusicMaker() },
+  { id: "science", emoji: "🔬", name: "Science Lab", desc: "Sink or float, color mixing, a volcano and a plant you grow.", start: () => startScienceLab() },
+  { id: "space", emoji: "🌌", name: "Space Explorer", desc: "Watch the planets orbit, find your weight on Mars, and take a space quiz.", start: () => startSpaceExplorer() },
+  { id: "money", emoji: "💰", name: "Money Smart", desc: "Savings goals, needs vs. wants, a budget game and growing money.", start: () => startMoneySmart() },
+  { id: "pixel", emoji: "🎨", name: "Pixel Art Studio", desc: "Paint pixel pictures like old video games, and save a gallery.", start: () => startPixelArt() },
+  { id: "puzzle", emoji: "🧩", name: "Puzzle Room", desc: "Sudoku, Tower of Hanoi and Lights Out brain puzzles.", start: () => startPuzzleRoom() },
+  { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab() },
+  { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
+  { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
+  { id: "gallery", emoji: "🖼️", name: "My Gallery", desc: "Save up to 1,000 pictures, drawings and videos, make new drawings, use them as backgrounds, and delete what you don't want.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|my pictures|my photos|my videos|my drawings|photo album" },
+  { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
+  { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude), and travel to its past lives to play any older version.", start: () => startSaveSite(), added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
+  { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer() },
+  { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator() },
+  { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner() }
 );
 // 🎲 Hippopoly: a property-trading board game, you vs. the computer, 10 levels
 const HP_GROUPS = { brown: ["#8d5a3b", 60], lblue: ["#7fd3ff", 100], pink: ["#ff6fb5", 140], orange: ["#ff8c42", 180], red: ["#e63946", 220], yellow: ["#ffd23f", 260], green: ["#3bb273", 300], blue: ["#1e4fd8", 350] };
@@ -11579,7 +11581,7 @@ function hpEnd(dbl) {
   hpDraw();
   if (HP.turn === 1) { HP.busy = true; naTimer(setTimeout(() => { HP.busy = false; hpAiBuild(); hpRoll(); }, 900)); }
 }
-NEW_APPS.push({ id: "hippopoly", emoji: "🎲", name: "Hippopoly", desc: "A property-trading board game: you vs. the computer, with 10 levels.", start: () => startHippopoly(), isNew: true });
+NEW_APPS.push({ id: "hippopoly", emoji: "🎲", name: "Hippopoly", desc: "A property-trading board game: you vs. the computer, with 10 levels.", start: () => startHippopoly() });
 
 // 🎲 Classic games vs. the computer (shared bits: difficulty, win counts)
 const CG_LVLS = [["easy", "😊 Easy"], ["medium", "🙂 Medium"], ["hard", "😈 Hard"]];
@@ -12117,15 +12119,15 @@ function dbAi() {
 }
 
 NEW_APPS.push(
-  { id: "uno", emoji: "🃏", name: "Uno", desc: "Match colors and numbers, and zap the computer with +4s!", start: () => startUno(), isNew: true, kw: "uno" },
-  { id: "bship", emoji: "🚢", name: "Battleship", desc: "Hunt down and sink the computer's hidden fleet.", start: () => startBattleship(), isNew: true, kw: "battle ?ships?" },
-  { id: "hclass", emoji: "🎓", name: "Head of the Class", desc: "Race the computer from Kindergarten to College with trivia.", start: () => startHeadClass(), isNew: true, kw: "head of (the )?class|trivia" },
-  { id: "rummi", emoji: "🀄", name: "Rummikub", desc: "Make runs and groups of number tiles before the computer.", start: () => startRummikub(), isNew: true, kw: "rummikub|rummy|rummicube" },
-  { id: "check", emoji: "⛀", name: "Checkers", desc: "Jump, capture and crown kings against the computer.", start: () => startCheckers(), isNew: true, kw: "checkers|draughts" },
-  { id: "yahtzee", emoji: "🎲", name: "Yahtzee", desc: "Roll five dice, fill your score card, and shout Yahtzee!", start: () => startYahtzee(), isNew: true, kw: "yahtzee|yatzy|dice game" },
-  { id: "mancala", emoji: "🥣", name: "Mancala", desc: "The ancient stone-sowing game. Capture the most stones!", start: () => startMancala(), isNew: true, kw: "mancala|kalah" },
-  { id: "gofish", emoji: "🐟", name: "Go Fish", desc: "Ask for cards, go fishing, and collect the most books.", start: () => startGoFish(), isNew: true, kw: "go ?fish" },
-  { id: "dots", emoji: "⬜", name: "Dots and Boxes", desc: "Draw lines, close boxes, and outsmart the computer.", start: () => startDots(), isNew: true, kw: "dots (and|&) box(es)?|dots game" },
+  { id: "uno", emoji: "🃏", name: "Uno", desc: "Match colors and numbers, and zap the computer with +4s!", start: () => startUno(), kw: "uno" },
+  { id: "bship", emoji: "🚢", name: "Battleship", desc: "Hunt down and sink the computer's hidden fleet.", start: () => startBattleship(), kw: "battle ?ships?" },
+  { id: "hclass", emoji: "🎓", name: "Head of the Class", desc: "Race the computer from Kindergarten to College with trivia.", start: () => startHeadClass(), kw: "head of (the )?class|trivia" },
+  { id: "rummi", emoji: "🀄", name: "Rummikub", desc: "Make runs and groups of number tiles before the computer.", start: () => startRummikub(), kw: "rummikub|rummy|rummicube" },
+  { id: "check", emoji: "⛀", name: "Checkers", desc: "Jump, capture and crown kings against the computer.", start: () => startCheckers(), kw: "checkers|draughts" },
+  { id: "yahtzee", emoji: "🎲", name: "Yahtzee", desc: "Roll five dice, fill your score card, and shout Yahtzee!", start: () => startYahtzee(), kw: "yahtzee|yatzy|dice game" },
+  { id: "mancala", emoji: "🥣", name: "Mancala", desc: "The ancient stone-sowing game. Capture the most stones!", start: () => startMancala(), kw: "mancala|kalah" },
+  { id: "gofish", emoji: "🐟", name: "Go Fish", desc: "Ask for cards, go fishing, and collect the most books.", start: () => startGoFish(), kw: "go ?fish" },
+  { id: "dots", emoji: "⬜", name: "Dots and Boxes", desc: "Draw lines, close boxes, and outsmart the computer.", start: () => startDots(), kw: "dots (and|&) box(es)?|dots game" },
 );
 
 // ♟️ Chess: you are white (bottom). Board squares 0-63, row 0 is the top (black's side).
@@ -12246,7 +12248,7 @@ function chAi() {
   if (Math.random() < cgSmart() + .15) { let best = -1e9; for (const m of ms) { const v = -chSearch(chApply(CH.s, m), d - 1, -1e9, -best); if (v > best) { best = v; pick = m; } } }
   chDo(pick);
 }
-NEW_APPS.push({ id: "chess", emoji: "♟️", name: "Chess", desc: "Real chess against the computer, with take-backs for practice.", start: () => startChess(), isNew: true, kw: "chess" });
+NEW_APPS.push({ id: "chess", emoji: "♟️", name: "Chess", desc: "Real chess against the computer, with take-backs for practice.", start: () => startChess(), kw: "chess" });
 
 // 🧠 The Memorizer: give it something to memorize, then type it from memory in a new box and get suggestions
 const MZ_SAMPLES = [
@@ -12421,7 +12423,7 @@ function startMemorizer(id, tab = "type") {
     });
   }
 }
-NEW_APPS.push({ id: "memorizer", emoji: "🧠", name: "The Memorizer", desc: "Paste anything to memorize, type it from memory, and get suggestions.", start: () => startMemorizer(), isNew: true, kw: "memori[sz]e[rs]?|memori[sz]or|memori[sz]ing|memory app|memorise|memorize" });
+NEW_APPS.push({ id: "memorizer", emoji: "🧠", name: "The Memorizer", desc: "Paste anything to memorize, type it from memory, and get suggestions.", start: () => startMemorizer(), kw: "memori[sz]e[rs]?|memori[sz]or|memori[sz]ing|memory app|memorise|memorize" });
 
 // 📝 Grammar & Reading Lab: the 8 parts of speech, sentences, text structures and text features
 const GL_UNITS = {
@@ -13181,7 +13183,7 @@ function glWhy(pick, toks) {
 let GL_STATE = null;
 function startGrammarLab(unit, tab = "learn") {
   if (!unit) {
-    appScreen("📝 Grammar & Reading Lab", `<h2>📝 Grammar &amp; Reading Lab</h2><p class="soft">Learn the 8 parts of speech, sentence types, text structures and text features. Then practice and play!</p>${glWeekLine()}
+    appScreen("📝 Grammar & Reading Lab", `<h2>📝 Grammar &amp; Reading Lab</h2><p class="soft">Learn the 8 parts of speech, sentence types, text structures and text features. Then practice${gamesAllowed() ? " and play" : ""}!</p>${glWeekLine()}
       <div class="aa-grid">${Object.entries(GL_UNITS).map(([k, u]) => `<button class="aa-card" data-u="${k}"><i>${u.e}</i><b>${u.name}</b><span>📖 Learn · 🎯 Quiz${gamesAllowed() ? " · " + u.game : ""}</span></button>`).join("")}
       <button class="aa-card" data-u="notes"><i>📒</i><b>New from the class notes</b><span>Endless quiz on the newest grammar from class</span></button>
       <button class="aa-card" data-u="mix"><i>🔀</i><b>Mix it all up</b><span>Endless quiz with questions from every topic</span></button>
@@ -13390,7 +13392,7 @@ function glGame(unit, box) {
   };
   round();
 }
-NEW_APPS.push({ id: "grammar", emoji: "📝", name: "Grammar & Reading Lab", desc: "The 8 parts of speech, sentence types, text structures and text features: learn, quiz and play.", start: () => startGrammarLab(), isNew: true, kw: "grammar( lab)?|parts? of speech|text structures?|text features?|comma splices?|fanboys|sentence types?|compound sentences?|complex sentences?|compound-complex|conjunctive adverbs?|reading lab" });
+NEW_APPS.push({ id: "grammar", emoji: "📝", name: "Grammar & Reading Lab", desc: "The 8 parts of speech, sentence types, text structures and text features: learn, quiz and play.", start: () => startGrammarLab(), kw: "grammar( lab)?|parts? of speech|text structures?|text features?|comma splices?|fanboys|sentence types?|compound sentences?|complex sentences?|compound-complex|conjunctive adverbs?|reading lab" });
 
 /* ---------- 🏹 Root Archery: Emmett's 30 Greek & Latin roots (brought in from Root Archery.html, then made cooler) ---------- */
 // [roots shown, meaning, sheet examples, more words ([] marks the root), starting level from Emmett's sheet: 0=X, 1=~, -1 = unmarked]
@@ -16482,7 +16484,7 @@ function startDreamTeam(sport) {
   document.getElementById("dt-back").addEventListener("click", startRootsChooser);
   profChip();
 }
-NEW_APPS.push({ id: "roots", emoji: "🏹", name: "Root Archery", desc: "Emmett's 30 Greek & Latin roots, six ways to play: 🏹 bow and arrow, 🥍 lacrosse, 🏀 basketball, ⚽ soccer, 🏈 football or ⚡ hyper typing practice! Move each root from X to ~ to Y.", start: () => startRootsChooser(), isNew: true, added: "2026-11-09", kw: "root archery|root lacrosse|root basketball|root soccer|root football|lacrosse|archery|(greek|latin|word) roots?|greek (and |& )?latin roots?|root words?|root sheet|roots? practice|practice roots?|roots? games?" });
+NEW_APPS.push({ id: "roots", emoji: "🏹", name: "Root Archery", desc: "Emmett's 30 Greek & Latin roots, six ways to play: 🏹 bow and arrow, 🥍 lacrosse, 🏀 basketball, ⚽ soccer, 🏈 football or ⚡ hyper typing practice! Move each root from X to ~ to Y.", start: () => startRootsChooser(), added: "2026-11-09", kw: "root archery|root lacrosse|root basketball|root soccer|root football|lacrosse|archery|(greek|latin|word) roots?|greek (and |& )?latin roots?|root words?|root sheet|roots? practice|practice roots?|roots? games?" });
 
 /* ---------- 🎡 Wheel Spinner: 1 to 1,000 parts, each with a name and an emoji ---------- */
 const WH_MAX = 1000;
@@ -16586,7 +16588,7 @@ function startWheel() {
   list(); hist(); bake();
   if (document.fonts?.ready) document.fonts.ready.then(() => { if (cv.isConnected && !spinning) bake(); });
 }
-NEW_APPS.push({ id: "wheel", emoji: "🎡", name: "Wheel Spinner", desc: "Make a spinning wheel with 1 to 1,000 parts. Name each part, give it an emoji, and spin!", start: () => startWheel(), isNew: true, added: "2026-11-10", kw: "wheel spinner|spinning wheel|spin (the|a) wheel|wheel of names|name wheel|prize wheel|random picker|spinner|wheel" });
+NEW_APPS.push({ id: "wheel", emoji: "🎡", name: "Wheel Spinner", desc: "Make a spinning wheel with 1 to 1,000 parts. Name each part, give it an emoji, and spin!", start: () => startWheel(), added: "2026-11-10", kw: "wheel spinner|spinning wheel|spin (the|a) wheel|wheel of names|name wheel|prize wheel|random picker|spinner|wheel" });
 /* ---------- 🎵 Name That Tune ----------
    🎹 Hear It: real melodies of old songs anyone may use (nursery rhymes, holiday songs, folk songs and famous classical music),
    played on a built-in piano. The fewer notes you need, the more points. 🧩 Song Clues: real songs you name from the artist,
@@ -18358,8 +18360,12 @@ function startNameThatTune() {
   $("quit").addEventListener("click", () => { ntStop(); if (G && G.n > 0) end(); else { G = null; home(); } });
   home();
 }
-NEW_APPS.push({ id: "tune", emoji: "🎵", name: "Name That Tune", desc: "Hear a real melody and name it, or name famous songs from clues. About 100 tunes and over 1,400 songs!", start: () => startNameThatTune(), isNew: true, added: "2026-11-11", kw: "name that tune|name the tune|guess the song|guess that song|song quiz|music quiz" });
+NEW_APPS.push({ id: "tune", emoji: "🎵", name: "Name That Tune", desc: "Hear a real melody and name it, or name famous songs from clues. About 100 tunes and over 1,400 songs!", start: () => startNameThatTune(), added: "2026-11-11", kw: "name that tune|name the tune|guess the song|guess that song|song quiz|music quiz" });
 
+// 🎮 people who can't play games don't see games (or the time machine) in app descriptions either
+[["pixel", "Paint pixel pictures one square at a time, and save a gallery."], ["money", "Savings goals, needs vs. wants, making a budget, and growing money."], ["grammar", "The 8 parts of speech, sentence types, text structures and text features: learn and quiz."], ["savesite", "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude)."]].forEach(([id, plain]) => {
+  const a = NEW_APPS.find(x => x.id === id); if (!a) return; const full = a.desc; Object.defineProperty(a, "desc", { get: () => gamesAllowed() ? full : plain, configurable: true });
+});
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
@@ -19926,7 +19932,7 @@ new MutationObserver(() => {
   document.body.classList.toggle("has-exit", !home);
   const lab = home ? "" : ($app.querySelector(".label")?.textContent || "").trim();
   if (home || (lab && !MENU_GAME_RX.test(lab))) IN_MENU_GAME = false;
-  if (!gamesAllowed() && !home && isGameScreen(lab)) { IN_MENU_GAME = false; setTimeout(() => { exitAll(); toast("🚫 That's not available for you."); }, 0); return; }
+  if (!gamesAllowed() && !home && isGameScreen(lab)) { IN_MENU_GAME = false; setTimeout(() => exitAll(), 0); return; }
   emergBtn.hidden = home || !(MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab));
   document.body.classList.toggle("emerg-on", !emergBtn.hidden);
   profChip(); bgFab(); if (!document.querySelector(".bgpage")) closeBgSheet();
