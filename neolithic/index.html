@@ -1490,6 +1490,20 @@
   .pl8-pw { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; font-weight: 700; }
   .pl8-pw input { flex: 1; min-width: 0; accent-color: var(--gold); }
   .pl8-shoot { width: 100%; max-width: 420px; }
+  .hpz-card { border-radius: 22px; padding: 20px 16px; margin: 12px 0; text-align: center; border: 2px solid var(--line); background: var(--panel-2); min-width: 0; }
+  .hpz-start { background: linear-gradient(160deg, rgba(255, 196, 92, .28), rgba(255, 128, 160, .18)); border-color: rgba(255, 196, 92, .55); }
+  .hpz-middle { background: linear-gradient(160deg, rgba(92, 200, 255, .26), rgba(120, 230, 160, .18)); border-color: rgba(92, 200, 255, .55); }
+  .hpz-end { background: linear-gradient(160deg, rgba(110, 90, 220, .35), rgba(30, 30, 80, .35)); border-color: rgba(150, 130, 255, .55); }
+  .hpz-hello { font-weight: 800; letter-spacing: .02em; } .hpz-hello small { font-weight: 600; color: var(--ink-soft); }
+  .hpz-big { font-size: 4.2rem; line-height: 1.1; margin: 10px 0 4px; }
+  .hpz-text { font-family: var(--display); font-size: clamp(1.25rem, 5.2vw, 1.7rem); line-height: 1.35; margin: 6px auto 12px; max-width: 34ch; overflow-wrap: anywhere; }
+  .hpz-tag { display: inline-block; font-size: .8rem; font-weight: 800; background: var(--gold); color: #3a2600; border-radius: 99px; padding: 3px 10px; margin-bottom: 12px; }
+  .hpz-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .hpz-btns .btn { padding: 10px 14px; font-size: 1rem; }
+  .hpz-favs { display: grid; gap: 8px; margin: 10px 0; }
+  .hpz-fav { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+  .hpz-fav p { margin: 0; overflow-wrap: anywhere; } .hpz-emo { font-size: 1.8rem; } .hpz-favbtns { display: flex; gap: 4px; }
+  .linklike { background: none; border: 0; padding: 0; color: var(--gold); text-decoration: underline; font: inherit; cursor: pointer; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -19752,6 +19766,151 @@ function startPool() {
 INFO_GAME_APPS.add("pool");   // 🎮 a game: hidden from anyone who can't have games
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Pool Hall", "🎱", "pool hall|pool|billiards|8 ball|eight ball|snooker", "Play 8-ball pool against the computer or a friend: aim, pick your power, and sink your balls before the 8.", () => startPool()]);
 NEW_APPS.push({ id: "pool", emoji: "🎱", name: "Pool Hall", desc: "8-ball pool: aim with a guide line, sink solids or stripes, and beat the computer or a friend.", start: () => startPool(), kw: "pool|billiards|8 ball|eight ball|snooker" });
+/* ---------- ☀️ Happy Phrases: cheerful words to start, keep going, or end your day happy. */
+const HPZ_PARTS = [
+  ["start", "🌅", "Start your day", "Good morning!", [
+    ["☀️", "Good morning! Today is a brand-fresh page, and you get to write the first line."],
+    ["🌱", "Every big thing starts small. One good choice this morning is plenty."],
+    ["🚀", "You woke up with a whole day of chances. Let's go find a few!"],
+    ["😊", "Smile at the first person you see today. Smiles are free and they come back."],
+    ["🧠", "Your brain is ready to learn something cool today. Feed it a question!"],
+    ["🌈", "Yesterday is done. Today is wide open and full of maybe."],
+    ["💪", "You are stronger than the hardest part of today."],
+    ["🎒", "Pack your bag, pack your snack, and pack a little bit of brave."],
+    ["🐣", "Even the tiniest chick has to start by poking one little hole. Start small, start now."],
+    ["🌻", "Sunflowers turn to face the light. Find one bright thing this morning and face it."],
+    ["🥞", "Breakfast fuels your body. Kindness fuels your day."],
+    ["🎯", "Pick one thing you want to do well today. Just one. You've got this."],
+    ["🐦", "The birds are already singing. Maybe today deserves a song from you too."],
+    ["🔋", "Fully charged and ready! Let's see what today can do."],
+    ["🦁", "Be brave enough to try, and kind enough to help someone else try."],
+    ["🧩", "Today is a puzzle. You don't need every piece yet, just the next one."],
+    ["⭐", "You don't have to be perfect today. You just have to be you."],
+    ["🌤️", "Clouds or sunshine, you bring your own good weather."],
+    ["📚", "Somewhere today there's something you don't know yet. How exciting is that?"],
+    ["🤝", "Say hi to someone new today. Every friend was a stranger once."],
+    ["🎨", "Make today colorful. Laugh loud, think big, and be kind."],
+    ["🐢", "Slow and steady still gets there. Take your time and do your best."],
+    ["🌊", "Ride the waves today. Some are big, some are small, and you can handle both."],
+    ["🎈", "Lift someone up today and you'll float a little higher too."],
+    ["🔑", "Your attitude is the key that opens today. Turn it to happy!"],
+    ["🏁", "Ready, set, GOOD MORNING!"],
+    ["🌟", "Shine today. The world needs your kind of sparkle."],
+    ["🍊", "Squeeze all the good out of today, like juice from an orange."],
+    ["🦋", "Little changes can turn into something beautiful. Try one today."],
+    ["🎵", "Hum your favorite song on the way. A happy tune makes the walk shorter."]
+  ]],
+  ["middle", "🌞", "Middle of the day", "Keep going!", [
+    ["🌞", "Halfway there! Take a deep breath. You're doing better than you think."],
+    ["🥪", "Lunch break! Refuel your tummy and your happiness."],
+    ["💧", "Have you had some water? Your brain works best when it's not thirsty."],
+    ["🧘", "Stretch up high, stretch down low, shake it out, and keep on going!"],
+    ["🔄", "If the morning was tough, the afternoon is a fresh start. Hit the reset button."],
+    ["🐌", "Feeling slow? That's okay. Even snails get where they're going."],
+    ["🌳", "Trees don't grow in a day, and neither do great ideas. Keep at it."],
+    ["😄", "Tell someone a joke this afternoon. Laughing recharges everybody."],
+    ["🎉", "Celebrate one thing you already did today, even a small one!"],
+    ["🧗", "If it feels hard, that means you're climbing. Keep looking up."],
+    ["🌀", "Mistakes are just proof that you're trying. Try again!"],
+    ["🍎", "Take a bite of something healthy and a break from anything stressful."],
+    ["👀", "Look out a window for a minute. The sky is a great place to rest your eyes."],
+    ["🤗", "Check on a friend this afternoon. A kind word can turn a whole day around."],
+    ["⚡", "Quick energy boost: ten jumping jacks and one big smile!"],
+    ["🧭", "Lost your focus? Pick the very next small step and just do that one."],
+    ["🌼", "You've made it this far. The rest of the day is lucky to have you."],
+    ["🏃", "Keep going! The finish line is closer than it was this morning."],
+    ["🐝", "Busy as a bee? Remember even bees stop to enjoy the flowers."],
+    ["🎶", "Put a little rhythm in your afternoon. Tap a beat while you think."],
+    ["🪁", "Let your worries fly away like a kite with the string let go."],
+    ["💡", "Your next great idea might be one question away. Ask it!"],
+    ["🧃", "Snack, sip, smile, repeat."],
+    ["🌻", "Stand tall like a sunflower in the afternoon sun. You're growing!"],
+    ["🛼", "Roll with it! Not everything goes as planned, and that's okay."],
+    ["🎯", "Remember your one goal from this morning? You can still get it."],
+    ["🐬", "Be playful like a dolphin and curious like a cat this afternoon."],
+    ["🌤️", "The sun is high and so are your chances. Keep shining."],
+    ["🙌", "Give yourself a high five. Seriously, you deserve it."],
+    ["📏", "Progress counts, even an inch at a time."]
+  ]],
+  ["end", "🌙", "End your day", "Good night!", [
+    ["🌙", "You did it! Another whole day, done. Be proud of yourself."],
+    ["⭐", "Think of three good things from today. Even tiny ones count."],
+    ["🛏️", "Rest now. Tomorrow will be glad you got a good night's sleep."],
+    ["🌌", "The stars came out to say: nice job today."],
+    ["💤", "Let today's worries float away. You can pick up the good stuff tomorrow."],
+    ["🧸", "Snuggle in. You were brave today in ways you might not even notice."],
+    ["🌠", "Make a wish on the first star you see. Dream big tonight."],
+    ["📖", "Every day is a page in your story, and today's page was worth reading."],
+    ["🕯️", "Breathe in slowly... and out slowly. Your body has worked hard. Let it rest."],
+    ["🦉", "The owls are waking up so you can go to sleep. Good night!"],
+    ["💛", "Somebody was happy because of you today. Hold onto that."],
+    ["🌒", "Even the moon takes breaks to grow full again. You're growing too."],
+    ["🎁", "Today was a gift. Tomorrow is another one waiting to be opened."],
+    ["🐑", "Count sheep, or count the nice things people said to you today."],
+    ["🌧️", "If today was rainy, remember that rain helps things grow."],
+    ["🤲", "Say thank you for one thing before you sleep. Grateful hearts sleep sweet."],
+    ["🏠", "You're home, you're safe, and you are loved."],
+    ["🌻", "Close your petals for the night, little sunflower. The sun will be back."],
+    ["🚂", "All aboard the dream train! Next stop: tomorrow."],
+    ["🧠", "Your brain sorts out everything you learned while you sleep. Pretty cool!"],
+    ["🌜", "The moon is on night duty now, so you can rest easy."],
+    ["🎈", "Let go of anything heavy from today. You don't need to carry it to bed."],
+    ["💫", "You don't have to finish everything. You just have to rest and try again tomorrow."],
+    ["🌲", "Quiet like a forest at night. Peaceful, calm and still."],
+    ["🦋", "Today you changed a little and learned a little. That's how butterflies happen."],
+    ["😴", "Sweet dreams! May they be silly, sunny, and full of adventure."],
+    ["🔦", "Even on a dark night, you are a little light."],
+    ["🌊", "Let your thoughts roll out like gentle waves. In... and out."],
+    ["🪐", "Goodnight, space explorer. The universe will still be amazing in the morning."],
+    ["🙏", "Thank you, today. See you soon, tomorrow."]
+  ]]
+];
+let HPZ_GUEST_FAV = [], HPZ_PICK = {};
+const hpzFavs = () => SITE_WHO === "guest" ? HPZ_GUEST_FAV : (store.get("hpz_fav", []) || []);
+const hpzSetFavs = L => { if (SITE_WHO === "guest") HPZ_GUEST_FAV = L; else store.set("hpz_fav", L); };
+const hpzNow = () => { const h = new Date().getHours(); return h >= 4 && h < 11 ? "start" : h >= 11 && h < 17 ? "middle" : "end"; };
+const hpzDayIdx = (n, salt) => { const d = new Date(), k = d.getFullYear() * 400 + d.getMonth() * 32 + d.getDate() + salt * 7; return ((k * 2654435761) >>> 0) % n; };   // the same "phrase of the day" all day
+function startHappy(tab) {
+  tab = tab || hpzNow();
+  const part = HPZ_PARTS.find(p => p[0] === tab), favs = hpzFavs();
+  const tabs = naTabs([...HPZ_PARTS.map(p => [p[0], `${p[1]} ${p[2]}`]), ["fav", `⭐ Favorites${favs.length ? " (" + favs.length + ")" : ""}`]], tab);
+  if (!part) {
+    appScreen("☀️ Happy Phrases", `<h2>☀️ Happy Phrases</h2>${tabs}
+      ${favs.length ? `<div class="hpz-favs">${favs.map((f, i) => `<div class="hpz-fav"><span class="hpz-emo" aria-hidden="true">${f[0]}</span><p>${esc(f[1])}</p><div class="hpz-favbtns"><button class="chip" data-hpz-say="${i}" aria-label="Read it out loud">🔊</button><button class="chip" data-hpz-unfav="${i}" aria-label="Remove from favorites">✖</button></div></div>`).join("")}</div>` : `<p class="soft">No favorites yet. Tap ⭐ Save on a phrase you love and it will live here.</p>`}`);
+    bindTabs(startHappy);
+    $app.querySelectorAll("[data-hpz-say]").forEach(b => b.addEventListener("click", () => svSay(favs[+b.dataset.hpzSay][1])));
+    $app.querySelectorAll("[data-hpz-unfav]").forEach(b => b.addEventListener("click", () => { const L = hpzFavs().slice(); L.splice(+b.dataset.hpzUnfav, 1); hpzSetFavs(L); startHappy("fav"); }));
+    return;
+  }
+  const [id, emo, name, hello, list] = part, today = hpzDayIdx(list.length, HPZ_PARTS.indexOf(part));
+  if (HPZ_PICK[id] === undefined) HPZ_PICK[id] = today;
+  const [pe, text] = list[HPZ_PICK[id]], isFav = favs.some(f => f[1] === text), isToday = HPZ_PICK[id] === today;
+  appScreen("☀️ Happy Phrases", `<h2>☀️ Happy Phrases</h2>${tabs}
+    <div class="hpz-card hpz-${id}">
+      <div class="hpz-hello">${emo} ${hello}${id === hpzNow() ? ` <small>(right now)</small>` : ""}</div>
+      <div class="hpz-big" aria-hidden="true">${pe}</div>
+      <p class="hpz-text" id="hpz-text">${esc(text)}</p>
+      ${isToday ? `<div class="hpz-tag">🌟 Phrase of the day</div>` : ""}
+      <div class="hpz-btns">
+        <button class="btn go" id="hpz-next">🔀 Another one</button>
+        <button class="btn${isFav ? " gold" : ""}" id="hpz-fav">${isFav ? "⭐ Saved" : "☆ Save"}</button>
+        <button class="btn" id="hpz-say">🔊 Read it</button>
+        <button class="btn" id="hpz-copy">📋 Copy</button>
+      </div>
+    </div>
+    <p class="soft">${list.length} happy phrases to ${name.toLowerCase()}. ${isToday ? "" : `<button class="linklike" id="hpz-today">🌟 Back to the phrase of the day</button>`}</p>`);
+  bindTabs(startHappy);
+  document.getElementById("hpz-next").addEventListener("click", () => { let n; do { n = Math.floor(Math.random() * list.length); } while (list.length > 1 && n === HPZ_PICK[id]); HPZ_PICK[id] = n; startHappy(id); });
+  document.getElementById("hpz-today")?.addEventListener("click", () => { HPZ_PICK[id] = today; startHappy(id); });
+  document.getElementById("hpz-say").addEventListener("click", () => svSay(text));
+  document.getElementById("hpz-copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(`${pe} ${text}`); toast("📋 Copied!"); } catch (e) { toast("Couldn't copy here. Try pressing and holding the words."); } });
+  document.getElementById("hpz-fav").addEventListener("click", () => {
+    const L = hpzFavs().slice(), i = L.findIndex(f => f[1] === text);
+    if (i >= 0) L.splice(i, 1); else L.unshift([pe, text, id]);
+    hpzSetFavs(L.slice(0, 200)); startHappy(id);
+  });
+}
+NEW_APPS.push({ id: "happy", emoji: "☀️", name: "Happy Phrases", desc: "Cheerful words to start your day, keep going in the middle, and end your day happy.", start: () => startHappy(), kw: "happy phrases?|happy words|good morning|good night|cheer me up|motivation|motivational|encourage(ment)?|positive|affirmations?" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
