@@ -1622,6 +1622,10 @@
   .tmr-find { display: grid; gap: 6px; margin: 6px 0 10px; } .tmr-find input { font: inherit; padding: 9px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); min-width: 0; width: 100%; }
   .tmr-ren { display: flex; gap: 6px; flex: 1 1 200px; min-width: 0; } .tmr-ren input { flex: 1; min-width: 0; font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); } .tmr-ren .btn { padding: 6px 12px; font-size: .95rem; }
   .tmr-more { justify-self: center; }
+  .subj-title { font-family: var(--display); font-weight: 400; font-size: 1.5rem; }
+  .subj-opts { display: grid; gap: 8px; margin: 8px 0 6px; }
+  .subj-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
+  .subj-opt:hover, .subj-opt:focus-visible { border-color: var(--gold); outline: none; } .subj-opt b { font-size: 1.05rem; } .subj-opt span { color: var(--ink-soft); font-size: .88rem; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -2993,6 +2997,49 @@ function vocabQuestion(v) {
 const quizQuestion = q => ({ kind: "mc", tag: "Big Ideas", prompt: esc(q.q), a: q.a, w: q.w, why: esc(q.why) });
 const grapesQuestion = g => ({ kind: "grapes", tag: "GRAPES", prompt: esc(g.f), a: g.c, why: esc(g.why) });
 
+/* ---------- 🌎 Social Studies around the world (for when you'd rather not study the Neolithic Revolution) */
+const SS_WORLD = [
+  { q: "How many continents are there?", a: "7", w: ["5", "6", "9"], why: "Africa, Antarctica, Asia, Australia, Europe, North America and South America." },
+  { q: "Which is the largest ocean on Earth?", a: "Pacific Ocean", w: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"], why: "The Pacific is bigger than all of Earth's land put together." },
+  { q: "Which continent has the most people?", a: "Asia", w: ["Africa", "Europe", "North America"], why: "More than half of all people on Earth live in Asia." },
+  { q: "What imaginary line divides Earth into the Northern and Southern Hemispheres?", a: "The equator", w: ["The prime meridian", "The Tropic of Cancer", "The Arctic Circle"], why: "The equator circles the middle of Earth at 0° latitude." },
+  { q: "Lines of latitude run which way across a map?", a: "East and west (side to side)", w: ["North and south (up and down)", "Diagonally", "In circles around the poles only"], why: "Latitude lines are flat, side-to-side lines that measure how far north or south you are." },
+  { q: "What does a compass rose on a map show?", a: "Directions like north, south, east and west", w: ["How far apart places are", "What the symbols mean", "How high the mountains are"], why: "The compass rose shows which way is north, south, east and west." },
+  { q: "What part of a map explains what its symbols mean?", a: "The key (legend)", w: ["The scale", "The title", "The compass rose"], why: "The key or legend tells you what each symbol and color stands for." },
+  { q: "What does a map scale help you figure out?", a: "Real distances between places", w: ["Which way is north", "What the weather is", "How many people live there"], why: "A scale like 1 inch = 10 miles turns map distances into real ones." },
+  { q: "What is the longest river in Africa?", a: "The Nile", w: ["The Congo", "The Amazon", "The Niger"], why: "The Nile flows north through East Africa into the Mediterranean Sea." },
+  { q: "Which is the largest country by land area?", a: "Russia", w: ["Canada", "China", "United States"], why: "Russia stretches across both Europe and Asia." },
+  { q: "What is the capital of the United States?", a: "Washington, D.C.", w: ["New York City", "Philadelphia", "Los Angeles"], why: "Washington, D.C. has been the capital since 1800." },
+  { q: "What are the three branches of the U.S. government?", a: "Legislative, executive and judicial", w: ["Federal, state and local", "Army, Navy and Air Force", "President, governor and mayor"], why: "Congress makes laws, the President carries them out, and the courts explain them." },
+  { q: "Which branch of the U.S. government makes laws?", a: "Legislative (Congress)", w: ["Executive (the President)", "Judicial (the courts)", "The military"], why: "Congress, made of the Senate and the House of Representatives, writes and passes laws." },
+  { q: "What is the highest court in the United States?", a: "The Supreme Court", w: ["The Senate", "The White House", "The Capitol"], why: "The Supreme Court decides what the Constitution means." },
+  { q: "What is the Constitution?", a: "The plan for the U.S. government and the highest law of the land", w: ["A list of every U.S. city", "A famous speech", "The national song"], why: "The Constitution sets up the government and protects people's rights." },
+  { q: "What are the first ten amendments to the Constitution called?", a: "The Bill of Rights", w: ["The Declaration of Independence", "The Preamble", "The Articles of Confederation"], why: "The Bill of Rights protects freedoms like speech and religion." },
+  { q: "What does it mean to vote?", a: "To make a choice in an election", w: ["To pay a tax", "To write a law alone", "To travel to the capital"], why: "Voting is how citizens choose leaders and decide some questions." },
+  { q: "What is a citizen?", a: "A member of a country with rights and responsibilities", w: ["Only someone who works for the government", "A visitor on vacation", "Someone who lives in a city only"], why: "Citizens have rights, like voting, and responsibilities, like following laws." },
+  { q: "In economics, what is a 'need'?", a: "Something you must have to live, like food or shelter", w: ["Something fun you'd like to have", "Money in a bank", "A kind of tax"], why: "Needs are things like food, water, clothing and shelter. Wants are extras." },
+  { q: "What do we call people who buy and use goods and services?", a: "Consumers", w: ["Producers", "Exporters", "Citizens only"], why: "Consumers buy things. Producers make or grow them." },
+  { q: "What is trading one thing for another without money called?", a: "Bartering", w: ["Saving", "Taxing", "Borrowing"], why: "Long ago, before money, people bartered goods like grain for tools." },
+  { q: "What is 'supply' in economics?", a: "How much of something is available to sell", w: ["How much people want something", "The price of a thing", "A kind of store"], why: "Supply is how much there is. Demand is how much people want it." },
+  { q: "Which ancient people built pyramids along the Nile River?", a: "The ancient Egyptians", w: ["The ancient Romans", "The Vikings", "The Aztecs"], why: "The Egyptians built pyramids as tombs for their pharaohs." },
+  { q: "Which ancient civilization is famous for starting democracy in Athens?", a: "Ancient Greece", w: ["Ancient China", "Ancient Egypt", "The Maya"], why: "Athens, in ancient Greece, let citizens vote on laws about 2,500 years ago." },
+  { q: "What long wall was built to protect ancient China?", a: "The Great Wall", w: ["Hadrian's Wall", "The Berlin Wall", "The Western Wall"], why: "The Great Wall was built and rebuilt over many centuries." },
+  { q: "Which empire built roads, aqueducts and the Colosseum?", a: "The Roman Empire", w: ["The Mongol Empire", "The Inca Empire", "The Ottoman Empire"], why: "Roman engineers built roads and aqueducts across their empire." },
+  { q: "What year did the United States declare independence?", a: "1776", w: ["1492", "1812", "1865"], why: "The Declaration of Independence was signed in 1776." },
+  { q: "Who was the first President of the United States?", a: "George Washington", w: ["Abraham Lincoln", "Thomas Jefferson", "John Adams"], why: "George Washington became the first President in 1789." },
+  { q: "What is a 'primary source'?", a: "Something made by people who were there, like a diary or photo", w: ["A textbook written much later", "A made-up story", "An encyclopedia summary"], why: "Primary sources come from the time and people being studied." },
+  { q: "What is culture?", a: "The way of life of a group, like its food, language and traditions", w: ["Only the art in museums", "The weather in a place", "The size of a country"], why: "Culture includes customs, beliefs, language, food, music and more." },
+  { q: "What is an island?", a: "Land with water all around it", w: ["Water with land all around it", "A very tall mountain", "A dry, sandy place"], why: "Hawaii, Japan and Madagascar are islands." },
+  { q: "What is a peninsula?", a: "Land with water on three sides", w: ["Land with water on all sides", "A deep valley", "A river's starting point"], why: "Florida and Italy are peninsulas." },
+  { q: "What is the biggest hot desert in the world?", a: "The Sahara", w: ["The Gobi", "The Mojave", "The Kalahari"], why: "The Sahara covers much of North Africa." },
+  { q: "Which mountain is the tallest above sea level?", a: "Mount Everest", w: ["K2", "Mount Kilimanjaro", "Denali"], why: "Mount Everest, on the Nepal–China border, is about 8,849 meters tall." },
+  { q: "What do you call a person who moves to a new country to live there?", a: "An immigrant", w: ["A tourist", "A pioneer only", "A senator"], why: "Immigrants move to a new country to make their home." },
+  { q: "What is a community?", a: "A group of people who live, work or play in the same area", w: ["Only a big city", "A single family", "A kind of government law"], why: "Communities can be towns, neighborhoods or cities." },
+  { q: "Which is a good way to be a responsible citizen?", a: "Following laws and helping your community", w: ["Ignoring rules you don't like", "Never learning about leaders", "Littering in parks"], why: "Responsible citizens follow laws, help others and stay informed." },
+  { q: "What is a timeline used for?", a: "Showing events in the order they happened", w: ["Measuring distances", "Showing what symbols mean", "Counting money"], why: "Timelines put events in order from earliest to latest." },
+  { q: "What is the Amazon?", a: "A huge rainforest and river in South America", w: ["A mountain in Asia", "A desert in Africa", "An ocean near Europe"], why: "The Amazon rainforest is the largest tropical rainforest on Earth." },
+  { q: "What is a 'natural resource'?", a: "Something from nature that people use, like water or trees", w: ["Something made in a factory", "A kind of money", "A law about nature"], why: "Water, soil, trees, oil and minerals are natural resources." }
+];
 function sourceFor(set) {
   const v = VOCAB.map(x => () => vocabQuestion(x));
   const q = QUIZ.map(x => () => quizQuestion(x));
@@ -3015,6 +3062,7 @@ function sourceFor(set) {
   if (set.startsWith("crf_")) { const [, room, fi] = set.split("_"), f = (CR_ROOMS[room] || CR_ROOMS.g6).floors()[+fi] || CR_FLOORS_G6[0]; return f.pools().flatMap(pool => pool.map(gen => () => { const q = ratioQuestion(gen, NEG_POOLS().includes(pool)); q.tag = q.tag.replace(/^Ratios & Rates/, `${f.emoji} ${f.name}`); return q; })); }
   if (set.startsWith("g4_")) { const gp = k => [...G4_GENS[k], ...G4_GENS[k]].map(gen => () => g4Question(gen)), parts = Object.keys(G4_GENS); const want = set.slice(3); return want === "all" || !G4_GENS[want] ? parts.flatMap(gp) : gp(want); }
   return { all: [...v, ...q, ...g], vocab: v, quiz: q, grapes: g, math, mathhard, science: sci, health, health_safety, health_body, health_food, ela, art,
+    ssw: SS_WORLD.map(x => () => bankQuestion("Social Studies · Around the World")(x)), health_all: [...health_safety, ...health_body, ...health_food],
     mix: [...v, ...q, ...g, ...math, ...mathhard, ...sci, ...health, ...ela, ...art] }[set];
 }
 const currentSet = () => choice.subject === "ss" ? choice.set
@@ -3046,12 +3094,12 @@ function makeDeck(set) {
 let choice = { subject: store.get("subject", "ss"), set: store.get("set", "all"), mlevel: store.get("mlevel", "easy"), goal: store.get("goal", "r10k") };
 if (!["easy", "hard"].includes(choice.mlevel)) choice.mlevel = "easy";
 choice.hpart = store.get("hpart", "safety");
-if (!HEALTH_PARTS[choice.hpart]) choice.hpart = "safety";
+if (!HEALTH_PARTS[choice.hpart] && choice.hpart !== "all") choice.hpart = "safety";
 choice.rpart = store.get("rpart", "all");
 if (!RATIO_PARTS[choice.rpart]) choice.rpart = "all";
 choice.g4part = store.get("g4part", "all");
 if (!G4_PARTS[choice.g4part]) choice.g4part = "all";
-if (!SUBJECTS[choice.subject] && !["g4", "crf"].includes(choice.subject)) choice.subject = "ss";
+if (!SUBJECTS[choice.subject] && !["g4", "crf", "ssw"].includes(choice.subject)) choice.subject = "ss";
 if (!SETS[choice.set]) choice.set = "all";
 if (!GOALS[choice.goal]) choice.goal = "r10k";
 
@@ -3099,8 +3147,9 @@ function showHome() {
       </details>
     </div>` : ""}`;
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
-    choice.subject = b.dataset.subject; store.set("subject", choice.subject);
-    if (choice.subject === "ss") { choice.set = "all"; store.set("set", "all"); }
+    const s = b.dataset.subject;
+    if (["math", "ss", "health"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
+    choice.subject = s; store.set("subject", s);
     startStudy();
   }));
   $app.querySelectorAll("[data-hpart]").forEach(b => b.addEventListener("click", () => {
@@ -5335,11 +5384,35 @@ function startStack() {
 /* ---------- Study mode: practice questions that go on forever, until you tap Stop ---------- */
 function studyTitle() {
   if (choice.subject === "math") return `Math · ${MATH_LEVELS[choice.mlevel].name}`;
-  if (choice.subject === "health") return `Health · ${HEALTH_PARTS[choice.hpart].name}`;
+  if (choice.subject === "health") return `Health · ${(HEALTH_PARTS[choice.hpart] || { name: "All topics" }).name}`;
+  if (choice.subject === "ssw") return "Social Studies · Around the World";
   if (choice.subject === "ratios") return `Ratios & Rates · ${RATIO_PARTS[choice.rpart].name}`;
   if (choice.subject === "g4") return `🏆 4th Grade Challenge · ${G4_PARTS[choice.g4part].name}`;
   if (choice.subject === "crf") { const [room, fi] = String(choice.crf || "g6_0").split("_"), f = (CR_ROOMS[room] || CR_ROOMS.g6).floors()[+fi] || CR_FLOORS_G6[0]; return `${f.emoji} ${f.name} practice`; }
   return choice.subject === "ss" ? `Social Studies · ${SETS[choice.set].name}` : SUBJECTS[choice.subject].name;
+}
+/* ---------- 🧭 Tapping Math, Social Studies or Health asks what you'd like to do (nothing is required) */
+function subjectPick(s) {
+  document.getElementById("subj-pick")?.remove();
+  const go = fn => () => { box.remove(); fn(); };
+  const study = (subject, extra = {}) => go(() => { choice.subject = subject; store.set("subject", subject); Object.entries(extra).forEach(([k, v]) => { choice[k] = v; store.set(k, v); }); startStudy(); });
+  const opts = s === "math" ? { title: "🧮 Math", say: "What would you like to do?", btns: [
+      ["📝 Practice math problems", "Endless problems, easy or hard", study("math")],
+      ["🧮 Open the Math Center", "All the math apps in one place, like the fraction lab", go(() => startMathCenter())]] }
+    : s === "ss" ? { title: "🌍 Social Studies", say: "You can study the Neolithic Revolution, but you don't have to!", btns: [
+      ["🌾 Study the Neolithic Revolution", "Early Humans to the first farms and cities (test practice)", study("ss", { set: "all" })],
+      ["🌎 Other social studies", "Maps, government, money, and history around the world", study("ssw")],
+      ["🗺️ World Explorer", "Explore countries, flags and more", go(() => startWorldExplorer())]] }
+    : { title: "❤️ Health", say: "Pick a health topic if you want to, or do a mix of everything.", btns: [
+      ...Object.entries(HEALTH_PARTS).map(([k, v]) => [`${{ safety: "🦺", body: "🫀", food: "🥦" }[k] || "❤️"} ${v.name}`, v.desc, study("health", { hpart: k })]),
+      ["🔀 A mix of all health", "Safety, body and food questions together", study("health", { hpart: "all" })]] };
+  const box = document.createElement("div"); box.id = "subj-pick"; box.className = "bgsheet";
+  box.innerHTML = `<div class="bgsheet-box subj-pick" role="dialog" aria-label="${esc(opts.title)}"><div class="prof-head"><b class="subj-title">${opts.title}</b><button class="iconbtn" id="sp-x" type="button">✕ Not now</button></div>
+    <p class="soft">${opts.say}</p><div class="subj-opts">${opts.btns.map(([t, d], i) => `<button class="subj-opt" data-sp="${i}" type="button"><b>${t}</b><span>${d}</span></button>`).join("")}</div></div>`;
+  box.querySelectorAll("[data-sp]").forEach(b => b.addEventListener("click", opts.btns[+b.dataset.sp][2]));
+  box.querySelector("#sp-x").addEventListener("click", () => box.remove());
+  box.addEventListener("click", e => { if (e.target === box) box.remove(); });
+  document.body.appendChild(box); box.querySelector("[data-sp]")?.focus();
 }
 function startStudy() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
