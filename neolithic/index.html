@@ -3218,7 +3218,8 @@ const whoHash = (id, code) => aaHash("ctc-code:" + id + ":" + String(code).trim(
 const whoAbout = id => id === "guest" ? "" : String((store.get("who_about", {}) || {})[id] || "");
 const whoHasCode = id => id !== "guest" && !!(store.get("who_code", {}) || {})[id];
 const whoSecretOK = () => SITE_WHO === "emmett" && whoHasCode("emmett");   // MR.E sees the secret once his own profile is locked
-const whoAva = id => { if (id === "guest") return "👤"; const i = sitePeople().findIndex(p => p.id === id); return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
+const WHO_AVA_FIXED = { shawn: "🐧" }, WHO_AVA_NAMES = [[/^xander\b/i, "🐢"]];   // Shawn is a penguin, Xander is a turtle
+const whoAva = id => { if (id === "guest") return "👤"; if (WHO_AVA_FIXED[id]) return WHO_AVA_FIXED[id]; const people = sitePeople(), i = people.findIndex(p => p.id === id), nm = (people[i] || {}).name || ""; const byName = WHO_AVA_NAMES.find(([rx]) => rx.test(nm)); if (byName) return byName[1]; return WHO_EMOJI[(i < 0 ? 0 : i) % WHO_EMOJI.length]; };
 // the built-in crew's names can be changed too (their ids stay the same, so their progress stays)
 function applyNames() { const N = store.get("who_names", {}) || {}; TY_ACCOUNTS.forEach(a => { if (a.custom) return; if (a.baseName == null) a.baseName = a.name; a.name = N[a.id] || a.baseName; }); if (SITE_WHO) SITE_NAME = (sitePeople().find(p => p.id === SITE_WHO) || { name: SITE_NAME }).name; }
 function askCode(id) {
@@ -4389,6 +4390,7 @@ let S = null;
 const HW = 2.2; // half the road width
 const SC_BALLS = [
   { id: "neon", name: "Neon", cost: 0, c: ["#d9fff0", "#39ff88", "#0b6b3a"] },
+  { id: "turtle", name: "🐢 Turtle", cost: 0, c: ["#e6ffd0", "#3bb273", "#1f5c33"] },
   { id: "ice", name: "Ice", cost: 15, c: ["#ffffff", "#7fdcff", "#1b5f8a"] },
   { id: "lava", name: "Lava", cost: 30, c: ["#fff1a8", "#ff6a1a", "#7a1400"] },
   { id: "gold", name: "Gold", cost: 50, c: ["#fffbe0", "#ffc93c", "#7a5200"] },
@@ -4400,7 +4402,7 @@ const SC_BALLS = [
 ];
 const SHIELD_COST = 20;
 const scBank = () => store.get("sc_crys", 0);
-const scOwned = () => store.get("sc_balls", ["neon"]);
+const scOwned = () => [...new Set([...(store.get("sc_balls", ["neon"]) || ["neon"]), ...SC_BALLS.filter(b => !b.cost).map(b => b.id)])];   // free balls belong to everyone
 const scBall = () => SC_BALLS.find(b => b.id === store.get("sc_ball", "neon")) || SC_BALLS[0];
 function stopSlope() {
   if (!S) return;
@@ -6814,7 +6816,7 @@ const TY_CHARS = [
   { id: "cat", emoji: "🐱", name: "Lucky Cat", cost: 30, power: "2 lives: survive one fall." },
   { id: "owl", emoji: "🦉", name: "Wise Owl", cost: 40, power: "Gets shorter, easier words." },
   { id: "roo", emoji: "🦘", name: "Kangaroo", cost: 50, power: "Triple Jump: skip 3 words for free each game." },
-  { id: "turtle", emoji: "🐢", name: "Turtle", cost: 60, power: "Platforms last 35% longer." },
+  { id: "turtle", emoji: "🐢", name: "Turtle", cost: 0, power: "Platforms last 35% longer. A free friend!" },
   { id: "unicorn", emoji: "🦄", name: "Unicorn", cost: 80, power: "Earns double carrots." },
   { id: "dragon", emoji: "🐉", name: "Dragon", cost: 150, power: "3 lives, platforms last 25% longer, and triple carrots!" },
   { id: "puppy", emoji: "🐶", name: "Puppy", cost: 0, power: "Woof! A free friend." },
@@ -11907,7 +11909,7 @@ function startWorldExplorer(tab = "flags") {
 }
 
 // 💬 Comic Creator
-const CC_CHARS = ["🦛", "🐶", "🐱", "🦊", "🐸", "🐼", "🦁", "🐧", "🤖", "👽", "🧙", "🦸", "👻", "🐉", "🧑", "👧"];
+const CC_CHARS = ["🦛", "🐶", "🐱", "🦊", "🐸", "🐼", "🦁", "🐧", "🐢", "🤖", "👽", "🧙", "🦸", "👻", "🐉", "🧑", "👧"];
 const CC_BGS = [["🌳 Park", "linear-gradient(#8fd3ff,#c8f0ff 60%,#7ccf6b 61%)"], ["🏫 School", "linear-gradient(#f2e3c6,#e3cfa8 70%,#a06c3a 71%)"], ["🌌 Space", "radial-gradient(circle at 30% 30%,#3a2a7a,#0a0626)"], ["🌊 Beach", "linear-gradient(#8fd3ff,#ffe8a8 70%,#f2c46d 71%)"], ["🏰 Castle", "linear-gradient(#ff9e6d,#c5609a 60%,#5a3a6a 61%)"], ["🌙 Night", "linear-gradient(#0b1033,#2a1d5c)"]];
 const CC_IDEAS = ["A hippo opens a bakery, but every cake comes out bouncy.", "A robot tries to learn how to tell a joke.", "A dragon is scared of a tiny mouse.", "Two aliens visit Earth and think a car wash is a spa.", "A ghost just wants someone to play board games with.", "A penguin moves to the beach.", "A cat becomes the mayor of the town."];
 function startComicCreator() {
@@ -13960,6 +13962,7 @@ const RA_FIRE = ["#ff5a1f", "#ffb000", "#ffe066"];
 // 🏹 The Arrow Locker: every arrow is earned by really doing it in the game
 const RA_SKINS = [
   { id: "oak", icon: "🪵", name: "Oak Arrow", how: "Ready from the start", shaft: "#6b4a24", tip: "#9aa4ad", f1: "#d64533", f2: "#f2b632", trail: null, ok: () => true },
+  { id: "turtle", icon: "🐢", name: "Turtle Arrow", how: "Free!", shaft: "#3d6b2c", tip: "#cfe8b8", f1: "#3bb273", f2: "#a8e06b", trail: ["#7ddc8a", "#c8f5b0"], ok: () => true },
   { id: "fire", icon: "🔥", name: "Fire Arrow", how: "Hit 5 bullseyes in a row", shaft: "#7a2a10", tip: "#ffd23f", f1: "#ff5a1f", f2: "#ffd23f", trail: RA_FIRE, ok: S => (S.bestStreak || 0) >= 5 },
   { id: "ice", icon: "❄️", name: "Ice Arrow", how: "Score 100 points in one round", shaft: "#3a6f9a", tip: "#e8fbff", f1: "#7fd8ff", f2: "#ffffff", trail: ["#bff1ff", "#7fd8ff", "#ffffff"], ok: S => (S.best || 0) >= 100 },
   { id: "comet", icon: "☄️", name: "Comet Arrow", how: "Hit 12 in one Rapid Fire", shaft: "#3b2a5a", tip: "#ffffff", f1: "#ff7ad9", f2: "#8be9ff", trail: ["#ff7ad9", "#8be9ff", "#ffffff"], ok: S => (S.rapidBest || 0) >= 12 },
@@ -15070,6 +15073,7 @@ const ROUND = 10, CLOCK = 60, FIRE = ["#ff5a1f", "#ffb000", "#ffe066"];
 // 🥍 Ball bag: every ball is earned by really doing it in the game
 const BALLS = [
   Object.assign({ id: "classic", name: "Game Ball", how: "Ready from the start", trail: null, ok: () => true }, T.ball),
+  { id: "turtle", icon: "🐢", name: "Turtle Ball", how: "Free!", c1: "#7ddc8a", c2: "#1f7a3a", trail: ["#7ddc8a", "#c8f5b0", "#ffffff"], ok: () => true },
   { id: "fire", icon: "🔥", name: "Fire Ball", how: \`Score 5 \${T.plural} in a row\`, c1: "#ff7a1a", c2: "#b3260b", trail: FIRE, ok: S => (S.bestStreak || 0) >= 5 },
   { id: "ice", icon: "❄️", name: "Ice Ball", how: "Score 100 points in one game", c1: "#bff1ff", c2: "#3a8fc9", trail: ["#bff1ff", "#7fd8ff", "#ffffff"], ok: S => (S.best || 0) >= 100 },
   { id: "comet", icon: "☄️", name: "Comet Ball", how: \`Score 12 in one \${T.clock}\`, c1: "#ff7ad9", c2: "#6b3fd1", trail: ["#ff7ad9", "#8be9ff", "#ffffff"], ok: S => (S.clockBest || 0) >= 12 },
@@ -15655,6 +15659,7 @@ const CHARS = [
   { id: "dino", e: "🦖", name: "Dino", spd: 3, jmp: 4, sht: 2, dnk: 5, col: "#3b8f3a", note: "Monster dunks" },
   { id: "tiger", e: "🐯", name: "Tiger", spd: 4, jmp: 4, sht: 3, dnk: 3, col: "#f2a516", note: "All-around" },
   { id: "penguin", e: "🐧", name: "Penguin", spd: 4, jmp: 2, sht: 4, dnk: 2, col: "#2c3e66", note: "Cool shooter" },
+  { id: "turtle", e: "🐢", name: "Turtle", spd: 2, jmp: 3, sht: 4, dnk: 3, col: "#2f9e6a", note: "Never gives up" },
 ];
 const LEVELS = {
   rookie: { name: "Rookie", spd: .82, acc: .8, steal: .004, block: .22, dunk: .15, rmin: 90, rmax: 220, perfect: .1, react: 26 },
@@ -18992,6 +18997,7 @@ NEW_APPS.push({ id: "survival", emoji: "🏕️", name: "Survival Guide", desc: 
 /* ---------- 🏎️ Turbo Keys Rally: type the sentences to drive your car, race 3 bots, win coins, and spend them on cars and paint in the garage. ---------- */
 const TK_CARS = [
   { id: "red", e: "🚗", name: "Red Rocket", price: 0 },
+  { id: "turtle", e: "🐢", name: "Turbo Turtle", price: 0 },
   { id: "trail", e: "🚙", name: "Trail Buddy", price: 60 },
   { id: "cab", e: "🚕", name: "Sunny Cab", price: 100 },
   { id: "patrol", e: "🚓", name: "Patrol Pal", price: 150 },
@@ -19048,7 +19054,7 @@ const TK_TEXTS = [
 ];
 const TK_STREAK = 20;   // letters in a row (no mistakes) to earn one Turbo
 const TK_DEF = () => ({ coins: 0, owned: ["red"], car: "red", paints: ["none"], paint: "none", level: "easy", races: 0, wins: 0, podiums: 0, best: 0, accSum: 0, recent: [] });
-const tkLoad = () => { const d = store.get("tk_save", null); return { ...TK_DEF(), ...(d && typeof d === "object" ? d : {}) }; };
+const tkLoad = () => { const d = store.get("tk_save", null), out = { ...TK_DEF(), ...(d && typeof d === "object" ? d : {}) }; out.owned = [...new Set([...(out.owned || []), ...TK_CARS.filter(c => !c.price).map(c => c.id)])]; return out; };   // free cars belong to everyone
 const tkSave = d => store.set("tk_save", d);
 const tkCar = id => TK_CARS.find(c => c.id === id) || TK_CARS[0];
 const tkPaint = id => TK_PAINTS.find(p => p.id === id) || TK_PAINTS[0];

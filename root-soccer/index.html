@@ -424,6 +424,7 @@ const ROUND = 10, CLOCK = 60, FIRE = ["#ff5a1f", "#ffb000", "#ffe066"];
 // 🥍 Ball bag: every ball is earned by really doing it in the game
 const BALLS = [
   Object.assign({ id: "classic", name: "Game Ball", how: "Ready from the start", trail: null, ok: () => true }, T.ball),
+  { id: "turtle", icon: "🐢", name: "Turtle Ball", how: "Free!", c1: "#7ddc8a", c2: "#1f7a3a", trail: ["#7ddc8a", "#c8f5b0", "#ffffff"], ok: () => true },
   { id: "fire", icon: "🔥", name: "Fire Ball", how: `Score 5 ${T.plural} in a row`, c1: "#ff7a1a", c2: "#b3260b", trail: FIRE, ok: S => (S.bestStreak || 0) >= 5 },
   { id: "ice", icon: "❄️", name: "Ice Ball", how: "Score 100 points in one game", c1: "#bff1ff", c2: "#3a8fc9", trail: ["#bff1ff", "#7fd8ff", "#ffffff"], ok: S => (S.best || 0) >= 100 },
   { id: "comet", icon: "☄️", name: "Comet Ball", how: `Score 12 in one ${T.clock}`, c1: "#ff7ad9", c2: "#6b3fd1", trail: ["#ff7ad9", "#8be9ff", "#ffffff"], ok: S => (S.clockBest || 0) >= 12 },
