@@ -1390,6 +1390,62 @@
   .tk-card .btn:disabled { opacity: .5; }
   .tk-tag { font-size: .82rem; font-weight: 800; color: var(--money); padding: 7px 0; }
   .tk-recent { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+  /* 🌳 Family Tree */
+  .ft-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+  .ft-bar .na-tabs { margin: 6px 0; }
+  .ft-count { font-size: .85rem; }
+  .ft-copy { margin-left: auto; }
+  .ft-guest { border: 2px dashed var(--gold); line-height: 1.5; }
+  .ft-scroll { overflow: auto; max-width: 100%; max-height: 72vh; border: 2px solid var(--line); border-radius: 16px; background: rgba(0, 0, 0, .18); margin: 8px 0 4px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+  .ft-tree { position: relative; width: max-content; min-width: 100%; padding: 12px 14px 16px; }
+  .ft-lines { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 0; overflow: visible; }
+  .ft-ln { fill: none; stroke: var(--ink-soft); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+  .ft-ln-pair { stroke: var(--gold); stroke-width: 3; stroke-linecap: round; }
+  .ft-ln-sib { fill: none; stroke: var(--ink-soft); stroke-width: 2; stroke-dasharray: 3 5; stroke-linecap: round; }
+  .ft-heart { fill: #ff7aa2; font-size: 12px; }
+  .ft-row { position: relative; z-index: 1; margin-bottom: 30px; }
+  .ft-row:last-child { margin-bottom: 0; }
+  .ft-gen { position: sticky; left: 0; display: inline-block; font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); background: var(--panel); border: 1px solid var(--line); padding: 2px 9px; border-radius: 99px; margin-bottom: 8px; }
+  .ft-people { display: flex; gap: 16px; justify-content: center; align-items: flex-start; }
+  .ft-p { position: relative; z-index: 1; width: 96px; flex: 0 0 96px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 6px; border-radius: 14px; border: 3px solid var(--line); background: var(--panel-2); color: var(--ink); transition: transform .1s, border-color .1s; }
+  .ft-p:hover { transform: translateY(-2px); border-color: var(--gold); }
+  .ft-p b { font-family: var(--display); font-weight: 400; font-size: .88rem; line-height: 1.15; text-align: center; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .ft-p small { font-size: .72rem; line-height: 1.2; color: var(--ink-soft); text-align: center; overflow-wrap: anywhere; }
+  .ft-p.me { border-color: var(--money); }
+  .ft-p.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 201, 60, .35); }
+  .ft-ava { font-size: 1.8rem; line-height: 1; }
+  .ft-card { border: 2px solid var(--line); }
+  .ft-card-top { display: flex; gap: 12px; align-items: center; }
+  .ft-card-top > div { min-width: 0; }
+  .ft-card-top h3 { margin: 0; font-family: var(--display); font-weight: 400; overflow-wrap: anywhere; }
+  .ft-card-top p { margin: 2px 0 0; overflow-wrap: anywhere; }
+  .ft-big { font-size: 2.6rem; line-height: 1; }
+  .ft-rel { font-size: 1.05rem; margin: 10px 0; overflow-wrap: anywhere; }
+  .ft-links { display: grid; gap: 8px; }
+  .ft-links > div { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .ft-links > div > b { min-width: 74px; font-size: .85rem; color: var(--ink-soft); }
+  .ft-links .chip.mini, .ft-acts .chip.mini { flex-direction: row; align-items: center; gap: 6px; max-width: 100%; overflow-wrap: anywhere; color: var(--ink); }
+  .ft-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .ft-acts .chip:disabled { opacity: .45; }
+  .ft-acts .ft-del { border-color: #b3263a; }
+  .ft-acts .ft-del.sure { background: #b3263a; color: #fff; }
+  .ft-form { border: 2px solid var(--gold); }
+  .ft-form h3 { margin: 4px 0 6px; overflow-wrap: anywhere; }
+  .ft-form label, .ft-field { display: flex; flex-direction: column; gap: 5px; font-weight: 700; font-size: .9rem; margin: 10px 0; }
+  .ft-form input, .ft-form select { font: inherit; font-weight: 400; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); width: 100%; min-width: 0; }
+  .ft-emojis { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ft-emo { font-size: 1.35rem; width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); padding: 0; }
+  .ft-emo.auto { width: auto; padding: 0 12px; font-size: .85rem; font-weight: 700; }
+  .ft-emo.on { border-color: var(--gold); background: #4a3a1a; }
+  .ft-form-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .ft-list { display: grid; gap: 6px; }
+  .ft-lh { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); margin: 12px 0 2px; }
+  .ft-li { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 8px 12px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); }
+  .ft-li.on { border-color: var(--gold); }
+  .ft-li-t { display: flex; flex-direction: column; min-width: 0; }
+  .ft-li-t b { overflow-wrap: anywhere; }
+  .ft-li-t small { color: var(--ink-soft); }
+  .ft-copybox { width: 100%; min-height: 150px; font: inherit; font-size: .85rem; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); padding: 10px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -18941,6 +18997,309 @@ INFO_GAME_APPS.add("turbokeys");
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Turbo Keys Rally", "🏎️", "turbo keys rally|turbo keys|typing race|race typing|car typing", "Type fast to drive your car, race bots, and buy cars with your coins.", () => startTurboKeys()]);
 MORE_GAMES.push({ id: "turbokeys", name: "Turbo Keys Rally", desc: "Type to drive! Race 3 bots, win coins, and buy cars and paint.", start: () => startTurboKeys() });
 NEW_APPS.push({ id: "turbokeys", emoji: "🏎️", name: "Turbo Keys Rally", desc: "Type fast to drive! Race 3 bots, win coins, and buy cars and paint in your garage.", start: () => startTurboKeys(), kw: "turbo keys rally|turbo keys|typing race|race typing|car typing|typing cars" });
+/* ---------- 🌳 Family Tree: put in your family and see how everyone is related to you ---------- */
+const FT_EMOJI = ["👵", "👴", "🧓", "👩", "👨", "🧑", "👧", "👦", "🧒", "👶", "👩‍🦰", "👨‍🦱", "👱‍♀️", "👱", "🧔", "👩‍🦳", "👨‍🦳", "🧕", "👸", "🤴", "🦸", "🧙", "🐶", "🐱", "⭐", "❤️"];
+const FT_MAX = 150;
+const FT_W = {   // [anyone, girl or woman, boy or man]
+  parent: ["parent", "mom", "dad"], grand: ["grandparent", "grandma", "grandpa"], child: ["child", "daughter", "son"], grandchild: ["grandchild", "granddaughter", "grandson"],
+  sibling: ["sibling", "sister", "brother"], aunt: ["aunt or uncle", "aunt", "uncle"], niece: ["niece or nephew", "niece", "nephew"], partner: ["partner", "wife", "husband"],
+  parentLaw: ["parent-in-law", "mother-in-law", "father-in-law"], sibLaw: ["sibling-in-law", "sister-in-law", "brother-in-law"], childLaw: ["child-in-law", "daughter-in-law", "son-in-law"],
+  step: ["step-parent", "stepmom", "stepdad"], stepGrand: ["step-grandparent", "step-grandma", "step-grandpa"], stepChild: ["stepchild", "stepdaughter", "stepson"]
+};
+const ftWord = (k, p) => FT_W[k][p && p.g === "f" ? 1 : p && p.g === "m" ? 2 : 0];
+const ftGreatN = (n, w) => w.split(" or ").map(x => n <= 2 ? "great-".repeat(n) + x : `${n}× great-${x}`).join(" or ");
+const ftGrandN = (n, w) => w.split(" or ").map(x => (n > 1 ? "great-".repeat(n - 1) : "") + "grand" + x).join(" or ");
+const ftOrd = n => ["", "first", "second", "third", "fourth", "fifth"][n] || n + "th";
+const ftCap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const ftKey = () => SITE_WHO && SITE_WHO !== "emmett" ? "ft_tree@" + SITE_WHO : "ft_tree";   // one tree per person
+const ftGenName = g => g === 0 ? "Your generation" : g === -1 ? "Parents' generation" : g === -2 ? "Grandparents' generation" : g < -2 ? ftCap(ftGreatN(-g - 2, "grandparents'")) + " generation" : g === 1 ? "Children's generation" : g === 2 ? "Grandchildren's generation" : ftCap(ftGreatN(g - 2, "grandchildren's")) + " generation";
+
+function ftPerson(id, d = {}) { return { id, name: d.name || "Someone", emoji: d.emoji || "", g: d.g || "", born: d.born || "", note: d.note || "", parents: d.parents || [], partners: d.partners || [], sib: d.sib || "" }; }
+function ftClean(T) {   // keep a saved tree tidy, even if something odd got saved
+  if (!T || typeof T !== "object" || !T.people || typeof T.people !== "object") T = { v: 1, n: 1, people: {} };
+  const P = T.people;
+  Object.keys(P).forEach(k => { if (!P[k] || typeof P[k] !== "object") delete P[k]; else P[k] = ftPerson(k, P[k]); });
+  if (!P.me) P.me = ftPerson("me", { name: SITE_NAME || "Me" });
+  Object.values(P).forEach(p => {
+    p.name = String(p.name).slice(0, 40) || "Someone"; p.emoji = FT_EMOJI.includes(p.emoji) ? p.emoji : ""; p.g = p.g === "f" || p.g === "m" ? p.g : "";
+    p.born = /^\d{1,4}$/.test(String(p.born)) ? String(p.born) : ""; p.note = String(p.note).slice(0, 120); p.sib = String(p.sib || "");
+    p.parents = (Array.isArray(p.parents) ? p.parents : []).filter((x, i, a) => P[x] && x !== p.id && a.indexOf(x) === i).slice(0, 2);
+    p.partners = (Array.isArray(p.partners) ? p.partners : []).filter((x, i, a) => P[x] && x !== p.id && a.indexOf(x) === i);
+  });
+  Object.values(P).forEach(p => p.partners.forEach(q => { if (!P[q].partners.includes(p.id)) P[q].partners.push(p.id); }));   // partners go both ways
+  T.n = Math.max(+T.n || 1, ...Object.keys(P).map(k => (+k.slice(1) || 0) + 1));
+  return T;
+}
+const ftLoad = () => ftClean(store.get(ftKey(), null));
+function ftSample() {   // 👤 guests look at this example family (it can't be changed)
+  const P = {}, add = (id, d) => (P[id] = ftPerson(id, d));
+  add("me", { name: "You", parents: ["ana", "sam"] });
+  add("pearl", { name: "Great-Grandma Pearl", g: "f", born: "1926", note: "Grew up on a farm" });
+  add("june", { name: "Grandma June", g: "f", born: "1950", parents: ["pearl"], partners: ["leo"], note: "Loves gardening" });
+  add("leo", { name: "Grandpa Leo", g: "m", born: "1948", partners: ["june"], note: "Tells the best jokes" });
+  add("ana", { name: "Mom (Ana)", g: "f", born: "1980", parents: ["june", "leo"], partners: ["sam"] });
+  add("sam", { name: "Dad (Sam)", g: "m", born: "1979", partners: ["ana"] });
+  add("mia", { name: "Aunt Mia", g: "f", born: "1983", parents: ["june", "leo"], partners: ["raj"] });
+  add("raj", { name: "Uncle Raj", g: "m", born: "1982", partners: ["mia"] });
+  add("lily", { name: "Lily", g: "f", born: "2012", parents: ["ana", "sam"], note: "Big sister" });
+  add("ben", { name: "Ben", g: "m", born: "2015", parents: ["mia", "raj"] });
+  return ftClean({ v: 1, n: 1, people: P });
+}
+
+// 🔗 who is connected to whom
+const ftKids = (T, id) => Object.keys(T.people).filter(k => T.people[k].parents.includes(id));
+function ftSibs(T, id) { const X = T.people[id]; return Object.keys(T.people).filter(k => k !== id && ((X.sib && T.people[k].sib === X.sib) || T.people[k].parents.some(p => X.parents.includes(p)))); }
+function ftWalk(T, start, gen) {   // steps through the family from one person: parents are one row up, children one row down
+  const P = T.people, q = [start]; if (!gen.has(start)) gen.set(start, 0);
+  while (q.length) {
+    const x = q.shift(), g = gen.get(x), X = P[x];
+    const step = (ids, d) => ids.forEach(y => { if (P[y] && !gen.has(y)) { gen.set(y, g + d); q.push(y); } });
+    step(X.parents, -1); step(ftKids(T, x), 1); step(X.partners, 0); step(ftSibs(T, x), 0);
+  }
+  return gen;
+}
+function ftGens(T) { const gen = ftWalk(T, "me", new Map([["me", 0]])); Object.keys(T.people).forEach(id => { if (!gen.has(id)) ftWalk(T, id, gen); }); return gen; }
+function ftAnc(T, id) {   // everyone above someone, with how many steps up (brothers and sisters share a pretend parent, so they count even before parents are added)
+  const out = new Map([[id, 0]]), q = [id];
+  while (q.length) {
+    const x = q.shift(), X = T.people[x], d = out.get(x); if (!X) continue;
+    [...X.parents, ...(X.sib ? ["~" + X.sib] : [])].forEach(u => { if (!out.has(u)) { out.set(u, d + 1); if (u[0] !== "~") q.push(u); } });
+  }
+  return out;
+}
+function ftBlood(T, a, b) {   // closest shared ancestor: how far up from a, and how far up from b
+  const A = ftAnc(T, a), B = ftAnc(T, b); let best = null;
+  A.forEach((up, k) => { if (!B.has(k)) return; const down = B.get(k); if (!best || up + down < best.up + best.down || (up + down === best.up + best.down && Math.max(up, down) < Math.max(best.up, best.down))) best = { up, down }; });
+  return best;
+}
+function ftBloodWord(up, down, X) {
+  if (!up && !down) return "you";
+  if (!up) return down === 1 ? ftWord("child", X) : down === 2 ? ftWord("grandchild", X) : ftGreatN(down - 2, ftWord("grandchild", X));
+  if (!down) return up === 1 ? ftWord("parent", X) : up === 2 ? ftWord("grand", X) : ftGreatN(up - 2, ftWord("grand", X));
+  if (up === 1 && down === 1) return ftWord("sibling", X);
+  if (up === 1) return down === 2 ? ftWord("niece", X) : ftGrandN(down - 2, ftWord("niece", X));
+  if (down === 1) return up === 2 ? ftWord("aunt", X) : ftGreatN(up - 2, ftWord("aunt", X));
+  const deg = Math.min(up, down) - 1, rem = Math.abs(up - down);
+  return (deg === 1 ? "cousin" : ftOrd(deg) + " cousin") + (rem ? ` ${rem === 1 ? "once" : rem === 2 ? "twice" : rem + " times"} removed` : "");
+}
+function ftRel(T, id) {   // what this person is to you
+  if (id === "me") return "you";
+  const P = T.people, X = P[id], me = P.me, b = ftBlood(T, "me", id);
+  if (b) return ftBloodWord(b.up, b.down, X);
+  if (me.partners.includes(id)) return ftWord("partner", X);
+  for (const pid of X.partners) {   // the partner of one of your relatives
+    const r = ftBlood(T, "me", pid); if (!r) continue;
+    if (r.up === 1 && !r.down) return ftWord("step", X);
+    if (r.up === 2 && !r.down) return ftWord("stepGrand", X);
+    if (r.up === 1 && r.down === 1) return ftWord("sibLaw", X);
+    if (!r.up && r.down === 1) return ftWord("childLaw", X);
+    if (r.down === 1 && r.up >= 2) return (r.up === 2 ? ftWord("aunt", X) : ftGreatN(r.up - 2, ftWord("aunt", X))) + " (by marriage)";
+    return ftBloodWord(r.up, r.down, P[pid]) + "'s " + ftWord("partner", X);
+  }
+  for (const qid of me.partners) {   // a relative of your partner
+    const r = ftBlood(T, qid, id); if (!r) continue;
+    if (r.up === 1 && !r.down) return ftWord("parentLaw", X);
+    if (r.up === 1 && r.down === 1) return ftWord("sibLaw", X);
+    if (!r.up && r.down === 1) return ftWord("stepChild", X);
+    return ftWord("partner", P[qid]) + "'s " + ftBloodWord(r.up, r.down, X);
+  }
+  return "relative";
+}
+const ftSay = (T, id, w) => id === "me" ? `This is you, <b>${esc(T.people.me.name)}</b>!` : w === "relative" ? `<b>${esc(T.people[id].name)}</b> is in your family tree.` : `<b>${esc(T.people[id].name)}</b> is your <b>${esc(w)}</b>.`;
+function ftAva(p, g) {
+  if (p.emoji) return p.emoji;
+  const i = p.g === "f" ? 1 : p.g === "m" ? 2 : 0, age = p.born ? new Date().getFullYear() - +p.born : null;
+  const set = age !== null ? (age >= 60 ? 0 : age >= 18 ? 1 : age >= 3 ? 2 : 3) : (g <= -2 ? 0 : g === -1 ? 1 : g === 0 ? 2 : 3);
+  return [["🧓", "👵", "👴"], ["🧑", "👩", "👨"], ["🧒", "👧", "👦"], ["👶", "👶", "👶"]][set][i];
+}
+
+// ➕ changing the tree
+function ftAdd(T, rel, to, d, other) {
+  const P = T.people, X = P[to]; if (!X) return null;
+  const id = "p" + T.n++, p = ftPerson(id, d);
+  if (rel === "parent") {
+    if (X.parents.length >= 2) return null;
+    const before = X.parents.slice(), same = a => a.length === before.length && a.every(x => before.includes(x));
+    [to, ...ftSibs(T, to).filter(s => P[s].parents.length < 2 && same(P[s].parents))].forEach(k => P[k].parents.push(id));   // brothers and sisters get the same parent
+    if (before.length === 1 && !P[before[0]].partners.length) { p.partners.push(before[0]); P[before[0]].partners.push(id); }   // a child's two parents start out as partners
+  } else if (rel === "child") {
+    p.parents = [to]; if (other && P[other] && other !== to) p.parents.push(other);
+  } else if (rel === "sibling") {
+    p.parents = X.parents.slice(); if (!X.sib) X.sib = X.id; p.sib = X.sib;
+  } else if (rel === "partner") {
+    p.partners = [to]; X.partners.push(id);
+  } else return null;
+  P[id] = p; return id;
+}
+function ftDelete(T, id) {   // removes a person, and anyone who was only linked to the tree through them
+  const P = T.people; if (id === "me" || !P[id]) return;
+  const drop = k => { delete P[k]; Object.values(P).forEach(q => { q.parents = q.parents.filter(x => x !== k); q.partners = q.partners.filter(x => x !== k); }); };
+  drop(id);
+  const reach = ftWalk(T, "me", new Map([["me", 0]])); Object.keys(P).forEach(k => { if (!reach.has(k)) drop(k); });
+}
+function ftRows(T, gen) {   // people in each row, ordered so families sit together
+  const P = T.people, by = new Map();
+  gen.forEach((g, id) => { if (!by.has(g)) by.set(g, []); by.get(g).push(id); });
+  const gs = [...by.keys()].sort((a, b) => a - b), yr = id => +P[id].born || 9999;
+  const rows = gs.map(g => by.get(g).sort((a, b) => yr(a) - yr(b) || (a === "me" ? -1 : b === "me" ? 1 : a < b ? -1 : 1)));
+  const posOf = () => { const m = new Map(); rows.forEach(r => r.forEach((id, i) => m.set(id, i - (r.length - 1) / 2))); return m; };
+  const order = (r, near) => {
+    const pos = posOf(), key = new Map();
+    r.forEach(id => { const n = near(id).filter(x => pos.has(x) && gen.get(x) !== gen.get(id)); if (n.length) key.set(id, n.reduce((t, x) => t + pos.get(x), 0) / n.length); });
+    for (let pass = 0; pass < 3; pass++) r.forEach(id => { if (key.has(id)) return; const f = [...P[id].partners, ...ftSibs(T, id)].find(x => key.has(x) && r.includes(x)); if (f) key.set(id, key.get(f) + (P[id].partners.includes(f) ? .01 : .02)); });
+    r.forEach(id => { if (!key.has(id)) key.set(id, pos.get(id)); });
+    const out = [], seen = new Set();
+    r.slice().sort((a, b) => key.get(a) - key.get(b)).forEach(id => {
+      if (seen.has(id)) return; seen.add(id); out.push(id);
+      P[id].partners.forEach(q => {   // a partner sits next to them; a partner's own brothers and sisters (with no parents in the tree) come along on the other side
+        if (!r.includes(q) || seen.has(q)) return; seen.add(q);
+        const qs = ftSibs(T, q).filter(s => r.includes(s) && !seen.has(s) && !P[s].parents.length); qs.forEach(s => seen.add(s));
+        if (qs.length) out.splice(out.indexOf(id), 0, ...qs, q); else out.push(q);
+      });
+    });
+    return out;
+  };
+  for (let it = 0; it < 3; it++) {
+    for (let i = 1; i < rows.length; i++) rows[i] = order(rows[i], id => P[id].parents);
+    for (let i = rows.length - 2; i >= 0; i--) rows[i] = order(rows[i], id => ftKids(T, id));
+  }
+  for (let i = 1; i < rows.length; i++) rows[i] = order(rows[i], id => P[id].parents);
+  return gs.map((g, i) => [g, rows[i]]);
+}
+function ftText(T) {
+  const gen = ftGens(T); let s = `🌳 ${T.people.me.name}'s family tree\n`;
+  ftRows(T, gen).forEach(([g, ids]) => { s += `\n${ftGenName(g)}\n`; ids.forEach(id => { const p = T.people[id], w = ftRel(T, id); s += `• ${ftAva(p, g)} ${p.name}${p.born ? ` (born ${p.born})` : ""}: ${id === "me" ? "you" : w === "relative" ? "in your family" : "your " + w}${p.note ? ` · ${p.note}` : ""}\n`; }); });
+  return s;
+}
+
+// 🖼️ the screen
+let FT = null, FT_RESIZE = false;
+function startFamilyTree() {
+  const guest = SITE_WHO === "guest";
+  FT = { T: guest ? ftSample() : ftLoad(), view: "tree", sel: "me", form: null, sure: null, guest, first: true };
+  appScreen("🌳 Family Tree", `<h2>🌳 Family Tree</h2><p class="soft">Put in your family and see how everyone is related to you. Tap anyone to see their card.</p>${guest ? `<div class="sl-card ft-guest">👤 <b>Guests can't save a family tree</b>, so there's nothing to type in here. Below is an example family to explore: tap anyone to see how they're related. To make your own tree, tap 🔄 Switch person on the home screen and pick your name.</div>` : ""}<div id="ft-main"></div>`);
+  if (!FT_RESIZE) { FT_RESIZE = true; window.addEventListener("resize", () => ftLines()); }
+  ftDraw();
+}
+const ftSave = () => { if (FT && !FT.guest) store.set(ftKey(), FT.T); };
+function ftDraw() {
+  const m = document.getElementById("ft-main"); if (!m || !FT) return;
+  const T = FT.T, P = T.people; if (!P[FT.sel]) FT.sel = "me";
+  const old = m.querySelector(".ft-scroll"), keepX = old ? old.scrollLeft : null;
+  const gen = ftGens(T), rows = ftRows(T, gen), rel = {}; Object.keys(P).forEach(id => (rel[id] = ftRel(T, id)));
+  const n = Object.keys(P).length, sel = FT.sel, S = P[sel];
+  const card = id => `<button type="button" class="ft-p${id === sel ? " on" : ""}${id === "me" ? " me" : ""}" data-ft="${esc(id)}"><span class="ft-ava" aria-hidden="true">${ftAva(P[id], gen.get(id))}</span><b>${esc(P[id].name)}</b><small>${esc(ftCap(rel[id]))}</small></button>`;
+  const body = FT.view === "list"
+    ? `<div class="ft-list">${rows.map(([g, ids]) => `<h3 class="ft-lh">${ftGenName(g)}</h3>${ids.map(id => `<button type="button" class="ft-li${id === sel ? " on" : ""}" data-ft="${esc(id)}"><span class="ft-ava" aria-hidden="true">${ftAva(P[id], g)}</span><span class="ft-li-t"><b>${esc(P[id].name)}</b><small>${esc([ftCap(rel[id]), P[id].born ? "born " + P[id].born : ""].filter(Boolean).join(" · "))}</small></span></button>`).join("")}`).join("")}</div>`
+    : `<div class="ft-scroll" id="ft-scroll"><div class="ft-tree" id="ft-tree"><svg class="ft-lines" id="ft-lines" aria-hidden="true"></svg>${rows.map(([g, ids]) => `<div class="ft-row"><div class="ft-gen">${ftGenName(g)}</div><div class="ft-people">${ids.map(card).join("")}</div></div>`).join("")}</div></div>`;
+  const chips = ids => ids.length ? ids.map(x => `<button type="button" class="chip mini ft-jump" data-ft="${esc(x)}">${ftAva(P[x], gen.get(x))} ${esc(P[x].name)}</button>`).join("") : `<span class="soft">none yet</span>`;
+  const facts = [S.born ? "Born " + S.born : "", S.note].filter(Boolean).map(esc).join(" · ");
+  let lost = 0; if (FT.sure === sel) { const C = JSON.parse(JSON.stringify(T)); ftDelete(C, sel); lost = n - Object.keys(C.people).length - 1; }
+  const acts = FT.guest ? "" : `<div class="ft-acts">
+      <button type="button" class="chip mini" data-ft-act="edit">✏️ Edit</button>
+      <button type="button" class="chip mini" data-ft-act="parent"${S.parents.length >= 2 ? " disabled title=\"Everyone can have 2 parents here\"" : ""}>⬆️ Add a parent</button>
+      <button type="button" class="chip mini" data-ft-act="child">⬇️ Add a child</button>
+      <button type="button" class="chip mini" data-ft-act="sibling">↔️ Add a brother or sister</button>
+      <button type="button" class="chip mini" data-ft-act="partner">💞 Add a partner</button>
+      ${sel === "me" ? "" : `<button type="button" class="chip mini ft-del${FT.sure === sel ? " sure" : ""}" id="ft-del">${FT.sure === sel ? `Tap again to delete ${esc(S.name)}${lost ? ` (and ${lost} ${lost === 1 ? "person" : "people"} only linked through them)` : ""}` : "🗑️ Delete"}</button>`}
+    </div>`;
+  m.innerHTML = `<div class="ft-bar">${naTabs([["tree", "🌳 Tree"], ["list", "📜 List"]], FT.view)}<span class="soft ft-count">${n} ${n === 1 ? "person" : "people"}</span>${FT.guest ? "" : `<button type="button" class="chip mini ft-copy" id="ft-copy">📋 Copy my tree as text</button>`}</div>
+    ${body}
+    <div class="sl-card ft-card" id="ft-card"><div class="ft-card-top"><span class="ft-big" aria-hidden="true">${ftAva(S, gen.get(sel))}</span><div><h3>${esc(S.name)}</h3>${facts ? `<p class="soft">${facts}</p>` : ""}</div></div>
+      <p class="ft-rel">${ftSay(T, sel, rel[sel])}</p>
+      <div class="ft-links"><div><b>Parents</b>${chips(S.parents)}</div><div><b>Partner</b>${chips(S.partners)}</div><div><b>Siblings</b>${chips(ftSibs(T, sel))}</div><div><b>Children</b>${chips(ftKids(T, sel))}</div></div>
+      ${acts}
+    </div>
+    ${FT.form && !FT.guest ? ftFormHTML(T) : ""}
+    <textarea class="ft-copybox" id="ft-copybox" readonly hidden aria-label="Your family tree as text"></textarea>`;
+  bindTabs(v => { FT.view = v; FT.sure = null; ftDraw(); });
+  m.querySelectorAll("[data-ft]").forEach(b => b.addEventListener("click", () => { FT.sel = b.dataset.ft; FT.sure = null; FT.form = null; ftDraw(); document.getElementById("ft-card")?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }));
+  m.querySelectorAll("[data-ft-act]").forEach(b => b.addEventListener("click", () => {
+    const a = b.dataset.ftAct; FT.sure = null;
+    if (a !== "edit" && Object.keys(FT.T.people).length >= FT_MAX) return toast(`Your tree is full (${FT_MAX} people).`);
+    FT.form = a === "edit" ? { mode: "edit", id: FT.sel } : { mode: "add", rel: a, to: FT.sel }; ftDraw();
+    document.getElementById("ft-form")?.scrollIntoView({ block: "center", behavior: "smooth" }); document.getElementById("ft-name")?.focus({ preventScroll: true });
+  }));
+  document.getElementById("ft-del")?.addEventListener("click", () => {
+    if (FT.sure !== FT.sel) { FT.sure = FT.sel; FT.form = null; return ftDraw(); }
+    const name = FT.T.people[FT.sel].name; ftDelete(FT.T, FT.sel); FT.sure = null; FT.sel = "me"; ftSave(); ftDraw(); toast(`🗑️ Deleted ${name}`);
+  });
+  document.getElementById("ft-copy")?.addEventListener("click", ftCopy);
+  if (FT.form && !FT.guest) ftBindForm();
+  if (FT.view === "tree") {
+    ftLines(); naTimer(setTimeout(ftLines, 400));   // again once fonts have loaded
+    const sc = document.getElementById("ft-scroll"), me = sc && sc.querySelector('[data-ft="me"]');
+    if (sc) { if (keepX !== null && !FT.first) sc.scrollLeft = keepX; else if (me) sc.scrollLeft = me.offsetLeft + me.offsetWidth / 2 - sc.clientWidth / 2; }
+  }
+  FT.first = false;
+}
+function ftFormHTML(T) {
+  const f = FT.form, P = T.people, X = P[f.mode === "edit" ? f.id : f.to], E = f.mode === "edit" ? X : ftPerson("");
+  const title = f.mode === "edit" ? `✏️ Edit ${esc(X.name)}` : { parent: `⬆️ Add a parent for ${esc(X.name)}`, child: `⬇️ Add a child for ${esc(X.name)}`, sibling: `↔️ Add a brother or sister for ${esc(X.name)}`, partner: `💞 Add a partner for ${esc(X.name)}` }[f.rel];
+  const year = new Date().getFullYear();
+  return `<form class="sl-card ft-form" id="ft-form" autocomplete="off"><h3>${title}</h3>
+    <label>Name<input id="ft-name" maxlength="40" value="${f.mode === "edit" ? esc(E.name) : ""}" placeholder="Like Grandma Rose" required></label>
+    <div class="ft-field"><b>Picture</b><div class="ft-emojis" role="radiogroup" aria-label="Picture"><button type="button" class="ft-emo auto${E.emoji ? "" : " on"}" data-emo="">✨ Auto</button>${FT_EMOJI.map(e => `<button type="button" class="ft-emo${E.emoji === e ? " on" : ""}" data-emo="${e}" aria-label="${e}">${e}</button>`).join("")}</div></div>
+    <label>Girl or boy? (optional, so it can say mom or dad)<select id="ft-g"><option value="">Skip</option><option value="f"${E.g === "f" ? " selected" : ""}>Girl / woman</option><option value="m"${E.g === "m" ? " selected" : ""}>Boy / man</option></select></label>
+    <label>Year born (optional)<input id="ft-born" type="number" inputmode="numeric" min="1" max="${year}" value="${esc(E.born)}" placeholder="Like 1955"></label>
+    <label>A short note (optional)<input id="ft-note" maxlength="120" value="${esc(E.note)}" placeholder="Like: loves fishing"></label>
+    ${f.mode === "add" && f.rel === "child" && X.partners.length ? `<label>Other parent<select id="ft-other">${X.partners.map(q => `<option value="${esc(q)}">${esc(P[q].name)}</option>`).join("")}<option value="">Nobody else / not sure</option></select></label>` : ""}
+    <div class="ft-form-btns"><button type="submit" class="btn go">💾 Save</button><button type="button" class="btn" id="ft-cancel">Cancel</button></div>
+  </form>`;
+}
+function ftBindForm() {
+  const form = document.getElementById("ft-form"); if (!form) return;
+  let emo = form.querySelector(".ft-emo.on")?.dataset.emo || "";
+  form.querySelectorAll("[data-emo]").forEach(b => b.addEventListener("click", () => { emo = b.dataset.emo; form.querySelectorAll("[data-emo]").forEach(x => x.classList.toggle("on", x === b)); }));
+  document.getElementById("ft-cancel").addEventListener("click", () => { FT.form = null; ftDraw(); document.getElementById("ft-card")?.scrollIntoView({ block: "nearest" }); });
+  form.addEventListener("submit", e => {
+    e.preventDefault(); if (FT.guest || !FT.form) return;
+    const name = document.getElementById("ft-name").value.trim().slice(0, 40); if (!name) { toast("Type a name first."); return; }
+    const by = Math.round(+document.getElementById("ft-born").value), year = new Date().getFullYear();
+    const d = { name, emoji: FT_EMOJI.includes(emo) ? emo : "", g: document.getElementById("ft-g").value, born: by >= 1 && by <= year ? String(by) : "", note: document.getElementById("ft-note").value.trim().slice(0, 120) };
+    const f = FT.form, T = FT.T;
+    if (f.mode === "edit") { if (!T.people[f.id]) return; Object.assign(T.people[f.id], d); FT.sel = f.id; }
+    else { if (Object.keys(T.people).length >= FT_MAX) return toast(`Your tree is full (${FT_MAX} people).`); const id = ftAdd(T, f.rel, f.to, d, document.getElementById("ft-other")?.value || ""); if (!id) return toast("That can't be added here."); FT.sel = id; }
+    FT.form = null; ftSave(); ftDraw(); toast(f.mode === "edit" ? "✏️ Saved!" : `🌳 Added ${name}!`);
+    document.getElementById("ft-card")?.scrollIntoView({ block: "nearest" });
+  });
+}
+async function ftCopy() {
+  const text = ftText(FT.T), ta = document.getElementById("ft-copybox");
+  try { await navigator.clipboard.writeText(text); toast("📋 Copied your family tree!"); return; } catch (e) {}
+  if (!ta) return; ta.hidden = false; ta.value = text; ta.focus(); ta.select();
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  if (ok) ta.hidden = true; toast(ok ? "📋 Copied your family tree!" : "Select the text below and copy it.");
+}
+function ftLines() {   // draws the lines between parents, partners and children
+  const tree = document.getElementById("ft-tree"), svg = document.getElementById("ft-lines"); if (!tree || !svg || !FT) return;
+  const T = FT.T, P = T.people, tr = tree.getBoundingClientRect(), box = {};
+  tree.querySelectorAll("[data-ft]").forEach(el => { const r = el.getBoundingClientRect(); box[el.dataset.ft] = { l: r.left - tr.left, r: r.right - tr.left, t: r.top - tr.top, b: r.bottom - tr.top, x: (r.left + r.right) / 2 - tr.left, y: r.top - tr.top + 26 }; });   // y: level with the picture, so cards of different heights still line up
+  const W = tree.scrollWidth, H = tree.scrollHeight; svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const f = v => Math.round(v * 10) / 10; let s = "";
+  const pairs = new Set();
+  Object.values(P).forEach(p => p.partners.forEach(q => {
+    const k = [p.id, q].sort().join("|"); if (pairs.has(k) || !box[p.id] || !box[q]) return; pairs.add(k);
+    const [L, R] = box[p.id].x < box[q].x ? [box[p.id], box[q]] : [box[q], box[p.id]]; if (Math.abs(L.t - R.t) > 4) return;
+    s += `<line class="ft-ln-pair" x1="${f(L.r)}" y1="${f(L.y)}" x2="${f(R.l)}" y2="${f(R.y)}"/>`;
+    if (R.l - L.r >= 12) s += `<text class="ft-heart" x="${f((L.r + R.l) / 2)}" y="${f(L.y - 6)}" text-anchor="middle">❤</text>`;
+  }));
+  const groups = new Map();
+  Object.values(P).forEach(p => { const ps = p.parents.filter(x => box[x]); if (!ps.length || !box[p.id]) return; const k = ps.slice().sort().join("|"); if (!groups.has(k)) groups.set(k, { ps, kids: [] }); groups.get(k).kids.push(p.id); });
+  const gaps = new Map(), px = G => G.ps.reduce((t, x) => t + box[x].x, 0) / G.ps.length;
+  groups.forEach(G => { G.pb = Math.max(...G.ps.map(x => box[x].b)); G.ct = Math.min(...G.kids.map(x => box[x].t)); const k = Math.round(G.pb) + ":" + Math.round(G.ct); if (!gaps.has(k)) gaps.set(k, []); gaps.get(k).push(G); });
+  gaps.forEach(list => { list.sort((a, b) => px(a) - px(b)); list.forEach((G, i) => (G.my = G.pb + (G.ct - G.pb) * (i + 1) / (list.length + 1))); });
+  groups.forEach(G => {
+    const x0 = px(G), two = G.ps.length === 2 && Math.abs(box[G.ps[0]].t - box[G.ps[1]].t) < 4, y0 = two ? box[G.ps[0]].y : G.pb;
+    const xs = G.kids.map(k => box[k].x), lo = Math.min(x0, ...xs), hi = Math.max(x0, ...xs);
+    s += `<path class="ft-ln" d="M${f(x0)} ${f(y0)}V${f(G.my)}M${f(lo)} ${f(G.my)}H${f(hi)}${G.kids.map(k => `M${f(box[k].x)} ${f(G.my)}V${f(box[k].t)}`).join("")}"/>`;
+  });
+  const sibs = new Map();   // brothers and sisters with no parents in the tree yet get a dotted bracket
+  Object.values(P).forEach(p => { if (!p.sib || !box[p.id] || p.parents.some(x => box[x])) return; if (!sibs.has(p.sib)) sibs.set(p.sib, []); sibs.get(p.sib).push(p.id); });
+  sibs.forEach(ids => { if (ids.length < 2) return; const y = Math.min(...ids.map(k => box[k].t)) - 6, xs = ids.map(k => box[k].x); s += `<path class="ft-ln-sib" d="M${f(Math.min(...xs))} ${f(y)}H${f(Math.max(...xs))}${ids.map(k => `M${f(box[k].x)} ${f(y)}V${f(box[k].t)}`).join("")}"/>`; });
+  svg.innerHTML = s;
+}
+NEW_APPS.push({ id: "family", emoji: "🌳", name: "Family Tree", desc: "Put in your family tree and see how everyone is related to you: parents, grandparents, cousins and more.", start: () => startFamilyTree(), kw: "family tree|family|ancestors|relatives|grandparents|cousins" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
