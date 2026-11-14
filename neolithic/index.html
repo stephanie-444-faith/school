@@ -1626,6 +1626,15 @@
   .subj-opts { display: grid; gap: 8px; margin: 8px 0 6px; }
   .subj-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
   .subj-opt:hover, .subj-opt:focus-visible { border-color: var(--gold); outline: none; } .subj-opt b { font-size: 1.05rem; } .subj-opt span { color: var(--ink-soft); font-size: .88rem; }
+  .gp-opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 8px 0; } .gp-opts > span { font-weight: 700; } .gp-names { display: flex; align-items: center; gap: 6px; margin-left: 6px; font-weight: 600; }
+  .gp-selrow { align-items: center; gap: 8px; flex-wrap: wrap; } .gp-selrow b { color: var(--ink-soft); font-weight: 600; }
+  .gp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin: 10px 0; }
+  .gp-item { position: relative; display: flex; flex-direction: column; padding: 0; border: 3px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; min-width: 0; }
+  .gp-item.on { border-color: var(--gold); } .gp-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #fff; }
+  .gp-item small { font-size: .74rem; padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+  .gp-check { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 800; background: rgba(0,0,0,.45); color: #fff; border: 2px solid #fff; }
+  .gp-item.on .gp-check { background: var(--gold); color: #3a2600; }
+  .gp-go { flex-wrap: wrap; gap: 8px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -10368,7 +10377,7 @@ function startMoneySmart(tab = "goal") {
 // 🎨 Pixel art (a tab in the 🎨 Art Gallery)
 const PX_COLORS = ["#000000", "#ffffff", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#9aa5b1", "#00c2c7"];
 const PX_TEMPLATES = { heart: ["..........", ".XX....XX.", "XXXX..XXXX", "XXXXXXXXXX", "XXXXXXXXXX", ".XXXXXXXX.", "..XXXXXX..", "...XXXX...", "....XX....", ".........."], smile: ["..XXXXXX..", ".X......X.", "X..X..X..X", "X........X", "X.X....X.X", "X..XXXX..X", ".X......X.", "..XXXXXX..", "..........", ".........."] };
-const ART_TABS = [["mine", "🖼️ My gallery"], ["pixel", "🟥 Pixel art"], ["draw", "✏️ Draw"], ["everyone", "👀 Everyone's art"]];   // 🎨 Art Gallery: pixel art and the gallery in one app
+const ART_TABS = [["mine", "🖼️ My gallery"], ["pixel", "🟥 Pixel art"], ["draw", "✏️ Draw"], ["print", "🖨️ Print"], ["everyone", "👀 Everyone's art"]];   // 🎨 Art Gallery: pixel art and the gallery in one app
 async function pxSave(grid, name, quiet) {   // a pixel picture goes into My Gallery, and remembers its pixels so you can keep painting it
   const N = Math.round(Math.sqrt(grid.length)) || 16, k = 20, c = document.createElement("canvas"); c.width = c.height = N * k;
   const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
@@ -10959,6 +10968,7 @@ function bgCreditSet(id, from) { if (!id || !from || !SITE_WHO) return; store.se
 function startGallery(filter = "all", tab = "mine", person = null) {
   if (tab === "pixel") return startPixelArt();
   if (tab === "draw") return startGalleryDraw();
+  if (tab === "print") return startGalleryPrint();
   appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, tab)}<div id="gal-body"></div>`);
   bindTabs(t => startGallery("all", t));
   const body = document.getElementById("gal-body"), me = galWho();
@@ -11058,7 +11068,7 @@ function galView(list, i, after) {
       ${mine ? `<p class="gal-rated">${galStarsTxt(m)}${raters ? `: ${raters}` : ""}${(m.takenBy || []).length ? ` · 📥 Taken by ${m.takenBy.map(w => esc(galName(w))).join(", ")}` : ""}</p>`
         : `<div class="gal-stars" role="group" aria-label="Your rating"><span>Your stars:</span>${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= myStars ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}">★</button>`).join("")}<small id="gv-avg">${galStarsTxt(m)}</small></div>`}
       <div class="row gal-vrow"><button class="btn" id="gv-prev" type="button" aria-label="Previous">◀</button><button class="btn" id="gv-next" type="button" aria-label="Next">▶</button>
-        ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Keep painting</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
+        ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Keep painting</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
           : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>`}</div>
     </div>${mine && m.from ? `<div class="gal-taken">📥 Taken from ${esc(galName(m.from))}</div>` : ""}`;
     const $v = id => box.querySelector("#gv-" + id);
@@ -11079,6 +11089,7 @@ function galView(list, i, after) {
       };
       $v("home")?.addEventListener("click", () => useBg("home")); $v("every")?.addEventListener("click", () => useBg("every"));
       $v("px")?.addEventListener("click", () => { store.set("px_cur", m.px.slice()); close(); startPixelArt(); });
+      $v("print")?.addEventListener("click", () => { GP_PICK = new Set([m.id]); close(); startGalleryPrint(); });
     } else {
       box.querySelectorAll("[data-star]").forEach(b => b.addEventListener("click", async () => {
         const n = +b.dataset.star; m.rates = { ...(m.rates || {}), [me]: n }; await galSaveMeta(m).catch(() => {});
@@ -11096,6 +11107,67 @@ function galView(list, i, after) {
   box.addEventListener("click", e => { if (e.target === box) close(); });
   document.addEventListener("keydown", key);
   document.body.appendChild(box); show(i);
+}
+/* ---------- 🖨️ Print: pick pictures and art from My Gallery, choose how many fit on a page, then print (or save a page to print anywhere) */
+let GP_PICK = new Set(), GP_PER = 1, GP_NAMES = true;
+const GP_CSS = `@page { margin: 10mm; }
+  .gp-page { box-sizing: border-box; height: 100vh; padding: 4mm; display: grid; gap: 6mm; page-break-after: always; break-after: page; background: #fff; }
+  .gp-page:last-child { page-break-after: auto; break-after: auto; }
+  .gp-page.per1 { grid-template: 1fr / 1fr; } .gp-page.per2 { grid-template: 1fr 1fr / 1fr; } .gp-page.per4 { grid-template: 1fr 1fr / 1fr 1fr; } .gp-page.per6 { grid-template: 1fr 1fr 1fr / 1fr 1fr; }
+  .gp-cell { margin: 0; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2mm; }
+  .gp-cell img { flex: 1; min-height: 0; max-width: 100%; max-height: 100%; object-fit: contain; }
+  .gp-cell figcaption { font: 600 13pt system-ui, sans-serif; color: #111; text-align: center; }`;
+const gpEsc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const gpPagesHTML = (list, srcs) => { const pages = []; for (let i = 0; i < list.length; i += GP_PER) pages.push(list.slice(i, i + GP_PER)); return pages.map((pg, pi) => `<section class="gp-page per${GP_PER}">${pg.map((m, k) => `<figure class="gp-cell"><img src="${srcs[pi * GP_PER + k]}" alt="${gpEsc(m.name)}">${GP_NAMES ? `<figcaption>${gpEsc(m.name)}</figcaption>` : ""}</figure>`).join("")}</section>`).join(""); };
+async function startGalleryPrint() {
+  appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, "print")}
+    <p class="soft">Pick the pictures and art you want to print, choose how many go on each page, then print. If your browser won't print from here, save a page and print it from there.</p>
+    <div class="gp-opts"><span>On each page:</span>${[1, 2, 4, 6].map(n => `<button class="chip${GP_PER === n ? " on" : ""}" data-gp-per="${n}" type="button">${n}</button>`).join("")}<label class="gp-names"><input type="checkbox" id="gp-names"${GP_NAMES ? " checked" : ""}> Show names</label></div>
+    <div class="row gp-selrow"><button class="chip" id="gp-all" type="button">Select all</button><button class="chip" id="gp-none" type="button">Clear</button><b id="gp-count"></b></div>
+    <div class="gp-grid" id="gp-grid"><p class="soft">Opening your gallery…</p></div>
+    <div class="row gp-go"><button class="btn gold" id="gp-print" type="button">🖨️ Print</button><button class="btn" id="gp-save" type="button">💾 Save a page to print</button></div>`);
+  bindTabs(t => startGallery("all", t));
+  let items = [];
+  const count = () => {
+    const n = items.filter(m => GP_PICK.has(m.id)).length, pages = Math.ceil(n / GP_PER);
+    const c = document.getElementById("gp-count"); if (c) c.textContent = n ? `${n} picked · ${pages} page${pages === 1 ? "" : "s"}` : "Nothing picked yet";
+    ["gp-print", "gp-save"].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = !n; });
+  };
+  const draw = () => {
+    const g = document.getElementById("gp-grid"); if (!g) return;
+    g.innerHTML = items.length ? items.map(m => `<button class="gp-item${GP_PICK.has(m.id) ? " on" : ""}" data-gp="${m.id}" type="button" aria-pressed="${GP_PICK.has(m.id)}"><img src="${m.thumb || ""}" alt=""><small>${esc(m.name)}</small><i class="gp-check" aria-hidden="true">${GP_PICK.has(m.id) ? "✔" : ""}</i></button>`).join("")
+      : `<p class="soft">There's nothing to print yet. Add pictures, or make pixel art or a drawing first!</p>`;
+    g.querySelectorAll("[data-gp]").forEach(b => b.addEventListener("click", () => { const id = b.dataset.gp; if (GP_PICK.has(id)) GP_PICK.delete(id); else GP_PICK.add(id); draw(); }));
+    count();
+  };
+  $app.querySelectorAll("[data-gp-per]").forEach(b => b.addEventListener("click", () => { GP_PER = +b.dataset.gpPer; $app.querySelectorAll("[data-gp-per]").forEach(x => x.classList.toggle("on", x === b)); count(); }));
+  document.getElementById("gp-names").addEventListener("change", e => { GP_NAMES = e.target.checked; });
+  document.getElementById("gp-all").addEventListener("click", () => { items.forEach(m => GP_PICK.add(m.id)); draw(); });
+  document.getElementById("gp-none").addEventListener("click", () => { GP_PICK.clear(); draw(); });
+  const picked = () => items.filter(m => GP_PICK.has(m.id));
+  document.getElementById("gp-print").addEventListener("click", async e => {
+    const b = e.currentTarget, list = picked(); if (!list.length) return; b.disabled = true; b.textContent = "Getting ready…";
+    document.getElementById("gp-area")?.remove(); document.getElementById("gp-style")?.remove();
+    const urls = []; for (const m of list) { const blob = await galBlob(m.id).catch(() => null); urls.push(blob ? URL.createObjectURL(blob) : m.thumb || ""); }
+    const st = document.createElement("style"); st.id = "gp-style"; st.textContent = `#gp-area { display: none; } @media print { body > *:not(#gp-area) { display: none !important; } body { background: #fff !important; } #gp-area { display: block !important; } ${GP_CSS} }`;
+    const area = document.createElement("div"); area.id = "gp-area"; area.innerHTML = gpPagesHTML(list, urls);
+    document.head.appendChild(st); document.body.appendChild(area);
+    await Promise.all([...area.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(ok => { i.onload = i.onerror = ok; setTimeout(ok, 5000); })));
+    const done = () => { b.disabled = false; b.textContent = "🖨️ Print"; setTimeout(() => urls.forEach(u => u.startsWith("blob:") && URL.revokeObjectURL(u)), 60000); };
+    try { window.print(); toast("🖨️ If no print window opened, tap 💾 Save a page to print."); } catch (err) { toast("This browser won't print from here. Tap 💾 Save a page to print instead."); }
+    done();
+  });
+  document.getElementById("gp-save").addEventListener("click", async e => {
+    const b = e.currentTarget, list = picked(); if (!list.length) return; b.disabled = true; b.textContent = "Making your page…";
+    const srcs = []; for (const m of list) { const blob = await galBlob(m.id).catch(() => null); srcs.push(blob ? await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = () => ok(m.thumb || ""); r.readAsDataURL(blob); }) : m.thumb || ""); }
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My art to print</title><style>body { margin: 0; background: #ddd; font-family: system-ui, sans-serif; } .bar { position: sticky; top: 0; padding: 10px; background: #222; color: #fff; text-align: center; } .bar button { font: inherit; font-weight: 700; padding: 10px 18px; border-radius: 10px; border: 0; background: #ffd23f; cursor: pointer; } ${GP_CSS} @media screen { .gp-page { width: min(210mm, 96vw); height: min(297mm, 136vw); margin: 12px auto; box-shadow: 0 2px 10px rgba(0,0,0,.25); } } @media print { .bar { display: none; } body { background: #fff; } }</style></head><body><div class="bar"><button onclick="print()">🖨️ Print</button> ${list.length} picture${list.length === 1 ? "" : "s"} from the Study Arcade</div>${gpPagesHTML(list, srcs)}</body></html>`;
+    const r = await saDownload(html, "my-art-to-print.html");
+    toast(r === "saved" || r === true ? "💾 Saved! Open it and tap 🖨️ Print." : r === "declined" ? "Okay, not saved." : "That couldn't be saved here.");
+    b.disabled = false; b.textContent = "💾 Save a page to print";
+  });
+  try { items = (await galList()).filter(m => m.kind !== "video"); } catch (e) { const g = document.getElementById("gp-grid"); if (g) g.innerHTML = `<p class="soft">😕 This browser won't let the gallery open here.</p>`; return count(); }
+  const ids = new Set(items.map(m => m.id)); [...GP_PICK].forEach(id => { if (!ids.has(id)) GP_PICK.delete(id); });
+  draw();
 }
 // ✏️ a simple sketchpad that saves straight to the gallery
 const GAL_INK = ["#000000", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#ffffff"];
