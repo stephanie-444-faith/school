@@ -1280,6 +1280,50 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
+  /* 🏕️ Survival Guide */
+  .sv-wrap { min-width: 0; } .sv-wrap h3 { margin: 14px 0 6px; font-family: var(--display); font-weight: 400; }
+  .sv-intro { margin: 4px 0 10px; font-size: 1.02rem; } .sv-note { margin: 6px 0 4px; font-size: .9rem; }
+  .sv-sos { background: rgba(255, 96, 112, .16); border: 2px solid var(--bad); border-radius: 14px; padding: 10px 14px; margin: 12px 0; font-weight: 700; overflow-wrap: anywhere; }
+  .sv-sos.sv-fire { background: rgba(255, 201, 60, .14); border-color: var(--gold); }
+  .sv-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 10px; margin: 10px 0; }
+  .sv-card { background: var(--panel-2); border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .sv-card.sv-grown { border-color: var(--gold); }
+  .sv-card p { margin: 0; line-height: 1.45; overflow-wrap: anywhere; }
+  .sv-chead { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .sv-chead i { font-style: normal; font-size: 1.8rem; line-height: 1; flex: none; }
+  .sv-chead h3 { margin: 0; flex: 1; min-width: 0; font-size: 1.08rem; overflow-wrap: anywhere; }
+  .sv-say { flex: none; border: 1px solid var(--line); background: var(--panel); border-radius: 999px; width: 36px; height: 36px; padding: 0; font-size: 1rem; }
+  .sv-say:hover { border-color: var(--gold); }
+  .sv-adult { align-self: flex-start; font-size: .8rem; font-weight: 800; color: #3a2600; background: var(--gold); border-radius: 999px; padding: 2px 10px; }
+  .sv-stop { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 8px; }
+  .sv-stopbox { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; border-top: 5px solid var(--bad); min-width: 0; }
+  .sv-stopbox b { font-family: var(--display); font-weight: 400; font-size: 2rem; line-height: 1; color: var(--bad); }
+  .sv-stopbox span { font-weight: 800; font-size: 1.05rem; } .sv-stopbox small { color: var(--ink-soft); font-size: .88rem; overflow-wrap: anywhere; }
+  .sv-threes, .sv-tri { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr)); gap: 8px; }
+  .sv-tri { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sv-threes div, .sv-tri div { background: var(--panel-2); border-radius: 14px; padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+  .sv-threes i, .sv-tri i { font-style: normal; font-size: 1.7rem; line-height: 1.1; }
+  .sv-threes b, .sv-tri b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; color: var(--gold); }
+  .sv-threes small { color: var(--ink-soft); font-size: .85rem; }
+  .sv-kitbar, .sv-qbar { height: 12px; border-radius: 99px; background: var(--panel-2); border: 1px solid var(--line); overflow: hidden; }
+  .sv-kitbar div, .sv-qbar div { height: 100%; background: var(--money); border-radius: 99px; transition: width .25s; }
+  .sv-kitn { margin: 6px 0 10px; font-weight: 700; }
+  .sv-kit { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 8px; margin-bottom: 12px; }
+  .sv-item { display: flex; align-items: center; gap: 10px; text-align: left; background: var(--panel-2); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; min-width: 0; }
+  .sv-item.on { border-color: var(--money); background: rgba(66, 227, 146, .12); }
+  .sv-item i { font-style: normal; font-size: 1.5rem; flex: none; } .sv-box { flex: none; font-size: 1.2rem; }
+  .sv-iname { display: flex; flex-direction: column; min-width: 0; } .sv-iname b { overflow-wrap: anywhere; } .sv-iname small { color: var(--ink-soft); font-size: .85rem; }
+  .sv-quiz { display: flex; flex-direction: column; gap: 10px; }
+  .sv-qtop { display: flex; justify-content: space-between; font-weight: 800; color: var(--ink-soft); }
+  .sv-qq { font-size: 1.25rem; overflow-wrap: anywhere; }
+  .sv-opts { display: grid; gap: 8px; }
+  .sv-opt { text-align: left; background: var(--panel-2); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; font-weight: 700; overflow-wrap: anywhere; }
+  .sv-opt:hover:not(:disabled) { border-color: var(--gold); }
+  .sv-opt.right { border-color: var(--money); background: rgba(66, 227, 146, .2); } .sv-opt.wrong { border-color: var(--bad); background: rgba(255, 96, 112, .2); }
+  .sv-opt:disabled { cursor: default; }
+  .sv-why { border-radius: 14px; padding: 12px 14px; border: 2px solid var(--line); background: var(--panel-2); display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+  .sv-why.ok { border-color: var(--money); } .sv-why.no { border-color: var(--bad); } .sv-why p { margin: 0; }
+  .sv-done { align-items: center; text-align: center; } .sv-big { font-family: var(--display); font-size: 3rem; margin: 0; color: var(--gold); }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -18411,6 +18455,141 @@ NEW_APPS.push({ id: "tune", emoji: "🎵", name: "Name That Tune", desc: "Hear a
 [["pixel", "Paint pixel pictures one square at a time, and save a gallery."], ["money", "Savings goals, needs vs. wants, making a budget, and growing money."], ["grammar", "The 8 parts of speech, sentence types, text structures and text features: learn and quiz."], ["savesite", "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude)."]].forEach(([id, plain]) => {
   const a = NEW_APPS.find(x => x.id === id); if (!a) return; const full = a.desc; Object.defineProperty(a, "desc", { get: () => gamesAllowed() ? full : plain, configurable: true });
 });
+/* ---------- 🏕️ Survival Guide: staying safe outdoors (lost, water, shelter, fire, first aid, weather, wild animals), a kit checklist and a quiz ---------- */
+const SV_TABS = [["lost", "🧭 Lost?"], ["water", "💧 Water"], ["shelter", "⛺ Shelter"], ["fire", "🔥 Fire"], ["aid", "🩹 First Aid"], ["weather", "🌦️ Weather"], ["wild", "🐻 Animals & Plants"], ["kit", "🎒 Emergency Kit"], ["quiz", "❓ Quiz"]];
+const SV_SOS = `<div class="sv-sos">🚨 When someone is hurt or in danger, tell a grown-up right away and call <b>911</b> (in the US).</div>`;
+// each card: [emoji, title, text, needs a grown-up?]
+const SV_INFO = {
+  lost: { intro: "If you ever get lost outdoors, remember: you are not in trouble, and people will come looking for you. Your job is to help them find you.",
+    top: () => `<h3>🛑 Remember S.T.O.P.</h3><div class="sv-stop">${[["S", "Stop", "Stop walking. Take a slow, deep breath. Feeling scared is normal."], ["T", "Think", "Where did you last see your group or the trail? What do you have with you?"], ["O", "Observe", "Look and listen. Is it getting dark or cold? Is there a safe spot close by?"], ["P", "Plan", "Stay where you are, keep warm and dry, and get ready to be found."]].map(([l, w, t]) => `<div class="sv-stopbox"><b>${l}</b><span>${w}</span><small>${t}</small></div>`).join("")}</div>`,
+    cards: [
+      ["🌲", "Hug a tree", "Pick a safe spot, like a big tree or rock, and stay there. A person who stays in one place is much easier to find."],
+      ["📣", "Be heard", "Blow your whistle 3 times, rest, then do it again. Three of anything means \"help!\" A whistle is louder than yelling and saves your voice."],
+      ["🟧", "Be seen", "Wear bright colors, or spread something bright out in an open spot. At night, flash your flashlight 3 times."],
+      ["🙋", "Answer the searchers", "If you hear people calling your name, shout back and blow your whistle. Never hide from searchers, even if you don't know them. They are there to help you."],
+      ["🧥", "Stay warm and dry", "Put on extra layers before you get cold. Sit on your pack or a pile of leaves, not the bare ground."],
+      ["🗺️", "Before you go", "Always tell a grown-up where you're going and when you'll be back. Stay with your group and stay on the trail."]] },
+  water: { intro: "Your body needs water every day, and even more when it's hot or you're working hard. Feeling thirsty, a headache or feeling dizzy can all mean: drink!",
+    cards: [
+      ["🎒", "Bring enough", "The safest water is the water you carry. Bring more than you think you'll need, and take small sips often."],
+      ["🏞️", "Where water hides", "Streams, lakes, springs, rain and melted snow. But finding water is only step one…"],
+      ["🦠", "Germs you can't see", "Even clear, cold, sparkly water can have germs that make you very sick. Never drink water from outdoors until it has been cleaned."],
+      ["♨️", "Boil it", "A big, bubbling (rolling) boil for 1 minute kills germs. High up in the mountains (above 6,500 feet), boil it for 3 minutes. Let it cool before you drink.", 1],
+      ["🧪", "Filter or tablets", "A camping water filter or water-cleaning tablets also work. Follow the directions exactly, including how long to wait before drinking.", 1],
+      ["🚫", "Never drink", "Seawater (the salt makes you even thirstier), water that smells bad or looks oily, or puddles near roads."],
+      ["❄️", "Snow", "Don't eat snow: it chills your whole body. Melt it first, then clean it like any other outdoor water."]] },
+  shelter: { intro: "In cold, wet or windy weather, staying warm and dry matters even more than food.",
+    top: () => `<h3>3️⃣ The rule of 3s</h3><div class="sv-threes">${[["💨", "3 minutes", "without air"], ["⛺", "3 hours", "without shelter in harsh weather"], ["💧", "3 days", "without water"], ["🍎", "3 weeks", "without food"]].map(([e, n, t]) => `<div><i>${e}</i><b>${n}</b><small>${t}</small></div>`).join("")}</div><p class="soft sv-note">These are rough rules (everyone is different), but they show what matters most: air, then shelter, then water, then food.</p>`,
+    cards: [
+      ["☔", "Stay dry", "Wet clothes pull heat out of your body fast. Put your rain jacket on early, and take off sweaty layers when you stop to rest."],
+      ["🍂", "Get off the ground", "The cold ground steals your warmth. Make a thick bed of dry leaves or pine needles to sit or lie on."],
+      ["🌬️", "Hide from the wind", "Find a spot behind big rocks, thick bushes or a big, solid log."],
+      ["🏕️", "Debris hut basics", "Lean a long, strong stick on a stump or rock. Lean smaller sticks along both sides like ribs. Pile leaves on top, really thick (about as deep as your arm is long). Small shelters stay warmer!", 1],
+      ["⚠️", "Safe spot check", "NOT under dead branches. NOT in a dry creek bed or low spot that can flood. NOT right at the water's edge."],
+      ["🚗", "Use what you have", "A tent, tarp, emergency blanket or big trash bag makes a quick shelter. If your family's car gets stuck, stay with the car: it's easier to find than a person."]] },
+  fire: { intro: "", top: () => `<div class="sv-sos sv-fire">🔥 Fire is a grown-up job. Never light a fire unless a grown-up is right there helping.</div><h3>🔺 The fire triangle</h3><div class="sv-tri">${[["🌡️", "Heat"], ["🪵", "Fuel"], ["💨", "Oxygen"]].map(([e, w]) => `<div><i>${e}</i><b>${w}</b></div>`).join("")}</div><p class="soft sv-note">A fire needs all three. Take away any one, and the fire goes out.</p>`,
+    cards: [
+      ["📍", "A safe place", "Use a fire ring if there is one. Clear the ground around it, and keep it far from tents, bushes and low branches. Check the rules: some places don't allow fires when it's dry.", 1],
+      ["🪣", "Ready to put it out", "Keep a bucket of water and a shovel next to the fire. Keep the fire small, and never leave it alone, not even for a minute.", 1],
+      ["💧", "Drown, stir, feel", "To put a fire out: drown it with water, stir the ashes, and drown it again. Hold the back of your hand close above (not on) the ashes. Still warm? Keep going! If it's too hot to touch, it's too hot to leave.", 1],
+      ["🛑", "Stop, drop and roll", "If your clothes catch fire: STOP where you are, DROP to the ground, cover your face with your hands, and ROLL until the fire is out."],
+      ["🔺", "Signal fires", "Three fires in a triangle is a call for help that rescuers know. In the daytime, smoke is easier to see than flames.", 1],
+      ["🔦", "Light without fire", "A flashlight or headlamp is the safest way to see at night. Pack one with extra batteries."]] },
+  aid: { intro: "", top: () => SV_SOS,
+    cards: [
+      ["🩸", "Cuts and scrapes", "Press on it with a clean cloth to stop the bleeding. Rinse it with clean water, then cover it with a bandage. If the bleeding won't stop, get help right away."],
+      ["🔥", "Burns", "Cool the burn under cool (not icy) running water for about 10 minutes. No ice and no butter. Cover it loosely. Big or bad burns need 911."],
+      ["🐝", "Stings", "Move away from the bees. Scrape a stinger out sideways with a card. A cold pack helps. If anyone has trouble breathing or a swelling face or throat, call 911 right away."],
+      ["🦶", "Sprains", "Remember RICE: Rest, Ice (wrapped in a cloth), Compression (a snug wrap) and Elevation (prop it up high)."],
+      ["🥶", "Too cold (hypothermia)", "Signs: shivering, clumsy hands, mumbling, very sleepy. Get out of the wind, change into dry, warm layers, huddle together, and get help."],
+      ["🥵", "Too hot", "Heavy sweating, dizziness, a headache or an upset tummy can mean heat exhaustion: rest in the shade, cool off and sip water. Hot skin plus confusion can be heat stroke: call 911!"],
+      ["🧰", "Pack a first-aid kit", "Bandages, gauze, tape, cleaning wipes, tweezers, a cold pack and any medicine you need. Look inside with a grown-up before you go."]] },
+  weather: { intro: "Check the weather forecast with a grown-up before you go, and turn back if it looks bad.",
+    cards: [
+      ["⚡", "When thunder roars, go indoors", "If you can hear thunder, lightning can reach you. Count from the flash to the boom: 30 seconds or less? Get to shelter now."],
+      ["⏱️", "The 30/30 rule", "Flash-to-boom 30 seconds or less means go inside. Then wait 30 minutes after the last thunder before going back out."],
+      ["🌳", "No safe place outside", "Keep heading for a building or a hard-topped car. On the way, stay away from hilltops, lone tall trees, open fields, water and metal fences. Spread out from your group."],
+      ["🧣", "Cold", "Dress in layers: a base layer, a warm middle layer and a waterproof outer layer, plus a hat and gloves. Numb, white or grayish skin can be frostbite: warm it gently and tell a grown-up."],
+      ["☀️", "Heat", "Drink water often, rest in the shade in the middle of the day, and wear a hat, sunscreen and light, loose clothes."],
+      ["🌊", "Flash floods", "Turn around, don't drown! Never walk, swim or ride through flood water. Just 6 inches of fast water can knock a person down. Head for higher ground."]] },
+  wild: { intro: "Wild animals and plants are amazing to see. Give them space, and you'll both stay safe.",
+    cards: [
+      ["🐻", "Bears", "Talk or sing on the trail so bears hear you coming. Never feed them, and store food the way the park's rules say. See a bear? Stay calm, don't run, stay with your group, talk in a calm voice and back away slowly."],
+      ["🧯", "Bear spray", "In bear country, grown-ups carry bear spray and know how to use it. Park rangers can tell you what to do about the bears where you are.", 1],
+      ["🐍", "Snakes", "Watch where you step and where you put your hands. Leave snakes alone: most bites happen when people try to touch or catch them. If bitten, stay calm and still and call 911. Don't cut, suck or ice the bite."],
+      ["🕷️", "Ticks", "Wear long pants tucked into your socks. After a hike, check your hair, behind your ears, your armpits and behind your knees. A grown-up can pull a tick straight out with tweezers."],
+      ["🍃", "Leaves of three, let it be", "Poison ivy and poison oak grow leaves in groups of three and can give you an itchy rash. Touched some? Wash your skin with soap and water, and wash your clothes too."],
+      ["🍄", "Never eat wild plants", "Never eat wild berries, plants or mushrooms unless an expert says they're safe. Some deadly mushrooms look just like safe ones. People can go weeks without food, so water and shelter come first."],
+      ["🦌", "Give animals space", "Even cute animals like deer, moose and raccoons can hurt you. Never feed or touch wild animals. Stay far from babies (mom is close by!) and from any animal acting strangely."]] }
+};
+const SV_KIT = [["whistle", "📣", "Whistle", "3 blasts = help"], ["water", "💧", "Full water bottle", "more than you think"], ["clean", "🧪", "Water filter or tablets", "to clean outdoor water"], ["light", "🔦", "Flashlight + extra batteries", "to see and to signal"], ["blanket", "🥈", "Emergency blanket", "keeps body heat in"], ["firstaid", "🩹", "First-aid kit", "for cuts, stings and blisters"], ["snacks", "🥜", "Snacks", "energy to stay warm"], ["rain", "🧥", "Rain jacket", "staying dry = staying warm"], ["hat", "🧢", "Warm hat and gloves", "even in summer, nights get cold"], ["map", "🧭", "Map and compass", "with a grown-up who can use them"], ["sun", "🧴", "Sunscreen and a sun hat", "no sunburns"], ["bugs", "🦟", "Bug spray", "keeps ticks and mosquitoes away"], ["bright", "🟧", "Something bright", "a bandana or vest, so you're easy to see"], ["bag", "🗑️", "Big trash bag", "a quick rain poncho or ground sheet"], ["numbers", "📝", "Family phone numbers on paper", "in case a phone dies"], ["phone", "📱", "A charged phone (a grown-up's)", "to call for help"], ["meds", "💊", "Medicine you need", "packed by a grown-up"], ["soap", "🧼", "Hand sanitizer", "clean hands before eating"]];
+// quiz: [question, right answer, wrong answers, why]
+const SV_QUIZ = [
+  ["You're lost in the woods. What should you do first?", "S.T.O.P.: stay put, think, look around and plan", ["Run to find the trail as fast as you can", "Keep walking until you find a road", "Hide so nobody worries"], "Staying in one place makes you much easier to find. Searchers start where you were last seen."],
+  ["What do 3 blasts on a whistle mean?", "I need help", ["I'm hungry", "Everything is fine", "Time to go home"], "Three of anything (blasts, flashes or fires) is a signal for help. A whistle is louder than yelling."],
+  ["Which water is safe to drink without cleaning it first?", "Water you brought from home", ["A clear, fast stream", "A pretty mountain lake", "A rain puddle"], "Even clear water can have germs you can't see. Boil it, filter it, or use tablets first."],
+  ["How long should water boil to be safe (in most places)?", "A rolling boil for 1 minute", ["Just until it's warm", "5 seconds", "Until it starts to steam"], "A big, bubbling boil for 1 minute. High up in the mountains (above 6,500 feet), boil it for 3 minutes."],
+  ["Why should your shelter keep you off the bare ground?", "The cold ground pulls heat out of your body", ["So bugs can find you", "It doesn't matter", "So you can see farther"], "A thick bed of dry leaves or pine needles keeps your body heat in."],
+  ["Which is a BAD place for a shelter?", "A dry creek bed", ["Flat, higher ground", "A spot out of the wind", "A spot away from dead branches"], "Dry creek beds and low spots can fill with water fast in a storm."],
+  ["What 3 things does a fire need?", "Heat, fuel and oxygen", ["Water, wind and sand", "Rocks, dirt and leaves", "Ice, smoke and ash"], "That's the fire triangle. Take away any one of them and the fire goes out."],
+  ["How do you know a campfire is really out?", "Drown it, stir it, drown it again, until no heat is left", ["When the flames are gone", "When it stops smoking for a minute", "When it's covered with leaves"], "Hidden coals can stay hot for hours. If it's too hot to touch, it's too hot to leave."],
+  ["Someone gets a small burn. What helps first?", "Cool running water for about 10 minutes", ["Butter", "Ice right on the skin", "Blowing on it hard"], "Cool (not icy) water helps the most. Tell a grown-up. Big burns need 911."],
+  ["You see lightning and count 10 seconds until the thunder. What should you do?", "Get to a building or a hard-topped car now", ["Stand under the tallest tree", "Go for a swim", "Wait for the rain to start"], "If you can hear thunder, lightning is close enough to strike. Wait 30 minutes after the last thunder before going back out."],
+  ["Fast water is flowing across the trail. What should you do?", "Turn around, don't drown", ["Walk through carefully", "Ride a bike across", "Jump in to test it"], "Just 6 inches of moving water can knock a person down."],
+  ["You see a bear far away. What should you do?", "Stay calm, don't run, and back away slowly", ["Run as fast as you can", "Walk closer for a photo", "Give it some food"], "Running can make a bear chase you. Stay with your group and let the grown-ups handle the bear spray."],
+  ["What does \"leaves of three, let it be\" warn you about?", "Poison ivy", ["Four-leaf clovers", "Maple trees", "Grass"], "Poison ivy grows leaves in groups of three and causes an itchy rash. Wash with soap and water if you touch it."],
+  ["Is it okay to eat wild mushrooms you find?", "No, never, unless an expert says it's safe", ["Yes, if they look like store mushrooms", "Yes, if they're white", "Yes, if an animal ate one"], "Some deadly mushrooms look almost exactly like safe ones. You can go weeks without food, so it's never worth it."],
+  ["After a hike in tall grass, what should you check for?", "Ticks", ["Sunburned hair", "Extra socks", "Pinecones"], "Check your hair, behind your ears, your armpits and behind your knees. A grown-up can remove a tick with tweezers."],
+  ["Someone in the cold is shivering, clumsy and very sleepy. What could it be?", "Hypothermia (the body is too cold)", ["Just being silly", "Too much sun", "A sprained ankle"], "Get them out of the wind and into dry, warm layers, and get help right away."]
+];
+function svSay(t) { try { const s = window.speechSynthesis; if (!s) return; s.cancel(); const u = new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g, "")); u.lang = "en-US"; u.rate = .95; s.speak(u); } catch (e) {} }
+function startSurvival(tab = "lost") {
+  if (!SV_TABS.some(t => t[0] === tab)) tab = "lost";
+  appScreen("🏕️ Survival Guide", `<h2>🏕️ Survival Guide</h2><p class="soft">How to stay safe outdoors, and what to do if something goes wrong.</p>${naTabs(SV_TABS, tab)}<div id="sv" class="sv-wrap"></div>`);
+  bindTabs(startSurvival);
+  const box = document.getElementById("sv");
+  if (SV_INFO[tab]) {
+    const I = SV_INFO[tab];
+    box.innerHTML = `${I.intro ? `<p class="sv-intro">${I.intro}</p>` : ""}${I.top ? I.top() : ""}<div class="sv-cards">${I.cards.map(([e, t, b, adult], i) => `<div class="sv-card${adult ? " sv-grown" : ""}"><div class="sv-chead"><i aria-hidden="true">${e}</i><h3>${t}</h3><button class="sv-say" type="button" data-say="${i}" aria-label="Read “${esc(t)}” out loud" title="Read it to me">🔊</button></div><p>${b}</p>${adult ? `<span class="sv-adult">🧑‍🤝‍🧑 With a grown-up</span>` : ""}</div>`).join("")}</div>${tab === "lost" || tab === "wild" || tab === "weather" ? SV_SOS : ""}`;
+    box.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => { const [, t, txt] = I.cards[+b.dataset.say]; svSay(t + ". " + txt); }));
+  } else if (tab === "kit") {
+    const have = new Set(store.get("sv_kit", []));
+    const bar = () => `<div class="sv-kitbar"><div style="width:${Math.round(have.size / SV_KIT.length * 100)}%"></div></div><p class="sv-kitn" id="sv-kitn">${have.size === SV_KIT.length ? "🎉 Your kit is complete! Ready for an adventure (with a grown-up)." : `🎒 ${have.size} of ${SV_KIT.length} packed`}</p>`;
+    box.innerHTML = `<p class="sv-intro">Pack an emergency kit with a grown-up. Tap each thing once it's in your pack. Your checks are saved.</p><div id="sv-kitprog">${bar()}</div><div class="sv-kit">${SV_KIT.map(([id, e, n, why]) => `<button class="sv-item${have.has(id) ? " on" : ""}" type="button" data-kit="${id}" aria-pressed="${have.has(id)}"><span class="sv-box" aria-hidden="true">${have.has(id) ? "✅" : "⬜"}</span><i aria-hidden="true">${e}</i><span class="sv-iname"><b>${n}</b><small>${why}</small></span></button>`).join("")}</div><button class="btn" type="button" id="sv-clear">🧹 Clear all checks</button>`;
+    box.querySelectorAll("[data-kit]").forEach(b => b.addEventListener("click", () => {
+      const id = b.dataset.kit, on = !have.has(id); on ? have.add(id) : have.delete(id); store.set("sv_kit", [...have]);
+      b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); b.querySelector(".sv-box").textContent = on ? "✅" : "⬜";
+      document.getElementById("sv-kitprog").innerHTML = bar(); if (on) sfx.right();
+    }));
+    document.getElementById("sv-clear").addEventListener("click", e => { const b = e.currentTarget; if (!have.size) return; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to clear them all"; return; } store.set("sv_kit", []); startSurvival("kit"); });
+  } else {
+    const N = 12, Q = shuffle(SV_QUIZ).slice(0, N).map(([q, r, w, why]) => ({ q, r, why, opts: shuffle([r, ...w]) }));
+    let i = 0, score = 0;
+    const ask = () => {
+      const x = Q[i];
+      box.innerHTML = `<div class="sv-quiz"><div class="sv-qtop"><span>Question ${i + 1} of ${N}</span><span>⭐ ${score}</span></div><div class="sv-qbar"><div style="width:${Math.round(i / N * 100)}%"></div></div><h3 class="sv-qq">${x.q}</h3><div class="sv-opts">${x.opts.map((o, k) => `<button class="sv-opt" type="button" data-o="${k}">${o}</button>`).join("")}</div><div id="sv-why"></div></div>`;
+      box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => {
+        if (box.querySelector(".sv-opt[disabled]")) return;
+        const pick = x.opts[+b.dataset.o], ok = pick === x.r; if (ok) { score++; sfx.right(); } else sfx.wrong();
+        box.querySelectorAll(".sv-opt").forEach(o => { o.disabled = true; const v = x.opts[+o.dataset.o]; if (v === x.r) o.classList.add("right"); else if (o === b) o.classList.add("wrong"); });
+        document.getElementById("sv-why").innerHTML = `<div class="sv-why ${ok ? "ok" : "no"}"><b>${ok ? "✅ Right!" : `❌ The answer is: ${x.r}`}</b><p>${x.why}</p><button class="btn go" type="button" id="sv-next">${i + 1 < N ? "Next ➜" : "See my score"}</button></div>`;
+        box.querySelector(".sv-qtop span:last-child").textContent = "⭐ " + score;
+        document.getElementById("sv-next").addEventListener("click", () => { i++; i < N ? ask() : done(); });
+        document.getElementById("sv-next").scrollIntoView({ block: "nearest" });
+      }));
+    };
+    const done = () => {
+      const best = Math.max(store.get("sv_quiz_best", 0), score); store.set("sv_quiz_best", best);
+      const msg = score === N ? "🏆 Perfect! You're a survival expert!" : score >= 9 ? "🌟 Great job! You really know your stuff." : score >= 6 ? "👍 Good work! Read a few cards and try again." : "📖 Keep learning! Read the cards, then try again.";
+      box.innerHTML = `<div class="sv-quiz sv-done"><p class="sv-big">${score} / ${N}</p><p><b>${msg}</b></p><p class="soft">Your best: ${best} / ${N}</p><button class="btn go" type="button" id="sv-again">🔁 Try again</button></div>`;
+      document.getElementById("sv-again").addEventListener("click", () => startSurvival("quiz"));
+    };
+    const best = store.get("sv_quiz_best", 0);
+    box.innerHTML = `<div class="sv-quiz sv-done"><p class="sv-intro">${N} questions about everything in the Survival Guide. Each answer explains why.</p>${best ? `<p class="soft">Your best: ${best} / ${N}</p>` : ""}<button class="btn go" type="button" id="sv-start">❓ Start the quiz</button></div>`;
+    document.getElementById("sv-start").addEventListener("click", ask);
+  }
+}
+NEW_APPS.push({ id: "survival", emoji: "🏕️", name: "Survival Guide", desc: "What to do if you're lost, safe water, shelter, fire safety, first aid, weather and wild animals, plus a kit checklist and a quiz.", start: () => startSurvival(), kw: "survival|survive|wilderness|lost in the woods|first aid|emergency kit|camping safety" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
