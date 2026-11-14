@@ -11357,10 +11357,52 @@ function plBuild(idx) {   // put a past version back together: start from the fi
   PL_LAST = { idx, lines }; return lines.join("\n");
 }
 // a past life runs in a sealed box with pretend storage, so it can never mess up the present site's saves
+/* ⏪🚫🎮 For people who can't have games, every past life runs with this filter: game buttons, game screens and any words about games are taken out. */
+function plNoGamesScript() {
+  const menu = (MENU_GAME_RX.source.match(/\)\?\(([^()]*)\)/) || [, ""])[1].split("|");
+  const screens = (GAME_SCREEN_RX.source.match(/\^\(([^()]*)\)/) || [, ""])[1].split("|").map(s => s.replace(/^[^A-Za-z0-9]+/, "").replace(/\\/g, "").trim());
+  const apps = NEW_APPS.filter(a => INFO_GAME_APPS.has(a.id)).map(a => a.name);
+  const extra = ["Bunny Hop Typing", "Cash Race", "Mystery Game", "Root Hyper Practice", "Root Basketball", "Root Soccer", "Root Football", "Root Lacrosse", "Hippo Hoops", "Dream Team", "Game Room", "Training Ground", "Carrot Champion", "Speed Champion"];
+  const names = [...new Set([...menu, ...screens, ...apps, ...extra].map(s => s.trim()).filter(s => s.length > 2 && !/^(Bunny|Uno)$/.test(s)))];
+  const exact = [...new Set([...names, "Uno", "Bunny"])];   // short names only count as a whole title
+  const fns = ["startDig", "startGame", "startSlope", "startDraw", "startArchers", "startMini", "startMystery", "startSnake", "startStack", "startBunny", "bunnyLobby", "startMore", "startGameRoom", "startHippopoly", "startUno", "startBattleship", "startRummikub", "startCheckers", "startChess", "startYahtzee", "startMancala", "startGoFish", "startDots", "startNameThatTune", "startRootArchery", "startRootHyper", "startRootsChooser", "startRootSport", "startHippoHoops", "startDreamTeam", "startPuzzleRoom", "startHeadClass", "startRodeo", "start2048", "startMemory", "startMines", "startBricks", "startHopper", "startGalaxy", "startWhack", "startConnect4", "startSimon", "startPong", "startRagdollSecret", "startTurboKeys", "startGlobeDetective"];
+  const code = `(function(){
+var NAMES=${JSON.stringify(names)},EXACT=${JSON.stringify(exact)},FNS=${JSON.stringify(fns)};
+var q=function(s){return s.replace(/[.*+?^\${}()|[\\]\\\\]/g,"\\\\$&")};
+var NAME_RX=new RegExp("(^|[^A-Za-z])("+NAMES.map(q).join("|")+")(?![A-Za-z])");
+var WORD_RX=/\\bgam(e|es|ing|er|ers)\\b|🎮|🕹️|Game Room/i;
+var PLAY_RX=/\\b(then|and|to|let'?s|can|go|or|you|we) play\\b(?!\\s+(the\\s+)?(piano|music|songs?|notes?|beats?|sounds?|drums?|instruments?))/i;
+var TITLE_RX=new RegExp("^\\\\W*("+EXACT.map(q).join("|")+")(\\\\W|$)");
+var hide=function(e){e.style.setProperty("display","none","important");e.setAttribute("data-plhide","1")};
+var CLICK="button,a,[role=button],summary,.aa-card,.gm-item,.chip,option";
+function titleOf(e){var b=e.querySelector("b,strong,h3,h4");return ((b?b.textContent:e.textContent)||"").trim()}
+function isGameTitle(t){return NAME_RX.test(t)||WORD_RX.test(t)||TITLE_RX.test(t)}
+function scrubNode(t){var s=t.nodeValue;if(!s||!(NAME_RX.test(s)||WORD_RX.test(s)||PLAY_RX.test(s)))return;var parts=s.split(/(?<=[.!?…:])\\s+/),kept=parts.filter(function(x){return !(NAME_RX.test(x)||WORD_RX.test(x)||PLAY_RX.test(x))});var v=kept.join(" ");if(v!==s){t.nodeValue=v;var p=t.parentElement;if(p&&!p.textContent.trim()&&!p.querySelector("img,svg,canvas,input,select,textarea"))hide(p)}}
+function scrub(root){
+  if(!root||root.nodeType!==1)return;
+  root.querySelectorAll("#gamesmenu,.gamesmenu,#bunny,[data-more],.gm-list,.rc-grid,#rl-frame,#hh-frame,#dt-frame,.ty-champ").forEach(hide);
+  if(root.matches&&root.matches(CLICK))check(root);root.querySelectorAll(CLICK).forEach(check);
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),n,list=[];while((n=w.nextNode()))list.push(n);
+  list.forEach(function(t){var p=t.parentElement;if(!p||p.closest("script,style,textarea,[data-plhide]"))return;scrubNode(t)});
+  root.querySelectorAll("[placeholder],[title],[aria-label]").forEach(function(e){["placeholder","title","aria-label"].forEach(function(a){var v=e.getAttribute(a);if(v&&(NAME_RX.test(v)||WORD_RX.test(v)))e.setAttribute(a,"")})});
+}
+function check(e){if(e.getAttribute("data-plhide"))return;if(isGameTitle(titleOf(e)))hide(e)}
+var last=0,count=0;
+function goHome(){var now=Date.now();if(now-last<3000)count++;else count=0;last=now;
+  if(count>4){var a=document.getElementById("app");if(a)a.innerHTML="<div class=\\"panel\\"><h2>⏪</h2><p>This part of the past isn't here. Tap ✕ Exit past life to come back.</p></div>";return}
+  try{if(typeof showHome==="function")return showHome();if(typeof exitAll==="function")return exitAll()}catch(x){}}
+function onGameScreen(){var a=document.getElementById("app")||document.body;var els=a.querySelectorAll(".label,h1,h2");for(var i=0;i<els.length&&i<4;i++){var e=els[i];if(e.offsetParent===null||e.closest("[data-plhide]"))continue;var t=(e.textContent||"").trim();if(NAME_RX.test(t)||TITLE_RX.test(t)||/^\\W*Games?\\b|Game Room|Mystery Game/.test(t))return true}return false}
+function block(){FNS.forEach(function(f){try{if(typeof window[f]==="function"&&!window[f].__pl){var g=function(){goHome()};g.__pl=1;window[f]=g}}catch(x){}})}
+var busy=false;function run(){if(busy)return;busy=true;try{block();scrub(document.body);if(onGameScreen())goHome()}finally{busy=false}}
+var t=null;new MutationObserver(function(){if(t)return;t=setTimeout(function(){t=null;run()},0)}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+document.addEventListener("DOMContentLoaded",run);window.addEventListener("load",run);setTimeout(run,0);
+})();`;
+  return "<script>" + code + "<\/script>";
+}
 const PL_SHIM = `<script>(function(){var m={},s={getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null},get length(){return Object.keys(m).length}};["localStorage","sessionStorage"].forEach(function(n){try{Object.defineProperty(window,n,{value:s,configurable:true})}catch(e){}});})();<\/script>`;
 function plPlay(idx) {
-  if (!gamesAllowed() || PL_SKIP_DATES.has(PL_DATA.versions[idx]?.date)) return;   // old versions have games in them
-  const v = PL_DATA.versions[idx], html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${PL_SHIM}<style>.home-new, .aa-card em { display: none !important; }</style></head><body>${plBuild(idx)}</body></html>`;
+  if (PL_SKIP_DATES.has(PL_DATA.versions[idx]?.date)) return;   // old versions have games in them
+  const v = PL_DATA.versions[idx], html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${PL_SHIM}${gamesAllowed() ? "" : plNoGamesScript()}<style>.home-new, .aa-card em { display: none !important; }</style></head><body>${plBuild(idx)}</body></html>`;
   document.getElementById("pl-wrap")?.remove();
   const w = document.createElement("div"); w.id = "pl-wrap"; w.className = "pl-wrap";
   w.innerHTML = `<div class="pl-bar"><button class="pl-exit" id="pl-exit" type="button">✕ Exit past life</button><span>⏪ Past life #${idx + 1} · ${esc(new Date(v.date + "T12:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }))} · ${esc(v.msg)}</span></div><iframe class="pl-frame" id="pl-frame" title="An older Study Arcade" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>`;
@@ -11379,8 +11421,8 @@ function startSaveSite() {
     <div class="row ss-btns"><button class="btn gold" id="ss-copy" type="button">📋 Copy all the code</button><button class="btn" id="ss-dl" type="button">⬇️ Download index.html</button><button class="btn" id="ss-show" type="button">👀 Show the code</button></div>
     <p class="soft ss-size">📦 ${mb} MB · ${lines} lines of code. In your own copy, progress saves in that browser. A few things need Claude (Hippo's AI answers, Ask Claude and the online save), and the rest works anywhere.</p>
     <textarea class="ss-code" id="ss-code" readonly hidden spellcheck="false" aria-label="The Study Arcade's code"></textarea>
-    ${gamesAllowed() ? `<div class="sl-card ss-past"><h3>⏪ Past lives</h3><p>Travel back in time and play any older version of the Study Arcade, all the way back to the very first one! A big ✕ Exit button in the top-left corner brings you back to now.</p>
-      <button class="btn go" id="ss-pastbtn" type="button">⏪ Show the past lives</button><div id="ss-past"></div></div>` : ""}`);
+    ${`<div class="sl-card ss-past"><h3>⏪ Past lives</h3><p>Travel back in time and ${gamesAllowed() ? "play" : "visit"} any older version of the Study Arcade, all the way back to the very first one! A big ✕ Exit button in the top-left corner brings you back to now.</p>
+      <button class="btn go" id="ss-pastbtn" type="button">⏪ Show the past lives</button><div id="ss-past"></div></div>`}`);
   const ta = document.getElementById("ss-code");
   if (!text) { document.getElementById("ss-copy").disabled = document.getElementById("ss-dl").disabled = document.getElementById("ss-show").disabled = true; toast("The code couldn't be gathered on this page."); }
   document.getElementById("ss-copy").addEventListener("click", async () => { if (await saCopy(text, ta)) { sfx.buy(); toast("📋 Copied the whole site! Paste it into index.html."); } else { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); toast("Press Ctrl+C (or ⌘+C) to copy the selected code."); } });
