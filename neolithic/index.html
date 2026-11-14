@@ -1653,6 +1653,10 @@
   .pic-drawbox { display: grid; gap: 8px; justify-items: center; margin: 8px 0; } .pic-cv { width: min(256px, 100%); aspect-ratio: 1; border-radius: 12px; touch-action: none; background: #fff; }
   .pic-inks { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
   .pic-artgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; } .pic-art { padding: 0; border: 2px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; cursor: pointer; } .pic-art img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .tk-boost { color: var(--gold); font-weight: 700; font-size: .78rem; }
+  .tk-hub { display: grid; gap: 10px; margin: 12px 0; } @media (min-width: 640px) { .tk-hub { grid-template-columns: 1fr 1fr; } }
+  .tk-hubbtn { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 18px 14px; border-radius: 18px; border: 3px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
+  .tk-hubbtn:hover, .tk-hubbtn:focus-visible { border-color: var(--gold); outline: none; } .tk-hubbtn span { font-size: 3rem; line-height: 1; } .tk-hubbtn b { font-family: var(--display); font-weight: 400; font-size: 1.3rem; } .tk-hubbtn small { color: var(--ink-soft); }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -19200,22 +19204,23 @@ function startSurvival(tab = "lost") {
 }
 NEW_APPS.push({ id: "survival", emoji: "🏕️", name: "Survival Guide", desc: "What to do if you're lost, safe water, shelter, fire safety, first aid, weather and wild animals, plus a kit checklist and a quiz.", start: () => startSurvival(), kw: "survival|survive|wilderness|lost in the woods|first aid|emergency kit|camping safety" });
 /* ---------- 🏎️ Turbo Keys Rally: type the sentences to drive your car, race 3 bots, win coins, and spend them on cars and paint in the garage. ---------- */
+// ⚡ better cars go faster: "boost" moves your car that much farther for every letter you type, so it reaches the finish line sooner
 const TK_CARS = [
-  { id: "red", e: "🚗", name: "Red Rocket", price: 0 },
-  { id: "turtle", e: "🐢", name: "Turbo Turtle", price: 0 },
-  { id: "trail", e: "🚙", name: "Trail Buddy", price: 60 },
-  { id: "cab", e: "🚕", name: "Sunny Cab", price: 100 },
-  { id: "patrol", e: "🚓", name: "Patrol Pal", price: 150 },
-  { id: "pickup", e: "🛻", name: "Pickup Pete", price: 200 },
-  { id: "van", e: "🚐", name: "Road Trip Van", price: 260 },
-  { id: "bus", e: "🚌", name: "Zoom Bus", price: 320 },
-  { id: "fire", e: "🚒", name: "Firefly Truck", price: 400 },
-  { id: "tractor", e: "🚜", name: "Turbo Tractor", price: 480 },
-  { id: "lap", e: "🏎️", name: "Lightning Lap", price: 600 },
-  { id: "rocket", e: "🚀", name: "Rocket Kart", price: 900, rot: 45 },
-  { id: "ufo", e: "🛸", name: "Saucer Cruiser", price: 1300, noflip: true },
-  { id: "turtle", e: "🐢", name: "Shell Speeder", price: 1800 },
-  { id: "dragon", e: "🐉", name: "Dragon Drift", price: 2500 }
+  { id: "red", e: "🚗", name: "Red Rocket", price: 0, boost: 0 },
+  { id: "tturtle", e: "🐢", name: "Turbo Turtle", price: 0, boost: 0 },
+  { id: "trail", e: "🚙", name: "Trail Buddy", price: 60, boost: 0.03 },
+  { id: "cab", e: "🚕", name: "Sunny Cab", price: 100, boost: 0.05 },
+  { id: "patrol", e: "🚓", name: "Patrol Pal", price: 150, boost: 0.07 },
+  { id: "pickup", e: "🛻", name: "Pickup Pete", price: 200, boost: 0.08 },
+  { id: "van", e: "🚐", name: "Road Trip Van", price: 260, boost: 0.1 },
+  { id: "bus", e: "🚌", name: "Zoom Bus", price: 320, boost: 0.11 },
+  { id: "fire", e: "🚒", name: "Firefly Truck", price: 400, boost: 0.13 },
+  { id: "tractor", e: "🚜", name: "Turbo Tractor", price: 480, boost: 0.14 },
+  { id: "lap", e: "🏎️", name: "Lightning Lap", price: 600, boost: 0.16 },
+  { id: "rocket", e: "🚀", name: "Rocket Kart", price: 900, rot: 45, boost: 0.19 },
+  { id: "ufo", e: "🛸", name: "Saucer Cruiser", price: 1300, noflip: true, boost: 0.22 },
+  { id: "turtle", e: "🐢", name: "Shell Speeder", price: 1800, boost: 0.24 },
+  { id: "dragon", e: "🐉", name: "Dragon Drift", price: 2500, boost: 0.28 }
 ];
 const TK_PAINTS = [   // sepia first turns any car the same tan color, so each paint comes out the same color on every car
   { id: "none", name: "Factory", price: 0, f: "" },
@@ -19274,6 +19279,16 @@ const tkCoinsShow = d => { const el = document.getElementById("tk-coins"); if (e
 const tkSegEnd = R => { const sp = R.text.indexOf(" ", R.done); return sp === -1 ? R.len : sp + 1; };   // the word you're on, plus the space after it
 let TK_R = null, TK_LAST_TEXT = -1;
 
+/* ---------- ⌨️ Opening the typing app: pick Bunny Hop Typing or Turbo Keys Rally */
+function startTypingHub() {
+  appScreen("🏎️ Turbo Keys Rally · Pick a typing game", `<h2>⌨️ Which typing game?</h2><p class="soft">Both make your fingers faster. Pick one!</p>
+    <div class="tk-hub"><button class="tk-hubbtn" id="hub-bunny" type="button"><span>🐰</span><b>Bunny Hop Typing</b><small>Hop across platforms by typing words, earn carrots and unlock characters.</small></button>
+    <button class="tk-hubbtn" id="hub-turbo" type="button"><span>🏎️</span><b>Turbo Keys Rally</b><small>Race 3 bots by typing sentences, win coins, and buy faster cars.</small></button></div>
+    ${typeof startLeaderboards === "function" ? `<p><button class="btn gold" id="hub-lb" type="button">🏆 Typing leaderboards</button></p>` : ""}`);
+  document.getElementById("hub-bunny").addEventListener("click", () => startBunny());
+  document.getElementById("hub-turbo").addEventListener("click", () => startTurboKeys("race"));
+  document.getElementById("hub-lb")?.addEventListener("click", () => startLeaderboards("typing"));
+}
 function startTurboKeys(tab = "race") {
   TK_R = null;
   const d = tkLoad();
@@ -19286,8 +19301,8 @@ function tkLobby() {
   const d = tkLoad(), box = document.getElementById("tk"); if (!box) return;
   TK_R = null;
   box.innerHTML = `<div class="tk-lobby">
-    <div class="tk-peek">${tkCarHTML(d.car, d.paint, "tk-big")}<div><b>${esc(tkCar(d.car).name)}</b><small>${d.paint !== "none" ? esc(tkPaint(d.paint).name) + " paint · " : ""}<button class="tk-link" id="tk-to-garage" type="button">change car</button></small></div></div>
-    <p class="soft">Type the sentence as fast and as carefully as you can. Every letter you get right pushes your car toward the finish line. Beat the bots to win coins!</p>
+    <div class="tk-peek">${tkCarHTML(d.car, d.paint, "tk-big")}<div><b>${esc(tkCar(d.car).name)}</b><small>${tkCar(d.car).boost ? `⚡ +${Math.round(tkCar(d.car).boost * 100)}% speed · ` : ""}${d.paint !== "none" ? esc(tkPaint(d.paint).name) + " paint · " : ""}<button class="tk-link" id="tk-to-garage" type="button">change car</button></small></div></div>
+    <p class="soft">Type the sentence as fast and as carefully as you can. Every letter you get right pushes your car toward the finish line, and better cars go faster. Beat the bots to win coins!</p>
     <div class="tk-sub">Pick your bots</div>
     <div class="tk-lvls">${Object.entries(TK_LEVELS).map(([k, L]) => `<button class="tk-lvl" type="button" data-lvl="${k}" aria-pressed="${d.level === k}"><b>${L.emoji} ${L.name}</b><small>about ${L.wpm} words a minute · coins ×${L.mult}</small></button>`).join("")}</div>
     <button class="btn go tk-start" id="tk-start" type="button">🏁 Start race</button>
@@ -19308,7 +19323,7 @@ function tkRace() {
   TK_LAST_TEXT = ti;
   const text = TK_TEXTS[ti], names = [...TK_BOTS].sort(() => Math.random() - .5).slice(0, 3), pool = TK_CARS.filter(c => c.id !== d.car).sort(() => Math.random() - .5);
   const R = TK_R = {
-    text, len: text.length, done: 0, v: "", ok: 0, go: false, over: false, t0: 0, last: 0, keys: 0, good: 0, streak: 0, turbo: 0, level: d.level, L, finished: [],
+    text, len: text.length, boost: (tkCar(d.car) || {}).boost || 0, done: 0, v: "", ok: 0, go: false, over: false, t0: 0, last: 0, keys: 0, good: 0, streak: 0, turbo: 0, level: d.level, L, finished: [],
     bots: names.map(([name, icon], i) => ({ name, icon, car: pool[i].id, paint: Math.random() < .4 ? TK_PAINTS[1 + Math.floor(Math.random() * 5)].id : "none", wpm: L.wpm * (.85 + Math.random() * .3), mult: 1, pos: 0, done: null }))
   };
   const racers = [{ name: "You", icon: "⭐", car: d.car, paint: d.paint, me: true }, ...R.bots];
@@ -19372,7 +19387,8 @@ function tkDraw() {
   R.ok = okEnd;
   el.innerHTML = [...R.text].map((ch, i) => { const c = i < okEnd ? "tk-ok" : i < badEnd ? "tk-bad" : i === okEnd && !R.over ? "tk-cur" : ""; return c ? `<span class="${c}">${esc(ch)}</span>` : esc(ch); }).join("");
   if (inp) inp.classList.toggle("tk-err", m < R.v.length);
-  const me = document.getElementById("tk-car-0"); if (me) me.style.left = tkLeft(okEnd / R.len);
+  const me = document.getElementById("tk-car-0"); if (me) me.style.left = tkLeft(Math.min(1, okEnd / R.len * (1 + R.boost)));
+  if (R.go && !R.over && R.boost && okEnd * (1 + R.boost) >= R.len) naTimer(setTimeout(tkFinish, 0));   // a fast car crosses the line early
   tkHud(R);
 }
 
@@ -19413,10 +19429,11 @@ function tkTurbo() {
 
 function tkFinish() {
   const R = TK_R; if (!R || R.over) return;
+  const typed = Math.min(R.len, Math.max(R.ok, R.done));   // speed counts only the letters you really typed
   R.over = true; R.endT = performance.now(); R.ok = R.len;
   const secs = Math.max(1, (R.endT - R.t0) / 1000);
   R.finished.push(0); const place = R.finished.length; tkMark(0, place);
-  const wpm = Math.round(R.len / 5 / (secs / 60)), acc = R.keys ? Math.round(R.good / R.keys * 100) : 100;
+  const wpm = Math.round(typed / 5 / (secs / 60)), acc = R.keys ? Math.round(R.good / R.keys * 100) : 100;
   const bonus = acc >= 98 ? 20 : acc >= 95 ? 15 : acc >= 90 ? 8 : 0, coins = Math.round(([0, 50, 30, 20, 10][place] + bonus) * R.L.mult);
   const d = tkLoad(), best = wpm > d.best;
   d.coins += coins; d.races++; if (place === 1) d.wins++; if (place <= 3) d.podiums++;
@@ -19444,10 +19461,10 @@ function tkFinish() {
 function tkGarage() {
   const d = tkLoad(), box = document.getElementById("tk"); if (!box) return;
   keyHandler = null;
-  const card = (look, name, state) => `<div class="tk-card${state.on ? " tk-on" : ""}">${look}<b>${esc(name)}</b>${state.btn}</div>`;
+  const card = (look, name, state) => `<div class="tk-card${state.on ? " tk-on" : ""}">${look}<b>${esc(name)}</b>${state.boost != null ? `<small class="tk-boost">${state.boost ? `⚡ +${Math.round(state.boost * 100)}% speed` : "Normal speed"}</small>` : ""}${state.btn}</div>`;
   box.innerHTML = `<p class="soft">Win races to earn 🪙 coins, then buy a car or a paint job. Tap <b>Drive</b> on any car you own.</p>
     <div class="tk-sub">🚗 Cars</div>
-    <div class="tk-grid">${TK_CARS.map(c => { const own = d.owned.includes(c.id), on = d.car === c.id; return card(tkCarHTML(c.id, on ? d.paint : "none", "tk-mid"), c.name, { on, btn: on ? `<span class="tk-tag">✅ Driving</span>` : own ? `<button class="btn" type="button" data-drive="${c.id}">Drive</button>` : `<button class="btn gold" type="button" data-buy="${c.id}"${d.coins < c.price ? " disabled" : ""}>🪙 ${c.price}</button>` }); }).join("")}</div>
+    <div class="tk-grid">${TK_CARS.map(c => { const own = d.owned.includes(c.id), on = d.car === c.id; return card(tkCarHTML(c.id, on ? d.paint : "none", "tk-mid"), c.name, { on, boost: c.boost || 0, btn: on ? `<span class="tk-tag">✅ Driving</span>` : own ? `<button class="btn" type="button" data-drive="${c.id}">Drive</button>` : `<button class="btn gold" type="button" data-buy="${c.id}"${d.coins < c.price ? " disabled" : ""}>🪙 ${c.price}</button>` }); }).join("")}</div>
     <div class="tk-sub">🎨 Paint for your ${esc(tkCar(d.car).name)}</div>
     <div class="tk-grid">${TK_PAINTS.map(p => { const own = d.paints.includes(p.id), on = d.paint === p.id; return card(tkCarHTML(d.car, p.id, "tk-mid"), p.name, { on, btn: on ? `<span class="tk-tag">✅ On</span>` : own ? `<button class="btn" type="button" data-usepaint="${p.id}">Use</button>` : `<button class="btn gold" type="button" data-buypaint="${p.id}"${d.coins < p.price ? " disabled" : ""}>🪙 ${p.price}</button>` }); }).join("")}</div>`;
   const redo = () => { tkCoinsShow(tkLoad()); tkGarage(); };
@@ -19482,8 +19499,8 @@ function tkStats() {
 // It's a game: hidden from people who can't play games, listed with the other games, and in the App-App.
 INFO_GAME_APPS.add("turbokeys");
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Turbo Keys Rally", "🏎️", "turbo keys rally|turbo keys|typing race|race typing|car typing", "Type fast to drive your car, race bots, and buy cars with your coins.", () => startTurboKeys()]);
-MORE_GAMES.push({ id: "turbokeys", name: "Turbo Keys Rally", desc: "Type to drive! Race 3 bots, win coins, and buy cars and paint.", start: () => startTurboKeys() });
-NEW_APPS.push({ id: "turbokeys", emoji: "🏎️", name: "Turbo Keys Rally", desc: "Type fast to drive! Race 3 bots, win coins, and buy cars and paint in your garage.", start: () => startTurboKeys(), kw: "turbo keys rally|turbo keys|typing race|race typing|car typing|typing cars" });
+MORE_GAMES.push({ id: "turbokeys", name: "Turbo Keys Rally", desc: "Type to drive! Race 3 bots, win coins, and buy cars and paint.", start: () => startTypingHub() });
+NEW_APPS.push({ id: "turbokeys", emoji: "🏎️", name: "Turbo Keys Rally", desc: "Type fast to drive! Race 3 bots, win coins, and buy cars and paint in your garage.", start: () => startTypingHub(), kw: "turbo keys rally|turbo keys|typing race|race typing|car typing|typing cars|typing" });
 /* ---------- 🌳 Family Tree: a real family tree for each person, with profiles, a focus tree, "how are we related?", a timeline, stats, sharing and GEDCOM files ---------- */
 const FT_EMOJI = ["👵", "👴", "🧓", "👩", "👨", "🧑", "👧", "👦", "🧒", "👶", "👩‍🦰", "👨‍🦱", "👱‍♀️", "👱", "🧔", "👩‍🦳", "👨‍🦳", "🧕", "👸", "🤴", "🦸", "🧙", "🐶", "🐱", "⭐", "❤️"];
 const FT_MAX = 500, FT_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
