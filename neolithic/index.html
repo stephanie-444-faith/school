@@ -2930,7 +2930,7 @@ const MEM_T = {};
 /* ---------- 👤 Profiles: every game and app has its own player list ----------
    Everyone from Bunny Hop is on every list (MR.E first), and anyone can add more players to a game any time, up to 100 per game.
    Each player's progress in that game is saved on its own. MR.E keeps the progress that was already there. */
-const PROF_MAX = 100;
+const PROF_MAX = Infinity;   // as many people as you want
 let PROF_GAME = null, PROF_RESTART = null;   // the game or app that's open now, and how to start it over for a new player
 const PROF_GLOBAL = /^(prof_|cg_|ty_|bg_|who_|subject$|mlevel$|rpart$|goal$)|sound/;   // settings that every player shares
 const profBuilt = () => TY_ACCOUNTS.filter(a => !a.guest && !a.custom).map(a => ({ id: a.id, name: a.name }));
@@ -11125,7 +11125,7 @@ function startSlang(tab = "make", vibe, word) {
 // 🖼️ My Gallery: up to 1,000 pictures, drawings and videos for each person.
 // Kept in this device's own storage (IndexedDB), because videos are far too big for the regular saves.
 // "meta" holds the small info and thumbnail for each item (one list per person), "blobs" holds the files themselves.
-const GAL_MAX = 1000, GAL_VIDEO_MAX = 150 * 1024 * 1024;
+const GAL_MAX = 10000, GAL_VIDEO_MAX = 150 * 1024 * 1024;
 let GAL_DB = null, GAL_PASTE = null;
 function galOpen() {
   if (GAL_DB) return GAL_DB;
@@ -12321,7 +12321,7 @@ NEW_APPS.push(
   { id: "lang", emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab() },
   { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn hello, numbers, colors, family, food and animals in the 20 most spoken languages on Earth, from English and Mandarin to Swahili and Hausa. Hear every word!", start: () => startLanguageWorld(), added: "2026-11-12", kw: "language world|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
   { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
-  { id: "gallery", emoji: "🎨", name: "Art Gallery", desc: "Paint pixel art and drawings, keep up to 1,000 pictures, drawings and videos, see everyone's art, and use any of it as a background.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|art gallery|art studio|my pictures|my photos|my videos|my drawings|photo album|pixel art|pixel|pixels|draw|drawing" },
+  { id: "gallery", emoji: "🎨", name: "Art Gallery", desc: "Paint pixel art and drawings, keep up to 10,000 pictures, drawings and videos each, see everyone's art, and use any of it as a background.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|art gallery|art studio|my pictures|my photos|my videos|my drawings|photo album|pixel art|pixel|pixels|draw|drawing" },
   { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
   { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Travel to the Study Arcade's past lives to play any older version. MR.E can also copy the whole site's code.", start: () => startSaveSite(), added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer() },
