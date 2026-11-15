@@ -1716,6 +1716,11 @@
   .nb-picrow { align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 8px; } .nb-picn { font-weight: 600; color: var(--ink-soft); }
   .cc-img { width: 2.2em; height: 2.2em; border-radius: 12px; object-fit: cover; display: block; } .cc-picbtn { padding: 4px 8px; margin-left: 4px; }
   .gd-picrow { align-items: center; gap: 8px; flex-wrap: wrap; margin: 6px 0; }
+  .home-apps .ha-find { display: block; width: 100%; box-sizing: border-box; margin: 6px 0 8px; font: inherit; padding: 10px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
+  .ha-list { display: grid; gap: 6px; max-height: min(60vh, 520px); overflow-y: auto; overscroll-behavior: contain; padding: 2px 4px 2px 0; -webkit-overflow-scrolling: touch; }
+  .ha-item { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 10px; text-align: left; padding: 8px 10px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
+  .ha-item:hover, .ha-item:focus-visible { border-color: var(--gold); outline: none; } .ha-item[hidden] { display: none; }
+  .ha-emo { font-size: 1.8rem; text-align: center; line-height: 1; } .ha-txt { display: grid; min-width: 0; } .ha-txt b { font-size: 1rem; } .ha-txt small { color: var(--ink-soft); font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3224,7 +3229,15 @@ function showHome() {
       <span class="label">Tap a subject to start studying</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
     </div>
+    <div class="panel home-apps"><span class="label">📱 All the apps</span>
+      <input class="ha-find" id="ha-find" type="search" placeholder="🔎 Find an app" aria-label="Find an app" autocomplete="off">
+      <div class="ha-list" id="ha-list">${homeAllApps().map((a, i) => `<button class="ha-item" type="button" data-ha="${i}" data-ha-txt="${esc((a.name + " " + a.desc).toLowerCase())}"><span class="ha-emo" aria-hidden="true">${a.emoji}</span><span class="ha-txt"><b>${esc(a.name)}</b><small>${esc(a.desc)}</small></span></button>`).join("")}</div>
+      <p class="soft ha-none" id="ha-none" hidden>No app matches that.</p>
+    </div>
 `;
+  { const all = homeAllApps();   // 📱 every app, in an easy scroll-down list
+    $app.querySelectorAll("[data-ha]").forEach(b => b.addEventListener("click", () => all[+b.dataset.ha]?.start()));
+    document.getElementById("ha-find").addEventListener("input", e => { const q = e.target.value.trim().toLowerCase(); let n = 0; $app.querySelectorAll("[data-ha]").forEach(b => { const ok = !q || b.dataset.haTxt.includes(q); b.hidden = !ok; if (ok) n++; }); document.getElementById("ha-none").hidden = n > 0; }); }
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     const s = b.dataset.subject;
     if (["math", "ss", "health"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
@@ -10038,6 +10051,8 @@ const HOME_CORE = () => [
   { key: "write", id: "write", cls: "dog-btn", emoji: "🐶", name: "Story Starters", desc: "Story ideas to write about, then keep the story going!", start: () => startStories() },
   ...HIPPO_APPS.map((a, i) => ({ key: "happ" + i, emoji: a[0], name: a[1], desc: a[2], start: () => a[3] === "calc" ? startMathCenter() : startHippo(a[3]) })),
 ];
+// 📱 every app for the home screen's scroll-down list: the App-App, Ask Hippo, and everything in the App-App (games only for people who can play them), A to Z
+const homeAllApps = () => { const seen = new Set(); return [...HOME_PINNED(), ...homePool()].filter(a => { const k = a.name.replace(/^\W+/, "").toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).sort((a, b) => a.name.replace(/^\W+/, "").localeCompare(b.name.replace(/^\W+/, ""))); };
 const homePool = () => { const no = gamesAllowed() ? null : GAME_HOME_KEYS(); return [...HOME_CORE(), ...NEW_APPS.map(a => ({ key: "na-" + a.id, emoji: a.emoji, name: a.name, desc: a.desc, start: a.start, added: a.added }))].filter(a => !no || !no.has(a.key)); };
 function homeToday(now = new Date()) {
   const day = aaDay(now), n = HOME_MAX - HOME_PINNED().length, pool = homePool();
