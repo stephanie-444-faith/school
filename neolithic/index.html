@@ -1711,6 +1711,11 @@
   .nb-body { font: inherit; font-size: 1.02rem; line-height: 1.5; min-height: 46vh; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.15); background: rgba(0,0,0,.18); color: inherit; resize: vertical; }
   .nb-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; } .nb-tools span { font-weight: 700; } .nb-col { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--line); cursor: pointer; } .nb-col.on { border-color: var(--gold); }
   .nb-acts { gap: 6px; flex-wrap: wrap; margin-top: 10px; } .nb-dates { font-size: .8rem; }
+  .nb-pics { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; } .nb-pic { position: relative; } .nb-pic > button:first-child { padding: 0; border: 2px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; cursor: pointer; } .nb-pic img { display: block; width: 84px; height: 84px; object-fit: cover; }
+  .nb-picx { position: absolute; top: -8px; right: -8px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid #fff; background: var(--bad); color: #fff; font-weight: 800; cursor: pointer; padding: 0; }
+  .nb-picrow { align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 8px; } .nb-picn { font-weight: 600; color: var(--ink-soft); }
+  .cc-img { width: 2.2em; height: 2.2em; border-radius: 12px; object-fit: cover; display: block; } .cc-picbtn { padding: 4px 8px; margin-left: 4px; }
+  .gd-picrow { align-items: center; gap: 8px; flex-wrap: wrap; margin: 6px 0; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3194,6 +3199,7 @@ function showHome() {
   PROF_GAME = null; PROF_RESTART = null;
   keyHandler = null;
   try { naCleanup(); hippoHush(); } catch (e) {}   // stop the last app's timers so nothing keeps running after ✕ Exit
+  PIC_TAKER = null;
   stopSlope();
   stopArchers();
   stopMini();
@@ -10494,7 +10500,33 @@ function startAIStudio(view) {
 let NA_TIMERS = [];
 function naCleanup() { NA_TIMERS.forEach(t => { clearInterval(t); clearTimeout(t); cancelAnimationFrame(t); }); NA_TIMERS = []; }
 const naTimer = t => (NA_TIMERS.push(t), t);
+/* ---------- 📷 Pictures everywhere: paste (Ctrl+V) or drop a picture on any screen. If the screen can use a picture it does; otherwise it goes into your Art Gallery.
+   (Dropping a picture also never makes the browser leave the site.) */
+let PIC_TAKER = null;   // a screen that can use a picture sets this to a function(files); it's cleared when you change screens
+const picFilesOf = dt => [...(dt?.files || [])].filter(f => /^(image|video)\//.test(f.type || ""));
+function picTake(files) {
+  if (!files.length) return;
+  if (PIC_TAKER && PIC_TAKER(files) !== false) return;
+  if (!SITE_WHO) return toast("Pick who you are first, then add pictures.");
+  galAddMany(files).then(n => { if (n) toast(`🖼️ Saved in your Art Gallery! Open 🎨 Art Gallery to see ${n === 1 ? "it" : "them"}.`); });
+}
+const picOwnZone = () => document.getElementById("gal-paste") || document.getElementById("bg-sheet") || document.getElementById("rp-sheet");   // these handle their own pictures
+document.addEventListener("paste", e => {
+  if (e.defaultPrevented || picOwnZone()) return;
+  const fs = [...(e.clipboardData?.items || [])].filter(i => i.kind === "file" && /^(image|video)\//.test(i.type)).map(i => i.getAsFile()).filter(Boolean);
+  if (fs.length) { e.preventDefault(); return picTake(fs); }
+  const t = e.target, typing = t && (t.isContentEditable || /^(INPUT|TEXTAREA)$/.test(t.tagName));
+  if (!typing && /<img[^>]+src="https?:/i.test(e.clipboardData?.getData("text/html") || "")) toast("That's only a link to a picture. Save the picture to your device (or copy the picture itself), then add it.");
+});
+document.addEventListener("dragover", e => { if ([...(e.dataTransfer?.types || [])].includes("Files")) e.preventDefault(); });
+document.addEventListener("drop", e => {
+  if (![...(e.dataTransfer?.types || [])].includes("Files")) return;
+  if (e.defaultPrevented) return;   // a drop zone on the screen already took it
+  e.preventDefault();
+  picTake(picFilesOf(e.dataTransfer));
+});
 function appScreen(label, inner) {
+  PIC_TAKER = null;
   { const g = NEW_APPS.find(a => label.includes(a.name)); if (g && PROF_GAME !== g.id) { PROF_GAME = g.id; PROF_RESTART = () => g.start(); } }
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush();
   $app.innerHTML = `<div class="panel newapp"><div class="topline"><span class="label">${label}</span><button class="iconbtn" id="na-back">Back to App-App</button></div>${inner}</div>`;
@@ -10678,7 +10710,7 @@ function startPixelArt() {
     <div class="px-wrap"><div class="px-grid" id="px" style="grid-template-columns:repeat(${N},1fr)">${grid.map((c, i) => `<i data-i="${i}" style="background:${c || "transparent"}"></i>`).join("")}</div>
     <div class="px-side"><div class="px-pal">${PX_COLORS.map(c => `<button class="px-col${c === color ? " on" : ""}" data-c="${c}" style="background:${c}" aria-label="color ${c}"></button>`).join("")}<input type="color" id="px-any" value="#ff6fb5" aria-label="Any color"></div>
     <div class="na-chips"><button class="chip on" data-t="pen">✏️ Pen</button><button class="chip" data-t="erase">🧽 Eraser</button><button class="chip" data-t="fill">🪣 Fill</button></div>
-    <div class="na-chips"><button class="chip" id="px-clear">🗑️ Clear</button><button class="chip" id="px-heart">❤️ Heart</button><button class="chip" id="px-smile">🙂 Smiley</button><button class="chip" id="px-mirror">🪞 Mirror</button></div>
+    <div class="na-chips"><button class="chip" id="px-clear">🗑️ Clear</button><button class="chip" id="px-heart">❤️ Heart</button><button class="chip" id="px-smile">🙂 Smiley</button><button class="chip" id="px-mirror">🪞 Mirror</button><label class="chip">📷 Picture → pixels<input type="file" id="px-picin" accept="image/*" hidden></label></div>
     <div class="px-savebox"><input class="gal-name" id="px-name" maxlength="60" placeholder="Name your pixel art" aria-label="Name your pixel art"><button class="btn gold" id="px-mygal" type="button">💾 Save to My Gallery</button></div>
     <h3>🟥 Your pixel art</h3><div class="px-gal2" id="px-gal"><p class="soft">Opening…</p></div></div></div>`);
   bindTabs(t => startGallery("all", t));
@@ -10697,6 +10729,19 @@ function startPixelArt() {
   document.getElementById("px-heart").addEventListener("click", () => tpl("heart", "#e63946"));
   document.getElementById("px-smile").addEventListener("click", () => tpl("smile", "#ffd23f"));
   document.getElementById("px-mirror").addEventListener("click", () => { for (let y = 0; y < N; y++) for (let x = 0; x < N / 2; x++) grid[y * N + (N - 1 - x)] = grid[y * N + x]; paintAll(); save(); });
+  const pixelate = async f => {   // 📷 turn any picture into 16×16 pixel art
+    if (!f || !/^image\//.test(f.type || "")) return;
+    const u = URL.createObjectURL(f);
+    try {
+      const img = await galLoadImg(u), c2 = document.createElement("canvas"); c2.width = c2.height = N; const x2 = c2.getContext("2d");
+      const s = Math.min(img.naturalWidth, img.naturalHeight); x2.imageSmoothingQuality = "high"; x2.drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, N, N);
+      const d = x2.getImageData(0, 0, N, N).data, hex = v => v.toString(16).padStart(2, "0");
+      grid = Array.from({ length: N * N }, (_, i) => d[i * 4 + 3] < 100 ? "" : "#" + hex(d[i * 4]) + hex(d[i * 4 + 1]) + hex(d[i * 4 + 2]));
+      paintAll(); save(); toast("📷 Your picture is pixel art now!");
+    } catch (e) { toast("That picture couldn't be opened."); } finally { URL.revokeObjectURL(u); }
+  };
+  document.getElementById("px-picin").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; pixelate(f); });
+  PIC_TAKER = files => { if (!document.getElementById("px")) return false; pixelate(files.find(f => /^image\//.test(f.type))); };
   let mine = [];
   const gal = async () => {
     try { mine = (await galList()).filter(m => Array.isArray(m.px)).slice(0, 30); } catch (e) { mine = null; }
@@ -11331,6 +11376,7 @@ function startGallery(filter = "all", tab = "mine", person = null) {
   };
   document.addEventListener("paste", GAL_PASTE);
   document.getElementById("gal-px")?.addEventListener("click", () => startPixelArt());
+  PIC_TAKER = files => { if (!document.getElementById("gal-grid")) return false; galAddMany(files).then(load); };
   pxMigrate().then(n => { if (n) toast(`🖼️ Moved ${n} pixel picture${n === 1 ? "" : "s"} into My Gallery!`); }).catch(() => {}).then(() => load());
 }
 // the big view: look, play, and (for my things) rename, keep private, use as a background, delete; (for other people's things) rate and take
@@ -11463,12 +11509,21 @@ function startGalleryDraw() {
   appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, "draw")}<h3>✏️ New drawing</h3>
     <div class="gd-pal">${GAL_INK.map((c, k) => `<button class="px-col${k === 0 ? " on" : ""}" data-ink="${c}" style="background:${c}" type="button" aria-label="color ${c}"></button>`).join("")}<input type="color" id="gd-any" value="#00c2c7" aria-label="Any color"></div>
     <div class="na-chips"><button class="chip" data-size="4" type="button">✏️ Thin</button><button class="chip on" data-size="10" type="button">🖍️ Medium</button><button class="chip" data-size="24" type="button">🖌️ Thick</button><button class="chip" id="gd-erase" type="button">🧽 Eraser</button><button class="chip" id="gd-undo" type="button">↩️ Undo</button><button class="chip" id="gd-clear" type="button">🗑️ Clear</button></div>
+    <div class="row gd-picrow"><label class="chip">📷 Draw on a picture<input type="file" id="gd-picin" accept="image/*" hidden></label><small class="soft">or paste or drop a picture</small></div>
     <canvas id="gd-cv" class="gd-canvas" width="900" height="650"></canvas>
     <div class="row"><input class="gal-name" id="gd-name" maxlength="60" placeholder="Name your drawing" aria-label="Name your drawing"><button class="btn gold" id="gd-save" type="button">💾 Save to My Gallery</button></div>`);
   const cv = document.getElementById("gd-cv"), x = cv.getContext("2d"), undo = [];
   let ink = GAL_INK[0], size = 10, erase = false, down = false, last = null;
   x.fillStyle = "#fff"; x.fillRect(0, 0, cv.width, cv.height); x.lineCap = x.lineJoin = "round";
   const pt = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; };
+  const putPic = async f => {   // 📷 a picture goes on the canvas so you can draw on top of it
+    if (!f || !/^image\//.test(f.type || "")) return;
+    const u = URL.createObjectURL(f);
+    try { const img = await galLoadImg(u), s = Math.min(cv.width / img.naturalWidth, cv.height / img.naturalHeight), w = img.naturalWidth * s, h2 = img.naturalHeight * s; try { undo.push(x.getImageData(0, 0, cv.width, cv.height)); } catch (e) {} x.fillStyle = "#fff"; x.fillRect(0, 0, cv.width, cv.height); x.drawImage(img, (cv.width - w) / 2, (cv.height - h2) / 2, w, h2); toast("📷 Now draw on your picture!"); }
+    catch (e) { toast("That picture couldn't be opened."); } finally { URL.revokeObjectURL(u); }
+  };
+  document.getElementById("gd-picin").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; putPic(f); });
+  PIC_TAKER = files => { if (!document.getElementById("gd-cv")) return false; putPic(files.find(f => /^image\//.test(f.type))); };
   cv.addEventListener("pointerdown", e => { e.preventDefault(); cv.setPointerCapture?.(e.pointerId); down = true; undo.push(x.getImageData(0, 0, cv.width, cv.height)); if (undo.length > 25) undo.shift(); last = pt(e); x.beginPath(); x.fillStyle = erase ? "#fff" : ink; x.arc(last[0], last[1], size / 2, 0, Math.PI * 2); x.fill(); });
   cv.addEventListener("pointermove", e => { if (!down) return; const p = pt(e); x.strokeStyle = erase ? "#fff" : ink; x.lineWidth = size; x.beginPath(); x.moveTo(last[0], last[1]); x.lineTo(p[0], p[1]); x.stroke(); last = p; });
   const up = () => { down = false; }; cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up); cv.addEventListener("pointerleave", up);
@@ -12292,13 +12347,15 @@ function startComicCreator() {
     appScreen("💬 Comic Creator", `<h2>💬 Comic Creator</h2><p class="soft">Make a 3-panel comic! Pick a background, characters and what they say. <button class="btn mini" id="cc-idea">💡 Give me an idea</button></p><p id="cc-ideatext" class="cc-idea"></p>
       <input class="cc-title" id="cc-title" value="${esc(c.title)}" aria-label="Comic title">
       <div class="cc-strip" id="cc-strip"></div>
-      <div class="cc-edit">${c.panels.map((p, i) => `<div class="sl-card"><h3>Panel ${i + 1}</h3><label class="sl-sl">Background <select data-bg="${i}">${CC_BGS.map((b, k) => `<option value="${k}" ${k === p.bg ? "selected" : ""}>${b[0]}</option>`).join("")}</select></label>${p.chars.map(([e, t], k) => `<div class="cc-row"><select data-ch="${i}-${k}">${CC_CHARS.map(x => `<option ${x === e ? "selected" : ""}>${x}</option>`).join("")}</select><input data-tx="${i}-${k}" value="${esc(t)}" maxlength="60" placeholder="What do they say?"></div>`).join("")}</div>`).join("")}</div>
+      <div class="cc-edit">${c.panels.map((p, i) => `<div class="sl-card"><h3>Panel ${i + 1}</h3><label class="sl-sl">Background <select data-bg="${i}">${CC_BGS.map((b, k) => `<option value="${k}" ${k === p.bg && !p.bgPic ? "selected" : ""}>${b[0]}</option>`).join("")}</select></label><label class="chip cc-picbtn">📷 ${p.bgPic ? "Change the picture" : "Use a picture"}<input type="file" accept="image/*" data-bgpic="${i}" hidden></label>${p.chars.map(([e, t], k) => `<div class="cc-row"><select data-ch="${i}-${k}">${/^data:image/.test(e) ? `<option value="${esc(e)}" selected>📷 My picture</option>` : ""}${CC_CHARS.map(x => `<option ${x === e ? "selected" : ""}>${x}</option>`).join("")}</select><label class="chip cc-picbtn" title="Use a picture for this character">📷<input type="file" accept="image/*" data-chpic="${i}-${k}" hidden></label><input data-tx="${i}-${k}" value="${esc(t)}" maxlength="60" placeholder="What do they say?"></div>`).join("")}</div>`).join("")}</div>
       <button class="btn gold" id="cc-new">📄 New blank comic</button>`);
-    const strip = () => { document.getElementById("cc-strip").innerHTML = c.panels.map(p => `<div class="cc-panel" style="background:${CC_BGS[p.bg][1]}">${p.chars.map(([e, t], k) => `<div class="cc-ch" style="left:${k ? 58 : 8}%">${t ? `<span class="cc-bub">${esc(t)}</span>` : ""}<i>${e}</i></div>`).join("")}</div>`).join(""); };
+    const strip = () => { document.getElementById("cc-strip").innerHTML = c.panels.map(p => `<div class="cc-panel" style="background:${p.bgPic ? `#fff url(${p.bgPic}) center / cover no-repeat` : CC_BGS[p.bg][1]}">${p.chars.map(([e, t], k) => `<div class="cc-ch" style="left:${k ? 58 : 8}%">${t ? `<span class="cc-bub">${esc(t)}</span>` : ""}<i>${/^data:image/.test(e) ? `<img class="cc-img" src="${e}" alt="">` : e}</i></div>`).join("")}</div>`).join(""); };
     strip();
     document.getElementById("cc-idea").addEventListener("click", () => { document.getElementById("cc-ideatext").textContent = "💡 " + rPick(CC_IDEAS); });
     document.getElementById("cc-title").addEventListener("input", e => { c.title = e.target.value; save(); });
-    $app.querySelectorAll("[data-bg]").forEach(s => s.addEventListener("change", () => { c.panels[+s.dataset.bg].bg = +s.value; save(); strip(); }));
+    $app.querySelectorAll("[data-bg]").forEach(s => s.addEventListener("change", () => { c.panels[+s.dataset.bg].bg = +s.value; delete c.panels[+s.dataset.bg].bgPic; save(); strip(); }));
+    $app.querySelectorAll("[data-chpic]").forEach(inp => inp.addEventListener("change", async () => { const f = inp.files[0]; inp.value = ""; const v = await picFromFile(f); if (!v) return toast("That picture couldn't be used."); const [i, k] = inp.dataset.chpic.split("-").map(Number); c.panels[i].chars[k][0] = v; save(); draw(); toast("📷 Your picture is in the comic!"); }));
+    $app.querySelectorAll("[data-bgpic]").forEach(inp => inp.addEventListener("change", async () => { const f = inp.files[0]; inp.value = ""; if (!f) return; const u = URL.createObjectURL(f); try { const img = await galLoadImg(u), cv = galShrink(img, img.naturalWidth, img.naturalHeight, 480, "image/jpeg", .78); if (!cv) throw 0; c.panels[+inp.dataset.bgpic].bgPic = cv; save(); strip(); toast("📷 Picture background added!"); } catch (e) { toast("That picture couldn't be used."); } finally { URL.revokeObjectURL(u); } }));
     $app.querySelectorAll("[data-ch]").forEach(s => s.addEventListener("change", () => { const [i, k] = s.dataset.ch.split("-").map(Number); c.panels[i].chars[k][0] = s.value; save(); strip(); }));
     $app.querySelectorAll("[data-tx]").forEach(s => s.addEventListener("input", () => { const [i, k] = s.dataset.tx.split("-").map(Number); c.panels[i].chars[k][1] = s.value; save(); strip(); }));
     document.getElementById("cc-new").addEventListener("click", () => { c = { title: "My Comic", panels: [0, 1, 2].map(i => ({ bg: i, chars: [["🦛", ""], ["🐱", ""]] })) }; save(); draw(); });
@@ -21853,7 +21910,7 @@ function startNotebook(open) {
     <div class="row nb-top"><button class="btn go" id="nb-add" type="button">✏️ Write a note</button><input class="nb-find" id="nb-find" type="search" placeholder="🔎 Search your notes" value="${esc(NB_FIND)}" aria-label="Search your notes"></div>
     <p class="soft nb-count">${L.length ? `${L.length.toLocaleString()} note${L.length === 1 ? "" : "s"}${q ? ` · ${list.length} match${list.length === 1 ? "" : "es"}` : ""}` : ""}</p>
     <div class="nb-grid" id="nb-grid">${!L.length ? `<p class="soft">No notes yet. Tap ✏️ Write a note to start!</p>` : !list.length ? `<p class="soft">No notes match that.</p>`
-      : list.map(n => `<button class="nb-card" type="button" data-nb="${n.id}" style="--nb:${(NB_COLORS.find(c => c[0] === n.color) || NB_COLORS[0])[1]}"><b>${n.pin ? "📌 " : ""}${esc(nbTitle(n))}</b><span>${esc((n.body || "").slice(0, 140))}</span><small>${nbWhen(n.edited)}</small></button>`).join("")}</div>`);
+      : list.map(n => `<button class="nb-card" type="button" data-nb="${n.id}" style="--nb:${(NB_COLORS.find(c => c[0] === n.color) || NB_COLORS[0])[1]}"><b>${n.pin ? "📌 " : ""}${esc(nbTitle(n))}${(n.pics || []).length ? ` <small class="nb-picn">📷 ${n.pics.length}</small>` : ""}</b><span>${esc((n.body || "").slice(0, 140))}</span><small>${nbWhen(n.edited)}</small></button>`).join("")}</div>`);
   document.getElementById("nb-add").addEventListener("click", () => {
     const L2 = nbLoad(); if (L2.length >= NB_MAX) return toast(`You have ${NB_MAX.toLocaleString()} notes. Delete some to write more.`);
     const n = { id: "n" + Date.now().toString(36) + rnd(100, 999), title: "", body: "", color: "plain", pin: false, at: Date.now(), edited: Date.now() };
@@ -21870,6 +21927,7 @@ function nbEditor(n) {
       <input class="nb-title" id="nb-title" maxlength="80" placeholder="Title" value="${esc(n.title || "")}" aria-label="Title">
       <textarea class="nb-body" id="nb-body" maxlength="20000" placeholder="Write your note here…" aria-label="Note">${esc(n.body || "")}</textarea>
     </div>
+    ${SITE_WHO === "guest" ? "" : `<div class="nb-pics" id="nb-pics"></div><div class="row nb-picrow"><label class="chip">📷 Add a picture<input type="file" id="nb-picin" accept="image/*" multiple hidden></label><small class="soft">or paste or drop a picture here</small></div>`}
     <div class="nb-tools"><span>Color:</span>${NB_COLORS.map(([k, c]) => `<button class="nb-col${n.color === k ? " on" : ""}" type="button" data-col="${k}" style="background:${c}" aria-label="${k}"></button>`).join("")}</div>
     <div class="row nb-acts"><button class="chip" id="nb-pin" type="button">${n.pin ? "📌 Unpin" : "📌 Pin to the top"}</button><button class="chip" id="nb-copy" type="button">📋 Copy</button><button class="chip" id="nb-say" type="button">🔊 Read it to me</button><button class="chip bad" id="nb-del" type="button">🗑 Delete</button></div>
     <p class="soft nb-dates">Started ${nbWhen(n.at)} · changed ${nbWhen(n.edited)}</p>`);
@@ -21877,13 +21935,31 @@ function nbEditor(n) {
   const save = (patch = {}) => { const L = nbLoad(), i = L.findIndex(x => x.id === n.id); if (i < 0) return; Object.assign(n, { title: document.getElementById("nb-title").value, body: document.getElementById("nb-body").value, edited: Date.now() }, patch); L[i] = { ...n }; nbSave(L); const s = document.getElementById("nb-saved"); if (s) s.textContent = "Saved ✓"; };
   const later = () => { const s = document.getElementById("nb-saved"); if (s) s.textContent = "Saving…"; clearTimeout(t); t = naTimer(setTimeout(() => save(), 400)); };
   ["nb-title", "nb-body"].forEach(id => document.getElementById(id).addEventListener("input", later));
+  const pics = async () => {   // 📷 the note's pictures live in the Art Gallery (only you can see them)
+    const box = document.getElementById("nb-pics"); if (!box) return;
+    const ids = n.pics || []; if (!ids.length) { box.innerHTML = ""; return; }
+    let metas = []; try { metas = (await galList()).filter(m => ids.includes(m.id)); } catch (e) {}
+    const b2 = document.getElementById("nb-pics"); if (!b2) return;
+    b2.innerHTML = ids.map(id => metas.find(m => m.id === id)).filter(Boolean).map(m => `<span class="nb-pic"><button type="button" data-nbview="${m.id}" aria-label="Look at ${esc(m.name)}"><img src="${m.thumb || ""}" alt=""></button><button type="button" class="nb-picx" data-nbpicx="${m.id}" aria-label="Remove this picture">✖</button></span>`).join("");
+    b2.querySelectorAll("[data-nbview]").forEach(b => b.addEventListener("click", () => galView(metas.filter(m => ids.includes(m.id)), metas.findIndex(m => m.id === b.dataset.nbview))));
+    b2.querySelectorAll("[data-nbpicx]").forEach(b => b.addEventListener("click", async () => { const id = b.dataset.nbpicx; save({ pics: (n.pics || []).filter(x => x !== id) }); await galDelete([id]).catch(() => {}); pics(); }));
+  };
+  const addPics = async files => {
+    if (SITE_WHO === "guest") { toast("Guests can't save pictures."); return; }
+    let added = 0;
+    for (const f of files) { if (!/^image\//.test(f.type || "")) continue; const r = await galAdd(f, "picture", "📒 " + nbTitle(n)); if (r.meta) { r.meta.private = true; r.meta.note = n.id; await galSaveMeta(r.meta).catch(() => {}); n.pics = [...(n.pics || []), r.meta.id]; added++; } else { toast(r.err); break; } }
+    if (added) { save({ pics: n.pics }); toast(`📷 Added ${added} picture${added === 1 ? "" : "s"} to your note!`); pics(); }
+  };
+  document.getElementById("nb-picin")?.addEventListener("change", e => { const fs = [...e.target.files]; e.target.value = ""; addPics(fs); });
+  PIC_TAKER = files => { if (!document.getElementById("nb-ed")) return false; addPics(files); };
+  pics();
   const leave = () => { clearTimeout(t); save(); const L = nbLoad(), x = L.find(y => y.id === n.id); if (x && !x.title.trim() && !x.body.trim()) nbSave(L.filter(y => y.id !== n.id)); NB_OPEN = null; startNotebook(); };
   document.getElementById("nb-back").addEventListener("click", leave);
   $app.querySelectorAll("[data-col]").forEach(b => b.addEventListener("click", () => { save({ color: b.dataset.col }); document.getElementById("nb-ed").style.setProperty("--nb", (NB_COLORS.find(c => c[0] === b.dataset.col) || NB_COLORS[0])[1]); $app.querySelectorAll("[data-col]").forEach(x => x.classList.toggle("on", x === b)); }));
   document.getElementById("nb-pin").addEventListener("click", e => { save({ pin: !n.pin }); e.currentTarget.textContent = n.pin ? "📌 Unpin" : "📌 Pin to the top"; toast(n.pin ? "📌 Pinned to the top!" : "Unpinned."); });
   document.getElementById("nb-copy").addEventListener("click", async () => { save(); try { await navigator.clipboard.writeText((n.title ? n.title + "\n\n" : "") + n.body); toast("📋 Copied!"); } catch (e) { toast("Couldn't copy here."); } });
   document.getElementById("nb-say").addEventListener("click", () => { save(); svSay((n.title ? n.title + ". " : "") + n.body); });
-  document.getElementById("nb-del").addEventListener("click", e => { const b = e.currentTarget; if (NB_SURE !== n.id) { NB_SURE = n.id; b.textContent = "Tap again to delete for good"; return; } clearTimeout(t); nbSave(nbLoad().filter(x => x.id !== n.id)); NB_OPEN = null; toast("🗑 Note deleted."); startNotebook(); });
+  document.getElementById("nb-del").addEventListener("click", e => { const b = e.currentTarget; if (NB_SURE !== n.id) { NB_SURE = n.id; b.textContent = "Tap again to delete for good"; return; } clearTimeout(t); if ((n.pics || []).length) galDelete(n.pics).catch(() => {}); nbSave(nbLoad().filter(x => x.id !== n.id)); NB_OPEN = null; toast("🗑 Note deleted."); startNotebook(); });
   if (!n.title && !n.body) document.getElementById("nb-title").focus();
 }
 NEW_APPS.push({ id: "notebook", emoji: "📒", name: "Notebook", desc: "Write notes so you can remember stuff. Search them, pin the important ones, and give them colors.", start: () => startNotebook(null), kw: "notebook|notes?|note book|remember|reminders?|journal|diary|write it down|to do list|todo" });
