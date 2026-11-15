@@ -3223,8 +3223,6 @@ function showHome() {
     <div class="panel">
       <span class="label">Tap a subject to start studying</span>
       <div class="chips">${chipRow(SUBJECTS, "subject")}</div>
-      <span class="label">Health topic</span><div class="chips">${chipRow(HEALTH_PARTS, "hpart")}</div>
-      <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
 `;
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
@@ -5691,9 +5689,11 @@ function subjectPick(s) {
   const study = (subject, extra = {}) => go(() => { choice.subject = subject; store.set("subject", subject); Object.entries(extra).forEach(([k, v]) => { choice[k] = v; store.set(k, v); }); startStudy(); });
   const opts = s === "math" ? { title: "🧮 Math", say: "What would you like to do?", btns: [
       ["📝 Practice math problems", "Endless problems, easy or hard", study("math")],
+      ["📐 Ratios & Rates", "Ratios, rates, tables and tape diagrams (test practice)", study("ratios", { rpart: "all" })],
       ["🧮 Open the Math Center", "All the math apps in one place, like the fraction lab", go(() => startMathCenter())]] }
     : s === "ss" ? { title: "🌍 Social Studies", say: "You can study the Neolithic Revolution, but you don't have to!", btns: [
       ["🌾 Study the Neolithic Revolution", "Early Humans to the first farms and cities (test practice)", study("ss", { set: "all" })],
+      ...Object.entries(SETS).filter(([k]) => k !== "all").map(([k, v]) => [`🌾 Neolithic: ${v.name}`, `Just one part: ${v.desc}`, study("ss", { set: k })]),
       ["🌎 Other social studies", "Maps, government, money, and history around the world", study("ssw")],
       ["🗺️ World Explorer", "Explore countries, flags and more", go(() => startWorldExplorer())],
       ["📜 Timeline", "Social Studies extra: put 14 events in order, from Africa to cities", go(() => startTimeline())],
