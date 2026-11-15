@@ -3201,17 +3201,7 @@ function showHome() {
       <span class="label">Health topic</span><div class="chips">${chipRow(HEALTH_PARTS, "hpart")}</div>
       <span class="label">Or study one part of Social Studies: Early Humans to the Neolithic Revolution</span><div class="chips">${chipRow(SETS, "set")}</div>
     </div>
-    ${ss ? `<div class="panel">
-      <span class="label">Social Studies extras</span>
-      <div class="extras">
-        <button class="btn" id="tl">Timeline<span>Put 14 events in order, from Africa to cities</span></button>
-        <button class="btn" id="fq">Focus Questions<span>The 8 questions from the study guide, with model answers</span></button>
-      </div>
-      <details>
-        <summary>What GRAPES stands for</summary>
-        <div class="legend">${Object.entries(GRAPES_CATS).map(([k, v]) => `<div><b>${k}</b> ${v.name}: ${v.say.toLowerCase()}</div>`).join("")}</div>
-      </details>
-    </div>` : ""}`;
+`;
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     const s = b.dataset.subject;
     if (["math", "ss", "health"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
@@ -3238,10 +3228,6 @@ function showHome() {
   document.getElementById("who-switch").addEventListener("click", () => { SITE_WHO = null; SITE_NAME = ""; BG_PICK = null; startWho(); window.scrollTo({ top: 0 }); });   // 🔄 asks "Who are you?" again
   document.getElementById("who-me").addEventListener("click", startProfile);
   bindHomeRow();
-  if (ss) {
-    document.getElementById("tl").addEventListener("click", startTimeline);
-    document.getElementById("fq").addEventListener("click", startFocus);
-  }
 }
 document.addEventListener("click", e => {
   const m = document.getElementById("gamesmenu");
@@ -3821,7 +3807,7 @@ function startInfo(jump) {
       Object.entries(SUBJECTS).map(([k, v]) => row(esc(v.name), esc(v.desc), "Home screen → subjects", btn(subj(k), "Go"))).join("") +
       row("Health topics", Object.values(HEALTH_PARTS).map(v => esc(v.name)).join(", ") + ": study just one part of Health.", "Home screen → Health topic", btn(() => { choice.subject = "health"; store.set("subject", "health"); startStudy(); }, "Go")) +
       row("One part of Social Studies", Object.values(SETS).map(v => esc(v.name)).join(", ") + " from Early Humans to the Neolithic Revolution.", "Home screen → Or study one part of Social Studies", "") +
-      row("Timeline and Focus Questions", "Put 14 events in order, and read the 8 study-guide questions with model answers. Plus what GRAPES stands for.", "Home screen → Social Studies extras (when Social Studies is picked)", btn(startTimeline, "Timeline") + btn(startFocus, "Questions")))}
+      row("Timeline and Focus Questions", "Put 14 events in order, and read the 8 study-guide questions with model answers. Plus what GRAPES stands for.", "Home screen → tap Social Studies → 📜 Timeline or ❓ Focus Questions", btn(startTimeline, "Timeline") + btn(startFocus, "Questions")))}
     ${sec("math", "🧮 Math Center", "In the 📱 App-App (and on the home screen on some days). You can also ask Hippo for the calculator.",
       row("Calculator", "Hippo's calculator, with square roots, powers and percents.", "Math Center → top", "") +
       row("Math practice", "Easy or Hard math, and the MP1 unit practice.", "Math Center", "") +
@@ -5684,13 +5670,16 @@ function subjectPick(s) {
     : s === "ss" ? { title: "🌍 Social Studies", say: "You can study the Neolithic Revolution, but you don't have to!", btns: [
       ["🌾 Study the Neolithic Revolution", "Early Humans to the first farms and cities (test practice)", study("ss", { set: "all" })],
       ["🌎 Other social studies", "Maps, government, money, and history around the world", study("ssw")],
-      ["🗺️ World Explorer", "Explore countries, flags and more", go(() => startWorldExplorer())]] }
+      ["🗺️ World Explorer", "Explore countries, flags and more", go(() => startWorldExplorer())],
+      ["📜 Timeline", "Social Studies extra: put 14 events in order, from Africa to cities", go(() => startTimeline())],
+      ["❓ Focus Questions", "Social Studies extra: the 8 questions from the study guide, with model answers", go(() => startFocus())]],
+      extra: `<details class="subj-extra"><summary>🍇 What GRAPES stands for</summary><div class="legend">${Object.entries(GRAPES_CATS).map(([k, v]) => `<div><b>${k}</b> ${v.name}: ${v.say.toLowerCase()}</div>`).join("")}</div></details>` }
     : { title: "❤️ Health", say: "Pick a health topic if you want to, or do a mix of everything.", btns: [
       ...Object.entries(HEALTH_PARTS).map(([k, v]) => [`${{ safety: "🦺", body: "🫀", food: "🥦" }[k] || "❤️"} ${v.name}`, v.desc, study("health", { hpart: k })]),
       ["🔀 A mix of all health", "Safety, body and food questions together", study("health", { hpart: "all" })]] };
   const box = document.createElement("div"); box.id = "subj-pick"; box.className = "bgsheet";
   box.innerHTML = `<div class="bgsheet-box subj-pick" role="dialog" aria-label="${esc(opts.title)}"><div class="prof-head"><b class="subj-title">${opts.title}</b><button class="iconbtn" id="sp-x" type="button">✕ Not now</button></div>
-    <p class="soft">${opts.say}</p><div class="subj-opts">${opts.btns.map(([t, d], i) => `<button class="subj-opt" data-sp="${i}" type="button"><b>${t}</b><span>${d}</span></button>`).join("")}</div></div>`;
+    <p class="soft">${opts.say}</p><div class="subj-opts">${opts.btns.map(([t, d], i) => `<button class="subj-opt" data-sp="${i}" type="button"><b>${t}</b><span>${d}</span></button>`).join("")}</div>${opts.extra || ""}</div>`;
   box.querySelectorAll("[data-sp]").forEach(b => b.addEventListener("click", opts.btns[+b.dataset.sp][2]));
   box.querySelector("#sp-x").addEventListener("click", () => box.remove());
   box.addEventListener("click", e => { if (e.target === box) box.remove(); });
