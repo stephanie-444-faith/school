@@ -3677,7 +3677,7 @@ function bgPaste(e, done) {   // Ctrl+V (or Paste) anywhere while a background c
 }
 function bgListenPaste(done) { bgStopPaste(); BG_PASTE = e => bgPaste(e, done); document.addEventListener("paste", BG_PASTE); }
 function bgStopPaste() { if (BG_PASTE) document.removeEventListener("paste", BG_PASTE); BG_PASTE = null; }
-const bgPasteHTML = () => `<div class="bg-add"><div class="bg-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Copy any picture or art, then click or tap here and paste it (Ctrl+V)"></div><label class="btn bg-file">📁 Choose a picture<input type="file" accept="image/*" class="bg-filein" hidden></label><button class="btn bg-galbtn" type="button">🖼️ From My Gallery</button></div><div class="bg-galpick" hidden></div>`;
+const bgPasteHTML = () => `<div class="bg-add"><div class="bg-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Copy any picture or art, then click or tap here and paste it (Ctrl+V)"></div><label class="btn bg-file">📁 Choose a picture<input type="file" accept="image/*" class="bg-filein" hidden></label><button class="btn bg-galbtn" type="button">🖼️ From the Art Gallery</button></div><div class="bg-galpick" hidden></div>`;
 function bgBindAdd(root, done) {
   const z = root.querySelector(".bg-paste"), f = root.querySelector(".bg-filein");
   z?.addEventListener("input", () => {   // some phones drop the picture in as an image instead
@@ -3691,10 +3691,10 @@ function bgBindAdd(root, done) {
   const gb = root.querySelector(".bg-galbtn"), gp = root.querySelector(".bg-galpick");
   gb?.addEventListener("click", async () => {
     if (!gp.hidden) { gp.hidden = true; return; }
-    const list = (await galList().catch(() => [])).filter(m => m.kind !== "video" && m.thumb);
-    if (!list.length) { toast("No pictures in your gallery yet. Open 🖼️ My Gallery in App-App to add some!"); return; }
-    gp.innerHTML = list.map(m => `<button type="button" data-galid="${m.id}" title="${esc(m.name)}" aria-label="${esc(m.name)}"><img src="${m.thumb}" alt="" loading="lazy"></button>`).join(""); gp.hidden = false;
-    gp.querySelectorAll("[data-galid]").forEach(b => b.addEventListener("click", async () => { const m = list.find(x => x.id === b.dataset.galid), blob = await galBlob(b.dataset.galid).catch(() => null); if (blob) bgAddPicture(blob).then(id => { if (id) { bgCreditSet(id, m && m.from); done(id); } }); else toast("That picture couldn't be opened."); }));
+    const me = galWho(), list = (await galEveryone().catch(() => [])).filter(m => m.kind !== "video" && m.thumb);
+    if (!list.length) { toast("No pictures in the Art Gallery yet. Open 🎨 Art Gallery in App-App to add some!"); return; }
+    gp.innerHTML = list.map(m => { const t = m.who === me ? m.name : `${m.name} (from ${galName(m.who)})`; return `<button type="button" data-galid="${m.id}" title="${esc(t)}" aria-label="${esc(t)}"><img src="${m.thumb}" alt="" loading="lazy"></button>`; }).join(""); gp.hidden = false;
+    gp.querySelectorAll("[data-galid]").forEach(b => b.addEventListener("click", async () => { const m = list.find(x => x.id === b.dataset.galid), blob = await galBlob(b.dataset.galid).catch(() => null); if (blob) bgAddPicture(blob).then(id => { if (id) { bgCreditSet(id, m && (m.who === me ? m.from : m.who)); done(id); } }); else toast("That picture couldn't be opened."); }));
   });
 }
 function bgBindDel(root, after) {
@@ -11224,6 +11224,10 @@ function bgCredit(id) {
   if (!el) { el = document.createElement("div"); el.id = "bg-credit"; el.className = "bg-credit"; document.body.appendChild(el); }
   el.textContent = `📥 Taken from ${galName(from)}`;
 }
+async function galEveryone() {   // my pictures plus everyone else's (except the ones they made private)
+  const d = await galOpen(), all = await galReq(d.transaction("meta").objectStore("meta").getAll()), me = galWho();
+  return all.filter(m => m.who === me || !m.private).sort((a, b) => (a.who === me) - (b.who === me) || b.at - a.at).sort((a, b) => (b.who === me) - (a.who === me));
+}
 function bgCreditSet(id, from) { if (!id || !from || !SITE_WHO) return; store.set("bg_from_" + SITE_WHO, { ...(store.get("bg_from_" + SITE_WHO, {}) || {}), [id]: from }); }
 function startGallery(filter = "all", tab = "mine", person = null) {
   if (tab === "pixel") return startPixelArt();
@@ -11329,10 +11333,22 @@ function galView(list, i, after) {
         : `<div class="gal-stars" role="group" aria-label="Your rating"><span>Your stars:</span>${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= myStars ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}">★</button>`).join("")}<small id="gv-avg">${galStarsTxt(m)}</small></div>`}
       <div class="row gal-vrow"><button class="btn" id="gv-prev" type="button" aria-label="Previous">◀</button><button class="btn" id="gv-next" type="button" aria-label="Next">▶</button>
         ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Keep painting</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
-          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button><button class="btn" id="gv-report" type="button">🚩 Report</button>`}</div>
+          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.kind !== "video" && SITE_WHO && SITE_WHO !== "guest" ? `<button class="btn" id="gv-mypic" type="button">🖼️ Make it my picture</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Paint my own copy</button>` : ""}<button class="btn" id="gv-report" type="button">🚩 Report</button>`}</div>
     </div>${mine && m.from ? `<div class="gal-taken">📥 Taken from ${esc(galName(m.from))}</div>` : ""}`;
     const $v = id => box.querySelector("#gv-" + id);
     $v("x").addEventListener("click", close); $v("prev").addEventListener("click", () => show(i - 1)); $v("next").addEventListener("click", () => show(i + 1));
+    // anyone can use anyone's pictures: as a background, as their profile picture, to print, or to paint a copy (credit goes to whoever added it)
+    const useBg = async where => {
+      const blob = await galBlob(m.id); if (!blob) return toast("That picture couldn't be opened.");
+      const id = await bgAddPicture(blob); if (!id) return; bgCreditSet(id, mine ? m.from : m.who);
+      if (where === "home") { const pp = { ...bgPages(), home: "img:" + id }; store.set("bg_page_" + SITE_WHO, pp); toast("🏠 It's your home screen background now!"); }
+      else { BG_PICK = "img:" + id; store.set("bg_" + SITE_WHO, BG_PICK); toast("🌈 It's your background everywhere now!"); }
+      setScene();
+    };
+    $v("home")?.addEventListener("click", () => useBg("home")); $v("every")?.addEventListener("click", () => useBg("every"));
+    $v("px")?.addEventListener("click", () => { store.set("px_cur", m.px.slice()); close(); startPixelArt(); });
+    $v("print")?.addEventListener("click", () => { GP_PICK = new Set([m.id]); if (!mine) GP_WHO = "all"; close(); startGalleryPrint(); });
+    $v("mypic")?.addEventListener("click", async () => { const blob = await galBlob(m.id).catch(() => null), u = blob ? URL.createObjectURL(blob) : m.thumb; const v = await picFromSource(u).catch(() => ""); if (blob) URL.revokeObjectURL(u); if (!v) return toast("That picture couldn't be used."); whoPicSet(SITE_WHO, v); toast("🖼️ It's your profile picture now!"); });
     if (mine) {
       $v("name").addEventListener("change", async e => { const name = e.target.value.trim().slice(0, 60) || m.name; m.name = name; await galSaveMeta(m).catch(() => {}); toast("✏️ Renamed!"); after && after(); });
       $v("priv").addEventListener("click", async () => { m.private = !m.private; await galSaveMeta(m).catch(() => {}); toast(m.private ? "🔒 Now only you can see it." : "👀 Now everyone can see it."); after && after(); show(i); });
@@ -11340,16 +11356,6 @@ function galView(list, i, after) {
         const b = $v("del"); if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to delete for good"; return; }
         await galDelete([m.id]).catch(() => toast("That couldn't be deleted. Try again.")); list.splice(i, 1); toast("🗑 Deleted."); after && after(); if (list.length) show(i); else close();
       });
-      const useBg = async where => {
-        const blob = await galBlob(m.id); if (!blob) return toast("That picture couldn't be opened.");
-        const id = await bgAddPicture(blob); if (!id) return; bgCreditSet(id, m.from);
-        if (where === "home") { const pp = { ...bgPages(), home: "img:" + id }; store.set("bg_page_" + SITE_WHO, pp); toast("🏠 It's your home screen background now!"); }
-        else { BG_PICK = "img:" + id; store.set("bg_" + SITE_WHO, BG_PICK); toast("🌈 It's your background everywhere now!"); }
-        setScene();
-      };
-      $v("home")?.addEventListener("click", () => useBg("home")); $v("every")?.addEventListener("click", () => useBg("every"));
-      $v("px")?.addEventListener("click", () => { store.set("px_cur", m.px.slice()); close(); startPixelArt(); });
-      $v("print")?.addEventListener("click", () => { GP_PICK = new Set([m.id]); close(); startGalleryPrint(); });
     } else {
       box.querySelectorAll("[data-star]").forEach(b => b.addEventListener("click", async () => {
         const n = +b.dataset.star; m.rates = { ...(m.rates || {}), [me]: n }; await galSaveMeta(m).catch(() => {});
@@ -11370,7 +11376,7 @@ function galView(list, i, after) {
   document.body.appendChild(box); show(i);
 }
 /* ---------- 🖨️ Print: pick pictures and art from My Gallery, choose how many fit on a page, then print (or save a page to print anywhere) */
-let GP_PICK = new Set(), GP_PER = 1, GP_NAMES = true;
+let GP_PICK = new Set(), GP_PER = 1, GP_NAMES = true, GP_WHO = "mine";
 const GP_CSS = `@page { margin: 10mm; }
   .gp-page { box-sizing: border-box; height: 100vh; padding: 4mm; display: grid; gap: 6mm; page-break-after: always; break-after: page; background: #fff; }
   .gp-page:last-child { page-break-after: auto; break-after: auto; }
@@ -11384,6 +11390,7 @@ async function startGalleryPrint() {
   appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, "print")}
     <p class="soft">Pick the pictures and art you want to print, choose how many go on each page, then print. If your browser won't print from here, save a page and print it from there.</p>
     <div class="gp-opts"><span>On each page:</span>${[1, 2, 4, 6].map(n => `<button class="chip${GP_PER === n ? " on" : ""}" data-gp-per="${n}" type="button">${n}</button>`).join("")}<label class="gp-names"><input type="checkbox" id="gp-names"${GP_NAMES ? " checked" : ""}> Show names</label></div>
+    <div class="na-chips"><button class="chip${GP_WHO === "mine" ? " on" : ""}" data-gp-who="mine" type="button">🖼️ Mine</button><button class="chip${GP_WHO === "all" ? " on" : ""}" data-gp-who="all" type="button">👀 Everyone's</button></div>
     <div class="row gp-selrow"><button class="chip" id="gp-all" type="button">Select all</button><button class="chip" id="gp-none" type="button">Clear</button><b id="gp-count"></b></div>
     <div class="gp-grid" id="gp-grid"><p class="soft">Opening your gallery…</p></div>
     <div class="row gp-go"><button class="btn gold" id="gp-print" type="button">🖨️ Print</button><button class="btn" id="gp-save" type="button">💾 Save a page to print</button></div>`);
@@ -11426,7 +11433,8 @@ async function startGalleryPrint() {
     toast(r === "saved" || r === true ? "💾 Saved! Open it and tap 🖨️ Print." : r === "declined" ? "Okay, not saved." : "That couldn't be saved here.");
     b.disabled = false; b.textContent = "💾 Save a page to print";
   });
-  try { items = (await galList()).filter(m => m.kind !== "video"); } catch (e) { const g = document.getElementById("gp-grid"); if (g) g.innerHTML = `<p class="soft">😕 This browser won't let the gallery open here.</p>`; return count(); }
+  $app.querySelectorAll("[data-gp-who]").forEach(b => b.addEventListener("click", () => { GP_WHO = b.dataset.gpWho; startGalleryPrint(); }));
+  try { const me = galWho(); items = (GP_WHO === "all" ? await galEveryone() : await galList()).filter(m => m.kind !== "video").map(m => m.who === me ? m : { ...m, name: `${m.name} (by ${galName(m.who)})` }); } catch (e) { const g = document.getElementById("gp-grid"); if (g) g.innerHTML = `<p class="soft">😕 This browser won't let the gallery open here.</p>`; return count(); }
   const ids = new Set(items.map(m => m.id)); [...GP_PICK].forEach(id => { if (!ids.has(id)) GP_PICK.delete(id); });
   draw();
 }
