@@ -2990,7 +2990,7 @@ function showSaveState() {
   const busy = pending.size > 0;
   el.className = "save-state " + (saveState === "cloud" ? (busy ? "saving" : "ok") : saveState === "connecting" ? "saving" : "warn");
   el.textContent = saveState === "cloud" ? (busy ? "Saving…" : "✓ Progress saved") : saveState === "connecting" ? "Connecting save…" : "Saved on this device only";
-  el.title = (saveState === "local" ? "Your progress is saved in this browser. To also save it online, open the page while signed in to Claude, with Contributor access or higher. " : "") + "Tap to save a copy of the whole site.";
+  el.title = (saveState === "local" ? "Your progress is saved in this browser. To also save it online, open the page while signed in to Claude, with Contributor access or higher. " : "") + "Tap for the time machine (and, for MR.E, the site's code).";
 }
 // Connect to the cloud save, merge it with this browser's saves, and keep them in sync.
 async function cloudConnect() {
@@ -12204,20 +12204,33 @@ function plPlay(idx) {
   document.getElementById("pl-exit").focus();
 }
 function startSaveSite() {
-  const text = saExport(), mb = text ? (new Blob([text]).size / 1048576).toFixed(1) : "?", lines = text ? text.split("\n").length.toLocaleString() : "?";
+  const isE = SITE_WHO === "emmett" && WHO_BY_SECRET !== "emmett";   // 🔒 only MR.E can copy the site's code, and only after typing his code again
   appScreen("💾 Save the Site", `<h2>💾 Save the Study Arcade</h2>
-    <p class="soft">Here's the whole Study Arcade as one HTML file. Put it on any web host (or just open it in a browser) and you can play it whenever you want, even without Claude!</p>
+    ${!isE ? `<div class="sl-card ss-lock"><h3>🔒 Only MR.E can copy the code</h3><p class="soft">The Study Arcade's code can only be copied by MR.E. You can still visit the past lives below!</p></div>`
+      : `<div class="sl-card ss-lock" id="ss-lock"><h3>🔒 The site's code</h3>${whoHasCode("emmett") ? `<p class="soft">Type your code to copy the Study Arcade's code.</p><form class="pf-row" id="ss-unlock"><input id="ss-codein" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn go" type="submit">🔓 Unlock</button></form><p class="su-msg" id="ss-msg"></p>` : `<p class="soft">Add a code to your profile first. Then you'll type it here every time you want to copy the site's code.</p>`}</div>`}
+    <div id="ss-codebox"></div>
+    ${`<div class="sl-card ss-past"><h3>⏪ Past lives</h3><p>Travel back in time and ${gamesAllowed() ? "play" : "visit"} any older version of the Study Arcade, all the way back to the very first one! A big ✕ Exit button in the top-left corner brings you back to now.</p>
+      <button class="btn go" id="ss-pastbtn" type="button">⏪ Show the past lives</button><div id="ss-past"></div></div>`}`);
+  document.getElementById("ss-unlock")?.addEventListener("submit", e => {
+    e.preventDefault(); if (!modCodeOK(document.getElementById("ss-codein").value)) { document.getElementById("ss-msg").textContent = "That's not your code. Try again."; return; }
+    document.getElementById("ss-lock").remove(); ssCodeBox(document.getElementById("ss-codebox")); toast("🔓 Unlocked until you leave this page.");
+  });
+  ssPast();
+}
+function ssCodeBox(holder) {   // the copy part of Save the Site (MR.E only, after his code)
+  const text = saExport(), mb = text ? (new Blob([text]).size / 1048576).toFixed(1) : "?", lines = text ? text.split("\n").length.toLocaleString() : "?";
+  holder.innerHTML = `<p class="soft">Here's the whole Study Arcade as one HTML file. Put it on any web host (or just open it in a browser) and you can play it whenever you want, even without Claude!</p>
     <ol class="ss-steps"><li>Tap <b>📋 Copy all the code</b> (or <b>⬇️ Download</b>).</li><li>Paste it into a new file called <b>index.html</b>, or into an HTML host like GitHub Pages, Netlify Drop or CodePen.</li><li>Open it in any web browser. That's it!</li></ol>
     <div class="row ss-btns"><button class="btn gold" id="ss-copy" type="button">📋 Copy all the code</button><button class="btn" id="ss-dl" type="button">⬇️ Download index.html</button><button class="btn" id="ss-show" type="button">👀 Show the code</button></div>
     <p class="soft ss-size">📦 ${mb} MB · ${lines} lines of code. In your own copy, progress saves in that browser. A few things need Claude (Hippo's AI answers, Ask Claude and the online save), and the rest works anywhere.</p>
-    <textarea class="ss-code" id="ss-code" readonly hidden spellcheck="false" aria-label="The Study Arcade's code"></textarea>
-    ${`<div class="sl-card ss-past"><h3>⏪ Past lives</h3><p>Travel back in time and ${gamesAllowed() ? "play" : "visit"} any older version of the Study Arcade, all the way back to the very first one! A big ✕ Exit button in the top-left corner brings you back to now.</p>
-      <button class="btn go" id="ss-pastbtn" type="button">⏪ Show the past lives</button><div id="ss-past"></div></div>`}`);
+    <textarea class="ss-code" id="ss-code" readonly hidden spellcheck="false" aria-label="The Study Arcade's code"></textarea>`;
   const ta = document.getElementById("ss-code");
   if (!text) { document.getElementById("ss-copy").disabled = document.getElementById("ss-dl").disabled = document.getElementById("ss-show").disabled = true; toast("The code couldn't be gathered on this page."); }
   document.getElementById("ss-copy").addEventListener("click", async () => { if (await saCopy(text, ta)) { sfx.buy(); toast("📋 Copied the whole site! Paste it into index.html."); } else { ta.hidden = false; ta.value = text; ta.focus(); ta.select(); toast("Press Ctrl+C (or ⌘+C) to copy the selected code."); } });
   document.getElementById("ss-dl").addEventListener("click", async () => { const r = await saDownload(text, "index.html"); toast(r === "saved" ? "⬇️ index.html is saved!" : r === "declined" ? "Okay, nothing was downloaded." : r === "busy" ? "A download box is already open." : r ? "⬇️ Downloading index.html… (if nothing happens, use 📋 Copy instead)" : "This page can't download files. Use 📋 Copy instead."); });
   document.getElementById("ss-show").addEventListener("click", e => { const b = e.currentTarget; if (ta.hidden) { ta.value = text; ta.hidden = false; b.textContent = "🙈 Hide the code"; } else { ta.hidden = true; b.textContent = "👀 Show the code"; } });
+}
+function ssPast() {
   document.getElementById("ss-pastbtn")?.addEventListener("click", async e => {
     const b = e.currentTarget, box = document.getElementById("ss-past"); b.disabled = true; b.textContent = "⏳ Opening the time machine…";
     try { await plLoad(); } catch (err) { box.innerHTML = `<p class="soft">😕 The past lives couldn't be loaded here. They live next to the main Study Arcade page, so they only work there.</p>`; b.disabled = false; b.textContent = "⏪ Try again"; return; }
@@ -12313,7 +12326,7 @@ NEW_APPS.push(
   { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
   { id: "gallery", emoji: "🎨", name: "Art Gallery", desc: "Paint pixel art and drawings, keep up to 1,000 pictures, drawings and videos, see everyone's art, and use any of it as a background.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|art gallery|art studio|my pictures|my photos|my videos|my drawings|photo album|pixel art|pixel|pixels|draw|drawing" },
   { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
-  { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude), and travel to its past lives to play any older version.", start: () => startSaveSite(), added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
+  { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Travel to the Study Arcade's past lives to play any older version. MR.E can also copy the whole site's code.", start: () => startSaveSite(), added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
   { id: "world", emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world.", start: () => startWorldExplorer() },
   { id: "comic", emoji: "💬", name: "Comic Creator", desc: "Make your own 3-panel comic with characters and speech bubbles.", start: () => startComicCreator() },
   { id: "calm", emoji: "🧘", name: "Calm Corner", desc: "Breathing exercises, a feelings check-in and a thankful jar.", start: () => startCalmCorner() }
@@ -19200,7 +19213,7 @@ function startNameThatTune() {
 NEW_APPS.push({ id: "tune", emoji: "🎵", name: "Name That Tune", desc: "Hear a real melody and name it, or name famous songs from clues. About 100 tunes and over 1,400 songs!", start: () => startNameThatTune(), added: "2026-11-11", kw: "name that tune|name the tune|guess the song|guess that song|song quiz|music quiz" });
 
 // 🎮 people who can't play games don't see games (or the time machine) in app descriptions either
-[["money", "Savings goals, needs vs. wants, making a budget, and growing money."], ["grammar", "The 8 parts of speech, sentence types, text structures and text features: learn and quiz."], ["savesite", "Get the whole Study Arcade as HTML code to keep or put on any web host (it works without Claude)."]].forEach(([id, plain]) => {
+[["money", "Savings goals, needs vs. wants, making a budget, and growing money."], ["grammar", "The 8 parts of speech, sentence types, text structures and text features: learn and quiz."], ["savesite", "Travel to the Study Arcade's past lives to visit any older version. MR.E can also copy the whole site's code."]].forEach(([id, plain]) => {
   const a = NEW_APPS.find(x => x.id === id); if (!a) return; const full = a.desc; Object.defineProperty(a, "desc", { get: () => gamesAllowed() ? full : plain, configurable: true });
 });
 /* ---------- 🏕️ Survival Guide: staying safe outdoors (lost, water, shelter, fire, first aid, weather, wild animals), a kit checklist and a quiz ---------- */
