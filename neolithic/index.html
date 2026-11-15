@@ -1700,6 +1700,17 @@
   .nk-btns { display: flex; gap: 4px; flex-wrap: wrap; } .nk-btns .chip { padding: 4px 8px; } .nk-more { justify-content: center; }
   .nk-favs { display: flex; flex-wrap: wrap; gap: 6px; } .nk-fav { display: inline-flex; align-items: center; gap: 6px; padding: 6px 6px 6px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel-2); max-width: 100%; }
   .nk-fav b { overflow-wrap: anywhere; } .nk-fav small { color: var(--ink-soft); } .nk-fav .chip { padding: 2px 8px; }
+  .nb-guest { padding: 8px 12px; border-radius: 12px; border: 2px dashed var(--gold); }
+  .nb-top { gap: 8px; flex-wrap: wrap; align-items: center; } .nb-find { flex: 1 1 180px; min-width: 0; font: inherit; padding: 11px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
+  .nb-count { margin: 6px 0; } .nb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .nb-card { display: grid; gap: 6px; align-content: start; text-align: left; padding: 12px; min-height: 120px; border-radius: 16px; border: 2px solid var(--line); background: var(--nb, var(--panel-2)); color: inherit; font: inherit; cursor: pointer; min-width: 0; }
+  .nb-card:hover, .nb-card:focus-visible { border-color: var(--gold); outline: none; } .nb-card b { font-size: 1.02rem; overflow-wrap: anywhere; }
+  .nb-card span { color: var(--ink-soft); font-size: .86rem; white-space: pre-line; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow-wrap: anywhere; } .nb-card small { color: var(--ink-soft); font-size: .72rem; }
+  .nb-edtop { justify-content: space-between; align-items: center; } .nb-ed { display: grid; gap: 8px; margin: 10px 0; padding: 12px; border-radius: 18px; background: var(--nb, var(--panel-2)); border: 2px solid var(--line); }
+  .nb-title { font: inherit; font-family: var(--display); font-size: 1.4rem; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.15); background: rgba(0,0,0,.18); color: inherit; min-width: 0; }
+  .nb-body { font: inherit; font-size: 1.02rem; line-height: 1.5; min-height: 46vh; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.15); background: rgba(0,0,0,.18); color: inherit; resize: vertical; }
+  .nb-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; } .nb-tools span { font-weight: 700; } .nb-col { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--line); cursor: pointer; } .nb-col.on { border-color: var(--gold); }
+  .nb-acts { gap: 6px; flex-wrap: wrap; margin-top: 10px; } .nb-dates { font-size: .8rem; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -21823,6 +21834,59 @@ function startNicknames() {
   draw();
 }
 NEW_APPS.push({ id: "nicknames", emoji: "🏷️", name: "Nickname Maker", desc: "Type a name, pick boy, girl or transgender, and get fun nicknames made from words in the dictionary.", start: () => startNicknames(), kw: "nicknames?|nick names?|nickname generator|nickname maker|name generator|cool names?" });
+/* ---------- 📒 Notebook: write notes to remember stuff. Search them, pin the important ones, and give them colors. Saved for each person (guests' notes aren't saved). */
+const NB_COLORS = [["plain", "#2b2650"], ["yellow", "#5a4a12"], ["green", "#16452c"], ["blue", "#173c5c"], ["pink", "#5a1f45"], ["purple", "#3b2466"]];
+const NB_MAX = 5000;
+let NB_GUEST = [], NB_FIND = "", NB_OPEN = null, NB_SURE = null;
+const nbLoad = () => SITE_WHO === "guest" ? NB_GUEST : (store.get("nb_notes", []) || []).filter(n => n && n.id);
+const nbSave = L => { if (SITE_WHO === "guest") NB_GUEST = L; else store.set("nb_notes", L); };
+const nbWhen = t => new Date(t).toLocaleString([], { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+const nbTitle = n => (n.title || "").trim() || (n.body || "").trim().split("\n")[0].slice(0, 40) || "Untitled note";
+function startNotebook(open) {
+  if (open !== undefined) NB_OPEN = open;
+  const L = nbLoad();
+  if (NB_OPEN && !L.some(n => n.id === NB_OPEN)) NB_OPEN = null;
+  if (NB_OPEN) return nbEditor(L.find(n => n.id === NB_OPEN));
+  const q = NB_FIND.toLowerCase(), list = L.filter(n => !q || (n.title + " " + n.body).toLowerCase().includes(q)).sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || b.edited - a.edited);
+  appScreen("📒 Notebook", `<h2>📒 Notebook</h2><p class="soft">Write down anything you want to remember: homework, ideas, lists, secrets for your stories…</p>
+    ${SITE_WHO === "guest" ? `<p class="nb-guest">👤 Guests' notes aren't saved. They go away when you leave the Guest account.</p>` : ""}
+    <div class="row nb-top"><button class="btn go" id="nb-add" type="button">✏️ Write a note</button><input class="nb-find" id="nb-find" type="search" placeholder="🔎 Search your notes" value="${esc(NB_FIND)}" aria-label="Search your notes"></div>
+    <p class="soft nb-count">${L.length ? `${L.length.toLocaleString()} note${L.length === 1 ? "" : "s"}${q ? ` · ${list.length} match${list.length === 1 ? "" : "es"}` : ""}` : ""}</p>
+    <div class="nb-grid" id="nb-grid">${!L.length ? `<p class="soft">No notes yet. Tap ✏️ Write a note to start!</p>` : !list.length ? `<p class="soft">No notes match that.</p>`
+      : list.map(n => `<button class="nb-card" type="button" data-nb="${n.id}" style="--nb:${(NB_COLORS.find(c => c[0] === n.color) || NB_COLORS[0])[1]}"><b>${n.pin ? "📌 " : ""}${esc(nbTitle(n))}</b><span>${esc((n.body || "").slice(0, 140))}</span><small>${nbWhen(n.edited)}</small></button>`).join("")}</div>`);
+  document.getElementById("nb-add").addEventListener("click", () => {
+    const L2 = nbLoad(); if (L2.length >= NB_MAX) return toast(`You have ${NB_MAX.toLocaleString()} notes. Delete some to write more.`);
+    const n = { id: "n" + Date.now().toString(36) + rnd(100, 999), title: "", body: "", color: "plain", pin: false, at: Date.now(), edited: Date.now() };
+    nbSave([n, ...L2]); startNotebook(n.id);
+  });
+  const f = document.getElementById("nb-find");
+  f.addEventListener("input", () => { NB_FIND = f.value; const pos = f.selectionStart; startNotebook(); const g = document.getElementById("nb-find"); g.focus(); try { g.setSelectionRange(pos, pos); } catch (e) {} });
+  $app.querySelectorAll("[data-nb]").forEach(b => b.addEventListener("click", () => startNotebook(b.dataset.nb)));
+}
+function nbEditor(n) {
+  NB_SURE = null;
+  appScreen("📒 Notebook", `<div class="row nb-edtop"><button class="chip" id="nb-back" type="button">⬅ All notes</button><small class="soft" id="nb-saved">Saved ✓</small></div>
+    <div class="nb-ed" id="nb-ed" style="--nb:${(NB_COLORS.find(c => c[0] === n.color) || NB_COLORS[0])[1]}">
+      <input class="nb-title" id="nb-title" maxlength="80" placeholder="Title" value="${esc(n.title || "")}" aria-label="Title">
+      <textarea class="nb-body" id="nb-body" maxlength="20000" placeholder="Write your note here…" aria-label="Note">${esc(n.body || "")}</textarea>
+    </div>
+    <div class="nb-tools"><span>Color:</span>${NB_COLORS.map(([k, c]) => `<button class="nb-col${n.color === k ? " on" : ""}" type="button" data-col="${k}" style="background:${c}" aria-label="${k}"></button>`).join("")}</div>
+    <div class="row nb-acts"><button class="chip" id="nb-pin" type="button">${n.pin ? "📌 Unpin" : "📌 Pin to the top"}</button><button class="chip" id="nb-copy" type="button">📋 Copy</button><button class="chip" id="nb-say" type="button">🔊 Read it to me</button><button class="chip bad" id="nb-del" type="button">🗑 Delete</button></div>
+    <p class="soft nb-dates">Started ${nbWhen(n.at)} · changed ${nbWhen(n.edited)}</p>`);
+  let t = null;
+  const save = (patch = {}) => { const L = nbLoad(), i = L.findIndex(x => x.id === n.id); if (i < 0) return; Object.assign(n, { title: document.getElementById("nb-title").value, body: document.getElementById("nb-body").value, edited: Date.now() }, patch); L[i] = { ...n }; nbSave(L); const s = document.getElementById("nb-saved"); if (s) s.textContent = "Saved ✓"; };
+  const later = () => { const s = document.getElementById("nb-saved"); if (s) s.textContent = "Saving…"; clearTimeout(t); t = naTimer(setTimeout(() => save(), 400)); };
+  ["nb-title", "nb-body"].forEach(id => document.getElementById(id).addEventListener("input", later));
+  const leave = () => { clearTimeout(t); save(); const L = nbLoad(), x = L.find(y => y.id === n.id); if (x && !x.title.trim() && !x.body.trim()) nbSave(L.filter(y => y.id !== n.id)); NB_OPEN = null; startNotebook(); };
+  document.getElementById("nb-back").addEventListener("click", leave);
+  $app.querySelectorAll("[data-col]").forEach(b => b.addEventListener("click", () => { save({ color: b.dataset.col }); document.getElementById("nb-ed").style.setProperty("--nb", (NB_COLORS.find(c => c[0] === b.dataset.col) || NB_COLORS[0])[1]); $app.querySelectorAll("[data-col]").forEach(x => x.classList.toggle("on", x === b)); }));
+  document.getElementById("nb-pin").addEventListener("click", e => { save({ pin: !n.pin }); e.currentTarget.textContent = n.pin ? "📌 Unpin" : "📌 Pin to the top"; toast(n.pin ? "📌 Pinned to the top!" : "Unpinned."); });
+  document.getElementById("nb-copy").addEventListener("click", async () => { save(); try { await navigator.clipboard.writeText((n.title ? n.title + "\n\n" : "") + n.body); toast("📋 Copied!"); } catch (e) { toast("Couldn't copy here."); } });
+  document.getElementById("nb-say").addEventListener("click", () => { save(); svSay((n.title ? n.title + ". " : "") + n.body); });
+  document.getElementById("nb-del").addEventListener("click", e => { const b = e.currentTarget; if (NB_SURE !== n.id) { NB_SURE = n.id; b.textContent = "Tap again to delete for good"; return; } clearTimeout(t); nbSave(nbLoad().filter(x => x.id !== n.id)); NB_OPEN = null; toast("🗑 Note deleted."); startNotebook(); });
+  if (!n.title && !n.body) document.getElementById("nb-title").focus();
+}
+NEW_APPS.push({ id: "notebook", emoji: "📒", name: "Notebook", desc: "Write notes so you can remember stuff. Search them, pin the important ones, and give them colors.", start: () => startNotebook(null), kw: "notebook|notes?|note book|remember|reminders?|journal|diary|write it down|to do list|todo" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
