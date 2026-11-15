@@ -1692,6 +1692,14 @@
   .dc-go { justify-content: center; gap: 10px; flex-wrap: wrap; } .dc-go [hidden] { display: none; }
   .dc-hist { margin: 4px 0; padding-left: 1.4em; display: grid; gap: 3px; } .dc-hist small { color: var(--ink-soft); }
   @media (prefers-reduced-motion: reduce) { .dc-die.spin { animation: none; } }
+  .nk-form { display: grid; gap: 10px; margin: 10px 0; } .nk-form input { font: inherit; font-size: 1.1rem; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; min-width: 0; }
+  .nk-who, .nk-trans { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .nk-trans span { font-weight: 700; margin-right: 4px; } .nk-form .btn.go { justify-self: start; }
+  .nk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 10px 0; }
+  .nk-card { display: grid; gap: 4px; padding: 12px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); min-width: 0; }
+  .nk-card b { font-family: var(--display); font-weight: 400; font-size: 1.25rem; overflow-wrap: anywhere; } .nk-card small { color: var(--ink-soft); font-size: .78rem; overflow-wrap: anywhere; }
+  .nk-btns { display: flex; gap: 4px; flex-wrap: wrap; } .nk-btns .chip { padding: 4px 8px; } .nk-more { justify-content: center; }
+  .nk-favs { display: flex; flex-wrap: wrap; gap: 6px; } .nk-fav { display: inline-flex; align-items: center; gap: 6px; padding: 6px 6px 6px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel-2); max-width: 100%; }
+  .nk-fav b { overflow-wrap: anywhere; } .nk-fav small { color: var(--ink-soft); } .nk-fav .chip { padding: 2px 8px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -21718,6 +21726,103 @@ function startDice() {
   draw(false);
 }
 NEW_APPS.push({ id: "dice", emoji: "🎲", name: "Dice", desc: "Roll 1 to 10 dice with 4, 6, 8, 10, 12, 20 or 100 sides. Keep the dice you like and roll the rest.", start: () => startDice(), kw: "dice|die|roll the dice|roll a die|d20|d6|dice roller" });
+/* ---------- 🏷️ Nickname Maker: type a name, pick boy, girl or transgender, and it mixes the name with words from the dictionary */
+const NK_TITLES = {
+  boy: ["Captain", "Sir", "King", "Duke", "Big", "Mister", "Prince", "Lord", "Chief", "Bro", "Dude"],
+  girl: ["Princess", "Queen", "Lady", "Miss", "Duchess", "Dame", "Sis", "Little Miss", "Captain"],
+  neutral: ["Agent", "Super", "Mighty", "Lil", "DJ", "Professor", "Rocket", "Doc", "Ace", "Boss", "Chef", "Wizard", "Ninja", "Admiral", "Captain", "Turbo"]
+};
+const NK_ENDS = { boy: ["man", "zilla", "ster", "o", "inator", "dude"], girl: ["bella", "ella", "boo", "ie", "kins", "lou"], neutral: ["zilla", "ster", "y", "o", "boo", "kins", "inator", "bug", "pop", "zoom"] };
+const NK_GOOD = "amazing awesome brave bright bubbly calm charming cheerful clever cool cosmic cozy curious daring dazzling dizzy dreamy eager electric epic fabulous fancy fearless fiery fizzy fluffy friendly funky fuzzy gentle giggly glowing golden goofy grand groovy happy heroic hyper jazzy jolly jumpy kind lively lucky magic magnetic marvelous mega merry mighty mystic nifty noble peppy perky playful plucky polished proud quick quirky radiant rapid rocking royal rusty silly sleek smart snappy sneaky snazzy sparkly speedy spicy sporty stellar sunny super swift tiny turbo ultra upbeat vivid wacky wild windy witty wonderful zany zappy zesty zippy".split(" ");
+const NK_ANIMALS = "aardvark alligator alpaca anteater armadillo badger bat bear beaver bee beetle bison buffalo bunny butterfly camel cardinal cat cheetah chicken chipmunk cobra cougar coyote crab crane cricket crocodile crow deer dingo dolphin donkey dove dragon duck eagle eel elephant elk emu falcon ferret finch firefly flamingo fox frog gazelle gecko gerbil giraffe goat goose gopher gorilla grasshopper hamster hare hawk hedgehog heron hippo hornet horse hummingbird iguana impala jackal jaguar jay jellyfish kangaroo kitten koala ladybug lemur leopard lion lizard llama lobster lynx macaw magpie manatee meerkat mole mongoose monkey moose moth mouse narwhal newt octopus orca ostrich otter owl ox panda panther parrot peacock pelican penguin pigeon piglet platypus pony poodle porcupine possum puffin puma puppy quail rabbit raccoon raven reindeer rhino robin rooster salamander salmon seal shark sheep skunk sloth snail sparrow spider squid squirrel starfish stingray stork swan tapir tiger toad tortoise toucan turkey turtle unicorn viper vulture walrus warthog wasp weasel whale wolf wombat woodpecker yak zebra".split(" ");
+const NK_BAD = /bitter|sad|sick|mad|angr|lazy|weird|scar|creep|evil|nast|gross|smell|stink|cry|pain|hurt|sore|wound|blood|grave|tomb|corpse|ghost|curse|doom|fear|bully|thief|steal|cheat|lie|liar|fake|poor|broke|fail|lose|lost|worst|bad|boring|slow|toxic|virus|germ|dirt|mud|trash|garbage|junk|rot|mold|ugly|fat|dumb|stupid|idiot|loser|nerd|geek|weak|wimp|baby|nut|sin|war|fight|punch|kick|slap|shoot|fire|burn|smoke|cig|vape|knife|blade|sword|axe|devil|demon|monster|zomb|vamp|witch|rabid|waste|annoy|sham|unsound|drama|flush|rampant|mock|rude|brat|pest|spoil|ruin|wreck|mess|fool|shame|blame|guilt|moan|whine|grump|sulk|insult|vomit|toilet|sneez|cough|itch|nag|mean|crude|cruel|rage|scold|snob|sour|stale|ill|odd|flop|dud|grim|gloom|dread|panic|worry|alarm|harm|danger|crash|jail|prison|crime|guilty|social|commun|priest|anarch|junta|injust|explo|bedpan|ashcan|rash|religi|church|politic|bedlam|karma|hippie|nazi|soldier|army|navy|enemy/;
+const NK_COOL = "comet rocket thunder lightning star galaxy meteor jet storm tornado ninja wizard pixel turbo phoenix blaze cyclone breeze sunshine rainbow diamond crystal legend champion hero spark glitter pebble cupcake cookie waffle muffin pancake jellybean marshmallow noodle pickle nugget sprinkle bubble cosmo dynamo boomerang thunderbolt starlight moonbeam snowflake button biscuit taco nacho popcorn".split(" ");
+let NK_GUEST_FAV = [], NK_LIST = [], NK_STATE = null;
+const nkFavs = () => SITE_WHO === "guest" ? NK_GUEST_FAV : (store.get("nk_fav", []) || []);
+const nkSetFavs = L => { if (SITE_WHO === "guest") NK_GUEST_FAV = L; else store.set("nk_fav", L.slice(0, 300)); };
+const nkCap = s => s.replace(/(^|[\s-])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+const nkSafe = s => { const t = s.toLowerCase().replace(/[^a-z]/g, ""); return !SG_BLOCK.test(t) && !NK_BAD.test(t); };
+const nkPick = a => a[Math.floor(Math.random() * a.length)];
+const nkWordOk = w => w && w.length >= 3 && w.length <= 9 && !SG_STOP.has(w) && nkSafe(w) && !/s$/.test(w) && !/(ing|ed|ly|ness)$/.test(w);
+function nkShort(name) {   // the first part of the name, like "Emm" from "Emmett"
+  const n = name.toLowerCase(), m = n.match(/^[^aeiouy]*[aeiouy]+[^aeiouy]?/); const s = m ? m[0] : n.slice(0, 3);
+  return s.length >= 2 ? s : n.slice(0, Math.min(3, n.length));
+}
+function nkMake(rawName, style) {   // style: "boy", "girl", or "neutral"
+  const name = rawName.replace(/[^A-Za-z]/g, ""), low = name.toLowerCase(), Name = nkCap(low), D = sgDict(), out = [];
+  if (low.length < 2) return [];
+  const common = D.tiers[0].filter(nkWordOk), styles = style === "neutral" ? ["neutral"] : [style, "neutral"];
+  const add = (nick, how, kind) => { nick = nick.replace(/\s+/g, " ").trim(); if (nick && nkSafe(nick) && !out.some(o => o.nick.toLowerCase() === nick.toLowerCase()) && nick.toLowerCase() !== low) out.push({ nick, how, kind }); };
+  // 1. blends: the end of the name runs into a dictionary word ("Colin" + "inventor" = "Colinventor")
+  for (let k = Math.min(4, low.length - 1); k >= 2; k--) {
+    const tail = low.slice(-k), words = common.filter(w => w.startsWith(tail) && w.length > k + 1);
+    for (let t = 0; t < 3 && words.length; t++) { const w = nkPick(words); add(nkCap(low + w.slice(k)), `${Name} + ${w}`, "blend"); }
+  }
+  // the end of a dictionary word runs into the name ("rocket" + "Ethan" = "Rockethan")
+  for (let k = Math.min(3, low.length - 1); k >= 2; k--) {
+    const head = low.slice(0, k), words = common.filter(w => w.endsWith(head) && w.length > k + 1);
+    for (let t = 0; t < 2 && words.length; t++) { const w = nkPick(words); add(nkCap(w.slice(0, -k) + low), `${w} + ${Name}`, "blend"); }
+  }
+  // 2. rhymes from the dictionary ("Zara the Tiara")
+  for (const n of [2, 1]) { const r = sgRhymes(low, n).filter(nkWordOk); for (let t = 0; t < 3 && r.length; t++) { const w = nkPick(r); add(`${Name} the ${nkCap(w)}`, `${Name} rhymes with ${w}`, "rhyme"); } }
+  // 3. same first sound ("Zippy Zara", "Colin the Cheetah")
+  const first = low[0], adj = NK_GOOD.filter(a => a[0] === first && D.all.has(a)), ani = NK_ANIMALS.filter(a => a[0] === first && D.all.has(a));
+  for (let t = 0; t < 2 && adj.length; t++) { const a = nkPick(adj); add(`${nkCap(a)} ${Name}`, `${a} and ${Name} both start with “${first.toUpperCase()}”`, "same"); }
+  for (let t = 0; t < 2 && ani.length; t++) { const a = nkPick(ani); add(`${Name} the ${nkCap(a)}`, `${a} and ${Name} both start with “${first.toUpperCase()}”`, "same"); }
+  // 4. titles and fun endings in the style picked
+  const sh = nkShort(low), Sh = nkCap(sh);
+  styles.forEach(st => {
+    for (let t = 0; t < 2; t++) add(`${nkPick(NK_TITLES[st])} ${nkPick([Name, Sh])}`, st === "neutral" ? "a title for anyone" : `a ${st}-style title`, "title");
+    for (let t = 0; t < 2; t++) { const e = nkPick(NK_ENDS[st]); add(nkCap(sh + (/[aeiouy]$/.test(sh) && /^[aeiouy]/.test(e) ? e.slice(1) : e)), `${Sh} + “${e}”`, "end"); }
+  });
+  // 5. a fun dictionary word with the name ("Comet Emmett", "Cupcake Zara")
+  const cool = NK_COOL.filter(w => D.all.has(w));
+  for (let t = 0; t < 2 && cool.length; t++) { const w = nkPick(cool); add(`${nkCap(w)} ${Name}`, `${w} (from the dictionary) + ${Name}`, "word"); }
+  // mix them up but keep one of each kind near the top
+  const kinds = ["blend", "rhyme", "same", "title", "end", "word"], first8 = [];
+  kinds.forEach(k => { const o = out.find(x => x.kind === k && !first8.includes(x)); if (o) first8.push(o); });
+  const rest = out.filter(o => !first8.includes(o)).sort(() => Math.random() - .5);
+  return [...first8.sort(() => Math.random() - .5), ...rest].slice(0, 10);
+}
+function startNicknames() {
+  const last = SITE_WHO === "guest" ? null : store.get("nk_last", null);
+  NK_STATE = NK_STATE || { name: (last && last.name) || (SITE_WHO && SITE_WHO !== "guest" && /^[A-Za-z][a-z]+\b/.test(SITE_NAME) ? SITE_NAME.match(/^[A-Za-z][a-z]+/)[0] : ""), who: (last && last.who) || "", trans: (last && last.trans) || "neutral" };
+  const S = NK_STATE, favs = nkFavs();
+  appScreen("🏷️ Nickname Maker", `<h2>🏷️ Nickname Maker</h2><p class="soft">Type a name and pick boy, girl or transgender. The Nickname Maker mixes the name with words from the dictionary to make fun nicknames!</p>
+    <form class="nk-form" id="nk-form"><input id="nk-name" maxlength="20" placeholder="A name, like Emmett" value="${esc(S.name)}" aria-label="Name" autocomplete="off">
+      <div class="nk-who">${[["boy", "👦 Boy"], ["girl", "👧 Girl"], ["trans", "🏳️‍⚧️ Transgender"]].map(([k, l]) => `<button type="button" class="chip${S.who === k ? " on" : ""}" data-nkwho="${k}">${l}</button>`).join("")}</div>
+      ${S.who === "trans" ? `<div class="nk-trans"><span>Which nicknames sound like you?</span>${[["neutral", "🌈 Any"], ["girl", "💗 Girl-style"], ["boy", "💙 Boy-style"]].map(([k, l]) => `<button type="button" class="chip${S.trans === k ? " on" : ""}" data-nktrans="${k}">${l}</button>`).join("")}</div>` : ""}
+      <button class="btn go" type="submit">✨ Make nicknames</button><p class="su-msg" id="nk-msg"></p></form>
+    <div class="nk-list" id="nk-list"></div>
+    <h3>⭐ Saved nicknames${favs.length ? ` (${favs.length})` : ""}</h3><div class="nk-favs" id="nk-favs">${favs.length ? favs.map((f, i) => `<span class="nk-fav"><b>${esc(f.nick)}</b><small>${esc(f.for)}</small><button class="chip" type="button" data-nkunfav="${i}" aria-label="Remove">✖</button></span>`).join("") : `<p class="soft">Tap ☆ on a nickname you love to save it here.</p>`}</div>`);
+  const nameIn = document.getElementById("nk-name");
+  $app.querySelectorAll("[data-nkwho]").forEach(b => b.addEventListener("click", () => { S.name = nameIn.value; S.who = b.dataset.nkwho; startNicknames(); }));
+  $app.querySelectorAll("[data-nktrans]").forEach(b => b.addEventListener("click", () => { S.name = nameIn.value; S.trans = b.dataset.nktrans; startNicknames(); }));
+  $app.querySelectorAll("[data-nkunfav]").forEach(b => b.addEventListener("click", () => { const L = nkFavs().slice(); L.splice(+b.dataset.nkunfav, 1); nkSetFavs(L); S.name = nameIn.value; startNicknames(); }));
+  const draw = () => {
+    const box = document.getElementById("nk-list"); if (!box) return;
+    if (!NK_LIST.length) { box.innerHTML = ""; return; }
+    const fv = nkFavs();
+    box.innerHTML = `<div class="nk-grid">${NK_LIST.map((o, i) => `<div class="nk-card"><b>${esc(o.nick)}</b><small>${esc(o.how)}</small><div class="nk-btns"><button class="chip" type="button" data-nksay="${i}" aria-label="Read it out loud">🔊</button><button class="chip" type="button" data-nkcopy="${i}" aria-label="Copy">📋</button><button class="chip${fv.some(f => f.nick === o.nick) ? " on" : ""}" type="button" data-nkfav="${i}" aria-label="Save">${fv.some(f => f.nick === o.nick) ? "⭐" : "☆"}</button></div></div>`).join("")}</div>
+      <div class="row nk-more"><button class="btn" type="button" id="nk-more">🔀 More nicknames</button></div>`;
+    box.querySelectorAll("[data-nksay]").forEach(b => b.addEventListener("click", () => svSay(NK_LIST[+b.dataset.nksay].nick)));
+    box.querySelectorAll("[data-nkcopy]").forEach(b => b.addEventListener("click", async () => { try { await navigator.clipboard.writeText(NK_LIST[+b.dataset.nkcopy].nick); toast("📋 Copied!"); } catch (e) { toast("Couldn't copy here."); } }));
+    box.querySelectorAll("[data-nkfav]").forEach(b => b.addEventListener("click", () => { const o = NK_LIST[+b.dataset.nkfav], L = nkFavs().slice(), i = L.findIndex(f => f.nick === o.nick); if (i >= 0) L.splice(i, 1); else L.unshift({ nick: o.nick, for: S.name.trim() }); nkSetFavs(L); S.name = nameIn.value; startNicknames(); }));
+    document.getElementById("nk-more").addEventListener("click", make);
+  };
+  function make() {
+    const name = nameIn.value.trim(), msg = document.getElementById("nk-msg"); S.name = name;
+    if (!/[A-Za-z].*[A-Za-z]/.test(name)) { msg.textContent = "Type a name first (at least 2 letters)."; return; }
+    if (!S.who) { msg.textContent = "Pick boy, girl or transgender."; return; }
+    msg.textContent = ""; if (SITE_WHO !== "guest") store.set("nk_last", { name, who: S.who, trans: S.trans });
+    NK_LIST = nkMake(name, S.who === "trans" ? S.trans : S.who);
+    if (!NK_LIST.length) { msg.textContent = "Try a longer name!"; return; }
+    draw(); naNote(880, .1, "triangle", .06);
+  }
+  document.getElementById("nk-form").addEventListener("submit", e => { e.preventDefault(); make(); });
+  draw();
+}
+NEW_APPS.push({ id: "nicknames", emoji: "🏷️", name: "Nickname Maker", desc: "Type a name, pick boy, girl or transgender, and get fun nicknames made from words in the dictionary.", start: () => startNicknames(), kw: "nicknames?|nick names?|nickname generator|nickname maker|name generator|cool names?" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
