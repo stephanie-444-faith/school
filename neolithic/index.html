@@ -1721,6 +1721,7 @@
   .ha-item { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 10px; text-align: left; padding: 8px 10px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
   .ha-item:hover, .ha-item:focus-visible { border-color: var(--gold); outline: none; } .ha-item[hidden] { display: none; }
   .ha-emo { font-size: 1.8rem; text-align: center; line-height: 1; } .ha-txt { display: grid; min-width: 0; } .ha-txt b { font-size: 1rem; } .ha-txt small { color: var(--ink-soft); font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hc-subj { align-items: center; margin: 4px 0 10px; } .hc-subj > span { font-weight: 700; margin-right: 2px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3240,7 +3241,7 @@ function showHome() {
     document.getElementById("ha-find").addEventListener("input", e => { const q = e.target.value.trim().toLowerCase(); let n = 0; $app.querySelectorAll("[data-ha]").forEach(b => { const ok = !q || b.dataset.haTxt.includes(q); b.hidden = !ok; if (ok) n++; }); document.getElementById("ha-none").hidden = n > 0; }); }
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     const s = b.dataset.subject;
-    if (["math", "ss", "health"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
+    if (["math", "ss", "health", "ela"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
     choice.subject = s; store.set("subject", s);
     startStudy();
   }));
@@ -5704,6 +5705,12 @@ function subjectPick(s) {
       ["📝 Practice math problems", "Endless problems, easy or hard", study("math")],
       ["📐 Ratios & Rates", "Ratios, rates, tables and tape diagrams (test practice)", study("ratios", { rpart: "all" })],
       ["🧮 Open the Math Center", "All the math apps in one place, like the fraction lab", go(() => startMathCenter())]] }
+    : s === "ela" ? { title: "📚 Reading & Writing", say: "What would you like to do?", btns: [
+      ["📝 Practice reading & writing", "Grammar and story word questions", study("ela")],
+      ["🏹 Roots games", "Greek & Latin roots: archery, sports and hyper practice", go(() => startRootsChooser())],
+      ["📖 The Library", "Big books and classic stories to read", go(() => startHippo("show me the library"))],
+      ["🎓 Head of the Class", "Race the computer from Kindergarten to College, with questions from any subject", go(() => startHeadClass())],
+      ["🐶 Story Starters", "Story ideas to write about, then keep the story going!", go(() => startStories())]] }
     : s === "ss" ? { title: "🌍 Social Studies", say: "You can study the Neolithic Revolution, but you don't have to!", btns: [
       ["🌾 Study the Neolithic Revolution", "Early Humans to the first farms and cities (test practice)", study("ss", { set: "all" })],
       ...Object.entries(SETS).filter(([k]) => k !== "all").map(([k, v]) => [`🌾 Neolithic: ${v.name}`, `Just one part: ${v.desc}`, study("ss", { set: k })]),
@@ -12666,7 +12673,16 @@ const HC_FACTS = [
   [["Who came up with general relativity?", "Albert Einstein", ["Isaac Newton", "Marie Curie", "Niels Bohr"]], ["What does GDP measure?", "A country's total economic output", ["Population growth", "Government debt", "Only inflation"]], ["Which search runs in O(log n) time?", "Binary search", ["Bubble sort", "Checking every item", "Random guessing"]], ["What is the most common element in the universe?", "Hydrogen", ["Oxygen", "Carbon", "Iron"]], ["Who wrote 'The Republic'?", "Plato", ["Aristotle", "Homer", "Cicero"]], ["What are proteins built from?", "Amino acids", ["Fatty acids", "Sugars", "Minerals"]], ["What does a psychologist study?", "The mind and behavior", ["Rocks and minerals", "Ancient languages", "Stars"]], ["What is the derivative of sin x?", "cos x", ["−sin x", "tan x", "−cos x"]]],
 ];
 let HC = null;
+// 🎓 Head of the Class can use trivia (by grade) or any subject's questions
+const HC_SUBJECTS = [["trivia", "🎲 Trivia", null], ["ss", "🌍 Social Studies", "all"], ["ssw", "🌎 Around the World", "ssw"], ["math", "🔢 Math", "math"], ["ratios", "📐 Ratios & Rates", "ratios_all"], ["science", "🔬 Science", "science"], ["health", "❤️ Health", "health_all"], ["ela", "📚 Reading & Writing", "ela"], ["art", "🎨 Art", "art"], ["mix", "🔀 Mix it up", "mix"]];
+const hcSubj = () => { const s = store.get("hc_subj", "trivia"); return HC_SUBJECTS.some(x => x[0] === s) ? s : "trivia"; };
+let HC_DECK = null;
 function hcQuestion(g) {
+  const sub = HC_SUBJECTS.find(x => x[0] === hcSubj());
+  if (sub && sub[2]) {   // a question from the subject's study deck
+    if (!HC_DECK || HC_DECK.set !== sub[2]) { HC_DECK = makeDeck(sub[2]); HC_DECK.set = sub[2]; }
+    for (let t = 0; t < 6; t++) { const m = HC_DECK.next(); let o = null; try { o = m(); } catch (e) {} if (o && o.a != null && Array.isArray(o.w) && o.w.length) return { q: o.prompt || o.q || "", html: true, a: String(o.a), opts: shuffle([String(o.a), ...o.w.slice(0, 3).map(String)]) }; }
+  }
   const band = g <= 2 ? 0 : g <= 5 ? 1 : g <= 8 ? 2 : g <= 12 ? 3 : 4;
   if (Math.random() < .4) { const [q, a, w] = rPick(HC_FACTS[band]); return { q, a, opts: shuffle([a, ...w]) }; }
   const [q, a, s] = HC_MATH[g](); return { q, a: String(a), opts: shuffle([a, ...hcNear(a, s || 1)]).map(String) };
@@ -12680,14 +12696,15 @@ function hcRender() {
   const box = document.getElementById("cg"); if (!box) return;
   const ladder = [...HC_GRADES, "🎓 Grad"].map((g, i) => `<div class="hc-rung${i === 14 ? " grad" : ""}"><span>${g}</span><b>${HC.pos[0] === i ? "🦛" : ""}${HC.pos[1] === i ? "🤖" : ""}</b></div>`).reverse().join("");
   const Q = HC.q;
-  box.innerHTML = `<div class="hc-wrap"><div class="hc-ladder">${ladder}</div><div class="hc-q">
+  box.innerHTML = `<div class="na-chips hc-subj"><span>Questions about:</span>${HC_SUBJECTS.map(([k, l]) => `<button class="chip${k === hcSubj() ? " on" : ""}" data-hcs="${k}" type="button">${l}</button>`).join("")}</div><div class="hc-wrap"><div class="hc-ladder">${ladder}</div><div class="hc-q">
     <p class="un-log">${esc(HC.log)}</p>
     ${HC.over !== null ? `<h3>${HC.over === 0 ? "🏆 You graduated first! You're Head of the Class!" : "🤖 The computer graduated first!"}</h3><button class="btn go" id="hc-again">Play again</button>` : `
-    <div class="sl-card"><small>${HC_GRADES[HC.pos[0]]} grade question</small><h3>${esc(Q.q)}</h3><div class="hc-opts">${Q.opts.map(o => `<button class="btn${HC.answered ? (o === Q.a ? " go" : o === HC.answered ? " bad" : "") : ""}" data-o="${esc(o)}" ${HC.answered ? "disabled" : ""}>${esc(o)}</button>`).join("")}</div>
+    <div class="sl-card"><small>${HC_GRADES[HC.pos[0]]} grade question${hcSubj() !== "trivia" ? ` · ${esc((HC_SUBJECTS.find(x => x[0] === hcSubj()) || [, ""])[1])}` : ""}</small><h3>${Q.html ? Q.q : esc(Q.q)}</h3><div class="hc-opts">${Q.opts.map(o => `<button class="btn${HC.answered ? (o === Q.a ? " go" : o === HC.answered ? " bad" : "") : ""}" data-o="${esc(o)}" ${HC.answered ? "disabled" : ""}>${esc(o)}</button>`).join("")}</div>
     ${HC.answered ? `<button class="btn go" id="hc-next">🤖 Computer's turn ➜</button>` : ""}</div>`}</div></div>`;
   box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { HC.answered = b.dataset.o; const ok = HC.answered === Q.a; if (ok) { HC.pos[0]++; sfx.right(); HC.log = HC.pos[0] === 14 ? "🎓 You graduated!" : `✅ Correct! You move up to ${HC_GRADES[HC.pos[0]]}.`; } else { sfx.wrong(); HC.log = `❌ Not quite. The answer was ${Q.a}. You stay in ${HC_GRADES[HC.pos[0]]}.`; } if (HC.pos[0] === 14) { HC.over = 0; cgWin("hclass", 0); } hcRender(); }));
   document.getElementById("hc-next")?.addEventListener("click", hcAi);
   document.getElementById("hc-again")?.addEventListener("click", startHeadClass);
+  box.querySelectorAll("[data-hcs]").forEach(b => b.addEventListener("click", () => { store.set("hc_subj", b.dataset.hcs); HC_DECK = null; startHeadClass(); toast(`🎓 Questions about ${b.textContent} now!`); }));
 }
 function hcAi() {
   const g = HC.pos[1], p = ({ easy: .45, medium: .62, hard: .8 })[cgLvl()] - g * .012;
@@ -13042,7 +13059,7 @@ function dbAi() {
 NEW_APPS.push(
   { id: "uno", emoji: "🃏", name: "Uno", desc: "Match colors and numbers, and zap the computer with +4s!", start: () => startUno(), kw: "uno" },
   { id: "bship", emoji: "🚢", name: "Battleship", desc: "Hunt down and sink the computer's hidden fleet.", start: () => startBattleship(), kw: "battle ?ships?" },
-  { id: "hclass", emoji: "🎓", name: "Head of the Class", desc: "Race the computer from Kindergarten to College with trivia.", start: () => startHeadClass(), kw: "head of (the )?class|trivia" },
+  { id: "hclass", emoji: "🎓", name: "Head of the Class", desc: "Race the computer from Kindergarten to College with trivia, or with questions from any subject.", start: () => startHeadClass(), kw: "head of (the )?class|trivia" },
   { id: "rummi", emoji: "🀄", name: "Rummikub", desc: "Make runs and groups of number tiles before the computer.", start: () => startRummikub(), kw: "rummikub|rummy|rummicube" },
   { id: "check", emoji: "⛀", name: "Checkers", desc: "Jump, capture and crown kings against the computer.", start: () => startCheckers(), kw: "checkers|draughts" },
   { id: "yahtzee", emoji: "🎲", name: "Yahtzee", desc: "Roll five dice, fill your score card, and shout Yahtzee!", start: () => startYahtzee(), kw: "yahtzee|yatzy|dice game" },
