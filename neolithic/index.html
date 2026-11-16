@@ -3280,10 +3280,10 @@ let GUEST_AGE = null;
 const whoAge = id => { if (id === "guest") return GUEST_AGE; const a = (store.get("who_age", {}) || {})[id]; return a && a.age >= 0 ? a.age + Math.floor((Date.now() - (a.at || Date.now())) / 31557600000) : null; };
 const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) < 25);
 const GAME_HOME_KEYS = () => new Set(["bunny", ...[...INFO_GAME_APPS].map(id => "na-" + id)]);
-const GAME_SCREEN_RX = /^(🎮 Game Room|🏹 Pick a roots game|🏹 Root Archery|⚡ Root Hyper Practice|🥍 |⚽ |🏈 |🏀 |🎵 Name That Tune)/;
+const GAME_SCREEN_RX = /^(🎮 Game Room|Hidden artifacts)/;   // only the games menu is blocked; every App-App app is for everyone
 function isGameScreen(lab) {
   if (document.getElementById("gamesmenu")) return false;
-  return MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab) || GAME_SCREEN_RX.test(lab) || NEW_APPS.some(a => INFO_GAME_APPS.has(a.id) && lab.includes(a.name)) || !!$app.querySelector(".gm-list, .rc-grid, #rl-frame, #hh-frame, #dt-frame");
+  return MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab) || GAME_SCREEN_RX.test(lab) || !!$app.querySelector(".gm-list, #hh-frame, #dt-frame");
 }
 function askAge(p) {   // 🎂 asked once per person
   PROF_GAME = null; PROF_RESTART = null; keyHandler = null;
@@ -3826,7 +3826,7 @@ const INFO_GAME_APPS = new Set(["tune", "hippopoly", "uno", "bship", "hclass", "
 function startInfo(jump) {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; naCleanup(); hippoHush(); PROF_GAME = null; PROF_RESTART = null;
   const today = new Set(homeToday().map(a => a.key));
-  const apps = homePool().filter(a => !INFO_GAME_APPS.has(a.key.replace(/^na-/, "")) && a.key !== "bunny");
+  const apps = homePool().filter(a => (!gamesAllowed() || !INFO_GAME_APPS.has(a.key.replace(/^na-/, ""))) && a.key !== "bunny");   // people without the games menu see game apps with the other apps
   const go = [];   // what each "go" button opens
   const btn = (fn, label) => { go.push(fn); return `<button class="if-go" type="button" data-go="${go.length - 1}">${label}</button>`; };
   const subj = k => () => { choice.subject = k; store.set("subject", k); if (k === "ss") { choice.set = "all"; store.set("set", "all"); } startStudy(); };
@@ -9681,8 +9681,8 @@ function hippoAsk(q) {   // answers the question, fixing misspellings first
 // 🎮 people who can't play games get no game answers or game buttons from Hippo
 function hippoAnswer(qRaw) {
   const a = hippoAnswerAll(qRaw); if (!a || gamesAllowed()) return a;
-  if (a.games || /^(Games|Secret Game Room|Franklin's Secrets|Typing)$/.test(a.topic)) return null;
-  const GRX = /Root Archery|Roots? games|Bunny Hop|Hippo Hoops|Dream Team|Ragdoll|Game Room|game room|random game|Hippopoly|Name That Tune/, b = { ...a };
+  if (a.games || /^(Games|Secret Game Room|Franklin's Secrets)$/.test(a.topic)) return null;
+  const GRX = /Hippo Hoops|Dream Team|Ragdoll|Game Room|game room|random game/, b = { ...a };
   if (b.action && GRX.test(b.action.label)) delete b.action;
   if (b.actions) b.actions = b.actions.filter(x => !GRX.test(x.label || ""));
   return b;
@@ -10053,7 +10053,7 @@ const HOME_CORE = () => [
 ];
 // 📱 every app for the home screen's scroll-down list: the App-App, Ask Hippo, and everything in the App-App (games only for people who can play them), A to Z
 const homeAllApps = () => { const seen = new Set(); return [...HOME_PINNED(), ...homePool()].filter(a => { const k = a.name.replace(/^\W+/, "").toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).sort((a, b) => a.name.replace(/^\W+/, "").localeCompare(b.name.replace(/^\W+/, ""))); };
-const homePool = () => { const no = gamesAllowed() ? null : GAME_HOME_KEYS(); return [...HOME_CORE().filter(a => a.key !== "bunny"), ...NEW_APPS.filter(a => !a.hidden).map(a => ({ key: "na-" + a.id, emoji: a.emoji, name: a.name, desc: a.desc, start: a.start, added: a.added }))].filter(a => !no || !no.has(a.key)); };
+const homePool = () => { const no = null; return [...HOME_CORE().filter(a => a.key !== "bunny"), ...NEW_APPS.filter(a => !a.hidden).map(a => ({ key: "na-" + a.id, emoji: a.emoji, name: a.name, desc: a.desc, start: a.start, added: a.added }))].filter(a => !no || !no.has(a.key)); };
 function homeToday(now = new Date()) {
   const day = aaDay(now), n = HOME_MAX - HOME_PINNED().length, pool = homePool();
   const order = [...pool].sort((a, b) => aaHash(a.key) - aaHash(b.key) || (a.key < b.key ? -1 : 1)), start = (day * n) % order.length;
@@ -10076,7 +10076,7 @@ function startAppApp() {
   $app.innerHTML = `<div class="panel appapp">
     <div class="topline"><span class="label">📱 App-App</span><button class="iconbtn" id="aa-home">Back to menu</button></div>
     <h2>📱 The App-App</h2><p class="soft">Every app lives here! The home screen shows ${HOME_MAX} at a time (counting the App-App), and some rotate in and out at midnight. <b id="aa-next"></b></p>
-    <div class="aa-grid">${NEW_APPS.map((a, i) => !a.hidden && (gamesAllowed() || !INFO_GAME_APPS.has(a.id)) ? card(a, "na-" + a.id, `data-app="${i}"`) : "").join("")}</div>
+    <div class="aa-grid">${NEW_APPS.map((a, i) => !a.hidden ? card(a, "na-" + a.id, `data-app="${i}"`) : "").join("")}</div>
     <h3>🏠 Home-screen favorites</h3>
     <div class="aa-grid">${extras.map(a => card(a, a.key, `data-homeapp="${a.key}"`)).join("")}</div>
   </div>`;
@@ -10227,7 +10227,7 @@ function startCodeLab(track, lesson) {
         <button class="aa-card" data-tr="html"><i>🌐</i><b>HTML: build websites</b><span>Make real web pages with headings, colors, lists, links and buttons. See your page change as you type!</span><small>✅ ${n("code_html")} / ${HTML_LESSONS.length} lessons</small></button>
         <button class="aa-card" data-tr="css"><i>🎨</i><b>CSS: style websites</b><span>Colors, fonts, borders, circles, boxes side by side and hover magic.</span><small>✅ ${n("code_css")} / ${CSS_LESSONS.length} lessons</small></button>
         <button class="aa-card" data-tr="js"><i>⚡</i><b>JavaScript: make websites think</b><span>The language that runs inside every web browser: variables, choices, loops, lists and functions.</span><small>✅ ${n("code_js")} / ${JS_LESSONS.length} lessons</small></button>
-        <button class="aa-card" data-tr="py"><i>🐍</i><b>Python: real programming</b><span>${gamesAllowed() ? `The language scientists and game makers use. Math, variables, loops, turtle drawing and your own games!` : `The language scientists and inventors use. Math, variables, loops, turtle drawing and your own programs!`}</span><small>✅ ${n("code_py")} / ${PY_LESSONS.length} lessons</small></button>
+        <button class="aa-card" data-tr="py"><i>🐍</i><b>Python: real programming</b><span>The language scientists and game makers use. Math, variables, loops, turtle drawing and your own games!</span><small>✅ ${n("code_py")} / ${PY_LESSONS.length} lessons</small></button>
         <button class="aa-card" data-tr="robot"><i>🤖</i><b>Robot Code</b><span>Program a robot with commands to get it through mazes to the star. Use as few blocks as you can!</span><small>✅ ${rb} / ${ROBOT_LEVELS.length} levels</small></button>
         <button class="aa-card" data-tr="binary"><i>0️⃣1️⃣</i><b>Binary: how computers count</b><span>Computers only use 0s and 1s. Flip the switches to make numbers!</span><small>✅ ${bn} / ${BIN_GOALS.length} challenges</small></button>
       </div>
@@ -10426,17 +10426,16 @@ function aiErrText(e) { const c = e && e.code; return c === "not_granted" ? "AI 
 function startAIStudio(view) {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null;
   const GAME_L = AI_LESSONS.findIndex(l => /game/i.test(l.t));
-  if (!gamesAllowed() && (view === "game" || view === "l" + GAME_L)) view = null;
   const seen = store.get("ai_seen", []);
   if (!view) {
     $app.innerHTML = `<div class="panel aistudio">
       <div class="topline"><span class="label">🤖 AI Studio</span><button class="iconbtn" id="ai-back">Back to App-App</button></div>
       <h2>🤖 AI Studio</h2><p class="soft">Learn to use AI like a pro: to learn, create and build cool things, safely.</p>
-      <h3>📘 Lessons</h3><div class="aa-grid">${AI_LESSONS.map((l, i) => !gamesAllowed() && i === GAME_L ? "" : `<button class="aa-card small" data-l="${i}"><i>${l.e}</i><b>${seen.includes(i) ? "✅ " : ""}${l.t}</b></button>`).join("")}</div>
+      <h3>📘 Lessons</h3><div class="aa-grid">${AI_LESSONS.map((l, i) => `<button class="aa-card small" data-l="${i}"><i>${l.e}</i><b>${seen.includes(i) ? "✅ " : ""}${l.t}</b></button>`).join("")}</div>
       <h3>🛠️ Projects</h3><div class="aa-grid">
         <button class="aa-card" id="ai-build"><i>🧪</i><b>Prompt Builder</b><span>Build a great prompt step by step, see its score, and try it on a real AI.</span></button>
         <button class="aa-card" id="ai-quiz"><i>🏅</i><b>Better Prompt Challenge</b><span>Can you spot the better prompt? 6 rounds.</span></button>
-        ${gamesAllowed() ? `<button class="aa-card" id="ai-game"><i>🎮</i><b>Make a game with AI</b><span>Describe a game, let AI write the code, then play it in the Code Lab!</span></button>` : ""}
+        <button class="aa-card" id="ai-game"><i>🎮</i><b>Make a game with AI</b><span>Describe a game, let AI write the code, then play it in the Code Lab!</span></button>
       </div></div>`;
     document.getElementById("ai-back").addEventListener("click", startAppApp);
     $app.querySelectorAll("[data-l]").forEach(b => b.addEventListener("click", () => startAIStudio("l" + b.dataset.l)));
@@ -10673,8 +10672,7 @@ function startSpaceExplorer(tab = "system") {
 
 // 💰 Money Smart
 function startMoneySmart(tab = "goal") {
-  if (tab === "budget" && !gamesAllowed()) tab = "goal";
-  appScreen("💰 Money Smart", `<h2>💰 Money Smart</h2>${naTabs([["goal", "🐷 Savings goal"], ["needs", "🛒 Needs vs. wants"], ...(gamesAllowed() ? [["budget", "📋 Budget game"]] : []), ["grow", "🌱 Watch money grow"]], tab)}<div id="ms"></div>`);
+  appScreen("💰 Money Smart", `<h2>💰 Money Smart</h2>${naTabs([["goal", "🐷 Savings goal"], ["needs", "🛒 Needs vs. wants"], ["budget", "📋 Budget game"], ["grow", "🌱 Watch money grow"]], tab)}<div id="ms"></div>`);
   bindTabs(startMoneySmart);
   const box = document.getElementById("ms");
   if (tab === "goal") {
@@ -12234,41 +12232,28 @@ function plBuild(idx) {   // put a past version back together: start from the fi
 }
 // a past life runs in a sealed box with pretend storage, so it can never mess up the present site's saves
 /* ⏪🚫🎮 For people who can't have games, every past life runs with this filter: game buttons, game screens and any words about games are taken out. */
-function plNoGamesScript() {
+function plNoGamesScript() {   // ⏪ past lives for people without the games menu: the games menu and its games are taken out (apps stay)
   const menu = (MENU_GAME_RX.source.match(/\)\?\(([^()]*)\)/) || [, ""])[1].split("|");
-  const screens = (GAME_SCREEN_RX.source.match(/\^\(([^()]*)\)/) || [, ""])[1].split("|").map(s => s.replace(/^[^A-Za-z0-9]+/, "").replace(/\\/g, "").trim());
-  const apps = NEW_APPS.filter(a => INFO_GAME_APPS.has(a.id)).map(a => a.name);
-  const extra = ["Bunny Hop Typing", "Cash Race", "Mystery Game", "Root Hyper Practice", "Root Basketball", "Root Soccer", "Root Football", "Root Lacrosse", "Hippo Hoops", "Dream Team", "Game Room", "Training Ground", "Carrot Champion", "Speed Champion"];
-  const names = [...new Set([...menu, ...screens, ...apps, ...extra].map(s => s.trim()).filter(s => s.length > 2 && !/^(Bunny|Uno)$/.test(s)))];
-  const exact = [...new Set([...names, "Uno", "Bunny"])];   // short names only count as a whole title
-  const fns = ["startDig", "startGame", "startSlope", "startDraw", "startArchers", "startMini", "startMystery", "startSnake", "startStack", "startBunny", "bunnyLobby", "startMore", "startGameRoom", "startHippopoly", "startUno", "startBattleship", "startRummikub", "startCheckers", "startChess", "startYahtzee", "startMancala", "startGoFish", "startDots", "startNameThatTune", "startRootArchery", "startRootHyper", "startRootsChooser", "startRootSport", "startHippoHoops", "startDreamTeam", "startPuzzleRoom", "startHeadClass", "startRodeo", "start2048", "startMemory", "startMines", "startBricks", "startHopper", "startGalaxy", "startWhack", "startConnect4", "startSimon", "startPong", "startRagdollSecret", "startTurboKeys", "startGlobeDetective", "startPool"];
-  NEW_APPS.filter(a => INFO_GAME_APPS.has(a.id)).concat(MORE_GAMES).forEach(a => { const m = String(a.start || "").match(/\b(start[A-Z]\w*)\(/); if (m && !fns.includes(m[1])) fns.push(m[1]); });   // every game added later is blocked too
+  const names = [...new Set([...menu, "Game Room", "Games menu", "Cash Race", "Mystery Game", "Hippo Hoops", "Dream Team", "Color Claim", "Block Burst Puzzle", "Ragdoll Archers"].map(s => s.trim()).filter(s => s.length > 2))];
+  const fns = ["startDig", "startGame", "startSlope", "startDraw", "startArchers", "startMini", "startMystery", "startSnake", "startStack", "startMore", "startGameRoom", "startRodeo", "start2048", "startMemory", "startMines", "startBricks", "startHopper", "startGalaxy", "startWhack", "startConnect4", "startSimon", "startPong", "startHippoHoops", "startDreamTeam", "startColorClaim", "startBlockBurst", "startRagdollSecret"];
+  MORE_GAMES.forEach(a => { const m = String(a.start || "").match(/\b(start[A-Z]\w*)\(/); if (m && !fns.includes(m[1]) && !NEW_APPS.some(x => String(x.start || "").includes(m[1] + "("))) fns.push(m[1]); });   // games added to the menu later are taken out too
   const code = `(function(){
-var NAMES=${JSON.stringify(names)},EXACT=${JSON.stringify(exact)},FNS=${JSON.stringify(fns)};
+var NAMES=${JSON.stringify(names)},FNS=${JSON.stringify(fns)};
 var q=function(s){return s.replace(/[.*+?^\${}()|[\\]\\\\]/g,"\\\\$&")};
 var NAME_RX=new RegExp("(^|[^A-Za-z])("+NAMES.map(q).join("|")+")(?![A-Za-z])");
-var WORD_RX=/\\bgam(e|es|ing|er|ers)\\b|🎮|🕹️|Game Room/i;
-var PLAY_RX=/\\b(then|and|to|let'?s|can|go|or|you|we) play\\b(?!\\s+(the\\s+)?(piano|music|songs?|notes?|beats?|sounds?|drums?|instruments?))/i;
-var TITLE_RX=new RegExp("^\\\\W*("+EXACT.map(q).join("|")+")(\\\\W|$)");
 var hide=function(e){e.style.setProperty("display","none","important");e.setAttribute("data-plhide","1")};
 var CLICK="button,a,[role=button],summary,.aa-card,.gm-item,.chip,option";
 function titleOf(e){var b=e.querySelector("b,strong,h3,h4");return ((b?b.textContent:e.textContent)||"").trim()}
-function isGameTitle(t){return NAME_RX.test(t)||WORD_RX.test(t)||TITLE_RX.test(t)}
-function scrubNode(t){var s=t.nodeValue;if(!s||!(NAME_RX.test(s)||WORD_RX.test(s)||PLAY_RX.test(s)))return;var parts=s.split(/(?<=[.!?…:])\\s+/),kept=parts.filter(function(x){return !(NAME_RX.test(x)||WORD_RX.test(x)||PLAY_RX.test(x))});var v=kept.join(" ");if(v!==s){t.nodeValue=v;var p=t.parentElement;if(p&&!p.textContent.trim()&&!p.querySelector("img,svg,canvas,input,select,textarea"))hide(p)}}
 function scrub(root){
   if(!root||root.nodeType!==1)return;
-  root.querySelectorAll("#gamesmenu,.gamesmenu,#bunny,[data-more],.gm-list,.rc-grid,#rl-frame,#hh-frame,#dt-frame,.ty-champ").forEach(hide);
-  if(root.matches&&root.matches(CLICK))check(root);root.querySelectorAll(CLICK).forEach(check);
-  var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),n,list=[];while((n=w.nextNode()))list.push(n);
-  list.forEach(function(t){var p=t.parentElement;if(!p||p.closest("script,style,textarea,[data-plhide]"))return;scrubNode(t)});
-  root.querySelectorAll("[placeholder],[title],[aria-label]").forEach(function(e){["placeholder","title","aria-label"].forEach(function(a){var v=e.getAttribute(a);if(v&&(NAME_RX.test(v)||WORD_RX.test(v)))e.setAttribute(a,"")})});
+  root.querySelectorAll("#gamesmenu .gm-panel,.gm-item,[data-more],.gm-list,#hh-frame,#dt-frame").forEach(hide);
+  root.querySelectorAll(CLICK).forEach(function(e){if(!e.getAttribute("data-plhide")&&NAME_RX.test(titleOf(e)))hide(e)});
 }
-function check(e){if(e.getAttribute("data-plhide"))return;if(isGameTitle(titleOf(e)))hide(e)}
 var last=0,count=0;
 function goHome(){var now=Date.now();if(now-last<3000)count++;else count=0;last=now;
   if(count>4){var a=document.getElementById("app");if(a)a.innerHTML="<div class=\\"panel\\"><h2>⏪</h2><p>This part of the past isn't here. Tap ✕ Exit past life to come back.</p></div>";return}
   try{if(typeof showHome==="function")return showHome();if(typeof exitAll==="function")return exitAll()}catch(x){}}
-function onGameScreen(){var a=document.getElementById("app")||document.body;var els=a.querySelectorAll(".label,h1,h2");for(var i=0;i<els.length&&i<4;i++){var e=els[i];if(e.offsetParent===null||e.closest("[data-plhide]"))continue;var t=(e.textContent||"").trim();if(NAME_RX.test(t)||TITLE_RX.test(t)||/^\\W*Games?\\b|Game Room|Mystery Game/.test(t))return true}return false}
+function onGameScreen(){var a=document.getElementById("app")||document.body;var els=a.querySelectorAll(".label,h1,h2");for(var i=0;i<els.length&&i<4;i++){var e=els[i];if(e.offsetParent===null||e.closest("[data-plhide]"))continue;var t=(e.textContent||"").trim();if(NAME_RX.test(t)||/^\\W*Game Room|Mystery Game/.test(t))return true}return false}
 function block(){FNS.forEach(function(f){try{if(typeof window[f]==="function"&&!window[f].__pl){var g=function(){goHome()};g.__pl=1;window[f]=g}}catch(x){}})}
 var busy=false;function run(){if(busy)return;busy=true;try{block();scrub(document.body);if(onGameScreen())goHome()}finally{busy=false}}
 var t=null;new MutationObserver(function(){if(t)return;t=setTimeout(function(){t=null;run()},0)}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
@@ -14139,8 +14124,7 @@ function startGrammarLab(unit, tab = "learn") {
     return;
   }
   const U = GL_UNITS[unit] || (unit === "notes" ? { e: "📒", name: "New from the class notes" } : { e: "🔀", name: "Mix it all up" });
-  if (tab === "game" && !gamesAllowed()) tab = "learn";
-  const tabs = unit === "mix" || unit === "notes" ? [["quiz", "🎯 Quiz"]] : [["learn", "📖 Learn"], ["quiz", "🎯 Quiz"], ...(gamesAllowed() ? [["game", U.game]] : [])];
+  const tabs = unit === "mix" || unit === "notes" ? [["quiz", "🎯 Quiz"]] : [["learn", "📖 Learn"], ["quiz", "🎯 Quiz"], ["game", U.game]];
   appScreen("📝 Grammar & Reading Lab", `${head}<h2>${U.e} ${U.name}</h2>${naTabs(tabs, tab)}<div id="gl"></div>`);
   bindTabs(t => startGrammarLab(unit, t));
   document.getElementById("gl-back").addEventListener("click", () => startGrammarLab());
@@ -19303,7 +19287,7 @@ NEW_APPS.push({ id: "tune", emoji: "🎵", name: "Name That Tune", desc: "Hear a
 
 // 🎮 people who can't play games don't see games (or the time machine) in app descriptions either
 [["money", "Savings goals, needs vs. wants, making a budget, and growing money."], ["grammar", "The 8 parts of speech, sentence types, text structures and text features: learn and quiz."], ["savesite", "Travel to the Study Arcade's past lives to visit any older version. MR.E can also copy the whole site's code."]].forEach(([id, plain]) => {
-  const a = NEW_APPS.find(x => x.id === id); if (!a) return; const full = a.desc; Object.defineProperty(a, "desc", { get: () => gamesAllowed() ? full : plain, configurable: true });
+  const a = NEW_APPS.find(x => x.id === id); if (!a) return; const full = a.desc; Object.defineProperty(a, "desc", { get: () => full, configurable: true });   // apps are for everyone now, so everyone sees the full description
 });
 /* ---------- 🏕️ Survival Guide: staying safe outdoors (lost, water, shelter, fire, first aid, weather, wild animals), a kit checklist and a quiz ---------- */
 const SV_TABS = [["lost", "🧭 Lost?"], ["water", "💧 Water"], ["shelter", "⛺ Shelter"], ["fire", "🔥 Fire"], ["aid", "🩹 First Aid"], ["weather", "🌦️ Weather"], ["wild", "🐻 Animals & Plants"], ["kit", "🎒 Emergency Kit"], ["quiz", "❓ Quiz"]];
@@ -23456,7 +23440,7 @@ function exitAll() {
 exitBtn.addEventListener("click", exitAll);
 // 🚨 Emergency button: only in the games under the 3 dots. One tap stops the game and jumps straight into a round of Root Archery.
 const emergBtn = document.getElementById("emerg");
-const MENU_GAME_RX = /^(🐰 |🏀 )?(Bunny Hop|Dig It Up|Cash Race|Slope City|Drawing Studio|Ragdoll Archers|Neon Snake|Sky Stack|2048|Memory Match|Minesweeper|Brick Breaker|Sky Hopper|Galaxy Defender|Whack-a-Mole|Connect Four|Simon Says|Pong|Rodeo Stampede|Hippo Hoops|Color Claim|Block Burst Puzzle)\b/;
+const MENU_GAME_RX = /^(🐰 |🏀 )?(Dig It Up|Cash Race|Slope City|Drawing Studio|Ragdoll Archers|Neon Snake|Sky Stack|2048|Memory Match|Minesweeper|Brick Breaker|Sky Hopper|Galaxy Defender|Whack-a-Mole|Connect Four|Simon Says|Pong|Rodeo Stampede|Hippo Hoops|Color Claim|Block Burst Puzzle)\b/;
 let IN_MENU_GAME = false;   // set when a game is opened from a games menu (Cash Race and Dig It Up play screens have no title)
 document.addEventListener("click", e => { if (e.target.closest?.(".gm-item, [data-more]")) IN_MENU_GAME = true; }, true);
 function emergencyGrammar() {
