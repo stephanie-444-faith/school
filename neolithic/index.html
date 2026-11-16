@@ -10053,7 +10053,7 @@ const HOME_CORE = () => [
 ];
 // 📱 every app for the home screen's scroll-down list: the App-App, Ask Hippo, and everything in the App-App (games only for people who can play them), A to Z
 const homeAllApps = () => { const seen = new Set(); return [...HOME_PINNED(), ...homePool()].filter(a => { const k = a.name.replace(/^\W+/, "").toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).sort((a, b) => a.name.replace(/^\W+/, "").localeCompare(b.name.replace(/^\W+/, ""))); };
-const homePool = () => { const no = gamesAllowed() ? null : GAME_HOME_KEYS(); return [...HOME_CORE(), ...NEW_APPS.map(a => ({ key: "na-" + a.id, emoji: a.emoji, name: a.name, desc: a.desc, start: a.start, added: a.added }))].filter(a => !no || !no.has(a.key)); };
+const homePool = () => { const no = gamesAllowed() ? null : GAME_HOME_KEYS(); return [...HOME_CORE().filter(a => a.key !== "bunny"), ...NEW_APPS.filter(a => !a.hidden).map(a => ({ key: "na-" + a.id, emoji: a.emoji, name: a.name, desc: a.desc, start: a.start, added: a.added }))].filter(a => !no || !no.has(a.key)); };
 function homeToday(now = new Date()) {
   const day = aaDay(now), n = HOME_MAX - HOME_PINNED().length, pool = homePool();
   const order = [...pool].sort((a, b) => aaHash(a.key) - aaHash(b.key) || (a.key < b.key ? -1 : 1)), start = (day * n) % order.length;
@@ -10071,12 +10071,12 @@ function bindHomeRow() {
 }
 function startAppApp() {
   stopSlope(); stopArchers(); stopMini(); closeShop(); keyHandler = null; PROF_GAME = null;
-  const day = aaDay(), home = new Set(homeToday().map(a => a.key)), extras = [HOME_PINNED()[1], ...HOME_CORE()].filter(a => gamesAllowed() || a.key !== "bunny");
+  const day = aaDay(), home = new Set(homeToday().map(a => a.key)), extras = [HOME_PINNED()[1], ...HOME_CORE()].filter(a => a.key !== "bunny");   // Bunny Hop Typing is inside the ⌨️ Typing app
   const card = (a, key, attr) => `<button class="aa-card" ${attr}><i>${a.emoji}</i><b>${a.name}</b><span>${a.desc}</span>${home.has(key) ? `<small class="aa-home">🏠 On the home screen today</small>` : ""}</button>`;
   $app.innerHTML = `<div class="panel appapp">
     <div class="topline"><span class="label">📱 App-App</span><button class="iconbtn" id="aa-home">Back to menu</button></div>
     <h2>📱 The App-App</h2><p class="soft">Every app lives here! The home screen shows ${HOME_MAX} at a time (counting the App-App), and some rotate in and out at midnight. <b id="aa-next"></b></p>
-    <div class="aa-grid">${NEW_APPS.map((a, i) => gamesAllowed() || !INFO_GAME_APPS.has(a.id) ? card(a, "na-" + a.id, `data-app="${i}"`) : "").join("")}</div>
+    <div class="aa-grid">${NEW_APPS.map((a, i) => !a.hidden && (gamesAllowed() || !INFO_GAME_APPS.has(a.id)) ? card(a, "na-" + a.id, `data-app="${i}"`) : "").join("")}</div>
     <h3>🏠 Home-screen favorites</h3>
     <div class="aa-grid">${extras.map(a => card(a, a.key, `data-homeapp="${a.key}"`)).join("")}</div>
   </div>`;
@@ -19517,7 +19517,7 @@ let TK_R = null, TK_LAST_TEXT = -1;
 
 /* ---------- ⌨️ Opening the typing app: pick Bunny Hop Typing or Turbo Keys Rally */
 function startTypingHub() {
-  appScreen("🏎️ Turbo Keys Rally · Pick a typing game", `<h2>⌨️ Which typing game?</h2><p class="soft">Both make your fingers faster. Pick one!</p>
+  appScreen("⌨️ Typing · Pick a game", `<h2>⌨️ Typing: which game?</h2><p class="soft">Both make your fingers faster. Pick one!</p>
     <div class="tk-hub"><button class="tk-hubbtn" id="hub-bunny" type="button"><span>🐰</span><b>Bunny Hop Typing</b><small>Hop across platforms by typing words, earn carrots and unlock characters.</small></button>
     <button class="tk-hubbtn" id="hub-turbo" type="button"><span>🏎️</span><b>Turbo Keys Rally</b><small>Race 3 bots by typing sentences, win coins, and buy faster cars.</small></button></div>
     ${typeof startLeaderboards === "function" ? `<p><button class="btn gold" id="hub-lb" type="button">🏆 Typing leaderboards</button></p>` : ""}`);
@@ -19736,7 +19736,10 @@ function tkStats() {
 INFO_GAME_APPS.add("turbokeys");
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Turbo Keys Rally", "🏎️", "turbo keys rally|turbo keys|typing race|race typing|car typing", "Type fast to drive your car, race bots, and buy cars with your coins.", () => startTurboKeys()]);
 MORE_GAMES.push({ id: "turbokeys", name: "Turbo Keys Rally", desc: "Type to drive! Race 3 bots, win coins, and buy cars and paint.", start: () => startTypingHub() });
-NEW_APPS.push({ id: "turbokeys", emoji: "🏎️", name: "Turbo Keys Rally", desc: "Type fast to drive! Race 3 bots, win coins, and buy cars and paint in your garage.", start: () => startTypingHub(), kw: "turbo keys rally|turbo keys|typing race|race typing|car typing|typing cars|typing" });
+NEW_APPS.push({ id: "typing", emoji: "⌨️", name: "Typing", desc: "Bunny Hop Typing and Turbo Keys Rally in one app: hop across platforms or race cars by typing!", start: () => startTypingHub(), kw: "typing|typing games?|learn to type|bunny hop typing|bunny hop|turbo keys rally|turbo keys|typing race|keyboard|wpm" });
+INFO_GAME_APPS.add("typing");
+// Turbo Keys Rally lives inside the ⌨️ Typing app, so it's hidden from the app lists (it stays here so each person's coins and cars save separately)
+NEW_APPS.push({ id: "turbokeys", hidden: true, emoji: "🏎️", name: "Turbo Keys Rally", desc: "Type fast to drive! Race 3 bots, win coins, and buy cars and paint in your garage.", start: () => startTypingHub(), kw: "turbo keys rally|turbo keys|race typing|car typing|typing cars" });
 /* ---------- 🌳 Family Tree: a real family tree for each person, with profiles, a focus tree, "how are we related?", a timeline, stats, sharing and GEDCOM files ---------- */
 const FT_EMOJI = ["👵", "👴", "🧓", "👩", "👨", "🧑", "👧", "👦", "🧒", "👶", "👩‍🦰", "👨‍🦱", "👱‍♀️", "👱", "🧔", "👩‍🦳", "👨‍🦳", "🧕", "👸", "🤴", "🦸", "🧙", "🐶", "🐱", "⭐", "❤️"];
 const FT_MAX = 500, FT_MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
