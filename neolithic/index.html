@@ -1722,6 +1722,11 @@
   .ha-item:hover, .ha-item:focus-visible { border-color: var(--gold); outline: none; } .ha-item[hidden] { display: none; }
   .ha-emo { font-size: 1.8rem; text-align: center; line-height: 1; } .ha-txt { display: grid; min-width: 0; } .ha-txt b { font-size: 1rem; } .ha-txt small { color: var(--ink-soft); font-size: .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hc-subj { align-items: center; margin: 4px 0 10px; } .hc-subj > span { font-weight: 700; margin-right: 2px; }
+  .bs-ships { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; } .bs-ship.done { opacity: .75; } .bs-ship.on { opacity: 1; } .bs-ship small { letter-spacing: -1px; opacity: .8; }
+  .bs-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+  .bs-tools { gap: 6px; flex-wrap: wrap; } .bs-tools .btn { padding: 10px 14px; font-size: .95rem; }
+  .bs-placing .bs-c { cursor: pointer; } .bs-s0 { background: #e07a5f !important; } .bs-s1 { background: #f2cc8f !important; } .bs-s2 { background: #81b29a !important; } .bs-s3 { background: #6c8ebf !important; } .bs-s4 { background: #b388eb !important; }
+  .bs-placing .bs-c.ghost-ok { box-shadow: inset 0 0 0 3px var(--money); background: rgba(70, 220, 140, .35) !important; } .bs-placing .bs-c.ghost-bad { box-shadow: inset 0 0 0 3px var(--bad); background: rgba(255, 80, 80, .35) !important; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -12601,22 +12606,58 @@ function bsPlace() { const g = Array(64).fill(-1); BS_SHIPS.forEach(([, len], k)
 const bsSunk = (g, shots, k) => g.every((v, i) => v !== k || shots[i]);
 const bsLeft = (g, shots) => BS_SHIPS.filter((_, k) => !bsSunk(g, shots, k)).length;
 function startBattleship() {
-  cgScreen("bship", "🚢 Battleship", "Your ships are hidden from the computer, and its ships are hidden from you. Take turns firing at squares on the enemy's waters. 💥 means hit, 🌊 means miss. Sink all 5 enemy ships before the computer sinks yours!", startBattleship);
-  BS = { mine: bsPlace(), theirs: bsPlace(), atThem: Array(64).fill(0), atMe: Array(64).fill(0), placing: true, turn: 0, over: null, queue: [], log: "Shuffle your ships until you like them, then start the battle!" };
+  cgScreen("bship", "🚢 Battleship", "First, place your 5 ships on your grid (or shuffle them). Your ships are hidden from the computer, and its ships are hidden from you. Take turns firing at squares on the enemy's waters. 💥 means hit, 🌊 means miss. Sink all 5 enemy ships before the computer sinks yours!", startBattleship);
+  BS = { mine: bsPlace(), theirs: bsPlace(), atThem: Array(64).fill(0), atMe: Array(64).fill(0), placing: true, sel: null, horiz: true, turn: 0, over: null, queue: [], log: "Place your ships! Tap a ship on your grid to pick it up, then tap where it should go. Or shuffle them." };
   bsRender();
 }
 function bsGrid(g, shots, enemy) {
   return `<div class="bs-grid${enemy ? " enemy" : ""}">${g.map((v, i) => { const s = shots[i], sunk = v >= 0 && s && bsSunk(g, shots, v); const cls = s ? (v >= 0 ? (sunk ? "sunk" : "hit") : "miss") : (!enemy && v >= 0 ? "ship" : ""); return `<button class="bs-c ${cls}" ${enemy ? `data-f="${i}"` : ""} ${enemy && (s || BS.placing || BS.turn || BS.over !== null) ? "disabled" : ""} aria-label="${"ABCDEFGH"[i >> 3]}${(i & 7) + 1}">${s ? (v >= 0 ? (sunk ? "🔥" : "💥") : "🌊") : !enemy && v >= 0 ? "🚢" : ""}</button>`; }).join("")}</div>`;
 }
+// ⚓ placing your own ships: pick a ship, turn it, and tap where it goes
+const bsCellsFor = (start, len, horiz) => { const r = start >> 3, c = start & 7; if (horiz ? c + len > 8 : r + len > 8) return null; return Array.from({ length: len }, (_, j) => horiz ? start + j : start + j * 8); };
+const bsPlaced = k => BS.mine.includes(k);
+function bsPick(k) {   // take ship k off the grid so it can be placed again
+  const cells = BS.mine.map((v, i) => v === k ? i : -1).filter(i => i >= 0);
+  if (cells.length > 1) BS.horiz = (cells[1] - cells[0]) === 1;
+  BS.mine = BS.mine.map(v => v === k ? -1 : v); BS.sel = k;
+}
+function bsPlaceAt(i) {
+  if (BS.sel === null) { const k = BS.mine[i]; if (k >= 0) { bsPick(k); BS.log = `Picked up your ${BS_SHIPS[k][0]}. Tap where it should go (🔄 turns it).`; } else { const next = BS_SHIPS.findIndex((_, k2) => !bsPlaced(k2)); if (next >= 0) { BS.sel = next; return bsPlaceAt(i); } } return bsRender(); }
+  const k = BS.sel, len = BS_SHIPS[k][1], cells = bsCellsFor(i, len, BS.horiz);
+  if (!cells || cells.some(c => BS.mine[c] >= 0 && BS.mine[c] !== k)) { BS.log = `Your ${BS_SHIPS[k][0]} doesn't fit there. Try another square, or tap 🔄 to turn it.`; naNote(180, .12, "square", .05); return bsRender(); }
+  BS.mine = BS.mine.map(v => v === k ? -1 : v); cells.forEach(c => BS.mine[c] = k); naNote(523, .08, "triangle", .06);
+  const next = BS_SHIPS.findIndex((_, k2) => !bsPlaced(k2)); BS.sel = next >= 0 ? next : null;
+  BS.log = next >= 0 ? `Placed! Now place your ${BS_SHIPS[next][0]} (${BS_SHIPS[next][1]} squares).` : "All 5 ships are placed! Tap a ship to move it, or ⚓ start the battle.";
+  bsRender();
+}
+function bsPlaceGrid() {
+  return `<div class="bs-grid bs-placing" id="bs-pgrid">${BS.mine.map((v, i) => `<button class="bs-c${v >= 0 ? " ship bs-s" + v : ""}" data-p="${i}" type="button" aria-label="Square ${String.fromCharCode(65 + (i >> 3))}${(i & 7) + 1}${v >= 0 ? ", " + BS_SHIPS[v][0] : ""}"></button>`).join("")}</div>`;
+}
 function bsRender() {
   const box = document.getElementById("cg"); if (!box) return;
+  if (BS.placing) {
+    const all = BS_SHIPS.every((_, k) => bsPlaced(k));
+    box.innerHTML = `<p class="un-log">${esc(BS.log)}</p>
+      <div class="bs-ships">${BS_SHIPS.map(([n, len], k) => `<button class="chip bs-ship${BS.sel === k ? " on" : ""}${bsPlaced(k) ? " done" : ""}" data-bship="${k}" type="button"><i class="bs-dot bs-s${k}"></i>${n} <small>${"■".repeat(len)}</small>${bsPlaced(k) ? " ✅" : ""}</button>`).join("")}</div>
+      <div class="row bs-tools"><button class="btn" id="bs-turn" type="button">🔄 Turn: ${BS.horiz ? "↔ sideways" : "↕ up and down"}</button><button class="btn" id="bs-shuf" type="button">🔀 Shuffle</button><button class="btn" id="bs-clear" type="button">🧹 Clear</button></div>
+      <div class="bs-wrap"><div><h3>🛳️ Your fleet</h3>${bsPlaceGrid()}</div></div>
+      <div class="row"><button class="btn go" id="bs-go" type="button"${all ? "" : " disabled"}>⚓ Start the battle!</button>${all ? "" : `<small class="soft">Place all 5 ships to start.</small>`}</div>`;
+    box.querySelectorAll("[data-bship]").forEach(b => b.addEventListener("click", () => { const k = +b.dataset.bship; if (bsPlaced(k)) bsPick(k); BS.sel = k; BS.log = `Tap where your ${BS_SHIPS[k][0]} should go (${BS_SHIPS[k][1]} squares). 🔄 turns it.`; bsRender(); }));
+    document.getElementById("bs-turn").addEventListener("click", () => { BS.horiz = !BS.horiz; bsRender(); });
+    document.getElementById("bs-shuf").addEventListener("click", () => { BS.mine = bsPlace(); BS.sel = null; BS.log = "Shuffled! Tap a ship to move it, or start the battle."; bsRender(); });
+    document.getElementById("bs-clear").addEventListener("click", () => { BS.mine = Array(64).fill(-1); BS.sel = 0; BS.log = `Place your ${BS_SHIPS[0][0]} (${BS_SHIPS[0][1]} squares) first. Tap a square!`; bsRender(); });
+    document.getElementById("bs-go").addEventListener("click", () => { if (!all) return; BS.placing = false; BS.sel = null; BS.log = "Fire! Tap a square in enemy waters."; bsRender(); });
+    const grid = document.getElementById("bs-pgrid"), cellsEls = [...grid.querySelectorAll("[data-p]")];
+    const ghost = i => { cellsEls.forEach(c => c.classList.remove("ghost-ok", "ghost-bad")); if (BS.sel === null || i == null) return; const cs = bsCellsFor(i, BS_SHIPS[BS.sel][1], BS.horiz), ok = cs && cs.every(c => BS.mine[c] < 0 || BS.mine[c] === BS.sel); (cs || [i]).forEach(c => cellsEls[c]?.classList.add(ok ? "ghost-ok" : "ghost-bad")); };
+    cellsEls.forEach(c => { c.addEventListener("click", () => bsPlaceAt(+c.dataset.p)); c.addEventListener("pointerenter", () => ghost(+c.dataset.p)); });
+    grid.addEventListener("pointerleave", () => ghost(null));
+    keyHandler = e => { if (e.key === "r" || e.key === "R") { BS.horiz = !BS.horiz; bsRender(); } };
+    return;
+  }
   box.innerHTML = `<p class="un-log">${esc(BS.log)}</p>
     ${BS.over !== null ? `<h3>${BS.over === 0 ? "🏆 You sank the whole fleet! Admiral Hippo!" : "🤖 The computer sank your fleet!"}</h3><button class="btn go" id="bs-again">Play again</button>` : ""}
-    ${BS.placing ? `<div class="row"><button class="btn" id="bs-shuf">🔀 Shuffle my ships</button><button class="btn go" id="bs-go">⚓ Start the battle!</button></div>` : ""}
-    <div class="bs-wrap">${BS.placing ? "" : `<div><h3>🎯 Enemy waters <small>(${bsLeft(BS.theirs, BS.atThem)} ships left)</small></h3>${bsGrid(BS.theirs, BS.atThem, true)}</div>`}
+    <div class="bs-wrap"><div><h3>🎯 Enemy waters <small>(${bsLeft(BS.theirs, BS.atThem)} ships left)</small></h3>${bsGrid(BS.theirs, BS.atThem, true)}</div>
       <div><h3>🛳️ Your fleet <small>(${bsLeft(BS.mine, BS.atMe)} ships left)</small></h3>${bsGrid(BS.mine, BS.atMe, false)}</div></div>`;
-  document.getElementById("bs-shuf")?.addEventListener("click", () => { BS.mine = bsPlace(); bsRender(); });
-  document.getElementById("bs-go")?.addEventListener("click", () => { BS.placing = false; BS.log = "Fire! Tap a square in enemy waters."; bsRender(); });
   document.getElementById("bs-again")?.addEventListener("click", startBattleship);
   box.querySelectorAll("[data-f]").forEach(b => b.addEventListener("click", () => bsFire(+b.dataset.f)));
 }
