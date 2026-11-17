@@ -1813,6 +1813,46 @@
   .pay-plan:hover, .pay-plan:focus-visible { border-color: var(--gold); outline: none; }
   .pay-plan.best { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 210, 63, .25); }
   .pay-price { font-family: var(--display); font-size: 1.35rem; } .pay-plan small { color: var(--ink-soft); }
+  /* 🐸 Science Hop */
+  .sh-hero { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 18px; background: var(--panel-2); border: 1px solid var(--line); margin: 8px 0; line-height: 1.5; }
+  .sh-me { font-size: 3.2rem; }
+  .sh-units { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 8px 0; }
+  .sh-unit { display: grid; gap: 3px; justify-items: start; text-align: left; padding: 12px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
+  .sh-unit > span { font-size: 1.8rem; } .sh-unit small { color: var(--ink-soft); } .sh-unit.done { border-color: #3bb273; } .sh-unit:hover { border-color: var(--gold); }
+  .sh-bar { display: block; width: 100%; height: 6px; border-radius: 4px; background: rgba(255,255,255,.12); overflow: hidden; } .sh-bar > i { display: block; height: 100%; background: #3bb273; }
+  .sh-go .btn small { opacity: .75; font-size: .75em; }
+  .sh-top { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .sh-card { display: grid; justify-items: center; gap: 10px; text-align: center; padding: 18px 14px; border-radius: 20px; background: var(--panel-2); border: 2px solid var(--line); margin: 8px 0; }
+  .sh-big { font-size: 4rem; line-height: 1.1; } .sh-fact { font-size: 1.2rem; line-height: 1.5; margin: 0; max-width: 30em; } .sh-q { font-size: 1.2rem; font-weight: 700; margin: 0; }
+  .sh-opts { display: grid; gap: 8px; width: 100%; }
+  .sh-opt { padding: 12px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel); color: inherit; font: inherit; font-weight: 700; cursor: pointer; }
+  .sh-opt:hover:not([disabled]) { border-color: var(--gold); } .sh-opt.right { background: rgba(59,178,115,.45); border-color: #3bb273; } .sh-opt.wrong { background: rgba(230,57,70,.4); border-color: #e63946; }
+  .sh-fb { min-height: 1.5em; display: grid; gap: 6px; justify-items: center; } .sh-good { color: #6ee7a0; } .sh-bad { color: #ff8a8a; }
+  .sh-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .sh-hud { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.05rem; margin-bottom: 6px; }
+  .sh-qbox { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 16px; background: var(--panel-2); border: 2px solid var(--line); min-height: 56px; font-size: 1.05rem; }
+  .sh-qe { font-size: 2rem; }
+  .sh-stage { position: relative; height: 330px; margin: 10px 0; border-radius: 20px; overflow: hidden; background: linear-gradient(#8fd8ff 0%, #c9f1ff 34%, #2f8fbf 34.5%, #1f6f99 100%); border: 2px solid var(--line); }
+  .sh-row { position: absolute; top: 12px; left: 10px; right: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .sh-row.in { animation: shDrop .45s ease-out; }
+  @keyframes shDrop { from { transform: translateY(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sh-pad { border: 0; border-radius: 46% 46% 40% 40% / 60% 60% 40% 40%; background: radial-gradient(circle at 50% 35%, #7ed957, #3e9b2f 70%); color: #10300a; box-shadow: 0 6px 0 #2a6b20; font: inherit; }
+  .sh-ans { display: grid; gap: 2px; place-items: center; min-height: 92px; padding: 10px 8px; font-size: .9rem; font-weight: 800; line-height: 1.2; cursor: pointer; overflow-wrap: anywhere; }
+  .sh-ans small { font-size: .7rem; opacity: .7; } .sh-ans:hover:not([disabled]) { filter: brightness(1.08); transform: translateY(-2px); }
+  .sh-ans.right { background: radial-gradient(circle at 50% 35%, #fff176, #f2b632 70%); box-shadow: 0 6px 0 #a87a10, 0 0 0 4px #fff3b0; }
+  .sh-cur { position: absolute; left: 50%; bottom: 14px; width: 42%; transform: translateX(-50%); height: 120px; }
+  .sh-mine { position: absolute; left: 0; right: 0; bottom: 0; height: 38px; overflow: hidden; }
+  .sh-timer { position: absolute; left: 10%; right: 10%; bottom: 8px; height: 6px; border-radius: 4px; background: #ffcf33; width: 80%; }
+  .sh-hopper { position: absolute; left: 50%; bottom: 26px; font-size: 3rem; line-height: 1; transform: translate(-50%, 0); transition: transform .4s cubic-bezier(.3, 1.6, .5, 1), opacity .4s; z-index: 2; pointer-events: none; }
+  .crumble { animation: shCrumble .8s ease-in forwards; }
+  @keyframes shCrumble { 0% { transform: none; } 20% { transform: translateX(-4px) rotate(-3deg); } 40% { transform: translateX(4px) rotate(3deg); } 100% { transform: translateY(70px) rotate(8deg); opacity: 0; } }
+  .sh-msg { min-height: 2.6em; text-align: center; }
+  .sh-help { text-align: center; font-size: .85rem; }
+  .sh-miss { text-align: left; padding: 10px 12px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); } .sh-miss p { margin: 6px 0 0; }
+  .sh-shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+  .sh-item { display: grid; gap: 2px; justify-items: center; padding: 12px 8px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
+  .sh-item > span { font-size: 2.4rem; } .sh-item small { color: var(--ink-soft); } .sh-item.own { border-color: #3bb273; } .sh-item.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,210,63,.3); }
+  @media (prefers-reduced-motion: reduce) { .sh-row.in, .crumble { animation: none; } .sh-hopper { transition: none; } }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3117,7 +3157,7 @@ const store = {
   }
 };
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -3372,7 +3412,7 @@ function showHome() {
     document.getElementById("ha-find").addEventListener("input", e => { const q = e.target.value.trim().toLowerCase(); let n = 0; $app.querySelectorAll("[data-ha]").forEach(b => { const ok = !q || b.dataset.haTxt.includes(q); b.hidden = !ok; if (ok) n++; }); document.getElementById("ha-none").hidden = n > 0; }); }
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     const s = b.dataset.subject;
-    if (["math", "ss", "health", "ela", "art"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
+    if (["math", "ss", "health", "ela", "art", "science"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
     choice.subject = s; store.set("subject", s);
     startStudy();
   }));
@@ -5873,6 +5913,11 @@ function subjectPick(s) {
       ["📝 Practice math problems", "Endless problems, easy or hard", study("math")],
       ["📐 Ratios & Rates", "Ratios, rates, tables and tape diagrams (test practice)", study("ratios", { rpart: "all" })],
       ["🧮 Open the Math Center", "All the math apps in one place, like the fraction lab", go(() => startMathCenter())]] }
+    : s === "science" ? { title: "🔬 Science", say: "What would you like to do?", btns: [
+      ["📝 Practice science questions", "Cells, Earth, energy, space", study("science")],
+      ["💻 Code Lab", "Learn to code step by step", go(() => startCodeLab())],
+      ["🔬 Science Lab", "Sink or float, color mixing, a volcano and a plant you grow", go(() => startScienceLab())],
+      ["🐸 Science Hop", "Learn science the way Bunny Hop Typing teaches typing: learn facts, then hop across platforms by answering before they crumble", go(() => startScienceHop())]] }
     : s === "art" ? { title: "🎨 Art", say: "What would you like to do?", btns: [
       ["📝 Practice art questions", "Color, design, and artists", study("art", { alevel: "easy" })],
       ["🧠 Complex art", "Harder questions: famous artists, art history, perspective, color theory and how art is made", study("art", { alevel: "hard" })],
@@ -21967,6 +22012,7 @@ const LB_BOARDS = [
   { id: "claim", g: "arcade", e: "🟩", name: "Color Claim", unit: v => `${v}% of the map`, get: id => lbBest(id, "claim") },
   { id: "connect4", g: "more", e: "🔴", name: "Connect Four", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "connect4") },
   { id: "pong", g: "more", e: "🏓", name: "Pong", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "pong") },
+  { id: "scihop", g: "more", e: "🐸", name: "Science Hop", unit: v => `${v} hops`, get: id => { const d = lbGet("sh_v1", id); return d && d.best ? lbNum(Math.max(0, ...Object.values(d.best).filter(x => typeof x === "number"))) : null; }, note: "Most hops in one run" },
   { id: "globe", g: "more", e: "🌐", name: "Globe Detective", unit: v => `${fmt(v)} points`, get: id => { const b = lbGet("glb_best", id); return lbNum(Math.max(lbBest(id, "globe") || 0, b && typeof b === "object" ? Math.max(0, ...Object.values(b).filter(x => typeof x === "number")) : 0)); }, note: "Best game in any area" },
   { id: "pool", g: "more", e: "🎱", name: "Pool Hall", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => { const s = lbGet("pool_stats", id); return s && typeof s === "object" ? lbNum(Object.entries(s).filter(([k]) => k.startsWith("w_")).reduce((t, [, v]) => t + (+v || 0), 0)) : null; }, note: "Wins against the computer" },
   { id: "rarch", g: "more", e: "🎯", name: "Root Archery", unit: v => `${fmt(v)} points`, get: id => lbNum((lbGet("ra_v1", id) || {}).best) },
@@ -24412,6 +24458,235 @@ function startTerms() {
 }
 // 📜 the Terms of Service button under "progress saved" at the bottom of every page
 document.getElementById("foot-tos")?.addEventListener("click", () => { try { exitAll(); } catch (e) {} startTerms(); });
+/* ---------- 🐸 Science Hop: learn science the way Bunny Hop Typing teaches typing.
+   🌀 The Learning Trail (like the Training Ground): learn one fact at a time with no lives and no rush, and earn ⚛️ atoms.
+   🐸 Hop!: answer to hop to the right platform before the one you're standing on crumbles. Spend atoms on new hoppers. */
+// [emoji, the fact, the question, the right answer, wrong answer, wrong answer]
+const SH_UNITS = [
+  { id: "life", e: "🌱", name: "Living Things", items: [
+    ["🌿", "Plants make their own food from sunlight, water and air. This is called photosynthesis.", "What do plants use to make their own food?", "Sunlight, water and air", "Soil and rocks", "Milk and sugar"],
+    ["🌸", "Flowers make seeds. Bees carry pollen from flower to flower, which helps new seeds form.", "Which helper carries pollen from flower to flower?", "Bees", "Worms", "Fish"],
+    ["🐸", "A frog starts life as an egg, then becomes a tadpole that swims with a tail, then grows legs and becomes a frog.", "What comes right after the egg in a frog's life cycle?", "Tadpole", "Caterpillar", "Chick"],
+    ["🦋", "A butterfly goes from egg to caterpillar to chrysalis to butterfly. That big change is called metamorphosis.", "What is the big change from caterpillar to butterfly called?", "Metamorphosis", "Photosynthesis", "Evaporation"],
+    ["🦁", "Herbivores eat plants, carnivores eat meat, and omnivores eat both.", "An animal that eats only plants is a…", "Herbivore", "Carnivore", "Omnivore"],
+    ["🌞", "In a food chain, energy starts with the sun, goes to plants, then to animals that eat plants, then to animals that eat those animals.", "Where does the energy in a food chain start?", "The sun", "The lion", "The soil"],
+    ["🔬", "All living things are made of tiny building blocks called cells.", "What are the tiny building blocks of all living things?", "Cells", "Pebbles", "Bubbles"],
+    ["🐋", "Mammals have hair or fur, breathe air, and feed their babies milk. Whales are mammals!", "Which of these is a mammal?", "Whale", "Shark", "Salmon"],
+    ["🐻", "Some animals hibernate: they sleep through the winter to save energy when food is hard to find.", "Why do some animals hibernate?", "To save energy when food is hard to find", "To grow wings", "To change color for summer"],
+    ["🦎", "An adaptation is a body part or behavior that helps a living thing survive, like a chameleon changing color to hide.", "A chameleon changing color to hide is an example of…", "An adaptation", "A food chain", "Erosion"]] },
+  { id: "matter", e: "🧪", name: "Matter", items: [
+    ["🧊", "Matter comes in three main states: solid, liquid and gas.", "Ice is water in which state?", "Solid", "Liquid", "Gas"],
+    ["💧", "A liquid takes the shape of its container, but the amount of it (its volume) stays the same.", "What takes the shape of its container but keeps the same volume?", "A liquid", "A solid", "A rock"],
+    ["♨️", "When water boils, it turns into a gas called water vapor. Water boils at 100°C (212°F).", "At what temperature does water boil, in Celsius?", "100°C", "0°C", "50°C"],
+    ["❄️", "Water freezes into ice at 0°C, which is 32°F.", "At what temperature does water freeze, in Fahrenheit?", "32°F", "0°F", "100°F"],
+    ["☁️", "Evaporation is a liquid turning into a gas. Condensation is a gas turning back into a liquid, like drops on a cold glass.", "Water drops forming on the outside of a cold glass is called…", "Condensation", "Evaporation", "Melting"],
+    ["⚛️", "Everything is made of tiny particles called atoms. They're so small that millions fit across one hair.", "What are the tiny particles that everything is made of?", "Atoms", "Seeds", "Sparks"],
+    ["🧲", "Magnets pull on things made of iron, like paper clips, but not plastic, wood or aluminum foil.", "Which of these will a magnet pick up?", "An iron paper clip", "A plastic spoon", "A wooden block"],
+    ["⚖️", "Mass is how much matter something has. We measure it with a balance, in grams and kilograms.", "Which unit measures mass?", "Grams", "Liters", "Meters"],
+    ["🧂", "When you stir salt into water, it dissolves. It seems to disappear, but it's still there: you can taste it!", "Salt mixed into water until you can't see it has…", "Dissolved", "Melted", "Frozen"],
+    ["🔥", "A chemical change makes a new substance, like burning wood into ash. Melting ice is a physical change: it's still water.", "Which one is a chemical change?", "Burning wood", "Melting ice", "Cutting paper"]] },
+  { id: "energy", e: "⚡", name: "Energy & Forces", items: [
+    ["🍎", "Gravity is the force that pulls things toward Earth. It's why a dropped apple falls down.", "What force makes a dropped apple fall?", "Gravity", "Magnetism", "Friction"],
+    ["🛝", "Friction is a force that slows things down when two surfaces rub together. Rough surfaces have more friction than smooth ones.", "Which surface has the most friction?", "Sandpaper", "Ice", "Glass"],
+    ["💡", "Electricity flows around a circuit, which is a complete loop. If the loop is broken, the light goes out.", "What does electricity need to flow?", "A complete circuit (a loop)", "A broken wire", "A magnet"],
+    ["🔌", "Conductors let electricity flow easily, like copper. Insulators block it, like rubber and plastic.", "Which one is a good insulator?", "Rubber", "Copper", "Iron"],
+    ["🔊", "Sound is made by vibrations. When a guitar string shakes back and forth, you hear it.", "What makes sound?", "Vibrations", "Shadows", "Magnets"],
+    ["🌈", "White light is made of all the colors of the rainbow. A prism splits it apart.", "What splits white light into a rainbow?", "A prism", "A magnet", "A mirror"],
+    ["🔦", "Light travels in straight lines. A shadow forms when something blocks the light.", "How does a shadow form?", "Something blocks the light", "Light bends around everything", "The light gets louder"],
+    ["☕", "Heat moves from hotter things to colder things. That's why hot cocoa cools down and an ice cube melts in your hand.", "Heat moves from…", "Hotter things to colder things", "Colder things to hotter things", "Only upward"],
+    ["🎢", "Energy can change forms. At the top of a roller coaster there's stored (potential) energy. Going down, it turns into moving (kinetic) energy.", "Moving energy is called…", "Kinetic energy", "Potential energy", "Solar energy"],
+    ["🏋️", "A force is a push or a pull. Forces can make things speed up, slow down or change direction.", "A force is a…", "Push or a pull", "Kind of light", "Type of rock"]] },
+  { id: "earth", e: "🌍", name: "Earth & Weather", items: [
+    ["🌋", "Earth has layers: the crust (where we live), the mantle, the outer core and the inner core.", "Which layer of Earth do we live on?", "The crust", "The mantle", "The inner core"],
+    ["🪨", "The three kinds of rock are igneous (from cooled lava), sedimentary (layers pressed together) and metamorphic (changed by heat and pressure).", "Rock made from cooled lava is…", "Igneous", "Sedimentary", "Metamorphic"],
+    ["🏞️", "Erosion is when wind, water or ice wear away rock and soil and carry it off. A river carved the Grand Canyon this way.", "Wind and water carrying soil away is called…", "Erosion", "Condensation", "Hibernation"],
+    ["🌧️", "In the water cycle, water evaporates, forms clouds, falls as rain or snow (precipitation), and collects in oceans and lakes.", "Rain, snow and hail are all kinds of…", "Precipitation", "Evaporation", "Erosion"],
+    ["🌡️", "A thermometer measures temperature. A rain gauge measures rain. An anemometer measures wind speed.", "What measures temperature?", "A thermometer", "A rain gauge", "An anemometer"],
+    ["🌊", "About 71% of Earth's surface is covered by water, and most of it is salty ocean water.", "About how much of Earth's surface is covered by water?", "About 71%", "About 10%", "About 50%"],
+    ["🦕", "Fossils are the remains or prints of living things from long ago, kept in rock.", "What are fossils?", "Remains or prints of ancient living things in rock", "Shiny crystals", "Frozen raindrops"],
+    ["🌪️", "A tornado is a spinning column of air that reaches from a storm cloud down to the ground.", "What is a tornado?", "A spinning column of air", "A giant wave", "A melting glacier"],
+    ["🫨", "Earthquakes happen when huge pieces of Earth's crust, called plates, slip and move.", "What causes earthquakes?", "Plates of Earth's crust moving", "Heavy rain", "The moon's shadow"],
+    ["🌬️", "Renewable resources, like sunlight and wind, won't run out. Nonrenewable ones, like coal and oil, can run out.", "Which resource is renewable?", "Wind", "Coal", "Oil"]] },
+  { id: "space", e: "🌌", name: "Space", items: [
+    ["☀️", "The sun is a star. It's the closest star to Earth.", "What is the sun?", "A star", "A planet", "A moon"],
+    ["🌍", "Earth spins around once a day. That gives us day and night.", "What causes day and night?", "Earth spinning", "The sun turning off", "Clouds"],
+    ["📅", "Earth travels all the way around the sun once a year: about 365 days.", "How long does Earth take to go around the sun?", "About 365 days (a year)", "One day", "One month"],
+    ["🍂", "We have seasons because Earth is tilted. When your half of Earth leans toward the sun, it's summer.", "Why do we have seasons?", "Earth is tilted", "Earth gets closer to the moon", "The sun gets bigger"],
+    ["🌙", "The moon doesn't make its own light. It reflects sunlight, and its shape seems to change in phases.", "Why does the moon shine?", "It reflects sunlight", "It's on fire", "It makes its own light"],
+    ["🪐", "There are 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune.", "How many planets are in our solar system?", "8", "9", "12"],
+    ["🟠", "Jupiter is the biggest planet. More than 1,000 Earths could fit inside it!", "Which is the biggest planet?", "Jupiter", "Saturn", "Earth"],
+    ["🔴", "Mars is called the Red Planet because its dust has rusty iron in it.", "Which planet is called the Red Planet?", "Mars", "Venus", "Neptune"],
+    ["🥵", "Venus is the hottest planet, even hotter than Mercury, because its thick clouds trap heat.", "Which planet is the hottest?", "Venus", "Mercury", "Mars"],
+    ["👨‍🚀", "In 1969, Neil Armstrong became the first person to walk on the moon.", "Who was the first person to walk on the moon?", "Neil Armstrong", "Albert Einstein", "Isaac Newton"]] },
+  { id: "body", e: "🫀", name: "Human Body", items: [
+    ["❤️", "Your heart is a muscle that pumps blood around your body. It beats about 100,000 times a day.", "What does the heart do?", "Pumps blood around the body", "Helps you think", "Digests food"],
+    ["🫁", "Your lungs take in oxygen when you breathe in and let out carbon dioxide when you breathe out.", "Which gas do your lungs take in?", "Oxygen", "Carbon dioxide", "Helium"],
+    ["🧠", "Your brain controls everything you do. Nerves carry its messages around your body.", "What carries messages between your brain and your body?", "Nerves", "Bones", "Teeth"],
+    ["🦴", "Your skeleton holds you up and protects your body. A grown-up has 206 bones.", "How many bones does a grown-up have?", "206", "50", "1,000"],
+    ["💪", "Muscles move your bones by pulling on them.", "What moves your bones?", "Muscles", "Skin", "Hair"],
+    ["🍽️", "Digestion breaks food down into nutrients your body can use. It starts in your mouth and keeps going in your stomach and intestines.", "Where does digestion start?", "In your mouth", "In your lungs", "In your feet"],
+    ["🦷", "Kids have 20 baby teeth. Grown-ups usually have 32 teeth.", "How many baby teeth do kids have?", "20", "10", "32"],
+    ["🩸", "Blood carries oxygen and food to every part of your body. Red blood cells carry the oxygen.", "What carries oxygen in your blood?", "Red blood cells", "White blood cells", "Hair cells"],
+    ["👃", "Your five senses are sight, hearing, smell, taste and touch.", "Which one is one of the five senses?", "Smell", "Speed", "Gravity"],
+    ["🧼", "Germs can make you sick. Washing your hands with soap for about 20 seconds helps stop them.", "How long should you wash your hands with soap?", "About 20 seconds", "1 second", "10 minutes"]] }
+];
+const SH_ITEMS = SH_UNITS.flatMap(u => u.items.map((x, k) => ({ id: u.id + k, u: u.id, e: x[0], fact: x[1], q: x[2], a: x[3], w: [x[4], x[5]] })));
+const SH_LEVELS = { easy: { name: "Easy", secs: 15, pts: 1 }, hard: { name: "Hard", secs: 9, pts: 2 }, extreme: { name: "Extreme", secs: 6, pts: 3 } };
+const SH_HOPPERS = [["frog", "🐸", "Frog", 0], ["turtle", "🐢", "Turtle", 0], ["bunny", "🐰", "Bunny", 50], ["cricket", "🦗", "Cricket", 100], ["squirrel", "🐿️", "Squirrel", 150], ["kangaroo", "🦘", "Kangaroo", 250], ["monkey", "🐒", "Monkey", 400], ["robot", "🤖", "Robot", 600], ["astro", "🧑‍🚀", "Astronaut", 900], ["dino", "🦖", "Dino", 1200], ["dragon", "🐉", "Dragon", 2000], ["unicorn", "🦄", "Unicorn", 3000]];
+const shGet = () => { const v = store.get("sh_v1", null) || {}; return { atoms: 0, learned: {}, best: {}, hopper: "frog", owned: ["frog", "turtle"], hops: 0, ...v, learned: { ...(v.learned || {}) }, best: { ...(v.best || {}) }, owned: [...new Set(["frog", "turtle", ...(v.owned || [])])] }; };
+const shSave = S => store.set("sh_v1", S);
+const shHopper = S => SH_HOPPERS.find(h => h.id === S.hopper) || SH_HOPPERS[0];
+SH_HOPPERS.forEach((h, i) => { SH_HOPPERS[i] = { id: h[0], e: h[1], name: h[2], cost: h[3] }; });
+function startScienceHop(view = "home", opt = {}) {
+  naCleanup?.(); keyHandler = null;
+  const S = shGet(), me = shHopper(S), nL = Object.keys(S.learned).length;
+  if (view === "trail") return shTrail(opt.unit);
+  if (view === "hop") return shHop(opt.level || "easy", opt.unit || "all");
+  if (view === "shop") return shShop();
+  appScreen("🐸 Science Hop", `<div class="sh"><h2>🐸 Science Hop</h2>
+    <p class="soft">Learn science the way Bunny Hop Typing teaches typing: learn on the 🌀 Learning Trail, then 🐸 hop! Answer to hop to the right platform before the one you're on crumbles.</p>
+    <div class="sh-hero"><span class="sh-me">${me.e}</span><div><b>${esc(SITE_NAME || "You")}</b> as the ${esc(me.name)}<br>⚛️ <b>${fmt(S.atoms)}</b> atoms · 📚 ${nL} / ${SH_ITEMS.length} facts learned<br><small class="soft">Best: Easy ${S.best.easy || 0} · Hard ${S.best.hard || 0} · Extreme ${S.best.extreme || 0} hops</small></div></div>
+    <h3>🌀 Learning Trail</h3><p class="soft">No lives and no rush: learn one fact at a time. Every new fact you get right earns ⚛️ 3 atoms.</p>
+    <div class="sh-units">${SH_UNITS.map(u => { const n = u.items.filter((x, k) => S.learned[u.id + k]).length; return `<button class="sh-unit${n === u.items.length ? " done" : ""}" type="button" data-trail="${u.id}"><span>${u.e}</span><b>${esc(u.name)}</b><small>${n === u.items.length ? "🏅 All learned!" : `${n} / ${u.items.length} learned`}</small><i class="sh-bar"><i style="width:${n * 10}%"></i></i></button>`; }).join("")}</div>
+    <h3>🐸 Hop!</h3><p class="soft">Pick a topic and a speed. Each hop earns atoms. You have 3 lives.</p>
+    <div class="na-chips" id="sh-topic"><button class="chip on" data-topic="all" type="button">🌍 Everything</button>${SH_UNITS.map(u => `<button class="chip" data-topic="${u.id}" type="button">${u.e} ${esc(u.name)}</button>`).join("")}</div>
+    <div class="row sh-go">${Object.entries(SH_LEVELS).map(([k, L]) => `<button class="btn${k === "easy" ? " go" : k === "hard" ? " gold" : " hot"}" type="button" data-hop="${k}">${k === "easy" ? "🐸" : k === "hard" ? "⚡" : "🔥"} ${L.name} <small>${L.secs}s</small></button>`).join("")}</div>
+    <div class="row"><button class="btn" id="sh-shop" type="button">🛒 Hopper shop</button></div></div>`);
+  let topic = "all";
+  $app.querySelectorAll("[data-trail]").forEach(b => b.addEventListener("click", () => shTrail(b.dataset.trail)));
+  $app.querySelectorAll("[data-topic]").forEach(b => b.addEventListener("click", () => { topic = b.dataset.topic; $app.querySelectorAll("[data-topic]").forEach(x => x.classList.toggle("on", x === b)); }));
+  $app.querySelectorAll("[data-hop]").forEach(b => b.addEventListener("click", () => shHop(b.dataset.hop, topic)));
+  document.getElementById("sh-shop").addEventListener("click", shShop);
+}
+// 🌀 the Learning Trail: a fact, then a question. Miss it and it comes back later.
+function shTrail(uid) {
+  const U = SH_UNITS.find(u => u.id === uid) || SH_UNITS[0], all = SH_ITEMS.filter(x => x.u === U.id);
+  let S = shGet(); const line = all.filter(x => !S.learned[x.id]); const review = !line.length; if (review) line.push(...shuffle(all).slice(0, 5));
+  let stage = "fact";
+  const draw = () => {
+    S = shGet();
+    if (!line.length) {
+      const allDone = all.every(x => S.learned[x.id]);
+      appScreen("🐸 Science Hop · 🌀 Learning Trail", `<div class="sh"><div class="sh-card sh-yay"><div class="sh-big">${allDone ? "🏅" : "🌟"}</div><h3>${allDone ? `You learned all of ${esc(U.name)}!` : "Nice work!"}</h3><p>Now try those facts in 🐸 Hop!</p>
+        <div class="row sh-nav"><button class="btn" id="sh-home" type="button">🐸 Science Hop</button><button class="btn go" id="sh-hopit" type="button">🐸 Hop through ${esc(U.name)}</button></div></div></div>`);
+      document.getElementById("sh-home").addEventListener("click", () => startScienceHop());
+      document.getElementById("sh-hopit").addEventListener("click", () => shHop("easy", U.id));
+      return;
+    }
+    const x = line[0], done = all.filter(y => S.learned[y.id]).length;
+    if (stage === "fact") {
+      appScreen("🐸 Science Hop · 🌀 Learning Trail", `<div class="sh"><div class="row sh-top"><button class="chip" id="sh-home" type="button">⬅ Science Hop</button><b>${U.e} ${esc(U.name)}</b><small class="soft">${review ? "Review" : `${done} / ${all.length} learned`}</small></div>
+        <div class="sh-card"><div class="sh-big">${x.e}</div><p class="sh-fact">${esc(x.fact)}</p><button class="btn" id="sh-say" type="button">🔊 Read it to me</button></div>
+        <div class="row sh-nav"><span class="soft">${line.length} to go</span><button class="btn go" id="sh-got" type="button">✅ Got it! Quiz me</button></div></div>`);
+      document.getElementById("sh-home").addEventListener("click", () => startScienceHop());
+      document.getElementById("sh-say").addEventListener("click", () => svSay?.(x.fact));
+      document.getElementById("sh-got").addEventListener("click", () => { stage = "q"; draw(); });
+      return;
+    }
+    const opts = shuffle([x.a, ...x.w]);
+    appScreen("🐸 Science Hop · 🌀 Learning Trail", `<div class="sh"><div class="row sh-top"><button class="chip" id="sh-home" type="button">⬅ Science Hop</button><b>${U.e} ${esc(U.name)}</b><small class="soft">${line.length} to go</small></div>
+      <div class="sh-card"><div class="sh-big">${x.e}</div><p class="sh-q">${esc(x.q)}</p><div class="sh-opts">${opts.map((o, i) => `<button class="sh-opt" type="button" data-o="${i}">${esc(o)}</button>`).join("")}</div><div class="sh-fb" id="sh-fb" aria-live="polite"></div></div></div>`);
+    document.getElementById("sh-home").addEventListener("click", () => startScienceHop());
+    $app.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => {
+      if ($app.querySelector(".sh-opt.right")) return;
+      const ok = opts[+b.dataset.o] === x.a; $app.querySelectorAll("[data-o]").forEach(y => { y.disabled = true; if (opts[+y.dataset.o] === x.a) y.classList.add("right"); });
+      const fb = document.getElementById("sh-fb");
+      if (ok) {
+        const S2 = shGet(), fresh = !S2.learned[x.id]; if (fresh) { S2.learned[x.id] = true; S2.atoms += 3; shSave(S2); }
+        tone?.([660, 880], .08, "sine", .06); fb.innerHTML = `<b class="sh-good">✅ Yes!${fresh ? " ⭐ +3 atoms" : ""}</b>`; line.shift(); stage = "fact";
+        naTimer(setTimeout(() => { if (document.getElementById("sh-fb")) draw(); }, 1000));
+      } else {
+        b.classList.add("wrong"); line.push(line.shift()); stage = "fact";
+        fb.innerHTML = `<b class="sh-bad">Not quite.</b> ${esc(x.fact)}<br><small class="soft">You'll see this one again soon.</small><br><button class="btn" id="sh-next" type="button">Next ▶</button>`;
+        document.getElementById("sh-next").addEventListener("click", draw);
+      }
+    }));
+  };
+  draw();
+}
+// 🐸 Hop!: answer to hop to the right platform before yours crumbles
+function shHop(level, topic) {
+  const L = SH_LEVELS[level] || SH_LEVELS.easy, U = SH_UNITS.find(u => u.id === topic);
+  const pool = SH_ITEMS.filter(x => topic === "all" || x.u === topic), me = shHopper(shGet());
+  let G = { hops: 0, lives: 3, atoms: 0, streak: 0, deck: shuffle(pool), missed: [], over: false, t: null, cur: null };
+  appScreen("🐸 Science Hop · Hop!", `<div class="sh sh-play"><div class="sh-hud"><span id="sh-lives"></span><span id="sh-hops">0 hops</span><span id="sh-atoms">⚛️ 0</span></div>
+    <div class="sh-qbox" id="sh-qbox"></div>
+    <div class="sh-stage" id="sh-stage"><div class="sh-row" id="sh-next"></div><div class="sh-cur" id="sh-cur"><div class="sh-hopper" id="sh-hopper">${me.e}</div><div class="sh-pad sh-mine" id="sh-mine"><i class="sh-timer" id="sh-timer"></i></div></div></div>
+    <div class="sh-msg" id="sh-msg" aria-live="polite"></div>
+    <p class="soft sh-help">${U ? `${U.e} ${esc(U.name)}` : "🌍 Everything"} · ${L.name}: ${L.secs} seconds before your platform crumbles. Keys 1, 2, 3 work too. <button class="linklike" id="sh-quit" type="button">Stop</button></p></div>`);
+  const $ = id => document.getElementById("sh-" + id);
+  const hud = () => { $("lives").textContent = "❤️".repeat(G.lives) + "🖤".repeat(3 - G.lives); $("hops").textContent = `${G.hops} hop${G.hops === 1 ? "" : "s"}`; $("atoms").textContent = `⚛️ ${G.atoms}`; };
+  const next = () => {
+    if (G.over) return;
+    if (!G.deck.length) G.deck = shuffle(pool);
+    const x = G.deck.shift(), opts = shuffle([x.a, ...x.w]); G.cur = { x, opts, done: false };
+    $("qbox").innerHTML = `<span class="sh-qe">${x.e}</span><b>${esc(x.q)}</b>`;
+    $("next").innerHTML = opts.map((o, i) => `<button class="sh-pad sh-ans" type="button" data-p="${i}"><span>${esc(o)}</span><small>${i + 1}</small></button>`).join("");
+    $("next").classList.remove("in"); void $("next").offsetWidth; $("next").classList.add("in");
+    const hp = $("hopper"); hp.style.transition = "none"; hp.style.transform = "translate(-50%, 0)"; hp.style.opacity = 1; void hp.offsetWidth; hp.style.transition = "";
+    $("mine").classList.remove("crumble"); $("msg").innerHTML = "";
+    const tm = $("timer"); tm.style.transition = "none"; tm.style.width = "100%"; void tm.offsetWidth; tm.style.transition = `width ${L.secs}s linear`; tm.style.width = "0%";
+    clearTimeout(G.t); G.t = naTimer(setTimeout(() => crumble(), L.secs * 1000));
+    $("next").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => pick(b)));
+    hud();
+  };
+  const hopTo = (btn, then) => {
+    const hp = $("hopper"), a = hp.getBoundingClientRect(), t = btn.getBoundingClientRect();
+    hp.style.transform = `translate(calc(-50% + ${(t.left + t.width / 2) - (a.left + a.width / 2)}px), ${(t.top + 4) - a.bottom}px)`;
+    naTimer(setTimeout(then, 420));
+  };
+  const pick = btn => {
+    if (G.over || G.cur.done) return; G.cur.done = true; clearTimeout(G.t);
+    const { x, opts } = G.cur, ok = opts[+btn.dataset.p] === x.a, right = [...$("next").children].find(b => opts[+b.dataset.p] === x.a);
+    $("timer").style.transition = "none";
+    if (ok) {
+      G.hops++; G.streak++; const earned = L.pts + (G.streak % 5 === 0 ? 5 : 0); G.atoms += earned; btn.classList.add("right");
+      tone?.([523, 784], .07, "triangle", .07); $("msg").innerHTML = `<b class="sh-good">🐸 Hop! +${earned} ⚛️${G.streak % 5 === 0 ? ` · 🔥 ${G.streak} in a row!` : ""}</b>`;
+      hud(); hopTo(btn, next);
+    } else {
+      G.streak = 0; G.lives--; btn.classList.add("crumble"); right.classList.add("right"); G.missed.push(x); hud(); tone?.([220, 165], .12, "sawtooth", .05);
+      $("msg").innerHTML = `<b class="sh-bad">💥 That platform crumbled!</b> ${esc(x.fact)}`;
+      if (G.lives <= 0) return naTimer(setTimeout(end, 1800));
+      naTimer(setTimeout(() => hopTo(right, () => naTimer(setTimeout(next, 900))), 1100));
+    }
+  };
+  const crumble = () => {   // ⏱ too slow: your platform crumbles and you fall
+    if (G.over || G.cur.done) return; G.cur.done = true; G.streak = 0; G.lives--; G.missed.push(G.cur.x);
+    $("mine").classList.add("crumble"); const hp = $("hopper"); hp.style.transform = "translate(-50%, 90px)"; hp.style.opacity = 0;
+    const right = [...$("next").children].find(b => G.cur.opts[+b.dataset.p] === G.cur.x.a); right?.classList.add("right");
+    $("msg").innerHTML = `<b class="sh-bad">⏱ Too slow! Your platform crumbled.</b> ${esc(G.cur.x.fact)}`; hud(); tone?.([300, 150], .15, "sawtooth", .05);
+    if (G.lives <= 0) return naTimer(setTimeout(end, 1800));
+    naTimer(setTimeout(next, 2600));
+  };
+  const end = () => {
+    G.over = true; clearTimeout(G.t);
+    const S = shGet(); S.atoms += G.atoms; S.hops = (S.hops || 0) + G.hops; const nb = G.hops > (S.best[level] || 0); if (nb) S.best[level] = G.hops; shSave(S);
+    const miss = [...new Map(G.missed.map(x => [x.id, x])).values()];
+    appScreen("🐸 Science Hop · Hop!", `<div class="sh"><div class="sh-card sh-yay"><div class="sh-big">${G.hops >= 20 ? "🏆" : G.hops >= 10 ? "🌟" : "🐸"}</div><h3>${G.hops} hop${G.hops === 1 ? "" : "s"}!${nb ? " New best!" : ""}</h3><p>⚛️ +${G.atoms} atoms (you have ${fmt(S.atoms)}) · ${L.name}</p>
+      ${miss.length ? `<div class="sh-miss"><b>📚 Learn these:</b>${miss.map(x => `<p>${x.e} ${esc(x.fact)}</p>`).join("")}</div>` : ""}
+      <div class="row sh-nav"><button class="btn" id="sh-home" type="button">🐸 Science Hop</button>${miss.length ? `<button class="btn" id="sh-learn" type="button">🌀 Learning Trail</button>` : ""}<button class="btn go" id="sh-again" type="button">Hop again!</button></div></div></div>`);
+    document.getElementById("sh-home").addEventListener("click", () => startScienceHop());
+    document.getElementById("sh-learn")?.addEventListener("click", () => shTrail(miss[0].u));
+    document.getElementById("sh-again").addEventListener("click", () => shHop(level, topic));
+  };
+  $("quit").addEventListener("click", () => { if (G.hops || G.atoms) end(); else { G.over = true; clearTimeout(G.t); startScienceHop(); } });
+  keyHandler = e => { if (!document.getElementById("sh-next")) { keyHandler = null; return; } const n = "123".indexOf(e.key); if (n >= 0 && e.key.length === 1) $("next").children[n]?.click(); };
+  next();
+}
+// 🛒 the Hopper shop
+function shShop() {
+  const S = shGet();
+  appScreen("🐸 Science Hop · 🛒 Hopper shop", `<div class="sh"><div class="row sh-top"><button class="chip" id="sh-home" type="button">⬅ Science Hop</button><b>⚛️ ${fmt(S.atoms)} atoms</b></div>
+    <p class="soft">Spend your atoms on a new hopper. The 🐢 Turtle is free!</p>
+    <div class="sh-shop">${SH_HOPPERS.map(h => { const own = S.owned.includes(h.id), on = S.hopper === h.id; return `<button class="sh-item${on ? " on" : ""}${own ? " own" : ""}" type="button" data-h="${h.id}"><span>${h.e}</span><b>${esc(h.name)}</b><small>${on ? "✅ Hopping now" : own ? "Tap to hop as me" : h.cost ? `⚛️ ${fmt(h.cost)}` : "Free"}</small></button>`; }).join("")}</div></div>`);
+  document.getElementById("sh-home").addEventListener("click", () => startScienceHop());
+  $app.querySelectorAll("[data-h]").forEach(b => b.addEventListener("click", () => {
+    const h = SH_HOPPERS.find(x => x.id === b.dataset.h), S2 = shGet();
+    if (!S2.owned.includes(h.id)) { if (S2.atoms < h.cost) return toast(`You need ⚛️ ${fmt(h.cost - S2.atoms)} more atoms. Hop or learn to earn them!`); S2.atoms -= h.cost; S2.owned.push(h.id); toast(`${h.e} You got the ${h.name}!`); }
+    S2.hopper = h.id; shSave(S2); shShop();
+  }));
+}
+NEW_APPS.push({ id: "scihop", emoji: "🐸", name: "Science Hop", desc: "Learn science the way Bunny Hop Typing teaches typing: learn facts on the Learning Trail, then hop across platforms by answering before they crumble.", start: () => startScienceHop(), kw: "science hop|science game|learn science|science lessons|science facts|hop science" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
