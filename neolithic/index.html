@@ -615,7 +615,7 @@
   .topline { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: .9rem; color: var(--ink-soft); }
 
   .iconbtn { background: none; border: 0; color: var(--ink-soft); text-decoration: underline; font-size: .85rem; }
-  footer { text-align: center; }
+  footer { text-align: center; } .foot-tos { margin-top: 6px; }
 
   /* Dig It Up */
   .feature-dig { background: linear-gradient(160deg, #3b2a14, var(--panel) 70%); }
@@ -1819,7 +1819,7 @@
 <button class="emerg-btn" id="emerg" type="button" hidden title="Jump to Root Archery practice">🚨 Emergency</button>
 <button class="pause-all" id="pause-all" type="button" hidden aria-pressed="false">Pause</button>
 <div class="wrap" id="app"></div>
-<footer><span class="save-state saving" id="save-state" role="status">Connecting save…</span> · <button class="iconbtn" id="mute" type="button">Sound: on</button></footer>
+<footer><span class="save-state saving" id="save-state" role="status">Connecting save…</span> · <button class="iconbtn" id="mute" type="button">Sound: on</button><div class="foot-tos"><button class="iconbtn" id="foot-tos" type="button">📜 Terms of Service</button></div></footer>
 
 <script>
 // 💾 remember this page's own code (for "Save the Site"): this script, and the page markup as it was before anything changed it
@@ -3641,13 +3641,32 @@ let WHO_BY_SECRET = null;   // set when MR.E opens someone's profile with the se
 const whoMuted = id => !!(store.get("who_mute", {}) || {})[id];
 const whoHiddenSet = () => new Set(store.get("who_hidden", []) || []);
 const modCodeOK = code => whoHasCode("emmett") && (store.get("who_code", {}) || {}).emmett === whoHash("emmett", String(code || ""));
-const RP_WHAT = { about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery" };
+const RP_WHAT = { tell: "💬 Something is wrong", about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery" };
 function reportSend(r) {
-  if (r && r.on === "emmett") return toast("MR.E can't be reported.");   // 🛡️ MR.E looks after the reports, so nobody can report him
+  if (r && r.on === "emmett" && r.what !== "tell") return tellSheet();   // 🛡️ MR.E can't be reported, but anyone can tell him something is wrong
   const L = store.get("who_reports", []) || [];
   L.unshift({ id: "r" + Date.now().toString(36) + rnd(100, 999), at: Date.now(), by: SITE_WHO || "", ...r });
   store.set("who_reports", L.slice(0, 300));
   toast("🚩 Sent to MR.E. Thank you for telling!");
+}
+// 💬 tell MR.E something is wrong: a broken page, a mistake, or something that isn't fair. It goes to his panel.
+function tellSheet(about = "") {
+  document.getElementById("rp-sheet")?.remove();
+  const box = document.createElement("div"); box.id = "rp-sheet"; box.className = "bgsheet";
+  box.innerHTML = `<div class="bgsheet-box rp-box" role="dialog" aria-label="Tell MR.E something is wrong"><div class="prof-head"><b class="subj-title">💬 Tell MR.E something is wrong</b><button class="iconbtn" id="rp-x" type="button">✕ Close</button></div>
+    <p class="soft">Is something broken, wrong, or not fair? Tell MR.E and he'll look at it. (You can't report MR.E, but you can always tell him what's wrong.)</p>
+    ${about ? `<p>About: <b>${esc(about)}</b></p>` : ""}
+    <label class="rp-lab">What's wrong?<textarea id="rp-note" maxlength="300" rows="4" placeholder="Like: the Typing app froze, or a question had the wrong answer"></textarea></label>
+    <p class="soft">Never write private things like your address, phone number or passwords.</p>
+    <div class="row"><button class="btn go" id="rp-send" type="button">💬 Send to MR.E</button></div></div>`;
+  box.querySelector("#rp-x").addEventListener("click", () => box.remove());
+  box.addEventListener("click", e => { if (e.target === box) box.remove(); });
+  box.querySelector("#rp-send").addEventListener("click", () => {
+    const t = box.querySelector("#rp-note").value.replace(/\s+/g, " ").trim().slice(0, 300); if (!t) { toast("Tell MR.E what's wrong first."); box.querySelector("#rp-note").focus(); return; }
+    const L = store.get("who_reports", []) || []; L.unshift({ id: "r" + Date.now().toString(36) + rnd(100, 999), at: Date.now(), by: SITE_WHO || "", what: "tell", on: "", text: t, about });
+    store.set("who_reports", L.slice(0, 300)); box.remove(); toast("💬 Sent to MR.E. Thanks for telling him!");
+  });
+  document.body.appendChild(box); box.querySelector("#rp-note").focus();
 }
 function reportSheet(preset) {   // preset: { on, what, text, art } skips the choosing (used by the Art Gallery)
   document.getElementById("rp-sheet")?.remove();
@@ -3655,6 +3674,7 @@ function reportSheet(preset) {   // preset: { on, what, text, art } skips the ch
   const box = document.createElement("div"); box.id = "rp-sheet"; box.className = "bgsheet";
   box.innerHTML = `<div class="bgsheet-box rp-box" role="dialog" aria-label="Report something"><div class="prof-head"><b class="subj-title">🚩 Report something</b><button class="iconbtn" id="rp-x" type="button">✕ Close</button></div>
     <p class="soft">If someone wrote, named or made something mean, unkind or not okay, tell MR.E. He'll look at it.</p>
+    <p class="soft">Something wrong with MR.E or the site? <button class="linklike" id="rp-tell" type="button">💬 Tell MR.E something is wrong</button></p>
     ${preset ? `<p><b>${esc(RP_WHAT[preset.what] || "")}</b> by <b>${esc(galName(preset.on))}</b>${preset.text ? `: “${esc(preset.text)}”` : ""}</p>`
       : `<label class="rp-lab">Who?<select id="rp-who">${ppl.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("")}</select></label>
          <div class="rp-what">${["about", "name", "pic"].map((k, i) => `<label><input type="radio" name="rp-what" value="${k}"${i === 0 ? " checked" : ""}> ${RP_WHAT[k]}</label>`).join("")}</div>
@@ -3665,6 +3685,7 @@ function reportSheet(preset) {   // preset: { on, what, text, art } skips the ch
   const prev = () => { const el = box.querySelector("#rp-preview"); if (!el) return; const r = pick(); el.innerHTML = r.what === "pic" ? `Their picture: <span class="rp-pic">${whoAvaHTML(r.on)}</span>` : r.text ? `“${esc(r.text)}”` : `<span class="soft">They haven't written anything there.</span>`; };
   box.querySelectorAll("#rp-who, [name='rp-what']").forEach(x => x.addEventListener("change", prev)); prev();
   box.querySelector("#rp-x").addEventListener("click", () => box.remove());
+  box.querySelector("#rp-tell").addEventListener("click", () => tellSheet());
   box.addEventListener("click", e => { if (e.target === box) box.remove(); });
   box.querySelector("#rp-send").addEventListener("click", () => { const r = pick(); if (!r.on) return; reportSend({ ...r, note: box.querySelector("#rp-note").value.trim().slice(0, 150) }); box.remove(); });
   document.body.appendChild(box);
@@ -3679,11 +3700,13 @@ function modPanel(box) {
   box.querySelector("#mod-unlock").addEventListener("submit", e => { e.preventDefault(); if (!modCodeOK(box.querySelector("#mod-code").value)) { box.querySelector("#mod-msg").textContent = "That's not your code. Try again."; return; } modOpen(box); });
 }
 function modOpen(box) {
-  const reps = (store.get("who_reports", []) || []).filter(r => r.on !== "emmett"), hidden = whoHiddenSet(), mute = store.get("who_mute", {}) || {};
+  const allReps = store.get("who_reports", []) || [], tells = allReps.filter(r => r.what === "tell"), reps = allReps.filter(r => r.what !== "tell" && r.on !== "emmett"), hidden = whoHiddenSet(), mute = store.get("who_mute", {}) || {};
   const all = profBuilt().concat(profExtra("site")).filter((p, i, a) => a.findIndex(x => x.id === p.id) === i);
   const ppl = sitePeople().filter(p => p.id !== "emmett"), gone = all.filter(p => hidden.has(p.id));
   const nm = id => galName(id) || "someone", when = t => new Date(t).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   box.innerHTML = `<h3>🛡️ Reports and people <small class="soft">(open until you leave this page)</small></h3>
+    <h4>💬 Things people told you are wrong (${tells.length})</h4>
+    ${tells.length ? tells.map(r => `<div class="mod-rep"><p><b>${esc(r.by ? nm(r.by) : "Someone")}</b> says something is wrong · <small>${when(r.at)}</small></p>${r.about ? `<p class="soft">About: ${esc(r.about)}</p>` : ""}<p class="mod-quote">“${esc(r.text)}”</p><div class="mod-btns"><button class="chip" data-act="done" data-rep="${r.id}">✅ Done</button></div></div>`).join("") : `<p class="soft">Nothing yet. 🎉</p>`}
     <h4>🚩 Reports (${reps.length})</h4>
     ${reps.length ? reps.map(r => `<div class="mod-rep" data-rep="${r.id}"><p><b>${esc(r.by ? nm(r.by) : "Someone")}</b> reported <b>${esc(nm(r.on))}</b> · ${esc(RP_WHAT[r.what] || r.what)} · <small>${when(r.at)}</small></p>
       ${r.text ? `<p class="mod-quote">“${esc(r.text)}”</p>` : ""}${r.what === "pic" ? `<p>Picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="soft">Why: ${esc(r.note)}</p>` : ""}
@@ -3736,10 +3759,11 @@ function startWho() {
     <p class="soft who-none" id="who-none" hidden>Nobody has that name yet. Are you someone new? Type your name in the blue box.</p>
     <div class="who-grid">${L.map(p => { const ab = whoAbout(p.id); return `<button class="who-btn" type="button" data-site-who="${esc(p.id)}" data-who-name="${esc(p.name.toLowerCase())}"><span class="who-ava" aria-hidden="true">${whoAvaHTML(p.id)}</span><b>${esc(p.name)}${whoHasCode(p.id) ? " 🔒" : ""}</b>${ab ? `<small class="who-about">${esc(ab.length > 60 ? ab.slice(0, 58) + "…" : ab)}</small>` : ""}</button>`; }).join("")}</div>
     <div class="who-code" id="who-code" hidden></div>
-    <p class="who-report"><button class="linklike" id="who-rp" type="button">🚩 Report something someone wrote</button></p>
+    <p class="who-report"><button class="linklike" id="who-rp" type="button">🚩 Report something someone wrote</button> · <button class="linklike" id="who-tell" type="button">💬 Tell MR.E something is wrong</button></p>
     <p class="who-tos"><button class="linklike" id="who-tos" type="button">📜 Terms of Service</button></p>
   </div>`;
   document.getElementById("who-rp").addEventListener("click", () => reportSheet());
+  document.getElementById("who-tell").addEventListener("click", () => tellSheet());
   document.getElementById("who-tos").addEventListener("click", () => startTerms());
   let taps = 0, tapId = null, tapT = null;   // one tap waits a moment, so three quick taps can be told apart
   $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => {
@@ -11587,7 +11611,7 @@ function galView(list, i, after) {
         : `<div class="gal-stars" role="group" aria-label="Your rating"><span>Your stars:</span>${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= myStars ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}">★</button>`).join("")}<small id="gv-avg">${galStarsTxt(m)}</small></div>`}
       <div class="row gal-vrow"><button class="btn" id="gv-prev" type="button" aria-label="Previous">◀</button><button class="btn" id="gv-next" type="button" aria-label="Next">▶</button>
         ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.kind !== "video" && SITE_WHO && SITE_WHO !== "guest" ? `<button class="btn" id="gv-mypic" type="button">🖼️ Make it my picture</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Keep painting</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
-          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.kind !== "video" && SITE_WHO && SITE_WHO !== "guest" ? `<button class="btn" id="gv-mypic" type="button">🖼️ Make it my picture</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Paint my own copy</button>` : ""}${m.who !== "emmett" ? `<button class="btn" id="gv-report" type="button">🚩 Report</button>` : ""}`}</div>
+          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.kind !== "video" && SITE_WHO && SITE_WHO !== "guest" ? `<button class="btn" id="gv-mypic" type="button">🖼️ Make it my picture</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Paint my own copy</button>` : ""}${m.who !== "emmett" ? `<button class="btn" id="gv-report" type="button">🚩 Report</button>` : `<button class="btn" id="gv-tell" type="button">💬 Tell MR.E something is wrong</button>`}`}</div>
     </div>${mine && m.from ? `<div class="gal-taken">📥 Taken from ${esc(galName(m.from))}</div>` : ""}`;
     const $v = id => box.querySelector("#gv-" + id);
     $v("x").addEventListener("click", close); $v("prev").addEventListener("click", () => show(i - 1)); $v("next").addEventListener("click", () => show(i + 1));
@@ -11617,6 +11641,7 @@ function galView(list, i, after) {
         tone([523, 659, 784].slice(0, Math.min(3, n)), .06, "triangle", .05); toast(`⭐ You gave it ${n} star${n === 1 ? "" : "s"}!`); after && after();
       }));
       $v("report")?.addEventListener("click", () => reportSheet({ on: m.who, what: "art", text: m.name, art: m.id }));
+      $v("tell")?.addEventListener("click", () => tellSheet(`MR.E's art: ${m.name}`));
       $v("take").addEventListener("click", async () => { const b = $v("take"); b.disabled = true; if (await galTake(m)) b.textContent = "📥 Taken!"; else b.disabled = false; });
     }
     const blob = await galBlob(m.id).catch(() => null), media = $v("media"); if (!media || list[i] !== m) return;
@@ -24377,11 +24402,16 @@ function startTerms() {
     <h3>6. Your information</h3><p>Progress, names, pictures and notes are saved in the browser on your own device. If you sign in with Google, Study Arcade uses your Google name and email only to keep track of your free trial and subscription on that device. Nothing is sold. If you're under 13, ask a parent before signing in or paying.</p>
     <h3>7. Be kind</h3><p>MR.E can change or delete names, pictures, art or writing that's mean or not okay, and can delete accounts.</p>
     <h3>8. Changes</h3><p>These terms can change. When they do, the new terms will be posted right here.</p>
+    <h3>9. Something wrong?</h3><p>Nobody can report MR.E, but anyone can tell him when something is wrong: a broken page, a mistake, or something that isn't fair. He'll look at it.</p>
+    <button class="btn go" id="tos-tell" type="button">💬 Tell MR.E something is wrong</button>
     <p class="soft">Questions? Ask Stephanie.</p>
   </div>`;
   document.getElementById("tos-back").addEventListener("click", () => SITE_WHO ? showHome() : startWho());
+  document.getElementById("tos-tell").addEventListener("click", () => tellSheet("The Terms of Service page"));
   window.scrollTo({ top: 0 });
 }
+// 📜 the Terms of Service button under "progress saved" at the bottom of every page
+document.getElementById("foot-tos")?.addEventListener("click", () => { try { exitAll(); } catch (e) {} startTerms(); });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
