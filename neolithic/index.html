@@ -1799,6 +1799,20 @@
   .ra.la .la-goal h2, .ra.la .la-master h2 { margin-top: 0; }
   .ra.la .ra-ans small { font-size: 14px; }
   .ra.la .ra-word mark.lc-hl, .ra.la .ra-modal mark.lc-hl { background: #ffd23f; color: #3b2a14; }
+  /* 💳 paying on the website + 📜 terms */
+  .pay-box p { margin: 8px 0; } .pay-box .btn.gold { width: 100%; }
+  .pay-gbtn { display: flex; justify-content: center; min-height: 48px; margin: 10px 0; }
+  .pay-mre { margin-top: 14px; padding: 10px 12px; border-radius: 14px; border: 2px dashed var(--line); display: grid; gap: 6px; }
+  .pay-rows { display: grid; gap: 6px; margin: 6px 0 12px; }
+  .pay-row { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); }
+  .pay-row small { grid-column: 1; color: var(--ink-soft); } .pay-row .chip { grid-column: 2; grid-row: 1 / span 2; }
+  .tos-page h3 { margin: 16px 0 4px; } .tos-page p { margin: 4px 0; line-height: 1.5; }
+  .who-tos { text-align: center; margin: 4px 0 0; } .pf-plan p { margin: 4px 0; }
+  .pay-plans { display: grid; gap: 8px; margin: 8px 0; }
+  .pay-plan { display: grid; gap: 2px; text-align: left; padding: 12px 14px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
+  .pay-plan:hover, .pay-plan:focus-visible { border-color: var(--gold); outline: none; }
+  .pay-plan.best { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 210, 63, .25); }
+  .pay-price { font-family: var(--display); font-size: 1.35rem; } .pay-plan small { color: var(--ink-soft); }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3453,9 +3467,11 @@ function startProfile() {
     ${id === "guest" ? "" : `<form class="pf-sec" id="pf-code"><h3>🔒 My code</h3>${has ? `<p class="soft">Your profile has a code, so only you can open it.</p>` : `<p class="soft">Add a code so nobody else can open your profile. Use 3 to 12 letters or numbers, and remember it!</p>`}
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>`}
+    ${payOnline() ? `<div class="pf-sec pf-plan"><h3>💳 My plan</h3><p>${esc(id === "guest" && !PAY_GUEST ? "Guests sign in with Google." : payStatusText(payStatus(id)))}</p>${PAY_CFG.stripePortal && payStatus(id).paid ? `<p><a href="${esc(PAY_CFG.stripePortal)}" target="_blank" rel="noopener">Manage or cancel my subscription</a></p>` : ""}<p class="soft"><button class="linklike" id="pf-tos" type="button">📜 Terms of Service</button></p></div>` : ""}
     ${id === "emmett" ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. To change anything on their account, you'll have to type your own code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
   </div>`;
   document.getElementById("pf-back").addEventListener("click", showHome);
+  document.getElementById("pf-tos")?.addEventListener("click", () => startTerms());
   { const lockedBySecret = WHO_BY_SECRET === id && id !== "emmett", head = $app.querySelector(".pf-head");
     if (lockedBySecret) {   // 🔐 someone else's account, opened with the secret taps: nothing can change until MR.E types his code
       $app.querySelectorAll(".pf-sec").forEach(s => s.inert = true);
@@ -3504,6 +3520,7 @@ function sitePeople() {
 }
 function pickWho(id) {
   const p = id === "guest" ? { id: "guest", name: "Guest" } : sitePeople().find(x => x.id === id); if (!p) return;
+  if (payGate(id)) return;   // 💳 the website version: guests sign in with Google, 30 days free, then $5 a month, $25 a year or $150 for 10 years (never in the Claude version)
   if (whoAge(id) === null) return askAge(p);   // 🎂 first time: how old are you? (a guest is asked every time)
   if (id === "guest") { const ab = { ...(store.get("who_about", {}) || {}) }, nm = { ...(store.get("who_names", {}) || {}) }, cd = { ...(store.get("who_code", {}) || {}) }; if ("guest" in ab) { delete ab.guest; store.set("who_about", ab); } if ("guest" in nm) { delete nm.guest; store.set("who_names", nm); } if ("guest" in cd) { delete cd.guest; store.set("who_code", cd); } }
   if (id !== "guest" && !profBuilt().some(x => x.id === id) && !profExtra("site").some(x => x.id === id)) store.set("prof_site", [...profExtra("site"), p].slice(0, PROF_MAX));   // everyone picked here is on every list
@@ -3626,6 +3643,7 @@ const whoHiddenSet = () => new Set(store.get("who_hidden", []) || []);
 const modCodeOK = code => whoHasCode("emmett") && (store.get("who_code", {}) || {}).emmett === whoHash("emmett", String(code || ""));
 const RP_WHAT = { about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery" };
 function reportSend(r) {
+  if (r && r.on === "emmett") return toast("MR.E can't be reported.");   // 🛡️ MR.E looks after the reports, so nobody can report him
   const L = store.get("who_reports", []) || [];
   L.unshift({ id: "r" + Date.now().toString(36) + rnd(100, 999), at: Date.now(), by: SITE_WHO || "", ...r });
   store.set("who_reports", L.slice(0, 300));
@@ -3633,7 +3651,7 @@ function reportSend(r) {
 }
 function reportSheet(preset) {   // preset: { on, what, text, art } skips the choosing (used by the Art Gallery)
   document.getElementById("rp-sheet")?.remove();
-  const ppl = sitePeople().filter(p => p.id !== SITE_WHO);
+  const ppl = sitePeople().filter(p => p.id !== SITE_WHO && p.id !== "emmett");   // MR.E can't be reported
   const box = document.createElement("div"); box.id = "rp-sheet"; box.className = "bgsheet";
   box.innerHTML = `<div class="bgsheet-box rp-box" role="dialog" aria-label="Report something"><div class="prof-head"><b class="subj-title">🚩 Report something</b><button class="iconbtn" id="rp-x" type="button">✕ Close</button></div>
     <p class="soft">If someone wrote, named or made something mean, unkind or not okay, tell MR.E. He'll look at it.</p>
@@ -3654,14 +3672,14 @@ function reportSheet(preset) {   // preset: { on, what, text, art } skips the ch
 // 🛡️ MR.E's moderation panel (inside his profile). It opens only after he types his code, and closes when he leaves the page.
 function modPanel(box) {
   if (!box) return;
-  const n = (store.get("who_reports", []) || []).length;
+  const n = (store.get("who_reports", []) || []).filter(r => r.on !== "emmett").length;
   if (!whoHasCode("emmett")) { box.innerHTML = `<h3>🚩 Reports${n ? ` (${n})` : ""}</h3><p class="soft">Add a code to your profile first. Then you'll type it here every time you look after reports or change someone's account.</p>`; return; }
   box.innerHTML = `<h3>🚩 Reports and people${n ? ` <span class="rp-count">${n}</span>` : ""}</h3><p class="soft">To see reports or change anyone's account, type your code again. (No shortcuts!)</p>
     <form class="pf-row" id="mod-unlock"><input id="mod-code" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn go" type="submit">🔓 Open</button></form><p class="su-msg" id="mod-msg"></p>`;
   box.querySelector("#mod-unlock").addEventListener("submit", e => { e.preventDefault(); if (!modCodeOK(box.querySelector("#mod-code").value)) { box.querySelector("#mod-msg").textContent = "That's not your code. Try again."; return; } modOpen(box); });
 }
 function modOpen(box) {
-  const reps = store.get("who_reports", []) || [], hidden = whoHiddenSet(), mute = store.get("who_mute", {}) || {};
+  const reps = (store.get("who_reports", []) || []).filter(r => r.on !== "emmett"), hidden = whoHiddenSet(), mute = store.get("who_mute", {}) || {};
   const all = profBuilt().concat(profExtra("site")).filter((p, i, a) => a.findIndex(x => x.id === p.id) === i);
   const ppl = sitePeople().filter(p => p.id !== "emmett"), gone = all.filter(p => hidden.has(p.id));
   const nm = id => galName(id) || "someone", when = t => new Date(t).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
@@ -3677,9 +3695,11 @@ function modOpen(box) {
     <h4>👥 Everyone</h4>
     <div class="mod-ppl">${ppl.map(p => `<div class="mod-p"><span class="rp-pic">${whoAvaHTML(p.id)}</span><div><b>${esc(p.name)}</b>${mute[p.id] ? " 🔇" : ""}<small>${esc(whoAbout(p.id) || "(nothing written)")}</small></div>
       <div class="mod-btns"><button class="chip" data-act="editname" data-on="${p.id}">✏️ Name</button><button class="chip" data-act="editabout" data-on="${p.id}">✏️ About</button><button class="chip" data-act="${mute[p.id] ? "unmute" : "mute"}" data-on="${p.id}">${mute[p.id] ? "🔊" : "🔇"}</button><button class="chip bad" data-act="del" data-on="${p.id}">🚫</button></div></div>`).join("")}</div>
+    ${payModHTML()}
     ${gone.length ? `<h4>🗑 Deleted people</h4><div class="mod-btns">${gone.map(p => `<button class="chip" data-act="undel" data-on="${p.id}">↩️ Bring back ${esc(p.name)}</button>`).join("")}</div>` : ""}
     <div id="mod-edit"></div>`;
   const again = () => modOpen(box);
+  payModBind(box, again);
   box.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", async () => {
     const act = b.dataset.act, on = b.dataset.on;
     if (act === "done") { store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.id !== b.dataset.rep)); toast("✅ Report done."); return again(); }
@@ -3704,7 +3724,7 @@ function modOpen(box) {
   }));
 }
 function startWho() {
-  PROF_GAME = null; PROF_RESTART = null; keyHandler = null; GUEST_AGE = null; WHO_BY_SECRET = null;
+  PROF_GAME = null; PROF_RESTART = null; keyHandler = null; GUEST_AGE = null; WHO_BY_SECRET = null; PAY_GUEST = null; PAY_PASSED.delete("guest");
   const L = sitePeople();
   $app.innerHTML = `<div class="panel who-screen" id="who-screen">
     <span class="label">👋 Who are you?</span>
@@ -3717,8 +3737,10 @@ function startWho() {
     <div class="who-grid">${L.map(p => { const ab = whoAbout(p.id); return `<button class="who-btn" type="button" data-site-who="${esc(p.id)}" data-who-name="${esc(p.name.toLowerCase())}"><span class="who-ava" aria-hidden="true">${whoAvaHTML(p.id)}</span><b>${esc(p.name)}${whoHasCode(p.id) ? " 🔒" : ""}</b>${ab ? `<small class="who-about">${esc(ab.length > 60 ? ab.slice(0, 58) + "…" : ab)}</small>` : ""}</button>`; }).join("")}</div>
     <div class="who-code" id="who-code" hidden></div>
     <p class="who-report"><button class="linklike" id="who-rp" type="button">🚩 Report something someone wrote</button></p>
+    <p class="who-tos"><button class="linklike" id="who-tos" type="button">📜 Terms of Service</button></p>
   </div>`;
   document.getElementById("who-rp").addEventListener("click", () => reportSheet());
+  document.getElementById("who-tos").addEventListener("click", () => startTerms());
   let taps = 0, tapId = null, tapT = null;   // one tap waits a moment, so three quick taps can be told apart
   $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => {
     const id = b.dataset.siteWho; if (id !== tapId) { taps = 0; tapId = id; }
@@ -11565,7 +11587,7 @@ function galView(list, i, after) {
         : `<div class="gal-stars" role="group" aria-label="Your rating"><span>Your stars:</span>${[1, 2, 3, 4, 5].map(n => `<button type="button" data-star="${n}" class="${n <= myStars ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}">★</button>`).join("")}<small id="gv-avg">${galStarsTxt(m)}</small></div>`}
       <div class="row gal-vrow"><button class="btn" id="gv-prev" type="button" aria-label="Previous">◀</button><button class="btn" id="gv-next" type="button" aria-label="Next">▶</button>
         ${mine ? `${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.kind !== "video" && SITE_WHO && SITE_WHO !== "guest" ? `<button class="btn" id="gv-mypic" type="button">🖼️ Make it my picture</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Keep painting</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}<button class="btn" id="gv-priv" type="button">${m.private ? "🔒 Only you can see this" : "👀 Everyone can see this"}</button><button class="btn gal-delbtn" id="gv-del" type="button">🗑 Delete</button>`
-          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.kind !== "video" && SITE_WHO && SITE_WHO !== "guest" ? `<button class="btn" id="gv-mypic" type="button">🖼️ Make it my picture</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Paint my own copy</button>` : ""}<button class="btn" id="gv-report" type="button">🚩 Report</button>`}</div>
+          : `<button class="btn gold" id="gv-take" type="button">📥 Take it</button>${m.kind !== "video" && SITE_WHO ? `<button class="btn" id="gv-home" type="button">🏠 Home background</button><button class="btn" id="gv-every" type="button">🌈 Background everywhere</button>` : ""}${m.kind !== "video" && SITE_WHO && SITE_WHO !== "guest" ? `<button class="btn" id="gv-mypic" type="button">🖼️ Make it my picture</button>` : ""}${m.kind !== "video" ? `<button class="btn" id="gv-print" type="button">🖨️ Print</button>` : ""}${m.px ? `<button class="btn" id="gv-px" type="button">🟥 Paint my own copy</button>` : ""}${m.who !== "emmett" ? `<button class="btn" id="gv-report" type="button">🚩 Report</button>` : ""}`}</div>
     </div>${mine && m.from ? `<div class="gal-taken">📥 Taken from ${esc(galName(m.from))}</div>` : ""}`;
     const $v = id => box.querySelector("#gv-" + id);
     $v("x").addEventListener("click", close); $v("prev").addEventListener("click", () => show(i - 1)); $v("next").addEventListener("click", () => show(i + 1));
@@ -24201,6 +24223,164 @@ function startLetterArchery(id, only) {
   };
   renderHome();
   if (only && only.length) newGame("round", only);
+}
+/* ---------- 💳 The website version: sign in with Google to play as a guest, 30 days free, then $5 a month, $25 a year, or $150 for 10 years.
+   • The Claude version is ALWAYS free. Charging only happens on the website (GitHub Pages).
+   • Everyone Stephanie put on the site is free forever. MR.E can make anyone free with his code.
+   • Nothing is charged until Stephanie fills in PAY_CFG with her own Google sign-in ID and Stripe payment links.
+     Until then, nobody is ever blocked. */
+const PAY_CFG = {
+  googleClientId: "",   // Google Cloud Console → APIs & Services → Credentials → Create credentials → OAuth client ID → Web application. Put the website's address under "Authorized JavaScript origins". It looks like 1234-abcd.apps.googleusercontent.com
+  // three Stripe Payment Links (Stripe Dashboard → Payment Links, each looks like https://buy.stripe.com/...).
+  // Set each one's "After payment" to go to the website with ?paid={CHECKOUT_SESSION_ID} on the end. A plan with no link isn't offered.
+  plans: [
+    { id: "month", name: "📅 Monthly", price: "$5 a month", note: "Cancel any time", link: "" },                          // a $5 monthly subscription
+    { id: "year", name: "🎉 Yearly deal", price: "$25 a year", note: "Save $35 a year compared to monthly", link: "" },    // a $25 yearly subscription
+    { id: "ten", name: "🏆 10-year deal", price: "$150 for 10 years", note: "One payment. That's just $15 a year!", link: "", years: 10 }   // a one-time $150 payment
+  ],
+  stripePortal: "",     // optional: Stripe's customer portal link, so people can cancel a monthly or yearly plan any time
+  trialDays: 30,
+  price: "$5 a month (or $25 a year, or $150 for 10 years)",
+  hosts: [".github.io"] // the websites that charge. The Claude version never does.
+};
+const payIsClaude = () => !!window.claude || /claude|anthropic/i.test(location.hostname);
+const payOnline = () => !payIsClaude() && PAY_CFG.hosts.some(h => h.startsWith(".") ? location.hostname.endsWith(h) : location.hostname === h);
+let PAY_GUEST = null;                 // the Google account of the guest playing right now (kept only while the page is open)
+const PAY_PASSED = new Set();         // people who got past the payment check during this visit
+const payKey = id => id === "guest" ? (PAY_GUEST ? "g:" + PAY_GUEST.sub : null) : id;
+const payFreeSet = () => new Set(store.get("who_free", []) || []);
+const payAccts = () => store.get("who_payacct", {}) || {};
+const payFamily = id => id !== "guest" && profBuilt().some(p => p.id === id);
+const payPlan = id => PAY_CFG.plans.find(p => p.id === id);
+const payPaid = a => a && a.paid && (!a.paid.until || a.paid.until > Date.now()) ? { paid: a.paid.plan || "month", until: a.paid.until || 0 } : null;
+const payName = id => id === "guest" ? (PAY_GUEST ? PAY_GUEST.name || "Guest" : "Guest") : ((sitePeople().find(p => p.id === id) || {}).name || id);
+// where someone stands: { free: "claude" | "family" | "mre" } · { paid } · { trial: days left } · { due } · { google } (a guest who hasn't signed in)
+function payStatus(id) {
+  if (!payOnline()) return { free: "claude" };
+  if (payFamily(id)) return { free: "family" };
+  const k = payKey(id); if (!k) return { google: true };
+  if (payFreeSet().has(k)) return { free: "mre" };
+  const A = payAccts(); let a = A[k];
+  if (!a) { a = { first: Date.now(), name: payName(id) }; store.set("who_payacct", { ...A, [k]: a }); }
+  const pd = payPaid(a); if (pd) return pd;
+  const left = PAY_CFG.trialDays - Math.floor((Date.now() - a.first) / 864e5);
+  return left > 0 ? { trial: left } : { due: true };
+}
+const payStatusText = st => st.free === "claude" ? "Free: the Claude version is always free." : st.free === "family" ? "Free forever: Stephanie put you on the site." : st.free === "mre" ? "Free forever: MR.E made you free." : st.paid ? (st.until ? `Paid with the 10-year deal: no paying until ${new Date(st.until).toLocaleDateString([], { month: "long", year: "numeric" })}. Thank you!` : `Subscribed: ${(payPlan(st.paid) || { price: "a plan" }).price}. Thank you!`) : st.trial ? `Free trial: ${st.trial} day${st.trial === 1 ? "" : "s"} left. After that it's ${PAY_CFG.price}.` : st.due ? `Your free trial is over. Pick a plan: ${PAY_CFG.price}.` : "Sign in with Google to start.";
+// 🆓 MR.E makes someone free forever (on this device) by typing his code
+function payMakeFree(id, code) {
+  if (!modCodeOK(code)) return whoHasCode("emmett") ? "That's not MR.E's code." : "MR.E needs to add a code to his own profile on this device first.";
+  const k = payKey(id); if (!k) return "Sign in with Google first.";
+  const f = payFreeSet(); f.add(k); store.set("who_free", [...f]); return "";
+}
+// 🚪 the check that runs when someone picks their name. Returns true when it showed a sheet instead of letting them in.
+function payGate(id) {
+  if (PAY_PASSED.has(id)) return false;
+  const st = payStatus(id);
+  if (st.google) { payGoogleSheet(); return true; }
+  if (st.due) { payWall(id); return true; }
+  PAY_PASSED.add(id);
+  if (st.trial) setTimeout(() => toast(`🎁 Free trial: ${st.trial} day${st.trial === 1 ? "" : "s"} left. After that it's ${PAY_CFG.price} on this website.`), 600);
+  return false;
+}
+function paySheet(html) {
+  document.getElementById("pay-sheet")?.remove();
+  const box = document.createElement("div"); box.id = "pay-sheet"; box.className = "bgsheet";
+  box.innerHTML = `<div class="bgsheet-box pay-box" role="dialog" aria-label="Paying for Study Arcade">${html}</div>`;
+  document.body.appendChild(box); return box;
+}
+const payJwt = t => { try { const b = t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"), s = atob(b + "===".slice((b.length + 3) % 4)); return JSON.parse(decodeURIComponent([...s].map(c => "%" + c.charCodeAt(0).toString(16).padStart(2, "0")).join(""))); } catch (e) { return null; } };
+function payLoadGoogle() { return new Promise((ok, no) => { if (window.google?.accounts?.id) return ok(); const s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client"; s.async = true; s.onload = () => ok(); s.onerror = () => no(new Error("google")); document.head.appendChild(s); }); }
+// 👤 guests on the website sign in with Google first
+function payGoogleSheet() {
+  const ready = !!PAY_CFG.googleClientId;
+  const box = paySheet(`<div class="prof-head"><b class="subj-title">👤 Play as a guest</b><button class="iconbtn" id="pay-x" type="button">✕ Not now</button></div>
+    ${ready ? `<p>To play as a guest on this website, sign in with Google. Guests get <b>${PAY_CFG.trialDays} days free</b>, then it's <b>${PAY_CFG.price}</b>.</p><div id="pay-gbtn" class="pay-gbtn"><p class="soft">Loading Google…</p></div><p class="soft">Under 13? Ask a grown-up to sign in for you.</p>`
+      : `<p>Guests on this website will sign in with Google. That isn't switched on yet, so you can play as a guest for free for now.</p><button class="btn go" id="pay-guestgo" type="button">▶ Play as a guest</button>`}
+    <p class="soft">The Claude version of Study Arcade is always free. <button class="linklike" id="pay-tos" type="button">📜 Terms of Service</button></p>`);
+  box.querySelector("#pay-x").addEventListener("click", () => box.remove());
+  box.querySelector("#pay-tos").addEventListener("click", () => { box.remove(); startTerms(); });
+  box.querySelector("#pay-guestgo")?.addEventListener("click", () => { box.remove(); PAY_PASSED.add("guest"); pickWho("guest"); });
+  if (!ready) return;
+  payLoadGoogle().then(() => {
+    const el = box.querySelector("#pay-gbtn"); if (!el) return; el.innerHTML = "";
+    google.accounts.id.initialize({ client_id: PAY_CFG.googleClientId, callback: r => {
+      const j = payJwt(r && r.credential); if (!j || !j.sub) return toast("Google sign-in didn't work. Try again.");
+      PAY_GUEST = { sub: j.sub, email: j.email || "", name: j.given_name || j.name || "Guest" }; box.remove(); pickWho("guest");
+    } });
+    google.accounts.id.renderButton(el, { theme: "filled_blue", size: "large", shape: "pill", text: "signin_with" });
+  }).catch(() => { const el = box.querySelector("#pay-gbtn"); if (el) el.innerHTML = `<p class="soft">😕 Google sign-in couldn't load. Check the internet connection and try again.</p>`; });
+}
+// 💳 the trial is over: subscribe, or MR.E makes them free
+function payWall(id) {
+  const nm = payName(id), plans = PAY_CFG.plans.filter(p => p.link), ready = plans.length > 0, k = payKey(id);
+  const box = paySheet(`<div class="prof-head"><b class="subj-title">💳 Your free month is over</b><button class="iconbtn" id="pay-x" type="button">🔄 Switch person</button></div>
+    <p>Hi ${esc(nm)}! Study Arcade on this website is free for ${PAY_CFG.trialDays} days. To keep playing, pick a plan. <span class="soft">(The Claude version is always free.)</span></p>
+    ${ready ? `<div class="pay-plans">${plans.map(p => `<button class="pay-plan${p.id === "ten" ? " best" : ""}" type="button" data-plan="${esc(p.id)}"><b>${esc(p.name)}</b><span class="pay-price">${esc(p.price)}</span><small>${esc(p.note)}</small></button>`).join("")}</div><p class="soft">A grown-up pays with Stripe, a payment company. Study Arcade never sees card numbers. Monthly and yearly plans renew until you cancel. The 10-year deal is one payment and never renews.${PAY_CFG.stripePortal ? ` <a href="${esc(PAY_CFG.stripePortal)}" target="_blank" rel="noopener">Manage or cancel</a>` : ""}</p>`
+      : `<p class="soft">Paying isn't switched on for this website yet, so you can keep playing free for now.</p><button class="btn go" id="pay-go" type="button">▶ Keep playing</button>`}
+    <form class="pay-mre" id="pay-mre"><b>🆓 MR.E: make ${esc(nm)} free forever</b><div class="pf-row"><input id="pay-code" type="password" maxlength="12" placeholder="MR.E's code" aria-label="MR.E's code" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn go" type="submit">🆓 Make free</button></div><p class="su-msg" id="pay-msg"></p></form>
+    <p class="soft"><button class="linklike" id="pay-tos" type="button">📜 Terms of Service</button></p>`);
+  box.querySelector("#pay-x").addEventListener("click", () => { box.remove(); startWho(); });
+  box.querySelector("#pay-tos").addEventListener("click", () => { box.remove(); startTerms(); });
+  box.querySelector("#pay-go")?.addEventListener("click", () => { box.remove(); PAY_PASSED.add(id); pickWho(id); });
+  box.querySelectorAll("[data-plan]").forEach(b => b.addEventListener("click", () => {
+    const plan = payPlan(b.dataset.plan); if (!plan || !plan.link) return;
+    store.set("who_paypending", { key: k, id, plan: plan.id, at: Date.now() });
+    const ref = String(k).replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 190), email = id === "guest" && PAY_GUEST ? PAY_GUEST.email : "";
+    location.href = plan.link + (plan.link.includes("?") ? "&" : "?") + "client_reference_id=" + encodeURIComponent(ref) + (email ? "&prefilled_email=" + encodeURIComponent(email) : "");
+  }));
+  box.querySelector("#pay-mre").addEventListener("submit", e => {
+    e.preventDefault(); const msg = payMakeFree(id, box.querySelector("#pay-code").value);
+    if (msg) { box.querySelector("#pay-msg").textContent = msg; box.querySelector("#pay-code").value = ""; return; }
+    box.remove(); toast(`🆓 ${nm} never has to pay again!`); PAY_PASSED.add(id); pickWho(id);
+  });
+}
+// ✅ back from Stripe: "?paid=cs_..." marks the person who just subscribed (only right after they tapped Subscribe on this device)
+function payReturn() {
+  let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
+  const sid = q.get("paid"); if (!sid) return;
+  const pend = store.get("who_paypending", null);
+  if (pend && /^cs_/.test(sid) && Date.now() - pend.at < 6 * 36e5) {
+    const plan = payPlan(pend.plan) || PAY_CFG.plans[0], now = Date.now(), A = payAccts();
+    A[pend.key] = { ...(A[pend.key] || { first: now }), paid: { at: now, session: sid, plan: plan.id, ...(plan.years ? { until: now + plan.years * 365.25 * 864e5 } : {}) } };
+    store.set("who_payacct", A); store.set("who_paypending", null); setTimeout(() => toast("💳 Thank you for paying! Pick your name to keep playing."), 800);
+  }
+  try { q.delete("paid"); history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash); } catch (e) {}
+}
+payReturn();
+// 🛡️ in MR.E's panel: who pays on the website, and a 🆓 button for each person
+function payModHTML() {
+  if (!payOnline()) return `<h4>💳 Paying</h4><p class="soft">This is the Claude version, so everyone is free. Paying only happens on the website version. To make someone free there, open your profile on the website and tap 🆓 next to their name.</p>`;
+  const free = payFreeSet(), A = payAccts(), ppl = sitePeople().filter(p => p.id !== "emmett"), guests = Object.entries(A).filter(([k]) => k.startsWith("g:"));
+  const row = (k, name, st) => `<div class="pay-row"><b>${esc(name)}</b><small>${esc(payStatusText(st))}</small>${st.free ? (st.free === "mre" ? `<button class="chip" data-payact="unfree" data-pk="${esc(k)}" type="button">↩️ Make them pay again</button>` : "") : `<button class="chip" data-payact="free" data-pk="${esc(k)}" type="button">🆓 Make free forever</button>`}</div>`;
+  return `<h4>💳 Paying on this website</h4><p class="soft">Everyone you make free never has to pay again on this device.</p>
+    <div class="pay-rows">${ppl.map(p => row(p.id, p.name, payStatus(p.id))).join("")}${guests.map(([k, a]) => row(k, "👤 Guest: " + (a.name || "Google account"), free.has(k) ? { free: "mre" } : payPaid(a) ? payPaid(a) : PAY_CFG.trialDays - Math.floor((Date.now() - a.first) / 864e5) > 0 ? { trial: PAY_CFG.trialDays - Math.floor((Date.now() - a.first) / 864e5) } : { due: true })).join("")}</div>`;
+}
+function payModBind(box, again) {
+  box.querySelectorAll("[data-payact]").forEach(b => b.addEventListener("click", () => {
+    const f = payFreeSet(), k = b.dataset.pk; if (b.dataset.payact === "free") f.add(k); else f.delete(k);
+    store.set("who_free", [...f]); toast(b.dataset.payact === "free" ? "🆓 They never have to pay again!" : "↩️ They'll pay like everyone else."); again();
+  }));
+}
+// 📜 Terms of Service
+function startTerms() {
+  stopSlope?.(); keyHandler = null; naCleanup?.(); PROF_GAME = null; PROF_RESTART = null;
+  const P = PAY_CFG.price, D = PAY_CFG.trialDays;
+  $app.innerHTML = `<div class="panel tos-page">
+    <div class="topline"><span class="label">📜 Terms of Service</span><button class="iconbtn" id="tos-back" type="button">${SITE_WHO ? "Back to menu" : "Back"}</button></div>
+    <h2>📜 Study Arcade Terms of Service</h2><p class="soft">Last updated November 17, 2026</p>
+    <h3>1. Two versions</h3><p>The <b>Claude version</b> of Study Arcade (the one inside Claude) is <b>always free</b>. Nobody is ever charged there. The <b>website version</b> (on GitHub Pages) costs money after a free trial. There are three plans: <b>$5 a month</b>, <b>$25 a year</b>, or <b>$150 for 10 years</b>.</p>
+    <h3>2. People who never pay</h3><p>Everyone Stephanie put on Study Arcade is free on the website too, forever. MR.E can also make any person free by typing his code. Once he does, that person never has to pay again on that device.</p>
+    <h3>3. Guests</h3><p>To play as a guest on the website, you sign in with Google. A guest gets <b>${D} days free</b>, counted from the first time that Google account plays as a guest on that device. After that they pick a plan.</p>
+    <h3>4. New people</h3><p>People who join on the website also get ${D} days free. After that they pick a plan.</p>
+    <h3>5. Paying and canceling</h3><p>Payments go through Stripe, a payment company. Study Arcade never sees or keeps card numbers. A grown-up must do the paying, so kids should ask a parent. The monthly plan ($5) renews every month and the yearly plan ($25) renews every year, until it's canceled. You can cancel any time and you won't be charged again. The 10-year deal is one payment of $150 that covers 10 years from the day you pay, and it never renews.${PAY_CFG.stripePortal ? ` <a href="${esc(PAY_CFG.stripePortal)}" target="_blank" rel="noopener">Manage or cancel a subscription</a>.` : ""}</p>
+    <h3>6. Your information</h3><p>Progress, names, pictures and notes are saved in the browser on your own device. If you sign in with Google, Study Arcade uses your Google name and email only to keep track of your free trial and subscription on that device. Nothing is sold. If you're under 13, ask a parent before signing in or paying.</p>
+    <h3>7. Be kind</h3><p>MR.E can change or delete names, pictures, art or writing that's mean or not okay, and can delete accounts.</p>
+    <h3>8. Changes</h3><p>These terms can change. When they do, the new terms will be posted right here.</p>
+    <p class="soft">Questions? Ask Stephanie.</p>
+  </div>`;
+  document.getElementById("tos-back").addEventListener("click", () => SITE_WHO ? showHome() : startWho());
+  window.scrollTo({ top: 0 });
 }
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
