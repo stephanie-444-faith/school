@@ -1830,9 +1830,12 @@
   .sh-opt:hover:not([disabled]) { border-color: var(--gold); } .sh-opt.right { background: rgba(59,178,115,.45); border-color: #3bb273; } .sh-opt.wrong { background: rgba(230,57,70,.4); border-color: #e63946; }
   .sh-fb { min-height: 1.5em; display: grid; gap: 6px; justify-items: center; } .sh-good { color: #6ee7a0; } .sh-bad { color: #ff8a8a; }
   .sh-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .sh-hud { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-weight: 800; font-size: 1.05rem; margin-bottom: 6px; }
+  .sh-hud { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px; font-weight: 800; font-size: 1.05rem; margin-bottom: 6px; }
   .sh-qbox { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 16px; background: var(--panel-2); border: 2px solid var(--line); min-height: 56px; font-size: 1.05rem; }
   .sh-qe { font-size: 2rem; }
+  .sh-hearts { white-space: nowrap; letter-spacing: -1px; } .sh-hearts.many { font-size: .82rem; }
+  .sh-halfh { position: relative; display: inline-block; } .sh-halfh i { position: absolute; left: 0; top: 0; width: 50%; overflow: hidden; font-style: normal; white-space: nowrap; }
+  .sh-item .sh-ih { color: #ff8fa3; font-weight: 800; }
   .sh-stage { position: relative; height: 330px; margin: 10px 0; border-radius: 20px; overflow: hidden; background: linear-gradient(#8fd8ff 0%, #c9f1ff 34%, #2f8fbf 34.5%, #1f6f99 100%); border: 2px solid var(--line); }
   .sh-wave { position: absolute; left: 0; right: 0; top: calc(34% - 9px); height: 20px; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20' viewBox='0 0 120 20'%3E%3Cpath d='M0 10 Q15 0 30 10 T60 10 T90 10 T120 10 V20 H0Z' fill='%232f8fbf'/%3E%3C/svg%3E") repeat-x 0 0 / 120px 20px; animation: shWave 4s linear infinite; }
   .sh-wave.b { top: calc(34% - 3px); opacity: .7; animation-duration: 6.5s; animation-direction: reverse; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20' viewBox='0 0 120 20'%3E%3Cpath d='M0 10 Q15 0 30 10 T60 10 T90 10 T120 10 V20 H0Z' fill='%232a82b0'/%3E%3C/svg%3E"); }
@@ -24709,7 +24712,9 @@ const SH_HOPPERS = [["frog", "🐸", "Frog", 0], ["turtle", "🐢", "Turtle", 0]
 const shGet = () => { const v = store.get("sh_v1", null) || {}; return { atoms: 0, learned: {}, best: {}, hopper: "frog", owned: ["frog", "turtle"], hops: 0, ...v, learned: { ...(v.learned || {}) }, best: { ...(v.best || {}) }, owned: [...new Set(["frog", "turtle", ...(v.owned || [])])] }; };
 const shSave = S => store.set("sh_v1", S);
 const shHopper = S => SH_HOPPERS.find(h => h.id === S.hopper) || SH_HOPPERS[0];
-SH_HOPPERS.forEach((h, i) => { SH_HOPPERS[i] = { id: h[0], e: h[1], name: h[2], cost: h[3] }; });
+SH_HOPPERS.forEach((h, i) => { SH_HOPPERS[i] = { id: h[0], e: h[1], name: h[2], cost: h[3], hearts: 3 + Math.max(0, i - 1) / 2 }; });   // ❤️ the free ones have 3 hearts; each more expensive hopper has half a heart more
+const shHalf = n => n % 1 ? (Math.floor(n) ? Math.floor(n) + "½" : "½") : String(n);   // 3.5 → "3½"
+const shHeartsHTML = (n, max) => { let h = ""; for (let i = 0; i < Math.ceil(max); i++) h += n >= i + 1 ? "❤️" : n >= i + .5 ? `<span class="sh-halfh">🖤<i>❤️</i></span>` : "🖤"; return `<span class="sh-hearts${Math.ceil(max) > 5 ? " many" : ""}" title="${shHalf(n)} of ${shHalf(max)} hearts">${h}</span>`; };
 function startScienceHop(view = "home", opt = {}) {
   naCleanup?.(); keyHandler = null;
   const S = shGet(), me = shHopper(S), nL = Object.keys(S.learned).length;
@@ -24718,10 +24723,10 @@ function startScienceHop(view = "home", opt = {}) {
   if (view === "shop") return shShop();
   appScreen("🐸 Science Hop", `<div class="sh"><h2>🐸 Science Hop</h2>
     <p class="soft">Learn science the way Bunny Hop Typing teaches typing: learn on the 🌀 Learning Trail, then 🐸 hop! Answer to hop to the right platform before the one you're on crumbles.</p>
-    <div class="sh-hero"><span class="sh-me">${me.e}</span><div><b>${esc(SITE_NAME || "You")}</b> as the ${esc(me.name)}<br>⚛️ <b>${fmt(S.atoms)}</b> atoms · 📚 ${nL} / ${SH_ITEMS.length} facts learned<br><small class="soft">Best: Easy ${S.best.easy || 0} · Hard ${S.best.hard || 0} · Extreme ${S.best.extreme || 0} hops</small></div></div>
+    <div class="sh-hero"><span class="sh-me">${me.e}</span><div><b>${esc(SITE_NAME || "You")}</b> as the ${esc(me.name)} (❤️ ${shHalf(me.hearts)} hearts)<br>⚛️ <b>${fmt(S.atoms)}</b> atoms · 📚 ${nL} / ${SH_ITEMS.length} facts learned<br><small class="soft">Best: Easy ${S.best.easy || 0} · Hard ${S.best.hard || 0} · Extreme ${S.best.extreme || 0} hops</small></div></div>
     <h3>🌀 Learning Trail</h3><p class="soft">No lives and no rush: learn one fact at a time. Every new fact you get right earns ⚛️ 3 atoms.</p>
     <div class="sh-units">${SH_UNITS.map(u => { const n = u.items.filter((x, k) => S.learned[u.id + k]).length; return `<button class="sh-unit${n === u.items.length ? " done" : ""}" type="button" data-trail="${u.id}"><span>${u.e}</span><b>${esc(u.name)}</b><small>${n === u.items.length ? "🏅 All learned!" : `${n} / ${u.items.length} learned`}</small><i class="sh-bar"><i style="width:${n * 10}%"></i></i></button>`; }).join("")}</div>
-    <h3>🐸 Hop!</h3><p class="soft">Pick a topic and a speed. Each hop earns atoms. You have 3 lives.</p>
+    <h3>🐸 Hop!</h3><p class="soft">Pick a topic and a speed. Each hop earns atoms. You start with ${shHalf(me.hearts)} hearts: a wrong platform costs a whole heart, and being too slow costs half a heart. Fancier hoppers have more hearts!</p>
     <div class="na-chips" id="sh-topic"><button class="chip on" data-topic="all" type="button">🌍 Everything</button>${SH_UNITS.map(u => `<button class="chip" data-topic="${u.id}" type="button">${u.e} ${esc(u.name)}</button>`).join("")}</div>
     <div class="row sh-go">${Object.entries(SH_LEVELS).map(([k, L]) => `<button class="btn${k === "easy" ? " go" : k === "hard" ? " gold" : " hot"}" type="button" data-hop="${k}">${k === "easy" ? "🐸" : k === "hard" ? "⚡" : "🔥"} ${L.name} <small>${L.secs}s</small></button>`).join("")}</div>
     <div class="row"><button class="btn" id="sh-shop" type="button">🛒 Hopper shop</button></div></div>`);
@@ -24781,14 +24786,14 @@ function shTrail(uid) {
 function shHop(level, topic) {
   const L = SH_LEVELS[level] || SH_LEVELS.easy, U = SH_UNITS.find(u => u.id === topic);
   const pool = SH_ITEMS.filter(x => topic === "all" || x.u === topic), me = shHopper(shGet());
-  let G = { hops: 0, lives: 3, atoms: 0, streak: 0, deck: shuffle(pool), missed: [], over: false, t: null, cur: null, paused: false, left: 0, at: 0 };
+  let G = { hops: 0, lives: me.hearts, max: me.hearts, atoms: 0, streak: 0, deck: shuffle(pool), missed: [], over: false, t: null, cur: null, paused: false, left: 0, at: 0 };
   appScreen("🐸 Science Hop · Hop!", `<div class="sh sh-play"><div class="sh-hud"><span id="sh-lives"></span><span id="sh-hops">0 hops</span><span id="sh-atoms">⚛️ 0</span><button class="chip sh-pbtn" id="sh-pbtn" type="button" aria-label="Pause">⏸️ Pause</button></div>
     <div class="sh-qbox" id="sh-qbox"></div>
     <div class="sh-stage" id="sh-stage"><i class="sh-wave" aria-hidden="true"></i><i class="sh-wave b" aria-hidden="true"></i><i class="sh-wave c" aria-hidden="true"></i><i class="sh-wave d" aria-hidden="true"></i><div class="sh-row" id="sh-next"></div><div class="sh-cur" id="sh-cur"><div class="sh-hopper" id="sh-hopper">${me.e}</div><div class="sh-pad sh-mine" id="sh-mine"><i class="sh-timer" id="sh-timer"></i></div></div><div class="sh-pause" id="sh-pause" hidden><b>⏸️ Paused</b><span>Your platform is waiting for you.</span><button class="btn go" id="sh-resume" type="button">▶ Keep hopping</button></div></div>
     <div class="sh-msg" id="sh-msg" aria-live="polite"></div>
     <p class="soft sh-help">${U ? `${U.e} ${esc(U.name)}` : "🌍 Everything"} · ${L.name}: ${L.secs} seconds before your platform crumbles. Keys 1, 2, 3 work too, and P pauses. <button class="linklike" id="sh-quit" type="button">Stop</button></p></div>`);
   const $ = id => document.getElementById("sh-" + id);
-  const hud = () => { $("lives").textContent = "❤️".repeat(G.lives) + "🖤".repeat(3 - G.lives); $("hops").textContent = `${G.hops} hop${G.hops === 1 ? "" : "s"}`; $("atoms").textContent = `⚛️ ${G.atoms}`; };
+  const hud = () => { $("lives").innerHTML = shHeartsHTML(G.lives, G.max); $("hops").textContent = `${G.hops} hop${G.hops === 1 ? "" : "s"}`; $("atoms").textContent = `⚛️ ${G.atoms}`; };
   const next = () => {
     if (G.over) return;
     if (!G.deck.length) G.deck = shuffle(pool);
@@ -24818,16 +24823,16 @@ function shHop(level, topic) {
       hud(); hopTo(btn, next);
     } else {
       G.streak = 0; G.lives--; btn.classList.add("crumble"); right.classList.add("right"); G.missed.push(x); hud(); tone?.([220, 165], .12, "sawtooth", .05);
-      $("msg").innerHTML = `<b class="sh-bad">💥 That platform crumbled!</b> ${esc(x.fact)}`;
+      $("msg").innerHTML = `<b class="sh-bad">💥 That platform crumbled! −1 ❤️</b> ${esc(x.fact)}`;
       if (G.lives <= 0) return naTimer(setTimeout(end, 1800));
       naTimer(setTimeout(() => hopTo(right, () => naTimer(setTimeout(next, 900))), 1100));
     }
   };
   const crumble = () => {   // ⏱ too slow: your platform crumbles and you fall
-    if (G.over || G.cur.done || G.paused) return; G.cur.done = true; G.streak = 0; G.lives--; G.missed.push(G.cur.x);
+    if (G.over || G.cur.done || G.paused) return; G.cur.done = true; G.streak = 0; G.lives -= .5; G.missed.push(G.cur.x);   // too slow costs half a heart
     $("mine").classList.add("crumble"); const hp = $("hopper"); hp.style.transform = "translate(-50%, 90px)"; hp.style.opacity = 0;
     const right = [...$("next").children].find(b => G.cur.opts[+b.dataset.p] === G.cur.x.a); right?.classList.add("right");
-    $("msg").innerHTML = `<b class="sh-bad">⏱ Too slow! Your platform crumbled.</b> ${esc(G.cur.x.fact)}`; hud(); tone?.([300, 150], .15, "sawtooth", .05);
+    $("msg").innerHTML = `<b class="sh-bad">⏱ Too slow! Your platform crumbled. −½ ❤️</b> ${esc(G.cur.x.fact)}`; hud(); tone?.([300, 150], .15, "sawtooth", .05);
     if (G.lives <= 0) return naTimer(setTimeout(end, 1800));
     naTimer(setTimeout(next, 2600));
   };
@@ -24864,8 +24869,8 @@ function shHop(level, topic) {
 function shShop() {
   const S = shGet();
   appScreen("🐸 Science Hop · 🛒 Hopper shop", `<div class="sh"><div class="row sh-top"><button class="chip" id="sh-home" type="button">⬅ Science Hop</button><b>⚛️ ${fmt(S.atoms)} atoms</b></div>
-    <p class="soft">Spend your atoms on a new hopper. The 🐢 Turtle is free!</p>
-    <div class="sh-shop">${SH_HOPPERS.map(h => { const own = S.owned.includes(h.id), on = S.hopper === h.id; return `<button class="sh-item${on ? " on" : ""}${own ? " own" : ""}" type="button" data-h="${h.id}"><span>${h.e}</span><b>${esc(h.name)}</b><small>${on ? "✅ Hopping now" : own ? "Tap to hop as me" : h.cost ? `⚛️ ${fmt(h.cost)}` : "Free"}</small></button>`; }).join("")}</div></div>`);
+    <p class="soft">Spend your atoms on a new hopper. Each fancier hopper starts with half a heart more! The 🐢 Turtle is free.</p>
+    <div class="sh-shop">${SH_HOPPERS.map(h => { const own = S.owned.includes(h.id), on = S.hopper === h.id; return `<button class="sh-item${on ? " on" : ""}${own ? " own" : ""}" type="button" data-h="${h.id}"><span>${h.e}</span><b>${esc(h.name)}</b><small class="sh-ih">❤️ ${shHalf(h.hearts)} hearts</small><small>${on ? "✅ Hopping now" : own ? "Tap to hop as me" : h.cost ? `⚛️ ${fmt(h.cost)}` : "Free"}</small></button>`; }).join("")}</div></div>`);
   document.getElementById("sh-home").addEventListener("click", () => startScienceHop());
   $app.querySelectorAll("[data-h]").forEach(b => b.addEventListener("click", () => {
     const h = SH_HOPPERS.find(x => x.id === b.dataset.h), S2 = shGet();
