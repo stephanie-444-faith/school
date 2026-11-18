@@ -964,7 +964,7 @@
   .room-emerg-row { display: flex; justify-content: center; margin: 4px 0 2px; }
   .room-emerg { border: 0; border-radius: 99px; padding: 10px 22px; font: inherit; font-weight: 800; font-size: 1rem; background: #ffb703; color: #3a1d00; box-shadow: 0 4px 14px rgba(0,0,0,.35); cursor: pointer; }
   .room-emerg:hover { filter: brightness(1.08); } .room-emerg:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-  .hip-head { display: flex; gap: 12px; align-items: center; } .hip-head h2 { margin: 0; } .hip-face { font-size: 3.4rem; animation: skyBob 3s ease-in-out infinite; }
+  .hip-head { display: flex; gap: 12px; align-items: center; } .hip-head h2 { margin: 0; } .hip-face { font-size: 3.4rem; animation: skyBob 3s ease-in-out infinite; } .hip-face.hip-plain { animation: none; }
   .hip-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 8px; }
   .hip-bar input { flex: 1; min-width: 200px; font: inherit; font-size: 1.1rem; padding: 12px 16px; border-radius: 99px; border: 2px solid var(--gold); background: var(--panel-2); color: inherit; }
   .hip-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; background: var(--panel-2); border: 2px solid var(--gold); border-radius: 16px; padding: 14px; margin: 12px 0; align-items: center; animation: coachIn .25s ease-out; }
@@ -1623,7 +1623,7 @@
   .tmr-ren { display: flex; gap: 6px; flex: 1 1 200px; min-width: 0; } .tmr-ren input { flex: 1; min-width: 0; font: inherit; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); } .tmr-ren .btn { padding: 6px 12px; font-size: .95rem; }
   .tmr-more { justify-self: center; }
   .subj-title { font-family: var(--display); font-weight: 400; font-size: 1.5rem; }
-  .subj-opts { display: grid; gap: 8px; margin: 8px 0 6px; }
+  .subj-opts { display: grid; gap: 8px; margin: 8px 0 6px; } .subj-group { margin: 10px 0 0; padding-top: 8px; border-top: 2px solid var(--line); }
   .subj-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
   .subj-opt:hover, .subj-opt:focus-visible { border-color: var(--gold); outline: none; } .subj-opt b { font-size: 1.05rem; } .subj-opt span { color: var(--ink-soft); font-size: .88rem; }
   .gp-opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 8px 0; } .gp-opts > span { font-weight: 700; } .gp-names { display: flex; align-items: center; gap: 6px; margin-left: 6px; font-weight: 600; }
@@ -1853,6 +1853,116 @@
   .sh-item { display: grid; gap: 2px; justify-items: center; padding: 12px 8px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
   .sh-item > span { font-size: 2.4rem; } .sh-item small { color: var(--ink-soft); } .sh-item.own { border-color: #3bb273; } .sh-item.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,210,63,.3); }
   @media (prefers-reduced-motion: reduce) { .sh-row.in, .crumble { animation: none; } .sh-hopper { transition: none; } }
+  /* 🧬 Kingdom Quest */
+  .kq h3 { margin: 14px 0 6px; }
+  .kq-hero { position: relative; overflow: hidden; border-radius: 22px; padding: 18px 16px 14px; margin: 6px 0 10px; background: linear-gradient(135deg, #1d3a66, #3b1f6b 55%, #0f4d4a); border: 2px solid rgba(255,255,255,.12); }
+  .kq-hero p { margin: 4px 0 8px; position: relative; font-weight: 700; }
+  .kq-floaty span { position: absolute; left: var(--x); top: var(--y); font-size: 1.6rem; opacity: .28; animation: kqFloat 9s ease-in-out var(--d) infinite alternate; pointer-events: none; }
+  @keyframes kqFloat { from { transform: translate(0, 0) rotate(-8deg); } to { transform: translate(14px, -18px) rotate(10deg); } }
+  .kq-title { position: relative; margin: 0; font-family: var(--display); font-weight: 400; font-size: 2.3rem; line-height: 1.05; }
+  .kq-title span { background: linear-gradient(90deg, #f5b700, #ff7a1a, #ef4b5c, #b0896f, #34c26a, #a066e0, #f5b700); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: kqShine 6s linear infinite; }
+  @keyframes kqShine { to { background-position: 300% 0; } }
+  .kq-stats { position: relative; display: flex; flex-wrap: wrap; gap: 6px; } .kq-stats span { background: rgba(0,0,0,.28); border-radius: 99px; padding: 4px 10px; font-size: .85rem; font-weight: 700; }
+  .kq-race-btn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 14px 16px; margin: 4px 0 10px; cursor: pointer; color: #2a1900; font: inherit; background: linear-gradient(135deg, #ffe066, #ffb703 60%, #ff8c42); box-shadow: 0 6px 0 #b86b00, 0 10px 24px rgba(255,183,3,.35); transition: transform .12s; }
+  .kq-race-btn:hover { transform: translateY(-2px); } .kq-race-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #b86b00; }
+  .kq-race-btn b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.4rem; } .kq-race-btn small { display: block; font-weight: 700; opacity: .85; }
+  .kq-race-ic { font-size: 2.6rem; animation: kqBob 2.4s ease-in-out infinite; } .kq-go { margin-left: auto; font-size: 1.6rem; }
+  @keyframes kqBob { 50% { transform: translateY(-5px) rotate(-6deg); } }
+  .kq-mn { display: grid; gap: 4px; width: 100%; text-align: center; border: 2px solid var(--line); border-radius: 18px; padding: 10px 12px; background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
+  .kq-mn small { color: var(--ink-soft); } .kq-mn-words { font-size: 1.15rem; font-weight: 800; line-height: 1.6; }
+  .kq-mn-words > span { display: inline-block; } .kq-mn-words b { color: var(--k); font-size: 1.55rem; font-family: var(--display); font-weight: 400; }
+  .kq-mn.wave .kq-mn-words > span { animation: kqWave .55s ease calc(var(--i) * .12s) both; }
+  @keyframes kqWave { 40% { transform: translateY(-9px) scale(1.12); } }
+  .kq-realms { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .kq-realm { position: relative; display: grid; gap: 3px; justify-items: start; text-align: left; padding: 12px; border-radius: 18px; border: 2px solid var(--k); background: var(--panel-2); background: linear-gradient(160deg, color-mix(in srgb, var(--k) 42%, transparent), var(--panel-2) 75%); color: inherit; font: inherit; cursor: pointer; transition: transform .12s, box-shadow .12s; }
+  .kq-realm:hover { transform: translateY(-3px); box-shadow: 0 0 18px var(--k); }
+  .kq-realm-e { font-size: 2.2rem; filter: drop-shadow(0 0 8px var(--k)); } .kq-realm b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; } .kq-realm small { color: var(--ink-soft); font-size: .78rem; }
+  .kq-crown { position: absolute; top: 6px; right: 8px; font-style: normal; font-size: 1.3rem; animation: kqBob 2s ease-in-out infinite; }
+  .kq-mini { display: block; width: 100%; height: 6px; border-radius: 4px; background: rgba(0,0,0,.3); overflow: hidden; } .kq-mini > i { display: block; height: 100%; background: var(--k); }
+  .kq-modes { display: grid; gap: 8px; }
+  .kq-mode { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; transition: transform .1s, border-color .1s; }
+  .kq-mode:hover { border-color: var(--gold); } .kq-mode:active { transform: scale(.98); }
+  .kq-mode b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.1rem; } .kq-mode small { color: var(--ink-soft); }
+  .kq-ic { font-size: 1.9rem; width: 44px; text-align: center; flex: 0 0 auto; } .kq-st { margin-left: auto; white-space: nowrap; }
+  .kq-mode.boss { border-color: #ef4b5c; background: linear-gradient(135deg, #4a1530, #2a1650); animation: kqGlow 2.6s ease-in-out infinite; }
+  @keyframes kqGlow { 50% { box-shadow: 0 0 16px rgba(239,75,92,.55); } }
+  .kq-tip { margin-top: 12px; }
+  .kq-top { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .kq-hud { display: flex; gap: 12px; font-size: 1.05rem; } .kq-hud .pop { display: inline-block; animation: kqPopIn .4s; }
+  .kq-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 6px; }
+  .kq-tabs button { flex: 0 0 auto; border: 0; border-radius: 99px; padding: 8px 12px; font: inherit; font-weight: 800; font-size: .88rem; cursor: pointer; color: #111; background: var(--k); opacity: .8; }
+  .kq-tabs button.on { opacity: 1; outline: 3px solid #fff; outline-offset: -1px; }
+  .kq-scard { border-left: 8px solid var(--k, var(--gold)); border-radius: 18px; background: var(--panel-2); padding: 12px 14px; margin: 8px 0; }
+  .kq-scard h3 { margin: 0 0 4px; } .kq-scard ul { margin: 6px 0; padding-left: 20px; line-height: 1.5; } .kq-ex { color: var(--ink-soft); margin: 6px 0 0; }
+  .kq-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; font-size: 1.7rem; } .kq-strip .no, .kq-shadow { filter: brightness(0) opacity(.35); }
+  .kq-cmpwrap { overflow-x: auto; } .kq-cmp { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 8px; }
+  .kq-cmp th, .kq-cmp td { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: center; } .kq-cmp td:first-child, .kq-cmp th:first-child { text-align: left; font-weight: 800; }
+  .kq-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .kq-sub { font-size: .9rem; } .kq-prog { height: 10px; border-radius: 99px; background: rgba(0,0,0,.3); overflow: hidden; margin: 6px 0 10px; }
+  .kq-prog > i { display: block; height: 100%; background: linear-gradient(90deg, #f5b700, #ff7a1a, #ef4b5c, #b0896f, #34c26a, #a066e0); transition: width .3s; }
+  .kq-card { position: relative; background: var(--panel-2); border: 2px solid var(--line); border-radius: 20px; padding: 14px; }
+  .kq-card.shake, .kq-game.hit { animation: kqShake .4s; }
+  @keyframes kqShake { 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
+  .kq-q { font-size: 1.2rem; font-weight: 700; line-height: 1.35; }
+  .kq-lab { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); font-weight: 800; margin-bottom: 4px; }
+  .kq-big { display: block; font-size: 3.3rem; text-align: center; margin: 4px 0; line-height: 1.1; animation: kqPopIn .45s ease-out; }
+  @keyframes kqPopIn { 0% { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: none; opacity: 1; } }
+  .kq-org { display: block; text-align: center; font-family: var(--display); font-weight: 400; font-size: 1.6rem; }
+  .kq-chs { display: grid; gap: 8px; margin-top: 12px; } .kq-chs.k6 { grid-template-columns: 1fr 1fr; }
+  @media (min-width: 560px) { .kq-chs.k6 { grid-template-columns: repeat(3, 1fr); } }
+  .kq-ch { position: relative; border: 3px solid transparent; border-radius: 14px; padding: 12px; font: inherit; font-weight: 800; color: var(--ink); background: var(--panel); cursor: pointer; text-align: left; line-height: 1.25; transition: transform .1s; overflow-wrap: anywhere; }
+  .kq-ch:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold); }
+  .kq-ch > i { position: absolute; top: 4px; right: 7px; font-style: normal; font-size: .7rem; opacity: .55; }
+  .kq-ch.k { overflow-wrap: normal; hyphens: manual; color: #111; text-align: center; background: var(--k); box-shadow: 0 4px 0 rgba(0,0,0,.25); } .kq-ch.k > span { display: block; font-size: 1.5rem; line-height: 1.1; }
+  .kq-ch.k:hover:not(:disabled) { border-color: #fff; box-shadow: 0 0 16px var(--k); }
+  .kq-ch:disabled { cursor: default; } .kq-ch.right { border-color: #fff; box-shadow: 0 0 0 3px #34c26a, 0 0 18px #34c26a; animation: kqPopIn .35s; }
+  .kq-ch.wrong { opacity: .5; text-decoration: line-through; } .kq-ch.fade { opacity: .32; }
+  .kq-pop { position: absolute; transform: translate(-50%, 0); font-family: var(--display); font-size: 1.5rem; color: #ffe066; text-shadow: 0 2px 0 #000; pointer-events: none; animation: kqUp 1s ease-out forwards; z-index: 3; }
+  @keyframes kqUp { to { transform: translate(-50%, -60px); opacity: 0; } }
+  .kq-fb { margin-top: 12px; border-radius: 14px; padding: 10px 12px; line-height: 1.4; display: none; } .kq-fb.good, .kq-fb.bad { display: block; }
+  .kq-fb.good { background: rgba(52,194,106,.16); border: 2px solid #34c26a; } .kq-fb.bad { background: rgba(239,75,92,.14); border: 2px solid #ef4b5c; }
+  .kq-newcard { display: block; margin-top: 6px; font-weight: 800; color: #ffe066; }
+  .kq-next { width: 100%; margin-top: 10px; } .kq-keys { font-size: .8rem; text-align: center; }
+  .kq-boss { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border-radius: 18px; background: linear-gradient(135deg, #4a1530, #2a1650); border: 2px solid #ef4b5c; }
+  .kq-bface { font-size: 2.8rem; line-height: 1; animation: kqBob 2.2s ease-in-out infinite; } .kq-bbody { flex: 1; min-width: 0; display: grid; gap: 3px; }
+  .kq-hp { display: block; height: 12px; border-radius: 99px; background: rgba(0,0,0,.4); overflow: hidden; } .kq-hp > i { display: block; height: 100%; background: linear-gradient(90deg, #ff4d6d, #ffb703); transition: width .5s ease; }
+  .kq-boss.ouch .kq-bface { animation: kqOuch .5s; } @keyframes kqOuch { 0% { transform: scale(1); filter: none; } 30% { transform: scale(.8) rotate(-12deg); filter: brightness(2) hue-rotate(-40deg); } 100% { transform: none; filter: none; } }
+  .kq-res { text-align: center; background: var(--panel-2); border-radius: 20px; padding: 16px; margin: 8px 0; } .kq-res h3 { margin: 4px 0 8px; }
+  .kq-pct { font-family: var(--display); font-size: 3.2rem; line-height: 1; } .kq-stars { font-size: 2.2rem; margin: 4px 0; }
+  .kq-miss { text-align: left; background: var(--panel); border-radius: 12px; padding: 10px 12px; margin: 8px 0; line-height: 1.4; } .kq-miss b { color: var(--gold); }
+  .kq-miss .kq-big { font-size: 2rem; animation: none; } .kq-miss .kq-org { font-size: 1.1rem; }
+  @media (max-width: 560px) { .hc-opts.long { grid-template-columns: 1fr; } }
+  .kq-race .hc-rung.kq-me { background: rgba(255,201,60,.28); } .kq-h { margin: 4px 0; } .kq-lv { margin: 6px 0 10px; }
+  .kq-rcard .kq-big { font-size: 2.6rem; } .kq-rcard .kq-org { font-size: 1.3rem; } .kq-rq { overflow-wrap: anywhere; }
+  .kq-detail { display: none; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 16px; border: 2px solid var(--k); background: var(--panel-2); margin: 8px 0; }
+  .kq-detail.on { display: flex; } .kq-detail .kq-big { margin: 0; } .kq-detail p { margin: 4px 0 0; }
+  .kq-dexh { margin: 12px 0 6px; padding-left: 10px; border-left: 6px solid var(--k); } .kq-dexh small { color: var(--ink-soft); font-weight: 400; }
+  .kq-dex { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
+  .kq-cardo { display: grid; gap: 2px; justify-items: center; padding: 10px 6px; border-radius: 14px; border: 2px dashed var(--line); background: var(--panel); color: var(--ink-soft); font: inherit; font-size: .8rem; cursor: pointer; }
+  .kq-cardo > span { font-size: 2rem; filter: brightness(0) opacity(.3); } .kq-cardo.got { border: 2px solid var(--k); color: var(--ink); background: linear-gradient(160deg, color-mix(in srgb, var(--k) 30%, transparent), var(--panel) 80%); }
+  .kq-cardo.got > span { filter: none; }
+  .kq-conf { position: fixed; top: -30px; font-size: 22px; pointer-events: none; z-index: 60; animation: kqFall 1.8s linear forwards; }
+  @keyframes kqFall { to { transform: translateY(108vh) rotate(540deg); opacity: .8; } }
+  @media (prefers-reduced-motion: reduce) { .kq-floaty span, .kq-title span, .kq-race-ic, .kq-crown, .kq-mode.boss, .kq-bface, .kq-big, .kq-mn.wave .kq-mn-words > span { animation: none; } }
+  /* 💬 Talk Room */
+  .talk h2 { margin: 0 0 4px; }
+  .talk-note { background: var(--panel-2); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; margin: 8px 0; }
+  .talk-rooms { margin: 8px 0; } .talk-rooms .chip { flex-direction: row; align-items: center; gap: 6px; padding: 7px 12px; border-width: 2px; } .talk-n { display: inline-block; min-width: 1.4em; padding: 0 5px; border-radius: 99px; background: #ff4d6d; color: #fff; font-size: .75rem; font-weight: 800; text-align: center; }
+  .talk-pick { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; margin: 6px 0; } .talk-ppl { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .talk-ppl .chip { flex-direction: row; align-items: center; gap: 6px; padding: 6px 10px; }
+  .talk-list { display: flex; flex-direction: column; gap: 8px; height: min(52vh, 460px); overflow-y: auto; padding: 10px; border-radius: 18px; background: rgba(0,0,0,.22); border: 2px solid var(--line); overscroll-behavior: contain; }
+  .talk-empty { margin: auto; text-align: center; }
+  .talk-msg { display: flex; gap: 8px; align-items: flex-end; max-width: 88%; } .talk-msg.talk-me { align-self: flex-end; flex-direction: row-reverse; }
+  .talk-ava { flex: 0 0 auto; display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; font-size: 1.3rem; background: var(--panel-2); }
+  .talk-ava .who-img { width: 100%; height: 100%; object-fit: cover; }
+  .talk-bub { min-width: 0; background: var(--panel-2); border-radius: 16px 16px 16px 4px; padding: 6px 10px 5px; } .talk-msg.talk-me .talk-bub { background: #3d6bd8; border-radius: 16px 16px 4px 16px; }
+  .talk-msg.mre .talk-bub { box-shadow: 0 0 0 2px var(--gold); }
+  .talk-bub p { margin: 2px 0; overflow-wrap: anywhere; white-space: pre-wrap; line-height: 1.35; }
+  .talk-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; font-size: .82rem; } .talk-meta small { color: var(--ink-soft); } .talk-msg.talk-me .talk-meta small { color: #dbe6ff; }
+  .talk-rep, .talk-del { font-size: .78rem; } .talk-del { color: #ff8a8a; }
+  .talk-emo { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0 4px; } .talk-emo button { border: 0; background: var(--panel-2); border-radius: 10px; padding: 4px 7px; font-size: 1.15rem; cursor: pointer; }
+  .talk-form { display: flex; gap: 8px; } .talk-form input { flex: 1; min-width: 0; padding: 12px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; }
+  .talk-tip { font-size: .82rem; margin: 6px 0; } .talk-unlock { margin-top: 10px; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3157,7 +3267,7 @@ const store = {
   }
 };
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -3399,7 +3509,7 @@ function showHome() {
     </div>
     <div class="panel">
       <span class="label">Tap a subject to start studying</span>
-      <div class="chips">${chipRow(Object.fromEntries(Object.entries(SUBJECTS).filter(([k]) => k !== "ratios")), "subject")}</div>
+      <div class="chips">${chipRow({ ...Object.fromEntries(Object.entries(SUBJECTS).filter(([k]) => k !== "ratios")), search: { name: "Searchable", desc: "Search for answers to anything" } }, "subject")}</div>
     </div>
     <div class="panel home-apps"><span class="label">📱 All the apps</span>
       <input class="ha-find" id="ha-find" type="search" placeholder="🔎 Find an app" aria-label="Find an app" autocomplete="off">
@@ -3412,7 +3522,8 @@ function showHome() {
     document.getElementById("ha-find").addEventListener("input", e => { const q = e.target.value.trim().toLowerCase(); let n = 0; $app.querySelectorAll("[data-ha]").forEach(b => { const ok = !q || b.dataset.haTxt.includes(q); b.hidden = !ok; if (ok) n++; }); document.getElementById("ha-none").hidden = n > 0; }); }
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     const s = b.dataset.subject;
-    if (["math", "ss", "health", "ela", "art", "science"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
+    if (s === "search") return startSearchable();   // 🔎 Searchable opens the search
+    if (["math", "ss", "health", "ela", "art", "science", "mix"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
     choice.subject = s; store.set("subject", s);
     startStudy();
   }));
@@ -3681,7 +3792,7 @@ let WHO_BY_SECRET = null;   // set when MR.E opens someone's profile with the se
 const whoMuted = id => !!(store.get("who_mute", {}) || {})[id];
 const whoHiddenSet = () => new Set(store.get("who_hidden", []) || []);
 const modCodeOK = code => whoHasCode("emmett") && (store.get("who_code", {}) || {}).emmett === whoHash("emmett", String(code || ""));
-const RP_WHAT = { tell: "💬 Something is wrong", about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery" };
+const RP_WHAT = { tell: "💬 Something is wrong", about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery", talk: "💬 Something they said in Talk Room" };
 function reportSend(r) {
   if (r && r.on === "emmett" && r.what !== "tell") return tellSheet();   // 🛡️ MR.E can't be reported, but anyone can tell him something is wrong
   const L = store.get("who_reports", []) || [];
@@ -3752,7 +3863,7 @@ function modOpen(box) {
       ${r.text ? `<p class="mod-quote">“${esc(r.text)}”</p>` : ""}${r.what === "pic" ? `<p>Picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="soft">Why: ${esc(r.note)}</p>` : ""}
       <div class="mod-btns">${r.what === "about" ? `<button class="chip" data-act="clearabout" data-on="${r.on}">🧹 Clear what they wrote</button><button class="chip" data-act="editabout" data-on="${r.on}">✏️ Change it</button>` : ""}
         ${r.what === "name" ? `<button class="chip" data-act="editname" data-on="${r.on}">✏️ Change their name</button>` : ""}${r.what === "pic" ? `<button class="chip" data-act="clearpic" data-on="${r.on}">🧹 Remove the picture</button>` : ""}
-        ${r.what === "art" && r.art ? `<button class="chip" data-act="delart" data-art="${r.art}">🗑 Delete the art</button>` : ""}
+        ${r.what === "art" && r.art ? `<button class="chip" data-act="delart" data-art="${r.art}">🗑 Delete the art</button>` : ""}${r.what === "talk" && r.msg ? `<button class="chip" data-act="delmsg" data-msg="${esc(r.msg)}">🗑 Delete the message</button>` : ""}
         <button class="chip" data-act="${mute[r.on] ? "unmute" : "mute"}" data-on="${r.on}">${mute[r.on] ? "🔊 Let them write again" : "🔇 Stop them from writing"}</button>
         ${r.on !== "emmett" ? `<button class="chip bad" data-act="del" data-on="${r.on}">🚫 Delete this person</button>` : ""}<button class="chip" data-act="done" data-rep="${r.id}">✅ Done</button></div></div>`).join("") : `<p class="soft">No reports. 🎉</p>`}
     <h4>👥 Everyone</h4>
@@ -3769,6 +3880,7 @@ function modOpen(box) {
     if (act === "clearabout") { const m = { ...(store.get("who_about", {}) || {}) }; delete m[on]; store.set("who_about", m); toast(`🧹 Cleared what ${nm(on)} wrote.`); return again(); }
     if (act === "clearpic") { whoPicSet(on, ""); toast(`🧹 Removed ${nm(on)}'s picture.`); return again(); }
     if (act === "mute" || act === "unmute") { const m = { ...(store.get("who_mute", {}) || {}) }; if (act === "mute") m[on] = true; else delete m[on]; store.set("who_mute", m); toast(act === "mute" ? `🔇 ${nm(on)} can't change their name or write about themselves now.` : `🔊 ${nm(on)} can write again.`); return again(); }
+    if (act === "delmsg") { const ok = await talkDeleteById(b.dataset.msg); if (!ok) return toast("That didn't delete. Open Talk Room on Claude and try there."); store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.msg !== b.dataset.msg)); toast("🗑 Message deleted."); return again(); }
     if (act === "delart") { await galDelete([b.dataset.art]).catch(() => {}); store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.art !== b.dataset.art)); toast("🗑 Art deleted."); return again(); }
     if (act === "del") { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Tap again to delete ${nm(on)}`; return; }
       const h2 = whoHiddenSet(); h2.add(on); store.set("who_hidden", [...h2]); ["who_about", "who_pic", "who_code"].forEach(k => { const m = { ...(store.get(k, {}) || {}) }; delete m[k === "who_pic" ? on : on]; store.set(k, m); });
@@ -5909,29 +6021,35 @@ function subjectPick(s) {
   document.getElementById("subj-pick")?.remove();
   const go = fn => () => { box.remove(); fn(); };
   const study = (subject, extra = {}) => go(() => { choice.subject = subject; store.set("subject", subject); Object.entries(extra).forEach(([k, v]) => { choice[k] = v; store.set(k, v); }); startStudy(); });
-  const opts = s === "math" ? { title: "🧮 Math", say: "What would you like to do?", btns: [
+  const hc = (subj, name, what) => [`🎓 Head of the Class: ${name}`, `Race the computer from Kindergarten to College${what}`, go(() => startHeadClass(subj))];
+  const subjOpts = k => k === "math" ? { title: "🧮 Math", say: "What would you like to do?", btns: [
+      hc("math", "Math", ". The math gets harder every grade!"),
       ["📝 Practice math problems", "Endless problems, easy or hard", study("math")],
       ["📐 Ratios & Rates", "Ratios, rates, tables and tape diagrams (test practice)", study("ratios", { rpart: "all" })],
       ["🧮 Open the Math Center", "All the math apps in one place, like the fraction lab", go(() => startMathCenter())]] }
-    : s === "science" ? { title: "🔬 Science", say: "What would you like to do?", btns: [
+    : k === "science" ? { title: "🔬 Science", say: "What would you like to do?", btns: [
+      hc("science", "Science", " with science questions"),
       ["📝 Practice science questions", "Cells, Earth, energy, space", study("science")],
       ["💻 Code Lab", "Learn to code step by step", go(() => startCodeLab())],
       ["🔬 Science Lab", "Sink or float, color mixing, a volcano and a plant you grow", go(() => startScienceLab())],
-      ["🐸 Science Hop", "Learn science the way Bunny Hop Typing teaches typing: learn facts, then hop across platforms by answering before they crumble", go(() => startScienceHop())]] }
-    : s === "art" ? { title: "🎨 Art", say: "What would you like to do?", btns: [
+      ["🐸 Science Hop", "Learn science the way Bunny Hop Typing teaches typing: learn facts, then hop across platforms by answering before they crumble", go(() => startScienceHop())],
+      ["🧬 Kingdom Quest", "The six kingdoms of life: race the computer like Head of the Class, plus study cards, sorting, mystery organisms and a final boss", go(() => startKingdomQuest())]] }
+    : k === "art" ? { title: "🎨 Art", say: "What would you like to do?", btns: [
+      hc("art", "Art", " with art questions"),
       ["📝 Practice art questions", "Color, design, and artists", study("art", { alevel: "easy" })],
       ["🧠 Complex art", "Harder questions: famous artists, art history, perspective, color theory and how art is made", study("art", { alevel: "hard" })],
       ["🖼️ Art Gallery", "Pixel art, drawings, your pictures, printing, and everyone's art", go(() => startGallery())],
       ["🎞️ Moving Art", "Make art that moves, or a flipbook", go(() => startMovingArt())],
       ["💬 Comic Creator", "Make your own comic with characters and speech bubbles", go(() => startComicCreator())],
       ["🌈 New home screen background", "Pick a new background for this home screen, or use your own picture or art", go(() => { if (!SITE_WHO) return toast("Pick who you are first!"); openBgSheet(); })]] }
-    : s === "ela" ? { title: "📚 Reading & Writing", say: "What would you like to do?", btns: [
+    : k === "ela" ? { title: "📚 Reading & Writing", say: "What would you like to do?", btns: [
+      hc("ela", "Reading & Writing", " with reading and writing questions"),
       ["📝 Practice reading & writing", "Grammar and story word questions", study("ela")],
       ["🏹 Roots games", "Greek & Latin roots: archery, sports and hyper practice", go(() => startRootsChooser())],
       ["📖 The Library", "Big books and classic stories to read", go(() => startHippo("show me the library"))],
-      ["🎓 Head of the Class", "Race the computer from Kindergarten to College, with questions from any subject", go(() => startHeadClass())],
       ["🐶 Story Starters", "Story ideas to write about, then keep the story going!", go(() => startStories())]] }
-    : s === "ss" ? { title: "🌍 Social Studies", say: "You can study the Neolithic Revolution, but you don't have to!", btns: [
+    : k === "ss" ? { title: "🌍 Social Studies", say: "You can study the Neolithic Revolution, but you don't have to!", btns: [
+      hc("ss", "Social Studies", " with social studies questions"),
       ["🌾 Study the Neolithic Revolution", "Early Humans to the first farms and cities (test practice)", study("ss", { set: "all" })],
       ...Object.entries(SETS).filter(([k]) => k !== "all").map(([k, v]) => [`🌾 Neolithic: ${v.name}`, `Just one part: ${v.desc}`, study("ss", { set: k })]),
       ["🌎 Other social studies", "Maps, government, money, and history around the world", study("ssw")],
@@ -5939,12 +6057,20 @@ function subjectPick(s) {
       ["📜 Timeline", "Social Studies extra: put 14 events in order, from Africa to cities", go(() => startTimeline())],
       ["❓ Focus Questions", "Social Studies extra: the 8 questions from the study guide, with model answers", go(() => startFocus())]],
       extra: `<details class="subj-extra"><summary>🍇 What GRAPES stands for</summary><div class="legend">${Object.entries(GRAPES_CATS).map(([k, v]) => `<div><b>${k}</b> ${v.name}: ${v.say.toLowerCase()}</div>`).join("")}</div></details>` }
-    : { title: "❤️ Health", say: "Pick a health topic if you want to, or do a mix of everything.", btns: [
+    : k === "health" ? { title: "❤️ Health", say: "Pick a health topic if you want to, or do a mix of everything.", btns: [
+      hc("health", "Health", " with health questions"),
       ...Object.entries(HEALTH_PARTS).map(([k, v]) => [`${{ safety: "🦺", body: "🫀", food: "🥦" }[k] || "❤️"} ${v.name}`, v.desc, study("health", { hpart: k })]),
-      ["🔀 A mix of all health", "Safety, body and food questions together", study("health", { hpart: "all" })]] };
+      ["🔀 A mix of all health", "Safety, body and food questions together", study("health", { hpart: "all" })]] }
+    : null;
+  const opts = s === "mix" ? { title: "🔀 Mix it up", say: "Do a mix of everything, or pick anything from any subject below.", btns: [
+      hc("mix", "Mix it up", " with questions from every subject"),
+      ["📝 Practice a mix of everything", "A bit of every subject", study("mix")],
+      ...["math", "science", "ss", "health", "ela", "art"].flatMap(k => { const o = subjOpts(k); return [["#", o.title], ...o.btns]; }),
+      ["#", "🔎 Searchable"], ["🔎 Searchable", "Search for answers to anything", go(() => startSearchable())]] }
+    : subjOpts(s);
   const box = document.createElement("div"); box.id = "subj-pick"; box.className = "bgsheet";
   box.innerHTML = `<div class="bgsheet-box subj-pick" role="dialog" aria-label="${esc(opts.title)}"><div class="prof-head"><b class="subj-title">${opts.title}</b><button class="iconbtn" id="sp-x" type="button">✕ Not now</button></div>
-    <p class="soft">${opts.say}</p><div class="subj-opts">${opts.btns.map(([t, d], i) => `<button class="subj-opt" data-sp="${i}" type="button"><b>${t}</b><span>${d}</span></button>`).join("")}</div>${opts.extra || ""}</div>`;
+    <p class="soft">${opts.say}</p><div class="subj-opts">${opts.btns.map(([t, d], i) => t === "#" ? `<h4 class="subj-group">${d}</h4>` : `<button class="subj-opt" data-sp="${i}" type="button"><b>${t}</b><span>${d}</span></button>`).join("")}</div>${opts.extra || ""}</div>`;
   box.querySelectorAll("[data-sp]").forEach(b => b.addEventListener("click", opts.btns[+b.dataset.sp][2]));
   box.querySelector("#sp-x").addEventListener("click", () => box.remove());
   box.addEventListener("click", e => { if (e.target === box) box.remove(); });
@@ -10739,7 +10865,7 @@ function startAIStudio(view) {
 }
 /* ---------- 10 more App-App apps ---------- */
 let NA_TIMERS = [];
-function naCleanup() { NA_TIMERS.forEach(t => { clearInterval(t); clearTimeout(t); cancelAnimationFrame(t); }); NA_TIMERS = []; }
+function naCleanup() { NA_TIMERS.forEach(t => { if (typeof t === "function") { try { t(); } catch (e) {} return; } clearInterval(t); clearTimeout(t); cancelAnimationFrame(t); }); NA_TIMERS = []; }   // a function is a listener to stop
 const naTimer = t => (NA_TIMERS.push(t), t);
 /* ---------- 📷 Pictures everywhere: paste (Ctrl+V) or drop a picture on any screen. If the screen can use a picture it does; otherwise it goes into your Art Gallery.
    (Dropping a picture also never makes the browser leave the site.) */
@@ -12948,11 +13074,13 @@ const HC_FACTS = [
 ];
 let HC = null;
 // 🎓 Head of the Class can use trivia (by grade) or any subject's questions
-const HC_SUBJECTS = [["trivia", "🎲 Trivia", null], ["ss", "🌍 Social Studies", "all"], ["ssw", "🌎 Around the World", "ssw"], ["math", "🔢 Math", "math"], ["ratios", "📐 Ratios & Rates", "ratios_all"], ["science", "🔬 Science", "science"], ["health", "❤️ Health", "health_all"], ["ela", "📚 Reading & Writing", "ela"], ["art", "🎨 Art", "art"], ["mix", "🔀 Mix it up", "mix"]];
+const HC_SUBJECTS = [["trivia", "🎲 Trivia", null], ["ss", "🌍 Social Studies", "all"], ["ssw", "🌎 Around the World", "ssw"], ["math", "🔢 Math", null], ["ratios", "📐 Ratios & Rates", "ratios_all"], ["science", "🔬 Science", "science"], ["kingdoms", "🧬 Six Kingdoms", null], ["health", "❤️ Health", "health_all"], ["ela", "📚 Reading & Writing", "ela"], ["art", "🎨 Art", "art"], ["mix", "🔀 Mix it up", "mix"]];
 const hcSubj = () => { const s = store.get("hc_subj", "trivia"); return HC_SUBJECTS.some(x => x[0] === s) ? s : "trivia"; };
 let HC_DECK = null;
 function hcQuestion(g) {
   const sub = HC_SUBJECTS.find(x => x[0] === hcSubj());
+  if (sub && sub[0] === "math") { const [q, a, st] = HC_MATH[Math.min(13, g)](); return { q, a: String(a), opts: shuffle([a, ...hcNear(a, st || 1)]).map(String) }; }   // 🔢 math gets harder every grade
+  if (sub && sub[0] === "kingdoms") { const x = kqRaceQ(Math.min(13, g)); return { q: x.q, html: true, a: x.a, opts: x.opts }; }   // 🧬 from Kingdom Quest
   if (sub && sub[2]) {   // a question from the subject's study deck
     if (!HC_DECK || HC_DECK.set !== sub[2]) { HC_DECK = makeDeck(sub[2]); HC_DECK.set = sub[2]; }
     for (let t = 0; t < 6; t++) { const m = HC_DECK.next(); let o = null; try { o = m(); } catch (e) {} if (o && o.a != null && Array.isArray(o.w) && o.w.length) return { q: o.prompt || o.q || "", html: true, a: String(o.a), opts: shuffle([String(o.a), ...o.w.slice(0, 3).map(String)]) }; }
@@ -12961,8 +13089,9 @@ function hcQuestion(g) {
   if (Math.random() < .4) { const [q, a, w] = rPick(HC_FACTS[band]); return { q, a, opts: shuffle([a, ...w]) }; }
   const [q, a, s] = HC_MATH[g](); return { q, a: String(a), opts: shuffle([a, ...hcNear(a, s || 1)]).map(String) };
 }
-function startHeadClass() {
+function startHeadClass(subj) {   // subj (optional): start with that subject's questions, like "math" from the home page
   cgScreen("hclass", "🎓 Head of the Class", "Race the computer from Kindergarten all the way through College! Each turn you get a question at your grade. Get it right and you move up a grade. The computer answers its own questions too. The first one to graduate from College is Head of the Class!", startHeadClass);
+  if (typeof subj === "string" && HC_SUBJECTS.some(x => x[0] === subj)) { store.set("hc_subj", subj); HC_DECK = null; }
   HC = { pos: [0, 0], q: hcQuestion(0), answered: null, over: null, log: "Kindergarten, here we go!" };
   hcRender();
 }
@@ -12973,7 +13102,7 @@ function hcRender() {
   box.innerHTML = `<div class="na-chips hc-subj"><span>Questions about:</span>${HC_SUBJECTS.map(([k, l]) => `<button class="chip${k === hcSubj() ? " on" : ""}" data-hcs="${k}" type="button">${l}</button>`).join("")}</div><div class="hc-wrap"><div class="hc-ladder">${ladder}</div><div class="hc-q">
     <p class="un-log">${esc(HC.log)}</p>
     ${HC.over !== null ? `<h3>${HC.over === 0 ? "🏆 You graduated first! You're Head of the Class!" : "🤖 The computer graduated first!"}</h3><button class="btn go" id="hc-again">Play again</button>` : `
-    <div class="sl-card"><small>${HC_GRADES[HC.pos[0]]} grade question${hcSubj() !== "trivia" ? ` · ${esc((HC_SUBJECTS.find(x => x[0] === hcSubj()) || [, ""])[1])}` : ""}</small><h3>${Q.html ? Q.q : esc(Q.q)}</h3><div class="hc-opts">${Q.opts.map(o => `<button class="btn${HC.answered ? (o === Q.a ? " go" : o === HC.answered ? " bad" : "") : ""}" data-o="${esc(o)}" ${HC.answered ? "disabled" : ""}>${esc(o)}</button>`).join("")}</div>
+    <div class="sl-card"><small>${HC_GRADES[HC.pos[0]]} grade question${hcSubj() !== "trivia" ? ` · ${esc((HC_SUBJECTS.find(x => x[0] === hcSubj()) || [, ""])[1])}` : ""}</small><h3>${Q.html ? Q.q : esc(Q.q)}</h3><div class="hc-opts${Q.opts.some(o => String(o).length > 11) ? " long" : ""}">${Q.opts.map(o => `<button class="btn${HC.answered ? (o === Q.a ? " go" : o === HC.answered ? " bad" : "") : ""}" data-o="${esc(o)}" ${HC.answered ? "disabled" : ""}>${esc(o)}</button>`).join("")}</div>
     ${HC.answered ? `<button class="btn go" id="hc-next">🤖 Computer's turn ➜</button>` : ""}</div>`}</div></div>`;
   box.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => { HC.answered = b.dataset.o; const ok = HC.answered === Q.a; if (ok) { HC.pos[0]++; sfx.right(); HC.log = HC.pos[0] === 14 ? "🎓 You graduated!" : `✅ Correct! You move up to ${HC_GRADES[HC.pos[0]]}.`; } else { sfx.wrong(); HC.log = `❌ Not quite. The answer was ${Q.a}. You stay in ${HC_GRADES[HC.pos[0]]}.`; } if (HC.pos[0] === 14) { HC.over = 0; cgWin("hclass", 0); } hcRender(); }));
   document.getElementById("hc-next")?.addEventListener("click", hcAi);
@@ -22012,6 +22141,7 @@ const LB_BOARDS = [
   { id: "claim", g: "arcade", e: "🟩", name: "Color Claim", unit: v => `${v}% of the map`, get: id => lbBest(id, "claim") },
   { id: "connect4", g: "more", e: "🔴", name: "Connect Four", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "connect4") },
   { id: "pong", g: "more", e: "🏓", name: "Pong", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "pong") },
+  { id: "kingdoms", g: "more", e: "🧬", name: "Kingdom Quest", unit: v => `${v} race${v === 1 ? "" : "s"} won`, get: id => { const d = lbGet("kq_v1", id); return d ? lbNum(d.wins) : null; }, note: "Kingdom Races won" },
   { id: "scihop", g: "more", e: "🐸", name: "Science Hop", unit: v => `${v} hops`, get: id => { const d = lbGet("sh_v1", id); return d && d.best ? lbNum(Math.max(0, ...Object.values(d.best).filter(x => typeof x === "number"))) : null; }, note: "Most hops in one run" },
   { id: "globe", g: "more", e: "🌐", name: "Globe Detective", unit: v => `${fmt(v)} points`, get: id => { const b = lbGet("glb_best", id); return lbNum(Math.max(lbBest(id, "globe") || 0, b && typeof b === "object" ? Math.max(0, ...Object.values(b).filter(x => typeof x === "number")) : 0)); }, note: "Best game in any area" },
   { id: "pool", g: "more", e: "🎱", name: "Pool Hall", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => { const s = lbGet("pool_stats", id); return s && typeof s === "object" ? lbNum(Object.entries(s).filter(([k]) => k.startsWith("w_")).reduce((t, [, v]) => t + (+v || 0), 0)) : null; }, note: "Wins against the computer" },
@@ -24687,6 +24817,583 @@ function shShop() {
   }));
 }
 NEW_APPS.push({ id: "scihop", emoji: "🐸", name: "Science Hop", desc: "Learn science the way Bunny Hop Typing teaches typing: learn facts on the Learning Trail, then hop across platforms by answering before they crumble.", start: () => startScienceHop(), kw: "science hop|science game|learn science|science lessons|science facts|hop science" });
+/* ---------- 🧬 Kingdom Quest: the six kingdoms of life, from MR.E's science worksheet.
+   🎓 Kingdom Race plays like Head of the Class: race the computer from Kindergarten to College, and the questions get harder every grade.
+   Also 📚 Study Cards, 🗂️ Kingdom Sort, 🕵️ Mystery Organism, ⚡ Fact Attack, 👑 the Final Boss (the practice test as a boss battle),
+   and the 📖 Organism Collection: sort an organism right on the first try to collect its card. */
+const KQ_K = {
+  ar: { n: "Archaebacteria", h: "Archae\u00adbacteria", e: "🌋", c: "#f5b700", t: "Extreme survivors" },
+  eu: { n: "Eubacteria", h: "Eu\u00adbacteria", e: "🦠", c: "#ff7a1a", t: "The true bacteria" },
+  pr: { n: "Protista", e: "💧", c: "#ef4b5c", t: "The weird ones" },
+  fu: { n: "Fungi", e: "🍄", c: "#b0896f", t: "They absorb their food" },
+  pl: { n: "Plantae", e: "🌿", c: "#34c26a", t: "They make their own food" },
+  an: { n: "Animalia", e: "🐾", c: "#a066e0", t: "They eat other things" }
+};
+const KQ_KO = ["ar", "eu", "pr", "fu", "pl", "an"];
+/* ---------- STUDY CARDS ---------- */
+const KQ_STUDY = {
+  big:{title:"🧠 Big Ideas", color:"var(--ar)", pts:[
+    "Long ago, scientists used only <b>2 kingdoms</b>: plants and animals.",
+    "Now most scientists use <b>6 kingdoms</b>. (Some biologists have suggested 7 or 8!)",
+    "<b>Euglena</b> is why 2 wasn't enough — it's a single-celled organism that is both <b>plant-like and animal-like</b>.",
+    "Kingdoms are <b>human inventions</b>. The organisms don't care what kingdom they're in!",
+    "<b>Only single-celled:</b> Archaebacteria, Eubacteria.",
+    "<b>Have multicellular organisms:</b> Protista (some), Fungi, Plantae, Animalia.",
+    "<b>Prokaryotic (NO nucleus):</b> Archaebacteria, Eubacteria. The other 4 have a nucleus."
+  ]},
+  ar:{pts:[
+    "Includes bacteria and <b>cyanophytes</b>, also called <b>blue-green algae</b>.",
+    "<b>Unicellular</b> (single-celled) and <b>prokaryotic</b> = no nucleus.",
+    "The <b>first living things on Earth</b> were probably like these bacteria.",
+    "Live in <b>extreme environments</b>: super hot, cold, or salty places.",
+    "Bacteria are just about everywhere on Earth."
+  ], ex:"Example: blue-green algae (cyanophytes)"},
+  eu:{pts:[
+    "The <b>“true bacteria.”</b>",
+    "<b>Unicellular</b> and <b>prokaryotic</b> (no nucleus).",
+    "They can <b>live inside you</b>!",
+    "<b>E. coli</b> → lives in your intestines.",
+    "<b>Staphylococcus</b> → lives on your skin.",
+    "<b>Streptococcus</b> → lives on your skin and in your throat.",
+    "Bacteria reproduce asexually by <b>binary fission</b> (splitting in two) — very fast."
+  ], ex:"Examples: E. coli, Staphylococcus, Streptococcus, decomposer bacteria (Pseudomonas)"},
+  pr:{pts:[
+    "Created for organisms that <b>didn't fit anywhere else</b> — the “weird” kingdom.",
+    "Most are <b>single-celled</b>, but their cells <b>have a nucleus</b> (like plant & animal cells).",
+    "Some act like plants, some like animals, some like <b>both</b>.",
+    "<b>Euglena</b> = plant-like AND animal-like.",
+    "<b>Paramecium</b> = zooms through water with thousands of tiny <b>cilia</b>; eats bacteria by <b>endocytosis</b> (engulfing).",
+    "<b>Amoeba</b> = changes shape constantly and <b>flows around food to engulf it</b>. Like a blob!",
+    "⚠️ <b>Slime mold</b> and <b>kelp</b> are protists too (slime mold is NOT a fungus!)."
+  ], ex:"Examples: Euglena, Paramecium, Amoeba, slime mold, kelp"},
+  fu:{pts:[
+    "Includes <b>yeasts, molds, mushrooms, and mildews</b>.",
+    "Most are <b>multicellular</b> — except <b>yeast</b>, which is unicellular.",
+    "Fungi <b>absorb nutrients</b>. They secrete <b>digestive enzymes</b> to break food down first.",
+    "They do NOT make their own food (no photosynthesis). Many are decomposers.",
+    "Reproduce with <b>spores</b>. A fungus body of threads is called a <b>mycelium</b>.",
+    "A mushroom's main body is hidden underground; the part you see is the <b>fruiting body</b>."
+  ], ex:"Examples: yeast, mushroom, mold, mildew, shelf fungus"},
+  pl:{pts:[
+    "Mosses, pine trees, roses, lilies, apple trees — and a bunch of algae.",
+    "Plants are usually <b>multicellular</b>.",
+    "Their cells have a <b>cell wall</b> (animal cells don't).",
+    "Plant cell walls are made of <b>cellulose</b>.",
+    "Plants are <b>autotrophs</b> — they make their own food by <b>photosynthesis</b>.",
+    "Even the <b>Venus flytrap</b> is a plant: it makes food from sunlight; bugs are just fertilizer."
+  ], ex:"Examples: lily, rose, pine, moss, apple tree, Venus flytrap"},
+  an:{pts:[
+    "<b>All animals are multicellular.</b>",
+    "Animal cells <b>lack a cell wall</b>.",
+    "Animals are <b>heterotrophs</b> — they eat other things for food.",
+    "Some don't look like animals but are: <b>sponges, sea anemones, sea cucumbers</b>.",
+    "Includes snails, spiders, insects (bees), birds (hawks), cows, and humans!"
+  ], ex:"Examples: snail, spider, bee, human, hawk, cow, sponge, sea anemone"},
+  vocab:{title:"📖 Vocab", color:"var(--an)", pts:[
+    "<b>Unicellular</b> = made of one cell. <b>Multicellular</b> = made of many cells.",
+    "<b>Prokaryotic</b> = no nucleus in the cell.",
+    "<b>Autotroph</b> = makes its own food (like by photosynthesis).",
+    "<b>Heterotroph</b> = gets food by eating or absorbing other things.",
+    "<b>Photosynthesis</b> = making food (glucose) from sunlight.",
+    "<b>Motile</b> = can move on its own.",
+    "<b>Cilia</b> = tiny hairs a paramecium uses to swim.",
+    "<b>Endocytosis</b> = a cell engulfing food by wrapping around it.",
+    "<b>Binary fission</b> = splitting into two (how bacteria reproduce).",
+    "<b>Spores</b> = tiny reproductive cells fungi (and slime molds) release.",
+    "<b>Mycelium</b> = the whitish, thready body of a fungus.",
+    "<b>Cellulose</b> = what plant cell walls are made of."
+  ]}
+};
+
+/* ---------- SORT: organisms ---------- */
+const KQ_ORGS = [
+  ["Blue-green algae (cyanophytes)","🟦","ar","On your worksheet, blue-green algae are in Archaebacteria."],
+  ["Bacteria in a boiling hot spring","♨️","ar","Extreme environments (hot, cold, salty) = Archaebacteria."],
+  ["Bacteria in super salty water","🧂","ar","Extreme environments = Archaebacteria."],
+  ["E. coli","🦠","eu","True bacteria that live in your intestines = Eubacteria."],
+  ["Staphylococcus","🖐️","eu","True bacteria living on your skin = Eubacteria."],
+  ["Streptococcus","😷","eu","True bacteria on your skin and in your throat = Eubacteria."],
+  ["Decomposer bacteria (Pseudomonas)","🍂","eu","Ordinary “true” bacteria = Eubacteria."],
+  ["Euglena","🟢","pr","Plant-like AND animal-like single cell = Protista."],
+  ["Paramecium","🏊","pr","Single cell that swims with cilia = Protista."],
+  ["Amoeba","🫧","pr","Shape-changing blob that engulfs food = Protista."],
+  ["Slime mold","🟠","pr","Trick! Slime mold is a PROTIST, not a fungus."],
+  ["Kelp","🌊","pr","Kelp (seaweed) is a protist."],
+  ["Yeast","🍞","fu","Yeast is the one unicellular fungus."],
+  ["Mushroom","🍄","fu","Mushrooms = Fungi."],
+  ["Mold","🧀","fu","Molds = Fungi."],
+  ["Mildew","🚿","fu","Mildews = Fungi."],
+  ["Shelf fungus","🪵","fu","Grows in trees and digests the wood = Fungi."],
+  ["Lily","🌷","pl","Flowering plant = Plantae."],
+  ["Rose","🌹","pl","Roses = Plantae."],
+  ["Pine tree","🌲","pl","Pine trees = Plantae."],
+  ["Moss","🌱","pl","Mosses = Plantae."],
+  ["Apple tree","🍎","pl","Grows flowers and seeds in fruit = Plantae."],
+  ["Venus flytrap","🪤","pl","Still a plant! It makes food by photosynthesis."],
+  ["Snail","🐌","an","Snails = Animalia."],
+  ["Spider","🕷️","an","Spiders = Animalia."],
+  ["Bee","🐝","an","Insects = Animalia."],
+  ["Human","🧍","an","Yes, you're in Animalia!"],
+  ["Hawk","🦅","an","Birds = Animalia."],
+  ["Cow","🐄","an","Cows = Animalia."],
+  ["Sponge","🧽","an","Sponges don't look like it, but they're animals."],
+  ["Sea anemone","🪸","an","Sea anemones are animals."],
+  ["Sea cucumber","🥒","an","Sea cucumbers are animals, not plants!"]
+];
+
+/* ---------- MYSTERY riddles (from his worksheet) ---------- */
+const KQ_RIDDLES = [
+  ["I am a multicellular, photosynthetic, marine organism with motile sperm cells. I grow very fast and live my adult life attached to rocks being pounded by waves.","pr","Kelp"],
+  ["I am a single-celled, prokaryotic organism that lives in the large intestines of mammals like humans. I reproduce asexually by binary fission very fast.","eu","E. coli"],
+  ["I am a multicellular autotroph that lives on land. I grow flowers with eggs and pollen inside them, and produce seeds inside of fruits.","pl","Apple tree"],
+  ["I am a motile unicell that lives in pondwater. My body is covered with cilia and I can swim very fast. I eat bacteria by endocytosis.","pr","Paramecium"],
+  ["I am unicellular or multicellular depending on my age. To reproduce, my cells join into a slippery, slithering, bright orange mass. When mature, I dry out and release millions of spores.","pr","Slime mold"],
+  ["I am multicellular, and my body is shaped like a thread. I live in water and turn it bright green when my population explodes. I reproduce using motile sperm.","pr","Algae"],
+  ["I am a multicellular heterotroph that eats by ingesting grass. My species has males and females, and we cannot reproduce asexually.","an","Cow"],
+  ["I am enormous but mostly invisible because my body is hidden under soil. I make spores in fruiting bodies that rise above the soil. I eat by digesting dead plant material.","fu","Mushroom"],
+  ["I grow inside living trees and slowly digest their wood, making it rot. My body is a whitish, thready mass called a mycelium. I eventually kill my host tree.","fu","Shelf fungus"],
+  ["I am a fast-moving predator. My body has organs and tissues. I have excellent eyesight and my favorite food is ducks. I can fly.","an","Hawk"],
+  ["I cause dead animals to really stink when I slowly digest their tissues. I am a single-celled organism with no nucleus in my cell.","eu","Decomposer bacteria (Pseudomonas)"],
+  ["I am photosynthetic and multicellular. I make my own glucose food from sunlight, but get my fertilizer from insects I catch in my folding leaves.","pl","Venus flytrap"]
+];
+const KQ_ORGNAMES = ["Kelp","E. coli","Apple tree","Paramecium","Slime mold","Algae","Cow","Mushroom","Shelf fungus","Hawk","Decomposer bacteria (Pseudomonas)","Venus flytrap"];
+
+/* ---------- FACT QUIZ ---------- */
+const KQ_FACTS = [
+  ["How many kingdoms do most scientists use?",["2","4","6","8"],2,"Six kingdoms!"],
+  ["Traditionally (long ago), living things were split into which two kingdoms?",["Plants and animals","Bacteria and fungi","Plants and fungi","Animals and protists"],0,"Long ago it was just plants and animals."],
+  ["Which organism showed that 2 kingdoms weren't enough?",["Amoeba","Euglena","E. coli","Yeast"],1,"Euglena has traits of both plants and animals."],
+  ["What is the single-celled organism that is both plant-like and animal-like?",["Paramecium","Amoeba","Euglena","Staphylococcus"],2,"Euglena — color it blue!"],
+  ["Who created the kingdoms?",["Nature","Humans","The organisms themselves","Nobody knows"],1,"Kingdoms are purely human inventions."],
+  ["Some biologists have already suggested how many kingdoms?",["3 and 4","5 and 6","7 and 8","10 and 12"],2,"Seven and eight kingdoms have been suggested."],
+  ["What kingdom did the first organisms on Earth belong to?",["Eubacteria","Protista","Archaebacteria","Plantae"],2,"The first living things were probably like Archaebacteria. Color everything in it yellow!"],
+  ["Which kingdom can live in extreme places — super hot, cold, or salty?",["Archaebacteria","Fungi","Animalia","Plantae"],0,"Archaebacteria are adapted to almost any environment."],
+  ["Cyanophytes are also called…",["Slime molds","Blue-green algae","Mildews","Cilia"],1,"Cyanophytes = blue-green algae."],
+  ["On your worksheet, blue-green algae are in which kingdom?",["Plantae","Protista","Archaebacteria","Fungi"],2,"The reading lists blue-green algae under Archaebacteria."],
+  ["What does prokaryotic mean?",["Has many cells","Has no nucleus","Makes its own food","Has a cell wall"],1,"Prokaryotic = no nucleus inside the cell."],
+  ["Which TWO kingdoms are prokaryotic (no nucleus)?",["Protista & Fungi","Archaebacteria & Eubacteria","Plantae & Animalia","Eubacteria & Protista"],1,"Both bacteria kingdoms are prokaryotic."],
+  ["What kingdom are the “true bacteria” in?",["Archaebacteria","Eubacteria","Protista","Fungi"],1,"Eubacteria = true bacteria. Color the word orange!"],
+  ["Which kingdom has bacteria that can live inside you?",["Eubacteria","Archaebacteria","Plantae","Fungi"],0,"Eubacteria like E. coli live inside you."],
+  ["Where does E. coli live?",["On your skin","In your intestines","In your throat","In hot springs"],1,"E. coli lives in your intestines."],
+  ["Where does Staphylococcus live?",["In your intestines","In pond water","On your skin","In soil"],2,"Staphylococcus lives on your skin."],
+  ["Where does Streptococcus live?",["Skin and throat","Intestines only","Tree bark","Salty lakes"],0,"Streptococcus lives on your skin and in your throat."],
+  ["How do bacteria reproduce?",["Spores","Binary fission (splitting in two)","Seeds","Eggs"],1,"Binary fission — and they do it very fast."],
+  ["Why did scientists create Kingdom Protista?",["For all the bacteria","For organisms that didn't fit anywhere else","For organisms with cell walls","For all ocean life"],1,"Protista is the “didn't fit anywhere else” kingdom."],
+  ["Most protists are…",["Multicellular with no nucleus","Single-celled WITH a nucleus","Single-celled with NO nucleus","Plants"],1,"Most are single-celled, and their cells have a nucleus."],
+  ["What kingdom do Paramecium and Euglena belong to?",["Eubacteria","Fungi","Protista","Animalia"],2,"Protista — color the word red!"],
+  ["How does a Paramecium move?",["Changing shape","Thousands of little cilia","A tail","It can't move"],1,"Paramecium uses thousands of little cilia."],
+  ["Which protist changes shape constantly and flows around its food to engulf it?",["Euglena","Paramecium","Amoeba","Kelp"],2,"Amoeba — the little blob. Color it pink!"],
+  ["Endocytosis means…",["Splitting in two","Engulfing food by wrapping around it","Making food from sunlight","Releasing spores"],1,"Paramecium eats bacteria by endocytosis."],
+  ["Slime mold belongs to which kingdom?",["Fungi","Protista","Plantae","Eubacteria"],1,"Tricky! Slime mold is a protist, even though it's called a “mold.”"],
+  ["What kingdom are fungi, molds, and yeast in?",["Plantae","Protista","Fungi","Eubacteria"],2,"Fungi — color the word green!"],
+  ["Which of these is NOT in Kingdom Fungi?",["Yeast","Mildew","Mushroom","Moss"],3,"Moss is a plant. Fungi = yeasts, molds, mushrooms, mildews."],
+  ["Which fungus is unicellular (single-celled)?",["Mushroom","Yeast","Shelf fungus","Mold"],1,"Most fungi are multicellular except yeast."],
+  ["How do fungi get food?",["Photosynthesis","Absorbing nutrients after secreting digestive enzymes","Eating with a mouth","Catching insects"],1,"Fungi secrete enzymes to break food down, then absorb it."],
+  ["The whitish, thready body of a fungus is called a…",["Cilia","Mycelium","Cell wall","Spore"],1,"Mycelium!"],
+  ["Fungi reproduce using…",["Seeds","Spores","Flowers","Binary fission"],1,"Fungi release spores."],
+  ["All animals are…",["Unicellular","Multicellular","Prokaryotic","Photosynthetic"],1,"All animals are multicellular."],
+  ["Animal cells LACK a…",["Nucleus","Cell wall","Cell membrane","Anything — they have everything"],1,"Animal cells have no cell wall."],
+  ["Sponges, sea anemones, and sea cucumbers are in which kingdom?",["Plantae","Protista","Animalia","Fungi"],2,"They don't look like it, but they're animals."],
+  ["What kingdom includes sea anemones, snails, humans, insects and birds?",["Animalia","Plantae","Protista","Eubacteria"],0,"Animalia — color the word purple!"],
+  ["Plant cell walls are made of…",["Protein","Cellulose","Chitin","Calcium"],1,"Cellulose!"],
+  ["What organisms have cellulose in their cell walls?",["Animals","Bacteria","Plants","Protists"],2,"Plants — color them green and brown!"],
+  ["Mosses, pine trees, and roses are in which kingdom?",["Fungi","Plantae","Protista","Animalia"],1,"Plantae (oddly enough!)."],
+  ["Which kingdoms have organisms that are multicellular?",["Archaebacteria & Eubacteria","Protista, Fungi, Plantae & Animalia","Only Animalia","Only Plantae & Animalia"],1,"Protista (some), Fungi, Plantae, Animalia — circle all of them with orange! Bacteria are never multicellular."],
+  ["Which kingdoms are ONLY single-celled?",["Fungi & Protista","Archaebacteria & Eubacteria","Plantae & Fungi","Protista & Animalia"],1,"Both bacteria kingdoms are only unicellular."],
+  ["Unicellular means…",["Many cells","One cell","No nucleus","Makes own food"],1,"Uni = one."],
+  ["Multicellular means…",["One cell","Many cells","Has a cell wall","Can move"],1,"Multi = many."],
+  ["An autotroph is an organism that…",["Makes its own food","Eats other organisms","Has no nucleus","Lives in extreme places"],0,"Auto = self. Plants are autotrophs."],
+  ["A heterotroph is an organism that…",["Makes its own food from sunlight","Gets food by eating or absorbing other things","Has a cell wall","Splits in two"],1,"Animals and fungi are heterotrophs."],
+  ["“Motile” means…",["Can move on its own","Lives in water","Has many cells","Makes spores"],0,"Motile = able to move."],
+  ["The Venus flytrap catches insects. What kingdom is it in?",["Animalia","Fungi","Plantae","Protista"],2,"It's a plant — it makes food by photosynthesis; bugs are just fertilizer."],
+  ["Which kingdom has a nucleus but is MOSTLY single-celled?",["Protista","Animalia","Plantae","Eubacteria"],0,"Protista!"],
+  ["Which statement is TRUE?",["Organisms care what kingdom they're in","Kingdoms are human inventions","There have always been 6 kingdoms","Bacteria have a nucleus"],1,"Kingdoms are purely human inventions."]
+];
+const KQ_TF = [
+  ["Bacteria cells have a nucleus.",false,"Bacteria are prokaryotic — NO nucleus."],
+  ["Plant cells have cell walls; animal cells don't.",true,"Right!"],
+  ["All fungi are multicellular.",false,"Yeast is unicellular."],
+  ["Fungi make their own food using sunlight.",false,"Fungi absorb nutrients — no photosynthesis."],
+  ["Euglena is both plant-like and animal-like.",true,"That's why it's a protist."],
+  ["Some animals are single-celled.",false,"ALL animals are multicellular."],
+  ["Eubacteria can live inside your body.",true,"Like E. coli in your intestines."],
+  ["Archaebacteria can survive hot, cold, and salty places.",true,"They're adapted to extreme environments."],
+  ["Slime mold is a fungus.",false,"Slime mold is a protist!"],
+  ["A sea cucumber is a plant.",false,"It's an animal."],
+  ["Most protists are single-celled.",true,"Most are — but kelp is multicellular."],
+  ["Kingdoms are purely human inventions.",true,"The organisms don't care!"]
+];
+
+// 🎓 Kingdom Race: Head of the Class with six-kingdoms questions. Kindergarten to 2nd sorts organisms (4 choices), 3rd to 5th sorts
+// with all six kingdoms or asks true or false, 6th to 9th asks facts from the reading, and 10th to College asks the mystery riddles and facts.
+const KQ_ALGAE = "It's thread-like algae. Most books put algae in Protista, but your reading says some algae are in Plantae, so both are accepted here. Ask the teacher which one they want!";
+const KQ_BOSS_HP = 27;   // 27 of 30 right (90%) beats the boss: that's ⭐⭐⭐ and "You're ready!"
+const kqGet = () => { const v = store.get("kq_v1", null) || {}; return { wins: 0, losses: 0, lvl: "medium", bossWins: 0, ...v, modes: { ...(v.modes || {}) }, found: { ...(v.found || {}) } }; };
+const kqSave = S => store.set("kq_v1", S);
+const kqKLab = k => `${KQ_K[k].e} ${KQ_K[k].h || KQ_K[k].n}`;   // soft hyphens let long names break nicely on phones
+const kqFound = S => KQ_ORGS.filter(o => S.found[o[0]]).length;
+const kqCollect = name => { if (!name) return false; const S = kqGet(); if (S.found[name]) return false; S.found[name] = Date.now(); kqSave(S); return true; };
+const kqOrg = name => KQ_ORGS.find(o => o[0] === name);
+function kqBurst(n = 24) {   // emoji confetti
+  try { if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; } catch (e) {}
+  const em = ["🦠", "🍄", "🌿", "🐾", "💧", "🌋", "⭐", "🎉"];
+  for (let i = 0; i < n; i++) { const d = document.createElement("div"); d.className = "kq-conf"; d.textContent = em[i % em.length]; d.style.left = Math.random() * 100 + "vw"; d.style.animationDelay = Math.random() * .6 + "s"; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+}
+function kqPop(el, txt) {   // "+14" floats up from a button
+  const card = document.getElementById("kq-card"); if (!card || !el) return;
+  const a = card.getBoundingClientRect(), b = el.getBoundingClientRect(), p = document.createElement("span");
+  p.className = "kq-pop"; p.textContent = txt; p.style.left = (b.left - a.left + b.width / 2) + "px"; p.style.top = (b.top - a.top) + "px";
+  card.appendChild(p); setTimeout(() => p.remove(), 1000);
+}
+const KQ_DECKS = {};
+const kqDeal = (key, all) => { if (!KQ_DECKS[key] || !KQ_DECKS[key].length) KQ_DECKS[key] = shuffle(all); return KQ_DECKS[key].pop(); };
+const kqTier = g => g <= 2 ? "🌱 Sorting" : g <= 5 ? "🗂️ Sorting and true or false" : g <= 9 ? "⚡ Facts from the reading" : "🕵️ Mystery organisms and hard facts";
+// one race question for grade g (0 = Kindergarten … 13 = College): { q (HTML), a, opts, why (plain text), org }
+function kqRaceQ(g) {
+  const r = Math.random();
+  if (g <= 2 || (g <= 5 && r < .6)) {
+    const [n, e, k, w] = kqDeal("org", KQ_ORGS), others = shuffle(KQ_KO.filter(x => x !== k)).slice(0, g <= 2 ? 3 : 5);
+    return { q: `Which kingdom is this in?<span class="kq-big">${e}</span><span class="kq-org">${esc(n)}</span>`, a: kqKLab(k), opts: (g <= 2 ? shuffle([k, ...others]) : KQ_KO).map(kqKLab), why: w, org: n };
+  }
+  if (g <= 5) { const [s, v, w] = kqDeal("tf", KQ_TF); return { q: `True or false? ${esc(s)}`, a: v ? "True" : "False", opts: ["True", "False"], why: w }; }
+  if (g <= 9 || r < .35) { const [q, ch, a, w] = kqDeal("fact", KQ_FACTS); return { q: esc(q), a: ch[a], opts: shuffle(ch), why: w }; }
+  const [t, k, name] = kqDeal("riddle", KQ_RIDDLES);
+  if (name !== "Algae" && Math.random() < .5) return { q: `🕵️ Mystery organism: which kingdom?<br>“${esc(t)}”`, a: kqKLab(k), opts: KQ_KO.map(kqKLab), why: `It's ${name}! Kingdom ${KQ_K[k].n}.` };
+  return { q: `🕵️ Mystery organism: who am I?<br>“${esc(t)}”`, a: name, opts: shuffle([name, ...shuffle(KQ_ORGNAMES.filter(x => x !== name)).slice(0, 3)]), why: `${name} (Kingdom ${KQ_K[k].n}).` };
+}
+// practice questions: { type: "k" (pick a kingdom) or "mc", prompt (HTML), correct, why (HTML), rv (for the review list), org }
+const kqSortQ = ([n, e, k, w]) => ({ type: "k", prompt: `<span class="kq-lab">Which kingdom?</span><span class="kq-big">${e}</span><span class="kq-org">${esc(n)}</span>`, correct: [k], why: esc(w), rv: `${e} ${esc(n)}`, org: n });
+const kqMystQs = () => KQ_RIDDLES.flatMap(([t, k, name]) => { const opts = shuffle([name, ...shuffle(KQ_ORGNAMES.filter(x => x !== name)).slice(0, 3)]); return [
+  { type: "k", prompt: `<span class="kq-lab">🕵️ Mystery organism: which kingdom?</span>“${esc(t)}”`, correct: name === "Algae" ? ["pr", "pl"] : [k], why: name === "Algae" ? KQ_ALGAE : `It's ${esc(name)}! Kingdom ${KQ_K[k].n}.`, rv: `“${esc(t)}”` },
+  { type: "mc", prompt: `<span class="kq-lab">🕵️ Mystery organism: who am I?</span>“${esc(t)}”`, choices: opts, correct: [opts.indexOf(name)], why: `${esc(name)} (Kingdom ${KQ_K[k].n}).`, rv: `“${esc(t)}”` }]; });
+const kqFactQs = () => [
+  ...KQ_FACTS.map(([q, ch, a, w]) => { const sh = shuffle(ch.map((c, i) => i)); return { type: "mc", prompt: esc(q), choices: sh.map(i => ch[i]), correct: [sh.indexOf(a)], why: esc(w), rv: esc(q) }; }),
+  ...KQ_TF.map(([s, v, w]) => ({ type: "mc", prompt: `<span class="kq-lab">True or false?</span>${esc(s)}`, choices: ["True", "False"], correct: [v ? 0 : 1], why: esc(w), rv: esc(s) }))];
+const KQ_MODES = {
+  sort: { t: "Kingdom Sort", ic: "🗂️", d: "Tap the right kingdom for 32 organisms", build: () => shuffle(KQ_ORGS.map(kqSortQ)) },
+  myst: { t: "Mystery Organism", ic: "🕵️", d: "All 12 riddles from the worksheet", build: () => shuffle(kqMystQs()) },
+  fact: { t: "Fact Attack", ic: "⚡", d: "Every fact from the reading, plus vocab", build: () => shuffle(kqFactQs()) },
+  boss: { t: "Final Boss: Practice Test", ic: "👑", d: "30 mixed questions, no do-overs. Beat the Microbe Monarch!", boss: true, build: () => shuffle([...shuffle(KQ_ORGS.map(kqSortQ)).slice(0, 10), ...shuffle(kqMystQs()).slice(0, 6), ...shuffle(kqFactQs()).slice(0, 14)]) }
+};
+const kqTop = (extra = "") => `<div class="row kq-top"><button class="chip" id="kq-home" type="button">⬅ Kingdom Quest</button>${extra}</div>`;
+const kqBindHome = () => document.getElementById("kq-home")?.addEventListener("click", () => startKingdomQuest());
+const kqTyping = e => e.target && e.target.closest?.("button, input, textarea, select, a");
+
+/* 🗺️ the Kingdom Quest home */
+function startKingdomQuest(view = "home", opt = {}) {
+  if (view === "race") return kqRace();
+  if (view === "study") return kqStudy(opt.tab || "big");
+  if (view === "play") return kqPlay(opt.mode || "sort");
+  if (view === "dex") return kqDex();
+  const S = kqGet(), nF = kqFound(S);
+  const stars = m => { const s = S.modes[m]; return s ? `${"⭐".repeat(s.stars)}<small> ${s.best}%</small>` : `<small class="soft">▶ Play</small>`; };
+  const floaty = ["🦠", "🍄", "🌿", "🐾", "💧", "🌋", "🧫", "🔬", "🧬", "🌱", "🐝", "🪸"].map((e, i) => `<span style="--x:${(i * 37 + 5) % 96}%;--y:${(i * 53 + 10) % 90}%;--d:${(i % 6) * -1.4}s">${e}</span>`).join("");
+  const MN = [["A", "wesome", "ar"], ["E", "agles", "eu"], ["P", "ick", "pr"], ["F", "resh", "fu"], ["P", "ine", "pl"], ["A", "pples", "an"]];
+  appScreen("🧬 Kingdom Quest", `<div class="kq">
+    <div class="kq-hero"><div class="kq-floaty" aria-hidden="true">${floaty}</div>
+      <h2 class="kq-title">Kingdom <span>Quest</span></h2>
+      <p>Master all six kingdoms of life before the test! 🧬</p>
+      <div class="kq-stats"><span>🏆 ${S.wins} race${S.wins === 1 ? "" : "s"} won</span><span>📖 ${nF} / ${KQ_ORGS.length} organisms</span><span>👑 ${S.bossWins ? `Boss beaten ${S.bossWins}×` : "Boss not beaten yet"}</span></div></div>
+    <button class="kq-race-btn" id="kq-race" type="button"><span class="kq-race-ic">🎓</span><span><b>Kingdom Race</b><small>Race the computer from Kindergarten to College, just like Head of the Class! The questions get harder every grade.</small></span><span class="kq-go">▶</span></button>
+    <button class="kq-mn" id="kq-mn" type="button"><small>Remember the order (tap to hear it)</small><span class="kq-mn-words">${MN.map(([L, rest, k], i) => `<span style="--k:${KQ_K[k].c};--i:${i}"><b>${L}</b>${rest}</span>`).join(" ")}</span><small>${KQ_KO.map(k => KQ_K[k].n).join(" · ")}</small></button>
+    <h3>🗺️ The six kingdoms</h3>
+    <div class="kq-realms">${KQ_KO.map(k => { const all = KQ_ORGS.filter(o => o[2] === k), n = all.filter(o => S.found[o[0]]).length; return `<button class="kq-realm" type="button" style="--k:${KQ_K[k].c}" data-realm="${k}">${n === all.length ? `<i class="kq-crown" title="Every card collected">👑</i>` : ""}<span class="kq-realm-e">${KQ_K[k].e}</span><b>${KQ_K[k].n}</b><small>${KQ_K[k].t}</small><i class="kq-mini"><i style="width:${Math.round(n / all.length * 100)}%"></i></i><small>${n} / ${all.length} collected</small></button>`; }).join("")}</div>
+    <h3>⚔️ Practice quests</h3>
+    <div class="kq-modes">
+      <button class="kq-mode" type="button" data-m="study"><span class="kq-ic">📚</span><span><b>Study Cards</b><small>Read this first: every kingdom, all the facts</small></span></button>
+      ${Object.entries(KQ_MODES).map(([k, m]) => `<button class="kq-mode${m.boss ? " boss" : ""}" type="button" data-m="${k}"><span class="kq-ic">${m.ic}</span><span><b>${m.t}</b><small>${m.d}</small></span><span class="kq-st">${stars(k)}</span></button>`).join("")}
+      <button class="kq-mode" type="button" data-m="dex"><span class="kq-ic">📖</span><span><b>Organism Collection</b><small>Sort an organism right on the first try to collect its card</small></span><span class="kq-st"><small>${nF} / ${KQ_ORGS.length}</small></span></button>
+    </div>
+    <p class="soft kq-tip">Tip: miss one and it comes back later in the round until you get it. Aim for ⭐⭐⭐ on every quest, then beat the Final Boss!</p></div>`);
+  document.getElementById("kq-race").addEventListener("click", () => kqRace());
+  document.getElementById("kq-mn").addEventListener("click", e => { const b = e.currentTarget; b.classList.remove("wave"); void b.offsetWidth; b.classList.add("wave"); svSay("Awesome Eagles Pick Fresh Pine Apples. Archaebacteria, Eubacteria, Protista, Fungi, Plantae, Animalia."); });
+  $app.querySelectorAll("[data-realm]").forEach(b => b.addEventListener("click", () => kqStudy(b.dataset.realm)));
+  $app.querySelectorAll("[data-m]").forEach(b => b.addEventListener("click", () => { const m = b.dataset.m; if (m === "study") kqStudy("big"); else if (m === "dex") kqDex(); else kqPlay(m); }));
+}
+
+/* 📚 Study Cards */
+function kqStudy(tab) {
+  const tabs = ["big", ...KQ_KO, "vocab"]; if (!tabs.includes(tab)) tab = "big";
+  const lab = t => t === "big" ? "🧠 Big Ideas" : t === "vocab" ? "📖 Vocab" : kqKLab(t);
+  const col = t => t === "big" ? "#ffc93c" : t === "vocab" ? "#9fd3ff" : KQ_K[t].c;
+  const s = KQ_STUDY[tab], i = tabs.indexOf(tab), S = kqGet();
+  let body = `<ul>${s.pts.map(p => `<li>${p}</li>`).join("")}</ul>${s.ex ? `<p class="kq-ex">${s.ex}</p>` : ""}`;
+  if (KQ_K[tab]) body += `<div class="kq-strip" title="Organisms in this kingdom (the dark ones aren't in your collection yet)">${KQ_ORGS.filter(o => o[2] === tab).map(o => `<span class="${S.found[o[0]] ? "" : "no"}" title="${esc(o[0])}">${o[1]}</span>`).join("")}</div>`;
+  if (tab === "big") body += `<div class="kq-cmpwrap"><table class="kq-cmp"><tr><th>Kingdom</th><th>Nucleus?</th><th>Cells</th><th>Food</th></tr>${[["ar", "❌", "1", "varies"], ["eu", "❌", "1", "varies"], ["pr", "✅", "mostly 1", "plant-like / animal-like / both"], ["fu", "✅", "many (yeast = 1)", "absorb"], ["pl", "✅", "many", "make own (photosynthesis)"], ["an", "✅", "many", "eat others"]].map(([k, a, b, c]) => `<tr><td style="color:${KQ_K[k].c}">${KQ_K[k].n}</td><td>${a}</td><td>${b}</td><td>${c}</td></tr>`).join("")}</table></div>`;
+  appScreen("🧬 Kingdom Quest · 📚 Study Cards", `<div class="kq">${kqTop(`<button class="chip" id="kq-say" type="button">🔊 Read it to me</button>`)}
+    <div class="kq-tabs">${tabs.map(t => `<button type="button" data-t="${t}" style="--k:${col(t)}"${t === tab ? ' class="on"' : ""}>${lab(t)}</button>`).join("")}</div>
+    <div class="kq-scard" style="--k:${col(tab)}"><h3>${lab(tab)}</h3>${body}</div>
+    <div class="row kq-nav">${i > 0 ? `<button class="btn" type="button" data-t="${tabs[i - 1]}">⬅ Back</button>` : "<span></span>"}${i < tabs.length - 1 ? `<button class="btn go" type="button" data-t="${tabs[i + 1]}">Next ➜</button>` : `<button class="btn go" id="kq-start" type="button">🎓 Start the Kingdom Race!</button>`}</div></div>`);
+  kqBindHome();
+  $app.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => kqStudy(b.dataset.t)));
+  document.getElementById("kq-start")?.addEventListener("click", () => kqRace());
+  document.getElementById("kq-say").addEventListener("click", () => svSay([lab(tab).replace(/^\S+\s/, ""), ...s.pts, s.ex || ""].join(". ")));
+  $app.querySelector(".kq-tabs .on")?.scrollIntoView?.({ block: "nearest", inline: "center" });
+}
+
+/* 🗂️🕵️⚡👑 the practice quests (missed questions come back later in the round, except in the Final Boss) */
+let KQG = null;
+function kqPlay(mode) {
+  const M = KQ_MODES[mode] ? KQ_MODES[mode] : KQ_MODES.sort, qs = M.build().map((q, i) => ({ ...q, id: i, tries: 0 }));
+  KQG = { mode: KQ_MODES[mode] ? mode : "sort", M, queue: qs, total: qs.length, done: 0, firstRight: 0, score: 0, streak: 0, best: 0, missed: [], boss: !!M.boss, hp: KQ_BOSS_HP, fresh: [] };
+  kqNext();
+}
+const kqBossFace = hp => hp <= 0 ? "💥" : hp <= 9 ? "😵‍💫" : hp <= 18 ? "😠" : "👾";
+const kqBossHTML = G => `<div class="kq-boss" id="kq-boss"><span class="kq-bface" id="kq-bface">${kqBossFace(G.hp)}</span><div class="kq-bbody"><b>The Microbe Monarch</b><i class="kq-hp"><i id="kq-hpbar" style="width:${G.hp / KQ_BOSS_HP * 100}%"></i></i><small id="kq-hptext">${G.hp > 0 ? `${G.hp} / ${KQ_BOSS_HP} HP · every right answer is a hit` : "💥 Defeated! Finish the test for bonus points."}</small></div></div>`;
+function kqNext() {
+  const G = KQG; if (!G) return;
+  if (!G.queue.length) return kqResults();
+  const q = G.queue[0], pct = Math.round(G.done / G.total * 100);
+  const chs = q.type === "k" ? `<div class="kq-chs k6">${KQ_KO.map((k, i) => `<button class="kq-ch k" type="button" data-v="${k}" style="--k:${KQ_K[k].c}"><i>${i + 1}</i><span>${KQ_K[k].e}</span>${KQ_K[k].h || KQ_K[k].n}</button>`).join("")}</div>`
+    : `<div class="kq-chs">${q.choices.map((c, i) => `<button class="kq-ch" type="button" data-v="${i}"><i>${i + 1}</i>${esc(c)}</button>`).join("")}</div>`;
+  appScreen(`🧬 Kingdom Quest · ${G.M.ic} ${G.M.t}`, `<div class="kq kq-game" id="kq-game">${kqTop(`<span class="kq-hud"><b>🏆 <span id="kq-score">${G.score}</span></b><b id="kq-stk">🔥 ${G.streak}</b></span>`)}
+    ${G.boss ? kqBossHTML(G) : ""}
+    <div class="kq-sub soft">${G.M.ic} ${G.M.t} · ${G.done} / ${G.total} ${G.boss ? "answered" : "mastered"}${q.tries ? " · 🔁 Try again!" : ""}</div>
+    <div class="kq-prog"><i style="width:${pct}%"></i></div>
+    <div class="kq-card" id="kq-card"><div class="kq-q">${q.prompt}</div>${chs}<div class="kq-fb" id="kq-fb" aria-live="polite"></div><button class="btn go kq-next" id="kq-nx" type="button" hidden>Next ➜</button></div>
+    <p class="soft kq-keys">Keys: 1 to ${q.type === "k" ? 6 : q.choices.length} to answer, Enter for the next one.</p></div>`);
+  kqBindHome();
+  $app.querySelectorAll(".kq-ch").forEach(b => b.addEventListener("click", () => kqAnswer(b)));
+  keyHandler = e => {
+    if (!document.getElementById("kq-card")) { keyHandler = null; return; }
+    const nx = document.getElementById("kq-nx");
+    if (e.key === "Enter" && nx && !nx.hidden) { if (!kqTyping(e)) { e.preventDefault(); nx.click(); } return; }
+    const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 6) $app.querySelectorAll(".kq-ch")[n - 1]?.click();
+  };
+}
+function kqAnswer(btn) {
+  const G = KQG, q = G && G.queue[0]; if (!q || q.answered) return; q.answered = true;
+  const val = b => q.type === "k" ? b.dataset.v : +b.dataset.v, ok = q.correct.includes(val(btn));
+  $app.querySelectorAll(".kq-ch").forEach(b => { b.disabled = true; if (q.correct.includes(val(b))) b.classList.add("right"); else if (b === btn) b.classList.add("wrong"); else b.classList.add("fade"); });
+  const fb = document.getElementById("kq-fb"), right = q.type === "k" ? q.correct.map(k => KQ_K[k].n).join(" or ") : esc(q.choices[q.correct[0]]);
+  if (ok) {
+    G.streak++; G.best = Math.max(G.best, G.streak); const pts = 10 + Math.min(G.streak, 10) * 2; G.score += pts;
+    let fresh = false; if (!q.tries) { G.firstRight++; if (q.org && kqCollect(q.org)) { G.fresh.push(q.org); fresh = true; } }
+    kqPop(btn, `+${pts}`); tone([523, 659, 784], .08, "triangle", .07);
+    fb.className = "kq-fb good"; fb.innerHTML = `<b>✅ ${rPick(["Nailed it!", "Boom! 💥", "Science genius! 🧪", "Correct!", "You got it!", "Kingdom master! 👑", "Awesome!"])}</b> ${q.why}${fresh ? `<span class="kq-newcard">📖 New card for your collection: ${kqOrg(q.org)[1]} ${esc(q.org)}</span>` : ""}`;
+    if (G.boss && G.hp > 0) {
+      G.hp--; const bar = document.getElementById("kq-hpbar"), face = document.getElementById("kq-bface"), txt = document.getElementById("kq-hptext"), box = document.getElementById("kq-boss");
+      if (bar) bar.style.width = (G.hp / KQ_BOSS_HP * 100) + "%"; if (face) face.textContent = kqBossFace(G.hp);
+      if (txt) txt.textContent = G.hp > 0 ? `${G.hp} / ${KQ_BOSS_HP} HP · every right answer is a hit` : "💥 Defeated! Finish the test for bonus points.";
+      if (box) { box.classList.remove("ouch"); void box.offsetWidth; box.classList.add("ouch"); }
+      if (!G.hp) { kqBurst(40); tone([523, 659, 784, 1047], .12, "triangle", .08); }
+    }
+    if (G.streak % 5 === 0) kqBurst();
+  } else {
+    G.streak = 0; if (!q.tries) G.missed.push(q); tone([220, 175], .14, "sawtooth", .05);
+    fb.className = "kq-fb bad"; fb.innerHTML = `<b>❌ Answer: ${right}</b> ${q.why}${G.boss ? `<br><small>👾 The Microbe Monarch dodged that one!</small>` : `<br><small>This one will come back soon 🔁</small>`}`;
+    const card = document.getElementById("kq-card"); card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+  }
+  document.getElementById("kq-score").textContent = G.score;
+  const s = document.getElementById("kq-stk"); s.textContent = "🔥 " + G.streak; s.classList.remove("pop"); void s.offsetWidth; s.classList.add("pop");
+  const nx = document.getElementById("kq-nx"); nx.hidden = false;
+  nx.addEventListener("click", () => {
+    G.queue.shift();
+    if (ok || G.boss) G.done++; else { q.tries++; q.answered = false; G.queue.splice(Math.min(3, G.queue.length), 0, q); }
+    kqNext();
+  });
+  nx.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+}
+function kqResults() {
+  const G = KQG, pct = Math.round(G.firstRight / G.total * 100), stars = pct >= 90 ? 3 : pct >= 75 ? 2 : 1, beat = G.boss && G.hp <= 0;
+  const S = kqGet(), prev = S.modes[G.mode]; if (!prev || pct > prev.best) S.modes[G.mode] = { best: pct, stars };
+  if (beat) S.bossWins = (S.bossWins || 0) + 1; kqSave(S);
+  if (stars === 3 || beat) kqBurst(60);
+  const msg = pct >= 90 ? "You're ready! 🏆" : pct >= 75 ? "So close! One more round!" : "Keep going! Replay to lock it in!";
+  const ans = q => q.type === "k" ? q.correct.map(k => KQ_K[k].n).join(" or ") : esc(q.choices[q.correct[0]]);
+  appScreen(`🧬 Kingdom Quest · ${G.M.ic} ${G.M.t}`, `<div class="kq"><div class="kq-res">
+      ${G.boss ? `<div class="kq-big">${beat ? "🏆" : "👾"}</div><h3>${beat ? "You beat the Microbe Monarch!" : `The Microbe Monarch got away with ${G.hp} HP left!`}</h3>` : ""}
+      <small class="soft">${G.M.t} complete</small><div class="kq-pct">${pct}%</div><div class="kq-stars">${"⭐".repeat(stars)}${"☆".repeat(3 - stars)}</div><b>${msg}</b>
+      <p class="soft">First-try correct: ${G.firstRight} / ${G.total} · Points: ${G.score} · Best streak: 🔥 ${G.best}</p>
+      ${G.fresh.length ? `<p class="kq-newcard">📖 New cards: ${G.fresh.map(n => `${kqOrg(n)[1]} ${esc(n)}`).join(", ")}</p>` : ""}</div>
+    ${G.missed.length ? `<div class="kq-scard"><h3>📝 Review what you missed</h3>${G.missed.map(q => `<div class="kq-miss">${q.rv}<br><b>➜ ${ans(q)}</b><br><small class="soft">${q.why}</small></div>`).join("")}</div>` : `<div class="kq-res"><h3>Perfect round: zero misses! 🎉</h3></div>`}
+    <div class="row kq-nav"><button class="btn" id="kq-home" type="button">⬅ Kingdom Quest</button><button class="btn go" id="kq-again" type="button">Play again 🔁</button></div></div>`);
+  kqBindHome();
+  document.getElementById("kq-again").addEventListener("click", () => kqPlay(G.mode));
+}
+
+/* 🎓 Kingdom Race: like Head of the Class */
+let KQR = null;
+function kqRace() {
+  KQR = { pos: [0, 0], q: kqRaceQ(0), answered: null, over: null, log: "Kindergarten, here we go! 🎒", missed: [], lvl: kqGet().lvl || "medium" };
+  kqRaceDraw();
+}
+function kqRaceDraw() {
+  const R = KQR, GR = HC_GRADES, S = kqGet(), Q = R.q;
+  const ladder = [...GR, "🎓 Grad"].map((g, i) => `<div class="hc-rung${i === 14 ? " grad" : ""}${R.pos[0] === i ? " kq-me" : ""}"><span>${g}</span><b>${R.pos[0] === i ? "🧑‍🔬" : ""}${R.pos[1] === i ? "🤖" : ""}</b></div>`).reverse().join("");
+  const card = R.over !== null ? `<div class="kq-res"><div class="kq-big">${R.over === 0 ? "🏆" : "🤖"}</div><h3>${R.over === 0 ? "You graduated first! You're Head of the Class of all six kingdoms!" : "The computer graduated first! Race again?"}</h3>
+      ${R.missed.length ? `<div class="kq-scard"><h3>📝 Learn these</h3>${R.missed.map(x => `<div class="kq-miss">${x.q}<br><b>➜ ${esc(x.a)}</b><br><small class="soft">${esc(x.why)}</small></div>`).join("")}</div>` : ""}
+      <div class="row kq-nav"><button class="btn" id="kq-study" type="button">📚 Study Cards</button><button class="btn go" id="kq-again" type="button">🎓 Race again</button></div></div>`
+    : `<div class="sl-card kq-rcard"><small>${GR[R.pos[0]]} grade question · ${kqTier(R.pos[0])}</small><h3 class="kq-rq">${Q.q}</h3>
+      <div class="hc-opts${Q.opts.some(o => String(o).length > 11) ? " long" : ""}">${Q.opts.map((o, i) => `<button class="btn${R.answered ? (o === Q.a ? " go" : o === R.answered ? " bad" : "") : ""}" type="button" data-o="${i}"${R.answered ? " disabled" : ""}>${esc(o)}</button>`).join("")}</div>
+      ${R.answered ? `<div class="kq-fb ${R.answered === Q.a ? "good" : "bad"}">${esc(Q.why)}</div><button class="btn go" id="kq-ai" type="button">🤖 Computer's turn ➜</button>` : ""}</div>`;
+  appScreen("🧬 Kingdom Quest · 🎓 Kingdom Race", `<div class="kq kq-race">${kqTop(`<span class="kq-hud"><b title="Races you won">🧑‍🔬 ${S.wins}</b><b title="Races the computer won">🤖 ${S.losses}</b></span>`)}
+    <h3 class="kq-h">🎓 Kingdom Race</h3>
+    <p class="soft">Race the computer from Kindergarten to College, just like Head of the Class! Get your question right to move up a grade. The questions get harder as you climb. The first one to graduate wins!</p>
+    <div class="na-chips kq-lv">${[["easy", "😊 Easy"], ["medium", "🙂 Medium"], ["hard", "😈 Hard"]].map(([k, l]) => `<button class="chip${k === R.lvl ? " on" : ""}" type="button" data-lv="${k}">${l}</button>`).join("")}<button class="chip" id="kq-new" type="button">🔄 New race</button></div>
+    <div class="hc-wrap"><div class="hc-ladder">${ladder}</div><div class="hc-q"><p class="un-log">${esc(R.log)}</p>${card}</div></div></div>`);
+  kqBindHome();
+  $app.querySelectorAll("[data-lv]").forEach(b => b.addEventListener("click", () => { const S2 = kqGet(); S2.lvl = b.dataset.lv; kqSave(S2); toast(`Computer: ${b.textContent}`); kqRace(); }));
+  document.getElementById("kq-new").addEventListener("click", () => kqRace());
+  document.getElementById("kq-again")?.addEventListener("click", () => kqRace());
+  document.getElementById("kq-study")?.addEventListener("click", () => kqStudy("big"));
+  document.getElementById("kq-ai")?.addEventListener("click", kqRaceAi);
+  $app.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => {
+    if (R.answered || R.over !== null) return;
+    const o = Q.opts[+b.dataset.o]; R.answered = o;
+    if (o === Q.a) { R.pos[0]++; tone([523, 784], .08, "triangle", .07); if (Q.org) kqCollect(Q.org); R.log = R.pos[0] === 14 ? "🎓 You graduated!" : `✅ Correct! You move up to ${GR[R.pos[0]]}.`; }
+    else { R.missed.push(Q); tone([220, 175], .14, "sawtooth", .05); R.log = `❌ Not quite. The answer was ${Q.a}. You stay in ${GR[R.pos[0]]}.`; }
+    if (R.pos[0] === 14) { R.over = 0; const S2 = kqGet(); S2.wins++; kqSave(S2); kqBurst(60); }
+    kqRaceDraw();
+  }));
+  keyHandler = e => {
+    if (!document.querySelector(".kq-race")) { keyHandler = null; return; }
+    if (e.key === "Enter") { const ai = document.getElementById("kq-ai"); if (ai && !kqTyping(e)) { e.preventDefault(); ai.click(); } return; }
+    const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 6) $app.querySelectorAll(".kq-race [data-o]")[n - 1]?.click();
+  };
+}
+function kqRaceAi() {   // the computer answers its own question, just like in Head of the Class
+  const R = KQR, g = R.pos[1], p = ({ easy: .45, medium: .62, hard: .8 })[R.lvl] - g * .012;
+  if (Math.random() < p) { R.pos[1]++; R.log = R.pos[1] === 14 ? "🤖 graduated!" : `🤖 answered right and moved up to ${HC_GRADES[R.pos[1]]}.`; }
+  else R.log = `🤖 got its ${HC_GRADES[g]} question wrong!`;
+  if (R.pos[1] === 14) { R.over = 1; const S = kqGet(); S.losses++; kqSave(S); }
+  else R.log += " Your turn!";
+  R.answered = null; R.q = kqRaceQ(Math.min(13, R.pos[0])); kqRaceDraw();
+}
+
+/* 📖 the Organism Collection */
+function kqDex() {
+  const S = kqGet(), nF = kqFound(S);
+  appScreen("🧬 Kingdom Quest · 📖 Organism Collection", `<div class="kq">${kqTop(`<b>📖 ${nF} / ${KQ_ORGS.length} collected</b>`)}
+    <p class="soft">Sort an organism into the right kingdom on the first try (in Kingdom Sort, the Final Boss or the Kingdom Race) to collect its card. Tap a card to read about it.</p>
+    <div class="kq-detail" id="kq-detail" aria-live="polite"></div>
+    ${KQ_KO.map(k => { const orgs = KQ_ORGS.filter(o => o[2] === k); return `<h4 class="kq-dexh" style="--k:${KQ_K[k].c}">${kqKLab(k)} <small>${orgs.filter(o => S.found[o[0]]).length} / ${orgs.length}</small></h4>
+      <div class="kq-dex">${orgs.map(o => { const got = !!S.found[o[0]]; return `<button class="kq-cardo${got ? " got" : ""}" type="button" style="--k:${KQ_K[k].c}" data-org="${KQ_ORGS.indexOf(o)}"><span>${o[1]}</span><b>${got ? esc(o[0]) : "???"}</b></button>`; }).join("")}</div>`; }).join("")}
+    <div class="row kq-nav"><button class="btn go" id="kq-sortgo" type="button">🗂️ Play Kingdom Sort</button></div></div>`);
+  kqBindHome();
+  document.getElementById("kq-sortgo").addEventListener("click", () => kqPlay("sort"));
+  $app.querySelectorAll("[data-org]").forEach(b => b.addEventListener("click", () => {
+    const [n, e, k, w] = KQ_ORGS[+b.dataset.org], d = document.getElementById("kq-detail");
+    d.innerHTML = kqGet().found[n] ? `<span class="kq-big">${e}</span><div><b>${esc(n)}</b> · ${kqKLab(k)}<p>${esc(w)}</p></div>` : `<span class="kq-big kq-shadow">${e}</span><div><b>Not collected yet!</b><p>Sort it right on the first try in Kingdom Sort to collect this card.</p></div>`;
+    d.style.setProperty("--k", KQ_K[k].c); d.classList.add("on");
+  }));
+}
+NEW_APPS.push({ id: "kingdoms", emoji: "🧬", name: "Kingdom Quest", desc: "The six kingdoms of life: race the computer like Head of the Class, plus study cards, kingdom sorting, mystery organisms and a final boss.", start: () => startKingdomQuest(), kw: "kingdom quest|six kingdoms|6 kingdoms|kingdoms of life|classification|classify|archaebacteria|eubacteria|protista|protists?|fungi|plantae|animalia|organisms?|biology" });
+/* ---------- 💬 Talk Room: talk with the other people on the site. Messages are saved online (on the Claude version of the site),
+   so everyone sees them, newest 300 kept. There are rooms for everyone, games and homework help, and messages to one person.
+   MR.E sees every message so he can keep Talk kind: after typing his code he can delete any message. Anyone can report a message to him.
+   Guests can read but can't send, and anyone MR.E stopped from writing can't send either. */
+const TALK_ROOMS = [["all", "💬 Everyone"], ["games", "🎮 Games"], ["help", "📚 Homework help"]];
+const TALK_MAX = 300;
+const TALK_EMOJI = ["😀", "😂", "👍", "❤️", "🎉", "🤔", "😎", "🙏", "🔥", "⭐"];
+// a gentle check before a message goes out: no name-calling or threats, and no private things
+const TALK_UNKIND = /\b(stupid|idiot|dumb|dummy|loser|ugly|moron|jerk|freak|weirdo|fatso|shut ?up|hate (you|u)|kill (you|u)|go die|you suck|u suck|nobody likes (you|u))\b/i;
+const talkPrivate = t => /\d{3}[-. )]*\d{3}[-. ]*\d{4}/.test(t) || /\S+@\S+\.\S+/.test(t) || /\b\d{1,5}\s+\w+(\s\w+)?\s+(street|st|road|rd|avenue|ave|lane|ln|drive|dr|court|ct|way|blvd|boulevard)\b/i.test(t) || /\bpass ?(word|code)s?\b/i.test(t);
+let TALK = null;   // { db, msgs, room, unlocked, ready, err, last, full, who }
+const talkDb = () => (window.claude && window.claude.use ? window.claude.use("db").catch(() => null) : Promise.resolve(null));
+const talkDm = (a, b) => "dm:" + [a, b].sort().join(":");
+const talkDmOther = room => room.slice(3).split(":").find(x => x !== SITE_WHO) || SITE_WHO;
+const talkCanSee = (m, me) => !String(m.room || "").startsWith("dm:") || m.room.slice(3).split(":").includes(me);
+const talkRoomName = room => String(room).startsWith("dm:") ? `💌 ${galName(talkDmOther(room))}` : (TALK_ROOMS.find(r => r[0] === room) || [, "💬 Everyone"])[1];
+const talkWhen = t => { const d = new Date(t), today = new Date().toDateString() === d.toDateString(); return d.toLocaleString([], today ? { hour: "numeric", minute: "2-digit" } : { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); };
+const talkSeenKey = () => "talk-seen-" + (SITE_WHO || "x");
+const talkSeen = () => { try { return JSON.parse(localStorage.getItem(talkSeenKey()) || "{}") || {}; } catch (e) { return {}; } };
+const talkMarkSeen = room => { const s = talkSeen(), last = (TALK.msgs.filter(m => m.room === room).pop() || {}).at || 0; if (last > (s[room] || 0)) { s[room] = last; try { localStorage.setItem(talkSeenKey(), JSON.stringify(s)); } catch (e) {} } };
+async function talkDeleteById(id) {   // used by Talk Room and by MR.E's reports panel
+  const db = await talkDb(); if (!db || !id) return false;
+  try { await db.collection("talk").doc(String(id)).delete(); return true; } catch (e) { return false; }
+}
+function startTalk(room) {
+  TALK = { db: null, msgs: [], room: room || "all", unlocked: false, ready: false, err: "", last: 0, full: false, who: SITE_WHO };
+  appScreen("💬 Talk Room", `<div class="talk" id="talk"></div>`);
+  talkDraw();
+  talkDb().then(db => {
+    if (!document.getElementById("talk")) return;
+    if (!db) { TALK.err = "off"; return talkDraw(); }
+    TALK.db = db;
+    const slow = naTimer(setTimeout(() => { if (!TALK.ready && document.getElementById("talk")) { TALK.err = "slow"; talkDraw(); } }, 10000));
+    const unsub = db.collection("talk").orderBy("at", "desc").limit(TALK_MAX).onSnapshot(snap => {
+      if (!snap.metadata.fromCache) { clearTimeout(slow); if (TALK.err === "slow") TALK.err = ""; }
+      TALK.ready = true; TALK.full = snap.size >= TALK_MAX;
+      TALK.msgs = snap.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(m => typeof m.text === "string" && typeof m.at === "number").reverse();
+      talkDraw(true);
+    }, e => { clearTimeout(slow); TALK.err = e && e.code === "revoked" ? "off" : "broken"; talkDraw(); });
+    naTimer(unsub);   // stops listening when you leave Talk Room
+  });
+}
+function talkDraw(fromSnap) {
+  const box = document.getElementById("talk"); if (!box || !TALK) return;
+  const me = SITE_WHO, guest = !me || me === "guest", mre = me === "emmett", hid = whoHiddenSet(), seen = talkSeen();
+  const vis = TALK.msgs.filter(m => !hid.has(m.who) && (TALK.room === "mod" || (talkCanSee(m, me) && m.room === TALK.room)));
+  const unread = room => TALK.msgs.filter(m => m.room === room && m.who !== me && m.at > (seen[room] || 0) && !hid.has(m.who)).length;
+  const dms = [...new Set(TALK.msgs.filter(m => String(m.room).startsWith("dm:") && talkCanSee(m, me)).map(m => m.room))];
+  if (TALK.room.startsWith("dm:") && !dms.includes(TALK.room)) dms.unshift(TALK.room);
+  const tab = (room, label) => { const n = room === TALK.room ? 0 : unread(room); return `<button class="chip${room === TALK.room ? " on" : ""}" type="button" data-room="${esc(room)}">${label}${n ? ` <span class="talk-n">${n > 99 ? "99+" : n}</span>` : ""}</button>`; };
+  // keep what you were typing (and where the list was scrolled) when new messages arrive
+  const oldIn = document.getElementById("talk-in"), typed = oldIn ? oldIn.value : "", hadFocus = oldIn && document.activeElement === oldIn, oldCode = document.getElementById("talk-code"), code = oldCode ? oldCode.value : "", codeFocus = oldCode && document.activeElement === oldCode;
+  const oldList = document.getElementById("talk-list"), nearEnd = !oldList || oldList.scrollHeight - oldList.scrollTop - oldList.clientHeight < 80, oldTop = oldList ? oldList.scrollTop : 0;
+  const status = TALK.err === "off" ? `<div class="talk-note">💬 Talk Room works on the Claude version of the site, where messages are saved online for everyone. Here there's no online save, so nobody would see your messages.</div>`
+    : TALK.err === "broken" ? `<div class="talk-note">😕 Talk Room stopped connecting. Leave and come back to try again.</div>`
+    : TALK.err === "slow" ? `<div class="talk-note">⏳ Still connecting… ${TALK.ready ? "These messages may be out of date." : "Messages will show up as soon as they load."}</div>` : "";
+  const msg = m => { const mine = m.who === me;
+    return `<div class="talk-msg${mine ? " talk-me" : ""}${m.who === "emmett" ? " mre" : ""}"><span class="talk-ava">${whoAvaHTML(m.who)}</span><div class="talk-bub"><div class="talk-meta"><b>${esc(galName(m.who))}</b>${m.who === "emmett" ? " 🛡️" : ""}${TALK.room === "mod" ? ` <small>in ${String(m.room).startsWith("dm:") ? `💌 ${esc(m.room.slice(3).split(":").map(galName).join(" and "))}` : esc(talkRoomName(m.room))}</small>` : ""}</div>
+      <p>${esc(m.text)}</p><div class="talk-meta"><small>${talkWhen(m.at)}</small>${!mine && m.who !== "emmett" && !guest ? `<button class="linklike talk-rep" type="button" data-rep="${esc(m.id)}" title="Report this to MR.E">🚩 Report</button>` : ""}${TALK.unlocked ? `<button class="linklike talk-del" type="button" data-del="${esc(m.id)}">🗑 Delete</button>` : ""}</div></div></div>`; };
+  const canSend = !guest && !whoMuted(me) && TALK.db && TALK.room !== "mod";
+  box.innerHTML = `<h2>💬 Talk Room</h2>
+    <p class="soft">Talk with the other people on the site. Be kind! MR.E can see every message so he can help keep Talk Room kind, and he can delete unkind ones.</p>
+    ${status}
+    <div class="na-chips talk-rooms">${TALK_ROOMS.map(([r, l]) => tab(r, l)).join("")}${dms.map(r => tab(r, talkRoomName(r))).join("")}${guest ? "" : `<button class="chip" type="button" id="talk-dm">💌 Message someone</button>`}${TALK.unlocked ? tab("mod", "🛡️ Every message") : ""}</div>
+    <div class="talk-pick" id="talk-pick" hidden></div>
+    <div class="talk-list" id="talk-list" aria-live="polite">${!TALK.ready && !TALK.err ? `<p class="soft talk-empty">Loading messages…</p>` : vis.length ? vis.map(msg).join("") : `<p class="soft talk-empty">${TALK.room === "mod" ? "No messages yet." : "No messages here yet. Say hi! 👋"}</p>`}</div>
+    ${canSend ? `<div class="talk-emo">${TALK_EMOJI.map(e => `<button type="button" data-emo="${e}" aria-label="Add ${e}">${e}</button>`).join("")}</div>
+    <form class="talk-form" id="talk-form"><input id="talk-in" type="text" maxlength="300" autocomplete="off" placeholder="Write to ${esc(talkRoomName(TALK.room).replace(/^\S+\s/, ""))}…" aria-label="Your message"><button class="btn go" type="submit">Send ➤</button></form>
+    <p class="soft talk-tip">Never share private things like your address, phone number or passwords.</p>`
+    : TALK.room === "mod" ? `<p class="soft">🛡️ This shows every message, including messages to one person. Tap 🗑 Delete on any unkind one.</p>`
+    : guest ? `<p class="talk-note">👋 Guests can read, but to talk, pick who you are first.</p>` : whoMuted(me) ? `<p class="talk-note">🔇 MR.E stopped you from writing for now.</p>` : ""}
+    ${mre ? (TALK.unlocked ? `<p class="soft">🛡️ You can delete messages until you leave Talk Room.</p>` : `<form class="pf-row talk-unlock" id="talk-unlock"><input id="talk-code" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off"><button class="btn gold" type="submit">🛡️ Keep Talk kind</button></form><p class="soft">Type your code to delete unkind messages and see every message.</p>`) : ""}`;
+  const list = document.getElementById("talk-list");
+  if (nearEnd || !fromSnap) list.scrollTop = list.scrollHeight; else list.scrollTop = oldTop;
+  const inp = document.getElementById("talk-in"); if (inp) { inp.value = typed; if (hadFocus || (!fromSnap && !codeFocus)) inp.focus({ preventScroll: true }); }
+  const ci = document.getElementById("talk-code"); if (ci) { ci.value = code; if (codeFocus) ci.focus({ preventScroll: true }); }
+  if (TALK.room !== "mod") talkMarkSeen(TALK.room);
+  box.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { TALK.room = b.dataset.room; document.getElementById("talk-in") && (document.getElementById("talk-in").value = ""); talkDraw(); }));
+  box.querySelectorAll("[data-emo]").forEach(b => b.addEventListener("click", () => { const i = document.getElementById("talk-in"); if (!i) return; i.value = (i.value + b.dataset.emo).slice(0, 300); i.focus(); }));
+  document.getElementById("talk-form")?.addEventListener("submit", e => { e.preventDefault(); talkSend(); });
+  document.getElementById("talk-dm")?.addEventListener("click", () => {
+    const pk = document.getElementById("talk-pick"), ppl = sitePeople().filter(p => p.id !== me && !hid.has(p.id));
+    pk.hidden = !pk.hidden;
+    pk.innerHTML = ppl.length ? `<b>💌 Who do you want to message?</b><div class="talk-ppl">${ppl.map(p => `<button class="chip" type="button" data-to="${esc(p.id)}"><span class="talk-ava">${whoAvaHTML(p.id)}</span>${esc(p.name)}</button>`).join("")}</div>` : `<p class="soft">There's nobody else on the site yet.</p>`;
+    pk.querySelectorAll("[data-to]").forEach(b => b.addEventListener("click", () => { TALK.room = talkDm(me, b.dataset.to); talkDraw(); }));
+  });
+  box.querySelectorAll("[data-rep]").forEach(b => b.addEventListener("click", () => { const m = TALK.msgs.find(x => x.id === b.dataset.rep); if (m) reportSheet({ on: m.who, what: "talk", text: m.text, msg: m.id }); }));
+  box.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", async () => {
+    if (!TALK.unlocked) return;
+    if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to delete"; return; }
+    b.disabled = true; const ok = await talkDeleteById(b.dataset.del);
+    if (ok) { store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.msg !== b.dataset.del)); toast("🗑 Message deleted."); } else { b.disabled = false; toast("That didn't delete. Try again."); }
+  }));
+  document.getElementById("talk-unlock")?.addEventListener("submit", e => { e.preventDefault(); if (!modCodeOK(document.getElementById("talk-code").value)) return toast("That's not your code. Try again."); TALK.unlocked = true; toast("🛡️ Unlocked until you leave Talk Room."); talkDraw(); });
+}
+async function talkSend() {
+  const inp = document.getElementById("talk-in"); if (!inp || !TALK || !TALK.db) return;
+  const t = inp.value.replace(/\s+/g, " ").trim().slice(0, 300), me = SITE_WHO;
+  if (!t) return inp.focus();
+  if (!me || me === "guest") return toast("Pick who you are first. Guests can read but can't send messages.");
+  if (whoMuted(me)) return toast("🔇 MR.E stopped you from writing for now.");
+  if (TALK_UNKIND.test(t)) return toast("💛 That might sound unkind. Try saying it a kinder way!");
+  if (talkPrivate(t)) return toast("🔒 Keep private things private: no phone numbers, emails, addresses or passwords.");
+  if (Date.now() - TALK.last < 1500) return toast("Slow down a little! 🐢");
+  TALK.last = Date.now();
+  const id = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8), room = TALK.room;
+  inp.value = "";
+  try { await TALK.db.collection("talk").doc(id).set({ who: me, text: t, room, at: Date.now() }); }
+  catch (e) { const i = document.getElementById("talk-in"); if (i && !i.value) i.value = t; return toast(e && e.code === "quota_exceeded" ? "Talk Room is full right now. Ask MR.E to delete some old messages." : "That didn't send. Try again in a moment."); }
+  tone([660, 880], .05, "sine", .05);
+  if (TALK.full) {   // keep only the newest messages: the oldest ones are removed
+    try { const old = await TALK.db.collection("talk").orderBy("at", "asc").limit(10).get(); for (const d of old.docs) await TALK.db.collection("talk").doc(d.id).delete(); } catch (e) {}
+  }
+}
+NEW_APPS.push({ id: "talk", emoji: "💬", name: "Talk Room", desc: "Talk with the other people on the site, in rooms or one to one. Be kind: MR.E can delete unkind messages.", start: () => startTalk(), kw: "talk room|talk|chat|chat room|message|messages|messaging|text|friends" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
@@ -25768,7 +26475,9 @@ function startLuckyDuck() {
   document.getElementById("ld-frame").srcdoc = LUCKY_DUCK_HTML;
   document.getElementById("ld-back").addEventListener("click", startMathCenter);
 }
-function startHippo(initial = "") {
+function startSearchable(initial = "") { return startHippo(initial, { plain: true }); }
+function startHippo(initial = "", opt = {}) {
+  const plain = !!opt.plain;   // 🔎 Searchable: no hippo name, face or voice lines
   PROF_GAME = null;
   stopSlope(); stopArchers(); stopMini(); closeShop();
   if (D && !D.over) { D.over = true; clearInterval(D.timer); }
@@ -25778,20 +26487,22 @@ function startHippo(initial = "") {
   const topics = [...HIPPO_FAMILIES.map(f => [f[0], f[1], f[2]]), ...Object.entries(HIPPO_BANK.reduce((t, e) => { t[e.topic] = t[e.topic] || [e.icon, 0]; t[e.topic][1]++; return t; }, {})).map(([n, [i, c]]) => [n, i, c])];
   // "Try asking" is a fresh mix every time: one question from many different kinds, plus a few from Hippo's fact list
   const tries = [], seenQ = new Set(), famOrder = HIPPO_FAMILIES.filter(f => !/^Time machine/.test(f[0])).map(f => [Math.random(), f]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
-  const addTry = t => { t = String(t).trim(); if (t && !seenQ.has(t.toLowerCase())) { seenQ.add(t.toLowerCase()); tries.push(t); } };
+  let addTry = t => { t = String(t).trim(); if (t && !seenQ.has(t.toLowerCase())) { seenQ.add(t.toLowerCase()); tries.push(t); } };
+  if (plain) { const add0 = addTry; addTry = t => { if (!/hip+o|hipp/i.test(String(t))) add0(t); }; }
   famOrder.slice(0, 6).forEach(f => { try { addTry(f[3]()); } catch (e) {} });
   for (let k = 0; k < 40 && tries.length < 10; k++) addTry(HIPPO_BANK[rnd(0, HIPPO_BANK.length - 1)].q);
   tries.sort(() => Math.random() - .5);
   $app.innerHTML = `
     <div class="panel hip">
-      <div class="topline"><span class="label">🦛 Ask Hippo</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
-      <div class="hip-head"><span class="hip-face">🦛</span><div><h2>Ask Hippo anything!</h2><p class="soft">Hippo knows <b>${fmt(total)}</b> questions and answers about math, animals, space, countries, science and more. Every answer comes with a picture or diagram.</p></div></div>
-      <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">Ask 🦛</button></form>
-      <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button><label class="hip-voice">🗣️ Hippo's voice <select id="hip-voice"></select></label><button class="btn" id="hip-voice-try" type="button">▶ Hear it</button></div>
+      <div class="topline"><span class="label">${plain ? "🔎 Searchable" : "🦛 Ask Hippo"}</span><button class="iconbtn" id="hip-home">Back to menu</button></div>
+      ${plain ? `<div class="hip-head"><span class="hip-face hip-plain">🔎</span><div><h2>Search anything!</h2><p class="soft">Search <b>${fmt(total)}</b> questions and answers about math, animals, space, countries, science and more. Every answer comes with a picture or diagram.</p></div></div>`
+        : `<div class="hip-head"><span class="hip-face">🦛</span><div><h2>Ask Hippo anything!</h2><p class="soft">Hippo knows <b>${fmt(total)}</b> questions and answers about math, animals, space, countries, science and more. Every answer comes with a picture or diagram.</p></div></div>`}
+      <form class="hip-bar" id="hip-form"><input id="hip-q" type="text" autocomplete="off" placeholder="Type your question… like “What is 12 × 7?”" aria-label="Your question" value="${esc(initial)}"><button class="btn go" type="submit">${plain ? "Search 🔎" : "Ask 🦛"}</button></form>
+      <div class="row hip-actions"><button class="btn gold" id="hip-rand">🎲 Surprise me</button><label class="hip-voice">🗣️ ${plain ? "Voice" : "Hippo's voice"} <select id="hip-voice"></select></label><button class="btn" id="hip-voice-try" type="button">▶ Hear it</button></div>
       <div id="hip-out"></div>
       ${hippoCalcHTML(true)}
       <h3>Try asking</h3><div class="hip-tries">${tries.map(t => `<button class="chip hip-try" type="button">${esc(t)}</button>`).join("")}</div>
-      <details class="hip-topics"><summary>📚 Everything Hippo knows (${fmt(total)} answers)</summary><div>${topics.map(([n, i, c]) => `<span><b>${i} ${esc(n)}</b> ${fmt(c)}</span>`).join("")}</div></details>
+      <details class="hip-topics"><summary>📚 ${plain ? "Everything you can search" : "Everything Hippo knows"} (${fmt(total)} answers)</summary><div>${topics.filter(([n]) => !plain || !/hip+o/i.test(n)).map(([n, i, c]) => `<span><b>${i} ${esc(n)}</b> ${fmt(c)}</span>`).join("")}</div></details>
     </div>`;
   const box = document.getElementById("hip-q");
   const ask = qq => {
@@ -25800,16 +26511,16 @@ function startHippo(initial = "") {
     try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state !== "running") actx.resume?.(); } catch (e) {}   // wake up sound during the tap so songs can play
     box.value = q;
     const ans = hippoAsk(q), out = document.getElementById("hip-out");
-    if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>🦛❓</span></div><div><b>Hmm, Hippo doesn't know that one yet.</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
+    if (!ans) { out.innerHTML = `<div class="hip-card none"><div class="hip-pic" style="background:#fff3d6"><span>${plain ? "🔎❓" : "🦛❓"}</span></div><div><b>${plain ? "Hmm, there's no answer for that one yet." : "Hmm, Hippo doesn't know that one yet."}</b><p>Try asking about math (like “What is 45 + 17?”), an animal, a planet, a country, a U.S. state, or something from your study topics!</p></div></div>`; sfx.wrong(); return; }
     out.innerHTML = `<div class="hip-card${ans.wide ? " wide" : ""}"><div class="hip-diagram">${ans.pic}</div><div class="hip-text"><small class="hip-topic">${ans.icon} ${esc(ans.topic)}</small><b>${esc(ans.text)}</b>${ans.why ? esc(ans.why).split("\n\n").map(x => `<p>${x.replace(/\n/g, "<br>")}</p>`).join("") : ""}${ans.reveal ? `<details class="hip-reveal"><summary>👀 Show the answer</summary><p>${esc(ans.reveal)}</p></details>` : ""}${ans.action ? `<button class="btn go" id="hip-act">${esc(ans.action.label)}</button>` : ""}${ans.actions ? `<div class="hip-acts">${ans.actions.map((a, i) => a.heading ? `<h4 class="hip-acts-h">${esc(a.heading)}</h4>` : `<button class="btn${i && !a.go ? "" : " go"}" data-hact="${i}">${esc(a.label)}</button>`).join("")}</div>` : ""}</div></div>`;
     if (ans.action) document.getElementById("hip-act").addEventListener("click", ans.action.fn);
-    if (ans.fixedQ) out.querySelector(".hip-text").insertAdjacentHTML("afterbegin", `<p class="hip-fixed">🔤 Hippo fixed the spelling: “${esc(ans.fixedQ)}”</p>`);
+    if (ans.fixedQ) out.querySelector(".hip-text").insertAdjacentHTML("afterbegin", `<p class="hip-fixed">🔤 ${plain ? "Fixed the spelling" : "Hippo fixed the spelling"}: “${esc(ans.fixedQ)}”</p>`);
     if (ans.games) { out.querySelector(".hip-card").insertAdjacentHTML("beforeend", `<div class="hip-games">${roomEmergHTML("hip-emerg")}${gamesMenuHTML()}</div>`); bindGamesMenu(); bindRoomEmerg("hip-emerg"); }
     // 🗣️ Hippo reads every answer out loud (stories start reading by themselves)
     if (!ans.noRead && !ans.games && ans.topic !== "Songs") {
       const words = [ans.text, ans.why, ans.reveal ? "" : ""].filter(Boolean).join(". ");
       const rb = document.createElement("button"); rb.className = "btn gold hip-say"; rb.type = "button";
-      let on = false; const set = v => { on = v; rb.textContent = on ? "⏹ Stop reading" : "🔊 Hippo, read it to me"; };
+      let on = false; const set = v => { on = v; rb.textContent = on ? "⏹ Stop reading" : plain ? "🔊 Read it to me" : "🔊 Hippo, read it to me"; };
       rb.addEventListener("click", () => { if (on) { hippoHush(); set(false); } else { set(true); hippoSay(words, { onEnd: () => set(false) }); } });
       set(false); out.querySelector(".hip-text").prepend(rb);
       if (ans.autoRead) { set(true); hippoSay(words, { onEnd: () => set(false) }); }
@@ -25833,7 +26544,7 @@ function startHippo(initial = "") {
   $app.querySelectorAll(".hip-try").forEach(b => b.addEventListener("click", () => ask(b.textContent)));
   document.getElementById("hip-home").addEventListener("click", () => { HIPPO_SONG_STOP?.(); hippoHush(); showHome(); });
   const vsel = document.getElementById("hip-voice"); fillHippoVoiceMenu(vsel);
-  const sample = () => hippoSay("Hello, sweetheart. It's Hippo. Come sit with me, and I'll read you a story.");
+  const sample = () => hippoSay(plain ? "Hi! This is the voice that reads your answers out loud." : "Hello, sweetheart. It's Hippo. Come sit with me, and I'll read you a story.");
   vsel.addEventListener("change", () => { store.set("hippo_voice", vsel.value); sample(); });
   document.getElementById("hip-voice-try").addEventListener("click", sample);
   box.focus();
