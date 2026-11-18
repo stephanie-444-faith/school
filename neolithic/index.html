@@ -1652,6 +1652,7 @@
   .pic-paste { min-height: 44px; }
   .pic-drawbox { display: grid; gap: 8px; justify-items: center; margin: 8px 0; } .pic-cv { width: min(256px, 100%); aspect-ratio: 1; border-radius: 12px; touch-action: none; background: #fff; }
   .pic-inks { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .pic-noprev { display: grid; place-items: center; aspect-ratio: 1; font-size: 1.6rem; background: var(--panel-2); }
   .pic-artgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; } .pic-art { padding: 0; border: 2px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; cursor: pointer; } .pic-art img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
   .tk-boost { color: var(--gold); font-weight: 700; font-size: .78rem; }
   .tk-hub { display: grid; gap: 10px; margin: 12px 0; } @media (min-width: 640px) { .tk-hub { grid-template-columns: 1fr 1fr; } }
@@ -3755,12 +3756,19 @@ function whoPicPicker(box, cur, onPick) {
     });
     box.querySelector("#pic-art").addEventListener("click", async () => {
       const ex = box.querySelector("#pic-extra"); ex.innerHTML = `<p class="soft">Opening the Art Gallery…</p>`;
-      let all = [], shown = 0; try { all = (await galEveryone()).filter(m => m.thumb && m.kind !== "video"); } catch (e) {}
+      let all = [], shown = 0, broke = false;
+      try { all = (await galEveryone()).filter(m => /^image\//.test(m.type || "") || (m.thumb && m.kind !== "video")); } catch (e) { broke = true; }   // every picture (and moving-art GIF), even ones without a small preview
+      if (broke) { ex.innerHTML = `<p class="soft">😕 The Art Gallery couldn't open just now. If the Study Arcade is open in another tab, close it, then <button class="linklike" type="button" id="pic-artagain">try again</button>.</p>`; ex.querySelector("#pic-artagain").addEventListener("click", () => box.querySelector("#pic-art").click()); return; }
       if (!all.length) { ex.innerHTML = `<p class="soft">There's no art in the Art Gallery yet. You can draw one instead!</p>`; return; }
       ex.innerHTML = `<p class="soft">Tap any art or picture to use it. (${all.length.toLocaleString()} to pick from, yours first)</p><div class="pic-artgrid" id="pic-artgrid"></div><button class="btn" type="button" id="pic-more" hidden></button>`;
       const grid = ex.querySelector("#pic-artgrid"), mb = ex.querySelector("#pic-more");
-      const more = () => { const next = all.slice(shown, shown + 60); grid.insertAdjacentHTML("beforeend", next.map((m, k) => `<button type="button" class="pic-art" data-pa="${shown + k}" title="${esc(m.name)}"><img src="${m.thumb}" alt="${esc(m.name)}" loading="lazy"></button>`).join("")); shown += next.length; mb.hidden = shown >= all.length; mb.textContent = `⬇️ Show more (${(all.length - shown).toLocaleString()} left)`; };
-      grid.addEventListener("click", async e => { const b = e.target.closest("[data-pa]"); if (b) set(await picFromSource(all[+b.dataset.pa].thumb).catch(() => "")); });
+      const more = () => { const next = all.slice(shown, shown + 60); grid.insertAdjacentHTML("beforeend", next.map((m, k) => `<button type="button" class="pic-art" data-pa="${shown + k}" title="${esc(m.name)}">${m.thumb ? `<img src="${m.thumb}" alt="${esc(m.name)}" loading="lazy">` : `<span class="pic-noprev" data-blob="${esc(m.id)}">🖼️</span>`}</button>`).join("")); shown += next.length; mb.hidden = shown >= all.length; mb.textContent = `⬇️ Show more (${(all.length - shown).toLocaleString()} left)`;
+        grid.querySelectorAll("[data-blob]").forEach(async el => { const id = el.dataset.blob; el.removeAttribute("data-blob"); const bl = await galBlob(id).catch(() => null); if (bl && el.isConnected) { const u = URL.createObjectURL(bl), v = await picFromSource(u).catch(() => ""); URL.revokeObjectURL(u); if (v) el.outerHTML = `<img src="${v}" alt="">`; } }); };   // pictures saved without a small preview get one made now
+      grid.addEventListener("click", async e => {   // the full picture first (sharper, and works even if the small preview is broken), then the small preview
+        const b = e.target.closest("[data-pa]"); if (!b || b.disabled) return; const m = all[+b.dataset.pa]; b.disabled = true;
+        let v = ""; const bl = await galBlob(m.id).catch(() => null); if (bl) { const u = URL.createObjectURL(bl); v = await picFromSource(u).catch(() => ""); URL.revokeObjectURL(u); }
+        if (!v && m.thumb) v = await picFromSource(m.thumb).catch(() => "");
+        b.disabled = false; set(v); });
       mb.addEventListener("click", more); more();
     });
   };
