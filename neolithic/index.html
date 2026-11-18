@@ -1829,10 +1829,22 @@
   .sh-opt:hover:not([disabled]) { border-color: var(--gold); } .sh-opt.right { background: rgba(59,178,115,.45); border-color: #3bb273; } .sh-opt.wrong { background: rgba(230,57,70,.4); border-color: #e63946; }
   .sh-fb { min-height: 1.5em; display: grid; gap: 6px; justify-items: center; } .sh-good { color: #6ee7a0; } .sh-bad { color: #ff8a8a; }
   .sh-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .sh-hud { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.05rem; margin-bottom: 6px; }
+  .sh-hud { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-weight: 800; font-size: 1.05rem; margin-bottom: 6px; }
   .sh-qbox { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 16px; background: var(--panel-2); border: 2px solid var(--line); min-height: 56px; font-size: 1.05rem; }
   .sh-qe { font-size: 2rem; }
   .sh-stage { position: relative; height: 330px; margin: 10px 0; border-radius: 20px; overflow: hidden; background: linear-gradient(#8fd8ff 0%, #c9f1ff 34%, #2f8fbf 34.5%, #1f6f99 100%); border: 2px solid var(--line); }
+  .sh-wave { position: absolute; left: 0; right: 0; top: calc(34% - 9px); height: 20px; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20' viewBox='0 0 120 20'%3E%3Cpath d='M0 10 Q15 0 30 10 T60 10 T90 10 T120 10 V20 H0Z' fill='%232f8fbf'/%3E%3C/svg%3E") repeat-x 0 0 / 120px 20px; animation: shWave 4s linear infinite; }
+  .sh-wave.b { top: calc(34% - 3px); opacity: .7; animation-duration: 6.5s; animation-direction: reverse; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20' viewBox='0 0 120 20'%3E%3Cpath d='M0 10 Q15 0 30 10 T60 10 T90 10 T120 10 V20 H0Z' fill='%232a82b0'/%3E%3C/svg%3E"); }
+  .sh-wave.c, .sh-wave.d { top: 58%; height: 14px; opacity: .35; background-size: 90px 14px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20' viewBox='0 0 120 20'%3E%3Cpath d='M0 10 Q15 4 30 10 T60 10 T90 10 T120 10' fill='none' stroke='%23bdeaff' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E"); animation-duration: 5s; }
+  .sh-wave.d { top: 78%; opacity: .25; animation-duration: 8s; animation-direction: reverse; background-size: 140px 14px; }
+  @keyframes shWave { to { background-position-x: 120px; } }
+  .sh-wave.c { animation-name: shWave2; } @keyframes shWave2 { to { background-position-x: 90px; } }
+  .sh-wave.d { animation-name: shWave3; } @keyframes shWave3 { to { background-position-x: 140px; } }
+  .sh-pause { position: absolute; inset: 0; z-index: 5; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; background: rgba(10,30,60,.82); color: #fff; backdrop-filter: blur(3px); }
+  .sh-pause[hidden] { display: none; } .sh-pause b { font-family: var(--display); font-weight: 400; font-size: 1.8rem; }
+  .sh-play.paused .sh-qbox b { filter: blur(6px); }
+  .sh-pbtn { flex-direction: row; padding: 4px 10px; border-width: 2px; font-size: .9rem; }
+  .sh-row, .sh-cur { z-index: 1; }
   .sh-row { position: absolute; top: 12px; left: 10px; right: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .sh-row.in { animation: shDrop .45s ease-out; }
   @keyframes shDrop { from { transform: translateY(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -1852,7 +1864,7 @@
   .sh-shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
   .sh-item { display: grid; gap: 2px; justify-items: center; padding: 12px 8px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; }
   .sh-item > span { font-size: 2.4rem; } .sh-item small { color: var(--ink-soft); } .sh-item.own { border-color: #3bb273; } .sh-item.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,210,63,.3); }
-  @media (prefers-reduced-motion: reduce) { .sh-row.in, .crumble { animation: none; } .sh-hopper { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .sh-row.in, .crumble, .sh-wave { animation: none; } .sh-hopper { transition: none; } }
   /* 🧬 Kingdom Quest */
   .kq h3 { margin: 14px 0 6px; }
   .kq-hero { position: relative; overflow: hidden; border-radius: 22px; padding: 18px 16px 14px; margin: 6px 0 10px; background: linear-gradient(135deg, #1d3a66, #3b1f6b 55%, #0f4d4a); border: 2px solid rgba(255,255,255,.12); }
@@ -1963,6 +1975,28 @@
   .talk-emo { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0 4px; } .talk-emo button { border: 0; background: var(--panel-2); border-radius: 10px; padding: 4px 7px; font-size: 1.15rem; cursor: pointer; }
   .talk-form { display: flex; gap: 8px; } .talk-form input { flex: 1; min-width: 0; padding: 12px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; }
   .talk-tip { font-size: .82rem; margin: 6px 0; } .talk-unlock { margin-top: 10px; }
+  /* 🖼️ Famous Artists */
+  .fa h2 { margin: 0 0 4px; } .fa h3 { margin: 14px 0 6px; }
+  .fa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 8px 0; } .fa-grid[hidden] { display: none; }
+  .fa-card { display: grid; gap: 3px; justify-items: start; text-align: left; padding: 8px; border-radius: 16px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; transition: transform .12s, border-color .12s; }
+  .fa-card:hover { transform: translateY(-3px); border-color: var(--gold); } .fa-card b { font-size: .95rem; line-height: 1.2; } .fa-card small { color: var(--ink-soft); font-size: .78rem; }
+  .fa-style { display: inline-block; font-size: .72rem; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: rgba(255,201,60,.18); color: var(--gold); }
+  .fa-pic { position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+  .fa-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s; } .fa-pic.ok img { opacity: 1; }
+  .fa-pic.none img { display: none; } .fa-none { display: none; position: absolute; inset: 0; place-content: center; justify-items: center; font-style: normal; font-size: 2rem; text-align: center; background: rgba(0,0,0,.25); }
+  .fa-none small { font-size: .7rem; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000; } .fa-pic.none .fa-none { display: grid; }
+  .fa-pic.big { aspect-ratio: 4 / 3; } .fa-pic.big img, .fa-pic.huge img { object-fit: contain; background: #111; }
+  .fa-pic.huge { aspect-ratio: auto; height: min(62vh, 560px); }
+  .fa-top, .fa-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; } .fa-nav { margin-top: 12px; }
+  .fa-hero { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 18px; background: linear-gradient(135deg, #3b1f6b, #1d3a66); } .fa-hero p { margin: 2px 0 6px; }
+  .fa-emo { font-size: 3rem; } .fa-fact { background: var(--panel-2); border-left: 6px solid var(--gold); border-radius: 12px; padding: 10px 12px; }
+  .fa-work { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 10px; border-radius: 18px; background: var(--panel-2); margin: 8px 0; }
+  @media (min-width: 620px) { .fa-work { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; } }
+  .fa-open { padding: 0; border: 0; background: none; cursor: zoom-in; display: block; width: 100%; } .fa-info b { font-family: var(--display); font-weight: 400; font-size: 1.2rem; display: block; } .fa-info small { color: var(--ink-soft); }
+  .fa-info p { margin: 6px 0 8px; line-height: 1.45; }
+  .fa-frame { padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #8a6a2a, #e3c27a 30%, #a8803a 60%, #e3c27a); box-shadow: 0 10px 30px rgba(0,0,0,.45); margin: 6px 0 10px; }
+  .fa-title { font-family: var(--display); font-weight: 400; } .fa-by { color: var(--ink-soft); margin: 0 0 6px; } .fa-pd { font-size: .8rem; margin-top: 10px; }
+  .btn[data-bgw]:disabled { opacity: .5; cursor: not-allowed; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -6038,6 +6072,7 @@ function subjectPick(s) {
       hc("art", "Art", " with art questions"),
       ["📝 Practice art questions", "Color, design, and artists", study("art", { alevel: "easy" })],
       ["🧠 Complex art", "Harder questions: famous artists, art history, perspective, color theory and how art is made", study("art", { alevel: "hard" })],
+      ["🖼️ Famous Artists", "Famous artists and their most famous paintings. Use any painting as your home background!", go(() => startArtists())],
       ["🖼️ Art Gallery", "Pixel art, drawings, your pictures, printing, and everyone's art", go(() => startGallery())],
       ["🎞️ Moving Art", "Make art that moves, or a flipbook", go(() => startMovingArt())],
       ["💬 Comic Creator", "Make your own comic with characters and speech bubbles", go(() => startComicCreator())],
@@ -24738,12 +24773,12 @@ function shTrail(uid) {
 function shHop(level, topic) {
   const L = SH_LEVELS[level] || SH_LEVELS.easy, U = SH_UNITS.find(u => u.id === topic);
   const pool = SH_ITEMS.filter(x => topic === "all" || x.u === topic), me = shHopper(shGet());
-  let G = { hops: 0, lives: 3, atoms: 0, streak: 0, deck: shuffle(pool), missed: [], over: false, t: null, cur: null };
-  appScreen("🐸 Science Hop · Hop!", `<div class="sh sh-play"><div class="sh-hud"><span id="sh-lives"></span><span id="sh-hops">0 hops</span><span id="sh-atoms">⚛️ 0</span></div>
+  let G = { hops: 0, lives: 3, atoms: 0, streak: 0, deck: shuffle(pool), missed: [], over: false, t: null, cur: null, paused: false, left: 0, at: 0 };
+  appScreen("🐸 Science Hop · Hop!", `<div class="sh sh-play"><div class="sh-hud"><span id="sh-lives"></span><span id="sh-hops">0 hops</span><span id="sh-atoms">⚛️ 0</span><button class="chip sh-pbtn" id="sh-pbtn" type="button" aria-label="Pause">⏸️ Pause</button></div>
     <div class="sh-qbox" id="sh-qbox"></div>
-    <div class="sh-stage" id="sh-stage"><div class="sh-row" id="sh-next"></div><div class="sh-cur" id="sh-cur"><div class="sh-hopper" id="sh-hopper">${me.e}</div><div class="sh-pad sh-mine" id="sh-mine"><i class="sh-timer" id="sh-timer"></i></div></div></div>
+    <div class="sh-stage" id="sh-stage"><i class="sh-wave" aria-hidden="true"></i><i class="sh-wave b" aria-hidden="true"></i><i class="sh-wave c" aria-hidden="true"></i><i class="sh-wave d" aria-hidden="true"></i><div class="sh-row" id="sh-next"></div><div class="sh-cur" id="sh-cur"><div class="sh-hopper" id="sh-hopper">${me.e}</div><div class="sh-pad sh-mine" id="sh-mine"><i class="sh-timer" id="sh-timer"></i></div></div><div class="sh-pause" id="sh-pause" hidden><b>⏸️ Paused</b><span>Your platform is waiting for you.</span><button class="btn go" id="sh-resume" type="button">▶ Keep hopping</button></div></div>
     <div class="sh-msg" id="sh-msg" aria-live="polite"></div>
-    <p class="soft sh-help">${U ? `${U.e} ${esc(U.name)}` : "🌍 Everything"} · ${L.name}: ${L.secs} seconds before your platform crumbles. Keys 1, 2, 3 work too. <button class="linklike" id="sh-quit" type="button">Stop</button></p></div>`);
+    <p class="soft sh-help">${U ? `${U.e} ${esc(U.name)}` : "🌍 Everything"} · ${L.name}: ${L.secs} seconds before your platform crumbles. Keys 1, 2, 3 work too, and P pauses. <button class="linklike" id="sh-quit" type="button">Stop</button></p></div>`);
   const $ = id => document.getElementById("sh-" + id);
   const hud = () => { $("lives").textContent = "❤️".repeat(G.lives) + "🖤".repeat(3 - G.lives); $("hops").textContent = `${G.hops} hop${G.hops === 1 ? "" : "s"}`; $("atoms").textContent = `⚛️ ${G.atoms}`; };
   const next = () => {
@@ -24756,7 +24791,7 @@ function shHop(level, topic) {
     const hp = $("hopper"); hp.style.transition = "none"; hp.style.transform = "translate(-50%, 0)"; hp.style.opacity = 1; void hp.offsetWidth; hp.style.transition = "";
     $("mine").classList.remove("crumble"); $("msg").innerHTML = "";
     const tm = $("timer"); tm.style.transition = "none"; tm.style.width = "100%"; void tm.offsetWidth; tm.style.transition = `width ${L.secs}s linear`; tm.style.width = "0%";
-    clearTimeout(G.t); G.t = naTimer(setTimeout(() => crumble(), L.secs * 1000));
+    clearTimeout(G.t); G.left = L.secs * 1000; G.at = Date.now(); G.t = naTimer(setTimeout(() => crumble(), G.left));
     $("next").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => pick(b)));
     hud();
   };
@@ -24766,7 +24801,7 @@ function shHop(level, topic) {
     naTimer(setTimeout(then, 420));
   };
   const pick = btn => {
-    if (G.over || G.cur.done) return; G.cur.done = true; clearTimeout(G.t);
+    if (G.over || G.cur.done || G.paused) return; G.cur.done = true; clearTimeout(G.t);
     const { x, opts } = G.cur, ok = opts[+btn.dataset.p] === x.a, right = [...$("next").children].find(b => opts[+b.dataset.p] === x.a);
     $("timer").style.transition = "none";
     if (ok) {
@@ -24781,7 +24816,7 @@ function shHop(level, topic) {
     }
   };
   const crumble = () => {   // ⏱ too slow: your platform crumbles and you fall
-    if (G.over || G.cur.done) return; G.cur.done = true; G.streak = 0; G.lives--; G.missed.push(G.cur.x);
+    if (G.over || G.cur.done || G.paused) return; G.cur.done = true; G.streak = 0; G.lives--; G.missed.push(G.cur.x);
     $("mine").classList.add("crumble"); const hp = $("hopper"); hp.style.transform = "translate(-50%, 90px)"; hp.style.opacity = 0;
     const right = [...$("next").children].find(b => G.cur.opts[+b.dataset.p] === G.cur.x.a); right?.classList.add("right");
     $("msg").innerHTML = `<b class="sh-bad">⏱ Too slow! Your platform crumbled.</b> ${esc(G.cur.x.fact)}`; hud(); tone?.([300, 150], .15, "sawtooth", .05);
@@ -24799,8 +24834,22 @@ function shHop(level, topic) {
     document.getElementById("sh-learn")?.addEventListener("click", () => shTrail(miss[0].u));
     document.getElementById("sh-again").addEventListener("click", () => shHop(level, topic));
   };
+  const pause = () => {   // ⏸ stops the clock and hides the answers until you come back
+    if (G.over || !G.cur || G.cur.done || G.paused) return;
+    G.paused = true; clearTimeout(G.t); G.left = Math.max(300, G.left - (Date.now() - G.at));
+    const tm = $("timer"), w = getComputedStyle(tm).width; tm.style.transition = "none"; tm.style.width = w;
+    $("pause").hidden = false; document.querySelector(".sh-play")?.classList.add("paused"); $("pbtn").textContent = "▶ Resume"; $("resume").focus();
+  };
+  const resume = () => {
+    if (!G.paused || G.over) return;
+    G.paused = false; G.at = Date.now(); $("pause").hidden = true; document.querySelector(".sh-play")?.classList.remove("paused"); $("pbtn").textContent = "⏸️ Pause";
+    const tm = $("timer"); void tm.offsetWidth; tm.style.transition = `width ${G.left / 1000}s linear`; tm.style.width = "0%";
+    G.t = naTimer(setTimeout(() => crumble(), G.left));
+  };
+  $("pbtn").addEventListener("click", () => G.paused ? resume() : pause());
+  $("resume").addEventListener("click", resume);
   $("quit").addEventListener("click", () => { if (G.hops || G.atoms) end(); else { G.over = true; clearTimeout(G.t); startScienceHop(); } });
-  keyHandler = e => { if (!document.getElementById("sh-next")) { keyHandler = null; return; } const n = "123".indexOf(e.key); if (n >= 0 && e.key.length === 1) $("next").children[n]?.click(); };
+  keyHandler = e => { if (!document.getElementById("sh-next")) { keyHandler = null; return; } if (e.key === "p" || e.key === "P" || e.key === "Escape") { G.paused ? resume() : pause(); return; } if (G.paused) return; const n = "123".indexOf(e.key); if (n >= 0 && e.key.length === 1) $("next").children[n]?.click(); };
   next();
 }
 // 🛒 the Hopper shop
@@ -25394,6 +25443,131 @@ async function talkSend() {
   }
 }
 NEW_APPS.push({ id: "talk", emoji: "💬", name: "Talk Room", desc: "Talk with the other people on the site, in rooms or one to one. Be kind: MR.E can delete unkind messages.", start: () => startTalk(), kw: "talk room|talk|chat|chat room|message|messages|messaging|text|friends" });
+/* ---------- 🖼️ Famous Artists: famous artists and their most famous paintings, oldest first. Every painting here is public domain.
+   A painting's picture is a file next to the page: art/<id>.jpg (big) and art/<id>-s.jpg (small). Until a picture is there, its card shows
+   the painting's main colors instead. Any painting with a picture can become your home background (it's saved like your own pictures). */
+// works: id → [title, year, where it is, about it, its main colors]
+const FA_WORKS = {
+  monalisa: ["Mona Lisa", "c. 1503–1519", "The Louvre, Paris", "The most famous painting in the world. Leonardo used soft, smoky shading called sfumato, so her smile seems to change as you look at it.", ["#5b5a35", "#a8874a", "#2e3020"]],
+  lastsupper: ["The Last Supper", "1495–1498", "Santa Maria delle Grazie, Milan", "A huge wall painting of Jesus and his twelve apostles at their last meal together. Leonardo tried a new kind of paint on the dry wall, and it started flaking while he was still alive.", ["#8a7a5c", "#c9b48a", "#4a4436"]],
+  adam: ["The Creation of Adam", "c. 1512", "The Sistine Chapel, Vatican City", "God reaches out to give life to Adam. Their fingers almost touch but don't, and that tiny gap makes everyone hold their breath.", ["#c9a27a", "#8fa6b8", "#e8d7b5"]],
+  venus: ["The Birth of Venus", "c. 1485", "Uffizi Gallery, Florence", "Venus, the goddess of love, arrives at the shore standing on a giant seashell, blown in by the winds.", ["#9fc2b4", "#e8cfa8", "#6b8f7a"]],
+  hunters: ["The Hunters in the Snow", "1565", "Kunsthistorisches Museum, Vienna", "Tired hunters and their dogs trudge home over a snowy hill while villagers skate on the frozen ponds below.", ["#c9d6d0", "#5d6b5f", "#2e3a33"]],
+  nightwatch: ["The Night Watch", "1642", "Rijksmuseum, Amsterdam", "A city guard company bursting into action. It's about 3.6 by 4.4 meters (12 by 14 feet)! Old, darkened varnish gave it its nickname, but it's really a daytime scene.", ["#3a2a16", "#c99a3c", "#1a140c"]],
+  pearl: ["Girl with a Pearl Earring", "c. 1665", "Mauritshuis, The Hague", "Not a portrait of a real person but a study of a face in an imaginary costume. People call it the Mona Lisa of the North.", ["#16232e", "#e3c27a", "#3f6f9e"]],
+  milkmaid: ["The Milkmaid", "c. 1658", "Rijksmuseum, Amsterdam", "A kitchen maid carefully pours milk. Vermeer painted the window light so well you can almost feel the sunshine.", ["#d8c8a0", "#2f5d9a", "#e3b23c"]],
+  temeraire: ["The Fighting Temeraire", "1839", "The National Gallery, London", "A little steam tugboat pulls an old warship, the Temeraire, to be taken apart, under a blazing sunset.", ["#e8a33c", "#f3e2b0", "#5b7c99"]],
+  greatwave: ["The Great Wave off Kanagawa", "c. 1831", "Prints are in many museums, like the Metropolitan Museum of Art in New York", "A giant wave curls like a claw over three boats, with a tiny Mount Fuji far away. It's a woodblock print, so many copies were made.", ["#1d3a6b", "#e9e2cf", "#8fb3c9"]],
+  redfuji: ["Fine Wind, Clear Morning (Red Fuji)", "c. 1831", "Prints are in many museums, like the British Museum in London", "Mount Fuji glows red in the early morning sun of late summer, under rows of little clouds.", ["#b5452f", "#3e6fa3", "#2e5a3a"]],
+  suddenshower: ["Sudden Shower over Shin-Ōhashi Bridge", "1857", "Prints are in many museums, like the Brooklyn Museum in New York", "People hurry across a bridge as a sudden rainstorm pours down in thin dark lines.", ["#4a5a6a", "#c9c2a3", "#2e4a5a"]],
+  sunrise: ["Impression, Sunrise", "1872", "Musée Marmottan Monet, Paris", "A quick painting of a misty harbor with an orange sun. A critic made fun of the title, and the name Impressionism stuck to a whole group of artists.", ["#6f8a9e", "#e8742c", "#3a4f63"]],
+  waterlilies: ["Water Lilies", "1906", "Art Institute of Chicago", "Monet built a water garden at his home in Giverny and painted its lilies about 250 times.", ["#5f8fa0", "#c9b8d8", "#3f6b4a"]],
+  balletclass: ["The Ballet Class", "c. 1871–1874", "Musée d'Orsay, Paris", "Young dancers stretch, fidget and listen while their teacher, holding a tall stick, leads the class.", ["#c9b59a", "#f0eadf", "#6b5a45"]],
+  moulin: ["Dance at Le Moulin de la Galette", "1876", "Musée d'Orsay, Paris", "A sunny Sunday afternoon dance in Paris, with spots of light falling through the trees onto everyone.", ["#2e4a6b", "#e8d8b0", "#4a6b4a"]],
+  cradle: ["The Cradle", "1872", "Musée d'Orsay, Paris", "Morisot's sister Edma watches her sleeping baby through a soft, see-through curtain.", ["#e8e2d8", "#3a3a4a", "#c9b8b0"]],
+  childsbath: ["The Child's Bath", "1893", "Art Institute of Chicago", "A mother gently washes her child's feet. The view from above and the bold patterns came from Japanese prints.", ["#e8c9a0", "#3f7a5a", "#c96b4a"]],
+  cardplayers: ["The Card Players", "1892–1895", "Musée d'Orsay, Paris", "Two men concentrate on their card game. Cézanne painted five versions of this scene.", ["#6b5a3a", "#c9a35a", "#3a4a5a"]],
+  starrynight: ["The Starry Night", "1889", "The Museum of Modern Art, New York", "A swirling night sky over a sleepy village, painted from the view from his window at the hospital in Saint-Rémy, France.", ["#1b3a6b", "#f2c94c", "#2d5f8a"]],
+  sunflowers: ["Sunflowers", "1888", "The National Gallery, London", "He painted sunflowers to decorate the room for his friend, the artist Paul Gauguin.", ["#e8b23c", "#c97a2c", "#6b8a3a"]],
+  bedroom: ["The Bedroom", "1888", "Van Gogh Museum, Amsterdam", "His own bedroom in the Yellow House in Arles, France. He wanted the bright colors to feel restful.", ["#4a7ab0", "#e8c94a", "#c9603a"]],
+  grandejatte: ["A Sunday on La Grande Jatte", "1884–1886", "Art Institute of Chicago", "People relax by the river on a Sunday. It took him about two years, and it's made of countless tiny dots.", ["#4a7a3a", "#e8d89a", "#3a5a8a"]],
+  tiger: ["Tiger in a Tropical Storm (Surprised!)", "1891", "The National Gallery, London", "A tiger crouches in the jungle as lightning flashes and the wind whips the leaves.", ["#3a5a2a", "#e8a33c", "#7a8a5a"]],
+  scream: ["The Scream", "1893", "National Museum of Norway, Oslo", "A figure on a bridge clutches its face under a blood-red sky. Munch said he felt an endless scream passing through nature.", ["#e0682c", "#2e4a6b", "#c9a33c"]],
+  kiss: ["The Kiss", "1907–1908", "Belvedere, Vienna", "Two people hug, wrapped in robes covered with shining gold patterns, on a meadow full of flowers.", ["#c9a23a", "#5a6b3a", "#e8d27a"]],
+  composition7: ["Composition VII", "1913", "Tretyakov Gallery, Moscow", "An explosion of colors and shapes. He thought of his Compositions like big pieces of music.", ["#c93a3a", "#3a6bc9", "#e8c93a"]],
+  hilma: ["The Ten Largest, No. 7, Adulthood", "1907", "Hilma af Klint Foundation, Stockholm", "One of ten giant paintings, each over 3 meters (10 feet) tall, about the stages of a human life.", ["#e8a3b8", "#f0d27a", "#7a9ac9"]],
+  mondrian: ["Composition with Red, Blue and Yellow", "1930", "Kunsthaus Zürich", "A grid of black lines with blocks of red, blue and yellow. Simple, but perfectly balanced.", ["#d7262e", "#1d4fa0", "#f2d22e"]],
+  gothic: ["American Gothic", "1930", "Art Institute of Chicago", "A farmer with a pitchfork stands beside a woman in front of their house. The models were Wood's sister and his dentist.", ["#6b7a5a", "#c9b89a", "#2e3a2e"]]
+};
+// artists: [id, emoji, name, years, from, style, fun fact, works]
+const FA_ARTISTS = [
+  ["botticelli", "🐚", "Sandro Botticelli", "c. 1445–1510", "🇮🇹 Italy", "Renaissance", "He worked in Florence for the powerful Medici family.", ["venus"]],
+  ["leonardo", "🧠", "Leonardo da Vinci", "1452–1519", "🇮🇹 Italy", "Renaissance", "He filled notebooks with ideas for flying machines and wrote many notes backwards, in mirror writing.", ["monalisa", "lastsupper"]],
+  ["michelangelo", "🏛️", "Michelangelo", "1475–1564", "🇮🇹 Italy", "Renaissance", "He painted the Sistine Chapel ceiling high up on scaffolding, looking up, for about four years (1508–1512).", ["adam"]],
+  ["bruegel", "⛸️", "Pieter Bruegel the Elder", "c. 1525–1569", "🇧🇪 Flanders (now Belgium)", "Northern Renaissance", "He loved painting everyday village life: farmers, feasts, games and weddings.", ["hunters"]],
+  ["rembrandt", "🕯️", "Rembrandt van Rijn", "1606–1669", "🇳🇱 The Netherlands", "Dutch Golden Age", "He made close to 100 self-portraits over his life, in paint, drawing and etching.", ["nightwatch"]],
+  ["vermeer", "🥛", "Johannes Vermeer", "1632–1675", "🇳🇱 The Netherlands", "Dutch Golden Age", "Only about 35 of his paintings are known today.", ["pearl", "milkmaid"]],
+  ["hokusai", "🌊", "Katsushika Hokusai", "1760–1849", "🇯🇵 Japan", "Ukiyo-e woodblock prints", "He made a series called Thirty-six Views of Mount Fuji, and he used about 30 different art names in his life.", ["greatwave", "redfuji"]],
+  ["turner", "🌅", "J. M. W. Turner", "1775–1851", "🇬🇧 England", "Romanticism", "He was famous for stormy seas, glowing sunsets and swirling light.", ["temeraire"]],
+  ["hiroshige", "☔", "Utagawa Hiroshige", "1797–1858", "🇯🇵 Japan", "Ukiyo-e woodblock prints", "Vincent van Gogh liked his prints so much that he painted copies of two of them.", ["suddenshower"]],
+  ["degas", "🩰", "Edgar Degas", "1834–1917", "🇫🇷 France", "Impressionism", "He made more than 1,500 paintings, pastels, prints and drawings of ballet dancers.", ["balletclass"]],
+  ["cezanne", "🍎", "Paul Cézanne", "1839–1906", "🇫🇷 France", "Post-Impressionism", "Many younger artists called him “the father of us all” because his blocky shapes led the way to modern art.", ["cardplayers"]],
+  ["monet", "🪷", "Claude Monet", "1840–1926", "🇫🇷 France", "Impressionism", "The word Impressionism came from the name of his painting Impression, Sunrise.", ["sunrise", "waterlilies"]],
+  ["morisot", "👶", "Berthe Morisot", "1841–1895", "🇫🇷 France", "Impressionism", "She was one of the first Impressionists and showed her art in their very first exhibition, in 1874.", ["cradle"]],
+  ["renoir", "💃", "Pierre-Auguste Renoir", "1841–1919", "🇫🇷 France", "Impressionism", "He said a painting should be something likable, joyful and pretty.", ["moulin"]],
+  ["rousseau", "🐅", "Henri Rousseau", "1844–1910", "🇫🇷 France", "Naïve art", "He taught himself to paint and never visited a jungle. He got his ideas from the plants and animals in Paris gardens and books.", ["tiger"]],
+  ["cassatt", "🛁", "Mary Cassatt", "1844–1926", "🇺🇸 United States (worked in France)", "Impressionism", "She was an American who joined the French Impressionists after Edgar Degas invited her.", ["childsbath"]],
+  ["vangogh", "🌻", "Vincent van Gogh", "1853–1890", "🇳🇱 The Netherlands (worked in France)", "Post-Impressionism", "He made about 2,100 artworks in just over 10 years, including around 860 oil paintings.", ["starrynight", "sunflowers", "bedroom"]],
+  ["seurat", "🔴", "Georges Seurat", "1859–1891", "🇫🇷 France", "Pointillism", "He painted with thousands of tiny dots of pure color that your eyes mix together. That's called pointillism.", ["grandejatte"]],
+  ["klimt", "✨", "Gustav Klimt", "1862–1918", "🇦🇹 Austria", "Art Nouveau", "In his “Golden Period” he used real gold leaf in his paintings.", ["kiss"]],
+  ["afklint", "🌀", "Hilma af Klint", "1862–1944", "🇸🇪 Sweden", "Abstract art", "She made abstract paintings before most other artists, but asked that they stay hidden until 20 years after she died.", ["hilma"]],
+  ["munch", "😱", "Edvard Munch", "1863–1944", "🇳🇴 Norway", "Expressionism", "He made several versions of The Scream, in paint, pastel and prints.", ["scream"]],
+  ["kandinsky", "🎺", "Wassily Kandinsky", "1866–1944", "🇷🇺 Russia (worked in Germany and France)", "Abstract art", "He felt colors like music. He said yellow was like a trumpet.", ["composition7"]],
+  ["mondrian", "🟥", "Piet Mondrian", "1872–1944", "🇳🇱 The Netherlands", "De Stijl", "He used only straight black lines, white, and the three primary colors: red, yellow and blue.", ["mondrian"]],
+  ["wood", "🏡", "Grant Wood", "1891–1942", "🇺🇸 United States", "Regionalism", "The house in American Gothic is a real house in Eldon, Iowa, and you can still visit it.", ["gothic"]]
+];
+const faArtistOf = wid => FA_ARTISTS.find(a => a[7].includes(wid));
+const faSrc = (wid, small) => `art/${wid}${small ? "-s" : ""}.jpg`;
+const faSwatch = wid => { const c = FA_WORKS[wid][4]; return `background: linear-gradient(135deg, ${c[0]} 0%, ${c[0]} 34%, ${c[1]} 34%, ${c[1]} 67%, ${c[2]} 67%)`; };
+// a painting's picture, or its colors while the picture isn't there
+const faPic = (wid, small, cls = "") => `<span class="fa-pic ${cls}" style="${faSwatch(wid)}" data-w="${wid}"><img src="${faSrc(wid, small)}" alt="${esc(FA_WORKS[wid][0])} by ${esc(faArtistOf(wid)[2])}" loading="lazy"><i class="fa-none">${faArtistOf(wid)[1]}<small>Picture coming soon</small></i></span>`;
+function faBindPics(root) {   // a picture that can't load leaves the painting's colors showing
+  root.querySelectorAll(".fa-pic img").forEach(im => {
+    const pic = im.closest(".fa-pic"), bad = () => { pic.classList.add("none"); root.querySelectorAll(`[data-bgw="${pic.dataset.w}"]`).forEach(b => { b.disabled = true; b.title = "This painting's picture isn't here yet."; }); };
+    const ok = () => pic.classList.add("ok");
+    if (im.complete) { if (im.naturalWidth) ok(); else bad(); } else { im.addEventListener("load", ok); im.addEventListener("error", bad); }
+  });
+}
+async function faUseBg(wid) {   // 🌈 use a painting as the home screen background (saved like your own pictures)
+  if (!SITE_WHO || SITE_WHO === "guest") return toast("Pick who you are first, then you can choose a background.");
+  const id = await bgAddPicture(faSrc(wid)); if (!id) return;
+  store.set("bg_page_" + SITE_WHO, { ...bgPages(), home: "img:" + id }); setScene();
+  toast(`🌈 ${FA_WORKS[wid][0]} is your home screen background now! Change it any time in 🎨 Art → New home screen background.`);
+}
+function startArtists(view = "home", id) {
+  if (view === "artist") return faArtist(id);
+  if (view === "work") return faWork(id);
+  const all = FA_ARTISTS.flatMap(a => a[7]);
+  appScreen("🖼️ Famous Artists", `<div class="fa"><h2>🖼️ Famous Artists</h2>
+    <p class="soft">Meet ${FA_ARTISTS.length} famous artists, from about 1485 to 1930, and see their most famous paintings. Tap 🌈 on any painting to make it your home background!</p>
+    <div class="na-chips" id="fa-view"><button class="chip on" type="button" data-v="artists">👩‍🎨 Artists</button><button class="chip" type="button" data-v="works">🖼️ All ${all.length} paintings</button></div>
+    <div class="fa-grid" id="fa-artists">${FA_ARTISTS.map(a => `<button class="fa-card" type="button" data-a="${a[0]}">${faPic(a[7][0], true)}<b>${a[1]} ${esc(a[2])}</b><small>${esc(a[3])} · ${esc(a[4].split(" (")[0])}</small><span class="fa-style">${esc(a[5])}</span></button>`).join("")}</div>
+    <div class="fa-grid" id="fa-works" hidden>${all.map(w => `<button class="fa-card" type="button" data-w2="${w}">${faPic(w, true)}<b>${esc(FA_WORKS[w][0])}</b><small>${esc(faArtistOf(w)[2])} · ${esc(FA_WORKS[w][1])}</small></button>`).join("")}</div>
+    <p class="soft fa-pd">All of these paintings are in the public domain: they're old enough that anyone may share them.</p></div>`);
+  faBindPics($app);
+  $app.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", () => { $app.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("on", x === b)); document.getElementById("fa-artists").hidden = b.dataset.v !== "artists"; document.getElementById("fa-works").hidden = b.dataset.v !== "works"; }));
+  $app.querySelectorAll("[data-a]").forEach(b => b.addEventListener("click", () => faArtist(b.dataset.a)));
+  $app.querySelectorAll("[data-w2]").forEach(b => b.addEventListener("click", () => faWork(b.dataset.w2)));
+}
+function faArtist(aid) {
+  const a = FA_ARTISTS.find(x => x[0] === aid) || FA_ARTISTS[0], i = FA_ARTISTS.indexOf(a), prev = FA_ARTISTS[i - 1], next = FA_ARTISTS[i + 1];
+  appScreen("🖼️ Famous Artists · " + a[2], `<div class="fa"><div class="row fa-top"><button class="chip" id="fa-home" type="button">⬅ Famous Artists</button><button class="chip" id="fa-say" type="button">🔊 Read it to me</button></div>
+    <div class="fa-hero"><span class="fa-emo">${a[1]}</span><div><h2>${esc(a[2])}</h2><p>${esc(a[3])} · ${esc(a[4])}</p><span class="fa-style">${esc(a[5])}</span></div></div>
+    <p class="fa-fact">💡 ${esc(a[6])}</p>
+    <h3>${a[7].length === 1 ? "Famous painting" : "Famous paintings"}</h3>
+    ${a[7].map(w => { const W = FA_WORKS[w]; return `<div class="fa-work"><button class="fa-open" type="button" data-w2="${w}" aria-label="Look closer at ${esc(W[0])}">${faPic(w, false, "big")}</button><div class="fa-info"><b>${esc(W[0])}</b><small>${esc(W[1])} · ${esc(W[2])}</small><p>${esc(W[3])}</p><div class="row"><button class="btn" type="button" data-w2="${w}">🔍 Look closer</button><button class="btn gold" type="button" data-bgw="${w}">🌈 Use as my home background</button></div></div></div>`; }).join("")}
+    <div class="row fa-nav">${prev ? `<button class="btn" type="button" data-a="${prev[0]}">⬅ ${prev[1]} ${esc(prev[2])}</button>` : "<span></span>"}${next ? `<button class="btn" type="button" data-a="${next[0]}">${next[1]} ${esc(next[2])} ➜</button>` : ""}</div></div>`);
+  faBindPics($app);
+  document.getElementById("fa-home").addEventListener("click", () => startArtists());
+  document.getElementById("fa-say").addEventListener("click", () => svSay(`${a[2]}, ${a[3].replace("c.", "about").replace("–", " to ")}, from ${a[4].replace(/^\S+\s/, "")}. ${a[6]} ${a[7].map(w => `${FA_WORKS[w][0]}. ${FA_WORKS[w][3]}`).join(" ")}`));
+  $app.querySelectorAll("[data-a]").forEach(b => b.addEventListener("click", () => faArtist(b.dataset.a)));
+  $app.querySelectorAll("[data-w2]").forEach(b => b.addEventListener("click", () => faWork(b.dataset.w2)));
+  $app.querySelectorAll("[data-bgw]").forEach(b => b.addEventListener("click", () => faUseBg(b.dataset.bgw)));
+}
+function faWork(wid) {   // 🔍 a painting, big
+  if (!FA_WORKS[wid]) return startArtists();
+  const W = FA_WORKS[wid], a = faArtistOf(wid);
+  appScreen("🖼️ Famous Artists · " + W[0], `<div class="fa"><div class="row fa-top"><button class="chip" id="fa-back" type="button">⬅ ${a[1]} ${esc(a[2])}</button><button class="chip" id="fa-home" type="button">🖼️ All artists</button></div>
+    <div class="fa-frame">${faPic(wid, false, "huge")}</div>
+    <h2 class="fa-title">${esc(W[0])}</h2><p class="fa-by">${esc(a[2])} · ${esc(W[1])} · ${esc(W[2])}</p><p>${esc(W[3])}</p>
+    <div class="row"><button class="btn gold" type="button" data-bgw="${wid}">🌈 Use as my home background</button><button class="btn" id="fa-say" type="button">🔊 Read it to me</button></div></div>`);
+  faBindPics($app);
+  document.getElementById("fa-back").addEventListener("click", () => faArtist(a[0]));
+  document.getElementById("fa-home").addEventListener("click", () => startArtists());
+  document.getElementById("fa-say").addEventListener("click", () => svSay(`${W[0]}, by ${a[2]}. ${W[3]}`));
+  $app.querySelector("[data-bgw]").addEventListener("click", () => faUseBg(wid));
+}
+NEW_APPS.push({ id: "artists", emoji: "🖼️", name: "Famous Artists", desc: "Famous artists and their most famous paintings, from Leonardo da Vinci to Van Gogh. Use any painting as your home background.", start: () => startArtists(), kw: "famous artists?|artists?|paintings?|painters?|masterpieces?|art history|museum|mona lisa|starry night|van gogh|monet|leonardo|da vinci|great wave|the scream" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
