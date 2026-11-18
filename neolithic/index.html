@@ -1938,7 +1938,9 @@
   .kq-fb { margin-top: 12px; border-radius: 14px; padding: 10px 12px; line-height: 1.4; display: none; } .kq-fb.good, .kq-fb.bad { display: block; }
   .kq-fb.good { background: rgba(52,194,106,.16); border: 2px solid #34c26a; } .kq-fb.bad { background: rgba(239,75,92,.14); border: 2px solid #ef4b5c; }
   .kq-newcard { display: block; margin-top: 6px; font-weight: 800; color: #ffe066; }
-  .kq-next { width: 100%; margin-top: 10px; } .kq-keys { font-size: .8rem; text-align: center; }
+  .kq-next { width: 100%; margin-top: 10px; }
+  .kq-hintrow { justify-content: center; margin-top: 10px; } .kq-hint { flex-direction: row; align-items: center; gap: 4px; padding: 6px 14px; border-width: 2px; } .kq-hint small { opacity: .75; }
+  .kq-hint:disabled { opacity: .5; cursor: default; } .kq-gone, .kq-ch.kq-gone { opacity: .18 !important; filter: grayscale(1); transform: scale(.94); pointer-events: none; } .kq-keys { font-size: .8rem; text-align: center; }
   .kq-boss { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border-radius: 18px; background: linear-gradient(135deg, #4a1530, #2a1650); border: 2px solid #ef4b5c; }
   .kq-bface { font-size: 2.8rem; line-height: 1; animation: kqBob 2.2s ease-in-out infinite; } .kq-bbody { flex: 1; min-width: 0; display: grid; gap: 3px; }
   .kq-hp { display: block; height: 12px; border-radius: 99px; background: rgba(0,0,0,.4); overflow: hidden; } .kq-hp > i { display: block; height: 100%; background: linear-gradient(90deg, #ff4d6d, #ffb703); transition: width .5s ease; }
@@ -1990,7 +1992,7 @@
   .fa-pic.none img { display: none; } .fa-none { display: none; position: absolute; inset: 0; place-content: center; justify-items: center; font-style: normal; font-size: 2rem; text-align: center; background: rgba(0,0,0,.25); }
   .fa-none small { font-size: .7rem; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000; } .fa-pic.none .fa-none { display: grid; }
   .fa-pic.big { aspect-ratio: 4 / 3; } .fa-pic.big img, .fa-pic.huge img { object-fit: contain; background: #111; }
-  .fa-pic.huge { aspect-ratio: auto; height: min(62vh, 560px); }
+  .fa-pic.huge { aspect-ratio: auto; min-height: 120px; } .fa-pic.huge img { position: relative; display: block; width: 100%; height: auto; max-height: 72vh; object-fit: contain; background: transparent; } .fa-pic.huge.none { height: 320px; }
   .fa-top, .fa-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; } .fa-nav { margin-top: 12px; }
   .fa-hero { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 18px; background: linear-gradient(135deg, #3b1f6b, #1d3a66); } .fa-hero p { margin: 2px 0 6px; }
   .fa-emo { font-size: 3rem; } .fa-fact { background: var(--panel-2); border-left: 6px solid var(--gold); border-radius: 12px; padding: 10px 12px; }
@@ -25197,7 +25199,7 @@ function kqStudy(tab) {
 let KQG = null;
 function kqPlay(mode) {
   const M = KQ_MODES[mode] ? KQ_MODES[mode] : KQ_MODES.sort, qs = M.build().map((q, i) => ({ ...q, id: i, tries: 0 }));
-  KQG = { mode: KQ_MODES[mode] ? mode : "sort", M, queue: qs, total: qs.length, done: 0, firstRight: 0, score: 0, streak: 0, best: 0, missed: [], boss: !!M.boss, hp: KQ_BOSS_HP, fresh: [] };
+  KQG = { mode: KQ_MODES[mode] ? mode : "sort", M, queue: qs, total: qs.length, done: 0, firstRight: 0, score: 0, streak: 0, best: 0, missed: [], boss: !!M.boss, hp: KQ_BOSS_HP, fresh: [], hints: 3 };
   kqNext();
 }
 const kqBossFace = hp => hp <= 0 ? "💥" : hp <= 9 ? "😵‍💫" : hp <= 18 ? "😠" : "👾";
@@ -25212,24 +25214,36 @@ function kqNext() {
     ${G.boss ? kqBossHTML(G) : ""}
     <div class="kq-sub soft">${G.M.ic} ${G.M.t} · ${G.done} / ${G.total} ${G.boss ? "answered" : "mastered"}${q.tries ? " · 🔁 Try again!" : ""}</div>
     <div class="kq-prog"><i style="width:${pct}%"></i></div>
-    <div class="kq-card" id="kq-card"><div class="kq-q">${q.prompt}</div>${chs}<div class="kq-fb" id="kq-fb" aria-live="polite"></div><button class="btn go kq-next" id="kq-nx" type="button" hidden>Next ➜</button></div>
-    <p class="soft kq-keys">Keys: 1 to ${q.type === "k" ? 6 : q.choices.length} to answer, Enter for the next one.</p></div>`);
+    <div class="kq-card" id="kq-card"><div class="kq-q">${q.prompt}</div>${chs}<div class="row kq-hintrow"><button class="chip kq-hint" id="kq-hint" type="button"${G.hints ? "" : " disabled"}>💡 Hint <small>(${G.hints} left)</small></button></div><div class="kq-fb" id="kq-fb" aria-live="polite"></div><button class="btn go kq-next" id="kq-nx" type="button" hidden>Next ➜</button></div>
+    <p class="soft kq-keys">Keys: 1 to ${q.type === "k" ? 6 : q.choices.length} to answer, H for a hint, Enter for the next one.</p></div>`);
+  document.getElementById("kq-hint").addEventListener("click", kqHint);
   kqBindHome();
   $app.querySelectorAll(".kq-ch").forEach(b => b.addEventListener("click", () => kqAnswer(b)));
   keyHandler = e => {
     if (!document.getElementById("kq-card")) { keyHandler = null; return; }
     const nx = document.getElementById("kq-nx");
     if (e.key === "Enter" && nx && !nx.hidden) { if (!kqTyping(e)) { e.preventDefault(); nx.click(); } return; }
+    if (e.key === "h" || e.key === "H") return kqHint();
     const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 6) $app.querySelectorAll(".kq-ch")[n - 1]?.click();
   };
+}
+const kqTake = n => Math.ceil(n / 2);   // a hint takes away half of the wrong answers (rounded up)
+function kqHint() {
+  const G = KQG, q = G && G.queue[0], hb = document.getElementById("kq-hint"); if (!q || q.answered || q.hinted || !hb) return;
+  const btns = [...$app.querySelectorAll(".kq-ch")], val = b => q.type === "k" ? b.dataset.v : +b.dataset.v, wrong = btns.filter(b => !q.correct.includes(val(b)));
+  if (btns.length <= 2) { document.getElementById("kq-fb").className = "kq-fb good"; document.getElementById("kq-fb").textContent = "💡 For true or false, check every word: if even one part is wrong, the whole sentence is false!"; return; }   // true or false: a tip, and no hint used
+  if (!G.hints) return toast("No hints left this round!");
+  q.hinted = true; G.hints--; shuffle(wrong).slice(0, kqTake(wrong.length)).forEach(b => { b.disabled = true; b.classList.add("kq-gone"); });
+  hb.disabled = true; hb.innerHTML = `💡 Hint used <small>(${G.hints} left)</small>`; tone([880, 660], .06, "sine", .05);
 }
 function kqAnswer(btn) {
   const G = KQG, q = G && G.queue[0]; if (!q || q.answered) return; q.answered = true;
   const val = b => q.type === "k" ? b.dataset.v : +b.dataset.v, ok = q.correct.includes(val(btn));
+  document.getElementById("kq-hint")?.setAttribute("disabled", "");
   $app.querySelectorAll(".kq-ch").forEach(b => { b.disabled = true; if (q.correct.includes(val(b))) b.classList.add("right"); else if (b === btn) b.classList.add("wrong"); else b.classList.add("fade"); });
   const fb = document.getElementById("kq-fb"), right = q.type === "k" ? q.correct.map(k => KQ_K[k].n).join(" or ") : esc(q.choices[q.correct[0]]);
   if (ok) {
-    G.streak++; G.best = Math.max(G.best, G.streak); const pts = 10 + Math.min(G.streak, 10) * 2; G.score += pts;
+    G.streak++; G.best = Math.max(G.best, G.streak); const pts = Math.round((10 + Math.min(G.streak, 10) * 2) / (q.hinted ? 2 : 1)); G.score += pts;   // 💡 a hinted answer earns half
     let fresh = false; if (!q.tries) { G.firstRight++; if (q.org && kqCollect(q.org)) { G.fresh.push(q.org); fresh = true; } }
     kqPop(btn, `+${pts}`); tone([523, 659, 784], .08, "triangle", .07);
     fb.className = "kq-fb good"; fb.innerHTML = `<b>✅ ${rPick(["Nailed it!", "Boom! 💥", "Science genius! 🧪", "Correct!", "You got it!", "Kingdom master! 👑", "Awesome!"])}</b> ${q.why}${fresh ? `<span class="kq-newcard">📖 New card for your collection: ${kqOrg(q.org)[1]} ${esc(q.org)}</span>` : ""}`;
@@ -25251,7 +25265,7 @@ function kqAnswer(btn) {
   const nx = document.getElementById("kq-nx"); nx.hidden = false;
   nx.addEventListener("click", () => {
     G.queue.shift();
-    if (ok || G.boss) G.done++; else { q.tries++; q.answered = false; G.queue.splice(Math.min(3, G.queue.length), 0, q); }
+    if (ok || G.boss) G.done++; else { q.tries++; q.answered = false; q.hinted = false; G.queue.splice(Math.min(3, G.queue.length), 0, q); }
     kqNext();
   });
   nx.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
@@ -25277,7 +25291,7 @@ function kqResults() {
 /* 🎓 Kingdom Race: like Head of the Class */
 let KQR = null;
 function kqRace() {
-  KQR = { pos: [0, 0], q: kqRaceQ(0), answered: null, over: null, log: "Kindergarten, here we go! 🎒", missed: [], lvl: kqGet().lvl || "medium" };
+  KQR = { pos: [0, 0], q: kqRaceQ(0), answered: null, over: null, log: "Kindergarten, here we go! 🎒", missed: [], lvl: kqGet().lvl || "medium", hints: 3 };
   kqRaceDraw();
 }
 function kqRaceDraw() {
@@ -25287,7 +25301,8 @@ function kqRaceDraw() {
       ${R.missed.length ? `<div class="kq-scard"><h3>📝 Learn these</h3>${R.missed.map(x => `<div class="kq-miss">${x.q}<br><b>➜ ${esc(x.a)}</b><br><small class="soft">${esc(x.why)}</small></div>`).join("")}</div>` : ""}
       <div class="row kq-nav"><button class="btn" id="kq-study" type="button">📚 Study Cards</button><button class="btn go" id="kq-again" type="button">🎓 Race again</button></div></div>`
     : `<div class="sl-card kq-rcard"><small>${GR[R.pos[0]]} grade question · ${kqTier(R.pos[0])}</small><h3 class="kq-rq">${Q.q}</h3>
-      <div class="hc-opts${Q.opts.some(o => String(o).length > 11) ? " long" : ""}">${Q.opts.map((o, i) => `<button class="btn${R.answered ? (o === Q.a ? " go" : o === R.answered ? " bad" : "") : ""}" type="button" data-o="${i}"${R.answered ? " disabled" : ""}>${esc(o)}</button>`).join("")}</div>
+      <div class="hc-opts${Q.opts.some(o => String(o).length > 11) ? " long" : ""}">${Q.opts.map((o, i) => { const gone = !R.answered && (Q.gone || []).includes(i); return `<button class="btn${R.answered ? (o === Q.a ? " go" : o === R.answered ? " bad" : "") : ""}${gone ? " kq-gone" : ""}" type="button" data-o="${i}"${R.answered || gone ? " disabled" : ""}>${esc(o)}</button>`; }).join("")}</div>
+      ${R.answered ? "" : `<div class="row kq-hintrow"><button class="chip kq-hint" id="kq-hint" type="button"${R.hints && !Q.gone ? "" : " disabled"}>💡 ${Q.gone ? "Hint used" : "Hint"} <small>(${R.hints} left this race)</small></button></div><div class="kq-fb" id="kq-tip"></div>`}
       ${R.answered ? `<div class="kq-fb ${R.answered === Q.a ? "good" : "bad"}">${esc(Q.why)}</div><button class="btn go" id="kq-ai" type="button">🤖 Computer's turn ➜</button>` : ""}</div>`;
   appScreen("🧬 Kingdom Quest · 🎓 Kingdom Race", `<div class="kq kq-race">${kqTop(`<span class="kq-hud"><b title="Races you won">🧑‍🔬 ${S.wins}</b><b title="Races the computer won">🤖 ${S.losses}</b></span>`)}
     <h3 class="kq-h">🎓 Kingdom Race</h3>
@@ -25300,6 +25315,13 @@ function kqRaceDraw() {
   document.getElementById("kq-again")?.addEventListener("click", () => kqRace());
   document.getElementById("kq-study")?.addEventListener("click", () => kqStudy("big"));
   document.getElementById("kq-ai")?.addEventListener("click", kqRaceAi);
+  const raceHint = () => {   // 💡 takes away half of the wrong answers
+    if (R.answered || R.over !== null || Q.gone) return;
+    if (Q.opts.length <= 2) { const t = document.getElementById("kq-tip"); if (t) { t.className = "kq-fb good"; t.textContent = "💡 For true or false, check every word: if even one part is wrong, the whole sentence is false!"; } return; }
+    if (!R.hints) return toast("No hints left this race!");
+    const wrong = Q.opts.map((o, i) => i).filter(i => Q.opts[i] !== Q.a); Q.gone = shuffle(wrong).slice(0, kqTake(wrong.length)); R.hints--; tone([880, 660], .06, "sine", .05); kqRaceDraw();
+  };
+  document.getElementById("kq-hint")?.addEventListener("click", raceHint);
   $app.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => {
     if (R.answered || R.over !== null) return;
     const o = Q.opts[+b.dataset.o]; R.answered = o;
@@ -25311,6 +25333,7 @@ function kqRaceDraw() {
   keyHandler = e => {
     if (!document.querySelector(".kq-race")) { keyHandler = null; return; }
     if (e.key === "Enter") { const ai = document.getElementById("kq-ai"); if (ai && !kqTyping(e)) { e.preventDefault(); ai.click(); } return; }
+    if (e.key === "h" || e.key === "H") return raceHint();
     const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 6) $app.querySelectorAll(".kq-race [data-o]")[n - 1]?.click();
   };
 }
@@ -25546,7 +25569,7 @@ function startArtists(view = "home", id) {
     <div class="na-chips" id="fa-view"><button class="chip on" type="button" data-v="artists">👩‍🎨 Artists</button><button class="chip" type="button" data-v="works">🖼️ All ${all.length} paintings</button></div>
     <div class="fa-grid" id="fa-artists">${FA_ARTISTS.map(a => `<button class="fa-card" type="button" data-a="${a[0]}">${faPic(a[7][0], true)}<b>${a[1]} ${esc(a[2])}</b><small>${esc(a[3])} · ${esc(a[4].split(" (")[0])}</small><span class="fa-style">${esc(a[5])}</span></button>`).join("")}</div>
     <div class="fa-grid" id="fa-works" hidden>${all.map(w => `<button class="fa-card" type="button" data-w2="${w}">${faPic(w, true)}<b>${esc(FA_WORKS[w][0])}</b><small>${esc(faArtistOf(w)[2])} · ${esc(FA_WORKS[w][1])}</small></button>`).join("")}</div>
-    <p class="soft fa-pd">All of these paintings are in the public domain: they're old enough that anyone may share them.</p></div>`);
+    <p class="soft fa-pd">All of these paintings are in the public domain: they're old enough that anyone may share them. The pictures come from Wikimedia Commons.</p></div>`);
   faBindPics($app);
   $app.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", () => { $app.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("on", x === b)); document.getElementById("fa-artists").hidden = b.dataset.v !== "artists"; document.getElementById("fa-works").hidden = b.dataset.v !== "works"; }));
   $app.querySelectorAll("[data-a]").forEach(b => b.addEventListener("click", () => faArtist(b.dataset.a)));
