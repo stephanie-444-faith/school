@@ -26763,7 +26763,8 @@ function m8Shake() {
   const ball = document.getElementById("m8-ball"); if (!ball || M8.busy) return; M8.busy = true;
   const S = m8Get(), st = M8.style || S.style, ok = c => st === "all" || (st === "classic" ? ["yes", "no", "maybe"].includes(c) : c === st);
   const idx = M8_ALL.map((a, i) => ok(a.c) ? i : -1).filter(i => i >= 0 && i !== M8.last), unseen = idx.filter(i => !S.seen.includes(i));
-  const i = rPick(unseen.length && Math.random() < .7 ? unseen : idx), a = M8_ALL[i], q = (document.getElementById("m8-q")?.value || "").trim();
+  const q = (document.getElementById("m8-q")?.value || "").trim(), yes = /franklin/i.test(q) ? M8_ALL.map((x, j) => x.t === "Yes!" || x.t === "Of course!" ? j : -1).filter(j => j >= 0) : [];   // 🤫 ask anything about Franklin and the answer is always "Yes!" or "Of course!"
+  const i = yes.length ? rPick(yes) : rPick(unseen.length && Math.random() < .7 ? unseen : idx), a = M8_ALL[i];
   M8.last = i; ball.classList.remove("show", "silly"); void ball.offsetWidth; ball.classList.add("shaking");
   document.getElementById("m8-cat").textContent = rPick(["🔮 Shaking…", "🌀 The magic is swirling…", "✨ Thinking…", "🎱 Asking the stars…"]);
   [0, 120, 240, 360, 480, 600].forEach((t, k) => setTimeout(() => tone([180 + k * 40 + Math.random() * 60], .05, "triangle", .05), t));
