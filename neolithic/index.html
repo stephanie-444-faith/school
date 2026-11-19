@@ -9772,6 +9772,7 @@ const HB_BOOKS = [
 ];
 function hbRng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const HB_CACHE = {};
+const HB_PLOTS = {};   // 📖 each big book's very own plot: HB_PLOTS[book number](C) adds its 100 pages (10 chapters of 10). Names and places come from HB_BOOKS and HB_PLACES.
 function hippoBook(bi) {
   if (HB_CACHE[bi]) return HB_CACHE[bi];
   const B = HB_BOOKS[bi], r = hbRng(bi * 7919 + 17), pk = a => a[Math.floor(r() * a.length)];
@@ -9780,6 +9781,11 @@ function hippoBook(bi) {
   const order = HB_PLACES.map((p, i) => [r(), i]).sort((a, b) => a[0] - b[0]).slice(0, 8).map(x => HB_PLACES[x[1]]);
   const pages = [], add = (ch, cht, scene, bg, text) => pages.push({ ch, cht, scene, bg, text });
   const homeBg = "#2b4a6b,#6b9fd1";
+  if (HB_PLOTS[bi]) {   // the book's own plot (the old shared story below is only a backup)
+    try { HB_PLOTS[bi]({ B, r, pk, order, add, H, HK, HE, trait, he, him, his, He, His, F, FK, FE, fq, home, homeE, homeD, Q, QE, QD, EL, ELK, ELE, FIN, FINE, FIND, G, GK, GE, homeBg, nightBg: "#1a2340,#3a4a7a", finBg: "#3a1f5a,#c97ad1", cap: hbCap }); } catch (e) { console.warn("book", bi, e); }
+    if (pages.length === 100) { pages.forEach((p, i) => p.n = i + 1); return HB_CACHE[bi] = pages; }
+    pages.length = 0;
+  }
   // Chapter 1: trouble at home
   let c = `Trouble at ${home}`;
   add(1, c, homeE + HE, homeBg, `In ${home}, ${homeD}, there lived a ${HK} named ${H}.\n\n${H} was ${trait}. Every morning, ${H} woke up, stretched, and said good morning to everyone ${he} saw. ${pk([`${He} liked to count the clouds and give them silly names.`, `${He} liked to collect shiny pebbles and line them up by size.`, `${He} liked to sit by the water and think about faraway places.`])}\n\nLife in ${home} was peaceful and happy. Nobody ever expected that a great adventure was just around the corner.`);
