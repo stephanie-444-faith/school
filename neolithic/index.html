@@ -2003,6 +2003,142 @@
   .fa-frame { padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #8a6a2a, #e3c27a 30%, #a8803a 60%, #e3c27a); box-shadow: 0 10px 30px rgba(0,0,0,.45); margin: 6px 0 10px; }
   .fa-title { font-family: var(--display); font-weight: 400; } .fa-by { color: var(--ink-soft); margin: 0 0 6px; } .fa-pd { font-size: .8rem; margin-top: 10px; }
   .btn[data-bgw]:disabled { opacity: .5; cursor: not-allowed; }
+  /* 🧫 Cell City */
+  .cy h3 { margin: 14px 0 6px; }
+  .cy-hero { position: relative; overflow: hidden; border-radius: 22px; padding: 18px 16px 14px; margin: 6px 0 10px; background: linear-gradient(135deg, #0e5a66, #1d6b4f 50%, #4a2c7a); border: 2px solid rgba(255,255,255,.12); color: #fff; }
+  .cy-hero p { margin: 4px 0 8px; position: relative; font-weight: 700; }
+  .cy-floaty span { position: absolute; left: var(--x); top: var(--y); font-size: 1.6rem; opacity: .28; animation: kqFloat 9s ease-in-out var(--d) infinite alternate; pointer-events: none; }
+  .cy-title { position: relative; margin: 0; font-family: var(--display); font-weight: 400; font-size: 2.3rem; line-height: 1.05; }
+  .cy-title span { background: linear-gradient(90deg, #ff7b54, #f6c445, #62c462, #4fc3ff, #c9b3f7, #ff8fb3, #ff7b54); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: kqShine 6s linear infinite; }
+  .cy-stats { position: relative; display: flex; flex-wrap: wrap; gap: 6px; } .cy-stats span { background: rgba(0,0,0,.28); border-radius: 99px; padding: 4px 10px; font-size: .85rem; font-weight: 700; }
+  .cy-bigbtns { display: grid; gap: 10px; margin: 4px 0 6px; }
+  @media (min-width: 700px) { .cy-bigbtns { grid-template-columns: 1fr 1fr; } }
+  .cy-big-btn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 14px 16px; cursor: pointer; font: inherit; transition: transform .12s; }
+  .cy-big-btn:hover { transform: translateY(-2px); } .cy-big-btn:active { transform: translateY(3px); }
+  .cy-big-btn.explore { color: #062a2e; background: linear-gradient(135deg, #8ff0e0, #4fd1c5 55%, #38b2ac); box-shadow: 0 6px 0 #1f7a73, 0 10px 24px rgba(79,209,197,.3); }
+  .cy-big-btn.race { color: #2a1900; background: linear-gradient(135deg, #ffe066, #ffb703 60%, #ff8c42); box-shadow: 0 6px 0 #b86b00, 0 10px 24px rgba(255,183,3,.3); }
+  .cy-big-btn b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.35rem; } .cy-big-btn small { display: block; font-weight: 700; opacity: .85; }
+  .cy-bic { font-size: 2.5rem; animation: kqBob 2.4s ease-in-out infinite; } .cy-go { margin-left: auto; font-size: 1.5rem; }
+  .cy-sub2 { margin: 0 0 8px; }
+  .cy-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+  .cy-bld { position: relative; display: grid; gap: 2px; justify-items: start; text-align: left; padding: 10px 12px; border-radius: 16px; border: 2px solid var(--c); background: var(--panel-2); background: linear-gradient(160deg, color-mix(in srgb, var(--c) 38%, transparent), var(--panel-2) 78%); color: inherit; font: inherit; cursor: pointer; transition: transform .12s, box-shadow .12s; }
+  .cy-bld:hover { transform: translateY(-3px); box-shadow: 0 0 16px var(--c); }
+  .cy-bld-e { font-size: 1.9rem; } .cy-bld b { font-size: .92rem; line-height: 1.2; } .cy-bld small { color: var(--ink-soft); font-size: .78rem; }
+  .cy-check { position: absolute; top: 6px; right: 8px; font-style: normal; font-size: .9rem; }
+  .cy-modes { display: grid; gap: 8px; }
+  .cy-mode { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; transition: transform .1s, border-color .1s; }
+  .cy-mode:hover { border-color: var(--gold); } .cy-mode:active { transform: scale(.98); }
+  .cy-mode b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.1rem; } .cy-mode small { color: var(--ink-soft); }
+  .cy-ic { font-size: 1.9rem; width: 44px; text-align: center; flex: 0 0 auto; } .cy-st { margin-left: auto; white-space: nowrap; }
+  .cy-mode.boss { border-color: #2ec4b6; background: linear-gradient(135deg, #0f4c4a, #2a1650); color: #fff; animation: cyGlow 2.6s ease-in-out infinite; } .cy-mode.boss small { color: #cfe; }
+  @keyframes cyGlow { 50% { box-shadow: 0 0 16px rgba(46,196,182,.55); } }
+  .cy-tip { margin-top: 12px; }
+  .cy-top { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .cy-hud { display: flex; gap: 12px; font-size: 1.05rem; } .cy-hud .pop { display: inline-block; animation: kqPopIn .4s; }
+  .cy-found { font-weight: 800; }
+  /* 🔬 the cell pictures */
+  .cy-kinds { margin-bottom: 8px; }
+  .cy-explore { display: grid; gap: 10px; align-items: start; }
+  @media (min-width: 760px) { .cy-explore { grid-template-columns: 3fr 2fr; } }
+  .cy-stage { background: radial-gradient(circle at 50% 40%, #fffafc, #efe6ff 75%); border-radius: 20px; padding: 6px; border: 2px solid var(--line); }
+  .cy-svg { display: block; width: 100%; height: auto; max-height: 62vh; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+  .cy-p { cursor: pointer; outline: none; transition: opacity .25s, filter .25s; }
+  .cy-p:hover { filter: brightness(1.06) drop-shadow(0 0 3px rgba(255,255,255,.9)); }
+  .cy-p:focus-visible { filter: drop-shadow(0 0 4px #1e88e5) drop-shadow(0 0 2px #1e88e5); }
+  .cy-svg.has-sel .cy-p:not(.sel) { opacity: .35; }
+  .cy-p.sel { filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px #ffb300); }
+  .cy-wig { transform-box: fill-box; transform-origin: center; animation: cyWig 4s ease-in-out infinite alternate; }
+  @keyframes cyWig { from { transform: rotate(-4deg); } to { transform: rotate(4deg) translateY(-1.5px); } }
+  .cy-dot { transform-box: fill-box; transform-origin: center; animation: cyDrift 3.5s ease-in-out infinite alternate; }
+  .cy-dot:nth-of-type(4n) { animation-delay: -1.2s; } .cy-dot:nth-of-type(4n+2) { animation-delay: -2.4s; }
+  @keyframes cyDrift { to { transform: translate(2px, -2px); } }
+  .cy-lab { font: 800 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1d1d2e; stroke: #fff; stroke-width: 3.5px; paint-order: stroke; stroke-linejoin: round; cursor: pointer; }
+  .cy-lab.sel { fill: #b45309; }
+  .cy-svg.done .cy-p { pointer-events: none; } .cy-svg.done .cy-p:not(.right):not(.wrong):not(.cy-cytoplasm) { opacity: .4; }
+  .cy-p.right { opacity: 1 !important; filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px #22c55e) drop-shadow(0 0 12px #22c55e); }
+  .cy-p.wrong { filter: drop-shadow(0 0 5px #ef4b5c) drop-shadow(0 0 9px #ef4b5c); }
+  .cy-p.cy-gone { opacity: .12 !important; pointer-events: none; filter: grayscale(1); }
+  @media (prefers-reduced-motion: reduce) { .cy-wig, .cy-dot, .cy-floaty span, .cy-bic { animation: none; } }
+  .cy-info .cy-icard { border-left: 8px solid var(--c, var(--gold)); border-radius: 18px; background: var(--panel-2); padding: 12px 14px; line-height: 1.45; }
+  .cy-icard p { margin: 6px 0; } .cy-hello { display: grid; gap: 4px; justify-items: start; }
+  .cy-ihead { display: flex; align-items: center; gap: 10px; } .cy-ihead b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.4rem; line-height: 1.1; } .cy-ihead small { color: var(--ink-soft); }
+  .cy-ie { font-size: 2.4rem; line-height: 1; }
+  .cy-job { font-size: 1.05rem; }
+  .cy-cityrow { display: flex; align-items: center; gap: 10px; border-radius: 14px; padding: 8px 10px; margin: 8px 0; background: color-mix(in srgb, var(--c, #888) 20%, transparent); }
+  .cy-cityrow > span { font-size: 2rem; } .cy-cityrow b { display: block; } .cy-cityrow small { display: block; color: var(--ink-soft); }
+  .cy-fact { font-size: .93rem; } .cy-irow { gap: 6px; flex-wrap: wrap; }
+  .cy-partchips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .cy-pc { border: 2px solid var(--c); border-radius: 99px; padding: 5px 11px; background: var(--panel-2); color: inherit; font: inherit; font-size: .88rem; font-weight: 700; cursor: pointer; opacity: .78; }
+  .cy-pc.got { opacity: 1; } .cy-pc.got::after { content: " ✅"; font-size: .75rem; }
+  .cy-pc.on { background: var(--c); color: #fff; opacity: 1; box-shadow: 0 0 12px var(--c); }
+  .cy-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  /* 📚 Study Cards */
+  .cy-tabs { margin-bottom: 8px; }
+  .cy-scard { border-left: 8px solid var(--k, var(--gold)); border-radius: 18px; background: var(--panel-2); padding: 12px 14px; margin: 8px 0; line-height: 1.45; }
+  .cy-scard h3 { margin: 0 0 4px; } .cy-scard ul, .cy-ol { margin: 6px 0; padding-left: 22px; } .cy-ol li { margin: 4px 0; }
+  .cy-pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+  .cy-pcard { display: grid; gap: 3px; justify-items: start; text-align: left; padding: 10px 12px; border-radius: 16px; border: 2px solid var(--c, var(--line)); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; line-height: 1.3; }
+  .cy-pcard.still { cursor: default; } .cy-pcard:not(.still):hover { box-shadow: 0 0 14px var(--c); }
+  .cy-pce { font-size: 1.9rem; } .cy-pcard small { color: var(--ink-soft); font-size: .82rem; } .cy-pcard .cy-pcity { color: var(--ink); font-weight: 700; }
+  .cy-cmpwrap { overflow-x: auto; } .cy-cmp { width: 100%; border-collapse: collapse; background: var(--panel-2); border-radius: 14px; overflow: hidden; }
+  .cy-cmp th, .cy-cmp td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; } .cy-cmp th { background: rgba(0,0,0,.18); }
+  .cy-time { display: grid; gap: 8px; }
+  .cy-tl { display: flex; align-items: flex-start; gap: 10px; background: var(--panel-2); border-radius: 14px; padding: 10px 12px; } .cy-tl p { margin: 0; line-height: 1.4; }
+  .cy-yr { font-family: var(--display); font-weight: 400; font-size: 1.2rem; color: var(--gold); min-width: 46px; } .cy-tle { font-size: 1.5rem; }
+  .cy-two { display: grid; gap: 8px; } @media (min-width: 640px) { .cy-two { grid-template-columns: 1fr 1fr; } }
+  .cy-ladder { display: grid; justify-items: center; gap: 2px; }
+  .cy-step { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 420px; background: var(--panel-2); border-radius: 16px; padding: 10px 14px; border: 2px solid var(--line); }
+  .cy-step b { display: block; font-size: 1.05rem; } .cy-step small { display: block; color: var(--ink-soft); } .cy-step .cy-ex { color: var(--ink); }
+  .cy-se { font-size: 2rem; } .cy-arrow { font-size: 1.2rem; opacity: .7; }
+  .cy-vocab { display: grid; gap: 6px; } .cy-vocab > div { background: var(--panel-2); border-radius: 12px; padding: 8px 12px; } .cy-vocab b { display: block; color: var(--gold); }
+  /* 🎯 missions */
+  .cy-sub { font-size: .9rem; } .cy-prog { height: 10px; border-radius: 99px; background: rgba(0,0,0,.3); overflow: hidden; margin: 6px 0 10px; }
+  .cy-prog > i { display: block; height: 100%; background: linear-gradient(90deg, #ff7b54, #f6c445, #62c462, #4fc3ff, #c9b3f7); transition: width .3s; }
+  .cy-card { position: relative; background: var(--panel-2); border: 2px solid var(--line); border-radius: 20px; padding: 14px; }
+  .cy-card.shake, .cy-tile.shake { animation: kqShake .4s; }
+  .cy-q { font-size: 1.15rem; font-weight: 800; line-height: 1.35; text-align: center; }
+  .cy-lab2 { display: block; font-size: .8rem; font-weight: 800; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .cy-big { display: block; font-size: 3.1rem; text-align: center; margin: 2px 0; line-height: 1.1; animation: kqPopIn .45s ease-out; }
+  .cy-org { display: block; font-size: 1.5rem; margin: 6px 0 2px; }
+  .cy-tag { text-align: center; font-weight: 800; margin: 8px 0 4px; color: var(--ink-soft); }
+  .cy-stage.game { margin-top: 4px; }
+  .cy-chs { display: grid; gap: 8px; margin-top: 12px; } @media (min-width: 560px) { .cy-chs { grid-template-columns: 1fr 1fr; } .cy-chs.three { grid-template-columns: repeat(3, 1fr); } }
+  .cy-ch { position: relative; border: 3px solid transparent; border-radius: 14px; padding: 12px; font: inherit; font-weight: 800; color: var(--ink); background: var(--panel); cursor: pointer; text-align: left; line-height: 1.25; transition: transform .1s; }
+  .cy-chs.three .cy-ch { text-align: center; font-size: 1.05rem; }
+  .cy-ch:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold); }
+  .cy-ch > i { position: absolute; top: 4px; right: 7px; font-style: normal; font-size: .7rem; opacity: .55; }
+  .cy-ch:disabled { cursor: default; } .cy-ch.right { border-color: #fff; box-shadow: 0 0 0 3px #34c26a, 0 0 18px #34c26a; animation: kqPopIn .35s; }
+  .cy-ch.wrong { opacity: .5; text-decoration: line-through; } .cy-ch.fade { opacity: .32; } .cy-ch.cy-gone { opacity: .18 !important; filter: grayscale(1); transform: scale(.94); pointer-events: none; }
+  .cy-hintrow { justify-content: center; margin-top: 10px; } .cy-hint { flex-direction: row; align-items: center; gap: 4px; padding: 6px 14px; border-width: 2px; } .cy-hint small { opacity: .75; } .cy-hint:disabled { opacity: .5; cursor: default; }
+  .cy-fb { margin-top: 12px; border-radius: 14px; padding: 10px 12px; line-height: 1.4; display: none; } .cy-fb.good, .cy-fb.bad { display: block; }
+  .cy-fb.good { background: rgba(52,194,106,.16); border: 2px solid #34c26a; } .cy-fb.bad { background: rgba(239,75,92,.14); border: 2px solid #ef4b5c; }
+  .cy-next { width: 100%; margin-top: 10px; } .cy-keys { font-size: .8rem; text-align: center; }
+  .cy-boss { background: linear-gradient(135deg, #0f4c4a, #2a1650); color: #fff; border-radius: 16px; padding: 8px 12px; margin-bottom: 8px; text-align: center; }
+  .cy-germs { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; font-size: 1.3rem; min-height: 1.6rem; }
+  .cy-germs span { display: inline-block; transition: transform .3s, opacity .3s; animation: kqBob 1.6s ease-in-out infinite; } .cy-germs span:nth-child(odd) { animation-delay: -.8s; }
+  .cy-germs span.zap { transform: scale(0); opacity: 0; width: 0; }
+  .cy-res { text-align: center; background: var(--panel-2); border-radius: 20px; padding: 16px; margin: 8px 0; } .cy-res h3 { margin: 4px 0 8px; }
+  .cy-pct { font-family: var(--display); font-size: 3.2rem; line-height: 1; } .cy-stars { font-size: 2.2rem; margin: 4px 0; }
+  .cy-miss { text-align: left; background: var(--panel); border-radius: 12px; padding: 10px 12px; margin: 8px 0; line-height: 1.4; } .cy-miss b { color: var(--gold); }
+  /* 🪜 Build It Up */
+  .cy-slots { list-style: none; display: grid; gap: 6px; padding: 0; margin: 12px 0; }
+  .cy-slots li { display: flex; align-items: center; gap: 10px; min-height: 44px; border: 2px dashed var(--line); border-radius: 14px; padding: 6px 12px; font-weight: 800; }
+  .cy-slots li > i { font-style: normal; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,0,0,.25); font-size: .85rem; flex: 0 0 auto; }
+  .cy-slots li > span { font-size: 1.4rem; } .cy-slots li small { color: var(--ink-soft); font-weight: 700; }
+  .cy-slots li.next { border-color: var(--gold); } .cy-slots li.got { border-style: solid; border-color: #34c26a; background: rgba(52,194,106,.14); animation: kqPopIn .35s; }
+  .cy-tiles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .cy-tile { display: flex; align-items: center; gap: 6px; border: 2px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--panel); color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; }
+  .cy-tile span { font-size: 1.3rem; } .cy-tile:hover { border-color: var(--gold); transform: translateY(-2px); }
+  /* 🔍 Zoom Journey */
+  .cy-zoom { text-align: center; } .cy-zoom p { max-width: 520px; margin: 0 auto; line-height: 1.45; }
+  .cy-zdots { display: flex; justify-content: center; gap: 6px; margin: 6px 0 10px; }
+  .cy-zdots button { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--gold); background: transparent; padding: 0; cursor: pointer; } .cy-zdots .past { background: color-mix(in srgb, var(--gold) 45%, transparent); } .cy-zdots .on { background: var(--gold); transform: scale(1.25); }
+  .cy-lens { position: relative; width: min(300px, 80vw); aspect-ratio: 1; margin: 0 auto 10px; border-radius: 50%; overflow: hidden; border: 10px solid #39424e; box-shadow: 0 0 0 4px #9aa6b2, 0 10px 30px rgba(0,0,0,.45), inset 0 0 40px rgba(0,0,0,.35); background: radial-gradient(circle, #fffdf6, #f3e9d2); display: grid; place-items: center; }
+  .cy-lens-in { width: 100%; height: 100%; display: grid; place-items: center; animation: cyZoomIn .6s ease-out; }
+  .cy-lens-in .cy-svg, .cy-lens-in .cy-zsvg { width: 92%; height: auto; }
+  @keyframes cyZoomIn { from { transform: scale(.2); filter: blur(6px); opacity: .3; } to { transform: none; filter: none; opacity: 1; } }
+  .cy-zemoji { font-size: 8rem; line-height: 1; } .cy-zemoji.spin { animation: cySpin 6s linear infinite; } @keyframes cySpin { to { transform: rotateY(360deg); } }
+  .cy-mag { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.65); color: #fff; border-radius: 99px; padding: 3px 10px; font-size: .85rem; white-space: nowrap; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3302,12 +3438,35 @@ const store = {
     k = profKey(k);
     const t = Math.max(Date.now(), localT(k) + 1);
     MEM[k] = copy(v); MEM_T[k] = t;
-    try { localStorage.setItem("ctc-" + k, JSON.stringify(v)); localStorage.setItem("ctc-t-" + k, String(t)); } catch (e) {}
+    if (BIG_KEY.test(k)) { try { localStorage.removeItem("ctc-" + k); localStorage.removeItem("ctc-t-" + k); } catch (e) {} bigPut(k, v).catch(() => { try { if (v != null) localStorage.setItem("ctc-" + k, JSON.stringify(v)); } catch (e) {} }); return; }   // 💾 big pictures go in IndexedDB (see bigBoot)
+    const put = () => { localStorage.setItem("ctc-" + k, JSON.stringify(v)); localStorage.setItem("ctc-t-" + k, String(t)); };
+    try { put(); } catch (e) { bigBoot().then(() => { try { put(); } catch (e2) {} }); }   // full? move the big pictures out of the way, then try again
     cloudQueue(k, v, t);
   }
 };
+/* 💾 Big saves (background pictures) live in IndexedDB instead of localStorage. localStorage only holds about 5 MB for the whole site,
+   and a few big background pictures could fill it up, so nothing new saved on this device any more (like a new profile picture).
+   bigBoot moves any old ones out of localStorage (making room again) and loads them all when the page opens. */
+const BIG_KEY = /^bg_(img|th)_/;   // each background picture, and its small preview
+let BIG_DB = null, BIG_BOOT = null;
+function bigOpen() {
+  return BIG_DB || (BIG_DB = new Promise((ok, no) => { try { const r = indexedDB.open("ctc-big", 1); r.onupgradeneeded = () => r.result.createObjectStore("kv"); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); r.onblocked = () => no(new Error("blocked")); } catch (e) { no(e); } }).catch(e => { BIG_DB = null; throw e; }));
+}
+const bigTx = (mode, fn) => bigOpen().then(d => new Promise((ok, no) => { const t = d.transaction("kv", mode), r = fn(t.objectStore("kv")); t.oncomplete = () => ok(r && r.result); t.onerror = () => no(t.error); t.onabort = () => no(t.error); }));
+const bigPut = (k, v) => bigTx("readwrite", st => v == null ? st.delete(k) : st.put(v, k));
+const bigGet = k => bigTx("readonly", st => st.get(k));
+function bigBoot() {
+  return BIG_BOOT || (BIG_BOOT = (async () => {
+    try {
+      const old = []; for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key && key.startsWith("ctc-") && !key.startsWith("ctc-t-") && BIG_KEY.test(key.slice(4))) old.push(key.slice(4)); }
+      for (const k of old) { let v = null; try { v = JSON.parse(localStorage.getItem("ctc-" + k)); } catch (e) {} if (v != null) await bigPut(k, v); localStorage.removeItem("ctc-" + k); localStorage.removeItem("ctc-t-" + k); }
+      if (old.length) setScene();   // (each picture is loaded only when it's needed: see bgImg)
+    } catch (e) {}
+    BIG_BOOT = null;
+  })());
+}
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|who_pic|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -4017,12 +4176,31 @@ const BG_ALL = [...BG_MADE, ...BG_MORE.map(b => [b[0], b[1]])];
 })();
 // 🎨 Backgrounds: an "everywhere" background, any page can have its own (even the home screen), and people can use their own pasted pictures.
 // Saved for each person: bg_<who> (everywhere), bg_page_<who> (page → background), bg_imgs_<who> (picture ids) and bg_img_<who>_<id> (each picture).
-const BG_PIC_MAX = 12;
+const BG_PIC_MAX = 10000;   // background pictures a person can keep (they're saved in IndexedDB, which has lots of room)
 let BG_PASTE = null, BG_CUR_IMG = null;
 const BG_PV = {};   // previews, worked out once per background
 const bgName = v => !v ? "✨ Each page picks its own" : v === "inherit" ? "↩ Normal" : v.startsWith("img:") ? "📷 My picture" : (BG_ALL.find(b => b[0] === v) || [, v])[1];
 const bgImgs = () => (SITE_WHO && store.get("bg_imgs_" + SITE_WHO, [])) || [];
-const bgImg = id => SITE_WHO ? store.get("bg_img_" + SITE_WHO + "_" + id, null) : null;
+const BG_LOADING = new Set();
+const bgImg = id => {   // a background picture, if it's loaded; if not, it loads now and the page updates when it's ready
+  if (!SITE_WHO) return null; const k = "bg_img_" + SITE_WHO + "_" + id;
+  if (k in MEM) return MEM[k];
+  const old = store.get(k, null); if (old) return old;   // (an old one still in localStorage)
+  if (!BG_LOADING.has(k)) { BG_LOADING.add(k); bigGet(k).then(v => { BG_LOADING.delete(k); if (!(k in MEM)) MEM[k] = v || null; if (v) setScene(); }).catch(() => BG_LOADING.delete(k)); }
+  return null;
+};
+async function bgShrink(src, max, q) {   // a smaller copy of a picture (a data URL)
+  const img = new Image(); await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = src; });
+  const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height, s = Math.min(1, max / Math.max(w, h)), c = document.createElement("canvas");
+  c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(h * s)); const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", q);
+}
+async function bgThumb(id, who = SITE_WHO) {   // the small preview for the chooser (made from the big picture the first time)
+  const tk = "bg_th_" + who + "_" + id, fk = "bg_img_" + who + "_" + id; if (MEM[tk]) return MEM[tk];
+  let t = await bigGet(tk).catch(() => null);
+  if (!t) { const full = MEM[fk] || store.get(fk, null) || await bigGet(fk).catch(() => null); if (!full) return null; t = await bgShrink(full, 260, .72).catch(() => null); if (t && who === SITE_WHO) store.set(tk, t); }
+  if (t) MEM[tk] = t; return t;
+}
 const bgPages = () => (SITE_WHO && store.get("bg_page_" + SITE_WHO, {})) || {};
 function bgPageKey() { if (document.getElementById("gamesmenu")) return "home"; const lab = ($app.querySelector(".label")?.textContent || "").trim(); return lab ? lab.replace(/ ·.*| \d.*/, "") : null; }
 const bgPageName = k => k === "home" ? "🏠 Home screen" : k;
@@ -4032,10 +4210,12 @@ function bgApplyImg(img) {
 }
 function bgGridHTML(cur, first) {   // first: an extra swatch at the start, like ["", "✨ Each page picks its own"]
   const tile = (v, name, extra = "", pv = `data-pv="${v}"`) => `<div class="bg-tile"><button class="bg-sw${v === cur ? " on" : ""}" type="button" data-bg="${esc(v)}" aria-pressed="${v === cur}"><span class="bg-pv" ${pv}><i></i></span><b>${v === cur ? "✓ " : ""}${name}</b></button>${extra}</div>`;
-  const pics = bgImgs().filter(id => bgImg(id));
-  return `<div class="bg-grid">${first ? tile(first[0], first[1], "", `data-pv="@${first[0]}"`) : ""}${pics.map(id => tile("img:" + id, "📷 My picture", `<button class="bg-x" type="button" data-delpic="${id}" title="Delete this picture" aria-label="Delete this picture">🗑</button>`, `style="background-image:url('${bgImg(id)}')"`)).join("")}${BG_ALL.map(([id, name]) => tile(id, name)).join("")}</div>`;
+  const pics = bgImgs().slice().reverse();   // newest first; each preview loads when you scroll to it (see bgFillPreviews)
+  return `<div class="bg-grid">${first ? tile(first[0], first[1], "", `data-pv="@${first[0]}"`) : ""}${pics.map(id => tile("img:" + id, "📷 My picture", `<button class="bg-x" type="button" data-delpic="${id}" title="Delete this picture" aria-label="Delete this picture">🗑</button>`, `data-bgth="${esc(id)}"`)).join("")}${BG_ALL.map(([id, name]) => tile(id, name)).join("")}</div>`;
 }
 function bgFillPreviews(root) {   // borrow each background's real colors and emoji (once), and show them on its swatch
+  const ths = [...root.querySelectorAll("[data-bgth]")], load = el => { const id = el.dataset.bgth; el.removeAttribute("data-bgth"); bgThumb(id).then(u => { if (u && el.isConnected) el.style.backgroundImage = `url('${u}')`; }); };
+  if (ths.length) { if ("IntersectionObserver" in window) { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); load(e.target); } }), { rootMargin: "300px" }); ths.forEach(el => io.observe(el)); } else ths.forEach(load); }   // 📷 my pictures' previews, as they scroll into view
   const keep = document.body.dataset.scene;
   root.querySelectorAll("[data-pv]").forEach(el => {
     const id = el.dataset.pv;
@@ -4055,7 +4235,7 @@ function bgFillPreviews(root) {   // borrow each background's real colors and em
 // 📷 a pasted or chosen picture: shrunk to save space, white behind see-through parts, and kept for this person
 async function bgAddPicture(src) {
   if (!SITE_WHO) return null;
-  const list = bgImgs(); if (list.length >= BG_PIC_MAX) { toast(`You can keep ${BG_PIC_MAX} pictures. Delete one first (tap its 🗑).`); return null; }
+  const list = bgImgs(); if (list.length >= BG_PIC_MAX) { toast(`You can keep ${BG_PIC_MAX.toLocaleString()} pictures. Delete one first (tap its 🗑).`); return null; }
   if (typeof src !== "string" && !/^image\//.test(src.type || "")) { toast("That isn't a picture."); return null; }
   const url = typeof src === "string" ? src : URL.createObjectURL(src), img = new Image();
   try { await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = url; }); } catch (e) { toast("That picture couldn't be opened. Try a different one."); return null; } finally { if (typeof src !== "string") URL.revokeObjectURL(url); }
@@ -4068,6 +4248,7 @@ async function bgAddPicture(src) {
   }
   const id = Date.now().toString(36) + rnd(10, 99);
   store.set("bg_img_" + SITE_WHO + "_" + id, data); store.set("bg_imgs_" + SITE_WHO, [...list, id]);
+  bgShrink(data, 260, .72).then(t => { if (t) store.set("bg_th_" + SITE_WHO + "_" + id, t); }).catch(() => {});
   return id;
 }
 function bgPaste(e, done) {   // Ctrl+V (or Paste) anywhere while a background chooser is open
@@ -4104,7 +4285,7 @@ function bgBindDel(root, after) {
   root.querySelectorAll("[data-delpic]").forEach(b => b.addEventListener("click", e => {
     e.stopPropagation(); if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Delete?"; b.classList.add("sure"); return; }
     const id = b.dataset.delpic, v = "img:" + id;
-    store.set("bg_img_" + SITE_WHO + "_" + id, null); store.set("bg_imgs_" + SITE_WHO, bgImgs().filter(x => x !== id));
+    store.set("bg_img_" + SITE_WHO + "_" + id, null); store.set("bg_th_" + SITE_WHO + "_" + id, null); store.set("bg_imgs_" + SITE_WHO, bgImgs().filter(x => x !== id));
     const pp = { ...bgPages() }; Object.keys(pp).forEach(k => { if (pp[k] === v) delete pp[k]; }); store.set("bg_page_" + SITE_WHO, pp);
     if (BG_PICK === v) { BG_PICK = null; store.set("bg_" + SITE_WHO, null); }
     setScene(); after(); toast("🗑 Picture deleted.");
@@ -4163,7 +4344,7 @@ function startBackgrounds() {
     const cur = BG_PICK || "", pp = bgPages(), keys = Object.keys(pp);
     wrap.innerHTML = `<h2>🎨 Choose a background</h2>
       <p class="soft">Your everywhere background shows on every page except the home screen and a few picker pages, and it's saved just for <b>${esc(SITE_NAME || "you")}</b>. <b>Tip:</b> tap the 🎨 button in the corner of any page (even the home screen) to give just that page its own background.</p>
-      <h3>📷 My pictures and art</h3><p class="soft">Paste or choose a picture to make it your everywhere background (up to ${BG_PIC_MAX}). Your pictures show at the start of the list below.</p>${bgPasteHTML()}
+      <h3>📷 My pictures and art</h3><p class="soft">Paste or choose a picture to make it your everywhere background (up to ${BG_PIC_MAX.toLocaleString()}). Your pictures show at the start of the list below.</p>${bgPasteHTML()}
       ${keys.length ? `<h3>📄 Pages with their own background</h3><div class="bg-pages">${keys.map(k => `<div class="bg-pagerow"><span><b>${esc(bgPageName(k))}</b> · ${esc(bgName(pp[k]))}</span><button class="chip" type="button" data-reset="${esc(k)}">↩ Reset</button></div>`).join("")}</div>` : ""}
       <h3>🌈 Everywhere background</h3>${bgGridHTML(cur, ["", "✨ Each page picks its own"])}`;
     bgFillPreviews(wrap);
@@ -6080,7 +6261,8 @@ function subjectPick(s) {
       ["💻 Code Lab", "Learn to code step by step", go(() => startCodeLab())],
       ["🔬 Science Lab", "Sink or float, color mixing, a volcano and a plant you grow", go(() => startScienceLab())],
       ["🐸 Science Hop", "Learn science the way Bunny Hop Typing teaches typing: learn facts, then hop across platforms by answering before they crumble", go(() => startScienceHop())],
-      ["🧬 Kingdom Quest", "The six kingdoms of life: race the computer like Head of the Class, plus study cards, sorting, mystery organisms and a final boss", go(() => startKingdomQuest())]] }
+      ["🧬 Kingdom Quest", "The six kingdoms of life: race the computer like Head of the Class, plus study cards, sorting, mystery organisms and a final boss", go(() => startKingdomQuest())],
+      ["🧫 Cell City", "Explore a plant cell and an animal cell like a tiny city, then find the parts, sort plant vs. animal, and defend the cell from germs", go(() => startCells())]] }
     : k === "art" ? { title: "🎨 Art", say: "What would you like to do?", btns: [
       hc("art", "Art", " with art questions"),
       ["📝 Practice art questions", "Color, design, and artists", study("art", { alevel: "easy" })],
@@ -11608,7 +11790,7 @@ function startSlang(tab = "make", vibe, word) {
   }
 }
 
-// 🖼️ My Gallery: up to 1,000 pictures, drawings and videos for each person.
+// 🖼️ My Gallery: up to 10,000 pictures, drawings and videos for each person.
 // Kept in this device's own storage (IndexedDB), because videos are far too big for the regular saves.
 // "meta" holds the small info and thumbnail for each item (one list per person), "blobs" holds the files themselves.
 const GAL_MAX = 10000, GAL_VIDEO_MAX = 150 * 1024 * 1024;
@@ -13122,13 +13304,14 @@ const HC_FACTS = [
 ];
 let HC = null;
 // 🎓 Head of the Class can use trivia (by grade) or any subject's questions
-const HC_SUBJECTS = [["trivia", "🎲 Trivia", null], ["ss", "🌍 Social Studies", "all"], ["ssw", "🌎 Around the World", "ssw"], ["math", "🔢 Math", null], ["ratios", "📐 Ratios & Rates", "ratios_all"], ["science", "🔬 Science", "science"], ["kingdoms", "🧬 Six Kingdoms", null], ["health", "❤️ Health", "health_all"], ["ela", "📚 Reading & Writing", "ela"], ["art", "🎨 Art", "art"], ["mix", "🔀 Mix it up", "mix"]];
+const HC_SUBJECTS = [["trivia", "🎲 Trivia", null], ["ss", "🌍 Social Studies", "all"], ["ssw", "🌎 Around the World", "ssw"], ["math", "🔢 Math", null], ["ratios", "📐 Ratios & Rates", "ratios_all"], ["science", "🔬 Science", "science"], ["kingdoms", "🧬 Six Kingdoms", null], ["cells", "🧫 Cells", null], ["health", "❤️ Health", "health_all"], ["ela", "📚 Reading & Writing", "ela"], ["art", "🎨 Art", "art"], ["mix", "🔀 Mix it up", "mix"]];
 const hcSubj = () => { const s = store.get("hc_subj", "trivia"); return HC_SUBJECTS.some(x => x[0] === s) ? s : "trivia"; };
 let HC_DECK = null;
 function hcQuestion(g) {
   const sub = HC_SUBJECTS.find(x => x[0] === hcSubj());
   if (sub && sub[0] === "math") { const [q, a, st] = HC_MATH[Math.min(13, g)](); return { q, a: String(a), opts: shuffle([a, ...hcNear(a, st || 1)]).map(String) }; }   // 🔢 math gets harder every grade
   if (sub && sub[0] === "kingdoms") { const x = kqRaceQ(Math.min(13, g)); return { q: x.q, html: true, a: x.a, opts: x.opts }; }   // 🧬 from Kingdom Quest
+  if (sub && sub[0] === "cells") { const x = cyRaceQ(Math.min(13, g)); return { q: x.q, html: true, a: x.a, opts: x.opts }; }   // 🧫 from Cell City
   if (sub && sub[2]) {   // a question from the subject's study deck
     if (!HC_DECK || HC_DECK.set !== sub[2]) { HC_DECK = makeDeck(sub[2]); HC_DECK.set = sub[2]; }
     for (let t = 0; t < 6; t++) { const m = HC_DECK.next(); let o = null; try { o = m(); } catch (e) {} if (o && o.a != null && Array.isArray(o.w) && o.w.length) return { q: o.prompt || o.q || "", html: true, a: String(o.a), opts: shuffle([String(o.a), ...o.w.slice(0, 3).map(String)]) }; }
@@ -22190,6 +22373,7 @@ const LB_BOARDS = [
   { id: "connect4", g: "more", e: "🔴", name: "Connect Four", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "connect4") },
   { id: "pong", g: "more", e: "🏓", name: "Pong", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "pong") },
   { id: "kingdoms", g: "more", e: "🧬", name: "Kingdom Quest", unit: v => `${v} race${v === 1 ? "" : "s"} won`, get: id => { const d = lbGet("kq_v1", id); return d ? lbNum(d.wins) : null; }, note: "Kingdom Races won" },
+  { id: "cells", g: "more", e: "🧫", name: "Cell City", unit: v => `${v} cell${v === 1 ? "" : "s"} saved`, get: id => { const d = lbGet("cy_v1", id); return d ? lbNum(d.saves) : null; }, note: "Times they won Defend the Cell" },
   { id: "scihop", g: "more", e: "🐸", name: "Science Hop", unit: v => `${v} hops`, get: id => { const d = lbGet("sh_v1", id); return d && d.best ? lbNum(Math.max(0, ...Object.values(d.best).filter(x => typeof x === "number"))) : null; }, note: "Most hops in one run" },
   { id: "globe", g: "more", e: "🌐", name: "Globe Detective", unit: v => `${fmt(v)} points`, get: id => { const b = lbGet("glb_best", id); return lbNum(Math.max(lbBest(id, "globe") || 0, b && typeof b === "object" ? Math.max(0, ...Object.values(b).filter(x => typeof x === "number")) : 0)); }, note: "Best game in any area" },
   { id: "pool", g: "more", e: "🎱", name: "Pool Hall", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => { const s = lbGet("pool_stats", id); return s && typeof s === "object" ? lbNum(Object.entries(s).filter(([k]) => k.startsWith("w_")).reduce((t, [, v]) => t + (+v || 0), 0)) : null; }, note: "Wins against the computer" },
@@ -24628,7 +24812,6 @@ function startTerms() {
     <h3>8. Changes</h3><p>These terms can change. When they do, the new terms will be posted right here.</p>
     <h3>9. Something wrong?</h3><p>Nobody can report MR.E, but anyone can tell him when something is wrong: a broken page, a mistake, or something that isn't fair. He'll look at it.</p>
     <button class="btn go" id="tos-tell" type="button">💬 Tell MR.E something is wrong</button>
-    <p class="soft">Questions? Ask Stephanie.</p>
   </div>`;
   document.getElementById("tos-back").addEventListener("click", () => SITE_WHO ? showHome() : startWho());
   document.getElementById("tos-tell").addEventListener("click", () => tellSheet("The Terms of Service page"));
@@ -25098,9 +25281,8 @@ const kqKLab = k => `${KQ_K[k].e} ${KQ_K[k].h || KQ_K[k].n}`;   // soft hyphens 
 const kqFound = S => KQ_ORGS.filter(o => S.found[o[0]]).length;
 const kqCollect = name => { if (!name) return false; const S = kqGet(); if (S.found[name]) return false; S.found[name] = Date.now(); kqSave(S); return true; };
 const kqOrg = name => KQ_ORGS.find(o => o[0] === name);
-function kqBurst(n = 24) {   // emoji confetti
+function kqBurst(n = 24, em = ["🦠", "🍄", "🌿", "🐾", "💧", "🌋", "⭐", "🎉"]) {   // emoji confetti
   try { if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; } catch (e) {}
-  const em = ["🦠", "🍄", "🌿", "🐾", "💧", "🌋", "⭐", "🎉"];
   for (let i = 0; i < n; i++) { const d = document.createElement("div"); d.className = "kq-conf"; d.textContent = em[i % em.length]; d.style.left = Math.random() * 100 + "vw"; d.style.animationDelay = Math.random() * .6 + "s"; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
 }
 function kqPop(el, txt) {   // "+14" floats up from a button
@@ -25604,6 +25786,664 @@ function faWork(wid) {   // 🔍 a painting, big
   $app.querySelector("[data-bgw]").addEventListener("click", () => faUseBg(wid));
 }
 NEW_APPS.push({ id: "artists", emoji: "🖼️", name: "Famous Artists", desc: "Famous artists and their most famous paintings, from Leonardo da Vinci to Van Gogh. Use any painting as your home background.", start: () => startArtists(), kw: "famous artists?|artists?|paintings?|painters?|masterpieces?|art history|museum|mona lisa|starry night|van gogh|monet|leonardo|da vinci|great wave|the scream" });
+/* ---------- 🧫 Cell City: the parts of plant and animal cells, explored like a tiny city.
+   Tap any part of a cell to learn its job, then practice: find the parts, match them to places in Cell City,
+   sort plant vs. animal, build up from cells to organisms, and defend the cell from germs.
+   🎓 Cell Race is Head of the Class with cell questions (see cyRaceQ). ---------- */
+const CY_PARTS = {
+  membrane: { n: "Cell membrane", e: "🚧", c: "#e2557a", where: "both",
+    job: "Controls what goes in and out of the cell",
+    that: "controls what goes in and out of the cell",
+    long: "A thin, bendy layer around the whole cell. It lets in things the cell needs, like water, food and oxygen, and lets waste out. Scientists say it is <b>selectively permeable</b>: only some things can get through.",
+    city: ["🛂", "the city gates & border guards", "They check everything coming into or leaving the city."],
+    fact: "It's so thin that about 10,000 cell membranes stacked up would only be as thick as a sheet of paper!" },
+  wall: { n: "Cell wall", e: "🧱", c: "#4e7d2a", where: "plant",
+    job: "Supports and protects a plant cell and gives it a boxy shape",
+    that: "gives a plant cell its stiff, boxy shape",
+    long: "A stiff layer <b>outside</b> the cell membrane. It supports and protects the cell, gives plant cells their boxy shape, and helps plants stand up tall. In plants it's made of <b>cellulose</b>.",
+    city: ["🏰", "the city wall", "A strong wall around the whole city that protects it and holds its shape."],
+    fact: "The paper you write on is made from the cell walls of trees! Animal cells don't have cell walls at all." },
+  nucleus: { n: "Nucleus", e: "🧠", c: "#7b52d6", where: "both",
+    job: "The control center: it holds the cell's DNA",
+    that: "holds the DNA and controls the cell",
+    long: "The control center of the cell. It holds <b>DNA</b>, the instructions for everything the cell does, like how to grow and when to divide. It has its own covering called the <b>nuclear envelope</b>.",
+    city: ["🏛️", "City Hall", "The mayor works here, and so do the city's rule books."],
+    fact: "If you stretched out all the DNA in just one of your cells, it would be about 2 meters (6 feet) long!" },
+  nucleolus: { n: "Nucleolus", e: "⚫", c: "#4b2a9e", where: "both",
+    job: "Makes ribosomes (it's inside the nucleus)",
+    that: "makes ribosomes, inside the nucleus",
+    long: "A dark spot <b>inside the nucleus</b>. Its job is to make <b>ribosomes</b>, the tiny parts that build proteins.",
+    city: ["🏫", "the job-training school", "It trains new workers (ribosomes) for the city's factories."],
+    fact: "Say it like this: noo-KLEE-oh-lus. Some cells have more than one!" },
+  cytoplasm: { n: "Cytoplasm", e: "🫧", c: "#f28cab", where: "both",
+    job: "The jelly-like fluid that fills the cell; the organelles float in it",
+    that: "is the jelly-like fluid the organelles float in",
+    long: "The jelly-like stuff that fills the cell around the nucleus. The organelles float in it, and many of the cell's chemical reactions happen in it.",
+    city: ["🏞️", "the land the city is built on", "Every building sits on it, and everything travels through it."],
+    fact: "Cytoplasm is mostly water!" },
+  mito: { n: "Mitochondria", e: "⚡", c: "#ff7b54", where: "both",
+    job: "The powerhouse: turns food into energy the cell can use",
+    that: "turns food into energy (the powerhouse of the cell)",
+    long: "The <b>powerhouse of the cell</b>. Mitochondria use oxygen to break down sugar and release the energy the cell needs. This is called <b>cellular respiration</b>. (Just one is called a mitochondrion.)",
+    city: ["🏭", "the power plant", "It makes the energy that keeps the whole city running."],
+    fact: "Plant cells have mitochondria too, not just animal cells! Busy muscle cells can have thousands of them." },
+  chloro: { n: "Chloroplast", e: "🌿", c: "#43a047", where: "plant",
+    job: "Uses sunlight to make food (sugar) for the plant",
+    that: "uses sunlight to make food",
+    long: "Chloroplasts use <b>sunlight, water and carbon dioxide</b> to make sugar (food) and oxygen. This is called <b>photosynthesis</b>. They're green because of a pigment called <b>chlorophyll</b>.",
+    city: ["☀️", "the solar-powered food factory", "It uses sunlight to make all of the city's food."],
+    fact: "Chloroplasts make oxygen, the gas you breathe. Animal cells don't have them, so animals have to eat!" },
+  ribo: { n: "Ribosome", lab: "Ribosomes", e: "🔧", c: "#2d2d55", where: "both",
+    job: "Builds proteins",
+    that: "builds proteins",
+    long: "Tiny dots that build <b>proteins</b> by following instructions from the nucleus. Some float in the cytoplasm, and some sit on the rough ER.",
+    city: ["👷", "the factory workers", "They build what the city needs, following City Hall's instructions."],
+    fact: "Ribosomes are some of the smallest parts of a cell, and one cell can have millions of them. Even bacteria have ribosomes!" },
+  er: { n: "Endoplasmic reticulum", lab: "ER", e: "🛣️", c: "#2f7fbf", where: "both",
+    job: "Moves proteins and other materials around the cell",
+    that: "moves proteins and materials around the cell, like highways",
+    long: "A folded network of tubes next to the nucleus, called the <b>ER</b> for short. <b>Rough ER</b> is covered in ribosomes and helps make proteins. <b>Smooth ER</b> has no ribosomes and makes fats (lipids).",
+    city: ["🛣️", "the highways and roads", "They carry things from place to place across the city."],
+    fact: "Say it like this: en-doh-PLAZ-mik reh-TIK-yoo-lum. Reticulum means “little net” in Latin." },
+  golgi: { n: "Golgi body", e: "📦", c: "#e0a800", where: "both",
+    job: "Packages proteins and ships them where they need to go",
+    that: "packages and ships proteins",
+    long: "A stack of flat sacs, also called the <b>Golgi apparatus</b>. It sorts proteins, packs them into tiny bubbles called <b>vesicles</b>, and ships them where they need to go, even out of the cell.",
+    city: ["📮", "the post office", "It packs boxes, labels them and mails them all over the city."],
+    fact: "It's named after Camillo Golgi, an Italian scientist who discovered it in 1898." },
+  vacuole: { n: "Vacuole", e: "💧", c: "#4a9fd8", where: "both",
+    job: "Stores water, food and waste",
+    that: "stores water, food and waste",
+    long: "A storage sac. Plant cells have one huge <b>central vacuole</b> full of water that presses out and keeps the plant firm. Animal cells have small vacuoles, or none.",
+    city: ["🗼", "the water tower & warehouse", "It stores water, food and supplies until the city needs them."],
+    fact: "When a plant doesn't get enough water, its vacuoles shrink and the plant droops. That's called wilting!" },
+  lyso: { n: "Lysosome", e: "♻️", c: "#178f84", where: "animal",
+    job: "Breaks down waste, worn-out cell parts and germs",
+    that: "breaks down waste and old cell parts",
+    long: "Small sacs filled with digestive chemicals called <b>enzymes</b>. They break down food, worn-out cell parts and germs, so the pieces can be used again.",
+    city: ["♻️", "the recycling center", "Its clean-up crew breaks down trash and recycles old parts."],
+    fact: "Lysosomes are mostly found in animal cells. In plant cells, the big vacuole does a lot of this clean-up job." }
+};
+const CY_ORDER = ["nucleus", "nucleolus", "membrane", "cytoplasm", "mito", "ribo", "er", "golgi", "vacuole", "lyso", "chloro", "wall"];
+const CY_CELLS = {
+  animal: { n: "Animal cell", e: "🐾", parts: ["membrane", "cytoplasm", "nucleus", "nucleolus", "er", "ribo", "mito", "golgi", "lyso", "vacuole"], about: "Animal cells are usually round or blobby, because they don't have a stiff cell wall." },
+  plant: { n: "Plant cell", e: "🌱", parts: ["wall", "membrane", "cytoplasm", "nucleus", "nucleolus", "er", "ribo", "mito", "chloro", "golgi", "vacuole"], about: "Plant cells are boxy because of their stiff cell wall. They also have chloroplasts and one big vacuole." }
+};
+const cyCap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const cyLc = s => s.charAt(0).toLowerCase() + s.slice(1);
+const cyWhere = id => { const w = CY_PARTS[id].where; return w === "plant" ? "🌱 Plant cells only" : w === "animal" ? "🐾 Mostly animal cells" : id === "vacuole" ? "🌱 Plant cells (one huge one) and 🐾 animal cells (small ones)" : "🌱 Plant cells and 🐾 animal cells"; };
+const cyGet = () => { const v = store.get("cy_v1", null) || {}; return { saves: 0, ...v, modes: { ...(v.modes || {}) }, found: { ...(v.found || {}) } }; };
+const cySave = S => store.set("cy_v1", S);
+const cyFound = S => CY_ORDER.filter(id => S.found[id]).length;
+const CY_CONF = ["🧫", "🔬", "🧬", "⚡", "🌿", "💧", "⭐", "🎉"];
+const cyBurst = n => kqBurst(n, CY_CONF);
+
+/* 🔬 the cell pictures: every part is a tappable group (data-part). Thin parts get wide see-through edges so they're easy to tap. */
+function cySvg(kind, { labels = true } = {}) {
+  const f = n => +n.toFixed(1);
+  const P = (id, inner) => `<g class="cy-p cy-${id}" data-part="${id}" tabindex="0" role="button" aria-label="${esc(CY_PARTS[id].n)}">${inner}</g>`;
+  const dots = pts => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="transparent"/><circle class="cy-dot" cx="${x}" cy="${y}" r="3.3" fill="#2d2d55"/>`).join("");
+  const mito = (x, y, a) => `<g transform="translate(${x} ${y}) rotate(${a})"><g class="cy-wig"><ellipse rx="27" ry="13.5" fill="#ff7b54" stroke="#b9461f" stroke-width="3"/><path d="M-19 0 L-13 -7 L-7 7 L-1 -7 L5 7 L11 -7 L17 0" fill="none" stroke="#b9461f" stroke-width="2.2" stroke-linejoin="round"/></g></g>`;
+  const chloro = (x, y, a) => `<g transform="translate(${x} ${y}) rotate(${a})"><g class="cy-wig"><ellipse rx="27" ry="14" fill="#62c462" stroke="#2e7d32" stroke-width="3"/><path d="M-15 0 H15" stroke="#2e7d32" stroke-width="1.6"/>${[-15, -5, 5, 15].map(cx => `<rect x="${cx - 3.5}" y="-6" width="7" height="12" rx="2" fill="#2e7d32"/>`).join("")}</g></g>`;
+  const lyso = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r + 5}" fill="transparent"/><circle cx="${x}" cy="${y}" r="${r}" fill="#2ec4b6" stroke="#178f84" stroke-width="2.5"/><circle cx="${f(x - r * .35)}" cy="${f(y - r * .2)}" r="1.8" fill="#0f6b62"/><circle cx="${f(x + r * .3)}" cy="${f(y + r * .1)}" r="1.8" fill="#0f6b62"/><circle cx="${f(x - r * .05)}" cy="${f(y + r * .45)}" r="1.8" fill="#0f6b62"/>`;
+  const golgi = (x, y) => `<g transform="translate(${x} ${y})">${[0, 1, 2, 3].map(i => { const w = 26 - i * 2.5, yy = i * 9, d = `M${-w} ${yy} Q 0 ${yy - 13} ${w} ${yy}`; return `<path d="${d}" stroke="transparent" stroke-width="14" fill="none"/><path d="${d}" stroke="#b8860b" stroke-width="8" fill="none" stroke-linecap="round"/><path d="${d}" stroke="#f6c445" stroke-width="4.5" fill="none" stroke-linecap="round"/>`; }).join("")}<circle cx="-31" cy="3" r="3.6" fill="#f6c445" stroke="#b8860b" stroke-width="1.5"/><circle cx="31" cy="13" r="3.6" fill="#f6c445" stroke="#b8860b" stroke-width="1.5"/><circle cx="28" cy="25" r="3" fill="#f6c445" stroke="#b8860b" stroke-width="1.5"/></g>`;
+  const qp = (a, b, c, t) => [0, 1].map(k => f((1 - t) ** 2 * a[k] + 2 * (1 - t) * t * b[k] + t * t * c[k]));
+  const er = arcs => arcs.map(([a, b, c], i) => { const d = `M${a.join(" ")} Q${b.join(" ")} ${c.join(" ")}`; return `<path d="${d}" fill="none" stroke="transparent" stroke-width="16"/><path d="${d}" fill="none" stroke="#2f7fbf" stroke-width="8" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#8fd0ff" stroke-width="4" stroke-linecap="round"/>${i === arcs.length - 1 ? [.12, .28, .44, .6, .76, .9].map(t => { const [x, y] = qp(a, b, c, t); return `<circle cx="${x}" cy="${y}" r="2.6" fill="#2d2d55"/>`; }).join("") : ""}`; }).join("");
+  const nucleus = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#c9b3f7" stroke="#6b45c9" stroke-width="4"/><circle cx="${x}" cy="${y}" r="${r - 5}" fill="none" stroke="#a88ae8" stroke-width="1.5" stroke-dasharray="6 5"/><path d="M${f(x - r * .62)} ${f(y + r * .22)} q${f(r * .2)} ${f(-r * .3)} ${f(r * .4)} 0 t${f(r * .4)} 0 M${f(x - r * .5)} ${f(y + r * .55)} q${f(r * .2)} ${f(-r * .28)} ${f(r * .4)} 0 t${f(r * .45)} 0 M${f(x - r * .7)} ${f(y - r * .25)} q${f(r * .15)} ${f(-r * .25)} ${f(r * .3)} 0" fill="none" stroke="#8a66dd" stroke-width="2" stroke-linecap="round"/>`;
+  let body, labs;
+  if (kind === "plant") {
+    const box = 'x="28" y="28" width="344" height="244" rx="14"';
+    body = P("wall", `<rect x="16" y="16" width="368" height="268" rx="22" fill="#d9ebb8" stroke="#4e7d2a" stroke-width="12"/><rect x="16" y="16" width="368" height="268" rx="22" fill="none" stroke="#8fbf5a" stroke-width="2.5" stroke-dasharray="14 8"/>`)
+      + P("cytoplasm", `<rect ${box} fill="#eef8e2"/>`)
+      + P("vacuole", `<path d="M160 90 C190 76 262 76 284 94 C300 118 300 182 284 206 C262 224 190 224 160 210 C144 186 144 114 160 90 Z" fill="#c6e9ff" stroke="#4a9fd8" stroke-width="3"/><path d="M172 102 C186 93 204 91 220 93" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/>`)
+      + P("er", er([[[44, 142], [86, 126], [128, 144]], [[44, 156], [86, 140], [128, 158]]]))
+      + P("nucleus", nucleus(84, 92, 36))
+      + P("nucleolus", `<circle cx="93" cy="85" r="10" fill="#4b2a9e"/><circle cx="90" cy="82" r="3" fill="#7d5cd6"/>`)
+      + P("golgi", golgi(334, 230))
+      + P("mito", mito(334, 76, 70) + mito(80, 246, 10))
+      + P("chloro", chloro(220, 54, 0) + chloro(334, 152, 90) + chloro(214, 246, 0) + chloro(96, 196, -15))
+      + P("ribo", dots([[150, 50], [276, 46], [150, 256], [272, 238], [40, 228], [312, 112], [306, 190], [134, 64], [138, 212]]))
+      + P("membrane", `<rect ${box} fill="none" stroke="transparent" stroke-width="10"/><rect ${box} fill="none" stroke="#e2557a" stroke-width="4"/>`);
+    labs = [["wall", 200, 21], ["membrane", 322, 41], ["cytoplasm", 128, 240, "start"], ["nucleus", 84, 121], ["nucleolus", 93, 71], ["er", 86, 174], ["chloro", 220, 38], ["mito", 80, 268], ["golgi", 300, 263, "end"], ["vacuole", 222, 154], ["ribo", 150, 40]];
+  } else {
+    const blob = "M200 24 C298 18 384 70 382 150 C380 230 300 282 200 278 C98 282 18 230 18 150 C18 72 102 28 200 24 Z";
+    body = P("cytoplasm", `<path d="${blob}" fill="#ffe3ec"/>`)
+      + P("vacuole", `<circle cx="338" cy="150" r="14" fill="#c6e9ff" stroke="#4a9fd8" stroke-width="2.5"/><circle cx="270" cy="214" r="8" fill="#c6e9ff" stroke="#4a9fd8" stroke-width="2"/>`)
+      + P("er", er([[[222, 98], [266, 150], [222, 202]], [[238, 90], [288, 150], [238, 210]]]))
+      + P("nucleus", nucleus(165, 148, 50))
+      + P("nucleolus", `<circle cx="178" cy="138" r="15" fill="#4b2a9e"/><circle cx="173" cy="133" r="4" fill="#7d5cd6"/>`)
+      + P("golgi", golgi(312, 186))
+      + P("mito", mito(92, 100, -25) + mito(300, 96, 22) + mito(98, 212, 18))
+      + P("lyso", lyso(252, 246, 11) + lyso(52, 158, 9))
+      + P("ribo", dots([[62, 124], [128, 74], [205, 60], [262, 56], [352, 196], [196, 246], [300, 248], [64, 196], [142, 222], [342, 108], [226, 230]]))
+      + P("membrane", `<path d="${blob}" fill="none" stroke="transparent" stroke-width="20"/><path d="${blob}" fill="none" stroke="#e2557a" stroke-width="7"/><path d="${blob}" fill="none" stroke="#ffc2d3" stroke-width="2"/>`);
+    labs = [["membrane", 200, 14], ["cytoplasm", 165, 266], ["nucleus", 165, 191], ["nucleolus", 178, 117], ["er", 296, 168, "start"], ["golgi", 312, 226], ["mito", 300, 74], ["lyso", 252, 271], ["vacuole", 338, 182], ["ribo", 128, 64]];
+  }
+  const L = labels ? `<g class="cy-labels">${labs.map(([id, x, y, a]) => `<text x="${x}" y="${y}" text-anchor="${a || "middle"}" class="cy-lab" data-lab="${id}">${esc(CY_PARTS[id].lab || CY_PARTS[id].n)}</text>`).join("")}</g>` : "";
+  return `<svg class="cy-svg" viewBox="0 0 400 300" role="img" aria-label="${CY_CELLS[kind] ? CY_CELLS[kind].n : "Cell"} diagram">${body}${L}</svg>`;
+}
+
+/* 📚 what's in the Study Cards (and the questions) */
+const CY_FACTS = [   // [question, choices, right answer, why, level 1-3]
+  ["What is the basic unit of all living things?", ["The cell", "The atom", "The organ", "The tissue"], 0, "The cell is the basic unit of structure and function in living things. (Atoms aren't alive!)", 1],
+  ["Who named cells after looking at cork in 1665?", ["Robert Hooke", "Rudolf Virchow", "Theodor Schwann", "Isaac Newton"], 0, "Robert Hooke saw tiny boxes in cork that reminded him of little rooms, called cells.", 2],
+  ["Who was the first to see living single-celled organisms in pond water?", ["Antonie van Leeuwenhoek", "Robert Hooke", "Matthias Schleiden", "Rudolf Virchow"], 0, "Leeuwenhoek built amazing microscopes and called the tiny living things he saw “animalcules.”", 3],
+  ["Which scientist said all plants are made of cells?", ["Matthias Schleiden", "Theodor Schwann", "Rudolf Virchow", "Robert Hooke"], 0, "Schleiden said it about plants in 1838. A year later, Schwann said the same about animals.", 3],
+  ["Which scientist said all animals are made of cells?", ["Theodor Schwann", "Matthias Schleiden", "Rudolf Virchow", "Antonie van Leeuwenhoek"], 0, "Theodor Schwann, in 1839.", 3],
+  ["Who said that all cells come from other cells?", ["Rudolf Virchow", "Robert Hooke", "Theodor Schwann", "Matthias Schleiden"], 0, "Rudolf Virchow, in 1855: every cell comes from a cell that was already there.", 3],
+  ["Which of these is NOT part of the cell theory?", ["All cells have a cell wall", "All living things are made of cells", "Cells are the basic unit of life", "All cells come from other cells"], 0, "Animal cells don't have cell walls! The other three are the three parts of the cell theory.", 2],
+  ["Where do new cells come from?", ["Other cells", "Food", "Air and water", "Nowhere: they just appear"], 0, "The cell theory says all cells come from cells that already exist. Cells make new cells by dividing.", 1],
+  ["What tool do you need to see most cells?", ["A microscope", "A telescope", "A thermometer", "A magnet"], 0, "Most cells are far too small to see with just your eyes. A microscope makes them look bigger.", 1],
+  ["A living thing made of just one cell is…", ["Unicellular", "Multicellular", "An organ", "A tissue"], 0, "Uni means one. Bacteria and amoebas are unicellular.", 1],
+  ["A living thing made of many cells is…", ["Multicellular", "Unicellular", "Prokaryotic", "A molecule"], 0, "Multi means many. You, dogs, trees and mushrooms are multicellular.", 1],
+  ["About how many cells are in the human body?", ["About 30 trillion", "About 1,000", "About 1 million", "About 100"], 0, "Scientists think it's about 30 trillion! That's 30,000,000,000,000.", 2],
+  ["A cell with NO nucleus is called a…", ["Prokaryote", "Eukaryote", "Organelle", "Tissue"], 0, "Pro means before, and karyon means nucleus: these cells came before cells with a nucleus. Bacteria are prokaryotes.", 2],
+  ["A cell WITH a nucleus is called a…", ["Eukaryote", "Prokaryote", "Bacterium", "Virus"], 0, "Eu means true: a true nucleus. Plants, animals, fungi and protists are eukaryotes.", 2],
+  ["Which of these is a prokaryote?", ["Bacteria", "A mushroom", "An oak tree", "A human"], 0, "Bacteria have no nucleus. Both bacteria kingdoms in Kingdom Quest are prokaryotes.", 2],
+  ["Where is the DNA in a prokaryote, like bacteria?", ["Floating in the cytoplasm", "In the nucleus", "In the cell wall", "In the chloroplasts"], 0, "Prokaryotes have no nucleus, so their DNA floats in the cytoplasm.", 3],
+  ["Which part do BOTH prokaryotes and eukaryotes have?", ["Ribosomes", "A nucleus", "Mitochondria", "Chloroplasts"], 0, "Every cell has a cell membrane, cytoplasm, ribosomes and DNA.", 3],
+  ["A group of similar cells doing the same job is a…", ["Tissue", "Organ", "Organ system", "Organism"], 0, "Like muscle tissue: lots of muscle cells working together.", 2],
+  ["Different tissues working together make an…", ["Organ", "Organism", "Organelle", "Atom"], 0, "Your heart, your stomach and a plant's leaf are all organs.", 2],
+  ["Which list goes from smallest to biggest?", ["Cell, tissue, organ, organ system, organism", "Tissue, cell, organ, organism, organ system", "Organ, tissue, cell, organism, organ system", "Cell, organ, tissue, organism, organ system"], 0, "Cells → tissues → organs → organ systems → organism.", 2],
+  ["The heart, blood and blood vessels work together as an…", ["Organ system", "Tissue", "Organelle", "Cell"], 0, "They make up the circulatory system.", 2],
+  ["What does “organelle” mean?", ["A tiny part inside a cell with a special job", "A small organ in your body", "A group of tissues", "A kind of cell wall"], 0, "Organelle means “little organ.” Each one has a job, like the organs in your body.", 1],
+  ["Which cell carries oxygen around your body?", ["Red blood cell", "Nerve cell", "Skin cell", "Root hair cell"], 0, "Red blood cells are shaped like squished discs so they can squeeze through tiny blood vessels.", 2],
+  ["Which cell sends messages around your body?", ["Nerve cell (neuron)", "Red blood cell", "Fat cell", "Guard cell"], 0, "Nerve cells have long branches. Some reach from your spine all the way down to your toes!", 2],
+  ["Which cell fights germs?", ["White blood cell", "Red blood cell", "Muscle cell", "Skin cell"], 0, "White blood cells hunt down germs, and some even swallow them!", 1],
+  ["Which plant cell soaks up water from the soil?", ["Root hair cell", "Guard cell", "Leaf cell", "Pollen grain"], 0, "Its long, thin “hair” gives it lots of surface to soak up water.", 3],
+  ["Guard cells open and close tiny holes on a…", ["Leaf", "Root", "Flower petal", "Seed"], 0, "The holes are called stomata. They let air in and out of the leaf.", 3],
+  ["Why do muscle cells have LOTS of mitochondria?", ["They need lots of energy to move", "They need to make food", "They store water", "They make the cell green"], 0, "Mitochondria release energy, and muscles use a lot of it!", 2],
+  ["What does a chloroplast need to make sugar?", ["Sunlight, water and carbon dioxide", "Oxygen and sugar", "Soil and rocks", "Darkness and cold"], 0, "Photosynthesis uses sunlight, water and carbon dioxide, and makes sugar and oxygen.", 2],
+  ["Cellular respiration happens in the…", ["Mitochondria", "Chloroplasts", "Nucleus", "Cell wall"], 0, "Mitochondria use oxygen to break down sugar and release energy.", 2],
+  ["Photosynthesis happens in the…", ["Chloroplasts", "Mitochondria", "Lysosomes", "Golgi body"], 0, "Chloroplasts use sunlight to make food.", 1],
+  ["What makes plants green?", ["Chlorophyll", "Cellulose", "DNA", "Cytoplasm"], 0, "Chlorophyll is a green pigment inside chloroplasts.", 2],
+  ["What is a plant's cell wall made of?", ["Cellulose", "Plastic", "Protein", "Bone"], 0, "Cellulose is tough stuff. Paper and cotton are made of it!", 2],
+  ["“Selectively permeable” means the cell membrane…", ["Lets only some things in and out", "Lets everything in", "Lets nothing in", "Makes food"], 0, "It picks what can get through, like a guard at a gate.", 3],
+  ["What happens to a plant when its vacuoles lose water?", ["It wilts (droops)", "It turns blue", "It grows faster", "Nothing happens"], 0, "The big central vacuole pushes out on the cell wall. Without water, the plant droops.", 2],
+  ["Which part of the cell holds the instructions (DNA)?", ["Nucleus", "Vacuole", "Cell membrane", "Lysosome"], 0, "The nucleus is the control center, and DNA is its instruction book.", 1]
+];
+const CY_TF = [   // [statement, true?, why, level]
+  ["Plant cells have mitochondria.", true, "True! Plants need energy too, so they have mitochondria AND chloroplasts.", 2],
+  ["Animal cells have a cell wall.", false, "False. Plant cells (and fungi and bacteria) have cell walls. Animal cells have just a membrane.", 1],
+  ["All living things are made of cells.", true, "True! That's the first part of the cell theory.", 1],
+  ["Bacteria have a nucleus.", false, "False. Bacteria are prokaryotes: no nucleus!", 2],
+  ["Ribosomes make proteins.", true, "True! Ribosomes are the protein builders.", 1],
+  ["The Golgi body makes energy for the cell.", false, "False. That's the mitochondria. The Golgi body packages and ships proteins.", 1],
+  ["Plant cells usually have one large central vacuole.", true, "True! It stores water and keeps the plant firm.", 1],
+  ["You can see most cells without a microscope.", false, "False. Most cells are far too small to see with just your eyes.", 1],
+  ["Cells can come from things that aren't alive.", false, "False. All cells come from other cells (Virchow said so in 1855).", 2],
+  ["The nucleolus is inside the nucleus.", true, "True! It's the dark spot in the nucleus that makes ribosomes.", 2],
+  ["Chloroplasts are found in animal cells.", false, "False. Chloroplasts are in plant cells (and some protists, like algae). That's why animals have to eat!", 1],
+  ["A tissue is a group of similar cells that do the same job.", true, "True! Like muscle tissue or nerve tissue.", 2],
+  ["Grown-up red blood cells in humans have no nucleus.", true, "True! Without a nucleus, they have more room to carry oxygen.", 3],
+  ["Smooth ER is covered in ribosomes.", false, "False. That's rough ER. Smooth ER has no ribosomes and makes fats.", 3]
+];
+const CY_SORT_OPTS = [["plant", "🌱 Plant cell"], ["animal", "🐾 Animal cell"], ["both", "🤝 Both"]];
+const CY_SORT = [   // [thing, plant / animal / both, why]
+  ["🚧 Cell membrane", "both", "Every cell has a cell membrane."],
+  ["🧱 Cell wall", "plant", "Plant cells have a stiff cell wall. Animal cells don't."],
+  ["🧠 Nucleus", "both", "Plant and animal cells are both eukaryotes, so they both have a nucleus."],
+  ["⚫ Nucleolus", "both", "It's inside the nucleus, and both cells have one."],
+  ["🫧 Cytoplasm", "both", "Every cell is filled with cytoplasm."],
+  ["⚡ Mitochondria", "both", "Tricky! Plant cells need energy too, so they have mitochondria."],
+  ["🌿 Chloroplasts", "plant", "Only plant cells make their own food with chloroplasts."],
+  ["🔧 Ribosomes", "both", "Every cell makes proteins, so every cell has ribosomes."],
+  ["🛣️ Endoplasmic reticulum (ER)", "both", "Both cells move materials around on the ER."],
+  ["📦 Golgi body", "both", "Both cells package and ship proteins."],
+  ["💧 One big central vacuole", "plant", "Plant cells have one huge vacuole. Animal cells have small ones, or none."],
+  ["♻️ Lysosomes", "animal", "Lysosomes are mostly in animal cells. In plant cells, the vacuole does that clean-up job."],
+  ["🟩 A boxy, rectangle shape", "plant", "The stiff cell wall gives plant cells their boxy shape."],
+  ["⚪ A round or blobby shape", "animal", "With no cell wall, animal cells can be round or almost any shape."],
+  ["☀️ Makes its own food from sunlight", "plant", "Photosynthesis happens in chloroplasts, and only plant cells have them."],
+  ["🍔 Gets food by eating", "animal", "Animals can't make their own food, so they eat."],
+  ["🧬 Has DNA", "both", "All cells have DNA."],
+  ["🔋 Gets energy from cellular respiration", "both", "Both plant and animal cells release energy in their mitochondria."],
+  ["💚 Green from chlorophyll", "plant", "Chlorophyll is in chloroplasts, so only plant cells are green."],
+  ["🫙 Only small vacuoles, or none", "animal", "Animal cells have only small vacuoles."]
+];
+const CY_SCIENTISTS = [   // [year, emoji, who, what]
+  ["1665", "🔬", "Robert Hooke", "looked at thin slices of cork and saw tiny boxes. They reminded him of little rooms, so he named them <b>cells</b>."],
+  ["1674", "💧", "Antonie van Leeuwenhoek", "built strong microscopes and was the first to see <b>living</b> single-celled organisms swimming in pond water."],
+  ["1838", "🌱", "Matthias Schleiden", "said that all <b>plants</b> are made of cells."],
+  ["1839", "🐾", "Theodor Schwann", "said that all <b>animals</b> are made of cells."],
+  ["1855", "🧫", "Rudolf Virchow", "said that all cells come from <b>other cells</b>."]
+];
+const CY_TYPES = [   // [emoji, cell, what's special]
+  ["🩸", "Red blood cell", "Carries oxygen around your body. It's shaped like a squished disc so it can squeeze through tiny blood vessels, and grown-up ones have no nucleus."],
+  ["🛡️", "White blood cell", "Fights germs. Some can change shape to wrap around a germ and swallow it!"],
+  ["⚡", "Nerve cell (neuron)", "Sends messages with long branches. Some reach from your spine to your toes."],
+  ["💪", "Muscle cell", "Long and stretchy. It can squeeze shorter to move your body, and it's packed with mitochondria for energy."],
+  ["🧴", "Skin cell", "Flat cells packed tightly together like tiles, so they protect your body."],
+  ["🌱", "Root hair cell", "A plant cell with a long, thin “hair” that soaks up water from the soil."],
+  ["🍃", "Guard cells", "Pairs of plant cells that open and close the tiny holes (stomata) on leaves."],
+  ["🦠", "Bacterium", "A whole living thing in just one cell! It has no nucleus, so it's a prokaryote."],
+  ["🥚", "Egg cell", "The biggest cells of all are eggs. An ostrich egg yolk is one giant cell!"]
+];
+const CY_VOCAB = [
+  ["Cell", "The smallest unit of life. Every living thing is made of one or more cells."],
+  ["Organelle", "A tiny part inside a cell with its own job. It means “little organ.”"],
+  ["Unicellular", "Made of just one cell, like bacteria."],
+  ["Multicellular", "Made of many cells, like you!"],
+  ["Prokaryote", "A cell with no nucleus, like bacteria."],
+  ["Eukaryote", "A cell with a nucleus, like plant and animal cells."],
+  ["DNA", "The instructions for the cell, kept in the nucleus."],
+  ["Tissue", "A group of similar cells doing the same job."],
+  ["Organ", "Different tissues working together, like the heart or a leaf."],
+  ["Organ system", "Organs working together, like the digestive system."],
+  ["Organism", "A whole living thing."],
+  ["Photosynthesis", "How chloroplasts use sunlight, water and carbon dioxide to make sugar and oxygen."],
+  ["Cellular respiration", "How mitochondria use oxygen to turn sugar into energy."],
+  ["Chlorophyll", "The green pigment in chloroplasts that catches sunlight."],
+  ["Selectively permeable", "Letting only some things through, like the cell membrane."],
+  ["Specialized cell", "A cell with a special shape and job, like a nerve cell."]
+];
+
+/* 🎯 questions: { type: "mc", prompt (HTML), choices, correct, why (HTML), rv } or { type: "map", cell, part, prompt, why, rv } */
+const cyMapQ = id => { const P = CY_PARTS[id], byJob = Math.random() < .6; return { type: "map", part: id, cell: P.where === "plant" ? "plant" : P.where === "animal" ? "animal" : rPick(["animal", "plant"]), prompt: byJob ? `Tap the part that <b>${esc(P.that)}</b>.` : `Tap the <b>${esc(P.n)}</b>.`, why: `${P.e} <b>${esc(P.n)}</b>: ${esc(cyLc(P.job))}.`, rv: byJob ? `The part that ${esc(P.that)}` : `Find the ${esc(P.n)}` }; };
+const cyFindQs = () => shuffle(CY_ORDER.map(cyMapQ));
+const cyCityQs = () => shuffle(CY_ORDER.map(id => {
+  const P = CY_PARTS[id], ids = shuffle([id, ...shuffle(CY_ORDER.filter(x => x !== id)).slice(0, 3)]), why = `${P.city[0]} ${esc(P.city[2])} That's the <b>${esc(P.n)}</b>: ${esc(cyLc(P.job))}.`;
+  return Math.random() < .5
+    ? { type: "mc", prompt: `<span class="cy-lab2">In Cell City…</span><span class="cy-big">${P.city[0]}</span>Which part is like <b>${esc(P.city[1])}</b>?`, choices: ids.map(x => `${CY_PARTS[x].e} ${CY_PARTS[x].n}`), correct: [ids.indexOf(id)], why, rv: `${P.city[0]} ${esc(cyCap(P.city[1]))}` }
+    : { type: "mc", prompt: `<span class="cy-lab2">In Cell City…</span><span class="cy-big">${P.e}</span>The <b>${esc(P.n)}</b> is like which place?`, choices: ids.map(x => `${CY_PARTS[x].city[0]} ${cyCap(CY_PARTS[x].city[1])}`), correct: [ids.indexOf(id)], why, rv: `${P.e} ${esc(P.n)}` };
+}));
+const cySortQ = ([s, a, w]) => ({ type: "mc", three: true, prompt: `<span class="cy-lab2">Plant cell, animal cell or both?</span><span class="cy-org">${esc(s)}</span>`, choices: CY_SORT_OPTS.map(x => x[1]), correct: [CY_SORT_OPTS.findIndex(x => x[0] === a)], why: esc(w), rv: esc(s) });
+const cyFactQs = n => shuffle([
+  ...CY_FACTS.map(([q, ch, a, w]) => { const sh = shuffle(ch.map((c, i) => i)); return { type: "mc", prompt: esc(q), choices: sh.map(i => ch[i]), correct: [sh.indexOf(a)], why: esc(w), rv: esc(q) }; }),
+  ...CY_TF.map(([s, v, w]) => ({ type: "mc", prompt: `<span class="cy-lab2">True or false?</span>${esc(s)}`, choices: ["True", "False"], correct: [v ? 0 : 1], why: esc(w), rv: esc(s) }))]).slice(0, n);
+const CY_GERMS = 18;   // 18 of 20 right (90%) zaps every germ: that's ⭐⭐⭐
+const CY_MODES = {
+  find: { t: "Find It!", ic: "🎯", d: "Tap the right part of the cell: all 12 parts", build: cyFindQs },
+  city: { t: "Cell City Match", ic: "🏙️", d: "Which part is the power plant? The post office?", build: cyCityQs },
+  sort: { t: "Plant, Animal or Both?", ic: "🌱", d: "Sort 16 parts and clues", build: () => shuffle(CY_SORT.map(cySortQ)).slice(0, 16) },
+  facts: { t: "Cell Facts", ic: "🧠", d: "Cell theory, scientists, prokaryotes, tissues and organs", build: () => cyFactQs(15) },
+  defend: { t: "Defend the Cell!", ic: "🛡️", d: "20 mixed questions, no do-overs. Zap 18 germs to save the cell!", boss: true, build: () => shuffle([...cyFindQs().slice(0, 5), ...cyCityQs().slice(0, 4), ...shuffle(CY_SORT.map(cySortQ)).slice(0, 4), ...cyFactQs(7)]) }
+};
+
+/* 🎓 Cell Race questions for Head of the Class: they get harder every grade */
+const CY_DECKS = {};
+const cyDeal = (key, all) => { if (!CY_DECKS[key] || !CY_DECKS[key].length) CY_DECKS[key] = shuffle(all); return CY_DECKS[key].pop(); };
+function cyRaceQ(g) {
+  const r = Math.random(), nm = id => `${CY_PARTS[id].e} ${CY_PARTS[id].n}`, pick = (id, n) => shuffle([id, ...shuffle(CY_ORDER.filter(x => x !== id)).slice(0, n - 1)]);
+  const sortQ = () => { const [s, a, w] = cyDeal("sort", CY_SORT); return { q: `🌱 Plant cell, 🐾 animal cell or 🤝 both?<br><b>${esc(s)}</b>`, a: CY_SORT_OPTS.find(x => x[0] === a)[1], opts: CY_SORT_OPTS.map(x => x[1]), why: w }; };
+  const tfQ = (lo, hi) => { const [s, v, w] = cyDeal("tf" + lo + hi, CY_TF.filter(t => t[3] >= lo && t[3] <= hi)); return { q: `True or false? ${esc(s)}`, a: v ? "True" : "False", opts: ["True", "False"], why: w }; };
+  const factQ = (lo, hi) => { const [q, ch, a, w] = cyDeal("f" + lo + hi, CY_FACTS.filter(t => t[4] >= lo && t[4] <= hi)); return { q: esc(q), a: ch[a], opts: shuffle([...ch]), why: w }; };
+  if (g <= 2) {
+    if (r < .5) return sortQ();
+    const id = cyDeal("city", CY_ORDER), P = CY_PARTS[id];
+    return { q: `In Cell City, which part is like ${esc(P.city[1])}? ${P.city[0]}`, a: nm(id), opts: pick(id, 3).map(nm), why: P.city[2] };
+  }
+  if (g <= 5) {
+    if (r < .3) return sortQ();
+    if (r < .75) { const id = cyDeal("that", CY_ORDER); return { q: `Which part of the cell ${esc(CY_PARTS[id].that)}?`, a: nm(id), opts: pick(id, 4).map(nm), why: CY_PARTS[id].job }; }
+    return r < .9 ? tfQ(1, 1) : factQ(1, 1);
+  }
+  if (g <= 9) {
+    if (r < .3) { const id = cyDeal("job", CY_ORDER), P = CY_PARTS[id]; return { q: `What is the job of the ${P.e} <b>${esc(P.n)}</b>?`, a: P.job, opts: pick(id, 4).map(x => CY_PARTS[x].job), why: P.job }; }
+    if (r < .55) return factQ(1, 2);
+    if (r < .75) return tfQ(1, 2);
+    const id = cyDeal("city2", CY_ORDER), P = CY_PARTS[id];
+    return { q: `In Cell City, the ${P.e} <b>${esc(P.n)}</b> is like which place?`, a: `${P.city[0]} ${cyCap(P.city[1])}`, opts: pick(id, 4).map(x => `${CY_PARTS[x].city[0]} ${cyCap(CY_PARTS[x].city[1])}`), why: P.city[2] };
+  }
+  if (r < .55) return factQ(3, 3);
+  if (r < .8) return factQ(2, 3);
+  return tfQ(2, 3);
+}
+
+/* 🏠 the Cell City home screen */
+const cyTop = (extra = "") => `<div class="row cy-top"><button class="chip" id="cy-home" type="button">⬅ Cell City</button>${extra}</div>`;
+const cyBindHome = () => document.getElementById("cy-home")?.addEventListener("click", () => startCells());
+const cyTyping = e => e.target && e.target.closest?.("button, input, textarea, select, a, [data-part]");
+function startCells(view = "home", opt = {}) {
+  if (view === "explore") return cyExplore(opt.kind, opt.part);
+  if (view === "study") return cyStudy(opt.tab || "parts");
+  if (view === "play") return cyPlay(opt.mode || "find");
+  if (view === "build") return cyBuild();
+  if (view === "zoom") return cyZoom(0);
+  const S = cyGet(), nF = cyFound(S), stars = ["find", "city", "sort", "facts", "build", "defend"].reduce((t, m) => t + ((S.modes[m] || {}).stars || 0), 0);
+  const st = m => { const s = S.modes[m]; return s ? `${"⭐".repeat(s.stars)}<small> ${s.best}%</small>` : `<small class="soft">▶ Play</small>`; };
+  const mode = (k, ic, t, d, boss) => `<button class="cy-mode${boss ? " boss" : ""}" type="button" data-m="${k}"><span class="cy-ic">${ic}</span><span><b>${t}</b><small>${d}</small></span><span class="cy-st">${st(k)}</span></button>`;
+  const floaty = ["🧫", "🔬", "🧬", "⚡", "🌿", "💧", "📦", "🔧", "🫧", "🧱", "🦠", "🧠"].map((e, i) => `<span style="--x:${(i * 37 + 5) % 96}%;--y:${(i * 53 + 10) % 90}%;--d:${(i % 6) * -1.4}s">${e}</span>`).join("");
+  appScreen("🧫 Cell City", `<div class="cy">
+    <div class="cy-hero"><div class="cy-floaty" aria-hidden="true">${floaty}</div>
+      <h2 class="cy-title">Cell <span>City</span></h2>
+      <p>Every living thing is made of cells. Step inside one: it works like a tiny city! 🏙️</p>
+      <div class="cy-stats"><span>🔬 ${nF} / ${CY_ORDER.length} parts explored</span><span>⭐ ${stars} / 18 stars</span><span>🛡️ ${S.saves ? `Cell saved ${S.saves}×` : "Cell not saved yet"}</span></div></div>
+    <div class="cy-bigbtns">
+      <button class="cy-big-btn explore" id="cy-explore" type="button"><span class="cy-bic">🔬</span><span><b>Explore a cell</b><small>Tap any part of a plant cell or an animal cell to see what it does</small></span><span class="cy-go">▶</span></button>
+      <button class="cy-big-btn race" id="cy-race" type="button"><span class="cy-bic">🎓</span><span><b>Cell Race</b><small>Race the computer from Kindergarten to College, just like Head of the Class! The questions get harder every grade.</small></span><span class="cy-go">▶</span></button>
+    </div>
+    <h3>🏙️ Welcome to Cell City</h3>
+    <p class="soft cy-sub2">Every part of a cell has a job, just like the places in a city. Tap a place to visit it.</p>
+    <div class="cy-map">${CY_ORDER.map(id => { const P = CY_PARTS[id]; return `<button class="cy-bld${S.found[id] ? " got" : ""}" type="button" data-bld="${id}" style="--c:${P.c}">${S.found[id] ? `<i class="cy-check" title="Explored">✅</i>` : ""}<span class="cy-bld-e">${P.city[0]}</span><b>${esc(cyCap(P.city[1]))}</b><small>${P.e} ${esc(P.n)}</small></button>`; }).join("")}</div>
+    <h3>🎯 Missions</h3>
+    <div class="cy-modes">
+      <button class="cy-mode" type="button" data-m="study"><span class="cy-ic">📚</span><span><b>Study Cards</b><small>Every part, plant vs. animal, cell theory, prokaryotes, special cells and vocab</small></span></button>
+      ${["find", "city", "sort", "facts"].map(k => mode(k, CY_MODES[k].ic, CY_MODES[k].t, CY_MODES[k].d)).join("")}
+      ${mode("build", "🪜", "Build It Up", "Put cells, tissues, organs and organ systems in order, plus the cell scientists")}
+      ${mode("defend", CY_MODES.defend.ic, CY_MODES.defend.t, CY_MODES.defend.d, true)}
+      <button class="cy-mode" type="button" data-m="zoom"><span class="cy-ic">🔍</span><span><b>Zoom Journey</b><small>Zoom in from you, all the way down to DNA</small></span></button>
+    </div>
+    <p class="soft cy-tip">Tip: explore all 12 parts first, then go for ⭐⭐⭐ on every mission. When you're ready, defend the cell from the germs!</p></div>`);
+  document.getElementById("cy-explore").addEventListener("click", () => cyExplore());
+  document.getElementById("cy-race").addEventListener("click", () => startHeadClass("cells"));
+  $app.querySelectorAll("[data-bld]").forEach(b => b.addEventListener("click", () => cyExplore(null, b.dataset.bld)));
+  $app.querySelectorAll("[data-m]").forEach(b => b.addEventListener("click", () => { const m = b.dataset.m; if (m === "study") cyStudy("parts"); else if (m === "build") cyBuild(); else if (m === "zoom") cyZoom(0); else cyPlay(m); }));
+}
+
+/* 🔬 Explore: tap the parts of a plant or animal cell */
+const CYE = { kind: "animal", sel: null, labels: true };
+function cyExplore(kind, part) {
+  if (kind && CY_CELLS[kind]) CYE.kind = kind;
+  if (part && CY_PARTS[part] && !CY_CELLS[CYE.kind].parts.includes(part)) CYE.kind = CY_PARTS[part].where === "animal" ? "animal" : "plant";
+  CYE.sel = part && CY_PARTS[part] ? part : null;
+  const S = cyGet(), C = CY_CELLS[CYE.kind];
+  appScreen("🧫 Cell City · 🔬 Explore", `<div class="cy">${cyTop(`<span class="cy-found" id="cy-found">🔬 ${cyFound(S)} / ${CY_ORDER.length} explored</span>`)}
+    <div class="na-chips cy-kinds">${["animal", "plant"].map(k => `<button class="chip${k === CYE.kind ? " on" : ""}" data-kind="${k}" type="button">${CY_CELLS[k].e} ${CY_CELLS[k].n}</button>`).join("")}<button class="chip${CYE.labels ? " on" : ""}" id="cy-labs" type="button" aria-pressed="${CYE.labels}">🏷️ Labels</button></div>
+    <div class="cy-explore"><div class="cy-stage" id="cy-stage">${cySvg(CYE.kind, { labels: CYE.labels })}</div><div class="cy-info" id="cy-info" aria-live="polite"></div></div>
+    <div class="cy-partchips" id="cy-pcs">${C.parts.map(id => `<button class="cy-pc${S.found[id] ? " got" : ""}" data-pc="${id}" type="button" style="--c:${CY_PARTS[id].c}">${CY_PARTS[id].e} ${esc(CY_PARTS[id].lab || CY_PARTS[id].n)}</button>`).join("")}</div>
+    <div class="row cy-nav"><button class="btn" id="cy-cmp" type="button">🌱 vs 🐾 What's different?</button><button class="btn" id="cy-zoom" type="button">🔍 Zoom Journey</button></div></div>`);
+  cyBindHome();
+  $app.querySelectorAll("[data-kind]").forEach(b => b.addEventListener("click", () => cyExplore(b.dataset.kind, CYE.sel && CY_CELLS[b.dataset.kind].parts.includes(CYE.sel) ? CYE.sel : null)));
+  document.getElementById("cy-labs").addEventListener("click", () => { CYE.labels = !CYE.labels; cyExplore(CYE.kind, CYE.sel); });
+  document.getElementById("cy-cmp").addEventListener("click", () => cyStudy("compare"));
+  document.getElementById("cy-zoom").addEventListener("click", () => cyZoom(0));
+  const stage = document.getElementById("cy-stage");
+  stage.addEventListener("click", e => { const g = e.target.closest?.("[data-part], [data-lab]"); if (g) cySelect(g.dataset.part || g.dataset.lab); });
+  stage.querySelectorAll("[data-part]").forEach(g => g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); cySelect(g.dataset.part); } }));
+  $app.querySelectorAll("[data-pc]").forEach(b => b.addEventListener("click", () => cySelect(b.dataset.pc)));
+  keyHandler = e => {
+    if (!document.getElementById("cy-stage")) { keyHandler = null; return; }
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const ps = CY_CELLS[CYE.kind].parts, i = ps.indexOf(CYE.sel); e.preventDefault();
+    cySelect(ps[(i + (e.key === "ArrowRight" ? 1 : ps.length - 1) + (i < 0 && e.key === "ArrowLeft" ? 1 : 0)) % ps.length]);
+  };
+  cySelect(CYE.sel, true);
+}
+function cySelect(id, quiet) {
+  const info = document.getElementById("cy-info"), svg = $app.querySelector("#cy-stage svg"); if (!info || !svg) return;
+  CYE.sel = id && CY_PARTS[id] ? id : null;
+  svg.classList.toggle("has-sel", !!CYE.sel);
+  svg.querySelectorAll("[data-part]").forEach(g => g.classList.toggle("sel", g.dataset.part === CYE.sel));
+  svg.querySelectorAll("[data-lab]").forEach(t => t.classList.toggle("sel", t.dataset.lab === CYE.sel));
+  $app.querySelectorAll("[data-pc]").forEach(b => b.classList.toggle("on", b.dataset.pc === CYE.sel));
+  if (!CYE.sel) { info.innerHTML = `<div class="cy-icard cy-hello"><span class="cy-ie">👆</span><b>Tap any part of the cell to learn what it does!</b><p class="soft">${CY_CELLS[CYE.kind].about}</p><p class="soft">You can also tap the names below, or use the ⬅ ➡ arrow keys.</p></div>`; return; }
+  const P = CY_PARTS[CYE.sel], S = cyGet(), fresh = !S.found[CYE.sel];
+  info.innerHTML = `<div class="cy-icard" style="--c:${P.c}"><div class="cy-ihead"><span class="cy-ie">${P.e}</span><div><b>${esc(P.n)}</b><small>${cyWhere(CYE.sel)}</small></div></div>
+    <p class="cy-job"><b>Job:</b> ${esc(P.job)}</p><p>${P.long}</p>
+    <div class="cy-cityrow"><span>${P.city[0]}</span><div><small>In Cell City, it's like…</small><b>${esc(cyCap(P.city[1]))}</b><small>${esc(P.city[2])}</small></div></div>
+    <p class="cy-fact">🤯 <b>Fun fact:</b> ${esc(P.fact)}</p>
+    <div class="row cy-irow"><button class="chip" id="cy-say" type="button">🔊 Read it to me</button><button class="chip" id="cy-prev" type="button" aria-label="Last part">⬅</button><button class="chip" id="cy-next" type="button" aria-label="Next part">➡</button></div></div>`;
+  document.getElementById("cy-say").addEventListener("click", () => svSay(`${P.n}. ${P.job}. ${P.long} In Cell City, it's like ${P.city[1]}. ${P.city[2]} Fun fact: ${P.fact}`));
+  const ps = CY_CELLS[CYE.kind].parts, i = ps.indexOf(CYE.sel);
+  document.getElementById("cy-prev").addEventListener("click", () => cySelect(ps[(i + ps.length - 1) % ps.length]));
+  document.getElementById("cy-next").addEventListener("click", () => cySelect(ps[(i + 1) % ps.length]));
+  if (fresh) {
+    S.found[CYE.sel] = Date.now(); cySave(S); const n = cyFound(S);
+    const fc = document.getElementById("cy-found"); if (fc) fc.textContent = `🔬 ${n} / ${CY_ORDER.length} explored`;
+    $app.querySelector(`[data-pc="${CYE.sel}"]`)?.classList.add("got");
+    tone([660, 880], .07, "triangle", .06);
+    if (n === CY_ORDER.length) { cyBurst(50); toast("🏅 You explored every part of the cell! You're a Cell Explorer!"); }
+    else if (!quiet) toast(`🔬 New part explored: ${P.e} ${P.n} (${n} / ${CY_ORDER.length})`);
+  }
+  if (!quiet && matchMedia("(max-width: 759px)").matches) info.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+}
+
+/* 📚 Study Cards */
+const CY_TABS = [["parts", "🧫 Parts"], ["compare", "🌱 vs 🐾"], ["theory", "📜 Cell theory"], ["pro", "🦠 Prokaryotes"], ["levels", "🪜 Cells to organisms"], ["types", "🔬 Special cells"], ["vocab", "📖 Vocab"]];
+function cyStudy(tab) {
+  if (!CY_TABS.some(t => t[0] === tab)) tab = "parts";
+  const yes = "✅", no = "❌";
+  let body = "", say = "";
+  if (tab === "parts") {
+    body = `<p class="soft">Tap a card to see that part in the cell.</p><div class="cy-pgrid">${CY_ORDER.map(id => { const P = CY_PARTS[id]; return `<button class="cy-pcard" type="button" data-go="${id}" style="--c:${P.c}"><span class="cy-pce">${P.e}</span><b>${esc(P.n)}</b><small>${esc(P.job)}</small><small class="cy-pcity">${P.city[0]} Like ${esc(P.city[1])}</small></button>`; }).join("")}</div>`;
+    say = CY_ORDER.map(id => `${CY_PARTS[id].n}: ${CY_PARTS[id].job}.`).join(" ");
+  } else if (tab === "compare") {
+    const rows = [["🚧 Cell membrane", yes, yes], ["🧱 Cell wall", yes, no], ["🧠 Nucleus", yes, yes], ["🫧 Cytoplasm", yes, yes], ["⚡ Mitochondria", yes, yes], ["🌿 Chloroplasts", yes, no], ["🔧 Ribosomes", yes, yes], ["🛣️ ER", yes, yes], ["📦 Golgi body", yes, yes], ["💧 Vacuole", "One huge one", "Small ones, or none"], ["♻️ Lysosomes", "Rare", yes], ["📐 Shape", "Boxy", "Round or blobby"], ["🍽️ Food", "Makes its own", "Eats"]];
+    body = `<div class="cy-cmpwrap"><table class="cy-cmp"><tr><th>Part</th><th>🌱 Plant cell</th><th>🐾 Animal cell</th></tr>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</table></div>
+      <div class="cy-scard"><h3>🌱 Plant cells have 3 special things</h3><p>A cell <b>W</b>all, <b>C</b>hloroplasts and a big central <b>V</b>acuole. To remember them: <b>W</b>e <b>C</b>an <b>V</b>iew plants!</p><p class="soft">⚠️ Watch out: plant cells have mitochondria too! Plants need energy just like animals do.</p></div>
+      <div class="row cy-nav"><button class="btn" type="button" data-kind="plant">🌱 Explore a plant cell</button><button class="btn" type="button" data-kind="animal">🐾 Explore an animal cell</button></div>`;
+    say = "Plant cells have three special things: a cell wall, chloroplasts and a big central vacuole. To remember them: We Can View plants! Watch out: plant cells have mitochondria too.";
+  } else if (tab === "theory") {
+    body = `<div class="cy-scard"><h3>📜 The cell theory</h3><ol class="cy-ol"><li>All living things are made of <b>one or more cells</b>.</li><li>The cell is the <b>basic unit</b> of structure and function in living things.</li><li>All cells come from <b>other cells</b>.</li></ol></div>
+      <h3>🔬 Who figured it out?</h3><div class="cy-time">${CY_SCIENTISTS.map(([y, e, w, t]) => `<div class="cy-tl"><b class="cy-yr">${y}</b><span class="cy-tle">${e}</span><p><b>${esc(w)}</b> ${t}</p></div>`).join("")}</div>`;
+    say = "The cell theory. One: all living things are made of one or more cells. Two: the cell is the basic unit of structure and function in living things. Three: all cells come from other cells. " + CY_SCIENTISTS.map(([y, , w, t]) => `In ${y}, ${w} ${t}`).join(" ");
+  } else if (tab === "pro") {
+    body = `<div class="cy-two"><div class="cy-scard" style="--k:#ef8b3c"><h3>🦠 Prokaryotes</h3><ul><li><b>No nucleus</b>: the DNA floats in the cytoplasm</li><li>No organelles wrapped in membranes (no mitochondria, no ER)</li><li>Tiny, and always just one cell</li><li>Examples: <b>bacteria</b> (both bacteria kingdoms)</li><li>Pro = before. They came first!</li></ul></div>
+      <div class="cy-scard" style="--k:#7b52d6"><h3>🧠 Eukaryotes</h3><ul><li><b>Have a nucleus</b> that holds the DNA</li><li>Have organelles like mitochondria, ER and Golgi bodies</li><li>Usually much bigger</li><li>One cell (like an amoeba or yeast) or many cells</li><li>Examples: <b>protists, fungi, plants and animals</b></li><li>Eu = true: a true nucleus</li></ul></div></div>
+      <div class="cy-scard"><h3>🤝 Every cell has these 4 things</h3><p>🚧 a cell membrane · 🫧 cytoplasm · 🔧 ribosomes · 🧬 DNA</p><p class="soft">Remember: <b>Pro</b>karyotes have <b>no</b> nucleus. “Pro” and “no” rhyme!</p></div>`;
+    say = "Prokaryotes have no nucleus. Their DNA floats in the cytoplasm. Bacteria are prokaryotes. Eukaryotes have a nucleus and organelles. Protists, fungi, plants and animals are eukaryotes. Every cell has a cell membrane, cytoplasm, ribosomes and DNA.";
+  } else if (tab === "levels") {
+    const steps = [["🫧", "Cell", "The smallest unit of life", "💪 a muscle cell"], ["🧵", "Tissue", "Similar cells doing the same job", "muscle tissue"], ["❤️", "Organ", "Different tissues working together", "the heart"], ["🩸", "Organ system", "Organs working together", "the circulatory system"], ["🧍", "Organism", "A whole living thing", "you!"]];
+    body = `<div class="cy-ladder">${steps.map(([e, n, d, x], i) => `<div class="cy-step"><span class="cy-se">${e}</span><div><b>${i + 1}. ${n}</b><small>${d}</small><small class="cy-ex">Example: ${x}</small></div></div>${i < steps.length - 1 ? `<div class="cy-arrow">⬇</div>` : ""}`).join("")}</div>
+      <div class="cy-scard"><h3>🌱 In a plant</h3><p>Leaf cell ➜ leaf tissue ➜ leaf (an organ) ➜ shoot system ➜ the whole plant</p></div>`;
+    say = "Cells make tissues. Tissues make organs. Organs make organ systems. And organ systems make an organism. For example: a muscle cell, muscle tissue, the heart, the circulatory system, and you!";
+  } else if (tab === "types") {
+    body = `<p class="soft">Cells in a multicellular body have special shapes for special jobs. They're called <b>specialized cells</b>.</p><div class="cy-pgrid">${CY_TYPES.map(([e, n, t]) => `<div class="cy-pcard still"><span class="cy-pce">${e}</span><b>${esc(n)}</b><small>${esc(t)}</small></div>`).join("")}</div>`;
+    say = CY_TYPES.map(([, n, t]) => `${n}: ${t}`).join(" ");
+  } else {
+    body = `<div class="cy-vocab">${CY_VOCAB.map(([w, d]) => `<div><b>${esc(w)}</b><span>${esc(d)}</span></div>`).join("")}</div>`;
+    say = CY_VOCAB.map(([w, d]) => `${w}: ${d}`).join(" ");
+  }
+  appScreen("🧫 Cell City · 📚 Study Cards", `<div class="cy">${cyTop(`<button class="chip" id="cy-say" type="button">🔊 Read it to me</button>`)}
+    <div class="na-chips cy-tabs">${CY_TABS.map(([k, l]) => `<button class="chip${k === tab ? " on" : ""}" data-tab="${k}" type="button">${l}</button>`).join("")}</div>
+    <div class="cy-study">${body}</div>
+    <div class="row cy-nav"><button class="btn" id="cy-sprev" type="button">⬅ Back</button><button class="btn go" id="cy-snext" type="button">${tab === "vocab" ? "🎯 Try a mission" : "Next ➜"}</button></div></div>`);
+  cyBindHome();
+  const i = CY_TABS.findIndex(t => t[0] === tab);
+  $app.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => cyStudy(b.dataset.tab)));
+  $app.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => cyExplore(null, b.dataset.go)));
+  $app.querySelectorAll(".cy-study [data-kind], .cy-nav [data-kind]").forEach(b => b.addEventListener("click", () => cyExplore(b.dataset.kind)));
+  document.getElementById("cy-say").addEventListener("click", () => svSay(say));
+  document.getElementById("cy-sprev").addEventListener("click", () => i ? cyStudy(CY_TABS[i - 1][0]) : startCells());
+  document.getElementById("cy-snext").addEventListener("click", () => tab === "vocab" ? startCells() : cyStudy(CY_TABS[i + 1][0]));
+}
+
+/* 🎯 the missions (Find It!, Cell City Match, Plant/Animal/Both, Cell Facts, Defend the Cell) */
+let CYG = null;
+function cyPlay(mode) {
+  const M = CY_MODES[mode] || CY_MODES.find, qs = M.build().map((q, i) => ({ ...q, id: i, tries: 0 }));
+  CYG = { mode: CY_MODES[mode] ? mode : "find", M, queue: qs, total: qs.length, done: 0, firstRight: 0, score: 0, streak: 0, best: 0, missed: [], boss: !!M.boss, hp: CY_GERMS, hints: 3 };
+  cyNext();
+}
+const cyGermsHTML = G => `<div class="cy-boss"><div class="cy-germs" id="cy-germs" aria-hidden="true">${Array.from({ length: CY_GERMS }, (_, i) => `<span class="${i < CY_GERMS - G.hp ? "zap" : ""}">🦠</span>`).join("")}</div><small id="cy-gtext">${G.hp > 0 ? `🦠 ${G.hp} germs are attacking the cell! Every right answer zaps one.` : "🛡️ Every germ is zapped! The cell is safe. Finish for bonus points."}</small></div>`;
+function cyNext() {
+  const G = CYG; if (!G) return;
+  if (!G.queue.length) return cyResults();
+  const q = G.queue[0], pct = Math.round(G.done / G.total * 100);
+  const body = q.type === "map"
+    ? `<div class="cy-tag">${CY_CELLS[q.cell].e} ${CY_CELLS[q.cell].n}</div><div class="cy-stage game" id="cy-game">${cySvg(q.cell, { labels: false })}</div>`
+    : `<div class="cy-chs${q.three ? " three" : ""}">${q.choices.map((c, i) => `<button class="cy-ch" type="button" data-v="${i}"><i>${i + 1}</i>${esc(c)}</button>`).join("")}</div>`;
+  appScreen(`🧫 Cell City · ${G.M.ic} ${G.M.t}`, `<div class="cy cy-gamebox">${cyTop(`<span class="cy-hud"><b>🏆 <span id="cy-score">${G.score}</span></b><b id="cy-stk">🔥 ${G.streak}</b></span>`)}
+    ${G.boss ? cyGermsHTML(G) : ""}
+    <div class="cy-sub soft">${G.M.ic} ${G.M.t} · ${G.done} / ${G.total} ${G.boss ? "answered" : "mastered"}${q.tries ? " · 🔁 Try again!" : ""}</div>
+    <div class="cy-prog"><i style="width:${pct}%"></i></div>
+    <div class="cy-card" id="cy-card"><div class="cy-q">${q.prompt}</div>${body}
+      <div class="row cy-hintrow"><button class="chip cy-hint" id="cy-hint" type="button"${G.hints ? "" : " disabled"}>💡 Hint <small>(${G.hints} left)</small></button></div>
+      <div class="cy-fb" id="cy-fb" aria-live="polite"></div><button class="btn go cy-next" id="cy-nx" type="button" hidden>Next ➜</button></div>
+    <p class="soft cy-keys">${q.type === "map" ? "Tap the cell to answer. H for a hint, Enter for the next one." : `Keys: 1 to ${q.choices.length} to answer, H for a hint, Enter for the next one.`}</p></div>`);
+  cyBindHome();
+  document.getElementById("cy-hint").addEventListener("click", cyHint);
+  if (q.type === "map") {
+    const st = document.getElementById("cy-game");
+    st.addEventListener("click", e => { const g = e.target.closest?.("[data-part]"); if (g) cyAnswer(g.dataset.part); });
+    st.querySelectorAll("[data-part]").forEach(g => g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); cyAnswer(g.dataset.part); } }));
+  } else $app.querySelectorAll(".cy-ch").forEach(b => b.addEventListener("click", () => cyAnswer(+b.dataset.v)));
+  keyHandler = e => {
+    if (!document.getElementById("cy-card")) { keyHandler = null; return; }
+    const nx = document.getElementById("cy-nx");
+    if (e.key === "Enter" && nx && !nx.hidden) { if (!cyTyping(e)) { e.preventDefault(); nx.click(); } return; }
+    if (e.key === "h" || e.key === "H") return cyHint();
+    const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 4) $app.querySelectorAll(".cy-ch")[n - 1]?.click();
+  };
+}
+function cyHint() {   // 💡 takes away half of the wrong answers (on a cell picture, half of the wrong parts)
+  const G = CYG, q = G && G.queue[0], hb = document.getElementById("cy-hint"); if (!q || q.answered || q.hinted || !hb) return;
+  let wrong;
+  if (q.type === "map") wrong = [...$app.querySelectorAll("#cy-game [data-part]")].filter(g => g.dataset.part !== q.part && g.dataset.part !== "cytoplasm");
+  else {
+    wrong = [...$app.querySelectorAll(".cy-ch")].filter(b => !q.correct.includes(+b.dataset.v));
+    if (q.choices.length <= 2) { const fb = document.getElementById("cy-fb"); fb.className = "cy-fb good"; fb.textContent = "💡 For true or false, check every word: if even one part is wrong, the whole sentence is false!"; return; }   // true or false: a tip, and no hint used
+  }
+  if (!G.hints) return toast("No hints left this round!");
+  q.hinted = true; G.hints--; shuffle(wrong).slice(0, Math.ceil(wrong.length / 2)).forEach(b => { b.classList.add("cy-gone"); if (b.tagName === "BUTTON") b.disabled = true; else b.setAttribute("tabindex", "-1"); });
+  hb.disabled = true; hb.innerHTML = `💡 Hint used <small>(${G.hints} left)</small>`; tone([880, 660], .06, "sine", .05);
+}
+function cyPop(el, txt) {   // "+14" floats up from where you tapped
+  const card = document.getElementById("cy-card"); if (!card || !el) return;
+  const a = card.getBoundingClientRect(), b = el.getBoundingClientRect(), p = document.createElement("span");
+  p.className = "kq-pop"; p.textContent = txt; p.style.left = (b.left - a.left + b.width / 2) + "px"; p.style.top = (b.top - a.top) + "px";
+  card.appendChild(p); setTimeout(() => p.remove(), 1000);
+}
+function cyAnswer(v) {
+  const G = CYG, q = G && G.queue[0]; if (!q || q.answered) return; q.answered = true;
+  const ok = q.type === "map" ? v === q.part : q.correct.includes(v);
+  document.getElementById("cy-hint")?.setAttribute("disabled", "");
+  let el, right, said = "";
+  if (q.type === "map") {
+    const svg = $app.querySelector("#cy-game svg"); svg.classList.add("done");
+    svg.querySelectorAll("[data-part]").forEach(g => { g.setAttribute("tabindex", "-1"); if (g.dataset.part === q.part) g.classList.add("right"); else if (g.dataset.part === v) g.classList.add("wrong"); });
+    el = svg.querySelector(`[data-part="${q.part}"]`); right = `${CY_PARTS[q.part].e} ${esc(CY_PARTS[q.part].n)}`;
+    if (!ok && CY_PARTS[v]) said = `You tapped the ${CY_PARTS[v].e} ${esc(CY_PARTS[v].n)}. The right part is glowing green. `;
+  } else {
+    $app.querySelectorAll(".cy-ch").forEach(b => { const i = +b.dataset.v; b.disabled = true; if (q.correct.includes(i)) b.classList.add("right"); else if (i === v) b.classList.add("wrong"); else b.classList.add("fade"); });
+    el = $app.querySelector(`.cy-ch[data-v="${v}"]`); right = esc(q.choices[q.correct[0]]);
+  }
+  const fb = document.getElementById("cy-fb");
+  if (ok) {
+    G.streak++; G.best = Math.max(G.best, G.streak); const pts = Math.round((10 + Math.min(G.streak, 10) * 2) / (q.hinted ? 2 : 1)); G.score += pts;   // 💡 a hinted answer earns half
+    if (!q.tries) G.firstRight++;
+    cyPop(el, `+${pts}`); tone([523, 659, 784], .08, "triangle", .07);
+    fb.className = "cy-fb good"; fb.innerHTML = `<b>✅ ${rPick(["Nailed it!", "Cell-ebrate! 🎉", "Science genius! 🧪", "Correct!", "You got it!", "Mighty mitochondria! ⚡", "Awesome!"])}</b> ${q.why}`;
+    if (G.boss && G.hp > 0) {
+      G.hp--; const live = [...document.querySelectorAll("#cy-germs span:not(.zap)")], g = live[0], txt = document.getElementById("cy-gtext");
+      if (g) { g.textContent = "💥"; setTimeout(() => g.classList.add("zap"), 280); }
+      if (txt) txt.textContent = G.hp > 0 ? `🦠 ${G.hp} germ${G.hp === 1 ? " is" : "s are"} attacking the cell! Every right answer zaps one.` : "🛡️ Every germ is zapped! The cell is safe. Finish for bonus points.";
+      if (!G.hp) { cyBurst(40); tone([523, 659, 784, 1047], .12, "triangle", .08); }
+    }
+    if (G.streak % 5 === 0) cyBurst(24);
+  } else {
+    G.streak = 0; if (!q.tries) G.missed.push(q); tone([220, 175], .14, "sawtooth", .05);
+    fb.className = "cy-fb bad"; fb.innerHTML = `<b>❌ Answer: ${right}</b> ${said}${q.why}${G.boss ? `<br><small>🦠 The germs dodged that one!</small>` : `<br><small>This one will come back soon 🔁</small>`}`;
+    const card = document.getElementById("cy-card"); card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+  }
+  document.getElementById("cy-score").textContent = G.score;
+  const s = document.getElementById("cy-stk"); s.textContent = "🔥 " + G.streak; s.classList.remove("pop"); void s.offsetWidth; s.classList.add("pop");
+  const nx = document.getElementById("cy-nx"); nx.hidden = false;
+  nx.addEventListener("click", () => {
+    G.queue.shift();
+    if (ok || G.boss) G.done++; else { q.tries++; q.answered = false; q.hinted = false; if (q.type === "map") Object.assign(q, cyMapQ(q.part), { tries: q.tries }); G.queue.splice(Math.min(3, G.queue.length), 0, q); }
+    cyNext();
+  });
+  nx.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+}
+function cyResults() {
+  const G = CYG, pct = Math.round(G.firstRight / G.total * 100), stars = pct >= 90 ? 3 : pct >= 75 ? 2 : 1, saved = G.boss && G.hp <= 0;
+  const S = cyGet(), prev = S.modes[G.mode]; if (!prev || pct > prev.best) S.modes[G.mode] = { best: pct, stars };
+  if (saved) S.saves = (S.saves || 0) + 1; cySave(S);
+  if (stars === 3 || saved) cyBurst(60);
+  const msg = pct >= 90 ? "You're a cell expert! 🏆" : pct >= 75 ? "So close! One more round!" : "Keep going! Play again to lock it in!";
+  const ans = q => q.type === "map" ? `${CY_PARTS[q.part].e} ${esc(CY_PARTS[q.part].n)}` : esc(q.choices[q.correct[0]]);
+  appScreen(`🧫 Cell City · ${G.M.ic} ${G.M.t}`, `<div class="cy"><div class="cy-res">
+      ${G.boss ? `<div class="cy-big">${saved ? "🛡️" : "🦠"}</div><h3>${saved ? "You saved the cell from the germs!" : `${G.hp} germ${G.hp === 1 ? " got" : "s got"} into the cell!`}</h3>` : ""}
+      <small class="soft">${G.M.t} complete</small><div class="cy-pct">${pct}%</div><div class="cy-stars">${"⭐".repeat(stars)}${"☆".repeat(3 - stars)}</div><b>${msg}</b>
+      <p class="soft">First-try correct: ${G.firstRight} / ${G.total} · Points: ${G.score} · Best streak: 🔥 ${G.best}</p></div>
+    ${G.missed.length ? `<div class="cy-scard"><h3>📝 Review what you missed</h3>${G.missed.map(q => `<div class="cy-miss">${q.rv}<br><b>➜ ${ans(q)}</b><br><small class="soft">${q.why}</small></div>`).join("")}</div>` : `<div class="cy-res"><h3>Perfect round: zero misses! 🎉</h3></div>`}
+    <div class="row cy-nav"><button class="btn" id="cy-home" type="button">⬅ Cell City</button><button class="btn go" id="cy-again" type="button">Play again 🔁</button></div></div>`);
+  cyBindHome();
+  document.getElementById("cy-again").addEventListener("click", () => cyPlay(G.mode));
+}
+
+/* 🪜 Build It Up: tap things in order (cells → organisms, smallest → biggest, and the cell scientists) */
+const CY_LEVELS = [
+  ["🫀 Build a person, starting with one muscle cell", [["💪", "Muscle cell"], ["🧵", "Muscle tissue"], ["❤️", "Heart"], ["🩸", "Circulatory system"], ["🧍", "Human"]]],
+  ["🧠 Build a person, starting with one nerve cell", [["⚡", "Nerve cell"], ["🕸️", "Nerve tissue"], ["🧠", "Brain"], ["📡", "Nervous system"], ["🧍", "Human"]]],
+  ["🦴 Build a person, starting with one bone cell", [["🔹", "Bone cell"], ["🧱", "Bone tissue"], ["🦴", "Thigh bone"], ["💀", "Skeletal system"], ["🧍", "Human"]]],
+  ["🌿 Build a plant, starting with one leaf cell", [["🟩", "Leaf cell"], ["🍃", "Leaf tissue"], ["🌿", "Leaf"], ["🌳", "Shoot system"], ["🪴", "Plant"]]],
+  ["🥕 Build a plant, starting with one root cell", [["🔸", "Root hair cell"], ["🟫", "Root tissue"], ["🥕", "Root"], ["🌾", "Root system"], ["🪴", "Plant"]]]
+].map(([t, items]) => ({ t, q: "Tap them in order, from smallest to biggest.", first: "smallest", last: "biggest", items, why: "Cells ➜ tissues ➜ organs ➜ organ systems ➜ organism." }));
+const CY_BUILD_SCI = { t: "📜 The cell scientists", q: "Tap them in order, from first to last.", first: "first", last: "last", items: CY_SCIENTISTS.map(([y, e, w]) => [e, w]), why: CY_SCIENTISTS.map(([y, , w]) => `${w} (${y})`).join(" ➜ ") + "." };
+const CY_BUILD_SIZE = { t: "🔍 Tiny to big", q: "Tap them in order, from smallest to biggest.", first: "smallest", last: "biggest", items: [["🔧", "Ribosome"], ["⚡", "Mitochondrion"], ["🧠", "Nucleus"], ["🫧", "A whole cell"], ["🧵", "Tissue"]], why: "Ribosomes are tiny dots, a mitochondrion is bigger, the nucleus is bigger still, the whole cell holds them all, and a tissue is made of many cells." };
+let CYB = null;
+function cyBuild() {
+  CYB = { list: [...shuffle(CY_LEVELS).slice(0, 2), CY_BUILD_SIZE, CY_BUILD_SCI], i: 0, mistakes: 0, right: 0 };
+  cyBuildStart();
+}
+function cyBuildStart() {
+  const B = CYB, P = B.list[B.i]; B.placed = []; B.tiles = shuffle(P.items.map((x, k) => k)); B.miss = 0; B.solved = false;
+  appScreen("🧫 Cell City · 🪜 Build It Up", `<div class="cy">${cyTop(`<span class="cy-hud"><b>🧩 ${B.i + 1} / ${B.list.length}</b><b id="cy-bmiss">❌ ${B.mistakes}</b></span>`)}<div class="cy-prog"><i style="width:${B.i / B.list.length * 100}%"></i></div><div class="cy-card" id="cy-card"></div></div>`);
+  cyBindHome();
+  keyHandler = e => {
+    if (!document.getElementById("cy-card")) { keyHandler = null; return; }
+    const nx = document.getElementById("cy-nx");
+    if (e.key === "Enter" && nx && !cyTyping(e)) { e.preventDefault(); nx.click(); }
+  };
+  cyBuildDraw();
+}
+function cyBuildDraw(msg) {
+  const B = CYB, P = B.list[B.i], card = document.getElementById("cy-card"); if (!card) return;
+  card.innerHTML = `<div class="cy-q"><span class="cy-lab2">${esc(P.t)}</span>${esc(P.q)}</div>
+    <ol class="cy-slots">${P.items.map((it, k) => { const got = k < B.placed.length; return `<li class="${got ? "got" : ""}${k === B.placed.length && !B.solved ? " next" : ""}"><i>${k + 1}</i>${got ? `<span>${it[0]}</span>${esc(it[1])}` : k === 0 ? `<small>${esc(P.first)}</small>` : k === P.items.length - 1 ? `<small>${esc(P.last)}</small>` : ""}</li>`; }).join("")}</ol>
+    <div class="cy-tiles">${B.tiles.filter(k => k >= B.placed.length).map(k => `<button class="cy-tile" type="button" data-k="${k}"><span>${P.items[k][0]}</span>${esc(P.items[k][1])}</button>`).join("")}</div>
+    <div class="cy-fb${B.solved ? " good" : msg ? " bad" : ""}" id="cy-fb" aria-live="polite">${B.solved ? `<b>✅ ${B.miss ? "You built it!" : "Perfect: no mistakes!"}</b> ${esc(P.why)}` : msg ? esc(msg) : ""}</div>
+    ${B.solved ? `<button class="btn go cy-next" id="cy-nx" type="button">${B.i + 1 < B.list.length ? "Next puzzle ➜" : "See my score ➜"}</button>` : ""}`;
+  card.querySelectorAll("[data-k]").forEach(b => b.addEventListener("click", () => {
+    const k = +b.dataset.k;
+    if (k === B.placed.length) {
+      B.placed.push(k); B.right++; tone([523 + k * 60, 659 + k * 60], .07, "triangle", .06);
+      if (B.placed.length === P.items.length) { B.solved = true; tone([523, 659, 784, 1047], .1, "triangle", .07); if (!B.miss) cyBurst(20); }
+      cyBuildDraw();
+    } else {
+      B.miss++; B.mistakes++; tone([220, 175], .12, "sawtooth", .05);
+      const m = document.getElementById("cy-bmiss"); if (m) m.textContent = "❌ " + B.mistakes;
+      b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+      const fb = document.getElementById("cy-fb"); fb.className = "cy-fb bad";
+      fb.textContent = B.placed.length ? `Not yet! What comes right after “${P.items[B.placed.length - 1][1]}”?` : `Not yet! Which one is the ${P.first}?`;
+    }
+  }));
+  document.getElementById("cy-nx")?.addEventListener("click", () => { B.i++; if (B.i < B.list.length) cyBuildStart(); else cyBuildResults(); });
+}
+function cyBuildResults() {
+  const B = CYB, pct = Math.round(B.right / (B.right + B.mistakes) * 100), stars = pct >= 90 ? 3 : pct >= 75 ? 2 : 1;
+  const S = cyGet(), prev = S.modes.build; if (!prev || pct > prev.best) S.modes.build = { best: pct, stars }; cySave(S);
+  if (stars === 3) cyBurst(60);
+  appScreen("🧫 Cell City · 🪜 Build It Up", `<div class="cy"><div class="cy-res"><small class="soft">Build It Up complete</small><div class="cy-pct">${pct}%</div><div class="cy-stars">${"⭐".repeat(stars)}${"☆".repeat(3 - stars)}</div>
+      <b>${B.mistakes ? `${B.mistakes} mistake${B.mistakes === 1 ? "" : "s"} in ${B.list.length} puzzles` : "Zero mistakes! 🏆"}</b>
+      <p class="soft">Remember: cells ➜ tissues ➜ organs ➜ organ systems ➜ organism.</p></div>
+    <div class="row cy-nav"><button class="btn" id="cy-home" type="button">⬅ Cell City</button><button class="btn go" id="cy-again" type="button">Play again 🔁</button></div></div>`);
+  cyBindHome();
+  document.getElementById("cy-again").addEventListener("click", cyBuild);
+}
+
+/* 🔍 Zoom Journey: from you, all the way down to DNA */
+const CY_ZOOM = [
+  ["🧒", "You!", "1×", "Your body is made of about 30 trillion cells. But you can't see even one of them with just your eyes!"],
+  ["✋", "Your skin", "10×", "With a magnifying glass, your skin looks bumpy, with tiny lines and pores. Still no cells!"],
+  ["tissue", "Skin tissue", "100×", "With a microscope, you finally see cells! They're packed together like tiles. Cells working together like this make a tissue."],
+  ["cell", "One cell", "400×", "Zoom in more and you can see one cell: its membrane, its cytoplasm and its nucleus."],
+  ["mito", "Organelles", "20,000×", "To see tiny organelles like mitochondria and ribosomes up close, scientists use a super-strong electron microscope."],
+  ["🧬", "DNA", "1,000,000×", "Inside the nucleus is DNA. It's shaped like a twisted ladder, and it holds the instructions for the whole cell!"]
+];
+function cyZoom(i) {
+  i = Math.max(0, Math.min(CY_ZOOM.length - 1, i));
+  const [v, t, mag, txt] = CY_ZOOM[i];
+  const pic = v === "tissue" ? `<svg viewBox="0 0 300 200" class="cy-zsvg">${Array.from({ length: 15 }, (_, k) => { const r = Math.floor(k / 5), c = k % 5, x = 6 + c * 56 + (r % 2) * 14, y = 10 + r * 62; return `<rect x="${x}" y="${y}" width="52" height="58" rx="14" fill="#ffd3df" stroke="#e2557a" stroke-width="3"/><circle cx="${x + 22 + (k * 7) % 9}" cy="${y + 27 + (k * 5) % 7}" r="9" fill="#b79cf0" stroke="#6b45c9" stroke-width="2"/>`; }).join("")}</svg>`
+    : v === "cell" ? cySvg("animal", { labels: true })
+    : v === "mito" ? `<svg viewBox="-80 -55 160 110" class="cy-zsvg"><g transform="rotate(-12) scale(2.4)"><ellipse rx="27" ry="13.5" fill="#ff7b54" stroke="#b9461f" stroke-width="2.4"/><path d="M-19 0 L-13 -7 L-7 7 L-1 -7 L5 7 L11 -7 L17 0" fill="none" stroke="#b9461f" stroke-width="1.8" stroke-linejoin="round"/></g>${[[-62, -40], [-50, 38], [58, -36], [64, 30], [0, -48], [8, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="#2d2d55"/>`).join("")}<text x="0" y="52" text-anchor="middle" class="cy-lab" style="font-size:8px">mitochondrion and ribosomes</text></svg>`
+    : `<span class="cy-zemoji${v === "🧬" ? " spin" : ""}">${v}</span>`;
+  appScreen("🧫 Cell City · 🔍 Zoom Journey", `<div class="cy">${cyTop()}
+    <div class="cy-zoom"><div class="cy-zdots">${CY_ZOOM.map((z, k) => `<button class="${k === i ? "on" : k < i ? "past" : ""}" type="button" data-z="${k}" aria-label="${esc(z[1])}"></button>`).join("")}</div>
+      <div class="cy-lens" id="cy-lens"><div class="cy-lens-in">${pic}</div><b class="cy-mag">🔍 ${mag}</b></div>
+      <h3>${i + 1}. ${esc(t)}</h3><p>${esc(txt)}</p>
+      <div class="row cy-nav"><button class="btn" id="cy-zout" type="button"${i ? "" : " disabled"}>➖ Zoom out</button>${i < CY_ZOOM.length - 1 ? `<button class="btn go" id="cy-zin" type="button">🔍 Zoom in ➕</button>` : `<button class="btn go" id="cy-zx" type="button">🔬 Explore a cell</button>`}</div></div></div>`);
+  cyBindHome();
+  document.getElementById("cy-zout").addEventListener("click", () => cyZoom(i - 1));
+  document.getElementById("cy-zin")?.addEventListener("click", () => cyZoom(i + 1));
+  document.getElementById("cy-zx")?.addEventListener("click", () => cyExplore("animal", "nucleus"));
+  $app.querySelectorAll("[data-z]").forEach(b => b.addEventListener("click", () => cyZoom(+b.dataset.z)));
+  keyHandler = e => { if (!document.getElementById("cy-lens")) { keyHandler = null; return; } if (e.key === "ArrowRight" || e.key === "+") cyZoom(i + 1); else if (e.key === "ArrowLeft" || e.key === "-") cyZoom(i - 1); };
+}
+NEW_APPS.push({ id: "cells", emoji: "🧫", name: "Cell City", desc: "Explore a plant cell and an animal cell part by part, like a tiny city. Then find the parts, match them to their jobs, sort plant vs. animal, and defend the cell from germs.", start: () => startCells(), added: "2026-11-18", kw: "cell city|cells|cell parts|parts of (a|the) cells?|organelles?|mitochondria|mitochondrion|chloroplasts?|ribosomes?|golgi( body| apparatus)?|vacuoles?|lysosomes?|cell membrane|cell wall|cytoplasm|endoplasmic reticulum|animal cells?|plant cells?|cell theory|prokaryotes?|eukaryotes?|powerhouse of the cell" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
@@ -27183,5 +28023,6 @@ new MutationObserver(() => {
 applyNames();
 showHome();
 showSaveState();
+bigBoot();
 cloudConnect();
 </script>
