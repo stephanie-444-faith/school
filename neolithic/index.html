@@ -2139,6 +2139,73 @@
   @keyframes cyZoomIn { from { transform: scale(.2); filter: blur(6px); opacity: .3; } to { transform: none; filter: none; opacity: 1; } }
   .cy-zemoji { font-size: 8rem; line-height: 1; } .cy-zemoji.spin { animation: cySpin 6s linear infinite; } @keyframes cySpin { to { transform: rotateY(360deg); } }
   .cy-mag { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.65); color: #fff; border-radius: 99px; padding: 3px 10px; font-size: .85rem; white-space: nowrap; }
+  /* 📝 sticky notes (bottom right) */
+  .sticky { position: fixed; right: 14px; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); z-index: 65; width: min(240px, calc(100vw - 28px)); color: #3a2e00; }
+  body.bg-img .sticky { bottom: calc(env(safe-area-inset-bottom, 0px) + 64px); }
+  .sticky.min { width: auto; }
+  .sk-pile { position: relative; }
+  .sk-under { position: absolute; inset: 0; border-radius: 3px 3px 14px 3px; background: #fff27a; box-shadow: 0 4px 10px rgba(0,0,0,.28); transform: translate(calc(var(--i) * -6px), calc(var(--i) * -6px)) rotate(calc(var(--i) * -2.5deg)); }
+  .sk-note { position: relative; display: block; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-radius: 3px 3px 16px 3px; padding: 14px 12px 10px; background: #fff27a; color: #3a2e00; font: inherit; line-height: 1.3; box-shadow: 0 6px 16px rgba(0,0,0,.35); transform: rotate(1.2deg); }
+  .sk-note::before { content: ""; position: absolute; top: -8px; left: 50%; width: 58px; height: 16px; transform: translateX(-50%) rotate(-3deg); background: rgba(255,255,255,.6); box-shadow: 0 1px 2px rgba(0,0,0,.18); }
+  .sk-note.c1, .sk-under.c1 { background: #ffb8d6; } .sk-note.c2, .sk-under.c2 { background: #aee3ff; } .sk-note.c3, .sk-under.c3 { background: #bff3a6; }
+  .sk-note.c1 { transform: rotate(-1.4deg); } .sk-note.c2 { transform: rotate(.8deg); } .sk-note.c3 { transform: rotate(-.6deg); }
+  .sk-top { cursor: pointer; animation: skIn .45s cubic-bezier(.2,.9,.3,1.3); } .sk-top:hover { transform: rotate(0) translateY(-3px); }
+  @keyframes skIn { from { transform: translateY(40px) rotate(10deg); opacity: 0; } }
+  .sk-h { margin: 0 0 2px; font-size: .9rem; } .sk-t { margin: 5px 0; font-size: .93rem; font-weight: 700; overflow-wrap: anywhere; }
+  .sk-top .sk-t { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .sk-s { margin: 4px 0; font-size: .8rem; opacity: .85; overflow-wrap: anywhere; } .sk-stopped { font-weight: 800; opacity: 1; color: #8a1030; } .sk-when { font-size: .72rem; opacity: .7; }
+  .sk-s .rp-pic .who-img { width: 28px; height: 28px; vertical-align: middle; }
+  .sk-more { display: block; margin-top: 6px; font-size: .75rem; font-weight: 800; opacity: .7; }
+  .sk-x { position: absolute; top: -14px; right: -8px; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; background: #2a1f4a; color: #fff; font: inherit; font-weight: 900; line-height: 1; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.4); z-index: 2; }
+  .sticky.open { width: min(340px, calc(100vw - 28px)); max-height: min(78vh, 680px); display: flex; flex-direction: column; background: rgba(30,20,58,.95); border-radius: 18px; padding: 10px 10px 4px; box-shadow: 0 14px 40px rgba(0,0,0,.55); border: 2px solid rgba(255,255,255,.15); }
+  .sk-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #fff; margin-bottom: 4px; } .sk-head span { display: flex; gap: 6px; }
+  .sk-x2 { width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(255,255,255,.16); color: #fff; font: inherit; font-weight: 900; cursor: pointer; }
+  .sk-list { overflow-y: auto; display: grid; gap: 16px; padding: 12px 6px 10px; overscroll-behavior: contain; }
+  .sk-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .sk-b { border: 2px solid rgba(0,0,0,.22); background: rgba(255,255,255,.65); color: #2a2000; border-radius: 99px; padding: 5px 10px; font: inherit; font-size: .8rem; font-weight: 800; cursor: pointer; }
+  .sk-b:hover { background: #fff; } .sk-b.go { background: #2a1f4a; color: #fff; border-color: #2a1f4a; } .sk-b:disabled { opacity: .5; cursor: default; }
+  .sk-form { margin-top: 6px; } .sk-form textarea, .sk-code { display: block; width: 100%; box-sizing: border-box; border: 2px solid rgba(0,0,0,.25); border-radius: 10px; padding: 6px 8px; font: inherit; background: rgba(255,255,255,.88); color: #222; margin-top: 6px; }
+  .sk-chk { display: flex; gap: 6px; align-items: center; font-size: .85rem; margin: 4px 0; cursor: pointer; } .sk-chk input { width: 18px; height: 18px; }
+  .sk-msg { margin: 4px 0 0; color: #b00020; font-weight: 800; font-size: .8rem; min-height: 1em; }
+  .sticky-badge { border: 0; border-radius: 12px 12px 4px 12px; background: #fff27a; color: #3a2e00; font: inherit; font-size: 1rem; font-weight: 900; padding: 9px 13px; box-shadow: 0 4px 12px rgba(0,0,0,.4); cursor: pointer; transform: rotate(-4deg); animation: skIn .4s ease-out; }
+  @media (prefers-reduced-motion: reduce) { .sk-top, .sticky-badge { animation: none; } }
+  /* 🎱 Magic Answer Ball */
+  .m8 { text-align: center; }
+  .m8-hero { border-radius: 22px; padding: 16px 14px 10px; margin: 6px 0 10px; background: linear-gradient(135deg, #3a0ca3, #7209b7 45%, #f72585 85%); color: #fff; box-shadow: 0 8px 24px rgba(114,9,183,.35); }
+  .m8-hero p { margin: 4px 0 4px; font-weight: 700; }
+  .m8-title { margin: 0; font-family: var(--display); font-weight: 400; font-size: 2.1rem; line-height: 1.05; }
+  .m8-title span { background: linear-gradient(90deg, #ffd60a, #4cc9f0, #80ffdb, #ffd60a); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: kqShine 5s linear infinite; }
+  .m8-ask { display: flex; gap: 8px; max-width: 520px; margin: 0 auto; } .m8-ask input { flex: 1; min-width: 0; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); padding: 10px 12px; font: inherit; }
+  .m8-stage { position: relative; width: min(280px, 74vw); margin: 22px auto 6px; }
+  .m8-ball { position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer; background: radial-gradient(circle at 34% 28%, #6b6b80 0%, #22222c 32%, #07070b 62%, #000 100%); box-shadow: 0 18px 40px rgba(0,0,0,.55), inset -18px -24px 50px rgba(0,0,0,.6), 0 0 0 3px rgba(255,255,255,.06); outline: none; transition: transform .2s; -webkit-tap-highlight-color: transparent; }
+  .m8-ball:hover { transform: translateY(-4px); } .m8-ball:focus-visible { box-shadow: 0 0 0 4px #4cc9f0, 0 18px 40px rgba(0,0,0,.55); }
+  .m8-shine { position: absolute; left: 16%; top: 9%; width: 34%; height: 20%; border-radius: 50%; background: radial-gradient(ellipse, rgba(255,255,255,.55), rgba(255,255,255,0) 70%); transform: rotate(-24deg); pointer-events: none; }
+  .m8-face, .m8-win { position: absolute; inset: 25%; border-radius: 50%; display: grid; place-items: center; transition: transform .45s cubic-bezier(.3,1.4,.5,1), opacity .3s; }
+  .m8-face { background: radial-gradient(circle at 40% 35%, #fff, #e6e6ef 70%); box-shadow: inset -4px -6px 10px rgba(0,0,0,.18); }
+  .m8-face span { font-family: var(--display); font-size: clamp(3rem, 15vw, 4.6rem); color: #111; line-height: 1; }
+  .m8-win { inset: 21%; overflow: hidden; background: #050526; box-shadow: inset 0 0 22px #000, 0 0 0 4px #15153a; opacity: 0; transform: scale(.4); }
+  .m8-liquid { position: absolute; inset: -40%; background: conic-gradient(from 0deg, #1d1d7a, #3a0ca3, #0b4f8a, #4361ee, #1d1d7a); filter: blur(10px); opacity: .85; animation: m8Swirl 6s linear infinite; }
+  @keyframes m8Swirl { to { transform: rotate(360deg); } }
+  .m8-ans { position: relative; display: grid; place-items: center; width: 84%; aspect-ratio: 1; border-radius: 50%; padding: 10%; box-sizing: border-box; background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--c, #4361ee) 70%, #fff), var(--c, #4361ee) 70%); color: #fff; font-weight: 900; line-height: 1.15; text-shadow: 0 2px 4px rgba(0,0,0,.45); box-shadow: 0 0 24px var(--c, #4361ee); overflow-wrap: anywhere; }
+  .m8-ball.show .m8-face { opacity: 0; transform: scale(.3) rotate(-30deg); }
+  .m8-ball.show .m8-win { opacity: 1; transform: none; }
+  .m8-ball.show .m8-ans { animation: m8Rise .7s ease-out; }
+  .m8-ball.silly.show .m8-ans { background: linear-gradient(135deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93); background-size: 300% 300%; animation: m8Rise .7s ease-out, m8Rainbow 3s linear infinite; box-shadow: 0 0 26px #ffca3a; }
+  @keyframes m8Rise { from { transform: translateY(40%) scale(.6); opacity: 0; filter: blur(4px); } }
+  @keyframes m8Rainbow { to { background-position: 300% 300%; } }
+  .m8-ball.shaking { animation: m8Shake .95s ease-in-out; }
+  @keyframes m8Shake { 10% { transform: translate(-14px, 4px) rotate(-12deg); } 20% { transform: translate(12px, -8px) rotate(10deg); } 30% { transform: translate(-16px, 6px) rotate(-14deg); } 40% { transform: translate(14px, -4px) rotate(12deg); } 55% { transform: translate(-10px, 6px) rotate(-8deg); } 70% { transform: translate(8px, -3px) rotate(6deg); } 85% { transform: translate(-4px, 2px) rotate(-3deg); } }
+  .m8-shadow { width: 70%; height: 18px; margin: 10px auto 0; border-radius: 50%; background: radial-gradient(ellipse, rgba(0,0,0,.5), transparent 70%); }
+  .m8-sparks { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+  .m8-sparks span { position: absolute; left: 50%; top: 50%; font-size: 1.4rem; opacity: 0; }
+  .m8-sparks.go span { animation: m8Spark 1s ease-out var(--d) forwards; }
+  @keyframes m8Spark { 0% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--a)) translateY(0) scale(.5); } 100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--a)) translateY(-170px) scale(1.2); } }
+  .m8-cat { font-weight: 800; font-size: 1.1rem; min-height: 1.5em; margin: 6px 0 10px; }
+  .m8-styles, .m8-tools { justify-content: center; margin: 6px 0; }
+  .m8-meter { max-width: 420px; margin: 10px auto; } .m8-bar { display: block; height: 10px; border-radius: 99px; background: rgba(0,0,0,.3); overflow: hidden; margin-top: 6px; } .m8-bar > i { display: block; height: 100%; background: linear-gradient(90deg, #f72585, #7209b7, #4361ee, #4cc9f0); }
+  .m8-list { display: grid; gap: 6px; text-align: left; max-width: 520px; margin: 0 auto; }
+  .m8-h { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-left: 6px solid var(--c); border-radius: 12px; padding: 8px 12px; } .m8-h > span { font-size: 1.4rem; } .m8-h small { display: block; color: var(--ink-soft); } .m8-h b { display: block; }
+  @media (prefers-reduced-motion: reduce) { .m8-liquid, .m8-title span { animation: none; } .m8-ball.shaking { animation-duration: .01s; } }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3466,7 +3533,7 @@ function bigBoot() {
   })());
 }
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|who_pic|who_reports|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|who_pic|who_reports|who_notes|who_block|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -3522,7 +3589,7 @@ async function cloudConnect() {
     const localKeys = new Set(Object.keys(MEM));
     try { for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key && key.startsWith("ctc-") && !key.startsWith("ctc-t-")) localKeys.add(key.slice(4)); } } catch (e) {}
     localKeys.forEach(k => { if (isCloudKey(k) && localT(k) > (remote[k] || 0)) pending.set(k, { v: store.get(k), t: localT(k) }); });
-    CLOUD = db; saveState = "cloud";
+    CLOUD = db; saveState = "cloud"; stickyListen(db);
     await cloudFlush();
     if (changed) applyNames();
     if (changed && document.getElementById("gamesmenu")) showHome();   // show the synced progress on the main page
@@ -3760,7 +3827,7 @@ const NO_GAMES_IDS = new Set(["stephenie", "shawn"]);
 // 👤 the Guest account is for visitors: its age is asked every time someone picks it (and never saved), and a guest can't enter any information: no name, no code, no About me
 let GUEST_AGE = null;
 const whoAge = id => { if (id === "guest") return GUEST_AGE; const a = (store.get("who_age", {}) || {})[id]; return a && a.age >= 0 ? a.age + Math.floor((Date.now() - (a.at || Date.now())) / 31557600000) : null; };
-const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) < 25);
+const gamesAllowed = () => !SITE_WHO || (!NO_GAMES_IDS.has(SITE_WHO) && whoAge(SITE_WHO) !== null && whoAge(SITE_WHO) < 25 && !whoBlocked(SITE_WHO, "games"));   // (MR.E can stop someone from playing games: see Sticky notes)
 const GAME_HOME_KEYS = () => new Set(["bunny", ...[...INFO_GAME_APPS].map(id => "na-" + id)]);
 const GAME_SCREEN_RX = /^(🎮 Game Room|Hidden artifacts)/;   // only the games menu is blocked; every App-App app is for everyone
 function isGameScreen(lab) {
@@ -3818,7 +3885,7 @@ function startProfile() {
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>`}
     ${payOnline() ? `<div class="pf-sec pf-plan"><h3>💳 My plan</h3><p>${esc(id === "guest" && !PAY_GUEST ? "Guests sign in with Google." : payStatusText(payStatus(id)))}</p>${PAY_CFG.stripePortal && payStatus(id).paid ? `<p><a href="${esc(PAY_CFG.stripePortal)}" target="_blank" rel="noopener">Manage or cancel my subscription</a></p>` : ""}<p class="soft"><button class="linklike" id="pf-tos" type="button">📜 Terms of Service</button></p></div>` : ""}
-    ${id === "emmett" ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. To change anything on their account, you'll have to type your own code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
+    ${id === "emmett" && payIsClaude() ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. To change anything on their account, you'll have to type your own code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
   </div>`;
   document.getElementById("pf-back").addEventListener("click", showHome);
   document.getElementById("pf-tos")?.addEventListener("click", () => startTerms());
@@ -3827,8 +3894,8 @@ function startProfile() {
       $app.querySelectorAll(".pf-sec").forEach(s => s.inert = true);
       head?.insertAdjacentHTML("afterend", `<form class="pf-sec pf-lock" id="pf-lock"><h3>🔐 This is ${esc(SITE_NAME)}'s account</h3><p class="soft">To change anything here, MR.E has to type his code.</p><div class="pf-row"><input id="pf-lockin" type="password" maxlength="12" placeholder="MR.E's code" aria-label="MR.E's code" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn go" type="submit">🔓 Unlock</button></div><p class="su-msg" id="pf-lockmsg"></p></form>`);
       document.getElementById("pf-lock").addEventListener("submit", e => { e.preventDefault(); if (!modCodeOK(document.getElementById("pf-lockin").value)) { document.getElementById("pf-lockmsg").textContent = whoHasCode("emmett") ? "That's not MR.E's code." : "MR.E needs a code on his own profile first."; return; } document.getElementById("pf-lock").remove(); $app.querySelectorAll(".pf-sec").forEach(s => s.inert = false); toast("🔓 Unlocked until you leave this page."); });
-    } else if (whoMuted(id)) {   // 🔇 MR.E turned off writing for this person
-      ["pf-name", "pf-about"].forEach(f => { const el = document.getElementById(f); if (el) { el.inert = true; el.classList.add("pf-muted"); el.insertAdjacentHTML("beforeend", `<p class="pf-mutenote">🔇 MR.E turned off writing for you, so you can't change this right now.</p>`); } });
+    } else {   // 🚫 MR.E stopped this person from changing their name, what they wrote, or their picture
+      [["pf-name", "name"], ["pf-about", "about"], ["pf-pic", "pic"]].forEach(([f, what]) => { const el = document.getElementById(f); if (el && whoBlocked(id, what)) { el.inert = true; el.classList.add("pf-muted"); el.insertAdjacentHTML("beforeend", `<p class="pf-mutenote">🔇 MR.E stopped you from changing this for now.</p>`); } });
     }
     if (id === "emmett" && !lockedBySecret) { $app.querySelector(".prof-page").insertAdjacentHTML("beforeend", `<div class="pf-sec pf-mod" id="pf-mod"></div>`); modPanel(document.getElementById("pf-mod")); }
   }
@@ -4003,7 +4070,7 @@ function reportSend(r) {
   if (r && r.on === "emmett" && r.what !== "tell") return tellSheet();   // 🛡️ MR.E can't be reported, but anyone can tell him something is wrong
   const L = store.get("who_reports", []) || [];
   L.unshift({ id: "r" + Date.now().toString(36) + rnd(100, 999), at: Date.now(), by: SITE_WHO || "", ...r });
-  store.set("who_reports", L.slice(0, 300));
+  store.set("who_reports", L.slice(0, 300)); stickyDraw();
   toast("🚩 Sent to MR.E. Thank you for telling!");
 }
 // 💬 tell MR.E something is wrong: a broken page, a mistake, or something that isn't fair. It goes to his panel.
@@ -4127,7 +4194,7 @@ function startWho() {
   $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => {
     const id = b.dataset.siteWho; if (id !== tapId) { taps = 0; tapId = id; }
     taps++; clearTimeout(tapT);
-    if (taps >= 3) { taps = 0; tapId = null; WHO_BY_SECRET = id; return pickWho(id); }   // their account stays locked until MR.E types his code   // 🤫 three quick taps open any profile, even one with a code (only MR.E is told)
+    if (taps >= 3 && payIsClaude()) { taps = 0; tapId = null; WHO_BY_SECRET = id; return pickWho(id); }   // their account stays locked until MR.E types his code   // 🤫 three quick taps open any profile, even one with a code (only MR.E is told)
     tapT = setTimeout(() => { taps = 0; tapId = null; if (!document.getElementById("who-screen")) return; whoHasCode(id) ? askCode(id) : pickWho(id); }, 400);
   }));
   document.getElementById("who-add")?.addEventListener("submit", e => {
@@ -10327,7 +10394,7 @@ function hippoAnswerAll(qRaw) {
       `🧮 MATH CENTER: Lucky Duck Math is at the bottom, and the glowing portals open the Challenge Lounges.\n\n` +
       `🧱 SKY STACK: double-click the Sound button to jump straight to 100 blocks.\n\n` +
       `💡 MATH HINTS: tap Hint once for a hint, then double-click the empty spot where it was to see every step.\n\n` +
-      (whoSecretOK() ? `🔑 SECRET (only MR.E can see this): on the Who are you? screen, tap anyone's name 3 times fast to open their profile, even if it has a code.\n\n` : "") +
+      (whoSecretOK() && payIsClaude() ? `🔑 SECRET (only MR.E can see this): on the Who are you? screen, tap anyone's name 3 times fast to open their profile, even if it has a code.\n\n` : "") +
       `🦛 Hippo has ${HIPPO_SECRET_COUNT} hidden secrets of its own. Ask "hippo secrets" for clues!`,
       hBig("🤫🎮", "#2e1a4a", "Franklin's secrets")), { wide: true, actions: [
         { heading: "Jump right in:" },
@@ -11839,6 +11906,7 @@ async function galVideoInfo(url) {
 // adds one file; resolves {meta} or {err}
 async function galAdd(file, kind, name) {
   const isV = /^video\//.test(file.type || ""), isI = /^image\//.test(file.type || "");
+  if (whoBlocked(galWho(), "art")) return { err: "🔇 MR.E stopped you from saving art for now." };
   if (!isV && !isI) return { err: "That isn't a picture or a video." };
   let n; try { n = await galCount(); } catch (e) { return { err: "This browser won't let the gallery save here. (Private windows can't save.)" }; }
   if (n >= GAL_MAX) return { err: `Your gallery is full (${GAL_MAX.toLocaleString()} things). Delete some to make room.` };
@@ -11886,6 +11954,7 @@ const galAvg = m => { const v = Object.values(m.rates || {}); return v.length ? 
 const galStarsTxt = m => { const n = Object.keys(m.rates || {}).length; return n ? `⭐ ${galAvg(m).toFixed(1)} (${n} rating${n === 1 ? "" : "s"})` : "No ratings yet"; };
 // 📥 take a copy of someone else's picture or art into my gallery (it remembers who it came from)
 async function galTake(m) {
+  if (whoBlocked(galWho(), "art")) { toast("🔇 MR.E stopped you from saving art for now."); return false; }
   const mine = await galList();
   if (mine.some(x => x.fromItem === m.id)) { toast("📥 You already took this one!"); return false; }
   if (mine.length >= GAL_MAX) { toast(`Your gallery is full (${GAL_MAX.toLocaleString()} things). Delete some to make room.`); return false; }
@@ -21455,7 +21524,7 @@ function startPool() {
 }
 INFO_GAME_APPS.add("pool");   // 🎮 a game: hidden from anyone who can't have games
 HIPPO_GAMES.splice(HIPPO_GAMES.length - 1, 0, ["Pool Hall", "🎱", "pool hall|pool|billiards|8 ball|eight ball|snooker", "Play 8-ball pool against the computer or a friend: aim, pick your power, and sink your balls before the 8.", () => startPool()]);
-NEW_APPS.push({ id: "pool", emoji: "🎱", name: "Pool Hall", desc: "8-ball pool: aim with a guide line, sink solids or stripes, and beat the computer or a friend.", start: () => startPool(), kw: "pool|billiards|8 ball|eight ball|snooker" });
+NEW_APPS.push({ id: "pool", emoji: "🎱", name: "Pool Hall", desc: "8-ball pool: aim with a guide line, sink solids or stripes, and beat the computer or a friend.", start: () => startPool(), kw: "pool|billiards|(?<!magic )8 ball|(?<!magic )eight ball|snooker" });
 /* ---------- ☀️ Happy Phrases: cheerful words to start, keep going, or end your day happy. */
 const HPZ_PARTS = [
   ["start", "🌅", "Start your day", "Good morning!", [
@@ -25605,7 +25674,7 @@ function talkDraw(fromSnap) {
   const msg = m => { const mine = m.who === me;
     return `<div class="talk-msg${mine ? " talk-me" : ""}${m.who === "emmett" ? " mre" : ""}"><span class="talk-ava">${whoAvaHTML(m.who)}</span><div class="talk-bub"><div class="talk-meta"><b>${esc(galName(m.who))}</b>${m.who === "emmett" ? " 🛡️" : ""}${TALK.room === "mod" ? ` <small>in ${String(m.room).startsWith("dm:") ? `💌 ${esc(m.room.slice(3).split(":").map(galName).join(" and "))}` : esc(talkRoomName(m.room))}</small>` : ""}</div>
       <p>${esc(m.text)}</p><div class="talk-meta"><small>${talkWhen(m.at)}</small>${!mine && m.who !== "emmett" && !guest ? `<button class="linklike talk-rep" type="button" data-rep="${esc(m.id)}" title="Report this to MR.E">🚩 Report</button>` : ""}${TALK.unlocked ? `<button class="linklike talk-del" type="button" data-del="${esc(m.id)}">🗑 Delete</button>` : ""}</div></div></div>`; };
-  const canSend = !guest && !whoMuted(me) && TALK.db && TALK.room !== "mod";
+  const canSend = !guest && !whoBlocked(me, "talk") && TALK.db && TALK.room !== "mod";
   box.innerHTML = `<h2>💬 Talk Room</h2>
     <p class="soft">Talk with the other people on the site. Be kind! MR.E can see every message so he can help keep Talk Room kind, and he can delete unkind ones.</p>
     ${status}
@@ -25616,7 +25685,7 @@ function talkDraw(fromSnap) {
     <form class="talk-form" id="talk-form"><input id="talk-in" type="text" maxlength="300" autocomplete="off" placeholder="Write to ${esc(talkRoomName(TALK.room).replace(/^\S+\s/, ""))}…" aria-label="Your message"><button class="btn go" type="submit">Send ➤</button></form>
     <p class="soft talk-tip">Never share private things like your address, phone number or passwords.</p>`
     : TALK.room === "mod" ? `<p class="soft">🛡️ This shows every message, including messages to one person. Tap 🗑 Delete on any unkind one.</p>`
-    : guest ? `<p class="talk-note">👋 Guests can read, but to talk, pick who you are first.</p>` : whoMuted(me) ? `<p class="talk-note">🔇 MR.E stopped you from writing for now.</p>` : ""}
+    : guest ? `<p class="talk-note">👋 Guests can read, but to talk, pick who you are first.</p>` : whoBlocked(me, "talk") ? `<p class="talk-note">🔇 MR.E stopped you from writing for now.</p>` : ""}
     ${mre ? (TALK.unlocked ? `<p class="soft">🛡️ You can delete messages until you leave Talk Room.</p>` : `<form class="pf-row talk-unlock" id="talk-unlock"><input id="talk-code" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off"><button class="btn gold" type="submit">🛡️ Keep Talk kind</button></form><p class="soft">Type your code to delete unkind messages and see every message.</p>`) : ""}`;
   const list = document.getElementById("talk-list");
   if (nearEnd || !fromSnap) list.scrollTop = list.scrollHeight; else list.scrollTop = oldTop;
@@ -25646,7 +25715,7 @@ async function talkSend() {
   const t = inp.value.replace(/\s+/g, " ").trim().slice(0, 300), me = SITE_WHO;
   if (!t) return inp.focus();
   if (!me || me === "guest") return toast("Pick who you are first. Guests can read but can't send messages.");
-  if (whoMuted(me)) return toast("🔇 MR.E stopped you from writing for now.");
+  if (whoBlocked(me, "talk")) return toast("🔇 MR.E stopped you from writing for now.");
   if (TALK_UNKIND.test(t)) return toast("💛 That might sound unkind. Try saying it a kinder way!");
   if (talkPrivate(t)) return toast("🔒 Keep private things private: no phone numbers, emails, addresses or passwords.");
   if (Date.now() - TALK.last < 1500) return toast("Slow down a little! 🐢");
@@ -26444,6 +26513,162 @@ function cyZoom(i) {
   keyHandler = e => { if (!document.getElementById("cy-lens")) { keyHandler = null; return; } if (e.key === "ArrowRight" || e.key === "+") cyZoom(i + 1); else if (e.key === "ArrowLeft" || e.key === "-") cyZoom(i - 1); };
 }
 NEW_APPS.push({ id: "cells", emoji: "🧫", name: "Cell City", desc: "Explore a plant cell and an animal cell part by part, like a tiny city. Then find the parts, match them to their jobs, sort plant vs. animal, and defend the cell from germs.", start: () => startCells(), added: "2026-11-18", kw: "cell city|cells|cell parts|parts of (a|the) cells?|organelles?|mitochondria|mitochondrion|chloroplasts?|ribosomes?|golgi( body| apparatus)?|vacuoles?|lysosomes?|cell membrane|cell wall|cytoplasm|endoplasmic reticulum|animal cells?|plant cells?|cell theory|prokaryotes?|eukaryotes?|powerhouse of the cell" });
+/* ---------- 📝 Sticky notes: reports and "something is wrong" messages show up for MR.E as a stack of sticky notes in the bottom-right corner.
+   On each note he can send a note back, stop someone from doing things (games, their name, writing, Talk Room, their picture, saving art),
+   or dismiss it. Stopping someone changes their account, so it needs his code every time. A note MR.E sends back shows up
+   for that person as a sticky note too, until they tap "Got it". (Saved online: who_reports, who_notes and who_block.) ---------- */
+const STICKY_BLOCKS = [["games", "🎮 Games"], ["name", "🏷️ Changing their name"], ["about", "💬 Writing about themselves"], ["talk", "🗨️ Talking in Talk Room"], ["pic", "🖼️ Changing their picture"], ["art", "🎨 Saving art in the Art Gallery"]];
+const whoBlocks = id => ({ ...((store.get("who_block", {}) || {})[id] || {}) });
+const whoBlocked = (id, what) => !!id && id !== "emmett" && (!!whoBlocks(id)[what] || ((what === "name" || what === "about" || what === "talk") && whoMuted(id)));
+let STICKY_OPEN = false, STICKY_MIN = false, STICKY_FORM = null, STICKY_WHO = null, STICKY_N = 0;   // the stack is open? folded down to a little 📝? which note has a form open ({ id, kind })? whose notes, and how many
+function stickyList() {
+  if (!SITE_WHO || SITE_WHO === "guest") return [];
+  if (SITE_WHO === "emmett") return (store.get("who_reports", []) || []).filter(r => r && r.id && (r.what === "tell" || r.on !== "emmett"));
+  return (store.get("who_notes", []) || []).filter(n => n && n.id && n.to === SITE_WHO);
+}
+const stickyWhen = t => new Date(t).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+const stickyNm = id => esc(galName(id) || "Someone");
+const stickyTarget = r => r.what === "tell" ? r.by : r.on;   // who "Stop them" is about: the person who was reported (or, for "something is wrong", whoever sent it)
+const stickyTitle = r => r.what === "tell" ? `💬 <b>${r.by ? stickyNm(r.by) : "Someone"}</b> says something is wrong` : `🚩 <b>${r.by ? stickyNm(r.by) : "Someone"}</b> reported <b>${stickyNm(r.on)}</b>`;
+function stickyRepHTML(r, i) {   // one note for MR.E
+  const f = STICKY_FORM && STICKY_FORM.id === r.id ? STICKY_FORM.kind : "", who = stickyTarget(r), canStop = who && who !== "emmett" && who !== "guest", canReply = r.by && r.by !== "emmett" && r.by !== "guest";
+  const now = canStop ? STICKY_BLOCKS.filter(([k]) => whoBlocked(who, k)) : [];
+  const form = f === "reply" ? `<form class="sk-form" data-form="reply" data-id="${esc(r.id)}"><textarea maxlength="300" rows="3" placeholder="Write a note back to ${stickyNm(r.by)}" aria-label="Your note"></textarea><div class="sk-btns"><button class="sk-b go" type="submit">📨 Send</button><button class="sk-b" type="button" data-sk="cancel">Cancel</button></div></form>`
+    : f === "block" ? `<form class="sk-form" data-form="block" data-id="${esc(r.id)}"><b>🚫 Stop ${stickyNm(who)} from:</b>${STICKY_BLOCKS.map(([k, l]) => `<label class="sk-chk"><input type="checkbox" value="${k}"${whoBlocked(who, k) ? " checked" : ""}> ${l}</label>`).join("")}
+        ${whoHasCode("emmett") ? `<input class="sk-code" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off" autocapitalize="off" spellcheck="false">` : `<p class="sk-s">Add a code to your profile first. Then you'll type it here every time.</p>`}
+        <p class="sk-msg" aria-live="polite"></p><div class="sk-btns"><button class="sk-b go" type="submit"${whoHasCode("emmett") ? "" : " disabled"}>💾 Save</button><button class="sk-b" type="button" data-sk="cancel">Cancel</button></div></form>`
+    : `<div class="sk-btns">${canReply ? `<button class="sk-b" type="button" data-sk="reply" data-id="${esc(r.id)}">↩️ Send back</button>` : ""}${canStop ? `<button class="sk-b" type="button" data-sk="block" data-id="${esc(r.id)}">🚫 Stop them</button>` : ""}<button class="sk-b" type="button" data-sk="dismiss" data-id="${esc(r.id)}">✖ Dismiss</button></div>`;
+  return `<div class="sk-note c${i % 4}" data-note="${esc(r.id)}"><p class="sk-h">${stickyTitle(r)}</p><small class="sk-when">${stickyWhen(r.at)}${r.what !== "tell" ? ` · ${esc(RP_WHAT[r.what] || r.what)}` : ""}</small>
+    ${r.about ? `<p class="sk-s">About: ${esc(r.about)}</p>` : ""}${r.text ? `<p class="sk-t">“${esc(r.text)}”</p>` : ""}${r.what === "pic" ? `<p class="sk-s">Their picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="sk-s">Why: ${esc(r.note)}</p>` : ""}
+    ${now.length ? `<p class="sk-s sk-stopped">🚫 ${stickyNm(who)} can't do: ${now.map(x => esc(x[1].replace(/^\S+ /, "").toLowerCase())).join(", ")}</p>` : ""}${form}</div>`;
+}
+const stickyNoteHTML = (n, i) => `<div class="sk-note c${i % 4}" data-note="${esc(n.id)}"><p class="sk-h">📝 <b>MR.E</b> sent you a note</p><small class="sk-when">${stickyWhen(n.at)}</small><p class="sk-t">${esc(n.text)}</p>${n.re ? `<p class="sk-s">You told him: “${esc(n.re)}”</p>` : ""}<div class="sk-btns"><button class="sk-b go" type="button" data-sk="gotit" data-id="${esc(n.id)}">✔ Got it</button></div></div>`;
+function stickyDraw() {
+  let box = document.getElementById("sticky");
+  const L = stickyList(), n = L.length, mre = SITE_WHO === "emmett";
+  if (STICKY_WHO !== SITE_WHO) { STICKY_WHO = SITE_WHO; STICKY_OPEN = false; STICKY_MIN = false; STICKY_FORM = null; STICKY_N = 0; }   // someone else is here now
+  if (n > STICKY_N) STICKY_MIN = false; STICKY_N = n;   // a new note always pops back up
+  if (!n || document.getElementById("who-screen") || document.getElementById("su-screen")) { box?.remove(); STICKY_OPEN = false; STICKY_FORM = null; return; }
+  if (box && box.contains(document.activeElement) && /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)) return;   // don't redraw while MR.E is typing
+  if (!box) { box = document.createElement("div"); box.id = "sticky"; box.className = "sticky"; box.setAttribute("aria-label", "Sticky notes"); document.body.appendChild(box); box.addEventListener("click", stickyClick); box.addEventListener("submit", stickySubmit); }
+  box.classList.toggle("open", STICKY_OPEN); box.classList.toggle("min", STICKY_MIN && !STICKY_OPEN);
+  if (STICKY_MIN && !STICKY_OPEN) { box.innerHTML = `<button class="sticky-badge" type="button" data-sk="max" aria-label="Show ${n} sticky note${n === 1 ? "" : "s"}">📝 <b>${n}</b></button>`; return; }
+  if (!STICKY_OPEN) {
+    const top = L[0], under = Math.min(n, 4) - 1;
+    const body = mre ? `<p class="sk-h">${stickyTitle(top)}</p>${top.text ? `<p class="sk-t">“${esc(top.text)}”</p>` : `<p class="sk-t">${esc(RP_WHAT[top.what] || "")}</p>`}` : `<p class="sk-h">📝 <b>MR.E</b> sent you a note</p><p class="sk-t">${esc(top.text)}</p>`;
+    box.innerHTML = `<div class="sk-pile">${Array.from({ length: under }, (_, i) => `<i class="sk-under c${(i + 1) % 4}" style="--i:${under - i}"></i>`).join("")}<button class="sk-note sk-top c0" type="button" data-sk="open">${body}<span class="sk-more">${n > 1 ? `📝 ${n} notes · ` : ""}Tap to open</span></button></div><button class="sk-x" type="button" data-sk="min" aria-label="Fold the sticky notes down" title="Fold down">–</button>`;
+    return;
+  }
+  box.innerHTML = `<div class="sk-head"><b>📝 ${mre ? "Notes for MR.E" : "Notes from MR.E"} (${n})</b><span><button type="button" class="sk-x2" data-sk="min" aria-label="Fold down" title="Fold down">–</button><button type="button" class="sk-x2" data-sk="close" aria-label="Close">✕</button></span></div>
+    <div class="sk-list">${L.map((r, i) => mre ? stickyRepHTML(r, i) : stickyNoteHTML(r, i)).join("")}</div>`;
+}
+function stickyClick(e) {
+  const b = e.target.closest("[data-sk]"); if (!b) return; const a = b.dataset.sk, id = b.dataset.id;
+  if (a === "open" || a === "max") { STICKY_OPEN = a === "open" || STICKY_OPEN; STICKY_MIN = false; }
+  else if (a === "close") { STICKY_OPEN = false; STICKY_FORM = null; }
+  else if (a === "min") { STICKY_MIN = true; STICKY_OPEN = false; STICKY_FORM = null; }
+  else if (a === "reply" || a === "block") STICKY_FORM = { id, kind: a };
+  else if (a === "cancel") STICKY_FORM = null;
+  else if (a === "dismiss") { store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.id !== id)); toast("✖ Dismissed."); }
+  else if (a === "gotit") store.set("who_notes", (store.get("who_notes", []) || []).filter(x => x.id !== id));
+  if (document.activeElement && document.getElementById("sticky")?.contains(document.activeElement)) document.activeElement.blur();
+  stickyDraw();
+  if (a === "reply" || a === "block") { const f = document.querySelector(`#sticky [data-form][data-id="${CSS.escape(id)}"]`); f?.scrollIntoView({ block: "nearest" }); (f?.querySelector("textarea") || f?.querySelector(".sk-code"))?.focus(); }
+}
+function stickySubmit(e) {
+  const f = e.target.closest("[data-form]"); if (!f) return; e.preventDefault();
+  const r = (store.get("who_reports", []) || []).find(x => x.id === f.dataset.id); if (!r) { STICKY_FORM = null; return stickyDraw(); }
+  if (f.dataset.form === "reply") {
+    const t = f.querySelector("textarea").value.replace(/\s+/g, " ").trim().slice(0, 300); if (!t) return toast("Write your note first.");
+    const N = store.get("who_notes", []) || []; N.unshift({ id: "n" + Date.now().toString(36) + rnd(100, 999), at: Date.now(), to: r.by, text: t, re: String(r.text || r.note || RP_WHAT[r.what] || "").slice(0, 160) });
+    store.set("who_notes", N.slice(0, 300)); STICKY_FORM = null; document.activeElement?.blur(); toast(`📨 Sent to ${galName(r.by) || "them"}! It shows up for them as a sticky note.`); return stickyDraw();
+  }
+  const msg = f.querySelector(".sk-msg"), code = f.querySelector(".sk-code");   // 🚫 stopping someone changes their account: MR.E types his code every time
+  if (!modCodeOK(code && code.value)) { msg.textContent = "That's not your code. Try again."; code?.select(); return; }
+  const who = stickyTarget(r), picked = [...f.querySelectorAll("input[type=checkbox]")].filter(x => x.checked).map(x => x.value);
+  const m = { ...(store.get("who_block", {}) || {}) }; if (picked.length) m[who] = Object.fromEntries(picked.map(k => [k, true])); else delete m[who]; store.set("who_block", m);
+  if (whoMuted(who)) { const mu = { ...(store.get("who_mute", {}) || {}) }; delete mu[who]; store.set("who_mute", mu); }   // the boxes now say exactly what they can't do
+  STICKY_FORM = null; document.activeElement?.blur();
+  toast(picked.length ? `🚫 ${galName(who)} can't do those things now.` : `✅ ${galName(who)} can do everything again.`); stickyDraw();
+}
+// 🔄 new reports and notes from other devices show up right away (on Claude)
+function stickyListen(db) {
+  ["who_reports", "who_notes", "who_block"].forEach(k => { try { db.doc("saves/" + k).onSnapshot(s => {
+    const x = s && s.exists ? s.data() : null; if (!x || !((x.t || 0) > localT(k))) return;
+    MEM[k] = copy(x.v); MEM_T[k] = x.t; try { localStorage.setItem("ctc-" + k, JSON.stringify(x.v)); localStorage.setItem("ctc-t-" + k, String(x.t)); } catch (e) {}
+    stickyDraw();
+  }, () => {}); } catch (e) {} });
+}
+/* ---------- 🎱 Magic Answer Ball: ask a yes-or-no question, shake the ball, and get one of 544 answers
+   (yes, no, maybe, silly, or a little advice). Each person's "answers seen" is saved (not for guests). ---------- */
+const M8_ANS = {"yes": ["It is certain.", "Yes, definitely!", "Without a doubt.", "You can count on it.", "Absolutely!", "Yes!", "For sure!", "100% yes.", "The stars say yes. ⭐", "All signs point to yes.", "Most likely.", "It looks good.", "Yes, and it'll be awesome.", "You bet!", "Totally!", "Of course!", "Yep!", "Yes, yes, a thousand times yes!", "Signs point to a big yes.", "The answer is yes.", "I'm sure of it.", "That's a yes from me.", "Without question.", "Definitely yes.", "It's a sure thing.", "No doubt about it.", "The ball has spoken: yes!", "Yes, go for it!", "Looks like a yes!", "Yes, and sooner than you think.", "Yes, but be patient.", "The future looks bright!", "Big thumbs up! 👍", "Yes, absolutely positively!", "Ding ding ding! Yes!", "You already know it's yes.", "Yes, with sprinkles on top.", "Yes, with extra cheese.", "It's written in the stars: yes.", "My crystal says yes. 🔮", "Yes, the universe agrees.", "Yes, and you'll be glad.", "Certainly!", "Indeed!", "Affirmative!", "Roger that: yes.", "Yes, captain!", "Green light! 🟢", "A shining yes!", "Positively!", "Yes, and that's final.", "Yes! High five! ✋", "All systems go!", "Yes, as sure as the sun rises.", "Yes, as sure as cats love naps.", "Of course, silly!", "Yes, obviously!", "Yes, it's meant to be.", "It's a match!", "Yes, you're on the right track.", "Bet on it.", "Yes, the odds are in your favor.", "Yes, the signs are clear.", "Yes, I can see it now.", "Very likely!", "Super likely!", "It's looking like a yes.", "Yes, but double-check first.", "Yes, if you work hard.", "Yes, if you believe it.", "Yes, if you're kind about it.", "Yes, after you finish your homework.", "Yes, after a snack.", "Yes, but ask nicely.", "The magic says yes.", "My sparkles say yes. ✨", "Yes, and it'll be epic.", "Yes, a legendary yes.", "Yes, a gold-medal yes. 🥇", "Yes, cross my heart.", "Yes, pinky promise.", "You got it!", "Yes, it's in the bag.", "Yes, easy peasy.", "Yes, smooth sailing ahead. ⛵", "The road ahead is clear: yes.", "Yes, full speed ahead! 🚀", "Yes, blast off!", "Yes, it's your lucky day! 🍀", "Luck is on your side.", "Yes, the dice rolled your way. 🎲", "Yes, a hole in one! ⛳", "Slam dunk: yes! 🏀", "Goal! That's a yes. ⚽", "Home run! Yes! ⚾", "Touchdown! Yes! 🏈", "Yes, it's a winner. 🏆", "Yes, and the crowd goes wild!", "Yes, with a cherry on top. 🍒", "Yes, like a rainbow after rain. 🌈", "Yes, bright as a sunny day. ☀️", "Yes, sweet as honey. 🍯", "Yes, quick as lightning. ⚡", "Yes, strong as a lion. 🦁", "The owl says hoo-ray, yes! 🦉", "Yes, the fortune cookie agrees. 🥠", "Yes, the moon winks at you. 🌙", "Yes, the planets lined up. 🪐", "Yes, a shooting star said so. 🌠", "Yes, the wizard approves. 🧙", "Yes, the dragon nods. 🐉", "Yes, the unicorn agrees. 🦄", "Yes, says the friendly robot. 🤖", "Beep boop: yes. 🤖", "Yes, by royal order. 👑", "Yes, it's official.", "Yes, stamped and approved. ✅", "Yes, checked and double-checked.", "Yes, the math adds up. ➕", "Science says yes. 🔬", "The data says yes. 📊", "Yes, history is on your side.", "Yes, and you'll remember it forever.", "Yes, it's going to be great.", "Yes, you deserve it.", "Yes, you've earned it.", "Yes, keep going!", "Yes, you can do it! 💪", "Yes, and it'll make you smile. 😊", "Yes, it's a brilliant idea. 💡", "Yes, and you'll learn a lot.", "Yes, the stars are shining on you.", "Yes, the answer is sparkling. 💎", "Yes, as sure as two plus two is four.", "Yes, the bells are ringing. 🔔", "Yes, the trumpets agree. 🎺", "Yes, and the drums say ba-dum-tss! 🥁"], "no": ["Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful.", "No.", "Nope!", "Not a chance.", "No way!", "Absolutely not.", "The stars say no.", "All signs point to no.", "Unlikely.", "Not likely.", "Not today.", "Not this time.", "I wouldn't bet on it.", "That's a no from me.", "Nah.", "Negative.", "No, sorry!", "No, but don't be sad.", "No, but something better is coming.", "No, but try again tomorrow.", "No, and that's okay.", "No, not yet.", "Red light! 🔴", "The stop sign says no. 🛑", "The ball says no.", "Nope, nope, nope.", "No, no, a thousand times no!", "Doubtful.", "Highly unlikely.", "Super unlikely.", "The odds are not great.", "The answer is no.", "My crystal says no. 🔮", "Not in a million years.", "Not in a zillion years.", "When pigs fly! 🐷", "When fish ride bikes! 🐟", "When cats bark! 🐱", "When the moon is made of cheese. 🧀", "Only in your dreams.", "No, the universe says wait.", "No, and the cat agrees. 🐈", "No, says the grumpy goat. 🐐", "The owl says hoo-no. 🦉", "No, the dragon shakes its head. 🐉", "No, the wizard says not yet. 🧙", "Beep boop: no. 🤖", "No, by royal order. 👑", "Denied! ❌", "Request denied.", "Access denied. 🔒", "No, the math doesn't add up.", "Science says no. 🔬", "The data says no. 📊", "No, the dice rolled the other way. 🎲", "Strike three: no. ⚾", "Missed the basket: no. 🏀", "No, that's offside. ⚽", "No, try a different play.", "No, but nice try!", "No, but keep asking good questions.", "No, but you're still awesome.", "No, but you'll figure it out.", "No, but tomorrow is a new day.", "No, but I believe in you.", "No, take a different path.", "No, think again.", "No, choose something else.", "No, but there's a better idea out there.", "No, save it for later.", "No, wait a little longer.", "No, not the right time.", "No, but maybe next week.", "No, but maybe next year.", "No, the clouds are in the way. ☁️", "No, it's raining on that idea. 🌧️", "No, the road is blocked. 🚧", "No, the bridge is out.", "No, that ship has sailed. 🚢", "No, the train left the station. 🚂", "No, the cookie crumbled. 🍪", "No, the ice cream melted. 🍦", "No, the balloon popped. 🎈", "No, the batteries are dead. 🪫", "Nope, not happening.", "It's a hard no.", "It's a soft no.", "Mostly no.", "Probably not.", "I don't think so.", "I really don't think so.", "Sorry, no can do.", "Uh-uh.", "Nuh-uh!", "Not a snowball's chance. ☃️", "Zero percent chance.", "Not even close.", "No, but it was a good guess.", "No, don't do it.", "No, that's not a good idea.", "No, ask a grown-up instead.", "No, not unless you clean your room first. 🧹", "No, homework comes first. 📚", "No, it's past your bedtime. 🛏️", "No, the timing is off. ⏰", "No, the moon says sleep on it. 🌙", "No, the compass points the other way. 🧭", "No, the map says turn around. 🗺️", "No, the traffic light is stuck on red. 🚦", "No, the fortune cookie was empty. 🥠"], "maybe": ["Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Maybe.", "Maybe yes, maybe no.", "Possibly.", "Perhaps.", "Who knows?", "It's hard to say.", "The future is cloudy.", "I'm not sure.", "Hmm... let me think.", "Hmm, good question!", "That's a tricky one.", "50/50.", "Flip a coin! 🪙", "It could go either way.", "Time will tell. ⏳", "Wait and see.", "The answer is a secret. 🤫", "That's top secret.", "Ask me after lunch.", "Ask me tomorrow.", "Ask me on a sunny day.", "Ask again, but louder!", "Ask again, but nicer!", "Shake me again.", "Try again.", "My crystal is foggy. 🌫️", "The stars are busy right now.", "The planets are confused. 🪐", "The magic is recharging. 🔋", "Loading... try again.", "Error 404: answer not found.", "The answer is buffering...", "Connection lost. Try again. 📶", "My sparkles are tired. Ask again. ✨", "I'm on a snack break. 🍪", "Be right back, thinking. 🤔", "Thinking... thinking... still thinking.", "Maybe, if you're lucky. 🍀", "Maybe, if the wind blows the right way. 🌬️", "Maybe, if you say please.", "Maybe, if you do a little dance. 💃", "Maybe, if you smile. 😊", "Maybe, if you finish your veggies. 🥦", "Maybe, but don't get your hopes up.", "Maybe, but probably not.", "Maybe, and probably yes.", "Leaning yes.", "Leaning no.", "It's a toss-up.", "The answer is somewhere in the middle.", "Yes and no.", "Kind of.", "Sort of.", "A little bit.", "Partly.", "You already know the answer.", "Trust your gut.", "What do YOU think?", "Follow your instinct.", "The answer is closer than you think.", "Watch for a sign today.", "Count to ten and ask again. 🔟", "Take a deep breath and ask again.", "Close your eyes and ask again.", "Spin around and ask again. 🌀", "Hop on one foot and ask again.", "Ask a friend first.", "Ask your teacher.", "Ask a grown-up.", "Ask the cat. 🐈", "Ask the dog. 🐕", "Ask the fish. 🐠", "Ask the moon. 🌙", "Ask the trees. 🌳", "The ball is shy right now.", "The ball needs a nap. 😴", "The ball was sleeping. Shake harder!", "Too blurry to read. 👓", "I can't see, it's too dark. 🔦", "The answer got lost in the fog.", "The answer is hiding. 🫣", "The answer went on vacation. 🏖️", "The answer is stuck in traffic. 🚗", "The answer missed the bus. 🚌", "The answer is under the couch. 🛋️", "The answer fell in the soup. 🍲", "Unclear: try a different question.", "Say it a different way and ask again.", "Too many questions at once!", "One question at a time, please.", "Even I don't know that one!", "That's a mystery. 🕵️", "Mystery! Solve it yourself. 🔍", "The jury is still out. ⚖️", "Not decided yet.", "The votes are still being counted. 🗳️", "Half yes, half no.", "Mostly maybe.", "Probably maybe.", "A definite maybe.", "Could be!", "It might happen.", "There's a chance.", "Stranger things have happened.", "Anything is possible.", "The crystal ball is cloudy today.", "Hmm, ask me in five minutes.", "I'll have to check my notes. 📝"], "silly": ["Yes, but only on Tuesdays.", "No, but only on Mondays.", "Yes, if a penguin wears a hat. 🐧", "Only if you hop like a bunny. 🐰", "Ask a banana. 🍌", "The pickle says yes. 🥒", "The potato says no. 🥔", "Bananas! 🍌 (That means yes.)", "Pizza! 🍕 (That means yes.)", "Tacos say yes. 🌮", "A llama told me yes. 🦙", "A sloth will tell you... eventually. 🦥", "The goldfish forgot the answer. 🐠", "A squirrel stole the answer. 🐿️", "The dog ate the answer. 🐕", "A dinosaur says ROAR. (That means yes.) 🦖", "The T. rex can't reach the answer. 🦖", "A unicorn sneezed glitter: yes! 🦄", "A dragon burped: no. 🐉", "The frog says ribbit. (That means yes.) 🐸", "The cow says moo-be. 🐄", "The duck says quack-tually, yes. 🦆", "The bee says bee-lieve it! 🐝", "The octopus gave eight thumbs up! 🐙", "The crab said no, sideways. 🦀", "The snail will answer in 3 years. 🐌", "The turtle says slow and steady: yes. 🐢", "Your sock knows the answer. 🧦", "Ask your left shoe. 👟", "The toaster says yes. 🍞", "The vacuum cleaner says no. 🧹", "My cousin the bowling ball says yes. 🎳", "Even the moon is laughing. 🌝", "The aliens say yes. 👽", "The aliens are still deciding. 👽", "Robots say 01111001. (That's a y for yes!) 🤖", "A pirate says: Arrr, yes! 🏴‍☠️", "A pirate says: Nay! 🏴‍☠️", "A ninja says yes, quietly. 🥷", "A wizard sneezed. Try again. 🧙", "The knight says onward: yes! 🛡️", "The princess says yes. 👸", "The prince says no. 🤴", "The jester says ha-ha, maybe! 🃏", "Yes, with a side of fries. 🍟", "No, but have a cookie instead. 🍪", "Yes, and also ice cream. 🍨", "Maybe, after pancakes. 🥞", "Only if it's raining tacos. 🌮", "Only if pigs learn to dance. 🐷", "Yes, if you can lick your elbow. 😛", "Yes, but first do the chicken dance. 🐔", "Yes, if you whistle a tune. 🎵", "No, the hamster is on strike. 🐹", "The hamsters powering me say yes. 🐹", "My batteries say yes, my brain says nap. 😴", "I was napping. What was the question? 😴", "Huh? I was daydreaming. 💭", "Sorry, I was busy counting stars. ⭐", "That question tickled! Yes! 🤭", "Ha! You wish! 😜", "Ooh, spicy question! Yes. 🌶️", "That's a juicy question. Maybe. 🍉", "Cool question. Ice cold yes. 🧊", "Bubble says yes! 🫧", "Pop! That's a no. 🎈", "Boing! Yes! 🦘", "Splash! That's a yes. 💦", "Kaboom! No! 💥", "Zoom! Yes! 🏎️", "Honk honk: yes! 🚗", "Choo choo: the yes train is coming! 🚂", "Beep beep: no. 🚚", "Knock knock. Who's there? Yes! 🚪", "Yes, in a parallel universe. 🌌", "No in this universe, yes in another one.", "Yes, says my imaginary friend.", "My imaginary friend says no.", "The answer is purple. 💜", "The answer smells like cheese. 🧀", "The answer is a dance move. 🕺", "The answer is upside down: ʎǝs 🙃", "Spell it backward: sey! (Yes!)", "Yes, but don't tell the cat. 🐈", "No, because the cat said so, and the cat is the boss. 🐈", "Yes! Now go tell a joke. 😂", "Yes, after a big stretch. 🙆", "No, but you get a gold star anyway. ⭐", "Yes, and you win a pretend trophy. 🏆", "Yes, and here's a pretend pony. 🐴", "The mushroom gnome says yes. 🍄", "The snowman says ice to meet you: yes. ☃️", "The sun says shine on: yes. ☀️", "The rain says drip-drop, no. 🌧️", "The volcano says ERUPT-ively yes! 🌋", "The tornado spun around and said maybe. 🌪️", "The cactus says don't touch that idea. 🌵", "The flower says yes, bloomingly. 🌸", "The tree says leaf it to me: yes. 🌳", "The mailbox says no letters today. 📭", "Yes, special delivery! 📦", "Yes, and it comes with a free pretend sticker.", "No, a shark ate it. 🦈", "Yes, the whale sang it. 🐋", "The parrot says yes, yes, yes! 🦜", "The parrot says no, no, no! 🦜", "Yes, said the moose on the loose. 🫎", "The kangaroo jumped up and down: yes! 🦘", "The giraffe can see the answer from up there: yes! 🦒", "The elephant never forgets: it's a yes. 🐘", "The monkey says ooh-ooh-yes! 🐒", "The penguin slid away. No answer. 🐧", "The koala is too sleepy to answer. 🐨", "The hedgehog rolled into a ball: maybe. 🦔", "The flamingo says yes, on one leg. 🦩", "Yes, and the jellybeans agree. 🫘", "The donut says hole-y yes! 🍩", "The broccoli says eat your greens first. 🥦", "The popcorn popped: yes! 🍿", "The cupcake says sweet, yes! 🧁"], "advice": ["You've got this! 💪", "Believe in yourself.", "Be brave and try!", "Do your best and it'll work out.", "Practice makes progress.", "Mistakes help you learn.", "Kindness is always a good answer.", "Ask for help: that's smart!", "Take a break, then decide.", "Sleep on it. 😴", "Go with the kind choice.", "Do the right thing, even when it's hard.", "Today is a great day to try.", "Start small, dream big.", "Keep going, you're doing great.", "Your hard work will pay off.", "Smile: it helps! 😊", "Be curious and find out.", "Read about it and see! 📚", "Make a plan, then go!", "Try it a different way.", "Good things take time.", "One step at a time.", "Listen to your heart.", "Trust yourself.", "Choose the fun option! 🎉", "Choose the helpful option.", "Share it with a friend.", "Do it together with someone.", "Don't give up!", "Try, try again.", "The answer is inside you.", "Think about it after a snack. 🍎", "Drink some water first. 💧", "Get some fresh air, then decide. 🌳", "Write it down and think. ✏️", "Draw it out! 🎨", "Say it out loud and listen.", "Whatever happens, you'll be okay.", "You're braver than you think.", "You're smarter than you think.", "You're stronger than you think.", "Be proud of yourself!", "Celebrate the small wins. 🎊", "Learn something new today.", "Help someone today.", "Say thank you to someone today.", "Make someone smile today.", "Do something kind today.", "Go play outside! 🌞", "Stretch and try again. 🙆", "Breathe in, breathe out. 🧘", "Dream big! 🌟", "Aim for the stars! 🚀", "Be you. Everyone else is taken.", "Keep calm and carry on.", "Laugh a little. 😂", "It's okay to not know yet.", "Every expert was once a beginner.", "Hard things get easier with practice."]};
+const M8_CATS = { yes: ["👍", "Yes", "#22c55e"], no: ["👎", "No", "#ff4d6d"], maybe: ["🤔", "Maybe", "#a66cff"], silly: ["🤪", "Silly", "#ff9f1c"], advice: ["💪", "Advice", "#f7b801"] };
+const M8_STYLES = [["all", "⭐ Everything"], ["classic", "🎱 Yes, no or maybe"], ["silly", "🤪 Silly"], ["advice", "💪 Advice"]];
+const M8_ALL = Object.entries(M8_ANS).flatMap(([c, L]) => L.map(t => ({ c, t })));
+const m8Get = () => { const v = store.get("m8_v1", null) || {}; return { seen: [], asked: 0, style: "all", talk: false, ...v }; };
+const m8Save = S => { if (SITE_WHO && SITE_WHO !== "guest") store.set("m8_v1", S); };   // guests can't save anything
+let M8 = { busy: false, hist: [], last: -1, motion: null };
+function startMagicBall() {
+  const S = m8Get(); M8.busy = false;
+  const sparks = ["✨", "⭐", "💫", "🌟", "✨", "💜", "💙", "💚"].map((e, i) => `<span style="--a:${i * 45}deg;--d:${(i % 4) * .15}s">${e}</span>`).join("");
+  appScreen("🔮 Magic Answer Ball", `<div class="m8">
+    <div class="m8-hero"><h2 class="m8-title">Magic <span>Answer</span> Ball</h2><p>Ask a yes-or-no question, then shake the ball! It knows <b>${M8_ALL.length}</b> answers. 🔮</p></div>
+    <form class="m8-ask" id="m8-form"><input id="m8-q" maxlength="120" placeholder="Ask a yes-or-no question…" autocomplete="off" aria-label="Your question"><button class="btn go" type="submit">🎱 Shake!</button></form>
+    <div class="m8-stage"><div class="m8-sparks" id="m8-sparks" aria-hidden="true">${sparks}</div>
+      <div class="m8-ball" id="m8-ball" role="button" tabindex="0" aria-label="Shake the ball"><div class="m8-face"><span>8</span></div><div class="m8-win"><div class="m8-liquid"></div><div class="m8-ans" id="m8-ans" aria-live="polite"></div></div><div class="m8-shine"></div></div>
+      <div class="m8-shadow"></div></div>
+    <p class="m8-cat" id="m8-cat">Tap the ball, or press the space bar.</p>
+    <div class="na-chips m8-styles" role="group" aria-label="Kinds of answers">${M8_STYLES.map(([k, l]) => `<button class="chip${S.style === k ? " on" : ""}" data-m8s="${k}" type="button">${l}</button>`).join("")}</div>
+    <div class="row m8-tools"><button class="chip${S.talk ? " on" : ""}" id="m8-talk" type="button" aria-pressed="${S.talk}">🔊 Read answers out loud</button><button class="chip" id="m8-motion" type="button">📳 Shake my phone to ask</button></div>
+    <div class="m8-meter" id="m8-meter"></div>
+    <div id="m8-hist"></div></div>`);
+  const ball = document.getElementById("m8-ball");
+  document.getElementById("m8-form").addEventListener("submit", e => { e.preventDefault(); m8Shake(); });
+  ball.addEventListener("click", () => m8Shake());
+  ball.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); m8Shake(); } });
+  $app.querySelectorAll("[data-m8s]").forEach(b => b.addEventListener("click", () => { const S2 = m8Get(); S2.style = b.dataset.m8s; m8Save(S2); M8.style = S2.style; $app.querySelectorAll("[data-m8s]").forEach(x => x.classList.toggle("on", x === b)); toast(`🎱 ${b.textContent} answers now!`); }));
+  document.getElementById("m8-talk").addEventListener("click", e => { const S2 = m8Get(); S2.talk = !S2.talk; M8.talk = S2.talk; m8Save(S2); e.currentTarget.classList.toggle("on", S2.talk); e.currentTarget.setAttribute("aria-pressed", S2.talk); toast(S2.talk ? "🔊 The ball will read its answers out loud." : "🔇 The ball is quiet now."); });
+  document.getElementById("m8-motion").addEventListener("click", async e => {   // 📳 shake the phone itself (some phones ask first)
+    const btn = e.currentTarget; if (M8.motion) { window.removeEventListener("devicemotion", M8.motion); M8.motion = null; btn.classList.remove("on"); return toast("📳 Phone shaking is off."); }
+    try { if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function" && await DeviceMotionEvent.requestPermission() !== "granted") return toast("📳 Your phone said no, so tap the ball instead."); } catch (er) { return toast("📳 This device can't feel shakes here. Tap the ball instead!"); }
+    if (!("DeviceMotionEvent" in window)) return toast("📳 This device can't feel shakes. Tap the ball instead!");
+    let t0 = 0; M8.motion = ev => { const a = ev.accelerationIncludingGravity || ev.acceleration; if (!a || !document.getElementById("m8-ball")) return; const m = Math.hypot(a.x || 0, a.y || 0, a.z || 0); if (m > 22 && Date.now() - t0 > 1500) { t0 = Date.now(); m8Shake(); } };
+    window.addEventListener("devicemotion", M8.motion); naTimer(() => { if (M8.motion) window.removeEventListener("devicemotion", M8.motion); M8.motion = null; }); btn.classList.add("on"); toast("📳 Now shake your phone to ask!");
+  });
+  keyHandler = e => { if (!document.getElementById("m8-ball")) { keyHandler = null; return; } if (e.key === " " && !(e.target && e.target.closest?.("input, textarea, button, select"))) { e.preventDefault(); m8Shake(); } };
+  m8Meter(); m8Hist();
+}
+function m8Meter() {
+  const el = document.getElementById("m8-meter"); if (!el) return; const S = m8Get(), n = S.seen.length;
+  el.innerHTML = SITE_WHO && SITE_WHO !== "guest" ? `<b>📖 You've seen ${n.toLocaleString()} of ${M8_ALL.length} answers${n >= M8_ALL.length ? " 🏆 Every single one!" : ""}</b><i class="m8-bar"><i style="width:${Math.min(100, n / M8_ALL.length * 100)}%"></i></i>` : `<b>📖 ${M8_ALL.length} answers to find!</b>`;
+}
+function m8Hist() {
+  const el = document.getElementById("m8-hist"); if (!el) return;
+  el.innerHTML = M8.hist.length ? `<h3>🕘 What you asked</h3><div class="m8-list">${M8.hist.map(h => `<div class="m8-h" style="--c:${M8_CATS[h.c][2]}"><span>${M8_CATS[h.c][0]}</span><div>${h.q ? `<small>${esc(h.q)}</small>` : ""}<b>${esc(h.t)}</b></div></div>`).join("")}</div>` : "";
+}
+function m8Shake() {
+  const ball = document.getElementById("m8-ball"); if (!ball || M8.busy) return; M8.busy = true;
+  const S = m8Get(), st = M8.style || S.style, ok = c => st === "all" || (st === "classic" ? ["yes", "no", "maybe"].includes(c) : c === st);
+  const idx = M8_ALL.map((a, i) => ok(a.c) ? i : -1).filter(i => i >= 0 && i !== M8.last), unseen = idx.filter(i => !S.seen.includes(i));
+  const i = rPick(unseen.length && Math.random() < .7 ? unseen : idx), a = M8_ALL[i], q = (document.getElementById("m8-q")?.value || "").trim();
+  M8.last = i; ball.classList.remove("show", "silly"); void ball.offsetWidth; ball.classList.add("shaking");
+  document.getElementById("m8-cat").textContent = rPick(["🔮 Shaking…", "🌀 The magic is swirling…", "✨ Thinking…", "🎱 Asking the stars…"]);
+  [0, 120, 240, 360, 480, 600].forEach((t, k) => setTimeout(() => tone([180 + k * 40 + Math.random() * 60], .05, "triangle", .05), t));
+  setTimeout(() => {
+    if (!document.getElementById("m8-ball")) return; M8.busy = false;
+    const ans = document.getElementById("m8-ans"), C = M8_CATS[a.c];
+    ans.textContent = a.t; ans.style.setProperty("--c", C[2]); ans.style.fontSize = a.t.length > 52 ? ".68rem" : a.t.length > 34 ? ".78rem" : a.t.length > 18 ? ".9rem" : "1.05rem";
+    ball.classList.remove("shaking"); ball.classList.add("show"); ball.classList.toggle("silly", a.c === "silly");
+    const sp = document.getElementById("m8-sparks"); sp.classList.remove("go"); void sp.offsetWidth; sp.classList.add("go");
+    document.getElementById("m8-cat").innerHTML = `<span style="color:${C[2]}">${C[0]} ${C[1]}</span>${q ? ` · “${esc(q)}”` : ""}`;
+    tone(a.c === "no" ? [440, 330] : a.c === "maybe" ? [520, 520] : [523, 659, 784], .09, "sine", .06);
+    if (M8.talk ?? S.talk) svSay(a.t.replace(/[\u{1F000}-\u{1FAFF}☀-➿]/gu, ""));
+    const S2 = m8Get(); if (!S2.seen.includes(i)) S2.seen.push(i); S2.asked++; m8Save(S2);
+    M8.hist.unshift({ q, t: a.t, c: a.c }); M8.hist = M8.hist.slice(0, 12); m8Meter(); m8Hist();
+    const inp = document.getElementById("m8-q"); if (inp) inp.value = "";
+  }, 950);
+}
+NEW_APPS.push({ id: "m8", emoji: "🔮", name: "Magic Answer Ball", desc: `Ask a yes-or-no question and shake the ball for one of ${M8_ALL.length} answers: yes, no, maybe, silly ones, and a little advice.`, start: () => startMagicBall(), added: "2026-11-18", kw: "magic answer ball|answer ball|magic (8|eight)[ -]?ball|fortune ball|ask the ball|crystal ball|yes or no (ball|machine|answer)|ask a (yes or no|yes-or-no) question" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
@@ -28017,7 +28242,7 @@ new MutationObserver(() => {
   if (!gamesAllowed() && !home && isGameScreen(lab)) { IN_MENU_GAME = false; setTimeout(() => exitAll(), 0); return; }
   emergBtn.hidden = home || !(MENU_GAME_RX.test(lab) || (IN_MENU_GAME && !lab));
   document.body.classList.toggle("emerg-on", !emergBtn.hidden);
-  profChip(); bgFab(); if (!document.querySelector(".bgpage")) closeBgSheet();
+  profChip(); bgFab(); if (!document.querySelector(".bgpage")) closeBgSheet(); stickyDraw();
 }).observe($app, { childList: true });
 
 applyNames();
