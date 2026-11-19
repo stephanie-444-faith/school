@@ -2206,6 +2206,84 @@
   .m8-list { display: grid; gap: 6px; text-align: left; max-width: 520px; margin: 0 auto; }
   .m8-h { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-left: 6px solid var(--c); border-radius: 12px; padding: 8px 12px; } .m8-h > span { font-size: 1.4rem; } .m8-h small { display: block; color: var(--ink-soft); } .m8-h b { display: block; }
   @media (prefers-reduced-motion: reduce) { .m8-liquid, .m8-title span { animation: none; } .m8-ball.shaking { animation-duration: .01s; } }
+  /* 🎯 quizzes (Kind Quiz, Book Quiz, Gym Test, Record Quiz) */
+  .qz h3 { margin: 14px 0 6px; }
+  .qz-hero { position: relative; overflow: hidden; text-align: center; border-radius: 22px; padding: 16px 14px 12px; margin: 6px 0 10px; color: #fff; background: linear-gradient(135deg, var(--qa), var(--qb)); box-shadow: 0 8px 24px color-mix(in srgb, var(--qa) 40%, transparent); }
+  .qz-hero h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 2rem; text-shadow: 0 2px 0 rgba(0,0,0,.2); } .qz-hero p { margin: 4px 0; font-weight: 700; }
+  .qz-big { display: block; font-size: 3rem; line-height: 1.1; animation: kqBob 2.6s ease-in-out infinite; }
+  .qz-best { display: inline-block; background: rgba(0,0,0,.22); border-radius: 99px; padding: 3px 12px; }
+  .qz-levels { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .qz-lvl { display: grid; gap: 2px; justify-items: center; text-align: center; padding: 12px 10px; border-radius: 18px; border: 2px solid color-mix(in srgb, var(--qa) 60%, transparent); background: linear-gradient(160deg, color-mix(in srgb, var(--qa) 30%, transparent), var(--panel-2) 80%); color: inherit; font: inherit; cursor: pointer; transition: transform .12s, box-shadow .12s; }
+  .qz-lvl:hover { transform: translateY(-3px); box-shadow: 0 0 16px var(--qa); } .qz-lvl > span { font-size: 2rem; } .qz-lvl b { font-family: var(--display); font-weight: 400; font-size: 1.1rem; } .qz-lvl small { color: var(--ink-soft); }
+  .qz-note { margin-top: 12px; }
+  .qz-start { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 14px 16px; margin: 10px 0; cursor: pointer; color: #fff; font: inherit; background: linear-gradient(135deg, var(--qa), var(--qb)); box-shadow: 0 6px 0 color-mix(in srgb, var(--qb) 70%, #000), 0 10px 22px color-mix(in srgb, var(--qa) 35%, transparent); transition: transform .12s; }
+  .qz-start:hover { transform: translateY(-2px); } .qz-start:active { transform: translateY(3px); } .qz-start > span:first-child { font-size: 2.2rem; } .qz-start > span:last-child { margin-left: auto; font-size: 1.4rem; }
+  .qz-start b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.3rem; } .qz-start small { display: block; font-weight: 700; opacity: .9; }
+  .qz-top { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; } .qz-hud { display: flex; gap: 12px; font-size: 1.05rem; }
+  .qz-prog { height: 10px; border-radius: 99px; background: rgba(0,0,0,.3); overflow: hidden; margin: 6px 0 4px; } .qz-prog > i { display: block; height: 100%; background: linear-gradient(90deg, var(--qa, #ffbe0b), var(--qb, #fb5607)); transition: width .3s; }
+  .qz-sub { font-size: .9rem; margin: 0 0 8px; }
+  .qz-card { position: relative; background: var(--panel-2); border: 2px solid color-mix(in srgb, var(--qa) 55%, var(--line)); border-radius: 20px; padding: 14px; } .qz-card.shake { animation: kqShake .4s; }
+  .qz-q { font-size: 1.15rem; font-weight: 800; line-height: 1.35; text-align: center; }
+  .qz-chs { display: grid; gap: 8px; margin-top: 12px; } @media (min-width: 560px) { .qz-chs { grid-template-columns: 1fr 1fr; } }
+  .qz-ch { position: relative; border: 3px solid transparent; border-radius: 14px; padding: 12px; font: inherit; font-weight: 800; color: var(--ink); background: var(--panel); cursor: pointer; text-align: left; line-height: 1.25; transition: transform .1s; }
+  .qz-ch:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--qa); } .qz-ch > i { position: absolute; top: 4px; right: 7px; font-style: normal; font-size: .7rem; opacity: .55; }
+  .qz-ch:disabled { cursor: default; } .qz-ch.right { border-color: #fff; box-shadow: 0 0 0 3px #34c26a, 0 0 18px #34c26a; animation: kqPopIn .35s; } .qz-ch.wrong { opacity: .5; text-decoration: line-through; } .qz-ch.fade { opacity: .32; }
+  .qz-ch.qz-gone { opacity: .18 !important; filter: grayscale(1); transform: scale(.94); pointer-events: none; }
+  .qz-hintrow { justify-content: center; margin-top: 10px; } .qz-hint { flex-direction: row; align-items: center; gap: 4px; padding: 6px 14px; border-width: 2px; } .qz-hint small { opacity: .75; } .qz-hint:disabled { opacity: .5; cursor: default; }
+  .qz-fb { margin-top: 12px; border-radius: 14px; padding: 10px 12px; line-height: 1.4; display: none; } .qz-fb.good, .qz-fb.bad { display: block; }
+  .qz-fb.good { background: rgba(52,194,106,.16); border: 2px solid #34c26a; } .qz-fb.bad { background: rgba(239,75,92,.14); border: 2px solid #ef4b5c; }
+  .qz-next { width: 100%; margin-top: 10px; } .qz-keys { font-size: .8rem; text-align: center; }
+  .qz-res { text-align: center; background: var(--panel-2); border-radius: 20px; padding: 16px; margin: 8px 0; border: 2px solid color-mix(in srgb, var(--qa, #ffbe0b) 50%, transparent); } .qz-res h3 { margin: 4px 0 8px; }
+  .qz-pct { font-family: var(--display); font-size: 3.2rem; line-height: 1; } .qz-stars { font-size: 2.2rem; margin: 4px 0; }
+  .qz-review { background: var(--panel-2); border-radius: 18px; padding: 12px 14px; } .qz-review h3 { margin: 0 0 4px; }
+  .qz-miss { background: var(--panel); border-radius: 12px; padding: 10px 12px; margin: 8px 0; line-height: 1.4; } .qz-miss b { color: var(--gold); }
+  .qz-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  /* 💪 Gym Test */
+  .gym-ages { justify-content: center; } .gym-card { background: var(--panel-2); border-radius: 18px; padding: 12px 14px; border-left: 8px solid var(--qa); line-height: 1.45; }
+  .gym-slide { display: grid; gap: 6px; margin-top: 8px; font-weight: 700; } .gym-slide input { width: 100%; accent-color: var(--qa); }
+  .gym-meter { height: 14px; border-radius: 99px; background: rgba(0,0,0,.3); overflow: hidden; margin-top: 8px; } .gym-meter i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ffd166, #06d6a0, #118ab2); transition: width .2s; }
+  .gym-say { font-weight: 800; margin: 8px 0 0; min-height: 1.4em; }
+  .gym-ideas { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } .gym-ideas > div { background: var(--panel-2); border-radius: 14px; padding: 10px 12px; } .gym-ideas b { display: block; } .gym-ideas small { color: var(--ink-soft); }
+  /* 🥇 World Records */
+  .wr-cats { justify-content: center; margin: 4px 0 10px; }
+  .wr-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .wr-card { position: relative; display: grid; gap: 3px; justify-items: start; padding: 12px; border-radius: 18px; background: linear-gradient(160deg, color-mix(in srgb, var(--qa) 26%, transparent), var(--panel-2) 70%); border: 2px solid color-mix(in srgb, var(--qa) 45%, transparent); line-height: 1.3; }
+  .wr-e { font-size: 2.2rem; } .wr-rec { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: .72rem; color: var(--gold); } .wr-who { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
+  .wr-num { font-weight: 900; background: linear-gradient(90deg, var(--qa), var(--qb)); color: #2a1500; border-radius: 8px; padding: 2px 8px; } .wr-more { color: var(--ink-soft); }
+  /* 📕 Shelf Sorter */
+  .ss-hero { position: relative; overflow: hidden; text-align: center; border-radius: 22px; padding: 70px 14px 14px; margin: 6px 0 10px; color: #fff; background: linear-gradient(180deg, #6b3e1e, #3e2412); box-shadow: inset 0 -8px 0 #2a170b; }
+  .ss-hero h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 2rem; } .ss-hero p { margin: 4px 0 10px; font-weight: 700; }
+  .ss-shelfart { position: absolute; left: 0; right: 0; top: 0; height: 58px; display: flex; align-items: flex-end; gap: 3px; padding: 0 14px; border-bottom: 8px solid #a0672f; }
+  .ss-shelfart i { flex: 1; height: var(--h); background: var(--bc); border-radius: 3px 3px 0 0; box-shadow: inset -3px 0 0 rgba(0,0,0,.2); }
+  .ss-card { display: inline-flex; align-items: center; gap: 10px; text-align: left; background: #fffbea; color: #3a2a10; border-radius: 12px; padding: 8px 14px; box-shadow: 0 4px 10px rgba(0,0,0,.35); transform: rotate(-1.5deg); } .ss-card > span { font-size: 2rem; } .ss-card b, .ss-card small { display: block; }
+  .ss-modes { display: grid; gap: 8px; }
+  .ss-mode { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 2px solid #a0672f; border-radius: 16px; padding: 12px 14px; background: linear-gradient(135deg, color-mix(in srgb, #a0672f 30%, transparent), var(--panel-2)); color: inherit; font: inherit; cursor: pointer; }
+  .ss-mode:hover { box-shadow: 0 0 14px #ffbe0b; } .ss-mi { font-size: 2rem; } .ss-mode b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.1rem; } .ss-mode small { color: var(--ink-soft); } .ss-st { margin-left: auto; white-space: nowrap; }
+  .ss-guide { margin-top: 12px; background: var(--panel-2); border-radius: 14px; padding: 10px 12px; } .ss-guide summary { font-weight: 800; cursor: pointer; }
+  .ss-dlist { display: grid; gap: 4px; margin-top: 6px; } .ss-dlist small { display: block; color: var(--ink-soft); }
+  .ss-play { background: var(--panel-2); border-radius: 20px; padding: 14px; text-align: center; border: 2px solid #a0672f; } .ss-ask { font-weight: 800; font-size: 1.1rem; margin: 0 0 10px; }
+  .ss-book { position: relative; display: inline-grid; gap: 4px; justify-items: center; align-content: center; width: 160px; min-height: 200px; padding: 14px 12px 14px 22px; border-radius: 4px 12px 12px 4px; background: linear-gradient(90deg, rgba(0,0,0,.25) 0 10px, transparent 10px), var(--bc); color: #fff; box-shadow: 0 8px 18px rgba(0,0,0,.35), inset -4px 0 0 rgba(255,255,255,.15); text-shadow: 0 1px 2px rgba(0,0,0,.45); animation: kqPopIn .4s; }
+  .ss-be { font-size: 3rem; } .ss-book b { font-size: 1rem; line-height: 1.2; } .ss-book small { opacity: .9; font-weight: 700; }
+  .ss-carts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .ss-cart, .ss-shelf { display: grid; gap: 2px; justify-items: center; border: 3px solid transparent; border-radius: 16px; padding: 12px 8px; font: inherit; color: inherit; cursor: pointer; background: var(--panel); font-size: 1.8rem; transition: transform .1s; }
+  .ss-cart b { font-size: 1.05rem; } .ss-cart small { font-size: .8rem; color: var(--ink-soft); }
+  .ss-shelves { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 14px; } @media (min-width: 620px) { .ss-shelves { grid-template-columns: repeat(5, 1fr); } }
+  .ss-shelf { font-size: 1rem; padding: 8px 6px; background: linear-gradient(180deg, #8a5a2b, #5e3a1a); color: #fff; border-bottom: 5px solid #3e2412; } .ss-shelf b { font-family: var(--display); font-weight: 400; font-size: 1.3rem; } .ss-shelf span { font-size: 1.4rem; } .ss-shelf small { font-size: .7rem; line-height: 1.15; opacity: .9; }
+  .ss-cart:hover:not(:disabled), .ss-shelf:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold); }
+  .ss-cart.right, .ss-shelf.right { border-color: #fff; box-shadow: 0 0 0 3px #34c26a, 0 0 18px #34c26a; } .ss-cart.wrong, .ss-shelf.wrong { opacity: .45; } .ss-cart:disabled, .ss-shelf:disabled { cursor: default; }
+  .ss-rack { display: flex; gap: 4px; justify-content: center; align-items: flex-end; min-height: 120px; padding: 8px 8px 0; border-bottom: 10px solid #a0672f; margin-bottom: 12px; }
+  .ss-spine { display: grid; align-content: space-between; justify-items: center; width: 52px; height: 110px; border-radius: 4px 4px 0 0; background: var(--bc); color: #fff; padding: 6px 2px; font-size: .62rem; text-shadow: 0 1px 2px rgba(0,0,0,.5); animation: kqPopIn .35s; overflow: hidden; }
+  .ss-spine b { font-size: .85rem; } .ss-spine small { writing-mode: vertical-rl; transform: rotate(180deg); max-height: 70px; overflow: hidden; } .ss-spine.empty { background: transparent; border: 2px dashed var(--line); color: var(--ink-soft); text-shadow: none; animation: none; }
+  .ss-pile { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; } .ss-pick { border: 0; background: none; padding: 0; cursor: pointer; } .ss-pick .ss-book { width: 120px; min-height: 150px; } .ss-pick .ss-be { font-size: 2rem; } .ss-pick .ss-book b { font-size: .8rem; }
+  .ss-pick:hover .ss-book { transform: translateY(-4px) rotate(-2deg); } .ss-pick.shake { animation: kqShake .4s; }
+  /* 🔊 Sound */
+  .snd { text-align: center; } .snd-hero { border-radius: 22px; padding: 16px; margin: 6px 0 12px; color: #fff; background: linear-gradient(135deg, #4361ee, #7209b7 60%, #f72585); }
+  .snd-hero h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 2rem; } .snd-hero p { margin: 4px 0 0; font-weight: 700; } .snd-big { display: block; font-size: 3.4rem; }
+  .snd-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 520px; margin: 0 auto 12px; }
+  .snd-p { display: grid; gap: 2px; justify-items: center; border: 3px solid var(--line); border-radius: 16px; padding: 10px 4px; background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; } .snd-p span { font-size: 1.8rem; } .snd-p.on { border-color: var(--gold); box-shadow: 0 0 14px var(--gold); }
+  .snd-slider { display: grid; gap: 8px; max-width: 520px; margin: 0 auto; font-weight: 800; font-size: 1.1rem; } .snd-slider input { width: 100%; height: 28px; accent-color: #f72585; }
+  .snd-bars { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 60px; margin: 12px auto; } .snd-bars i { width: 16px; height: var(--h); border-radius: 4px; background: var(--line); transition: background .2s; }
+  .snd-bars i.on { background: linear-gradient(180deg, #f72585, #4361ee); } .snd-btns { justify-content: center; gap: 8px; flex-wrap: wrap; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3609,6 +3687,24 @@ document.addEventListener("keydown", e => { if (keyHandler && !e.target.closest?
 /* ---------- Sound (starts after the first tap) ---------- */
 let muted = store.get("muted", false);
 let actx = null;
+// 🔊 The Sound page's volume: every sound on the site goes through one volume knob (a gain) on its way to the speakers,
+// and the reading voice uses it too. Off = muted.
+let SND_VOL = (() => { const v = +store.get("sound_vol", 1); return isFinite(v) ? Math.max(0, Math.min(1, v)) : 1; })();
+const SND_MASTERS = new Set();
+const sndLevel = () => muted ? 0 : SND_VOL;
+(() => { try {
+  const orig = AudioNode.prototype.connect;
+  AudioNode.prototype.connect = function (dest, ...rest) {
+    if (typeof AudioDestinationNode !== "undefined" && dest instanceof AudioDestinationNode) {
+      const c = dest.context; if (!c.__sndMaster) { const g = c.createGain(); g.gain.value = sndLevel(); orig.call(g, dest); c.__sndMaster = g; SND_MASTERS.add(g); }
+      return orig.call(this, c.__sndMaster, ...rest);
+    }
+    return orig.call(this, dest, ...rest);
+  };
+  const ss = window.speechSynthesis; if (ss && ss.speak) { const sp = ss.speak.bind(ss); ss.speak = u => { const v = sndLevel(); if (v <= 0) return; try { u.volume = Math.min(1, (u.volume ?? 1) * v); } catch (e) {} sp(u); }; }
+} catch (e) {} })();
+function sndApply() { const v = sndLevel(); SND_MASTERS.forEach(g => { try { g.gain.setTargetAtTime(v, g.context.currentTime, .015); } catch (e) { try { g.gain.value = v; } catch (e2) {} } }); }
+function sndSet(v) { SND_VOL = Math.max(0, Math.min(1, v)); muted = SND_VOL === 0; store.set("sound_vol", SND_VOL); store.set("muted", muted); sndApply(); renderMute(); }
 function tone(freqs, dur = .12, type = "triangle", vol = .12) {
   if (muted) return;
   try {
@@ -3623,8 +3719,8 @@ function tone(freqs, dur = .12, type = "triangle", vol = .12) {
 }
 const sfx = { right: () => tone([660, 880]), wrong: () => tone([220, 160], .16, "sawtooth", .07), buy: () => tone([988, 1319, 1568], .07, "square", .06) };
 const muteBtn = document.getElementById("mute");
-const renderMute = () => { muteBtn.textContent = "Sound: " + (muted ? "off" : "on"); };
-muteBtn.addEventListener("click", () => { muted = !muted; store.set("muted", muted); renderMute(); });
+const renderMute = () => { muteBtn.textContent = "Sound: " + (muted || !SND_VOL ? "off" : SND_VOL < .4 ? "quiet" : SND_VOL < .8 ? "medium" : "on"); };
+muteBtn.addEventListener("click", () => { muted = !muted; if (!muted && !SND_VOL) { SND_VOL = 1; store.set("sound_vol", 1); } store.set("muted", muted); sndApply(); renderMute(); });
 muteBtn.addEventListener("dblclick", () => M?.skip100?.()); // secret Sky Stack skip (the two clicks leave the sound how it was)
 renderMute();
 
@@ -3775,7 +3871,7 @@ function showHome() {
     </div>
     <div class="panel">
       <span class="label">Tap a subject to start studying</span>
-      <div class="chips">${chipRow({ ...Object.fromEntries(Object.entries(SUBJECTS).filter(([k]) => k !== "ratios")), search: { name: "Searchable", desc: "Search for answers to anything" } }, "subject")}</div>
+      <div class="chips">${chipRow({ ...Object.fromEntries(Object.entries(SUBJECTS).filter(([k]) => k !== "ratios" && k !== "mix")), counsel: { name: "Counseling", desc: "Feelings, friends and kindness" }, library: { name: "Library", desc: "Books and reading" }, gym: { name: "Gym", desc: "Exercise, records and survival" }, music: { name: "Music", desc: "Songs, sound and tunes" }, mix: SUBJECTS.mix, search: { name: "Searchable", desc: "Search for answers to anything" } }, "subject")}</div>
     </div>
     <div class="panel home-apps"><span class="label">📱 All the apps</span>
       <input class="ha-find" id="ha-find" type="search" placeholder="🔎 Find an app" aria-label="Find an app" autocomplete="off">
@@ -3789,7 +3885,7 @@ function showHome() {
   $app.querySelectorAll("[data-subject]").forEach(b => b.addEventListener("click", () => {
     const s = b.dataset.subject;
     if (s === "search") return startSearchable();   // 🔎 Searchable opens the search
-    if (["math", "ss", "health", "ela", "art", "science", "mix"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
+    if (["math", "ss", "health", "ela", "art", "science", "counsel", "library", "gym", "music", "mix"].includes(s)) return subjectPick(s);   // these ask what you'd like to do first
     choice.subject = s; store.set("subject", s);
     startStudy();
   }));
@@ -6358,11 +6454,27 @@ function subjectPick(s) {
       hc("health", "Health", " with health questions"),
       ...Object.entries(HEALTH_PARTS).map(([k, v]) => [`${{ safety: "🦺", body: "🫀", food: "🥦" }[k] || "❤️"} ${v.name}`, v.desc, study("health", { hpart: k })]),
       ["🔀 A mix of all health", "Safety, body and food questions together", study("health", { hpart: "all" })]] }
+    : k === "counsel" ? { title: "💛 Counseling", say: "What would you like to do?", btns: [
+      hc("counsel", "Counseling", " with questions about feelings, friends and kindness"),
+      ["🧘 Calm Corner", "Breathing exercises, a feelings check-in and a thankful jar", go(() => startCalmCorner())],
+      ["💖 Kind Quiz", "What's the kind thing to do? Real-life choices about friends and feelings", go(() => startKindQuiz())]] }
+    : k === "library" ? { title: "📚 Library", say: "What would you like to do?", btns: [
+      ["📖 The Library", "Big books and classic stories to read", go(() => startHippo("show me the library"))],
+      ["📚 Book Quiz", "Famous books, authors and characters, from Dr. Seuss to Shakespeare", go(() => startBookQuiz())],
+      ["📕 Shelf Sorter", "Shelve books like a real librarian: fiction or nonfiction, Dewey Decimal numbers and ABC order", go(() => startShelfSorter())]] }
+    : k === "gym" ? { title: "🏃 Gym", say: "What would you like to do?", btns: [
+      ["💪 Gym Test", "How much should you be exercising? Check it for your age, then take the test", go(() => startGymTest())],
+      ["🥇 World Records", "The biggest, tallest and fastest records everybody should know", go(() => startWorldRecords())],
+      ["🏕️ Survival Guide", "What to do if you're lost, safe water, shelter, first aid and more", go(() => startSurvival())]] }
+    : k === "music" ? { title: "🎵 Music", say: "What would you like to do?", btns: [
+      ["🎵 Hippo Sings", "Songs in every style, parades too", go(() => startHippo("sing me a song"))],
+      ["🔊 Sound", "Turn the sound on, off, or anywhere in between", go(() => startSoundPage())],
+      ["🎶 Name That Tune", "Hear a real melody and name it, or name famous songs from clues", go(() => startNameThatTune())]] }
     : null;
   const opts = s === "mix" ? { title: "🔀 Mix it up", say: "Do a mix of everything, or pick anything from any subject below.", btns: [
       hc("mix", "Mix it up", " with questions from every subject"),
       ["📝 Practice a mix of everything", "A bit of every subject", study("mix")],
-      ...["math", "science", "ss", "health", "ela", "art"].flatMap(k => { const o = subjOpts(k); return [["#", o.title], ...o.btns]; }),
+      ...["math", "science", "ss", "health", "ela", "art", "counsel", "library", "gym", "music"].flatMap(k => { const o = subjOpts(k); return [["#", o.title], ...o.btns]; }),
       ["#", "🔎 Searchable"], ["🔎 Searchable", "Search for answers to anything", go(() => startSearchable())]] }
     : subjOpts(s);
   const box = document.createElement("div"); box.id = "subj-pick"; box.className = "bgsheet";
@@ -13373,7 +13485,7 @@ const HC_FACTS = [
 ];
 let HC = null;
 // 🎓 Head of the Class can use trivia (by grade) or any subject's questions
-const HC_SUBJECTS = [["trivia", "🎲 Trivia", null], ["ss", "🌍 Social Studies", "all"], ["ssw", "🌎 Around the World", "ssw"], ["math", "🔢 Math", null], ["ratios", "📐 Ratios & Rates", "ratios_all"], ["science", "🔬 Science", "science"], ["kingdoms", "🧬 Six Kingdoms", null], ["cells", "🧫 Cells", null], ["health", "❤️ Health", "health_all"], ["ela", "📚 Reading & Writing", "ela"], ["art", "🎨 Art", "art"], ["mix", "🔀 Mix it up", "mix"]];
+const HC_SUBJECTS = [["trivia", "🎲 Trivia", null], ["ss", "🌍 Social Studies", "all"], ["ssw", "🌎 Around the World", "ssw"], ["math", "🔢 Math", null], ["ratios", "📐 Ratios & Rates", "ratios_all"], ["science", "🔬 Science", "science"], ["kingdoms", "🧬 Six Kingdoms", null], ["cells", "🧫 Cells", null], ["counsel", "💛 Counseling", null], ["health", "❤️ Health", "health_all"], ["ela", "📚 Reading & Writing", "ela"], ["art", "🎨 Art", "art"], ["mix", "🔀 Mix it up", "mix"]];
 const hcSubj = () => { const s = store.get("hc_subj", "trivia"); return HC_SUBJECTS.some(x => x[0] === s) ? s : "trivia"; };
 let HC_DECK = null;
 function hcQuestion(g) {
@@ -13381,6 +13493,7 @@ function hcQuestion(g) {
   if (sub && sub[0] === "math") { const [q, a, st] = HC_MATH[Math.min(13, g)](); return { q, a: String(a), opts: shuffle([a, ...hcNear(a, st || 1)]).map(String) }; }   // 🔢 math gets harder every grade
   if (sub && sub[0] === "kingdoms") { const x = kqRaceQ(Math.min(13, g)); return { q: x.q, html: true, a: x.a, opts: x.opts }; }   // 🧬 from Kingdom Quest
   if (sub && sub[0] === "cells") { const x = cyRaceQ(Math.min(13, g)); return { q: x.q, html: true, a: x.a, opts: x.opts }; }   // 🧫 from Cell City
+  if (sub && sub[0] === "counsel") { const x = kindRaceQ(Math.min(13, g)); return { q: x.q, html: true, a: x.a, opts: x.opts }; }   // 💛 feelings, friends and kindness
   if (sub && sub[2]) {   // a question from the subject's study deck
     if (!HC_DECK || HC_DECK.set !== sub[2]) { HC_DECK = makeDeck(sub[2]); HC_DECK.set = sub[2]; }
     for (let t = 0; t < 6; t++) { const m = HC_DECK.next(); let o = null; try { o = m(); } catch (e) {} if (o && o.a != null && Array.isArray(o.w) && o.w.length) return { q: o.prompt || o.q || "", html: true, a: String(o.a), opts: shuffle([String(o.a), ...o.w.slice(0, 3).map(String)]) }; }
@@ -26669,6 +26782,453 @@ function m8Shake() {
   }, 950);
 }
 NEW_APPS.push({ id: "m8", emoji: "🔮", name: "Magic Answer Ball", desc: `Ask a yes-or-no question and shake the ball for one of ${M8_ALL.length} answers: yes, no, maybe, silly ones, and a little advice.`, start: () => startMagicBall(), added: "2026-11-18", kw: "magic answer ball|answer ball|magic (8|eight)[ -]?ball|fortune ball|ask the ball|crystal ball|yes or no (ball|machine|answer)|ask a (yes or no|yes-or-no) question" });
+/* ---------- 💛 Counseling, 📚 Library, 🏃 Gym and 🎵 Music: the home-page subjects' own apps ---------- */
+// [question, choices (the first is right; they get mixed up), why, level 1-3]
+const KIND_QS = [
+  ["Your friend drops their lunch tray and everyone laughs. What's the kind thing to do?", ["Help them pick it up", "Laugh with everyone", "Walk away fast", "Take a picture"], "Helping shows them they're not alone. Laughing can make someone feel even worse.", 1],
+  ["A new kid sits alone at lunch. What could you do?", ["Invite them to sit with you", "Ignore them", "Stare at them", "Whisper about them"], "Being new is hard. A simple “Want to sit with us?” can make someone's whole day.", 1],
+  ["Your friend is crying. How might they feel?", ["Sad or hurt", "Excited", "Bored", "Sleepy"], "Tears often mean someone is sad or hurt. You can ask, “Are you okay?”", 1],
+  ["Someone's face is red, their fists are tight, and they're stomping. They might feel…", ["Angry", "Calm", "Happy", "Proud"], "Our bodies show our feelings. Tight fists and stomping can mean anger.", 1],
+  ["You feel really angry. What's a good first step?", ["Take slow, deep breaths", "Yell at someone", "Throw something", "Slam a door"], "Deep breaths calm your body down so you can think clearly. (Try the 🧘 Calm Corner!)", 1],
+  ["Your classmate shares their crayons with you. What should you say?", ["Thank you!", "Nothing", "These are ugly", "Give me more"], "Saying thank you shows you noticed their kindness.", 1],
+  ["You bumped into someone by accident. What do you do?", ["Say “Sorry, are you okay?”", "Keep walking", "Blame them", "Laugh"], "Saying sorry and checking on them is kind, even when it was an accident.", 1],
+  ["A friend made a mistake reading out loud. What's kind?", ["Cheer them on", "Laugh at them", "Tell everyone", "Copy the mistake to tease them"], "Everyone makes mistakes. A kind word helps people feel brave enough to try again.", 1],
+  ["What does it mean to be a good listener?", ["Look at the person and pay attention", "Interrupt a lot", "Look at your tablet", "Walk away"], "Good listeners look at you, don't interrupt, and care about what you say.", 1],
+  ["Someone is being left out of a game at recess. What could you do?", ["Ask them to join", "Tell them no", "Pretend you don't see", "Make fun of them"], "Inviting someone in is one of the kindest things you can do.", 1],
+  ["You feel nervous before a test. What can help?", ["Take deep breaths and remember you studied", "Panic", "Give up", "Hide under the desk"], "A little nervousness is normal. Breathing slowly and thinking “I can do this” helps.", 1],
+  ["Which one is a kind word?", ["Please", "Shut up", "Whatever", "Loser"], "Please, thank you and sorry are kind words that show respect.", 1],
+  ["Your friend won a prize and you didn't. What's a kind thing to say?", ["Congratulations!", "That's not fair!", "You cheated", "Who cares"], "It's okay to feel disappointed, and you can still be happy for your friend.", 1],
+  ["You see someone's pencil fall on the floor. What do you do?", ["Pick it up and give it back", "Kick it away", "Keep it", "Step on it"], "Small helpful actions are a big part of kindness.", 1],
+  ["Someone in a group chat posts a mean joke about a classmate. What's the best choice?", ["Don't laugh along, and tell a trusted adult", "Add a laughing emoji", "Share it with more people", "Add your own mean joke"], "Sharing or laughing spreads the hurt. Not joining in and telling an adult helps stop bullying.", 2],
+  ["What is empathy?", ["Understanding how someone else feels", "Being the best at sports", "Feeling sorry for yourself", "Always getting your way"], "Empathy means imagining how it feels to be in someone else's shoes.", 2],
+  ["Two friends are arguing about whose turn it is. What's a fair way to solve it?", ["Take turns or flip a coin", "Whoever yells louder wins", "Stop being friends", "Grab it and run"], "Fair solutions let both people feel respected.", 2],
+  ["You get a bad grade. Which is a growth mindset thought?", ["I can learn from this and do better next time", "I'm just bad at this", "I'll never get it", "I should stop trying"], "A growth mindset means believing your brain grows when you practice and learn from mistakes.", 2],
+  ["A classmate is being bullied every day. Who should you tell?", ["A trusted adult, like a teacher or counselor", "Nobody", "Only the bully", "Everyone online"], "Telling a trusted adult isn't tattling. It's getting help to keep someone safe.", 2],
+  ["What's the difference between tattling and reporting?", ["Reporting is to keep someone safe; tattling is to get someone in trouble", "There's no difference", "Tattling is always good", "Reporting is always mean"], "If someone could get hurt, telling an adult is the right thing to do.", 2],
+  ["A friend tells you a secret: someone is hurting them. What should you do?", ["Tell a trusted adult right away", "Keep it secret forever", "Tell everyone at school", "Ignore it"], "Some secrets aren't safe to keep. If someone is being hurt, a trusted adult needs to know.", 2],
+  ["You feel worried a lot and it's hard to stop. What's a good choice?", ["Talk to a parent, teacher or counselor", "Keep it all inside", "Pretend you're fine forever", "Stay up all night"], "Talking about worries with someone you trust makes them easier to handle. Counselors are there to help!", 2],
+  ["Which is an “I statement”?", ["I feel upset when you take my things without asking", "You're so annoying!", "You always ruin everything", "Go away!"], "I statements say how you feel without blaming, so the other person is more likely to listen.", 2],
+  ["Someone says sorry to you. What's a kind response?", ["Thanks for saying sorry", "I'll never forgive you", "Whatever", "Ignore them"], "Accepting an apology helps you both move on. (You can still set boundaries.)", 2],
+  ["What's a healthy way to deal with stress?", ["Exercise, talk to someone, or take a break", "Skip sleep", "Yell at people", "Eat only candy"], "Moving your body, sleeping, and talking to people you trust all help with stress.", 2],
+  ["A friend wants you to do something you know is wrong. What can you do?", ["Say no and suggest something else", "Do it so they like you", "Do it secretly", "Blame someone else"], "Real friends respect your choices. Saying no takes courage!", 2],
+  ["What makes a good friend?", ["Being kind, honest and trustworthy", "Always agreeing with everything", "Having the coolest stuff", "Being popular"], "Good friends are kind, honest, and have your back.", 2],
+  ["You're really frustrated with a hard homework problem. What could help?", ["Take a short break, then try again or ask for help", "Rip up the paper", "Give up forever", "Copy someone's answers"], "Breaks and asking for help are smart strategies, not signs of weakness.", 2],
+  ["How can you show respect for someone who's different from you?", ["Be curious and kind, and listen", "Make fun of them", "Avoid them", "Tell them to change"], "Our differences make the world interesting. Respect means treating everyone kindly.", 2],
+  ["What's one way to cheer up a friend who's having a bad day?", ["Ask if they want to talk, or do something fun together", "Tell them to get over it", "Ignore them", "Talk only about yourself"], "Sometimes just being there and listening means the most.", 2],
+  ["What is a “bystander”?", ["Someone who sees something happen", "The person who bullies", "A teacher", "A kind of sport"], "Bystanders have power! They can help stop bullying by speaking up or getting help.", 2],
+  ["Online, someone you don't know asks for your address. What do you do?", ["Don't answer, and tell a trusted adult", "Give it to them", "Send a photo of your house", "Ask for theirs"], "Never share private information online. Tell an adult right away.", 2],
+  ["What is a “boundary” in a friendship?", ["A limit you set about what you're okay with", "A fence around your house", "A rule that you can't have friends", "A kind of argument"], "Healthy boundaries help friendships feel safe and respectful.", 3],
+  ["Which is an example of assertive communication?", ["Calmly saying what you need while respecting others", "Yelling until you get your way", "Saying nothing and staying upset", "Being sarcastic"], "Assertive means honest and respectful: not aggressive, and not silent.", 3],
+  ["Peer pressure is…", ["When people your age push you to do something", "When you're stressed about grades", "A kind of exercise", "Pressure from your parents only"], "Peer pressure can be good or bad. You get to decide what's right for you.", 3],
+  ["What's a good way to calm down before a big presentation?", ["Practice, breathe slowly, and picture it going well", "Skip it", "Stay up all night worrying", "Drink lots of soda"], "Practice and calming strategies make nerves easier to handle.", 3],
+  ["Someone spreads a rumor about you. What's a healthy response?", ["Stay calm, talk to someone you trust, and don't spread rumors back", "Spread a worse rumor about them", "Post angry messages", "Never go to school again"], "Getting even usually makes things worse. A trusted adult or counselor can help.", 3],
+  ["What's the best way to solve a conflict?", ["Listen to each other, then find a solution together", "Whoever is louder wins", "Never talk about it", "Get other people on your side"], "Listening first helps both people feel heard, which makes solutions easier.", 3],
+  ["What does “resilience” mean?", ["Bouncing back after something hard", "Never feeling sad", "Always winning", "Being stubborn"], "Resilience is the ability to keep going and recover from tough times.", 3],
+  ["Which is a sign that a friend needs help from an adult right away?", ["They talk about feeling hopeless or hurting themselves", "They're a little grumpy one morning", "They like a different TV show", "They got a new haircut"], "If a friend talks about hurting themselves, tell a trusted adult right away. That's being a good friend.", 3],
+  ["What's a healthy way to use screens and social media?", ["Take breaks, and remember posts don't show the whole story", "Compare yourself to everyone online", "Stay online all night", "Share everything about your life"], "People usually post their best moments. Balance and breaks are good for your mind.", 3],
+  ["Gratitude means…", ["Noticing and appreciating the good things in your life", "Wanting more stuff", "Being jealous", "Forgetting to say thanks"], "Practicing gratitude, like the Calm Corner's thankful jar, can boost your mood!", 3],
+  ["What can you do if you feel overwhelmed by too many things to do?", ["Make a list and do one thing at a time", "Do nothing and hope it all goes away", "Try to do everything at once", "Stay up all night"], "Breaking big jobs into small steps makes them easier to handle.", 3],
+  ["Why is it important to apologize when you hurt someone?", ["It shows you care and helps fix the friendship", "So you don't get in trouble", "It isn't important", "Because you have to"], "A real apology says what you did, that you're sorry, and how you'll do better.", 3],
+  ["What is self-talk?", ["The things you say to yourself in your head", "Talking out loud to nobody", "A kind of phone call", "Gossip"], "Kind self-talk, like “I can do hard things,” helps you feel more confident.", 3]
+];
+const BOOK_QS = [
+  ["Who wrote “The Cat in the Hat”?", ["Dr. Seuss", "Eric Carle", "Roald Dahl", "Beverly Cleary"], "Dr. Seuss (Theodor Geisel) wrote it in 1957, using only 236 different words!", 1],
+  ["In “The Very Hungry Caterpillar,” what does the caterpillar become?", ["A butterfly", "A moth", "A bird", "A frog"], "After eating LOTS of food, it builds a cocoon and comes out as a beautiful butterfly. (By Eric Carle.)", 1],
+  ["What kind of animal is Charlotte in “Charlotte's Web”?", ["A spider", "A pig", "A rat", "A goose"], "Charlotte is a clever spider who writes words in her web to save her friend Wilbur the pig.", 1],
+  ["What is the pig's name in “Charlotte's Web”?", ["Wilbur", "Templeton", "Babe", "Arnold"], "Wilbur! Templeton is the rat.", 1],
+  ["In “Goldilocks and the Three Bears,” whose porridge was “just right”?", ["Baby Bear's", "Papa Bear's", "Mama Bear's", "Goldilocks's mom's"], "Papa Bear's was too hot, Mama Bear's was too cold, and Baby Bear's was just right.", 1],
+  ["Who wrote “Where the Wild Things Are”?", ["Maurice Sendak", "Dr. Seuss", "Mo Willems", "Shel Silverstein"], "Maurice Sendak wrote it in 1963. Max sails to the land of the Wild Things!", 1],
+  ["What does Clifford look like?", ["A big red dog", "A small blue cat", "A green dragon", "A yellow bird"], "Clifford the Big Red Dog was created by Norman Bridwell.", 1],
+  ["In Mo Willems' books, who keeps asking to drive the bus?", ["The Pigeon", "The Elephant", "The Duck", "The Bus Driver"], "“Don't Let the Pigeon Drive the Bus!” Kids yell NO!", 1],
+  ["In “The Tale of Peter Rabbit,” whose garden does Peter sneak into?", ["Mr. McGregor's", "Farmer Brown's", "Old MacDonald's", "Mr. Toad's"], "Beatrix Potter wrote it in 1902. Peter loses his jacket escaping!", 1],
+  ["What food does Sam-I-Am want someone to try?", ["Green eggs and ham", "Purple pancakes", "Blue spaghetti", "Red rice"], "“Green Eggs and Ham” by Dr. Seuss. Spoiler: he likes them!", 1],
+  ["In “Winnie-the-Pooh,” what food does Pooh love most?", ["Honey", "Carrots", "Cheese", "Fish"], "Pooh Bear loves honey (he calls it “hunny”). By A. A. Milne.", 1],
+  ["What happens when Pinocchio tells a lie?", ["His nose grows", "His ears get bigger", "He turns blue", "He shrinks"], "In the story by Carlo Collodi, his wooden nose grows every time he lies.", 1],
+  ["Who wrote “Charlie and the Chocolate Factory”?", ["Roald Dahl", "J. K. Rowling", "C. S. Lewis", "E. B. White"], "Roald Dahl also wrote “Matilda,” “The BFG” and “James and the Giant Peach.”", 2],
+  ["What is the name of Harry Potter's owl?", ["Hedwig", "Errol", "Scabbers", "Crookshanks"], "Hedwig is Harry's snowy owl. Scabbers is Ron's rat, and Crookshanks is Hermione's cat.", 2],
+  ["In “The Lion, the Witch and the Wardrobe,” how do the children get to Narnia?", ["Through a wardrobe", "Through a mirror", "Down a rabbit hole", "On a train"], "Lucy finds Narnia hiding in the back of a wardrobe. By C. S. Lewis.", 2],
+  ["In “Alice's Adventures in Wonderland,” what does Alice follow down the rabbit hole?", ["A White Rabbit", "A Cheshire Cat", "A Mad Hatter", "A Queen"], "The White Rabbit is late, late, late! By Lewis Carroll.", 2],
+  ["Who wrote “Charlotte's Web”?", ["E. B. White", "Roald Dahl", "Beverly Cleary", "Judy Blume"], "E. B. White also wrote “Stuart Little.”", 2],
+  ["In “Matilda,” what special power does Matilda have?", ["She can move things with her mind", "She can fly", "She can turn invisible", "She can talk to animals"], "Matilda is a super reader who can move things just by thinking!", 2],
+  ["Who is the boy who never grows up?", ["Peter Pan", "Pinocchio", "Oliver Twist", "Huckleberry Finn"], "Peter Pan lives in Neverland. By J. M. Barrie.", 2],
+  ["In “The Wonderful Wizard of Oz,” what is Dorothy's dog's name?", ["Toto", "Spot", "Rex", "Buddy"], "Toto goes everywhere with Dorothy. By L. Frank Baum.", 2],
+  ["In “The Wonderful Wizard of Oz,” what does the Scarecrow want?", ["A brain", "A heart", "Courage", "A home"], "The Tin Woodman wants a heart and the Lion wants courage.", 2],
+  ["Who wrote the Percy Jackson books?", ["Rick Riordan", "J. K. Rowling", "Suzanne Collins", "Jeff Kinney"], "Percy finds out he's the son of Poseidon, the Greek god of the sea!", 2],
+  ["In “Hatchet,” Brian survives alone in the wilderness with which tool?", ["A hatchet", "A knife", "A rope", "A phone"], "Gary Paulsen's “Hatchet” is a great survival story. (Check out the 🏕️ Survival Guide!)", 2],
+  ["What is the name of Harry Potter's school?", ["Hogwarts", "Narnia Academy", "Camp Half-Blood", "Wizard Hall"], "Hogwarts School of Witchcraft and Wizardry!", 2],
+  ["Who wrote “Diary of a Wimpy Kid”?", ["Jeff Kinney", "Dav Pilkey", "Lincoln Peirce", "Rick Riordan"], "Jeff Kinney wrote and drew Greg Heffley's diaries.", 2],
+  ["Who created Dog Man and Captain Underpants?", ["Dav Pilkey", "Jeff Kinney", "Mo Willems", "Raina Telgemeier"], "Dav Pilkey started making comics when he was a kid!", 2],
+  ["In “Wonder,” what is the main character's name?", ["Auggie Pullman", "Greg Heffley", "Percy Jackson", "Charlie Bucket"], "R. J. Palacio's “Wonder” is about kindness. Choose kind!", 2],
+  ["In “The Hobbit,” what is Bilbo Baggins?", ["A hobbit", "An elf", "A dwarf", "A wizard"], "Bilbo is a hobbit who goes on an adventure with 13 dwarves and a wizard.", 2],
+  ["A made-up story is called…", ["Fiction", "Nonfiction", "A biography", "An atlas"], "Fiction comes from the imagination. Nonfiction is true. (Try the 📕 Shelf Sorter!)", 2],
+  ["A true story about someone's life, written by someone else, is a…", ["Biography", "Autobiography", "Fable", "Myth"], "If you write about your own life, it's an autobiography.", 2],
+  ["Who wrote “The Hobbit”?", ["J. R. R. Tolkien", "C. S. Lewis", "Lewis Carroll", "Roald Dahl"], "J. R. R. Tolkien also wrote “The Lord of the Rings.”", 3],
+  ["Who wrote “Little Women”?", ["Louisa May Alcott", "Jane Austen", "Charlotte Brontë", "Laura Ingalls Wilder"], "It's about four sisters: Meg, Jo, Beth and Amy March.", 3],
+  ["Who wrote “The Adventures of Tom Sawyer”?", ["Mark Twain", "Charles Dickens", "Jack London", "Robert Louis Stevenson"], "Mark Twain's real name was Samuel Clemens.", 3],
+  ["“Treasure Island” was written by…", ["Robert Louis Stevenson", "Jules Verne", "Mark Twain", "Herman Melville"], "Pirates! Long John Silver! Buried treasure!", 3],
+  ["Who wrote “A Christmas Carol”?", ["Charles Dickens", "Mark Twain", "Lewis Carroll", "Oscar Wilde"], "Charles Dickens wrote it in 1843.", 3],
+  ["In “A Christmas Carol,” who is the grumpy old man?", ["Ebenezer Scrooge", "Tiny Tim", "Bob Cratchit", "Jacob Marley"], "Bah, humbug! Three ghosts help Scrooge change his ways.", 3],
+  ["Who wrote “Romeo and Juliet”?", ["William Shakespeare", "Charles Dickens", "Homer", "Geoffrey Chaucer"], "Shakespeare wrote it in the 1590s.", 3],
+  ["The ancient Greek poem about Odysseus's long trip home is…", ["The Odyssey", "The Iliad", "Beowulf", "The Aeneid"], "It's said to have been written by the poet Homer.", 3],
+  ["Who wrote “Little House on the Prairie”?", ["Laura Ingalls Wilder", "Louisa May Alcott", "Beverly Cleary", "E. B. White"], "She wrote about growing up as a pioneer.", 3],
+  ["In “The Giver,” what does Jonas receive from the Giver?", ["Memories", "A key", "A map", "Money"], "In Lois Lowry's book, Jonas receives memories of the past.", 3],
+  ["Who wrote “Frankenstein”?", ["Mary Shelley", "Bram Stoker", "Edgar Allan Poe", "Jane Austen"], "Mary Shelley started writing it when she was only 18!", 3],
+  ["“Twenty Thousand Leagues Under the Seas” is by…", ["Jules Verne", "H. G. Wells", "Mark Twain", "Arthur Conan Doyle"], "Captain Nemo explores the ocean in his submarine, the Nautilus.", 3],
+  ["Which detective lives at 221B Baker Street?", ["Sherlock Holmes", "Hercule Poirot", "Nancy Drew", "Encyclopedia Brown"], "Sherlock Holmes was created by Arthur Conan Doyle.", 3],
+  ["Who wrote “The Call of the Wild”?", ["Jack London", "Gary Paulsen", "Mark Twain", "Jules Verne"], "It's about Buck, a dog in the Yukon during the Gold Rush.", 3],
+  ["In “Holes,” what does Stanley have to do at Camp Green Lake?", ["Dig holes", "Climb trees", "Build boats", "Catch fish"], "Every day, five feet wide and five feet deep! By Louis Sachar.", 3],
+  ["What is the lion's name in “The Lion, the Witch and the Wardrobe”?", ["Aslan", "Mufasa", "Simba", "Leo"], "Aslan is the great lion of Narnia.", 3],
+  ["A short story where animals act like people and teach a lesson is a…", ["Fable", "Biography", "Poem", "Atlas"], "Aesop's fables, like “The Tortoise and the Hare,” are famous ones.", 3],
+  ["“The Tortoise and the Hare” teaches that…", ["Slow and steady wins the race", "Speed is everything", "You should never race", "Rabbits are lazy"], "The hare took a nap, and the tortoise kept going and won!", 3]
+];
+const GYM_QS = [
+  ["How many minutes of activity should kids and teens (ages 6 to 17) get every day?", ["At least 60 minutes", "10 minutes", "4 hours", "None"], "Health experts (the CDC and the World Health Organization) say at least 60 minutes every day of moving that gets your heart pumping."],
+  ["How many days a week should kids do hard (vigorous) activity, like running?", ["At least 3 days", "0 days", "Once a month", "Never, it's bad for you"], "At least 3 days a week, as part of your 60 minutes a day."],
+  ["Kids should do muscle-strengthening activities, like climbing or push-ups, about…", ["3 days a week", "Never", "Once a year", "Only grown-ups should"], "Climbing, push-ups, tug-of-war and playing on monkey bars all build muscles. Aim for 3 days a week."],
+  ["Jumping rope, running and hopscotch help make your…", ["Bones stronger", "Hair grow faster", "Eyes see better", "Ears hear better"], "These are bone-strengthening activities. Kids should do them about 3 days a week."],
+  ["How much activity do grown-ups need each week?", ["At least 150 minutes of moderate activity", "10 minutes", "20 hours", "None"], "That's about 30 minutes a day, 5 days a week, plus muscle-strengthening 2 days a week."],
+  ["Moderate activity means you can…", ["Talk, but not sing", "Not breathe at all", "Sit still", "Fall asleep"], "That's the “talk test”! Brisk walking is moderate."],
+  ["Vigorous (hard) activity means you…", ["Can only say a few words before taking a breath", "Can sing a whole song easily", "Are lying down", "Are reading a book"], "Running, fast swimming and soccer are vigorous for most people."],
+  ["Which is a vigorous activity?", ["Running", "Watching TV", "Reading", "Sitting at a computer"], "Running gets your heart pumping hard!"],
+  ["Which is a moderate activity?", ["Brisk walking or biking on flat ground", "Sleeping", "Sitting in class", "Watching a movie"], "These get you moving, but you can still talk."],
+  ["Why should you warm up before exercising?", ["To get your muscles ready and help prevent injuries", "To get tired before you start", "It isn't useful", "To make it harder"], "A few minutes of easy movement gets your body ready."],
+  ["What's the best thing to drink when you exercise?", ["Water", "Soda", "Energy drinks", "Nothing at all"], "Water keeps you hydrated. Drink before, during and after exercise."],
+  ["How many hours of sleep do kids ages 6 to 12 need each night?", ["9 to 12 hours", "4 hours", "15 to 18 hours", "2 hours"], "Sleep helps your body recover and your brain learn. Teens need 8 to 10 hours."],
+  ["Exercise is good for your…", ["Heart, muscles, bones, mood and sleep", "Only your legs", "Nothing", "Only your hair"], "Moving helps almost every part of you, even your brain!"],
+  ["Your heart is a…", ["Muscle", "Bone", "Tendon", "Lung"], "Your heart is a muscle, and exercise makes it stronger."],
+  ["What's a good way to cool down after exercise?", ["Walk slowly and stretch", "Stop suddenly and lie down", "Run even faster", "Eat a huge meal right away"], "Cooling down lets your heart rate slow down little by little."],
+  ["Stretching helps your…", ["Flexibility", "Eyesight", "Hearing", "Handwriting"], "Flexibility means how far your muscles and joints can move."],
+  ["Do your 60 minutes have to be all at once?", ["No, you can add up shorter times", "Yes, always all at once", "Only on weekends", "Only in gym class"], "10 minutes of tag + 20 minutes of biking + 30 minutes of soccer = 60!"],
+  ["Which of these counts as exercise?", ["Dancing, playing tag, biking and swimming", "Only running laps", "Only lifting weights", "Only team sports"], "Anything that gets you moving counts, so pick what's fun!"],
+  ["What should you do if something hurts while you're exercising?", ["Stop and tell an adult", "Keep going no matter what", "Exercise harder", "Ignore it"], "Pain is your body's warning signal."],
+  ["You've been sitting for a long time. What's a good habit?", ["Get up and move every so often", "Never stand up", "Sit even longer", "Lie down instead"], "Short movement breaks are great for your body and brain."],
+  ["Preschoolers (ages 3 to 5) should be…", ["Active throughout the day", "Sitting most of the day", "Exercising once a week", "Lifting heavy weights"], "Little kids learn and grow by playing and moving all day."],
+  ["Exercise can make you feel happier because your body releases…", ["Endorphins, chemicals that help you feel good", "Sugar", "Sleepiness", "Germs"], "That happy feeling after playing hard is real!"]
+];
+// [category, emoji, record, holder, how big, more]
+const WR_CATS = [["earth", "🌍 Earth"], ["animals", "🐾 Animals"], ["people", "🏃 People & sports"], ["made", "🏙️ Built by people"], ["space", "🚀 Space"], ["body", "🫀 Your body"]];
+const WR_RECORDS = [
+  ["earth", "🏔️", "Tallest mountain", "Mount Everest", "8,849 m (29,032 ft)", "On the border of Nepal and China. That's measured from sea level."],
+  ["earth", "🌊", "Longest river", "The Nile", "About 6,650 km (4,130 mi)", "In Africa. Some scientists think the Amazon might be a little longer!"],
+  ["earth", "🌏", "Biggest ocean", "The Pacific Ocean", "About 165 million km²", "It's bigger than all the land on Earth put together."],
+  ["earth", "🌑", "Deepest place in the ocean", "Challenger Deep (Mariana Trench)", "About 10,935 m (35,876 ft) deep", "If Mount Everest were dropped in, its top would still be about 2 km underwater."],
+  ["earth", "🧊", "Biggest desert", "Antarctica", "About 14 million km²", "A desert is a place that gets very little rain or snow, so cold deserts count! The biggest hot desert is the Sahara."],
+  ["earth", "💧", "Highest waterfall", "Angel Falls, Venezuela", "979 m (3,212 ft)", "The water falls so far that a lot of it turns to mist before it lands."],
+  ["earth", "🏞️", "Biggest lake", "The Caspian Sea", "About 371,000 km²", "It's called a sea, but it's really a salty lake. The deepest lake is Lake Baikal in Russia."],
+  ["earth", "🔥", "Hottest temperature ever recorded", "Death Valley, California", "56.7 °C (134 °F)", "Recorded in 1913 at Furnace Creek."],
+  ["earth", "🥶", "Coldest temperature ever recorded", "Vostok Station, Antarctica", "−89.2 °C (−128.6 °F)", "Recorded in 1983."],
+  ["earth", "🗺️", "Biggest continent", "Asia", "About 44.6 million km²", "About 6 out of every 10 people in the world live in Asia."],
+  ["earth", "🇷🇺", "Biggest country", "Russia", "About 17.1 million km²", "It stretches across 11 time zones!"],
+  ["earth", "🇻🇦", "Smallest country", "Vatican City", "About 0.44 km²", "It's a whole country inside the city of Rome, Italy."],
+  ["earth", "🇮🇳", "Country with the most people", "India", "More than 1.4 billion people", "India passed China in 2023."],
+  ["animals", "🐋", "Biggest animal ever", "Blue whale", "Up to about 30 m (98 ft) long", "Bigger than any dinosaur! Its tongue alone can weigh as much as an elephant."],
+  ["animals", "🦒", "Tallest animal", "Giraffe", "Up to about 5.5 m (18 ft) tall", "Taller than a double-decker bus! Its neck alone can be 1.8 m (6 ft) long."],
+  ["animals", "🐆", "Fastest land animal", "Cheetah", "About 100 to 120 km/h (60 to 75 mph)", "It can only run that fast in short sprints."],
+  ["animals", "🦅", "Fastest animal of all", "Peregrine falcon", "Over 300 km/h (186 mph) in a dive", "It dives down from the sky to catch other birds."],
+  ["animals", "🐘", "Biggest land animal", "African bush elephant", "Up to about 6,000 kg (13,000 lb)", "That's about as heavy as four cars!"],
+  ["animals", "🐦", "Smallest bird", "Bee hummingbird", "About 5 cm (2 in) long", "It weighs less than a dime!"],
+  ["animals", "🪶", "Biggest bird", "Ostrich", "Up to about 2.7 m (9 ft) tall", "It also lays the biggest eggs of any living bird."],
+  ["animals", "🦈", "Longest life (animal with a backbone)", "Greenland shark", "Probably 250 to 500 years", "Some sharks alive today may have been born hundreds of years ago!"],
+  ["animals", "🐳", "Loudest animal", "Sperm whale", "About 230 decibels", "Its clicks are the loudest sounds made by any animal (measured underwater)."],
+  ["animals", "🐊", "Biggest reptile", "Saltwater crocodile", "Up to about 6 m (20 ft) long", "It lives in Australia and Southeast Asia."],
+  ["people", "🏃", "Fastest 100 meters (men)", "Usain Bolt, Jamaica", "9.58 seconds (2009)", "At top speed he ran about 44.7 km/h (27.8 mph)!"],
+  ["people", "🏃‍♀️", "Fastest 100 meters (women)", "Florence Griffith-Joyner, USA", "10.49 seconds (1988)", "Her record has lasted more than 35 years."],
+  ["people", "🏊", "Most Olympic medals", "Michael Phelps (swimming)", "28 medals (23 gold)", "He won them at the Olympics from 2004 to 2016."],
+  ["people", "📏", "Tallest person ever", "Robert Wadlow, USA", "2.72 m (8 ft 11 in)", "He was still growing when he died at age 22."],
+  ["people", "🎂", "Oldest person ever", "Jeanne Calment, France", "122 years and 164 days", "She was born in 1875 and lived until 1997."],
+  ["people", "🤸", "Highest high jump", "Javier Sotomayor, Cuba", "2.45 m (8 ft ½ in) in 1993", "That's higher than most doorways!"],
+  ["people", "🦘", "Longest long jump", "Mike Powell, USA", "8.95 m (29 ft 4 in) in 1991", "About as long as two cars parked end to end."],
+  ["people", "🌕", "First people to walk on the Moon", "Neil Armstrong and Buzz Aldrin", "July 20, 1969", "On the Apollo 11 mission. Michael Collins flew around the Moon above them."],
+  ["people", "🧗", "First to climb Mount Everest", "Tenzing Norgay and Edmund Hillary", "May 29, 1953", "They reached the top together."],
+  ["made", "🏙️", "Tallest building", "Burj Khalifa, Dubai", "828 m (2,717 ft)", "It has more than 160 floors."],
+  ["made", "🧱", "Longest wall", "The Great Wall of China", "More than 21,000 km (13,000 mi), counting all its parts", "It was built over about 2,000 years. (And no, you can't see it from space with just your eyes!)"],
+  ["made", "🗿", "Tallest statue", "Statue of Unity, India", "182 m (597 ft)", "About twice as tall as the Statue of Liberty, even counting its base."],
+  ["made", "🔺", "Biggest pyramid", "Great Pyramid of Cholula, Mexico", "About 4.45 million m³", "It's so old and grassy it looks like a hill, with a church on top!"],
+  ["made", "🌉", "Longest bridge", "Danyang–Kunshan Grand Bridge, China", "About 164 km (102 mi)", "It's a bridge for high-speed trains."],
+  ["made", "🛰️", "Fastest thing people ever built", "Parker Solar Probe", "About 692,000 km/h (430,000 mph)", "It swoops past the Sun. At that speed you could fly from New York to Tokyo in under a minute!"],
+  ["space", "🪐", "Biggest planet", "Jupiter", "About 11 times as wide as Earth", "More than 1,300 Earths could fit inside it."],
+  ["space", "🌡️", "Hottest planet", "Venus", "About 465 °C (870 °F)", "Hotter than Mercury, even though Mercury is closer to the Sun, because Venus's thick clouds trap the heat."],
+  ["space", "✨", "Brightest star in the night sky", "Sirius", "About 8.6 light-years away", "It's sometimes called the Dog Star."],
+  ["space", "🌋", "Tallest mountain in the solar system", "Olympus Mons, Mars", "About 22 km (13.6 mi) high", "About 2½ times as tall as Mount Everest!"],
+  ["space", "☀️", "Closest star to Earth", "The Sun", "About 150 million km away", "The next closest star, Proxima Centauri, is about 4.2 light-years away."],
+  ["body", "🧴", "Biggest organ", "Your skin", "About 2 m² on a grown-up", "It protects everything inside you."],
+  ["body", "🦴", "Longest bone", "The femur (thigh bone)", "About a quarter of your height", "It's also the strongest bone in your body."],
+  ["body", "👂", "Smallest bone", "The stapes (in your ear)", "About 3 mm long", "It's shaped like a tiny stirrup and helps you hear."],
+  ["body", "🦷", "Hardest part of your body", "Tooth enamel", "Harder than bone", "Brush your teeth to keep it strong!"]
+];
+// 📕 Shelf Sorter: [title, emoji, Dewey hundred, call number, why]
+const SS_DEWEY = [["000", "💻", "Computers & General Knowledge", "Encyclopedias, computers, world records, mysteries"], ["100", "🧠", "Philosophy & Psychology", "Thinking, feelings, and the unexplained"], ["200", "🕊️", "Religion & Myths", "World religions and mythology"], ["300", "🏛️", "Social Sciences", "Government, money, holidays, fairy tales"], ["400", "🔤", "Language", "Dictionaries, sign language, learning languages"], ["500", "🔬", "Science & Math", "Animals, plants, space, dinosaurs, math"], ["600", "⚙️", "Technology & Health", "Cooking, pets, cars, the human body, inventions"], ["700", "🎨", "Arts & Recreation", "Drawing, music, sports, crafts, games"], ["800", "📜", "Literature", "Poems, plays, jokes and riddles"], ["900", "🌍", "History & Geography", "Countries, history, maps, biographies"]];
+const SS_BOOKS = [
+  ["All About Sharks", "🦈", "500", "597.3", "Animals are science!"], ["Dinosaurs of the World", "🦖", "500", "567.9", "Dinosaurs are science (fossils and ancient life)."], ["The Solar System", "🪐", "500", "523.2", "Space is science (astronomy)."], ["Multiplication Magic", "✖️", "500", "513.2", "Math lives with science in the 500s."], ["Volcanoes and Earthquakes", "🌋", "500", "551.2", "Earth science is in the 500s."], ["Amazing Plants", "🌱", "500", "580", "Plants are science (botany)."],
+  ["How to Care for Your Puppy", "🐶", "600", "636.7", "Taking care of pets is in the 600s (technology and everyday life)."], ["Kids' Cookbook", "🍳", "600", "641.5", "Cooking is in the 600s."], ["The Human Body", "🫀", "600", "612", "Health and the body are in the 600s."], ["Cars, Trucks and Trains", "🚂", "600", "629.2", "Machines and vehicles are technology."], ["Robots and Inventions", "🤖", "600", "629.8", "Inventions and robots are technology."],
+  ["Learn to Draw Animals", "✏️", "700", "743.6", "Drawing is art."], ["Soccer Skills", "⚽", "700", "796.334", "Sports are in the 700s (recreation)."], ["Learn to Play Piano", "🎹", "700", "786.2", "Music is in the 700s."], ["Origami Fun", "🦢", "700", "736.98", "Crafts are art."], ["Magic Tricks for Kids", "🎩", "700", "793.8", "Magic tricks and games are recreation."],
+  ["Poems for Kids", "📝", "800", "811", "Poetry is literature."], ["Shakespeare for Young Readers", "🎭", "800", "822.3", "Plays are literature."], ["The Big Book of Jokes and Riddles", "😂", "800", "818.6", "Jokes are in the 800s with literature."],
+  ["Spanish for Beginners", "🇪🇸", "400", "468", "Learning a language is in the 400s."], ["Sign Language for Kids", "🤟", "400", "419", "Sign language is a language!"], ["A Kid's Dictionary", "📖", "400", "423", "Dictionaries are in the 400s."],
+  ["Greek Myths", "⚡", "200", "292", "Mythology is in the 200s."], ["World Religions", "🕊️", "200", "200", "Religions are in the 200s."],
+  ["Feelings and Friendship", "💛", "100", "152.4", "Feelings and how we think are psychology."], ["Ghosts: Are They Real?", "👻", "100", "133.1", "The unexplained is in the 100s."],
+  ["How Money Works", "💰", "300", "332.4", "Money is a social science."], ["Holidays Around the World", "🎉", "300", "394.26", "Holidays and customs are social sciences."], ["Fairy Tales and Folktales", "🧚", "300", "398.2", "Fairy tales live at 398.2! (They're folklore.)"], ["How Our Government Works", "🏛️", "300", "320.4", "Government is a social science."],
+  ["The Encyclopedia of Everything", "📚", "000", "031", "Encyclopedias are general knowledge."], ["Coding for Kids", "💻", "000", "005.1", "Computers are in the 000s."], ["The Book of World Records", "🏆", "000", "032.02", "Record books are general knowledge."], ["UFOs and Mysteries", "🛸", "000", "001.94", "Mysteries like UFOs are in the 000s."],
+  ["Ancient Egypt", "🏺", "900", "932", "History is in the 900s."], ["The World Atlas", "🗺️", "900", "912", "Maps and atlases are geography."], ["The American Revolution", "🇺🇸", "900", "973.3", "History is in the 900s."], ["A Biography of Harriet Tubman", "⭐", "900", "920", "Biographies are in the 900s (920)."], ["Let's Visit Japan", "🗾", "900", "952", "Countries are geography."]
+];
+const SS_FICTION = [["The Dragon Who Loved Pancakes", "🐉"], ["Mystery at Moonlight Manor", "🏚️"], ["Space Cats to the Rescue", "🐱"], ["The Haunted Treehouse", "🌳"], ["My Robot Best Friend", "🤖"], ["The Secret of Pirate Cove", "🏴‍☠️"], ["Unicorn Soccer Camp", "🦄"], ["The Boy Who Could Talk to Fish", "🐟"], ["Time-Travel Tuesday", "⏰"], ["The Wizard's Lost Sock", "🧦"], ["Princess Penny and the Giant", "👑"], ["The Invisible Hamster", "🐹"]];
+const SS_AUTHORS = ["Adams", "Baker", "Chen", "Diaz", "Evans", "Fischer", "Garcia", "Hughes", "Ito", "Jackson", "Kim", "Lopez", "Martin", "Nguyen", "Okafor", "Patel", "Quinn", "Rivera", "Smith", "Taylor", "Usman", "Vega", "Williams", "Young", "Zhang"];
+const SS_FIRST = ["Ava", "Ben", "Cleo", "Dev", "Ella", "Finn", "Gia", "Hugo", "Iris", "Jay", "Kai", "Lena", "Max", "Nora", "Omar", "Pia", "Rosa", "Sam", "Tess", "Zoe"];
+
+/* 🎯 one quiz for Kind Quiz, Book Quiz, the Gym Test and the Record Quiz: misses come back later, 3 hints a round, stars for your best */
+let QZ = null;
+const qzBest = id => (store.get("qz_v1", {}) || {})[id];
+function qzPlay(cfg) {   // cfg: { id, label, title, ic, colors: [a, b], qs: [[question, choices (the first one is right), why]], n, home, rank(pct) }
+  const qs = shuffle(cfg.qs).slice(0, cfg.n || 10).map(([q, ch, why]) => { const sh = shuffle(ch.map((c, i) => i)); return { q, choices: sh.map(i => ch[i]), correct: sh.indexOf(0), why, tries: 0 }; });
+  QZ = { cfg, queue: qs, total: qs.length, done: 0, first: 0, score: 0, streak: 0, best: 0, missed: [], hints: 3 };
+  qzNext();
+}
+const qzStyle = c => `--qa:${c.colors[0]};--qb:${c.colors[1]}`;
+const qzTop = (c, extra = "") => `<div class="row qz-top"><button class="chip" id="qz-home" type="button">⬅ ${esc(c.title)}</button>${extra}</div>`;
+function qzNext() {
+  const G = QZ; if (!G) return; if (!G.queue.length) return qzResults();
+  const q = G.queue[0], c = G.cfg;
+  appScreen(c.label, `<div class="qz" style="${qzStyle(c)}">${qzTop(c, `<span class="qz-hud"><b>🏆 <span id="qz-score">${G.score}</span></b><b id="qz-stk">🔥 ${G.streak}</b></span>`)}
+    <div class="qz-prog"><i style="width:${G.done / G.total * 100}%"></i></div><p class="qz-sub soft">${c.ic} ${esc(c.title)} · ${G.done} / ${G.total}${q.tries ? " · 🔁 Try again!" : ""}</p>
+    <div class="qz-card" id="qz-card"><div class="qz-q">${esc(q.q)}</div><div class="qz-chs">${q.choices.map((t, i) => `<button class="qz-ch" type="button" data-v="${i}"><i>${i + 1}</i>${esc(t)}</button>`).join("")}</div>
+      <div class="row qz-hintrow"><button class="chip qz-hint" id="qz-hint" type="button"${G.hints ? "" : " disabled"}>💡 Hint <small>(${G.hints} left)</small></button></div>
+      <div class="qz-fb" id="qz-fb" aria-live="polite"></div><button class="btn go qz-next" id="qz-nx" type="button" hidden>Next ➜</button></div>
+    <p class="soft qz-keys">Keys: 1 to ${q.choices.length} to answer, H for a hint, Enter for the next one.</p></div>`);
+  document.getElementById("qz-home").addEventListener("click", () => c.home());
+  document.getElementById("qz-hint").addEventListener("click", qzHint);
+  $app.querySelectorAll(".qz-ch").forEach(b => b.addEventListener("click", () => qzAnswer(+b.dataset.v)));
+  keyHandler = e => {
+    if (!document.getElementById("qz-card")) { keyHandler = null; return; }
+    const nx = document.getElementById("qz-nx");
+    if (e.key === "Enter" && nx && !nx.hidden) { if (!(e.target && e.target.closest?.("button, input, textarea, select, a"))) { e.preventDefault(); nx.click(); } return; }
+    if (e.key === "h" || e.key === "H") return qzHint();
+    const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 4) $app.querySelectorAll(".qz-ch")[n - 1]?.click();
+  };
+}
+function qzHint() {
+  const G = QZ, q = G && G.queue[0], hb = document.getElementById("qz-hint"); if (!q || q.answered || q.hinted || !hb) return;
+  if (!G.hints) return toast("No hints left this round!");
+  const wrong = [...$app.querySelectorAll(".qz-ch")].filter(b => +b.dataset.v !== q.correct);
+  q.hinted = true; G.hints--; shuffle(wrong).slice(0, Math.ceil(wrong.length / 2)).forEach(b => { b.disabled = true; b.classList.add("qz-gone"); });
+  hb.disabled = true; hb.innerHTML = `💡 Hint used <small>(${G.hints} left)</small>`; tone([880, 660], .06, "sine", .05);
+}
+function qzAnswer(v) {
+  const G = QZ, q = G && G.queue[0]; if (!q || q.answered) return; q.answered = true; const ok = v === q.correct;
+  document.getElementById("qz-hint")?.setAttribute("disabled", "");
+  $app.querySelectorAll(".qz-ch").forEach(b => { const i = +b.dataset.v; b.disabled = true; b.classList.add(i === q.correct ? "right" : i === v ? "wrong" : "fade"); });
+  const fb = document.getElementById("qz-fb");
+  if (ok) {
+    G.streak++; G.best = Math.max(G.best, G.streak); const pts = Math.round((10 + Math.min(G.streak, 10) * 2) / (q.hinted ? 2 : 1)); G.score += pts; if (!q.tries) G.first++;
+    tone([523, 659, 784], .08, "triangle", .07); fb.className = "qz-fb good"; fb.innerHTML = `<b>✅ ${rPick(["Yes!", "Nailed it!", "Correct!", "You got it!", "Awesome!", "Super!"])} +${pts}</b> ${esc(q.why)}`;
+    if (G.streak % 5 === 0) kqBurst(22, [G.cfg.ic, "⭐", "🎉", "✨"]);
+  } else {
+    G.streak = 0; if (!q.tries) G.missed.push(q); tone([220, 175], .14, "sawtooth", .05);
+    fb.className = "qz-fb bad"; fb.innerHTML = `<b>❌ Answer: ${esc(q.choices[q.correct])}</b> ${esc(q.why)}<br><small>This one will come back soon 🔁</small>`;
+    const card = document.getElementById("qz-card"); card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+  }
+  document.getElementById("qz-score").textContent = G.score; const s = document.getElementById("qz-stk"); s.textContent = "🔥 " + G.streak;
+  const nx = document.getElementById("qz-nx"); nx.hidden = false;
+  nx.addEventListener("click", () => { G.queue.shift(); if (ok) G.done++; else { q.tries++; q.answered = false; q.hinted = false; G.queue.splice(Math.min(3, G.queue.length), 0, q); } qzNext(); });
+  nx.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+}
+function qzResults() {
+  const G = QZ, c = G.cfg, pct = Math.round(G.first / G.total * 100), stars = pct >= 90 ? 3 : pct >= 75 ? 2 : 1;
+  const all = { ...(store.get("qz_v1", {}) || {}) }, prev = all[c.id]; if (!prev || pct > prev.best) { all[c.id] = { best: pct, stars }; store.set("qz_v1", all); }
+  if (stars === 3) kqBurst(50, [c.ic, "⭐", "🎉", "✨", "🌈"]);
+  appScreen(c.label, `<div class="qz" style="${qzStyle(c)}"><div class="qz-res"><span class="qz-big">${c.ic}</span><small class="soft">${esc(c.title)} complete</small><div class="qz-pct">${pct}%</div><div class="qz-stars">${"⭐".repeat(stars)}${"☆".repeat(3 - stars)}</div>
+      <b>${c.rank ? c.rank(pct) : pct >= 90 ? "Amazing! 🏆" : pct >= 75 ? "So close! One more round!" : "Keep going! Play again to lock it in!"}</b>
+      <p class="soft">First-try correct: ${G.first} / ${G.total} · Points: ${G.score} · Best streak: 🔥 ${G.best}</p></div>
+    ${G.missed.length ? `<div class="qz-review"><h3>📝 Review what you missed</h3>${G.missed.map(q => `<div class="qz-miss">${esc(q.q)}<br><b>➜ ${esc(q.choices[q.correct])}</b><br><small class="soft">${esc(q.why)}</small></div>`).join("")}</div>` : `<div class="qz-res"><h3>Perfect round: zero misses! 🎉</h3></div>`}
+    <div class="row qz-nav"><button class="btn" id="qz-home" type="button">⬅ ${esc(c.title)}</button><button class="btn go" id="qz-again" type="button">Play again 🔁</button></div></div>`);
+  document.getElementById("qz-home").addEventListener("click", () => c.home());
+  document.getElementById("qz-again").addEventListener("click", () => qzPlay(c));
+}
+// a landing page: big title, best stars, and level buttons that start a round
+function qzLanding({ id, label, title, ic, colors, blurb, levels, note, home, rank, n, extra = "" }) {
+  const b = qzBest(id);
+  appScreen(label, `<div class="qz qz-land" style="--qa:${colors[0]};--qb:${colors[1]}"><div class="qz-hero"><span class="qz-big">${ic}</span><h2>${esc(title)}</h2><p>${blurb}</p>${b ? `<p class="qz-best">Your best: ${"⭐".repeat(b.stars)} ${b.best}%</p>` : ""}</div>
+    ${extra}<h3>${levels.length > 1 ? "Pick a level" : "Ready?"}</h3><div class="qz-levels">${levels.map((l, i) => `<button class="qz-lvl" type="button" data-lv="${i}"><span>${l.ic}</span><b>${esc(l.t)}</b><small>${esc(l.d)}</small></button>`).join("")}</div>
+    ${note ? `<p class="soft qz-note">${note}</p>` : ""}</div>`);
+  $app.querySelectorAll("[data-lv]").forEach(btn => btn.addEventListener("click", () => { const l = levels[+btn.dataset.lv]; qzPlay({ id, label, title, ic, colors, qs: l.qs(), n: n || 10, home, rank }); }));
+}
+
+/* 💖 Kind Quiz */
+function startKindQuiz() {
+  const by = lv => () => KIND_QS.filter(x => lv.includes(x[3])).map(x => x.slice(0, 3));
+  qzLanding({ id: "kind", label: "💖 Kind Quiz", title: "Kind Quiz", ic: "💖", colors: ["#ff5fa2", "#ffb347"], home: () => startKindQuiz(),
+    blurb: "What's the kind thing to do? Real-life choices about friends, feelings and being kind.",
+    rank: p => p >= 90 ? "💖 Kindness Superstar!" : p >= 75 ? "🌟 Super Friend!" : "🌱 Kindness Explorer: keep growing!",
+    levels: [{ ic: "🌱", t: "Starter", d: "Feelings and kind choices", qs: by([1]) }, { ic: "🌟", t: "Middle", d: "Friends, bullying and growth mindset", qs: by([2]) }, { ic: "💎", t: "Advanced", d: "Boundaries, resilience and solving conflicts", qs: by([3]) }, { ic: "🌈", t: "Everything", d: "A mix of all of them", qs: by([1, 2, 3]) }],
+    note: "💛 If you ever feel unsafe, sad for a long time, or really worried, talk to a trusted adult or your school counselor. They're there to help." });
+}
+// 🎓 Head of the Class: Counseling (harder every grade)
+const KIND_DECKS = {};
+function kindRaceQ(g) {
+  const lv = g <= 3 ? [1] : g <= 7 ? [1, 2] : g <= 10 ? [2, 3] : [3], key = lv.join("");
+  if (!KIND_DECKS[key] || !KIND_DECKS[key].length) KIND_DECKS[key] = shuffle(KIND_QS.filter(x => lv.includes(x[3])));
+  const [q, ch, w] = KIND_DECKS[key].pop();
+  return { q: esc(q), a: ch[0], opts: shuffle([...ch]), why: w };
+}
+
+/* 📚 Book Quiz */
+function startBookQuiz() {
+  const by = lv => () => BOOK_QS.filter(x => lv.includes(x[3])).map(x => x.slice(0, 3));
+  qzLanding({ id: "books", label: "📚 Book Quiz", title: "Book Quiz", ic: "📚", colors: ["#3a86ff", "#8338ec"], home: () => startBookQuiz(),
+    blurb: "Famous books, authors and characters, from picture books to classics.",
+    rank: p => p >= 90 ? "📚 Bookworm Champion!" : p >= 75 ? "📖 Super Reader!" : "🔖 Keep reading and try again!",
+    levels: [{ ic: "📗", t: "Picture books", d: "Dr. Seuss, Charlotte's Web and more", qs: by([1]) }, { ic: "📘", t: "Chapter books", d: "Roald Dahl, Narnia, Oz and more", qs: by([2]) }, { ic: "📕", t: "Classics", d: "Dickens, Twain, Shakespeare and more", qs: by([3]) }, { ic: "🌈", t: "Everything", d: "A mix of all of them", qs: by([1, 2, 3]) }],
+    note: "Want to read some of these? Many classic stories are in 📖 The Library!" });
+}
+
+/* 💪 Gym Test: how much should you exercise? A quick check for your age, then the test */
+const GYM_AGES = [
+  ["3-5", "🧸", "Ages 3 to 5", "Be active <b>all through the day</b>: about 3 hours of play and moving around, with at least 1 hour of energetic play.", 180, "day"],
+  ["6-17", "🧒", "Ages 6 to 17", "At least <b>60 minutes every day</b> of moving that gets your heart pumping. Make it <b>hard</b> (like running) at least 3 days a week, and do <b>muscle</b> and <b>bone</b> strengthening activities 3 days a week too.", 60, "day"],
+  ["18-64", "🧑", "Ages 18 to 64", "At least <b>150 minutes a week</b> of moderate activity (like brisk walking), or 75 minutes of hard activity, plus <b>muscle-strengthening</b> 2 days a week.", 150, "week"],
+  ["65+", "🧓", "Ages 65 and up", "Like younger grown-ups, at least <b>150 minutes a week</b> of moderate activity and <b>muscle-strengthening</b> 2 days a week, plus <b>balance</b> activities.", 150, "week"]
+];
+function startGymTest(group) {
+  const age = SITE_WHO ? whoAge(SITE_WHO) : null, def = age == null ? "6-17" : age < 6 ? "3-5" : age < 18 ? "6-17" : age < 65 ? "18-64" : "65+";
+  const G = GYM_AGES.find(x => x[0] === (group || def)) || GYM_AGES[1], b = qzBest("gym");
+  const ideas = [["🔥 Hard (vigorous)", "Running, soccer, basketball, fast swimming, jumping rope, tag"], ["😊 Moderate", "Brisk walking, biking, skateboarding, dancing, hiking"], ["💪 Muscles", "Climbing, push-ups, sit-ups, monkey bars, tug-of-war, yoga"], ["🦴 Bones", "Jumping, hopscotch, running, gymnastics, volleyball"]];
+  appScreen("💪 Gym Test", `<div class="qz gym" style="--qa:#06d6a0;--qb:#118ab2"><div class="qz-hero"><span class="qz-big">💪</span><h2>Gym Test</h2><p>How much should you be exercising? Check it for your age, then take the test!</p>${b ? `<p class="qz-best">Your best: ${"⭐".repeat(b.stars)} ${b.best}%</p>` : ""}</div>
+    <h3>🧮 How much should I exercise?</h3><div class="na-chips gym-ages">${GYM_AGES.map(a => `<button class="chip${a === G ? " on" : ""}" type="button" data-ga="${a[0]}">${a[1]} ${a[2]}</button>`).join("")}</div>
+    <div class="gym-card"><p>${G[3]}</p>
+      <label class="gym-slide"><span>How many minutes did you move ${G[5] === "day" ? "today" : "this week"}? <b id="gym-min">0</b></span><input type="range" id="gym-range" min="0" max="${G[5] === "day" ? 240 : 600}" step="5" value="0"></label>
+      <div class="gym-meter"><i id="gym-bar"></i></div><p class="gym-say" id="gym-say" aria-live="polite"></p></div>
+    <h3>🏃 Ideas to get moving</h3><div class="gym-ideas">${ideas.map(([t, d]) => `<div><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <button class="qz-start" id="gym-go" type="button"><span>📝</span><span><b>Take the Gym Test</b><small>12 questions about exercise, sleep and staying healthy</small></span><span>▶</span></button>
+    <p class="soft qz-note">These numbers come from the CDC and the World Health Organization. If you have a health condition, ask your doctor what's right for you.</p></div>`);
+  $app.querySelectorAll("[data-ga]").forEach(x => x.addEventListener("click", () => startGymTest(x.dataset.ga)));
+  const r = document.getElementById("gym-range"), upd = () => {
+    const m = +r.value, goal = G[4], pct = Math.min(100, m / goal * 100);
+    document.getElementById("gym-min").textContent = m + " min"; document.getElementById("gym-bar").style.width = pct + "%";
+    document.getElementById("gym-say").textContent = m >= goal ? `🌟 Awesome! You reached your goal of ${goal} minutes${G[5] === "day" ? " a day" : " a week"}!` : m >= goal * .5 ? `💪 Halfway there! ${goal - m} more minutes to reach ${goal}.` : m > 0 ? `🏃 Good start! Try for ${goal} minutes${G[5] === "day" ? " a day" : " a week"}.` : "Slide to show how much you moved.";
+  };
+  r.addEventListener("input", upd); upd();
+  document.getElementById("gym-go").addEventListener("click", () => qzPlay({ id: "gym", label: "💪 Gym Test", title: "Gym Test", ic: "💪", colors: ["#06d6a0", "#118ab2"], qs: GYM_QS, n: 12, home: () => startGymTest(), rank: p => p >= 90 ? "🏅 Fitness Genius!" : p >= 75 ? "💪 Strong work!" : "🏃 Keep training and try again!" }));
+}
+
+/* 🥇 World Records everybody should know */
+function wrQuizQs() {
+  return WR_RECORDS.flatMap((r, i) => {
+    const same = WR_RECORDS.filter((x, j) => j !== i && x[0] === r[0]), pick = k => shuffle(same).slice(0, 3).map(x => x[k]);
+    return [[`Who or what holds the record for “${r[2]}”? ${r[1]}`, [r[3], ...pick(3)], `${r[3]}: ${r[4]}. ${r[5]}`], [`What record does ${r[3]} hold?`, [r[2], ...pick(2)], `${r[2]}: ${r[4]}. ${r[5]}`]];
+  });
+}
+function startWorldRecords(cat = "all") {
+  const L = WR_RECORDS.filter(r => cat === "all" || r[0] === cat), b = qzBest("records");
+  appScreen("🥇 World Records", `<div class="qz wr" style="--qa:#ffbe0b;--qb:#fb5607"><div class="qz-hero"><span class="qz-big">🥇</span><h2>World Records</h2><p>The biggest, tallest, fastest and most amazing records everybody should know!</p>${b ? `<p class="qz-best">Record Quiz best: ${"⭐".repeat(b.stars)} ${b.best}%</p>` : ""}</div>
+    <button class="qz-start" id="wr-quiz" type="button"><span>🏆</span><span><b>Record Quiz</b><small>12 questions: can you remember who holds each record?</small></span><span>▶</span></button>
+    <div class="na-chips wr-cats"><button class="chip${cat === "all" ? " on" : ""}" type="button" data-wc="all">⭐ All ${WR_RECORDS.length}</button>${WR_CATS.map(([k, l]) => `<button class="chip${cat === k ? " on" : ""}" type="button" data-wc="${k}">${l}</button>`).join("")}</div>
+    <div class="wr-grid">${L.map(r => `<div class="wr-card"><span class="wr-e">${r[1]}</span><small class="wr-rec">${esc(r[2])}</small><b class="wr-who">${esc(r[3])}</b><span class="wr-num">${esc(r[4])}</span><small class="wr-more">${esc(r[5])}</small></div>`).join("")}</div>
+    <p class="soft qz-note">Records can change! These are the records as of 2026.</p></div>`);
+  $app.querySelectorAll("[data-wc]").forEach(x => x.addEventListener("click", () => startWorldRecords(x.dataset.wc)));
+  document.getElementById("wr-quiz").addEventListener("click", () => qzPlay({ id: "records", label: "🥇 World Records", title: "World Records", ic: "🥇", colors: ["#ffbe0b", "#fb5607"], qs: wrQuizQs(), n: 12, home: () => startWorldRecords(), rank: p => p >= 90 ? "🥇 Record Breaker!" : p >= 75 ? "🥈 So close to gold!" : "🥉 Keep exploring the records!" }));
+}
+
+/* 📕 Shelf Sorter: shelve books like a real librarian (fiction or nonfiction, Dewey Decimal numbers, and ABC order by author) */
+const SS_COLORS = ["#e63946", "#f4a261", "#2a9d8f", "#457b9d", "#8338ec", "#ff006e", "#3a86ff", "#06d6a0", "#ffbe0b", "#6d597a"];
+const ssColor = t => SS_COLORS[[...t].reduce((a, c) => a + c.charCodeAt(0), 0) % SS_COLORS.length];
+const ssBook = (t, e, sub = "") => `<div class="ss-book" style="--bc:${ssColor(t)}"><span class="ss-be">${e}</span><b>${esc(t)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</div>`;
+const SS_MODES = { fic: ["📖", "Fiction or Nonfiction?", "Is the book made up, or true?"], dewey: ["🔢", "Dewey Decimal Detective", "Find the right shelf number for each nonfiction book"], abc: ["🔤", "ABC Shelf", "Fiction is shelved by the author's last name: put them in order"] };
+const ssGet = () => store.get("ss_v1", {}) || {};
+function startShelfSorter() {
+  const S = ssGet(), stars = Object.values(S).reduce((t, m) => t + (m.stars || 0), 0), rank = stars >= 9 ? "👑 Head Librarian" : stars >= 6 ? "📚 Librarian" : stars >= 3 ? "🛒 Book Shelver" : "🔖 Library Helper";
+  appScreen("📕 Shelf Sorter", `<div class="ss"><div class="ss-hero"><div class="ss-shelfart" aria-hidden="true">${SS_BOOKS.slice(0, 16).map((b, i) => `<i style="--bc:${ssColor(b[0])};--h:${60 + (i * 37) % 40}%"></i>`).join("")}</div><h2>📕 Shelf Sorter</h2><p>Help shelve the books, just like a real librarian!</p>
+      <div class="ss-card"><span>🪪</span><div><small>Library card</small><b>${esc(SITE_NAME || "Reader")}</b><small>${rank} · ⭐ ${stars} / 9</small></div></div></div>
+    <div class="ss-modes">${Object.entries(SS_MODES).map(([k, [ic, t, d]]) => { const s = S[k]; return `<button class="ss-mode" type="button" data-sm="${k}"><span class="ss-mi">${ic}</span><span><b>${t}</b><small>${d}</small></span><span class="ss-st">${s ? `${"⭐".repeat(s.stars)}<small> ${s.best}%</small>` : `<small>▶ Play</small>`}</span></button>`; }).join("")}</div>
+    <details class="ss-guide"><summary>📍 How a library is organized</summary><p><b>Fiction</b> (made-up stories) is shelved in ABC order by the author's last name. <b>Nonfiction</b> (true books) uses the <b>Dewey Decimal System</b>: every subject has a number from 000 to 999.</p><div class="ss-dlist">${SS_DEWEY.map(d => `<div><b>${d[0]}s</b> ${d[1]} ${esc(d[2])}<small>${esc(d[3])}</small></div>`).join("")}</div></details></div>`);
+  $app.querySelectorAll("[data-sm]").forEach(b => b.addEventListener("click", () => ssPlay(b.dataset.sm)));
+}
+let SSG = null;
+function ssPlay(mode) {
+  if (mode === "abc") { SSG = { mode, i: 0, rounds: 4, right: 0, miss: 0 }; return ssAbcStart(); }
+  const qs = mode === "fic" ? shuffle([...shuffle(SS_FICTION).slice(0, 6).map(([t, e]) => ({ t, e, a: "fic", why: "It's a made-up story, so it's fiction. It goes on the fiction shelves in ABC order by the author's last name." })), ...shuffle(SS_BOOKS).slice(0, 6).map(b => ({ t: b[0], e: b[1], a: "non", why: `It's a true, information book, so it's nonfiction. Its Dewey number is ${b[3]}.` }))])
+    : shuffle(SS_BOOKS).slice(0, 12).map(b => ({ t: b[0], e: b[1], a: b[2], why: `${b[4]} Its call number is ${b[3]}.` }));
+  SSG = { mode, queue: qs.map(q => ({ ...q, tries: 0 })), total: qs.length, done: 0, first: 0, streak: 0 };
+  ssNext();
+}
+const ssTop = extra => `<div class="row qz-top"><button class="chip" id="ss-home" type="button">⬅ Shelf Sorter</button>${extra || ""}</div>`;
+function ssNext() {
+  const G = SSG; if (!G.queue.length) return ssResults(Math.round(G.first / G.total * 100));
+  const q = G.queue[0], [ic, title] = SS_MODES[G.mode];
+  const opts = G.mode === "fic" ? `<div class="ss-carts"><button class="ss-cart" type="button" data-a="fic">📖<b>Fiction</b><small>Made up</small></button><button class="ss-cart" type="button" data-a="non">📚<b>Nonfiction</b><small>True</small></button></div>`
+    : `<div class="ss-shelves">${SS_DEWEY.map(d => `<button class="ss-shelf" type="button" data-a="${d[0]}"><b>${d[0]}</b><span>${d[1]}</span><small>${esc(d[2])}</small></button>`).join("")}</div>`;
+  appScreen(`📕 Shelf Sorter · ${ic} ${title}`, `<div class="ss">${ssTop(`<span class="qz-hud"><b>📚 ${G.done} / ${G.total}</b><b>🔥 ${G.streak}</b></span>`)}
+    <div class="qz-prog ss-prog"><i style="width:${G.done / G.total * 100}%"></i></div>
+    <div class="ss-play" id="ss-card"><p class="ss-ask">${G.mode === "fic" ? "Is this book fiction or nonfiction?" : "Which shelf does this book go on?"}${q.tries ? " 🔁" : ""}</p>${ssBook(q.t, q.e)}${opts}
+      <div class="qz-fb" id="ss-fb" aria-live="polite"></div><button class="btn go qz-next" id="ss-nx" type="button" hidden>Next book ➜</button></div></div>`);
+  document.getElementById("ss-home").addEventListener("click", startShelfSorter);
+  $app.querySelectorAll("[data-a]").forEach(b => b.addEventListener("click", () => {
+    if (q.answered) return; q.answered = true; const ok = b.dataset.a === q.a;
+    $app.querySelectorAll("[data-a]").forEach(x => { x.disabled = true; if (x.dataset.a === q.a) x.classList.add("right"); else if (x === b) x.classList.add("wrong"); });
+    const fb = document.getElementById("ss-fb");
+    if (ok) { G.streak++; if (!q.tries) G.first++; tone([523, 659, 784], .08, "triangle", .07); fb.className = "qz-fb good"; fb.innerHTML = `<b>✅ ${rPick(["Shelved!", "Perfect spot!", "Librarian skills!", "Right shelf!"])}</b> ${esc(q.why)}`; if (G.streak % 5 === 0) kqBurst(20, ["📚", "📕", "📗", "📘", "⭐"]); }
+    else { G.streak = 0; tone([220, 175], .14, "sawtooth", .05); fb.className = "qz-fb bad"; fb.innerHTML = `<b>❌ Not that one.</b> ${esc(q.why)}<br><small>This book will come back 🔁</small>`; }
+    const nx = document.getElementById("ss-nx"); nx.hidden = false; nx.focus();
+    nx.addEventListener("click", () => { G.queue.shift(); if (ok) G.done++; else { q.tries++; q.answered = false; G.queue.splice(Math.min(3, G.queue.length), 0, q); } ssNext(); });
+  }));
+}
+function ssAbcStart() {
+  const G = SSG, last = shuffle(SS_AUTHORS).slice(0, 5), books = shuffle(SS_FICTION).slice(0, 5).map(([t, e], i) => ({ t, e, a: last[i], f: rPick(SS_FIRST) }));
+  G.books = books; G.order = [...books].sort((x, y) => x.a.localeCompare(y.a)); G.placed = []; G.solved = false; G.roundMiss = 0;
+  appScreen("📕 Shelf Sorter · 🔤 ABC Shelf", `<div class="ss">${ssTop(`<span class="qz-hud"><b>🧩 ${G.i + 1} / ${G.rounds}</b><b id="ss-miss">❌ ${G.miss}</b></span>`)}<div class="ss-play" id="ss-card"></div></div>`);
+  document.getElementById("ss-home").addEventListener("click", startShelfSorter);
+  ssAbcDraw();
+}
+function ssAbcDraw(msg) {
+  const G = SSG, card = document.getElementById("ss-card"); if (!card) return;
+  card.innerHTML = `<p class="ss-ask">Fiction goes in ABC order by the <b>author's last name</b>. Tap the books in order, A to Z!</p>
+    <div class="ss-rack">${G.order.map((b, k) => k < G.placed.length ? `<div class="ss-spine" style="--bc:${ssColor(b.t)}"><b>${esc(b.a.slice(0, 3).toUpperCase())}</b><small>${esc(b.t)}</small></div>` : `<div class="ss-spine empty"><b>${k + 1}</b></div>`).join("")}</div>
+    <div class="ss-pile">${G.books.filter(b => !G.placed.includes(b)).map(b => `<button class="ss-pick" type="button" data-bk="${G.books.indexOf(b)}">${ssBook(b.t, b.e, `${b.f} ${b.a}`)}</button>`).join("")}</div>
+    <div class="qz-fb${G.solved ? " good" : msg ? " bad" : ""}" id="ss-fb" aria-live="polite">${G.solved ? `<b>✅ ${G.roundMiss ? "Shelved!" : "Perfect ABC order!"}</b> ${G.order.map(b => esc(b.a)).join(" ➜ ")}` : msg ? esc(msg) : ""}</div>
+    ${G.solved ? `<button class="btn go qz-next" id="ss-nx" type="button">${G.i + 1 < G.rounds ? "Next shelf ➜" : "See my score ➜"}</button>` : ""}`;
+  card.querySelectorAll("[data-bk]").forEach(b => b.addEventListener("click", () => {
+    const bk = G.books[+b.dataset.bk], want = G.order[G.placed.length];
+    if (bk === want) { G.placed.push(bk); G.right++; tone([523 + G.placed.length * 60], .08, "triangle", .06); if (G.placed.length === G.order.length) { G.solved = true; tone([523, 659, 784, 1047], .1, "triangle", .07); if (!G.roundMiss) kqBurst(18, ["📚", "🔤", "⭐"]); } ssAbcDraw(); }
+    else { G.miss++; G.roundMiss++; tone([220, 175], .12, "sawtooth", .05); const m = document.getElementById("ss-miss"); if (m) m.textContent = "❌ " + G.miss; b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); const fb = document.getElementById("ss-fb"); fb.className = "qz-fb bad"; fb.textContent = `Not yet! ${bk.a} comes ${bk.a.localeCompare(want.a) > 0 ? "later" : "earlier"} in ABC order.`; }
+  }));
+  document.getElementById("ss-nx")?.addEventListener("click", () => { G.i++; if (G.i < G.rounds) ssAbcStart(); else ssResults(Math.round(G.right / (G.right + G.miss) * 100)); });
+}
+function ssResults(pct) {
+  const G = SSG, stars = pct >= 90 ? 3 : pct >= 75 ? 2 : 1, S = ssGet(), prev = S[G.mode];
+  if (!prev || pct > prev.best) { S[G.mode] = { best: pct, stars }; store.set("ss_v1", S); }
+  if (stars === 3) kqBurst(50, ["📚", "📕", "📗", "📘", "⭐", "🎉"]);
+  const [ic, title] = SS_MODES[G.mode];
+  appScreen(`📕 Shelf Sorter · ${ic} ${title}`, `<div class="ss"><div class="qz-res ss-res"><span class="qz-big">${ic}</span><small class="soft">${title} complete</small><div class="qz-pct">${pct}%</div><div class="qz-stars">${"⭐".repeat(stars)}${"☆".repeat(3 - stars)}</div><b>${pct >= 90 ? "📚 You're a real librarian!" : pct >= 75 ? "So close! One more try!" : "Keep practicing: you'll get it!"}</b></div>
+    <div class="row qz-nav"><button class="btn" id="ss-home" type="button">⬅ Shelf Sorter</button><button class="btn go" id="ss-again" type="button">Play again 🔁</button></div></div>`);
+  document.getElementById("ss-home").addEventListener("click", startShelfSorter);
+  document.getElementById("ss-again").addEventListener("click", () => ssPlay(G.mode));
+}
+
+/* 🔊 Sound: on, off, or anywhere in between (it changes every sound on the site, and the reading voice) */
+function startSoundPage() {
+  const pct = () => Math.round((muted ? 0 : SND_VOL) * 100), face = p => p === 0 ? "🔇" : p < 40 ? "🔈" : p < 80 ? "🔉" : "🔊";
+  appScreen("🔊 Sound", `<div class="snd"><div class="snd-hero"><span class="snd-big" id="snd-big">${face(pct())}</span><h2>Sound</h2><p>Turn the sound on, off, or anywhere in between.</p></div>
+    <div class="snd-presets">${[[0, "🔇", "Off"], [25, "🔈", "Quiet"], [50, "🔉", "Medium"], [100, "🔊", "Loud"]].map(([v, e, t]) => `<button class="snd-p" type="button" data-sv="${v}"><span>${e}</span><b>${t}</b></button>`).join("")}</div>
+    <label class="snd-slider"><span>Volume: <b id="snd-pct"></b></span><input type="range" id="snd-range" min="0" max="100" step="5" aria-label="Volume"></label>
+    <div class="snd-bars" aria-hidden="true">${Array.from({ length: 10 }, (_, i) => `<i style="--h:${20 + i * 8}%"></i>`).join("")}</div>
+    <div class="row snd-btns"><button class="btn go" id="snd-test" type="button">▶ Play a test sound</button><button class="btn" id="snd-say" type="button">🗣️ Test the reading voice</button></div>
+    <p class="soft">This changes every sound in Study Arcade: games, music, Hippo's songs, and the voice that reads out loud. The <b>Sound</b> button at the bottom of every page turns it on and off too.</p></div>`);
+  const r = document.getElementById("snd-range");
+  const show = () => { const p = pct(); r.value = p; document.getElementById("snd-pct").textContent = p === 0 ? "Off" : p + "%"; document.getElementById("snd-big").textContent = face(p); $app.querySelectorAll("[data-sv]").forEach(b => b.classList.toggle("on", +b.dataset.sv === p)); $app.querySelectorAll(".snd-bars i").forEach((b, i) => b.classList.toggle("on", p > i * 10)); };
+  const set = p => { sndSet(p / 100); show(); };
+  r.addEventListener("input", () => set(+r.value));
+  r.addEventListener("change", () => { if (!muted) tone([523, 659], .08, "triangle", .1); });
+  $app.querySelectorAll("[data-sv]").forEach(b => b.addEventListener("click", () => { set(+b.dataset.sv); if (!muted) tone([523, 659, 784], .08, "triangle", .1); }));
+  document.getElementById("snd-test").addEventListener("click", () => { if (muted) return toast("🔇 The sound is off. Turn it up first!"); tone([523, 659, 784, 1047], .12, "triangle", .12); });
+  document.getElementById("snd-say").addEventListener("click", () => { if (muted) return toast("🔇 The sound is off. Turn it up first!"); svSay("Hi! This is how loud I'll read things to you."); });
+  show();
+}
+
+NEW_APPS.push(
+  { id: "kind", emoji: "💖", name: "Kind Quiz", desc: "What's the kind thing to do? Real-life choices about friends, feelings and being kind, in four levels.", start: () => startKindQuiz(), kw: "kind quiz|kindness quiz|kindness|being kind|feelings quiz|friendship quiz|counseling quiz" },
+  { id: "books", emoji: "📚", name: "Book Quiz", desc: "Famous books, authors and characters, from Dr. Seuss to Shakespeare.", start: () => startBookQuiz(), kw: "book quiz|books? trivia|authors? quiz|reading quiz|literature quiz" },
+  { id: "shelf", emoji: "📕", name: "Shelf Sorter", desc: "Shelve books like a real librarian: fiction or nonfiction, Dewey Decimal numbers, and ABC order by author.", start: () => startShelfSorter(), added: "2026-11-18", kw: "shelf sorter|dewey( decimal)?( system)?|library game|call numbers?|fiction or nonfiction|librarian|shelve books" },
+  { id: "gymtest", emoji: "💪", name: "Gym Test", desc: "How much should you be exercising? Check it for your age, get ideas to move, and take the test.", start: () => startGymTest(), kw: "gym test|gym class|exercise check|how much (should i|to|do i need to) exercise|exercise|fitness|physical activity|workout" },
+  { id: "records", emoji: "🥇", name: "World Records", desc: "The biggest, tallest, fastest and most amazing world records everybody should know, plus a Record Quiz.", start: () => startWorldRecords(), added: "2026-11-18", kw: "world records?|record quiz|records everybody should know|famous records" },
+  { id: "sound", emoji: "🔊", name: "Sound", desc: "Turn the sound on, off, or anywhere in between.", start: () => startSoundPage(), kw: "sound|sounds|volume|mute|unmute|sound settings|turn (the )?sound (on|off|up|down)|too loud|too quiet" }
+);
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
