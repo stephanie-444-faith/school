@@ -2284,6 +2284,63 @@
   .snd-slider { display: grid; gap: 8px; max-width: 520px; margin: 0 auto; font-weight: 800; font-size: 1.1rem; } .snd-slider input { width: 100%; height: 28px; accent-color: #f72585; }
   .snd-bars { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 60px; margin: 12px auto; } .snd-bars i { width: 16px; height: var(--h); border-radius: 4px; background: var(--line); transition: background .2s; }
   .snd-bars i.on { background: linear-gradient(180deg, #f72585, #4361ee); } .snd-btns { justify-content: center; gap: 8px; flex-wrap: wrap; }
+  /* 🔎 the Art Hunt button in Famous Artists */
+  .fa-hunt { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 14px 16px; margin: 8px 0 10px; cursor: pointer; color: #fff; font: inherit; text-shadow: 0 1px 3px rgba(0,0,0,.35); background: linear-gradient(120deg, #ff006e, #fb5607, #ffbe0b, #06d6a0, #3a86ff, #8338ec); background-size: 250% 100%; animation: ahSky 8s ease-in-out infinite alternate; box-shadow: 0 6px 0 #5a1a8a, 0 10px 24px rgba(131,56,236,.35); transition: transform .12s; }
+  .fa-hunt:hover { transform: translateY(-2px); } .fa-hunt:active { transform: translateY(3px); } .fa-hunt > span:first-child { font-size: 2.4rem; } .fa-hunt > span:last-child { margin-left: auto; font-size: 1.5rem; }
+  .fa-hunt b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.4rem; } .fa-hunt small { display: block; font-weight: 700; opacity: .92; }
+  #fa-era { margin-bottom: 6px; }
+  /* 🔎 Art Hunt */
+  .ah h3 { margin: 14px 0 6px; }
+  .ah-hero { position: relative; overflow: hidden; text-align: center; border-radius: 24px; padding: 22px 14px 16px; margin: 6px 0 10px; color: #fff; background: linear-gradient(120deg, #ff006e, #fb5607 25%, #ffbe0b 45%, #06d6a0 65%, #3a86ff 82%, #8338ec); background-size: 250% 250%; animation: ahSky 12s ease-in-out infinite alternate; box-shadow: 0 10px 30px rgba(131,56,236,.35); }
+  @keyframes ahSky { to { background-position: 100% 100%; } }
+  .ah-splats i { position: absolute; left: var(--x); top: var(--y); width: var(--s); height: var(--s); transform: translate(-50%, -50%); border-radius: 46% 54% 60% 40% / 50% 42% 58% 50%; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.35), transparent 40%), var(--c); opacity: .55; filter: blur(1px); animation: ahBlob 7s ease-in-out infinite alternate; }
+  .ah-splats i:nth-child(even) { animation-duration: 9s; border-radius: 60% 40% 45% 55% / 45% 60% 40% 55%; }
+  @keyframes ahBlob { to { transform: translate(-50%, -50%) rotate(40deg) scale(1.15); } }
+  .ah-floaty span { position: absolute; left: var(--x); top: var(--y); font-size: 1.6rem; opacity: .5; animation: kqFloat 8s ease-in-out var(--d) infinite alternate; pointer-events: none; }
+  .ah-title { position: relative; margin: 0; font-family: var(--display); font-weight: 400; font-size: 2.8rem; line-height: 1; text-shadow: 0 4px 0 rgba(0,0,0,.25); }
+  .ah-title span { display: inline-block; color: #fff; -webkit-text-stroke: 2px #2a0a4a; paint-order: stroke fill; animation: kqBob 2.2s ease-in-out infinite; }
+  .ah-hero p { position: relative; margin: 6px 0 10px; font-weight: 800; font-size: 1.05rem; text-shadow: 0 2px 4px rgba(0,0,0,.35); }
+  .ah-badge { position: relative; display: inline-flex; align-items: center; gap: 10px; text-align: left; background: rgba(20,8,40,.55); border: 2px solid rgba(255,255,255,.5); border-radius: 18px; padding: 8px 14px; backdrop-filter: blur(4px); color: #fff; }
+  .ah-badge > span { font-size: 2.2rem; } .ah-badge b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.15rem; } .ah-badge small { display: block; opacity: .85; }
+  .ah-badge.up { margin-top: 10px; animation: kqPopIn .6s; background: linear-gradient(135deg, #8338ec, #ff006e); }
+  .ah-eras { justify-content: center; }
+  .ah-modes { display: grid; gap: 10px; }
+  .ah-mode { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 14px 16px; cursor: pointer; color: #fff; font: inherit; background: linear-gradient(135deg, var(--c), var(--c2)); box-shadow: 0 6px 0 color-mix(in srgb, var(--c) 60%, #000), 0 10px 22px color-mix(in srgb, var(--c) 35%, transparent); transition: transform .12s; text-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  .ah-mode:hover { transform: translateY(-3px) rotate(-.5deg); } .ah-mode:active { transform: translateY(3px); }
+  .ah-mi { font-size: 2.4rem; animation: kqBob 2.4s ease-in-out infinite; } .ah-mode b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.35rem; } .ah-mode small { display: block; font-weight: 700; opacity: .92; }
+  .ah-best { margin-left: auto; font-weight: 900; white-space: nowrap; background: rgba(0,0,0,.22); border-radius: 99px; padding: 4px 10px; }
+  .ah-note { margin-top: 12px; text-align: center; }
+  .ah-top { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; } .ah-hud { display: flex; gap: 12px; font-size: 1.05rem; } .ah-hud .pop { display: inline-block; animation: kqPopIn .4s; }
+  .ah-hud .hurry { color: #ff4d6d; animation: kqBob .5s ease-in-out infinite; }
+  .ah-prog { height: 10px; border-radius: 99px; background: rgba(0,0,0,.3); overflow: hidden; margin: 6px 0 10px; } .ah-prog > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ff006e, #fb5607, #ffbe0b, #06d6a0, #3a86ff, #8338ec); transition: width .3s; }
+  .ah-speed .ah-prog > i { width: 100%; transition: width .25s linear; }
+  .ah-card { position: relative; background: var(--panel-2); border-radius: 22px; padding: 12px; border: 3px solid transparent; background-image: linear-gradient(var(--panel-2), var(--panel-2)), linear-gradient(135deg, #ff006e, #ffbe0b, #06d6a0, #3a86ff, #8338ec); background-origin: border-box; background-clip: padding-box, border-box; }
+  .ah-card.shake { animation: kqShake .4s; } .ah-card.yay { animation: kqPopIn .45s; }
+  .ah-ask { margin: 0 0 8px; text-align: center; font-weight: 900; font-size: 1.15rem; }
+  .ah-frame { position: relative; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #b8860b, #ffd700 30%, #8b6508 55%, #ffe066 80%, #b8860b); box-shadow: 0 10px 24px rgba(0,0,0,.45), inset 0 0 0 3px rgba(255,255,255,.35); }
+  .ah-canvas { position: relative; overflow: hidden; border-radius: 3px; background: #111; display: grid; place-items: center; height: min(46vh, 380px); box-shadow: inset 0 0 0 3px #5a3a0a; }
+  .ah-canvas img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+  .ah-canvas img.zin { transform: scale(6); transition: none; } .ah-canvas img.zout { transform: scale(1); transition: transform 13s cubic-bezier(.25,.1,.25,1); } .ah-canvas img.shown { transform: scale(1); transition: transform .6s ease-out; }
+  .ah-zpts { position: absolute; top: 18px; right: 18px; background: #ff006e; color: #fff; font-family: var(--display); font-weight: 400; font-size: 1.3rem; border-radius: 99px; padding: 2px 12px; box-shadow: 0 3px 8px rgba(0,0,0,.4); }
+  .ah-chs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .ah-ch { position: relative; display: grid; gap: 2px; justify-items: center; text-align: center; border: 3px solid rgba(255,255,255,.25); border-radius: 16px; padding: 10px 6px; cursor: pointer; color: #fff; font: inherit; line-height: 1.15; background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 65%, #000)); box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 55%, #000); text-shadow: 0 1px 3px rgba(0,0,0,.4); transition: transform .1s; }
+  .ah-ch:hover:not(:disabled) { transform: translateY(-3px) scale(1.02); } .ah-ch:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+  .ah-ch > i { position: absolute; top: 4px; left: 8px; font-style: normal; font-size: .7rem; opacity: .7; } .ah-che { font-size: 1.6rem; } .ah-ch b { font-size: .95rem; }
+  .ah-ch:disabled { cursor: default; } .ah-ch.right { border-color: #fff; box-shadow: 0 0 0 4px #22c55e, 0 0 24px #22c55e; animation: kqPopIn .4s; } .ah-ch.wrong { opacity: .45; filter: grayscale(.6); } .ah-ch.fade { opacity: .35; } .ah-ch.gone { opacity: .12; filter: grayscale(1); transform: scale(.92); pointer-events: none; }
+  .ah-hintrow { justify-content: center; margin-top: 10px; } .ah-hint { flex-direction: row; align-items: center; gap: 4px; padding: 6px 14px; border-width: 2px; } .ah-hint small { opacity: .75; } .ah-hint:disabled { opacity: .5; cursor: default; }
+  .ah-fb { margin-top: 12px; border-radius: 14px; padding: 10px 12px; line-height: 1.4; display: none; text-align: center; } .ah-fb.good, .ah-fb.bad { display: block; }
+  .ah-fb.good { background: rgba(34,197,94,.16); border: 2px solid #22c55e; } .ah-fb.bad { background: rgba(255,77,109,.14); border: 2px solid #ff4d6d; }
+  .ah-about { margin: 8px 0 0; color: var(--ink-soft); font-size: .92rem; } .ah-next { width: 100%; margin-top: 10px; }
+  .ah-burst { position: absolute; left: 50%; top: 40%; pointer-events: none; z-index: 3; }
+  .ah-burst span { position: absolute; font-size: 1.8rem; animation: ahPop .9s ease-out forwards; }
+  @keyframes ahPop { from { transform: rotate(var(--a)) translateY(0) scale(.4); opacity: 1; } to { transform: rotate(var(--a)) translateY(-150px) scale(1.3); opacity: 0; } }
+  .ah-res { text-align: center; background: var(--panel-2); border-radius: 22px; padding: 16px; margin: 8px 0; border: 3px solid #8338ec; }
+  .ah-resic { display: block; font-size: 3rem; } .ah-pts { font-family: var(--display); font-size: 3.4rem; line-height: 1; background: linear-gradient(90deg, #ff006e, #ffbe0b, #06d6a0, #3a86ff); -webkit-background-clip: text; background-clip: text; color: transparent; } .ah-pts small { font-size: 1.1rem; }
+  .ah-stars { font-size: 2.2rem; margin: 4px 0; } .ah-newbest { display: inline-block; background: linear-gradient(90deg, #ffbe0b, #fb5607); color: #2a1500; border-radius: 99px; padding: 4px 14px; animation: kqBob 1.6s ease-in-out infinite; }
+  .ah-missed { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .ah-mcard { display: grid; gap: 3px; justify-items: start; text-align: left; padding: 8px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; } .ah-mcard small { color: var(--ink-soft); } .ah-mcard .fa-pic { width: 100%; }
+  .ah-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  @media (prefers-reduced-motion: reduce) { .ah-hero, .ah-splats i, .ah-floaty span, .ah-title span, .ah-mi { animation: none; } .ah-canvas img.zout { transition-duration: 2s; } }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3611,7 +3668,7 @@ function bigBoot() {
   })());
 }
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|who_pic|who_reports|who_notes|who_block|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|ah_v1|qz_v1|ss_v1|m8_v1|who_pic|who_reports|who_notes|who_block|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -6430,7 +6487,8 @@ function subjectPick(s) {
       hc("art", "Art", " with art questions"),
       ["📝 Practice art questions", "Color, design, and artists", study("art", { alevel: "easy" })],
       ["🧠 Complex art", "Harder questions: famous artists, art history, perspective, color theory and how art is made", study("art", { alevel: "hard" })],
-      ["🖼️ Famous Artists", "Famous artists and their most famous paintings. Use any painting as your home background!", go(() => startArtists())],
+      ["🖼️ Famous Artists", "84 famous artists, older and modern, and their most famous paintings. Use any painting as your home background!", go(() => startArtists())],
+      ["🔎 Art Hunt", "See a famous painting and say who made it! Classic Hunt, Zoom Mystery and a 60-second Speed Round", go(() => startArtHunt())],
       ["🖼️ Art Gallery", "Pixel art, drawings, your pictures, printing, and everyone's art", go(() => startGallery())],
       ["🎞️ Moving Art", "Make art that moves, or a flipbook", go(() => startMovingArt())],
       ["💬 Comic Creator", "Make your own comic with characters and speech bubbles", go(() => startComicCreator())],
@@ -22555,6 +22613,7 @@ const LB_BOARDS = [
   { id: "connect4", g: "more", e: "🔴", name: "Connect Four", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "connect4") },
   { id: "pong", g: "more", e: "🏓", name: "Pong", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => lbBest(id, "pong") },
   { id: "kingdoms", g: "more", e: "🧬", name: "Kingdom Quest", unit: v => `${v} race${v === 1 ? "" : "s"} won`, get: id => { const d = lbGet("kq_v1", id); return d ? lbNum(d.wins) : null; }, note: "Kingdom Races won" },
+  { id: "arthunt", g: "more", e: "🔎", name: "Art Hunt", unit: v => `${v} points`, get: id => { const d = lbGet("ah_v1", id); return d && d.best ? lbNum(d.best.speed) : null; }, note: "Best Speed Round score" },
   { id: "cells", g: "more", e: "🧫", name: "Cell City", unit: v => `${v} cell${v === 1 ? "" : "s"} saved`, get: id => { const d = lbGet("cy_v1", id); return d ? lbNum(d.saves) : null; }, note: "Times they won Defend the Cell" },
   { id: "scihop", g: "more", e: "🐸", name: "Science Hop", unit: v => `${v} hops`, get: id => { const d = lbGet("sh_v1", id); return d && d.best ? lbNum(Math.max(0, ...Object.values(d.best).filter(x => typeof x === "number"))) : null; }, note: "Most hops in one run" },
   { id: "globe", g: "more", e: "🌐", name: "Globe Detective", unit: v => `${fmt(v)} points`, get: id => { const b = lbGet("glb_best", id); return lbNum(Math.max(lbBest(id, "globe") || 0, b && typeof b === "object" ? Math.max(0, ...Object.values(b).filter(x => typeof x === "number")) : 0)); }, note: "Best game in any area" },
@@ -25929,15 +25988,19 @@ function startArtists(view = "home", id) {
   if (view === "work") return faWork(id);
   const all = FA_ARTISTS.flatMap(a => a[7]);
   appScreen("🖼️ Famous Artists", `<div class="fa"><h2>🖼️ Famous Artists</h2>
-    <p class="soft">Meet ${FA_ARTISTS.length} famous artists, from about 1485 to 1930, and see their most famous paintings. Tap 🌈 on any painting to make it your home background!</p>
+    <p class="soft">Meet ${FA_ARTISTS.length} famous artists, from about the year 1000 to 1930, and see their most famous paintings. Tap 🌈 on any painting to make it your home background!</p>
+    <button class="fa-hunt" id="fa-hunt" type="button"><span>🔎</span><span><b>Art Hunt</b><small>See a painting and say who made it! A colorful game with 3 ways to play.</small></span><span>▶</span></button>
+    <div class="na-chips" id="fa-era">${[["all", "🌈 Everyone"], ["old", "🏛️ Older artists"], ["modern", "🚀 Modern artists (1900 and later)"]].map(([k, l], i) => `<button class="chip${i ? "" : " on"}" type="button" data-fe="${k}">${l}</button>`).join("")}</div>
     <div class="na-chips" id="fa-view"><button class="chip on" type="button" data-v="artists">👩‍🎨 Artists</button><button class="chip" type="button" data-v="works">🖼️ All ${all.length} paintings</button></div>
-    <div class="fa-grid" id="fa-artists">${FA_ARTISTS.map(a => `<button class="fa-card" type="button" data-a="${a[0]}">${faPic(a[7][0], true)}<b>${a[1]} ${esc(a[2])}</b><small>${esc(a[3])} · ${esc(a[4].split(" (")[0])}</small><span class="fa-style">${esc(a[5])}</span></button>`).join("")}</div>
-    <div class="fa-grid" id="fa-works" hidden>${all.map(w => `<button class="fa-card" type="button" data-w2="${w}">${faPic(w, true)}<b>${esc(FA_WORKS[w][0])}</b><small>${esc(faArtistOf(w)[2])} · ${esc(FA_WORKS[w][1])}</small></button>`).join("")}</div>
+    <div class="fa-grid" id="fa-artists">${FA_ARTISTS.map(a => `<button class="fa-card" type="button" data-a="${a[0]}" data-era="${a[7].some(w => faYear(w) >= 1900) ? "modern" : "old"}">${faPic(a[7][0], true)}<b>${a[1]} ${esc(a[2])}</b><small>${esc(a[3])} · ${esc(a[4].split(" (")[0])}</small><span class="fa-style">${esc(a[5])}</span></button>`).join("")}</div>
+    <div class="fa-grid" id="fa-works" hidden>${all.map(w => `<button class="fa-card" type="button" data-w2="${w}" data-era="${faYear(w) >= 1900 ? "modern" : "old"}">${faPic(w, true)}<b>${esc(FA_WORKS[w][0])}</b><small>${esc(faArtistOf(w)[2])} · ${esc(FA_WORKS[w][1])}</small></button>`).join("")}</div>
     <p class="soft fa-pd">All of these paintings are in the public domain: they're old enough that anyone may share them. The pictures come from Wikimedia Commons.</p></div>`);
   faBindPics($app);
   $app.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", () => { $app.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("on", x === b)); document.getElementById("fa-artists").hidden = b.dataset.v !== "artists"; document.getElementById("fa-works").hidden = b.dataset.v !== "works"; }));
   $app.querySelectorAll("[data-a]").forEach(b => b.addEventListener("click", () => faArtist(b.dataset.a)));
   $app.querySelectorAll("[data-w2]").forEach(b => b.addEventListener("click", () => faWork(b.dataset.w2)));
+  document.getElementById("fa-hunt").addEventListener("click", () => startArtHunt());
+  $app.querySelectorAll("[data-fe]").forEach(b => b.addEventListener("click", () => { const e = b.dataset.fe; $app.querySelectorAll("[data-fe]").forEach(x => x.classList.toggle("on", x === b)); $app.querySelectorAll(".fa-card[data-era]").forEach(c => { c.hidden = e !== "all" && c.dataset.era !== e; }); }));   // 🏛️ older or 🚀 modern artists
 }
 function faArtist(aid) {
   const a = FA_ARTISTS.find(x => x[0] === aid) || FA_ARTISTS[0], i = FA_ARTISTS.indexOf(a), prev = FA_ARTISTS[i - 1], next = FA_ARTISTS[i + 1];
@@ -25967,7 +26030,7 @@ function faWork(wid) {   // 🔍 a painting, big
   document.getElementById("fa-say").addEventListener("click", () => svSay(`${W[0]}, by ${a[2]}. ${W[3]}`));
   $app.querySelector("[data-bgw]").addEventListener("click", () => faUseBg(wid));
 }
-NEW_APPS.push({ id: "artists", emoji: "🖼️", name: "Famous Artists", desc: "Famous artists and their most famous paintings, from Leonardo da Vinci to Van Gogh. Use any painting as your home background.", start: () => startArtists(), kw: "famous artists?|artists?|paintings?|painters?|masterpieces?|art history|museum|mona lisa|starry night|van gogh|monet|leonardo|da vinci|great wave|the scream" });
+NEW_APPS.push({ id: "artists", emoji: "🖼️", name: "Famous Artists", desc: "84 famous artists, older and modern, and their most famous paintings, from Fan Kuan and Leonardo da Vinci to Van Gogh and Matisse. Play Art Hunt, and use any painting as your home background.", start: () => startArtists(), kw: "famous artists?|artists?|paintings?|painters?|masterpieces?|art history|museum|mona lisa|starry night|van gogh|monet|leonardo|da vinci|great wave|the scream" });
 /* ---------- 🧫 Cell City: the parts of plant and animal cells, explored like a tiny city.
    Tap any part of a cell to learn its job, then practice: find the parts, match them to places in Cell City,
    sort plant vs. animal, build up from cells to organisms, and defend the cell from germs.
@@ -27230,6 +27293,256 @@ NEW_APPS.push(
   { id: "records", emoji: "🥇", name: "World Records", desc: "The biggest, tallest, fastest and most amazing world records everybody should know, plus a Record Quiz.", start: () => startWorldRecords(), added: "2026-11-18", kw: "world records?|record quiz|records everybody should know|famous records" },
   { id: "sound", emoji: "🔊", name: "Sound", desc: "Turn the sound on, off, or anywhere in between.", start: () => startSoundPage(), kw: "sound|sounds|volume|mute|unmute|sound settings|turn (the )?sound (on|off|up|down)|too loud|too quiet" }
 );
+/* 🖼️ Famous Artists: 60 more artists, from about the year 1000 to 1930 (40 older and 20 modern). Every painting here is in the public domain. */
+Object.assign(FA_WORKS, {
+  travelers: ["Travelers among Mountains and Streams", "c. 1000", "National Palace Museum, Taipei", "A giant mountain towers over tiny travelers and their donkeys. It's painted on a silk scroll more than 2 meters (7 feet) tall.", ["#8a7a5a", "#3a3a2a", "#c9b89a"]],
+  qingming: ["Along the River During the Qingming Festival", "1100s", "Palace Museum, Beijing", "A scroll more than 5 meters (17 feet) long showing city life in ancient China, with over 800 people, boats, bridges and shops. This picture shows just one part of it.", ["#c9b48a", "#6a5a3a", "#8a9a7a"]],
+  arnolfini: ["The Arnolfini Portrait", "1434", "The National Gallery, London", "A rich couple stands in their room. Look at the round mirror on the back wall: it shows two more people, maybe even the painter himself!", ["#3b4a2a", "#8a3b2a", "#c9a35a"]],
+  hare: ["Young Hare", "1502", "Albertina, Vienna", "A watercolor of a hare so detailed you can almost count its whiskers. You can even see a window reflected in its eye!", ["#c9b28a", "#7a5a3a", "#f2ead8"]],
+  athens: ["The School of Athens", "1509–1511", "Apostolic Palace, Vatican City", "A giant wall painting of the great thinkers of ancient Greece. Plato and Aristotle walk in the middle, and Raphael painted himself near the edge, looking out at you.", ["#c9b48a", "#6f8fb0", "#8a5a3a"]],
+  ambassadors: ["The Ambassadors", "1533", "The National Gallery, London", "Two French visitors stand with globes, books and science tools. The strange stretched shape on the floor is a skull: you can only see it properly from the side!", ["#1f3d2a", "#7a3a2a", "#c9a35a"]],
+  chessgame: ["The Chess Game", "1555", "National Museum, Poznań, Poland", "Three of the artist's sisters play chess while a servant watches. The youngest giggles because her big sister is about to win!", ["#3a3a2a", "#c94a3a", "#e8d7b5"]],
+  vertumnus: ["Vertumnus", "c. 1591", "Skokloster Castle, Sweden", "A portrait of Emperor Rudolf II made entirely of fruits, vegetables and flowers. His nose is a pear and his cheeks are apples!", ["#7a8a3a", "#c94a2a", "#e8b54a"]],
+  pinetrees: ["Pine Trees", "late 1500s", "Tokyo National Museum", "Pine trees fading into the fog, painted on folding screens with just black ink. The empty paper becomes the mist.", ["#e8e4d8", "#4a4a44", "#9a9a8e"]],
+  turkey: ["Turkey Cock", "c. 1612", "Victoria and Albert Museum, London", "A turkey brought to India from far away. The emperor wanted a perfect picture of this strange new bird, so Mansur painted every feather.", ["#e8dcc0", "#5a3a2a", "#3a6a8a"]],
+  cavalier: ["The Laughing Cavalier", "1624", "The Wallace Collection, London", "He isn't really laughing, but his smiling eyes and twirly mustache make it look like he's about to!", ["#3a3a3a", "#c9a35a", "#8a2a2a"]],
+  allegory: ["Self-Portrait as the Allegory of Painting", "c. 1638", "Royal Collection, Windsor Castle", "She painted herself as the spirit of Painting itself, brush in hand, leaning in to work.", ["#2a1f18", "#3a6a4a", "#c98a5a"]],
+  meninas: ["Las Meninas", "1656", "Museo del Prado, Madrid", "A little princess and her helpers, with Velázquez himself painting a huge canvas. The king and queen appear in the mirror on the back wall: are they standing where you are?", ["#3a2e22", "#c9b48a", "#6a5a4a"]],
+  metamorphosis: ["The Metamorphosis of the Insects of Suriname", "1705", "A book of 60 hand-colored prints", "She drew insects together with the plants they live on, showing each stage of their lives, from egg to caterpillar to butterfly or moth.", ["#e8e0c8", "#5a8a3a", "#c96a2a"]],
+  stonemason: ["The Stonemason's Yard", "c. 1725", "The National Gallery, London", "A sunny morning in a quiet corner of Venice. Stonemasons are working, and a mother rushes over to a little child who has fallen down.", ["#c9b48a", "#8aa8c8", "#6a5a4a"]],
+  rooster: ["Black Rooster and Nandina", "1757–1766", "Museum of the Imperial Collections, Tokyo", "Part of a set of 30 bright paintings of animals and plants called the Colorful Realm of Living Beings. Every feather is painted in amazing detail.", ["#e8e0c8", "#1a1a1a", "#c92a2a"]],
+  whistlejacket: ["Whistlejacket", "c. 1762", "The National Gallery, London", "A life-size racehorse rearing up on a plain background. The painting is about 3 meters (10 feet) tall!", ["#d8c9a8", "#8a4a1a", "#2a1a0a"]],
+  swing: ["The Swing", "1767", "The Wallace Collection, London", "A young woman in a puffy pink dress swings high in a leafy garden, and her shoe goes flying off!", ["#5a7a3a", "#f2a8b4", "#2e4a2a"]],
+  blueboy: ["The Blue Boy", "c. 1770", "The Huntington, San Marino, California", "A boy in a shimmering blue satin outfit. Painting so much blue was a bold choice, and it worked!", ["#3a6a9a", "#5a4a3a", "#a8c4d8"]],
+  parasol: ["The Parasol", "1777", "Museo del Prado, Madrid", "A young woman with a little dog on her lap, while a young man holds a green parasol to shade her. It was a design for a tapestry.", ["#5a8a4a", "#e8c08a", "#3a4a6a"]],
+  strawhat: ["Self-Portrait in a Straw Hat", "1782", "The National Gallery, London", "She painted herself outdoors in a straw hat with flowers, holding her palette and brushes.", ["#8ab4d8", "#e8c890", "#3a2a1a"]],
+  threebeauties: ["Three Beauties of the Present Day", "c. 1793", "Woodblock print (copies in many museums)", "Three famous young women of Edo (now Tokyo). Each has a family crest on her clothes so people could tell who she was.", ["#e8dcc8", "#2a2a2a", "#c98a8a"]],
+  napoleon: ["Napoleon Crossing the Alps", "1801", "Château de Malmaison, France", "Napoleon on a rearing horse, cape blowing in the wind. In real life he crossed the mountains riding a mule!", ["#5a6a7a", "#c93a2a", "#e8d0a0"]],
+  wanderer: ["Wanderer above the Sea of Fog", "c. 1818", "Hamburger Kunsthalle, Germany", "A hiker stands on a rocky peak looking out over a sea of fog and mountains. We never see his face.", ["#8a9aa8", "#2a2a2a", "#d8d4c8"]],
+  haywain: ["The Hay Wain", "1821", "The National Gallery, London", "A horse-drawn hay cart crosses a shallow river on a summer day in the English countryside.", ["#4a6a3a", "#a8b8c8", "#8a6a3a"]],
+  parakeet: ["Carolina Parakeet", "1820s", "From “The Birds of America”", "Bright green and yellow parrots that once lived in the eastern United States. Sadly, they're extinct now: the last known one died in 1918.", ["#5aa83a", "#e8c83a", "#c94a2a"]],
+  skeleton: ["Takiyasha the Witch and the Skeleton Spectre", "c. 1844", "Woodblock print (three sheets)", "A princess calls up a gigantic skeleton that leans over a ruined palace to scare a warrior. It's one of the coolest prints ever made!", ["#2a2a2a", "#e8e0c8", "#8a2a2a"]],
+  ninthwave: ["The Ninth Wave", "1850", "State Russian Museum, St. Petersburg", "Sailors cling to a broken mast after a storm as the sun breaks through. Sailors believed the ninth wave was the biggest and most dangerous.", ["#e8a84a", "#3a6a5a", "#c96a2a"]],
+  delaware: ["Washington Crossing the Delaware", "1851", "The Metropolitan Museum of Art, New York", "George Washington stands in a boat crossing an icy river on Christmas night, 1776, to surprise the enemy. The painting is about 6.5 meters (21 feet) wide!", ["#c9b48a", "#3a4a5a", "#8a3a2a"]],
+  horsefair: ["The Horse Fair", "1852–1855", "The Metropolitan Museum of Art, New York", "Powerful horses rear and stomp at a horse market in Paris. The painting is over 5 meters (16 feet) wide!", ["#8a7a5a", "#3a3a3a", "#e8e0d0"]],
+  gleaners: ["The Gleaners", "1857", "Musée d'Orsay, Paris", "Three women bend down to pick up the leftover grain after the harvest. The rich farm is far behind them.", ["#c9a86a", "#5a6a7a", "#8a5a3a"]],
+  fifer: ["The Fifer", "1866", "Musée d'Orsay, Paris", "A young boy in a soldiers' band plays the fife. The plain gray background makes him almost pop out of the painting.", ["#a8a8a0", "#c92a2a", "#1a1a1a"]],
+  mother: ["Whistler's Mother", "1871", "Musée d'Orsay, Paris", "Whistler's mother sits in a gray room. He called it “Arrangement in Grey and Black No. 1,” but everyone calls it Whistler's Mother.", ["#6a6a64", "#1a1a1a", "#d8d4c8"]],
+  snapwhip: ["Snap the Whip", "1872", "Butler Institute of American Art, Ohio", "Kids hold hands and run in a line outside their one-room schoolhouse, trying to fling off the last ones in the chain!", ["#6a9a4a", "#c9b48a", "#8a3a2a"]],
+  rainyday: ["Paris Street; Rainy Day", "1877", "Art Institute of Chicago", "People with umbrellas stroll through a wet Paris street. The cobblestones shine with rain.", ["#8a8a84", "#3a3a3a", "#c9b48a"]],
+  lanterns: ["Carnation, Lily, Lily, Rose", "1885–1886", "Tate Britain, London", "Two girls light paper lanterns among the lilies at dusk. Sargent painted it a few minutes at a time, only when the evening light was just right.", ["#4a6a3a", "#e8c87a", "#f2f0e8"]],
+  puppies: ["Still Life with Three Puppies", "1888", "Museum of Modern Art, New York", "Three puppies drink from a pan next to blue cups and fruit. It looks a little like a picture from a children's book!", ["#c94a3a", "#3a6a9a", "#e8c88a"]],
+  goulue: ["Moulin Rouge: La Goulue", "1891", "Poster (copies in many museums)", "A poster for the Moulin Rouge dance hall, with the dancer La Goulue in the spotlight. It was pasted up all over Paris!", ["#e8d890", "#c92a2a", "#1a1a1a"]],
+  banjo: ["The Banjo Lesson", "1893", "Hampton University Museum, Virginia", "A grandfather patiently teaches a young boy to play the banjo in the warm glow of a fire.", ["#5a4a3a", "#c9a86a", "#2a3a4a"]],
+  seasons: ["The Seasons", "1896", "Decorative panels (prints)", "Spring, summer, autumn and winter shown as four young women with flowers, fruit and snow.", ["#c9b48a", "#8aa85a", "#d88a5a"]],
+  strandgade: ["Interior, Strandgade 30", "1900", "Städel Museum, Frankfurt", "A woman in black stands with her back to us in a quiet, sunlit room in Copenhagen. Hammershøi loved peaceful, almost silent rooms.", ["#c9c4b8", "#2a2a2a", "#8a8478"]],
+  dresden: ["Street, Dresden", "1908", "Museum of Modern Art, New York", "People crowd a city street in wild pinks, oranges and greens. Kirchner wanted to show how the busy city felt, not just how it looked.", ["#e86a8a", "#e8a84a", "#3a8a6a"]],
+  stag: ["Stag at Sharkey's", "1909", "Cleveland Museum of Art", "Two boxers fight in a smoky club while the crowd cheers. Bellows painted with fast, slashing brushstrokes to show all the action.", ["#c98a5a", "#2a2a2a", "#8a6a4a"]],
+  cityrises: ["The City Rises", "1910", "Museum of Modern Art, New York", "A huge red horse charges through a city being built, with workers straining to hold on. Everything swirls with energy!", ["#c93a2a", "#e8c88a", "#3a5a8a"]],
+  beach: ["Children on the Beach", "1910", "Museo del Prado, Madrid", "Three boys lie on the wet sand at the edge of the sea, glowing in the bright Spanish sunshine.", ["#c98a5a", "#3a8aa8", "#e8d0a8"]],
+  yellowcow: ["The Yellow Cow", "1911", "Solomon R. Guggenheim Museum, New York", "A happy yellow cow leaps through a colorful landscape. Marc used yellow for happiness and blue for calm.", ["#e8c83a", "#3a6ab4", "#c93a3a"]],
+  eiffel: ["Eiffel Tower", "1911", "Solomon R. Guggenheim Museum, New York", "The Eiffel Tower seems to break apart and dance, as if you're seeing it from many places at once.", ["#c93a2a", "#3a5a8a", "#e8d8b8"]],
+  goldfish: ["Goldfish", "1912", "Pushkin Museum, Moscow", "Four bright orange goldfish swim in a glass bowl surrounded by plants and flowers.", ["#e86a2a", "#3a8a5a", "#e8c8a8"]],
+  physalis: ["Self-Portrait with Physalis", "1912", "Leopold Museum, Vienna", "Schiele painted himself with a sideways look next to a plant with bright orange berries.", ["#e8e0d0", "#2a2a2a", "#e86a2a"]],
+  picasso: ["Portrait of Pablo Picasso", "1912", "Art Institute of Chicago", "Gris painted his friend Picasso broken into shapes and angles. That's Cubism: showing something from many sides at once.", ["#5a6a8a", "#a89a8a", "#3a3a4a"]],
+  greenjacket: ["Lady in a Green Jacket", "1913", "Museum Ludwig, Cologne", "A woman in a green jacket stands by a lake with other strollers, under arching trees.", ["#3a8a4a", "#e8b84a", "#5a8ac8"]],
+  dining: ["The Dining Room in the Country", "1913", "Minneapolis Institute of Art", "A sunny dining room opens onto a bright garden. A cat waits on a chair, and someone leans in at the window.", ["#c94a3a", "#e8a84a", "#5a8a4a"]],
+  blacksquare: ["Black Square", "1915", "Tretyakov Gallery, Moscow", "Just a black square on a white background! People were shocked, but it became one of the most famous paintings of modern art.", ["#1a1a1a", "#e8e4dc", "#3a3a3a"]],
+  jackpine: ["The Jack Pine", "1916–1917", "National Gallery of Canada, Ottawa", "A lone pine tree stands against a glowing lake and sky in the Canadian wilderness.", ["#c96a3a", "#3a5a7a", "#8a5a8a"]],
+  alliesday: ["Allies Day, May 1917", "1917", "National Gallery of Art, Washington", "Flags of the United States, Britain and France fly over Fifth Avenue in New York to celebrate the countries working together.", ["#c93a3a", "#3a5a9a", "#e8e0d0"]],
+  jeanne: ["Jeanne Hébuterne", "1918", "Norton Simon Museum, Pasadena", "A portrait of the artist Jeanne Hébuterne, with Modigliani's famous long neck and tilted head.", ["#8a4a2a", "#3a4a6a", "#e8b88a"]],
+  popova: ["Painterly Architectonic", "1918", "Painting (Russia)", "Big overlapping shapes of bright color seem to stack up and slide past each other, like a building made of color.", ["#c93a2a", "#e8d8b8", "#2a2a3a"]],
+  senecio: ["Senecio", "1922", "Kunstmuseum Basel, Switzerland", "A round face made of simple shapes and warm squares of color, like a funny mask.", ["#e89a3a", "#c93a2a", "#e8d0a0"]],
+  flower: ["Flower Abstraction", "1924", "Whitney Museum of American Art, New York", "O'Keeffe painted flowers so close up and so big that they almost turn into shapes and colors.", ["#e8d0d8", "#4a6a8a", "#c98aa8"]],
+  automat: ["Automat", "1927", "Des Moines Art Center, Iowa", "A woman sits alone with a cup of coffee late at night in an automat, a restaurant where food waited behind little glass windows.", ["#3a3a2a", "#c9a85a", "#5a6a3a"]]
+});
+FA_ARTISTS.push(
+  ["fankuan", "⛰️", "Fan Kuan", "c. 960–c. 1030", "🇨🇳 China", "Chinese landscape painting", "He lived in the mountains to study them. He hid his signature among the leaves, and nobody found it until 1958!", ["travelers"]],
+  ["zhangzeduan", "🏯", "Zhang Zeduan", "1085–1145", "🇨🇳 China", "Chinese scroll painting", "Almost nothing is known about his life except this one amazing painting.", ["qingming"]],
+  ["vaneyck", "🪞", "Jan van Eyck", "c. 1390–1441", "🇧🇪 Flanders (now Belgium)", "Early Netherlandish painting", "He was one of the first great painters to use oil paint, which let him paint tiny, glowing details.", ["arnolfini"]],
+  ["durer", "🐇", "Albrecht Dürer", "1471–1528", "🇩🇪 Germany", "Northern Renaissance", "He was famous for his prints, and he was one of the first artists to paint lots of self-portraits.", ["hare"]],
+  ["raphael", "📜", "Raphael", "1483–1520", "🇮🇹 Italy", "Renaissance", "He worked in Rome at the same time as Michelangelo, and the two were rivals.", ["athens"]],
+  ["holbein", "💀", "Hans Holbein the Younger", "c. 1497–1543", "🇩🇪 Germany (worked in England)", "Northern Renaissance", "He was the court painter for King Henry VIII of England.", ["ambassadors"]],
+  ["arcimboldo", "🍐", "Giuseppe Arcimboldo", "c. 1526–1593", "🇮🇹 Italy", "Mannerism", "He made portraits out of fruit, vegetables, flowers, fish and even books!", ["vertumnus"]],
+  ["anguissola", "♟️", "Sofonisba Anguissola", "c. 1532–1625", "🇮🇹 Italy", "Renaissance", "She became a painter at the Spanish royal court, at a time when very few women could be professional artists.", ["chessgame"]],
+  ["tohaku", "🌲", "Hasegawa Tōhaku", "1539–1610", "🇯🇵 Japan", "Japanese ink painting", "He used only black ink and empty space to make you feel misty air.", ["pinetrees"]],
+  ["hals", "😄", "Frans Hals", "c. 1582–1666", "🇳🇱 The Netherlands", "Dutch Golden Age", "He painted with quick, loose brushstrokes that made people look alive and full of personality.", ["cavalier"]],
+  ["mansur", "🦃", "Ustad Mansur", "active c. 1590–1630", "🇮🇳 India (Mughal Empire)", "Mughal painting", "The emperor Jahangir called him “Wonder of the Age” for his paintings of animals and birds.", ["turkey"]],
+  ["gentileschi", "🎨", "Artemisia Gentileschi", "1593–c. 1656", "🇮🇹 Italy", "Baroque", "She was the first woman accepted into the art academy in Florence.", ["allegory"]],
+  ["velazquez", "👑", "Diego Velázquez", "1599–1660", "🇪🇸 Spain", "Baroque", "He was the court painter for King Philip IV of Spain.", ["meninas"]],
+  ["merian", "🦋", "Maria Sibylla Merian", "1647–1717", "🇩🇪 Germany (worked in the Netherlands)", "Nature illustration", "She sailed to South America to study insects, and she was one of the first to show how caterpillars turn into butterflies.", ["metamorphosis"]],
+  ["canaletto", "🚤", "Canaletto", "1697–1768", "🇮🇹 Italy (Venice)", "City views", "Visitors to Venice bought his sunny city views as souvenirs, like giant postcards.", ["stonemason"]],
+  ["jakuchu", "🐓", "Itō Jakuchū", "1716–1800", "🇯🇵 Japan", "Edo period painting", "He kept roosters in his garden so he could study them, and he painted them over and over.", ["rooster"]],
+  ["stubbs", "🐎", "George Stubbs", "1724–1806", "🇬🇧 England", "Animal painting", "He studied horse skeletons and muscles for 18 months so he could paint horses perfectly.", ["whistlejacket"]],
+  ["gainsborough", "💙", "Thomas Gainsborough", "1727–1788", "🇬🇧 England", "Portraits and landscapes", "He loved painting landscapes most, but people paid him to paint their portraits.", ["blueboy"]],
+  ["fragonard", "🌸", "Jean-Honoré Fragonard", "1732–1806", "🇫🇷 France", "Rococo", "He painted fast, playful, pastel scenes full of gardens and fun.", ["swing"]],
+  ["goya", "☂️", "Francisco Goya", "1746–1828", "🇪🇸 Spain", "Romanticism", "He went deaf when he was 46, but he kept painting for more than 30 years.", ["parasol"]],
+  ["david", "🐴", "Jacques-Louis David", "1748–1825", "🇫🇷 France", "Neoclassicism", "He became Napoleon's official painter.", ["napoleon"]],
+  ["utamaro", "🎎", "Kitagawa Utamaro", "c. 1753–1806", "🇯🇵 Japan", "Ukiyo-e woodblock prints", "He was famous for close-up prints of people's faces, which was something new back then.", ["threebeauties"]],
+  ["vigeelebrun", "👒", "Élisabeth Vigée Le Brun", "1755–1842", "🇫🇷 France", "Portraits", "She painted Queen Marie Antoinette more than 30 times.", ["strawhat"]],
+  ["friedrich", "🌫️", "Caspar David Friedrich", "1774–1840", "🇩🇪 Germany", "Romanticism", "He often painted people from behind, so you feel like you're standing right there with them.", ["wanderer"]],
+  ["constable", "🌾", "John Constable", "1776–1837", "🇬🇧 England", "Romanticism", "He made hundreds of sketches of clouds to get his skies just right.", ["haywain"]],
+  ["audubon", "🦜", "John James Audubon", "1785–1851", "🇺🇸 United States", "Nature illustration", "He painted every kind of American bird he could find, life-size, for his giant book “The Birds of America.”", ["parakeet"]],
+  ["kuniyoshi", "🐱", "Utagawa Kuniyoshi", "1797–1861", "🇯🇵 Japan", "Ukiyo-e woodblock prints", "He loved drawing warriors, monsters and lots of cats!", ["skeleton"]],
+  ["millet", "👩‍🌾", "Jean-François Millet", "1814–1875", "🇫🇷 France", "Realism", "He grew up on a farm and painted the hard work of country people.", ["gleaners"]],
+  ["leutze", "🚣", "Emanuel Leutze", "1816–1868", "🇩🇪 Germany and 🇺🇸 United States", "History painting", "He painted this American scene while living in Germany, with American visitors as his models.", ["delaware"]],
+  ["aivazovsky", "🌊", "Ivan Aivazovsky", "1817–1900", "🇷🇺 Russia (born in Crimea)", "Romanticism", "He painted about 6,000 pictures, mostly of the sea, often from memory.", ["ninthwave"]],
+  ["bonheur", "🐴", "Rosa Bonheur", "1822–1899", "🇫🇷 France", "Realism", "She got special permission from the police to wear pants so she could visit horse markets and draw.", ["horsefair"]],
+  ["manet", "🎶", "Édouard Manet", "1832–1883", "🇫🇷 France", "Realism and Impressionism", "Younger painters like Monet looked up to him, even though critics often made fun of his work.", ["fifer"]],
+  ["whistler", "🪑", "James McNeill Whistler", "1834–1903", "🇺🇸 United States (worked in England and France)", "Tonalism", "He gave his paintings musical names like “Arrangement” and “Nocturne.”", ["mother"]],
+  ["homer", "🧒", "Winslow Homer", "1836–1910", "🇺🇸 United States", "Realism", "He started out drawing pictures of the Civil War for a magazine.", ["snapwhip"]],
+  ["caillebotte", "🌂", "Gustave Caillebotte", "1848–1894", "🇫🇷 France", "Impressionism", "He was rich, so he bought his friends' paintings to help them, and he left them all to France.", ["rainyday"]],
+  ["gauguin", "🐶", "Paul Gauguin", "1848–1903", "🇫🇷 France (worked in Tahiti)", "Post-Impressionism", "He worked as a stockbroker before he became a full-time painter.", ["puppies"]],
+  ["sargent", "🏮", "John Singer Sargent", "1856–1925", "🇺🇸 United States (born in Italy)", "Portraits and Impressionism", "He painted about 900 oil paintings and more than 2,000 watercolors.", ["lanterns"]],
+  ["tanner", "🪕", "Henry Ossawa Tanner", "1859–1937", "🇺🇸 United States (worked in France)", "Realism", "He was the first African American painter to become famous around the world.", ["banjo"]],
+  ["mucha", "🌼", "Alphonse Mucha", "1860–1939", "🇨🇿 Czech Republic (worked in Paris)", "Art Nouveau", "His swirly posters were so popular that people took them right off the walls of Paris!", ["seasons"]],
+  ["lautrec", "🎩", "Henri de Toulouse-Lautrec", "1864–1901", "🇫🇷 France", "Post-Impressionism", "He made famous posters for the theaters and dance halls of Paris.", ["goulue"]],
+  ["sorolla", "🏖️", "Joaquín Sorolla", "1863–1923", "🇪🇸 Spain", "Impressionism (Luminism)", "He was called the “master of light” for his sunny beach scenes.", ["beach"]],
+  ["hammershoi", "🚪", "Vilhelm Hammershøi", "1864–1916", "🇩🇰 Denmark", "Quiet interiors", "He painted the same rooms of his own apartment over and over, in soft grays.", ["strandgade"]],
+  ["bonnard", "🐈", "Pierre Bonnard", "1867–1947", "🇫🇷 France", "Post-Impressionism", "He sometimes kept working on a painting for years, even sneaking into museums to touch up his own paintings!", ["dining"]],
+  ["matisse", "🐠", "Henri Matisse", "1869–1954", "🇫🇷 France", "Fauvism", "When he was too sick to stand and paint, he made art by cutting shapes out of painted paper.", ["goldfish"]],
+  ["thomson", "🛶", "Tom Thomson", "1877–1917", "🇨🇦 Canada", "Canadian landscape painting", "He spent his summers as a park ranger and canoe guide in Algonquin Park.", ["jackpine"]],
+  ["malevich", "⬛", "Kazimir Malevich", "1879–1935", "🇷🇺 Russia (born in Kyiv, Ukraine)", "Suprematism", "He wanted art to be about pure feeling, without painting any real objects at all.", ["blacksquare"]],
+  ["klee", "🙂", "Paul Klee", "1879–1940", "🇨🇭 Switzerland (worked in Germany)", "Modern art", "He said that drawing is “taking a line for a walk.”", ["senecio"]],
+  ["kirchner", "🌆", "Ernst Ludwig Kirchner", "1880–1938", "🇩🇪 Germany", "Expressionism", "He started an art group called “The Bridge” with his friends.", ["dresden"]],
+  ["marc", "🐄", "Franz Marc", "1880–1916", "🇩🇪 Germany", "Expressionism (The Blue Rider)", "He painted animals in bright colors that showed feelings: blue for calm and strength, yellow for happiness.", ["yellowcow"]],
+  ["boccioni", "🏗️", "Umberto Boccioni", "1882–1916", "🇮🇹 Italy", "Futurism", "The Futurists loved speed, machines and the busy, noisy modern city.", ["cityrises"]],
+  ["bellows", "🥊", "George Bellows", "1882–1925", "🇺🇸 United States", "Realism (the Ashcan School)", "He was a great baseball player and almost became a pro, but chose painting instead.", ["stag"]],
+  ["hopper", "☕", "Edward Hopper", "1882–1967", "🇺🇸 United States", "American Realism", "He painted quiet, lonely moments in American cities, like diners, offices and gas stations.", ["automat"]],
+  ["modigliani", "🦢", "Amedeo Modigliani", "1884–1920", "🇮🇹 Italy (worked in Paris)", "Modern art", "He painted people with long necks and long faces, and sometimes eyes that are just blue.", ["jeanne"]],
+  ["delaunay", "🗼", "Robert Delaunay", "1885–1941", "🇫🇷 France", "Orphism", "He painted the Eiffel Tower again and again, as if it were dancing.", ["eiffel"]],
+  ["okeeffe", "🌺", "Georgia O'Keeffe", "1887–1986", "🇺🇸 United States", "American Modernism", "She later lived in the New Mexico desert and painted its red hills and bleached bones.", ["flower"]],
+  ["gris", "🧊", "Juan Gris", "1887–1927", "🇪🇸 Spain (worked in Paris)", "Cubism", "He was a friend of Pablo Picasso and one of the first Cubists.", ["picasso"]],
+  ["macke", "🧥", "August Macke", "1887–1914", "🇩🇪 Germany", "Expressionism", "He loved painting people strolling in parks and by lakes, in bright, happy colors.", ["greenjacket"]],
+  ["popova", "🔺", "Lyubov Popova", "1889–1924", "🇷🇺 Russia", "Russian avant-garde", "Besides paintings, she designed fabrics, books and stage sets.", ["popova"]],
+  ["schiele", "🍂", "Egon Schiele", "1890–1918", "🇦🇹 Austria", "Expressionism", "Gustav Klimt was his mentor and friend.", ["physalis"]],
+  ["hassam", "🇺🇸", "Childe Hassam", "1859–1935", "🇺🇸 United States", "American Impressionism", "He painted about 30 pictures of flags flying in New York during World War I.", ["alliesday"]]
+);
+const faBorn = a => +((a[3].match(/\d{3,4}/) || [0])[0]);
+FA_ARTISTS.sort((a, b) => faBorn(a) - faBorn(b));   // oldest first
+/* ---------- 🔎 Art Hunt: see a famous painting and say who made it! Classic Hunt, Zoom Mystery and Speed Round,
+   with older artists, modern artists, or everyone. Uses the Famous Artists paintings. ---------- */
+const AH_MODES = { classic: ["🖼️", "Classic Hunt", "10 paintings: who made each one?"], zoom: ["🔍", "Zoom Mystery", "Each painting starts super zoomed in. Guess early for more points!"], speed: ["⚡", "Speed Round", "60 seconds! How many can you get?"] };
+const AH_ERAS = [["all", "🌈 Everyone"], ["old", "🏛️ Older artists"], ["modern", "🚀 Modern artists"]];
+const AH_COLORS = ["#ff006e", "#3a86ff", "#ffbe0b", "#06d6a0", "#8338ec", "#fb5607"];
+const faYear = wid => +((FA_WORKS[wid][1].match(/\d{3,4}/) || [0])[0]);
+const ahEraOf = wid => faYear(wid) >= 1900 ? "modern" : "old";
+const ahGet = () => { const v = store.get("ah_v1", null) || {}; return { total: 0, era: "all", ...v, best: { ...(v.best || {}) } }; };
+const ahSave = S => store.set("ah_v1", S);
+const ahRank = n => n >= 300 ? ["🕵️‍♀️", "Master Art Detective", null] : n >= 120 ? ["🎖️", "Senior Art Detective", 300] : n >= 40 ? ["🔎", "Junior Art Detective", 120] : ["🖍️", "Rookie Art Hunter", 40];
+let AHG = null;
+function startArtHunt() {
+  const S = ahGet(), [re, rn, next] = ahRank(S.total), works = FA_ARTISTS.flatMap(a => a[7]);
+  const floaty = ["🎨", "🖌️", "🖼️", "🔎", "✨", "🌈", "🖍️", "⭐", "🎭", "💎"].map((e, i) => `<span style="--x:${(i * 41 + 4) % 94}%;--y:${(i * 59 + 8) % 86}%;--d:${(i % 5) * -1.3}s">${e}</span>`).join("");
+  const splats = AH_COLORS.map((c, i) => `<i style="--c:${c};--x:${[8, 82, 22, 64, 90, 44][i]}%;--y:${[18, 12, 78, 88, 58, 30][i]}%;--s:${[90, 120, 70, 100, 60, 80][i]}px"></i>`).join("");
+  appScreen("🔎 Art Hunt", `<div class="ah"><div class="ah-hero"><div class="ah-splats" aria-hidden="true">${splats}</div><div class="ah-floaty" aria-hidden="true">${floaty}</div>
+      <h2 class="ah-title">Art <span>Hunt</span></h2><p>See a famous painting. Can you say who made it? 🖼️</p>
+      <div class="ah-badge"><span>${re}</span><div><small>Your rank</small><b>${rn}</b><small>${S.total.toLocaleString()} paintings found${next ? ` · ${next - S.total} more to the next rank` : " · the top rank!"}</small></div></div></div>
+    <h3>🌍 Which artists?</h3><div class="na-chips ah-eras">${AH_ERAS.map(([k, l]) => `<button class="chip${S.era === k ? " on" : ""}" type="button" data-era="${k}">${l}</button>`).join("")}</div>
+    <h3>🎮 Pick a hunt</h3><div class="ah-modes">${Object.entries(AH_MODES).map(([k, [ic, t, d]], i) => `<button class="ah-mode" type="button" style="--c:${AH_COLORS[i]};--c2:${AH_COLORS[i + 3]}" data-ahm="${k}"><span class="ah-mi">${ic}</span><span><b>${t}</b><small>${d}</small></span><span class="ah-best">${S.best[k] != null ? `🏆 ${S.best[k]}` : "▶"}</span></button>`).join("")}</div>
+    <p class="soft ah-note">${works.length} paintings by ${FA_ARTISTS.length} artists. Learn all about them in <button class="linklike" type="button" id="ah-fa">🖼️ Famous Artists</button>!</p></div>`);
+  $app.querySelectorAll("[data-era]").forEach(b => b.addEventListener("click", () => { const S2 = ahGet(); S2.era = b.dataset.era; ahSave(S2); $app.querySelectorAll("[data-era]").forEach(x => x.classList.toggle("on", x === b)); tone([660, 880], .06, "triangle", .05); }));
+  $app.querySelectorAll("[data-ahm]").forEach(b => b.addEventListener("click", () => ahPlay(b.dataset.ahm)));
+  document.getElementById("ah-fa").addEventListener("click", () => startArtists());
+}
+function ahPlay(mode) {
+  const S = ahGet(), works = FA_ARTISTS.flatMap(a => a[7]).filter(w => S.era === "all" || ahEraOf(w) === S.era);
+  AHG = { mode, era: S.era, pool: shuffle(works), i: 0, total: mode === "speed" ? 0 : Math.min(10, works.length), score: 0, right: 0, seen: 0, streak: 0, best: 0, hints: mode === "speed" ? 0 : 3, left: 60, missed: [], over: false };
+  const [ic, t] = AH_MODES[mode];
+  appScreen(`🔎 Art Hunt · ${ic} ${t}`, `<div class="ah ah-game ah-${mode}"><div class="row ah-top"><button class="chip" id="ah-home" type="button">⬅ Art Hunt</button><span class="ah-hud"><b>🏆 <span id="ah-score">0</span></b><b id="ah-stk">🔥 0</b>${mode === "speed" ? `<b id="ah-time">⏱️ 60</b>` : `<b id="ah-n">🖼️ 1 / ${AHG.total}</b>`}</span></div>
+    <div class="ah-prog"><i id="ah-bar"></i></div><div id="ah-stage"></div></div>`);
+  document.getElementById("ah-home").addEventListener("click", () => { AHG.over = true; startArtHunt(); });
+  if (mode === "speed") naTimer(setInterval(() => {
+    if (!AHG || AHG.over || !document.getElementById("ah-stage")) return;
+    AHG.left = Math.max(0, AHG.left - .25); const t = document.getElementById("ah-time"); if (t) t.textContent = "⏱️ " + Math.ceil(AHG.left);
+    document.getElementById("ah-bar").style.width = (AHG.left / 60 * 100) + "%"; if (AHG.left <= 10) t?.classList.add("hurry");
+    if (AHG.left <= 0) ahEnd();
+  }, 250));
+  keyHandler = e => {
+    if (!document.getElementById("ah-stage")) { keyHandler = null; return; }
+    const nx = document.getElementById("ah-nx");
+    if (e.key === "Enter" && nx) { if (!(e.target && e.target.closest?.("button, input, a"))) { e.preventDefault(); nx.click(); } return; }
+    if (e.key === "h" || e.key === "H") return ahHint();
+    const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 4) $app.querySelectorAll(".ah-ch")[n - 1]?.click();
+  };
+  ahQ();
+}
+function ahChoices(wid) {   // the right artist and 3 others (from the same time when possible)
+  const right = faArtistOf(wid), era = ahEraOf(wid), others = FA_ARTISTS.filter(a => a !== right), same = others.filter(a => a[7].some(w => ahEraOf(w) === era));
+  const pick = shuffle(same.length >= 3 ? same : others).slice(0, 3);
+  return shuffle([right, ...pick]);
+}
+function ahQ() {
+  const G = AHG; if (!G || G.over) return;
+  if (G.mode !== "speed" && G.seen >= G.total) return ahEnd();
+  const wid = G.pool[G.i % G.pool.length], next = G.pool[(G.i + 1) % G.pool.length]; G.i++; G.cur = { wid, answered: false, hinted: false, t0: 0 };
+  const ch = ahChoices(wid); G.cur.ch = ch;
+  const fx = 20 + Math.random() * 60, fy = 20 + Math.random() * 60;
+  document.getElementById("ah-stage").innerHTML = `<div class="ah-card" id="ah-card"><p class="ah-ask">${G.mode === "zoom" ? "🔍 Zooming out… who made this painting?" : "Who made this painting?"}</p>
+      <div class="ah-frame"><div class="ah-canvas" id="ah-canvas"><img id="ah-img" src="${faSrc(wid)}" alt="A famous painting" style="transform-origin:${fx}% ${fy}%"></div>${G.mode === "zoom" ? `<b class="ah-zpts" id="ah-zpts">100</b>` : ""}</div>
+      <div class="ah-chs">${ch.map((a, k) => `<button class="ah-ch" type="button" data-k="${k}" style="--c:${AH_COLORS[k]}"><i>${k + 1}</i><span class="ah-che">${a[1]}</span><b>${esc(a[2])}</b></button>`).join("")}</div>
+      ${G.mode === "speed" ? "" : `<div class="row ah-hintrow"><button class="chip ah-hint" id="ah-hint" type="button"${G.hints ? "" : " disabled"}>💡 Hint <small>(${G.hints} left)</small></button></div>`}
+      <div class="ah-fb" id="ah-fb" aria-live="polite"></div></div>`;
+  if (G.mode !== "speed") { document.getElementById("ah-n").textContent = `🖼️ ${G.seen + 1} / ${G.total}`; document.getElementById("ah-bar").style.width = (G.seen / G.total * 100) + "%"; }
+  const img = document.getElementById("ah-img"), go = () => { if (!G.cur || G.cur.wid !== wid) return; G.cur.t0 = Date.now(); if (G.mode === "zoom") { img.classList.add("zin"); void img.offsetWidth; img.classList.add("zout"); G.zt = naTimer(setInterval(() => { const el = document.getElementById("ah-zpts"); if (!el || G.cur.answered) return; el.textContent = ahZoomPts(); }, 200)); } };
+  if (img.complete && img.naturalWidth) go(); else { img.addEventListener("load", go, { once: true }); img.addEventListener("error", () => { if (G.cur && G.cur.wid === wid) ahQ(); }, { once: true }); }   // a missing picture is skipped
+  new Image().src = faSrc(next);   // get the next one ready
+  document.getElementById("ah-hint")?.addEventListener("click", ahHint);
+  $app.querySelectorAll(".ah-ch").forEach(b => b.addEventListener("click", () => ahAnswer(+b.dataset.k)));
+}
+const ahZoomPts = () => { const G = AHG, s = G.cur && G.cur.t0 ? (Date.now() - G.cur.t0) / 1000 : 0; return Math.max(20, Math.round(100 - s * 6.5)); };
+function ahHint() {
+  const G = AHG, c = G && G.cur, hb = document.getElementById("ah-hint"); if (!c || c.answered || c.hinted || !hb || !G.hints) return;
+  const right = faArtistOf(c.wid), wrong = [...$app.querySelectorAll(".ah-ch")].filter(b => c.ch[+b.dataset.k] !== right);
+  c.hinted = true; G.hints--; shuffle(wrong).slice(0, 2).forEach(b => { b.disabled = true; b.classList.add("gone"); });
+  hb.disabled = true; hb.innerHTML = `💡 Hint used <small>(${G.hints} left)</small>`; tone([880, 660], .06, "sine", .05);
+}
+function ahAnswer(k) {
+  const G = AHG, c = G && G.cur; if (!c || c.answered || G.over) return; c.answered = true;
+  const right = faArtistOf(c.wid), ok = c.ch[k] === right, W = FA_WORKS[c.wid];
+  G.seen++;
+  $app.querySelectorAll(".ah-ch").forEach(b => { b.disabled = true; const a = c.ch[+b.dataset.k]; b.classList.add(a === right ? "right" : +b.dataset.k === k ? "wrong" : "fade"); });
+  document.getElementById("ah-hint")?.setAttribute("disabled", "");
+  const img = document.getElementById("ah-img"); img.classList.remove("zin", "zout"); img.classList.add("shown");
+  const fb = document.getElementById("ah-fb"), card = document.getElementById("ah-card");
+  if (ok) {
+    G.right++; G.streak++; G.best = Math.max(G.best, G.streak);
+    const pts = G.mode === "zoom" ? ahZoomPts() : G.mode === "speed" ? 10 + Math.min(G.streak, 10) * 2 : Math.round((10 + Math.min(G.streak, 10) * 3) / (c.hinted ? 2 : 1));
+    G.score += Math.round(pts / (G.mode === "zoom" && c.hinted ? 2 : 1));
+    tone([523, 659, 784, 1047], .07, "triangle", .07); card.classList.add("yay");
+    const burst = document.createElement("div"); burst.className = "ah-burst"; burst.innerHTML = ["✨", "⭐", "🎨", "🌟", "💫", "🎉"].map((e, i) => `<span style="--a:${i * 60}deg">${e}</span>`).join(""); card.appendChild(burst);
+    if (G.streak % 5 === 0) kqBurst(26, ["🎨", "🖌️", "🖼️", "⭐", "🌈", "✨"]);
+    fb.className = "ah-fb good"; fb.innerHTML = `<b>✅ ${rPick(["Art genius!", "You found it!", "Masterpiece!", "Brilliant!", "Yes!", "Sharp eyes!", "Bravo!"])} +${pts}</b><br><i>${esc(W[0])}</i> by <b>${right[1]} ${esc(right[2])}</b> · ${esc(W[1])}`;
+  } else {
+    G.streak = 0; G.missed.push(c.wid); tone([220, 175], .14, "sawtooth", .05); card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+    if (G.mode === "speed") G.left = Math.max(0, G.left - 3);
+    fb.className = "ah-fb bad"; fb.innerHTML = `<b>❌ It was ${right[1]} ${esc(right[2])}!</b><br><i>${esc(W[0])}</i> · ${esc(W[1])}${G.mode === "speed" ? " · −3 seconds" : ""}`;
+  }
+  document.getElementById("ah-score").textContent = G.score; const s = document.getElementById("ah-stk"); s.textContent = "🔥 " + G.streak; s.classList.remove("pop"); void s.offsetWidth; s.classList.add("pop");
+  if (G.mode === "speed") return setTimeout(() => { if (!G.over && document.getElementById("ah-stage")) ahQ(); }, ok ? 650 : 1100);
+  fb.insertAdjacentHTML("beforeend", `<p class="ah-about">${esc(W[3])}</p><button class="btn go ah-next" id="ah-nx" type="button">${G.seen >= G.total ? "See my score 🏆" : "Next painting ➜"}</button>`);
+  document.getElementById("ah-nx").addEventListener("click", ahQ);
+  document.getElementById("ah-nx").scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+}
+function ahEnd() {
+  const G = AHG; if (!G || G.over) return; G.over = true;
+  const S = ahGet(), before = ahRank(S.total)[1], prevBest = S.best[G.mode], isBest = prevBest == null || G.score > prevBest;
+  S.total += G.right; if (isBest) S.best[G.mode] = G.score; ahSave(S);
+  const [re, rn] = ahRank(S.total), pct = G.seen ? Math.round(G.right / G.seen * 100) : 0, stars = G.mode === "speed" ? (G.right >= 20 ? 3 : G.right >= 12 ? 2 : 1) : pct >= 90 ? 3 : pct >= 70 ? 2 : 1;
+  if (stars === 3 || isBest) kqBurst(60, ["🎨", "🖌️", "🖼️", "⭐", "🌈", "✨", "🏆"]);
+  const [ic, t] = AH_MODES[G.mode];
+  appScreen(`🔎 Art Hunt · ${ic} ${t}`, `<div class="ah"><div class="ah-res"><span class="ah-resic">${ic}</span><small>${t} complete</small><div class="ah-pts">${G.score}<small> points</small></div><div class="ah-stars">${"⭐".repeat(stars)}${"☆".repeat(3 - stars)}</div>
+      ${isBest ? `<b class="ah-newbest">🏆 New best score!</b>` : `<small>Your best: ${prevBest}</small>`}
+      <p>${G.right} right out of ${G.seen} · Best streak 🔥 ${G.best}</p>
+      ${rn !== before ? `<div class="ah-badge up"><span>${re}</span><div><small>New rank!</small><b>${rn}</b></div></div>` : ""}</div>
+    ${G.missed.length ? `<h3>🖼️ Paintings to remember</h3><div class="ah-missed">${[...new Set(G.missed)].map(w => `<button class="ah-mcard" type="button" data-w="${w}">${faPic(w, true)}<b>${esc(FA_WORKS[w][0])}</b><small>${faArtistOf(w)[1]} ${esc(faArtistOf(w)[2])}</small></button>`).join("")}</div>` : `<div class="ah-res"><h3>Zero misses! You're an art detective! 🕵️</h3></div>`}
+    <div class="row ah-nav"><button class="btn" id="ah-back" type="button">⬅ Art Hunt</button><button class="btn go" id="ah-again" type="button">Play again 🔁</button></div></div>`);
+  faBindPics($app);
+  document.getElementById("ah-back").addEventListener("click", startArtHunt);
+  document.getElementById("ah-again").addEventListener("click", () => ahPlay(G.mode));
+  $app.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => faWork(b.dataset.w)));
+}
+NEW_APPS.splice(Math.max(0, NEW_APPS.findIndex(a => a.id === "artists")), 0, { id: "arthunt", emoji: "🔎", name: "Art Hunt", desc: "See a famous painting and say who made it! Classic Hunt, Zoom Mystery and a 60-second Speed Round, with older or modern artists.", start: () => startArtHunt(), added: "2026-11-18", kw: "art hunt|who painted|guess the (artist|painter|painting)|name that painting|painting quiz|art quiz|artist quiz" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
