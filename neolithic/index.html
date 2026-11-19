@@ -2318,8 +2318,8 @@
   .ah-card.shake { animation: kqShake .4s; } .ah-card.yay { animation: kqPopIn .45s; }
   .ah-ask { margin: 0 0 8px; text-align: center; font-weight: 900; font-size: 1.15rem; }
   .ah-frame { position: relative; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #b8860b, #ffd700 30%, #8b6508 55%, #ffe066 80%, #b8860b); box-shadow: 0 10px 24px rgba(0,0,0,.45), inset 0 0 0 3px rgba(255,255,255,.35); }
-  .ah-canvas { position: relative; overflow: hidden; border-radius: 3px; background: #111; display: grid; place-items: center; height: min(46vh, 380px); box-shadow: inset 0 0 0 3px #5a3a0a; }
-  .ah-canvas img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+  .ah-canvas { position: relative; overflow: hidden; border-radius: 3px; background: #111; display: grid; place-items: center; min-height: 140px; box-shadow: inset 0 0 0 3px #5a3a0a; }
+  .ah-canvas img { display: block; max-width: 100%; max-height: min(46vh, 380px); width: auto; height: auto; }
   .ah-canvas img.zin { transform: scale(6); transition: none; } .ah-canvas img.zout { transform: scale(1); transition: transform 13s cubic-bezier(.25,.1,.25,1); } .ah-canvas img.shown { transform: scale(1); transition: transform .6s ease-out; }
   .ah-zpts { position: absolute; top: 18px; right: 18px; background: #ff006e; color: #fff; font-family: var(--display); font-weight: 400; font-size: 1.3rem; border-radius: 99px; padding: 2px 12px; box-shadow: 0 3px 8px rgba(0,0,0,.4); }
   .ah-chs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }

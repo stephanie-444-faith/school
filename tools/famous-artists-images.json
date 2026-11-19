@@ -1,5 +1,5 @@
 {
- "note": "Famous Artists pictures in neolithic/art/: <id>.jpg (up to 1280 px) and <id>-s.jpg (up to 400 px), made from these Wikimedia Commons files (all public domain). They are published next to the page.",
+ "note": "Famous Artists pictures in neolithic/art/: <id>.jpg (up to 1280 px) and <id>-s.jpg (up to 400 px), made from these Wikimedia Commons files (public domain, or CC0 where noted). They are published next to the page.",
  "works": [
   {
    "id": "monalisa",
@@ -180,6 +180,366 @@
    "commons_file": "Hilma_af_Klint_-_The_Ten_Largest_No._7_-_Adulthood_-_1907.jpg",
    "license": "Public domain",
    "page": "https://commons.wikimedia.org/wiki/File:Hilma_af_Klint_-_The_Ten_Largest_No._7_-_Adulthood_-_1907.jpg"
+  },
+  {
+   "id": "arnolfini",
+   "commons_file": "Van_Eyck_-_Arnolfini_Portrait.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Van_Eyck_-_Arnolfini_Portrait.jpg"
+  },
+  {
+   "id": "hare",
+   "commons_file": "Albrecht_Dürer_-_Hare,_1502_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Albrecht_D%C3%BCrer_-_Hare,_1502_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "athens",
+   "commons_file": "\"The_School_of_Athens\"_by_Raffaello_Sanzio_da_Urbino.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:%22The_School_of_Athens%22_by_Raffaello_Sanzio_da_Urbino.jpg"
+  },
+  {
+   "id": "ambassadors",
+   "commons_file": "Hans_Holbein_the_Younger_-_The_Ambassadors_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Hans_Holbein_the_Younger_-_The_Ambassadors_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "chessgame",
+   "commons_file": "The_Chess_Game_(Sofonisba_Anguissola)_1555_(4096x3236px).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:The_Chess_Game_(Sofonisba_Anguissola)_1555_(4096x3236px).jpg"
+  },
+  {
+   "id": "vertumnus",
+   "commons_file": "Giuseppe_Arcimboldo_-_Rudolf_II_of_Habsburg_as_Vertumnus_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Giuseppe_Arcimboldo_-_Rudolf_II_of_Habsburg_as_Vertumnus_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "pinetrees",
+   "commons_file": "Hasegawa_Tohaku_-_Pine_Trees_(Shōrin-zu_byōbu)_-_right_hand_screen.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Hasegawa_Tohaku_-_Pine_Trees_(Sh%C5%8Drin-zu_by%C5%8Dbu)_-_right_hand_screen.jpg"
+  },
+  {
+   "id": "turkey",
+   "commons_file": "Turkey_Cock,_by_Mansur,_opaque_watercolour_and_gold_on_paper,_Mughal,_ca._1612.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Turkey_Cock,_by_Mansur,_opaque_watercolour_and_gold_on_paper,_Mughal,_ca._1612.jpg"
+  },
+  {
+   "id": "allegory",
+   "commons_file": "Self-portrait_as_the_Allegory_of_Painting_(La_Pittura)_-_Artemisia_Gentileschi.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Self-portrait_as_the_Allegory_of_Painting_(La_Pittura)_-_Artemisia_Gentileschi.jpg"
+  },
+  {
+   "id": "cavalier",
+   "commons_file": "Frans_Hals_–_The_Laughing_Cavalier.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Frans_Hals_%E2%80%93_The_Laughing_Cavalier.jpg"
+  },
+  {
+   "id": "meninas",
+   "commons_file": "Las_Meninas,_by_Diego_Velázquez,_from_Prado_in_Google_Earth.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Las_Meninas,_by_Diego_Vel%C3%A1zquez,_from_Prado_in_Google_Earth.jpg"
+  },
+  {
+   "id": "metamorphosis",
+   "commons_file": "Maria_Sibylla_Merian_Banana_Flower_and_Fruit,_from_Metamorphosis_insectorum_Surinamensium_1705.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Maria_Sibylla_Merian_Banana_Flower_and_Fruit,_from_Metamorphosis_insectorum_Surinamensium_1705.jpg"
+  },
+  {
+   "id": "stonemason",
+   "commons_file": "Canaletto_-_The_Stonemason's_Yard.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Canaletto_-_The_Stonemason%27s_Yard.jpg"
+  },
+  {
+   "id": "rooster",
+   "commons_file": "Itō_Jakuchū_-_Black_rooster_and_nandin_(Colorful_Realm_of_Living_Beings).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:It%C5%8D_Jakuch%C5%AB_-_Black_rooster_and_nandin_(Colorful_Realm_of_Living_Beings).jpg"
+  },
+  {
+   "id": "whistlejacket",
+   "commons_file": "Whistlejacket_by_George_Stubbs.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Whistlejacket_by_George_Stubbs.jpg"
+  },
+  {
+   "id": "swing",
+   "commons_file": "Joean_Honoré_Fragonard_-_The_Swing.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Joean_Honor%C3%A9_Fragonard_-_The_Swing.jpg"
+  },
+  {
+   "id": "blueboy",
+   "commons_file": "Thomas_Gainsborough_-_The_Blue_Boy_(1770).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Thomas_Gainsborough_-_The_Blue_Boy_(1770).jpg"
+  },
+  {
+   "id": "parasol",
+   "commons_file": "El_Quitasol_(Goya).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:El_Quitasol_(Goya).jpg"
+  },
+  {
+   "id": "strawhat",
+   "commons_file": "Self-portrait_in_a_Straw_Hat_by_Elisabeth-Louise_Vigée-Lebrun.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Self-portrait_in_a_Straw_Hat_by_Elisabeth-Louise_Vig%C3%A9e-Lebrun.jpg"
+  },
+  {
+   "id": "threebeauties",
+   "commons_file": "Kitagawa_Utamaro_-_Toji_san_bijin_(Three_Beauties_of_the_Present_Day)From_Bijin-ga_(Pictures_of_Beautiful_Women),_published_by_Tsutaya_Juzaburo_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Kitagawa_Utamaro_-_Toji_san_bijin_(Three_Beauties_of_the_Present_Day)From_Bijin-ga_(Pictures_of_Beautiful_Women),_published_by_Tsutaya_Juzaburo_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "napoleon",
+   "commons_file": "Napoleon_at_the_Great_St._Bernard_-_Jacques-Louis_David_-_Google_Cultural_Institute.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Napoleon_at_the_Great_St._Bernard_-_Jacques-Louis_David_-_Google_Cultural_Institute.jpg"
+  },
+  {
+   "id": "wanderer",
+   "commons_file": "Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg"
+  },
+  {
+   "id": "haywain",
+   "commons_file": "John_Constable_-_The_Hay_Wain_(1821).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:John_Constable_-_The_Hay_Wain_(1821).jpg"
+  },
+  {
+   "id": "parakeet",
+   "commons_file": "The_birds_of_America._(Livraison)_6,_Plate_26,_Carolina_Parrot_Males_1.,_F(emale)_2.,_Young_3._(i.e._Carolina_Parakeet)_;_Plant_Vulgo_Cuckle_Burr_-_estampe_-_Drawn_from_Nature_and_Published_by_John_J._Audubon..._-_btv1b53144003f.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:The_birds_of_America._(Livraison)_6,_Plate_26,_Carolina_Parrot_Males_1.,_F(emale)_2.,_Young_3._(i.e._Carolina_Parakeet)_;_Plant_Vulgo_Cuckle_Burr_-_estampe_-_Drawn_from_Nature_and_Published_by_John_J._Audubon..._-_btv1b53144003f.jpg"
+  },
+  {
+   "id": "skeleton",
+   "commons_file": "Takiyasha_the_Witch_and_the_Skeleton_Spectre,_by_Utagawa_Kuniyoshi.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Takiyasha_the_Witch_and_the_Skeleton_Spectre,_by_Utagawa_Kuniyoshi.jpg"
+  },
+  {
+   "id": "ninthwave",
+   "commons_file": "Hovhannes_Aivazovsky_-_The_Ninth_Wave_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Hovhannes_Aivazovsky_-_The_Ninth_Wave_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "delaware",
+   "commons_file": "Washington_Crossing_the_Delaware_by_Emanuel_Leutze,_MMA-NYC,_1851.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Washington_Crossing_the_Delaware_by_Emanuel_Leutze,_MMA-NYC,_1851.jpg"
+  },
+  {
+   "id": "horsefair",
+   "commons_file": "Rosa_Bonheur,_The_Horse_Fair,_1852–55.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Rosa_Bonheur,_The_Horse_Fair,_1852%E2%80%9355.jpg"
+  },
+  {
+   "id": "gleaners",
+   "commons_file": "Jean-François_Millet_-_Gleaners_-_Google_Art_Project_2.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Jean-Fran%C3%A7ois_Millet_-_Gleaners_-_Google_Art_Project_2.jpg"
+  },
+  {
+   "id": "fifer",
+   "commons_file": "Manet,_Edouard_-_Young_Flautist,_or_The_Fifer,_1866_(2).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Manet,_Edouard_-_Young_Flautist,_or_The_Fifer,_1866_(2).jpg"
+  },
+  {
+   "id": "mother",
+   "commons_file": "Whistlers_Mother_high_res.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Whistlers_Mother_high_res.jpg"
+  },
+  {
+   "id": "snapwhip",
+   "commons_file": "Winslow_Homer_-_Snap_the_Whip_(Butler_Institute_of_American_Art).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Winslow_Homer_-_Snap_the_Whip_(Butler_Institute_of_American_Art).jpg"
+  },
+  {
+   "id": "rainyday",
+   "commons_file": "Gustave_Caillebotte_-_Paris_Street;_Rainy_Day_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Gustave_Caillebotte_-_Paris_Street;_Rainy_Day_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "lanterns",
+   "commons_file": "John_Singer_Sargent_-_Carnation,_Lily,_Lily,_Rose_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:John_Singer_Sargent_-_Carnation,_Lily,_Lily,_Rose_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "puppies",
+   "commons_file": "Paul_Gauguin_-_Still_Life_with_Three_Puppies.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Paul_Gauguin_-_Still_Life_with_Three_Puppies.jpg"
+  },
+  {
+   "id": "banjo",
+   "commons_file": "Henry_Ossawa_Tanner,_The_Banjo_Lesson_(darker).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Henry_Ossawa_Tanner,_The_Banjo_Lesson_(darker).jpg"
+  },
+  {
+   "id": "goulue",
+   "commons_file": "Toulouse-Lautrec_-_Moulin_Rouge,_La_Goulue,_1954.1193.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Toulouse-Lautrec_-_Moulin_Rouge,_La_Goulue,_1954.1193.jpg"
+  },
+  {
+   "id": "seasons",
+   "commons_file": "Four_Seasons_by_Alfons_Mucha,_circa_1896.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Four_Seasons_by_Alfons_Mucha,_circa_1896.jpg"
+  },
+  {
+   "id": "travelers",
+   "commons_file": "Fan_Kuan_-_Travelers_Among_Mountains_and_Streams_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Fan_Kuan_-_Travelers_Among_Mountains_and_Streams_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "qingming",
+   "commons_file": "Along_the_River_During_the_Qingming_Festival_(detail_of_original).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Along_the_River_During_the_Qingming_Festival_(detail_of_original).jpg"
+  },
+  {
+   "id": "beach",
+   "commons_file": "Joaquín_Sorolla_-_Chicos_en_la_playa.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Joaqu%C3%ADn_Sorolla_-_Chicos_en_la_playa.jpg"
+  },
+  {
+   "id": "goldfish",
+   "commons_file": "I_pesci_rossi.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:I_pesci_rossi.jpg"
+  },
+  {
+   "id": "yellowcow",
+   "commons_file": "Franz_Marc-The_Yellow_Cow-1911.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Franz_Marc-The_Yellow_Cow-1911.jpg"
+  },
+  {
+   "id": "eiffel",
+   "commons_file": "Robert_Delaunay_-_Eiffel_Tower_-_1911_-_Solomon_R._Guggenheim_Museum.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Robert_Delaunay_-_Eiffel_Tower_-_1911_-_Solomon_R._Guggenheim_Museum.jpg"
+  },
+  {
+   "id": "cityrises",
+   "commons_file": "The_City_Rises_by_Umberto_Boccioni_1910.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:The_City_Rises_by_Umberto_Boccioni_1910.jpg"
+  },
+  {
+   "id": "greenjacket",
+   "commons_file": "Dame_in_grüner_Jacke_-_August_Macke_-_Museum_Ludwig-7004_(cropped).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Dame_in_gr%C3%BCner_Jacke_-_August_Macke_-_Museum_Ludwig-7004_(cropped).jpg"
+  },
+  {
+   "id": "physalis",
+   "commons_file": "Egon_Schiele_-_Self-Portrait_with_Physalis_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Egon_Schiele_-_Self-Portrait_with_Physalis_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "blacksquare",
+   "commons_file": "Kazimir_Malevich,_1915,_Black_Suprematic_Square,_oil_on_linen_canvas,_79.5_x_79.5_cm,_Tretyakov_Gallery,_Moscow.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Kazimir_Malevich,_1915,_Black_Suprematic_Square,_oil_on_linen_canvas,_79.5_x_79.5_cm,_Tretyakov_Gallery,_Moscow.jpg"
+  },
+  {
+   "id": "jackpine",
+   "commons_file": "Tom_Thomson_-_The_Jack_Pine_1916.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Tom_Thomson_-_The_Jack_Pine_1916.jpg"
+  },
+  {
+   "id": "senecio",
+   "commons_file": "Paul_Klee,_1922,_Senecio,_oil_on_gauze,_40.3_×_37.4_cm,_Kunstmuseum_Basel.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Paul_Klee,_1922,_Senecio,_oil_on_gauze,_40.3_%C3%97_37.4_cm,_Kunstmuseum_Basel.jpg"
+  },
+  {
+   "id": "jeanne",
+   "commons_file": "Jeanne_Hébuterne_(1918)_by_Amedeo_Modigliani_(Norton_Simon_Museum).jpg",
+   "license": "CC0",
+   "page": "https://commons.wikimedia.org/wiki/File:Jeanne_H%C3%A9buterne_(1918)_by_Amedeo_Modigliani_(Norton_Simon_Museum).jpg"
+  },
+  {
+   "id": "picasso",
+   "commons_file": "Juan_Gris_-_Portrait_of_Pablo_Picasso_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Juan_Gris_-_Portrait_of_Pablo_Picasso_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "automat",
+   "commons_file": "Automat-edward-hopper-1927.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Automat-edward-hopper-1927.jpg"
+  },
+  {
+   "id": "flower",
+   "commons_file": "Flower_Abstraction_O'Keeffe_1924.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Flower_Abstraction_O%27Keeffe_1924.jpg"
+  },
+  {
+   "id": "dresden",
+   "commons_file": "Kirchner_-_Street,_Dresden,_1908,_12.1951.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Kirchner_-_Street,_Dresden,_1908,_12.1951.jpg"
+  },
+  {
+   "id": "alliesday",
+   "commons_file": "Childe_Hassam,_Allies_Day,_May_1917,_1917,_NGA_30115.jpg",
+   "license": "CC0",
+   "page": "https://commons.wikimedia.org/wiki/File:Childe_Hassam,_Allies_Day,_May_1917,_1917,_NGA_30115.jpg"
+  },
+  {
+   "id": "dining",
+   "commons_file": "The_dining_room_in_the_country_by_Pierre_Bonnard_(1913).jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:The_dining_room_in_the_country_by_Pierre_Bonnard_(1913).jpg"
+  },
+  {
+   "id": "popova",
+   "commons_file": "Painterly_Architectonic_-_1918.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Painterly_Architectonic_-_1918.jpg"
+  },
+  {
+   "id": "stag",
+   "commons_file": "George_Bellows_-_A_Stag_at_Sharkey's_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:George_Bellows_-_A_Stag_at_Sharkey%27s_-_Google_Art_Project.jpg"
+  },
+  {
+   "id": "strandgade",
+   "commons_file": "Vilhelm_Hammershøi,_Interiør_fra_Strandgade_30,_1900.jpg",
+   "license": "Public domain",
+   "page": "https://commons.wikimedia.org/wiki/File:Vilhelm_Hammersh%C3%B8i,_Interi%C3%B8r_fra_Strandgade_30,_1900.jpg"
   }
  ]
 }
