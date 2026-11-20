@@ -2341,6 +2341,55 @@
   .ah-mcard { display: grid; gap: 3px; justify-items: start; text-align: left; padding: 8px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; } .ah-mcard small { color: var(--ink-soft); } .ah-mcard .fa-pic { width: 100%; }
   .ah-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   @media (prefers-reduced-motion: reduce) { .ah-hero, .ah-splats i, .ah-floaty span, .ah-title span, .ah-mi { animation: none; } .ah-canvas img.zout { transition-duration: 2s; } }
+  /* 📘 Learnable (a wiki-style how-to book) */
+  .ln-masthead { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 20px; margin: 6px 0 10px; color: #fff; background: linear-gradient(135deg, #1d4ed8, #0ea5e9 60%, #14b8a6); box-shadow: 0 8px 22px rgba(14,165,233,.3); }
+  .ln-logo { font-size: 2.8rem; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.2); box-shadow: inset 0 0 0 3px rgba(255,255,255,.35); }
+  .ln-name { margin: 0; font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 2.2rem; letter-spacing: .02em; } .ln-motto { margin: 2px 0 0; font-style: italic; opacity: .92; }
+  .ln-search { display: flex; gap: 8px; margin: 6px 0 8px; } .ln-search input { flex: 1; min-width: 0; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); padding: 10px 16px; font: inherit; font-size: 1.05rem; }
+  .ln-search input:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,.3); }
+  .ln-cats { margin-bottom: 6px; } .ln-bar { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin: 6px 0; } .ln-write { font-size: 1.05rem; }
+  .ln-note { background: rgba(14,165,233,.12); border: 2px solid rgba(14,165,233,.45); border-radius: 14px; padding: 10px 12px; }
+  .ln-count { margin: 6px 0; } .ln-cards { display: grid; gap: 8px; }
+  .ln-card { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; border: 2px solid var(--line); border-radius: 16px; padding: 10px; background: var(--panel-2); color: inherit; font: inherit; cursor: pointer; transition: transform .1s, border-color .1s; }
+  .ln-card:hover { border-color: #0ea5e9; transform: translateY(-2px); }
+  .ln-card > img, .ln-noth { flex: 0 0 auto; width: 72px; height: 72px; border-radius: 12px; object-fit: cover; background: rgba(14,165,233,.15); display: grid; place-items: center; font-size: 2rem; }
+  .ln-ct { display: grid; gap: 2px; min-width: 0; } .ln-ct b { font-family: Georgia, serif; font-size: 1.15rem; line-height: 1.2; } .ln-ct small { color: var(--ink-soft); }
+  .ln-ct small .who-img { width: 18px; height: 18px; vertical-align: middle; border-radius: 50%; } .ln-sum { color: var(--ink-soft); font-size: .88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ln-empty { text-align: center; padding: 24px 12px; } .ln-empty > span { display: block; font-size: 3rem; } .ln-empty b { font-size: 1.2rem; }
+  .ln-top { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; } .ln-acts { gap: 6px; flex-wrap: wrap; }
+  /* the page itself looks like an encyclopedia page */
+  .ln-page { background: #fff; color: #202122; border-radius: 6px; padding: 16px 18px 20px; font-family: Georgia, "Times New Roman", serif; line-height: 1.6; box-shadow: 0 4px 18px rgba(0,0,0,.3); overflow: hidden; }
+  .ln-page a { color: #3366cc; }
+  .ln-h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 1.9rem; line-height: 1.2; margin: 0; padding-bottom: 4px; border-bottom: 1px solid #a2a9b1; color: #000; }
+  .ln-from { margin: 4px 0 12px; font-size: .85rem; color: #54595d; font-family: system-ui, sans-serif; }
+  .ln-info { float: right; width: 260px; margin: 0 0 12px 16px; border: 1px solid #a2a9b1; background: #f8f9fa; padding: 6px; font-family: system-ui, sans-serif; font-size: .88rem; line-height: 1.4; }
+  .ln-info-h { text-align: center; font-weight: 700; font-size: 1.05rem; padding: 4px; background: #cee0f2; margin-bottom: 6px; }
+  .ln-page table, .ln-page th, .ln-page td, .ln-page li, .ln-page p { color: #202122; background: transparent; border-color: #c8ccd1; }
+  .ln-info table { width: 100%; border-collapse: collapse; } .ln-info th { text-align: left; vertical-align: top; padding: 3px 6px 3px 0; width: 38%; } .ln-info td { padding: 3px 0; } .ln-info .who-img { width: 18px; height: 18px; vertical-align: middle; border-radius: 50%; }
+  @media (max-width: 620px) { .ln-info { float: none; width: auto; margin: 0 0 12px; } }
+  .ln-lead { font-size: 1.02rem; }
+  .ln-toc { display: inline-block; border: 1px solid #a2a9b1; background: #f8f9fa; padding: 8px 14px; margin: 6px 0 4px; font-family: system-ui, sans-serif; font-size: .92rem; } .ln-toc ol { margin: 4px 0 0; padding-left: 22px; }
+  .ln-h2 { clear: none; font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 1.45rem; margin: 18px 0 6px; padding-bottom: 2px; border-bottom: 1px solid #a2a9b1; color: #000; }
+  .ln-page ul, .ln-page ol { padding-left: 24px; } .ln-steps li { margin: 0 0 8px; } .ln-steps li p { margin: 0; }
+  .ln-safe { background: #fef6e7; border-left: 4px solid #fc3; padding: 8px 10px; }
+  .ln-fig { margin: 8px 0; display: inline-block; max-width: 100%; border: 1px solid #c8ccd1; background: #f8f9fa; padding: 4px; } .ln-fig figcaption { font-size: .82rem; color: #54595d; font-family: system-ui, sans-serif; padding: 2px 2px 0; }
+  .ln-ph { display: block; border: 0; padding: 0; background: none; cursor: zoom-in; } .ln-ph img, .ln-fig > img { display: block; max-width: 100%; max-height: 320px; height: auto; }
+  .ln-load { display: grid; place-items: center; width: 200px; height: 140px; font-size: 2rem; background: #eaecf0; }
+  .ln-info .ln-fig { display: block; text-align: center; } .ln-info .ln-ph img { margin: 0 auto; max-height: 220px; }
+  .ln-gallery { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ln-foot { clear: both; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 18px; padding-top: 10px; border-top: 1px solid #a2a9b1; font-family: system-ui, sans-serif; } .ln-foot .linklike { color: #3366cc; }
+  .ln-zoom { align-items: center; flex-direction: column; gap: 10px; } .ln-zoom img { max-width: 94vw; max-height: 80vh; border-radius: 6px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+  /* the writing form */
+  .ln-edit { display: grid; gap: 10px; } .ln-headline, .ln-catpick { display: grid; gap: 6px; font-weight: 800; } .ln-headline input { font: inherit; font-family: Georgia, serif; font-size: 1.3rem; padding: 10px 12px; border-radius: 12px; border: 2px solid #0ea5e9; background: var(--panel-2); color: var(--ink); }
+  .ln-group { border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; display: grid; gap: 8px; } .ln-group legend { font-weight: 900; padding: 0 6px; }
+  .ln-blank { display: grid; gap: 4px; } .ln-blank > span { font-weight: 800; font-size: .92rem; } .ln-blank i { font-style: normal; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #0ea5e9; color: #fff; font-size: .72rem; margin-right: 6px; }
+  .ln-blank input, .ln-blank textarea { font: inherit; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); resize: vertical; } .ln-blank input:focus, .ln-blank textarea:focus { outline: none; border-color: #0ea5e9; }
+  .ln-pics { display: grid; gap: 8px; } .ln-pic { display: grid; grid-template-columns: 64px 1fr auto auto; gap: 8px; align-items: center; background: var(--panel); border-radius: 12px; padding: 6px; }
+  @media (max-width: 560px) { .ln-pic { grid-template-columns: 64px 1fr auto; } .ln-pic select { grid-column: 2; } }
+  .ln-picimg { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; display: grid; place-items: center; background: var(--panel-2); font-size: 1.6rem; } .ln-picimg img { width: 100%; height: 100%; object-fit: cover; }
+  .ln-pic input, .ln-pic select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); min-width: 0; }
+  .ln-picbtns { gap: 8px; flex-wrap: wrap; } .ln-pub { justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+  .ln-prevbox { max-height: 88vh; overflow-y: auto; }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -4218,7 +4267,7 @@ let WHO_BY_SECRET = null;   // set when MR.E opens someone's profile with the se
 const whoMuted = id => !!(store.get("who_mute", {}) || {})[id];
 const whoHiddenSet = () => new Set(store.get("who_hidden", []) || []);
 const modCodeOK = code => whoHasCode("emmett") && (store.get("who_code", {}) || {}).emmett === whoHash("emmett", String(code || ""));
-const RP_WHAT = { tell: "💬 Something is wrong", about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery", talk: "💬 Something they said in Talk Room" };
+const RP_WHAT = { tell: "💬 Something is wrong", about: "💬 What they wrote about themselves", name: "🏷️ Their name", pic: "🖼️ Their profile picture", art: "🎨 Their art in the Art Gallery", talk: "💬 Something they said in Talk Room", learn: "📘 A how-to they published in Learnable" };
 function reportSend(r) {
   if (r && r.on === "emmett" && r.what !== "tell") return tellSheet();   // 🛡️ MR.E can't be reported, but anyone can tell him something is wrong
   const L = store.get("who_reports", []) || [];
@@ -4289,7 +4338,7 @@ function modOpen(box) {
       ${r.text ? `<p class="mod-quote">“${esc(r.text)}”</p>` : ""}${r.what === "pic" ? `<p>Picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="soft">Why: ${esc(r.note)}</p>` : ""}
       <div class="mod-btns">${r.what === "about" ? `<button class="chip" data-act="clearabout" data-on="${r.on}">🧹 Clear what they wrote</button><button class="chip" data-act="editabout" data-on="${r.on}">✏️ Change it</button>` : ""}
         ${r.what === "name" ? `<button class="chip" data-act="editname" data-on="${r.on}">✏️ Change their name</button>` : ""}${r.what === "pic" ? `<button class="chip" data-act="clearpic" data-on="${r.on}">🧹 Remove the picture</button>` : ""}
-        ${r.what === "art" && r.art ? `<button class="chip" data-act="delart" data-art="${r.art}">🗑 Delete the art</button>` : ""}${r.what === "talk" && r.msg ? `<button class="chip" data-act="delmsg" data-msg="${esc(r.msg)}">🗑 Delete the message</button>` : ""}
+        ${r.what === "art" && r.art ? `<button class="chip" data-act="delart" data-art="${r.art}">🗑 Delete the art</button>` : ""}${r.what === "talk" && r.msg ? `<button class="chip" data-act="delmsg" data-msg="${esc(r.msg)}">🗑 Delete the message</button>` : ""}${r.what === "learn" && r.doc ? `<button class="chip" data-act="dellearn" data-doc="${esc(r.doc)}">🗑 Delete the how-to</button>` : ""}
         <button class="chip" data-act="${mute[r.on] ? "unmute" : "mute"}" data-on="${r.on}">${mute[r.on] ? "🔊 Let them write again" : "🔇 Stop them from writing"}</button>
         ${r.on !== "emmett" ? `<button class="chip bad" data-act="del" data-on="${r.on}">🚫 Delete this person</button>` : ""}<button class="chip" data-act="done" data-rep="${r.id}">✅ Done</button></div></div>`).join("") : `<p class="soft">No reports. 🎉</p>`}
     <h4>👥 Everyone</h4>
@@ -4307,6 +4356,7 @@ function modOpen(box) {
     if (act === "clearpic") { whoPicSet(on, ""); toast(`🧹 Removed ${nm(on)}'s picture.`); return again(); }
     if (act === "mute" || act === "unmute") { const m = { ...(store.get("who_mute", {}) || {}) }; if (act === "mute") m[on] = true; else delete m[on]; store.set("who_mute", m); toast(act === "mute" ? `🔇 ${nm(on)} can't change their name or write about themselves now.` : `🔊 ${nm(on)} can write again.`); return again(); }
     if (act === "delmsg") { const ok = await talkDeleteById(b.dataset.msg); if (!ok) return toast("That didn't delete. Open Talk Room on Claude and try there."); store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.msg !== b.dataset.msg)); toast("🗑 Message deleted."); return again(); }
+    if (act === "dellearn") { lnConnect(); const ok = await lnDelete(b.dataset.doc); if (!ok) return toast("That didn't delete. Open Learnable on Claude and try there."); toast("🗑 How-to deleted."); return again(); }
     if (act === "delart") { await galDelete([b.dataset.art]).catch(() => {}); store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.art !== b.dataset.art)); toast("🗑 Art deleted."); return again(); }
     if (act === "del") { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Tap again to delete ${nm(on)}`; return; }
       const h2 = whoHiddenSet(); h2.add(on); store.set("who_hidden", [...h2]); ["who_about", "who_pic", "who_code"].forEach(k => { const m = { ...(store.get(k, {}) || {}) }; delete m[k === "who_pic" ? on : on]; store.set(k, m); });
@@ -6519,7 +6569,8 @@ function subjectPick(s) {
     : k === "library" ? { title: "📚 Library", say: "What would you like to do?", btns: [
       ["📖 The Library", "Big books and classic stories to read", go(() => startHippo("show me the library"))],
       ["📚 Book Quiz", "Famous books, authors and characters, from Dr. Seuss to Shakespeare", go(() => startBookQuiz())],
-      ["📕 Shelf Sorter", "Shelve books like a real librarian: fiction or nonfiction, Dewey Decimal numbers and ABC order", go(() => startShelfSorter())]] }
+      ["📕 Shelf Sorter", "Shelve books like a real librarian: fiction or nonfiction, Dewey Decimal numbers and ABC order", go(() => startShelfSorter())],
+      ["📘 Learnable", "The how-to book everyone writes: read everyone's how-tos, or write your own with pictures", go(() => startLearnable())]] }
     : k === "gym" ? { title: "🏃 Gym", say: "What would you like to do?", btns: [
       ["💪 Gym Test", "How much should you be exercising? Check it for your age, then take the test", go(() => startGymTest())],
       ["🥇 World Records", "The biggest, tallest and fastest records everybody should know", go(() => startWorldRecords())],
@@ -26699,7 +26750,7 @@ NEW_APPS.push({ id: "cells", emoji: "🧫", name: "Cell City", desc: "Explore a 
    On each note he can send a note back, stop someone from doing things (games, their name, writing, Talk Room, their picture, saving art),
    or dismiss it. Stopping someone changes their account, so it needs his code every time. A note MR.E sends back shows up
    for that person as a sticky note too, until they tap "Got it". (Saved online: who_reports, who_notes and who_block.) ---------- */
-const STICKY_BLOCKS = [["games", "🎮 Games"], ["name", "🏷️ Changing their name"], ["about", "💬 Writing about themselves"], ["talk", "🗨️ Talking in Talk Room"], ["pic", "🖼️ Changing their picture"], ["art", "🎨 Saving art in the Art Gallery"]];
+const STICKY_BLOCKS = [["games", "🎮 Games"], ["name", "🏷️ Changing their name"], ["about", "💬 Writing about themselves"], ["talk", "🗨️ Talking in Talk Room"], ["pic", "🖼️ Changing their picture"], ["art", "🎨 Saving art in the Art Gallery"], ["learn", "📘 Publishing in Learnable"]];
 const whoBlocks = id => ({ ...((store.get("who_block", {}) || {})[id] || {}) });
 const whoBlocked = (id, what) => !!id && id !== "emmett" && (!!whoBlocks(id)[what] || ((what === "name" || what === "about" || what === "talk") && whoMuted(id)));
 let STICKY_OPEN = false, STICKY_MIN = false, STICKY_FORM = null, STICKY_WHO = null, STICKY_N = 0;   // the stack is open? folded down to a little 📝? which note has a form open ({ id, kind })? whose notes, and how many
@@ -27549,6 +27600,258 @@ function ahEnd() {
   $app.querySelectorAll("[data-w]").forEach(b => b.addEventListener("click", () => faWork(b.dataset.w)));
 }
 NEW_APPS.splice(Math.max(0, NEW_APPS.findIndex(a => a.id === "artists")), 0, { id: "arthunt", emoji: "🔎", name: "Art Hunt", desc: "See a famous painting and say who made it! Classic Hunt, Zoom Mystery and a 60-second Speed Round, with older or modern artists.", start: () => startArtHunt(), added: "2026-11-18", kw: "art hunt|who painted|guess the (artist|painter|painting)|name that painting|painting quiz|art quiz|artist quiz" });
+/* ---------- 📘 Learnable: the how-to book that everyone writes (like a wiki). Fill in 20 labeled blanks, add up to 6 pictures,
+   pick a headline, and publish: everyone who uses Study Arcade can read it and search for it. Saved in the page's shared online
+   storage (collections "learnable" and "learnpics"); on the website version, how-tos are kept on this device only.
+   Guests can read but not write. Unkind words are blocked, anyone can report a how-to, MR.E can delete any how-to (after his code)
+   and can stop someone from publishing (Sticky notes → Stop them → Publishing in Learnable). ---------- */
+const LN_FIELDS = [   // [key, label, example, big box?]
+  ["what", "What will people learn?", "How to fold a paper airplane that flies really far", 0],
+  ["who", "Who is it for?", "Kids 6 and up, total beginners", 0],
+  ["why", "Why is it fun or useful?", "You can have contests with friends and it only costs one sheet of paper!", 1],
+  ["time", "How long does it take?", "About 10 minutes", 0],
+  ["level", "How hard is it?", "Easy, medium or hard", 0],
+  ["need", "What you need", "A sheet of paper, a flat table (one thing per line)", 1],
+  ...Array.from({ length: 10 }, (_, i) => [`s${i + 1}`, `Step ${i + 1}`, ["First, ...", "Next, ...", "Then ...", "After that, ...", "Now ...", "Then ...", "Next, ...", "Almost done! ...", "Then ...", "Finally, ..."][i], 1]),
+  ["tips", "Tips and tricks", "Make your folds really sharp by pressing with your thumbnail.", 1],
+  ["safety", "Be careful!", "Never throw it at someone's face. Ask a grown-up before using scissors.", 1],
+  ["fact", "Fun fact", "The world record for a paper airplane flight is over 88 meters!", 1],
+  ["done", "How do you know you did it right?", "It glides straight and flies farther than across the room.", 1]
+];
+const LN_CATS = [["science", "🔬 Science"], ["art", "🎨 Art & crafts"], ["food", "🍳 Cooking"], ["sports", "⚽ Sports"], ["games", "🎲 Games"], ["music", "🎵 Music"], ["tech", "💻 Tech"], ["nature", "🌳 Nature"], ["school", "📚 School"], ["life", "🏠 Everyday life"], ["other", "✨ Other"]];
+const LN_MAXPICS = 6;
+const LN = { db: null, ready: false, local: false, list: [], err: "", picCache: {}, view: { q: "", cat: "all", sort: "new" }, unlocked: false };
+const lnCat = k => (LN_CATS.find(c => c[0] === k) || LN_CATS[LN_CATS.length - 1])[1];
+const lnText = a => [a.h, ...LN_FIELDS.map(f => (a.f || {})[f[0]] || ""), ...(a.caps || [])].join(" ");
+const lnId = p => p + Date.now().toString(36) + rnd(100, 999);
+const lnWhen = t => new Date(t).toLocaleDateString([], { month: "long", day: "numeric", year: "numeric" });
+const lnCanWrite = () => SITE_WHO && SITE_WHO !== "guest";
+const lnMine = a => a && a.by === SITE_WHO && lnCanWrite();
+async function lnConnect() {   // 📡 one listener for the whole visit, so new how-tos show up right away
+  if (LN.db || LN.local || LN.connecting) return; LN.connecting = true;
+  const db = window.claude && window.claude.use ? await window.claude.use("db").catch(() => null) : null;
+  if (!db) { LN.local = true; LN.list = (store.get("learn_local", []) || []).filter(a => a && a.id); LN.ready = true; LN.connecting = false; return lnRefresh(); }
+  LN.db = db; LN.connecting = false;
+  try {
+    db.collection("learnable").orderBy("at", "desc").limit(500).onSnapshot(snap => {
+      LN.ready = true; LN.err = "";
+      LN.list = snap.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(a => typeof a.h === "string" && typeof a.at === "number");
+      lnRefresh();
+    }, e => { LN.err = e && e.code === "revoked" ? "off" : "broken"; LN.ready = true; lnRefresh(); });
+  } catch (e) { LN.err = "broken"; LN.ready = true; }
+}
+function lnRefresh() {   // redraw whatever Learnable screen is open
+  if (document.getElementById("ln-list")) lnDrawList();
+  const art = document.getElementById("ln-article"); if (art && !LN.list.some(a => a.id === art.dataset.id) && !LN.local) { toast("That how-to was deleted."); startLearnable(); }
+}
+async function lnPic(id) {   // a picture (data URL), from the shared storage or this device
+  if (!id) return null; if (LN.picCache[id]) return LN.picCache[id];
+  let d = null;
+  try { if (LN.db) { const s = await LN.db.collection("learnpics").doc(id).get(); d = s.exists ? (s.data() || {}).d : null; } else d = await bigGet("lnpic_" + id); } catch (e) {}
+  if (d) LN.picCache[id] = d; return d;
+}
+async function lnShrink(src, max = 900, limit = 170000) {   // a picture made small enough to share (and a tiny one for cards)
+  const img = await galLoadImg(src), w = img.naturalWidth, h = img.naturalHeight; if (!w || !h) return null;
+  let m = max, q = .8, out = "";
+  for (let k = 0; k < 8; k++) { const s = Math.min(1, m / Math.max(w, h)), c = document.createElement("canvas"); c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(h * s)); const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height); out = c.toDataURL("image/jpeg", q); if (out.length <= limit) break; m = Math.round(m * .82); q = Math.max(.5, q - .06); }
+  return out.length <= limit ? out : null;
+}
+
+/* 🏠 the front page: search, categories and every how-to */
+function startLearnable(view, id) {
+  lnConnect();
+  if (view === "write") return lnEdit(id);
+  if (view === "read") return lnRead(id);
+  const n = LN.list.length;
+  appScreen("📘 Learnable", `<div class="ln">
+    <div class="ln-masthead"><div class="ln-logo" aria-hidden="true">📘</div><div><h2 class="ln-name">Learnable</h2><p class="ln-motto">The how-to book that everyone writes</p></div></div>
+    <form class="ln-search" id="ln-sform" role="search"><input id="ln-q" type="search" placeholder="🔎 Search Learnable" aria-label="Search Learnable" value="${esc(LN.view.q)}" autocomplete="off"><button class="btn go" type="submit">Search</button></form>
+    <div class="na-chips ln-cats"><button class="chip${LN.view.cat === "all" ? " on" : ""}" type="button" data-lc="all">⭐ Everything</button>${LN_CATS.map(([k, l]) => `<button class="chip${LN.view.cat === k ? " on" : ""}" type="button" data-lc="${k}">${l}</button>`).join("")}</div>
+    <div class="row ln-bar"><button class="btn go ln-write" id="ln-new" type="button">✍️ Write a how-to</button><span class="na-chips ln-sort"><button class="chip${LN.view.sort === "new" ? " on" : ""}" type="button" data-ls="new">🆕 Newest</button><button class="chip${LN.view.sort === "top" ? " on" : ""}" type="button" data-ls="top">👍 Most helpful</button>${LN.unlocked ? "" : `<button class="chip" type="button" id="ln-mod" title="MR.E: delete how-tos">🛡️</button>`}</span></div>
+    ${LN.local ? `<p class="ln-note">📱 On this version of Study Arcade, how-tos are saved on this device only. Open Study Arcade in Claude to share them with everyone.</p>` : ""}
+    <div id="ln-list" aria-live="polite"></div></div>`);
+  const q = document.getElementById("ln-q");
+  q.addEventListener("input", () => { LN.view.q = q.value; lnDrawList(); });
+  document.getElementById("ln-sform").addEventListener("submit", e => { e.preventDefault(); LN.view.q = q.value; lnDrawList(); });
+  $app.querySelectorAll("[data-lc]").forEach(b => b.addEventListener("click", () => { LN.view.cat = b.dataset.lc; $app.querySelectorAll("[data-lc]").forEach(x => x.classList.toggle("on", x === b)); lnDrawList(); }));
+  $app.querySelectorAll("[data-ls]").forEach(b => b.addEventListener("click", () => { LN.view.sort = b.dataset.ls; $app.querySelectorAll("[data-ls]").forEach(x => x.classList.toggle("on", x === b)); lnDrawList(); }));
+  document.getElementById("ln-new").addEventListener("click", () => lnEdit());
+  document.getElementById("ln-mod")?.addEventListener("click", lnUnlock);
+  lnDrawList();
+}
+function lnDrawList() {
+  const box = document.getElementById("ln-list"); if (!box) return;
+  if (!LN.ready) { box.innerHTML = `<p class="soft ln-empty">📡 Opening Learnable…</p>`; return; }
+  if (LN.err === "off") { box.innerHTML = `<p class="ln-note">Learnable can't open here. Ask the person who shared Study Arcade to give you access.</p>`; return; }
+  if (LN.err) { box.innerHTML = `<p class="ln-note">😕 Learnable couldn't load just now. Try again in a minute.</p>`; return; }
+  const words = LN.view.q.toLowerCase().split(/\s+/).filter(Boolean);
+  let L = LN.list.filter(a => (LN.view.cat === "all" || a.cat === LN.view.cat) && (!words.length || words.every(w => lnText(a).toLowerCase().includes(w))));
+  const likes = a => Object.keys(a.likes || {}).length;
+  if (LN.view.sort === "top") L = [...L].sort((a, b) => likes(b) - likes(a) || b.at - a.at);
+  box.innerHTML = !LN.list.length ? `<div class="ln-empty"><span>📘</span><b>No how-tos yet!</b><p class="soft">Be the first: tap ✍️ Write a how-to and teach everyone something you know.</p></div>`
+    : !L.length ? `<div class="ln-empty"><span>🔎</span><b>Nothing found</b><p class="soft">Try different words, or write the how-to yourself!</p></div>`
+    : `<p class="soft ln-count">${L.length === LN.list.length ? `${L.length} how-to${L.length === 1 ? "" : "s"}` : `${L.length} of ${LN.list.length} how-tos`}</p><div class="ln-cards">${L.map(a => `<button class="ln-card" type="button" data-lr="${esc(a.id)}">${a.th ? `<img src="${a.th}" alt="" loading="lazy">` : `<span class="ln-noth">${lnCat(a.cat).split(" ")[0]}</span>`}<span class="ln-ct"><b>${esc(a.h)}</b><small>${esc(lnCat(a.cat))} · ${whoAvaHTML(a.by)} ${esc(a.byName || galName(a.by) || "Someone")} · ${lnWhen(a.at)}${likes(a) ? ` · 👍 ${likes(a)}` : ""}</small>${(a.f || {}).what ? `<span class="ln-sum">${esc(a.f.what)}</span>` : ""}</span></button>`).join("")}</div>`;
+  box.querySelectorAll("[data-lr]").forEach(b => b.addEventListener("click", () => lnRead(b.dataset.lr)));
+}
+function lnUnlock() {   // 🛡️ MR.E types his code (every visit) to delete any how-to
+  if (SITE_WHO !== "emmett") return toast("Only MR.E can do that.");
+  if (!whoHasCode("emmett")) return toast("Add a code to your profile first.");
+  const c = prompt("MR.E's code:"); if (c == null) return;
+  if (!modCodeOK(c)) return toast("That's not your code.");
+  LN.unlocked = true; toast("🛡️ Unlocked: you can delete any how-to until you leave Learnable."); startLearnable();
+}
+
+/* 📖 reading a how-to: like an encyclopedia page */
+function lnRead(id) {
+  const a = LN.list.find(x => x.id === id); if (!a) { toast("That how-to isn't here any more."); return startLearnable(); }
+  const f = a.f || {}, steps = LN_FIELDS.filter(x => /^s\d+$/.test(x[0]) && (f[x[0]] || "").trim()).map(x => [x[0], f[x[0]]]);
+  const pics = (a.pics || []).map((p, i) => ({ id: p, cap: (a.caps || [])[i] || "", at: (a.picAt || [])[i] || "top" }));
+  const picHTML = list => list.map(p => `<figure class="ln-fig"><button type="button" class="ln-ph" data-pz="${esc(p.id)}" aria-label="See the picture bigger"><span class="ln-load" data-pid="${esc(p.id)}">🖼️</span></button>${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("");
+  const sec = [["learn", "What you'll learn", f.what || f.why], ["need", "What you need", f.need], ["steps", "Steps", steps.length], ["tips", "Tips and tricks", f.tips], ["safety", "Be careful!", f.safety], ["fact", "Fun fact", f.fact], ["done", "How to know you did it right", f.done]].filter(s => s[2]);
+  const lines = t => String(t || "").split(/\n|(?:,\s*)(?=[A-Za-z0-9])/).map(x => x.trim()).filter(Boolean);
+  const mine = lnMine(a), likes = Object.keys(a.likes || {}), liked = likes.includes(SITE_WHO);
+  appScreen("📘 Learnable · " + a.h.slice(0, 40), `<div class="ln"><div class="row ln-top"><button class="chip" id="ln-home" type="button">⬅ Learnable</button><span class="row ln-acts"><button class="chip" id="ln-say" type="button">🔊 Read it to me</button>${mine ? `<button class="chip" id="ln-edit" type="button">✏️ Edit</button>` : ""}${mine || LN.unlocked ? `<button class="chip bad" id="ln-del" type="button">🗑 Delete</button>` : ""}</span></div>
+    <article class="ln-page" id="ln-article" data-id="${esc(a.id)}">
+      <h1 class="ln-h1">${esc(a.h)}</h1><p class="ln-from">From Learnable, the how-to book that everyone writes</p>
+      <aside class="ln-info"><div class="ln-info-h">${esc(a.h)}</div>${pics.find(p => p.at === "top") ? picHTML([pics.find(p => p.at === "top")]) : ""}
+        <table><tr><th>Category</th><td>${esc(lnCat(a.cat))}</td></tr>${f.who ? `<tr><th>For</th><td>${esc(f.who)}</td></tr>` : ""}${f.time ? `<tr><th>Time</th><td>${esc(f.time)}</td></tr>` : ""}${f.level ? `<tr><th>How hard</th><td>${esc(f.level)}</td></tr>` : ""}<tr><th>Written by</th><td>${whoAvaHTML(a.by)} ${esc(a.byName || galName(a.by) || "Someone")}</td></tr><tr><th>Published</th><td>${lnWhen(a.at)}${a.edited ? `<br><small>Edited ${lnWhen(a.edited)}</small>` : ""}</td></tr></table></aside>
+      ${f.what ? `<p class="ln-lead" id="ln-learn"><b>${esc(a.h)}</b> teaches ${esc(f.what.replace(/^how to /i, "how to ").replace(/^./, s => s.toLowerCase()))}${/[.!?]$/.test(f.what) ? "" : "."}${f.why ? " " + esc(f.why) : ""}</p>` : ""}
+      ${sec.length > 2 ? `<nav class="ln-toc"><b>Contents</b><ol>${sec.map(s => `<li><a href="#ln-${s[0]}" data-jump="${s[0]}">${s[1]}</a></li>`).join("")}</ol></nav>` : ""}
+      ${f.need ? `<h2 class="ln-h2" id="ln-need">What you need</h2><ul>${lines(f.need).map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+      ${steps.length ? `<h2 class="ln-h2" id="ln-steps">Steps</h2><ol class="ln-steps">${steps.map(([k, t], i) => `<li><p>${esc(t)}</p>${picHTML(pics.filter(p => p.at === k))}</li>`).join("")}</ol>` : ""}
+      ${f.tips ? `<h2 class="ln-h2" id="ln-tips">Tips and tricks</h2><p>${esc(f.tips)}</p>` : ""}
+      ${f.safety ? `<h2 class="ln-h2" id="ln-safety">⚠️ Be careful!</h2><p class="ln-safe">${esc(f.safety)}</p>` : ""}
+      ${f.fact ? `<h2 class="ln-h2" id="ln-fact">Fun fact</h2><p>💡 ${esc(f.fact)}</p>` : ""}
+      ${f.done ? `<h2 class="ln-h2" id="ln-done">How to know you did it right</h2><p>✅ ${esc(f.done)}</p>` : ""}
+      ${pics.filter(p => p.at === "more" || (p.at === "top" && p !== pics.find(q => q.at === "top"))).length ? `<h2 class="ln-h2">Pictures</h2><div class="ln-gallery">${picHTML(pics.filter(p => p.at === "more" || (p.at === "top" && p !== pics.find(q => q.at === "top"))))}</div>` : ""}
+      <div class="ln-foot"><button class="btn${liked ? " go" : ""}" id="ln-like" type="button"${lnCanWrite() ? "" : " disabled"}>👍 Helpful${likes.length ? ` (${likes.length})` : ""}</button>${!mine && lnCanWrite() ? `<button class="linklike" id="ln-rep" type="button">🚩 Report this how-to</button>` : ""}</div>
+    </article></div>`);
+  document.getElementById("ln-home").addEventListener("click", () => startLearnable());
+  $app.querySelectorAll("[data-pid]").forEach(async el => { const d = await lnPic(el.dataset.pid); if (d && el.isConnected) el.outerHTML = `<img src="${d}" alt="">`; else if (el.isConnected) el.textContent = "😕"; });
+  $app.querySelectorAll("[data-pz]").forEach(b => b.addEventListener("click", async () => { const d = await lnPic(b.dataset.pz); if (!d) return; const v = document.createElement("div"); v.className = "bgsheet ln-zoom"; v.innerHTML = `<img src="${d}" alt=""><button class="iconbtn" type="button">✕ Close</button>`; v.addEventListener("click", () => v.remove()); document.body.appendChild(v); }));
+  $app.querySelectorAll("[data-jump]").forEach(x => x.addEventListener("click", e => { e.preventDefault(); document.getElementById("ln-" + x.dataset.jump)?.scrollIntoView({ behavior: "smooth", block: "start" }); }));
+  document.getElementById("ln-say").addEventListener("click", () => svSay(`${a.h}. ${f.what || ""}. ${f.why || ""} ${f.need ? "What you need: " + f.need + "." : ""} ${steps.map(([k, t], i) => `Step ${i + 1}: ${t}`).join(" ")} ${f.tips ? "Tips: " + f.tips : ""} ${f.safety ? "Be careful! " + f.safety : ""} ${f.fact ? "Fun fact: " + f.fact : ""} ${f.done ? f.done : ""}`));
+  document.getElementById("ln-edit")?.addEventListener("click", () => lnEdit(a.id));
+  document.getElementById("ln-del")?.addEventListener("click", async e => { const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to delete"; return; } b.disabled = true; if (await lnDelete(a.id)) { toast("🗑 Deleted."); startLearnable(); } else { b.disabled = false; toast("That didn't delete. Try again."); } });
+  document.getElementById("ln-like").addEventListener("click", () => lnLike(a.id));
+  document.getElementById("ln-rep")?.addEventListener("click", () => reportSheet({ on: a.by, what: "learn", text: a.h, doc: a.id }));
+}
+async function lnLike(id) {
+  if (!lnCanWrite()) return toast("Pick who you are first.");
+  const a = LN.list.find(x => x.id === id); if (!a) return; const L = { ...(a.likes || {}) }; if (L[SITE_WHO]) delete L[SITE_WHO]; else L[SITE_WHO] = true;
+  a.likes = L; try { await lnSave({ ...a, likes: L }, true); } catch (e) {} lnRead(id);
+}
+async function lnSave(a, quiet) {   // write a how-to (to everyone, or to this device)
+  const { id, ...doc } = a;
+  if (LN.db) await LN.db.collection("learnable").doc(id).set(doc);
+  else { const L = (store.get("learn_local", []) || []).filter(x => x.id !== id); L.unshift(a); store.set("learn_local", L); LN.list = L; if (!quiet) lnRefresh(); }
+}
+async function lnDelete(id) {   // a how-to and its pictures
+  const a = LN.list.find(x => x.id === id);
+  try {
+    if (LN.db) { await LN.db.collection("learnable").doc(id).delete(); for (const p of (a && a.pics) || []) await LN.db.collection("learnpics").doc(p).delete().catch(() => {}); }
+    else { store.set("learn_local", (store.get("learn_local", []) || []).filter(x => x.id !== id)); for (const p of (a && a.pics) || []) await bigPut("lnpic_" + p, null).catch(() => {}); LN.list = store.get("learn_local", []); }
+    store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.doc !== id)); return true;
+  } catch (e) { return false; }
+}
+
+/* ✍️ writing (or editing) a how-to: 20 labeled blanks, a headline, a category and up to 6 pictures */
+let LNE = null;
+function lnEdit(id) {
+  if (!lnCanWrite()) return toast("Pick who you are first, then you can write a how-to. (Guests can read.)");
+  if (whoBlocked(SITE_WHO, "learn")) return toast("🔇 MR.E stopped you from publishing in Learnable for now.");
+  const old = id ? LN.list.find(x => x.id === id) : null; if (id && !lnMine(old)) return toast("You can only change your own how-tos.");
+  const draft = !old && store.get("learn_draft", null);
+  LNE = old ? { id: old.id, h: old.h, cat: old.cat, f: { ...(old.f || {}) }, pics: (old.pics || []).map((p, i) => ({ id: p, cap: (old.caps || [])[i] || "", at: (old.picAt || [])[i] || "top", old: true })), at: old.at, likes: old.likes, th: old.th }
+    : { id: null, h: (draft && draft.h) || "", cat: (draft && draft.cat) || "", f: { ...((draft && draft.f) || {}) }, pics: [] };
+  const where = [["top", "At the top"], ...Array.from({ length: 10 }, (_, i) => [`s${i + 1}`, `With step ${i + 1}`]), ["more", "At the end"]];
+  const field = ([k, label, ex, big]) => `<label class="ln-blank"><span><i>${LN_FIELDS.findIndex(x => x[0] === k) + 1}</i>${esc(label)}</span>${big ? `<textarea data-f="${k}" rows="2" maxlength="600" placeholder="${esc(ex)}">${esc(LNE.f[k] || "")}</textarea>` : `<input data-f="${k}" maxlength="120" placeholder="${esc(ex)}" value="${esc(LNE.f[k] || "")}">`}</label>`;
+  const group = (t, keys) => `<fieldset class="ln-group"><legend>${t}</legend>${LN_FIELDS.filter(x => keys.includes(x[0])).map(field).join("")}</fieldset>`;
+  appScreen("📘 Learnable · ✍️ Write", `<div class="ln"><div class="row ln-top"><button class="chip" id="ln-home" type="button">⬅ Learnable</button><b>${old ? "✏️ Edit your how-to" : "✍️ Write a how-to"}</b></div>
+    <form class="ln-edit" id="ln-form">
+      <label class="ln-headline"><span>📰 Headline <small>(the big title everyone sees)</small></span><input id="ln-h" maxlength="80" placeholder="How to Make the Best Paper Airplane Ever" value="${esc(LNE.h)}" required></label>
+      <div class="ln-catpick"><span>🏷️ Category</span><div class="na-chips">${LN_CATS.map(([k, l]) => `<button class="chip${LNE.cat === k ? " on" : ""}" type="button" data-ec="${k}">${l}</button>`).join("")}</div></div>
+      <p class="soft">Fill in the blanks below. You don't have to fill in all 20, but the more you write, the better it is! Never write private things like your address or phone number.</p>
+      ${group("📘 About it", ["what", "who", "why", "time", "level"])}
+      ${group("🧰 What you need", ["need"])}
+      ${group("🪜 Steps (use as many as you need)", LN_FIELDS.filter(x => /^s\d+$/.test(x[0])).map(x => x[0]))}
+      ${group("💡 Extras", ["tips", "safety", "fact", "done"])}
+      <fieldset class="ln-group"><legend>🖼️ Pictures (up to ${LN_MAXPICS})</legend><div id="ln-pics" class="ln-pics"></div>
+        <div class="row ln-picbtns"><label class="btn">📁 Choose a picture<input type="file" id="ln-file" accept="image/*" multiple hidden></label><label class="btn">📸 Take a photo<input type="file" id="ln-cam" accept="image/*" capture="environment" hidden></label><button class="btn" type="button" id="ln-gal">🎨 From the Art Gallery</button></div>
+        <div class="bg-paste ln-paste" id="ln-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Or paste a picture here"></div><div id="ln-galbox"></div></fieldset>
+      <p class="su-msg" id="ln-msg" aria-live="polite"></p>
+      <div class="row ln-pub"><button class="btn" type="button" id="ln-prev">👀 Preview</button><button class="btn go" type="submit" id="ln-go">🚀 ${old ? "Save changes" : "Publish for everyone"}</button></div>
+    </form></div>`);
+  const form = document.getElementById("ln-form"), msg = t => { document.getElementById("ln-msg").textContent = t; };
+  const keep = () => { LNE.h = document.getElementById("ln-h").value; form.querySelectorAll("[data-f]").forEach(x => { LNE.f[x.dataset.f] = x.value; }); if (!LNE.id) store.set("learn_draft", { h: LNE.h, cat: LNE.cat, f: LNE.f }); };
+  form.addEventListener("input", keep);
+  document.getElementById("ln-home").addEventListener("click", () => { keep(); startLearnable(); });
+  form.querySelectorAll("[data-ec]").forEach(b => b.addEventListener("click", () => { LNE.cat = b.dataset.ec; form.querySelectorAll("[data-ec]").forEach(x => x.classList.toggle("on", x === b)); keep(); }));
+  const drawPics = () => {
+    const box = document.getElementById("ln-pics"); if (!box) return;
+    box.innerHTML = LNE.pics.length ? LNE.pics.map((p, i) => `<div class="ln-pic"><span class="ln-picimg" data-pi="${i}">${p.d ? `<img src="${p.d}" alt="">` : "🖼️"}</span><input data-pcap="${i}" maxlength="100" placeholder="Caption (what's in the picture?)" value="${esc(p.cap)}"><select data-pat="${i}" aria-label="Where the picture goes">${where.map(([k, l]) => `<option value="${k}"${p.at === k ? " selected" : ""}>${l}</option>`).join("")}</select><button class="chip bad" type="button" data-prm="${i}" aria-label="Remove this picture">🗑</button></div>`).join("") : `<p class="soft">No pictures yet. Pictures help people follow along!</p>`;
+    box.querySelectorAll("[data-pcap]").forEach(x => x.addEventListener("input", () => { LNE.pics[+x.dataset.pcap].cap = x.value; }));
+    box.querySelectorAll("[data-pat]").forEach(x => x.addEventListener("change", () => { LNE.pics[+x.dataset.pat].at = x.value; }));
+    box.querySelectorAll("[data-prm]").forEach(x => x.addEventListener("click", () => { LNE.pics.splice(+x.dataset.prm, 1); drawPics(); }));
+    box.querySelectorAll("[data-pi]").forEach(async el => { const p = LNE.pics[+el.dataset.pi]; if (!p.d && p.id) { const d = await lnPic(p.id); if (d && el.isConnected) el.innerHTML = `<img src="${d}" alt="">`; } });
+  };
+  const addPic = async src => {
+    if (LNE.pics.length >= LN_MAXPICS) return toast(`You can add up to ${LN_MAXPICS} pictures.`);
+    const d = await lnShrink(src).catch(() => null); if (!d) return toast("That picture couldn't be used. Try a different one.");
+    LNE.pics.push({ d, cap: "", at: LNE.pics.some(p => p.at === "top") ? "more" : "top" }); drawPics();
+  };
+  const fromFiles = async files => { for (const f of [...files].filter(f => /^image\//.test(f.type || ""))) { const u = URL.createObjectURL(f); await addPic(u); URL.revokeObjectURL(u); } };
+  document.getElementById("ln-file").addEventListener("change", async e => { await fromFiles(e.target.files); e.target.value = ""; });
+  document.getElementById("ln-cam").addEventListener("change", async e => { await fromFiles(e.target.files); e.target.value = ""; });
+  const paste = document.getElementById("ln-paste");
+  paste.addEventListener("paste", async e => { e.preventDefault(); const it = [...(e.clipboardData?.items || [])].find(i => i.kind === "file" && /^image\//.test(i.type)); if (it) return fromFiles([it.getAsFile()]); const m = (e.clipboardData?.getData("text/html") || "").match(/<img[^>]+src="(data:image\/[^"]+)"/i); if (m) return addPic(m[1]); toast("📋 Copy a picture first, then paste it here."); });
+  paste.addEventListener("input", () => { paste.textContent = ""; });
+  document.getElementById("ln-gal").addEventListener("click", async () => {   // 🎨 any picture from the Art Gallery
+    const gb = document.getElementById("ln-galbox"); gb.innerHTML = `<p class="soft">Opening the Art Gallery…</p>`;
+    let all = []; try { all = (await galEveryone()).filter(m => /^image\//.test(m.type || "") || (m.thumb && m.kind !== "video")); } catch (e) { gb.innerHTML = `<p class="soft">😕 The Art Gallery couldn't open just now.</p>`; return; }
+    if (!all.length) { gb.innerHTML = `<p class="soft">There's nothing in the Art Gallery yet.</p>`; return; }
+    gb.innerHTML = `<p class="soft">Tap a picture to add it:</p><div class="pic-artgrid">${all.slice(0, 120).map((m, i) => `<button type="button" class="pic-art" data-lg="${i}" title="${esc(m.name)}">${m.thumb ? `<img src="${m.thumb}" alt="" loading="lazy">` : "🖼️"}</button>`).join("")}</div>`;
+    gb.querySelectorAll("[data-lg]").forEach(b => b.addEventListener("click", async () => { const m = all[+b.dataset.lg]; b.disabled = true; const bl = await galBlob(m.id).catch(() => null); if (bl) { const u = URL.createObjectURL(bl); await addPic(u); URL.revokeObjectURL(u); } else if (m.thumb) await addPic(m.thumb); b.disabled = false; }));
+  });
+  const build = () => { keep(); const f = {}; LN_FIELDS.forEach(([k]) => { const v = String(LNE.f[k] || "").replace(/[ \t]+/g, " ").trim(); if (v) f[k] = v; }); return { h: LNE.h.replace(/\s+/g, " ").trim(), cat: LNE.cat || "other", f }; };
+  const check = A => {
+    if (A.h.length < 4) return "Give your how-to a headline first (at least 4 letters).";
+    if (Object.keys(A.f).length < 3) return "Fill in at least 3 of the blanks so people can learn from it.";
+    if (TALK_UNKIND.test([A.h, ...Object.values(A.f), ...LNE.pics.map(p => p.cap)].join(" "))) return "Some words aren't kind. Please change them first.";
+    return "";
+  };
+  document.getElementById("ln-prev").addEventListener("click", () => {
+    const A = build(), bad = check(A); if (bad) return msg(bad); msg("");
+    const v = document.createElement("div"); v.className = "bgsheet"; v.innerHTML = `<div class="bgsheet-box ln-prevbox"><div class="prof-head"><b>👀 Preview</b><button class="iconbtn" type="button" id="lp-x">✕ Close</button></div><div class="ln-page"><h1 class="ln-h1">${esc(A.h)}</h1><p class="ln-from">From Learnable, the how-to book that everyone writes</p>${LN_FIELDS.filter(([k]) => A.f[k]).map(([k, l]) => `<h2 class="ln-h2">${esc(l)}</h2><p>${esc(A.f[k])}</p>`).join("")}${LNE.pics.filter(p => p.d).map(p => `<figure class="ln-fig"><img src="${p.d}" alt="">${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("")}</div></div>`;
+    v.addEventListener("click", e => { if (e.target === v || e.target.id === "lp-x") v.remove(); }); document.body.appendChild(v);
+  });
+  form.addEventListener("submit", async e => {
+    e.preventDefault(); const A = build(), bad = check(A); if (bad) return msg(bad);
+    const go = document.getElementById("ln-go"); go.disabled = true; msg("🚀 Publishing…");
+    try {
+      const ids = [], caps = [], at = [];
+      for (const p of LNE.pics) {   // each picture is saved on its own (so the how-to stays small)
+        let pid = p.id;
+        if (!pid) { pid = lnId("P"); if (LN.db) await LN.db.collection("learnpics").doc(pid).set({ d: p.d, by: SITE_WHO, at: Date.now() }); else await bigPut("lnpic_" + pid, p.d); LN.picCache[pid] = p.d; }
+        ids.push(pid); caps.push(String(p.cap || "").trim().slice(0, 100)); at.push(p.at || "more");
+      }
+      if (LNE.id) { const was = LN.list.find(x => x.id === LNE.id); for (const p of (was && was.pics) || []) if (!ids.includes(p)) { if (LN.db) await LN.db.collection("learnpics").doc(p).delete().catch(() => {}); else await bigPut("lnpic_" + p, null).catch(() => {}); } }
+      const cover = LNE.pics.find(p => p.at === "top") || LNE.pics[0], th = cover ? (cover.d ? await lnShrink(cover.d, 220, 14000).catch(() => null) : LNE.th) : null;
+      const id = LNE.id || lnId("L"), a = { id, h: A.h, cat: A.cat, f: A.f, pics: ids, caps, picAt: at, th: th || null, by: SITE_WHO, byName: SITE_NAME || galName(SITE_WHO), at: LNE.at || Date.now(), likes: LNE.likes || {} };
+      if (LNE.id) a.edited = Date.now();
+      await lnSave(a);
+      if (!LNE.id) store.set("learn_draft", null);
+      { const i = LN.list.findIndex(x => x.id === id); if (i >= 0) LN.list[i] = a; else LN.list.unshift(a); }   // show it right away (the shared list catches up a moment later)
+      kqBurst(30, ["📘", "✨", "⭐", "🎉", "💡"]); toast(LNE.id ? "✏️ Saved!" : LN.db ? "🚀 Published! Everyone can read it now." : "🚀 Published on this device!");
+      lnRead(id);
+    } catch (er) {
+      go.disabled = false;
+      msg(er && er.code === "quota_exceeded" ? "Learnable is full right now. Ask MR.E to delete some old how-tos." : er && (er.code === "permission_denied" || er.code === "not_granted") ? "You can read Learnable, but you can't publish here. Ask the person who shared Study Arcade for more access." : "That didn't publish. Try again in a minute (smaller pictures can help).");
+    }
+  });
+  drawPics();
+}
+NEW_APPS.push({ id: "learnable", emoji: "📘", name: "Learnable", desc: "The how-to book everyone writes: fill in 20 blanks, add pictures, pick a headline and publish it for everyone. Search everyone's how-tos!", start: () => startLearnable(), added: "2026-11-20", kw: "learnable|how-?tos?|how to (book|app|guide)|wiki|wikipedia|tutorials?|write a how ?to|teach (people|everyone)" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
