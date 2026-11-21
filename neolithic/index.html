@@ -721,6 +721,14 @@
   .who-add input { flex: 1; min-width: 200px; max-width: 360px; font: inherit; padding: 12px 14px; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; }
   body.bg-img { background: #101018 var(--bgimg) center / cover no-repeat fixed !important; }
   body.bg-img::before, body.bg-img::after { display: none !important; }
+  #bg-move { position: fixed; inset: -5%; z-index: -1; display: none; pointer-events: none; background: #101018 var(--bgimg) center / cover no-repeat; will-change: transform; transform-origin: 50% 45%; }
+  #bg-move::after { content: ""; position: absolute; inset: -20%; background: radial-gradient(circle at 35% 30%, rgba(255, 244, 214, .22), transparent 45%), radial-gradient(circle at 70% 75%, rgba(170, 200, 255, .12), transparent 50%); mix-blend-mode: soft-light; animation: bgGlow 48s ease-in-out infinite alternate; }
+  body.bg-img.bg-move { background: #101018 !important; }
+  body.bg-img.bg-move #bg-move { display: block; animation: bgMajestic 90s ease-in-out infinite alternate; }
+  @keyframes bgMajestic { 0% { transform: scale(1.02) translate(0, 0); } 20% { transform: scale(1.06) translate(-1.2%, -.8%); } 45% { transform: scale(1.11) translate(1%, -1.6%); } 70% { transform: scale(1.07) translate(1.8%, .9%); } 100% { transform: scale(1.03) translate(-1%, 1.4%); } }
+  @keyframes bgGlow { from { transform: translate(-8%, -6%) rotate(0deg); opacity: .55; } to { transform: translate(10%, 8%) rotate(8deg); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { body.bg-img.bg-move #bg-move, #bg-move::after { animation: none; } }
+  .bg-movetog { display: flex; align-items: center; gap: 8px; margin: 8px 0 4px; font-weight: 700; cursor: pointer; } .bg-movetog input { width: 20px; height: 20px; accent-color: var(--gold); }
   .bg-fab { position: fixed; left: 12px; top: calc(env(safe-area-inset-top, 0px) + 8px); z-index: 55; width: 40px; height: 40px; padding: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); background: rgba(24,14,60,.82); color: #fff; font-size: 1.2rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.45); }
   .bg-fab:hover, .bg-fab:focus-visible { border-color: var(--gold); outline: none; transform: scale(1.06); } .bg-fab[hidden] { display: none; } .bg-fab.in-corner { position: static; flex: none; width: 38px; height: 38px; }
   .bgsheet { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; justify-content: center; }
@@ -4530,10 +4538,23 @@ async function bgThumb(id, who = SITE_WHO) {   // the small preview for the choo
 const bgPages = () => (SITE_WHO && store.get("bg_page_" + SITE_WHO, {})) || {};
 function bgPageKey() { if (document.getElementById("gamesmenu")) return "home"; const lab = ($app.querySelector(".label")?.textContent || "").trim(); return lab ? lab.replace(/ ·.*| \d.*/, "") : null; }
 const bgPageName = k => k === "home" ? "🏠 Home screen" : k;
+// 🌅 Pictures and paintings people add as backgrounds move in a calm, majestic way: a very slow drift and zoom, with soft light
+// passing over them. It's on unless someone turns it off (the checkbox under "Paste a picture"), or their device asks for less motion.
+let BG_MOVE_GUEST = true;
+const bgMoveOn = () => !SITE_WHO || SITE_WHO === "guest" ? BG_MOVE_GUEST : store.get("bg_move_" + SITE_WHO, true) !== false;
 function bgApplyImg(img) {
   if (img) { if (BG_CUR_IMG !== img) { document.body.style.setProperty("--bgimg", `url("${img}")`); BG_CUR_IMG = img; } document.body.classList.add("bg-img"); }
   else if (BG_CUR_IMG) { document.body.classList.remove("bg-img"); document.body.style.removeProperty("--bgimg"); BG_CUR_IMG = null; }
+  const move = !!img && bgMoveOn();
+  if (move && !document.getElementById("bg-move")) { const d = document.createElement("div"); d.id = "bg-move"; d.setAttribute("aria-hidden", "true"); document.body.prepend(d); }
+  if (document.body.classList.contains("bg-move") !== move) document.body.classList.toggle("bg-move", move);
 }
+document.addEventListener("change", e => {   // ✨ the "move slowly" checkbox (it's in every background picker)
+  if (e.target?.id !== "bg-movechk") return;
+  if (!SITE_WHO || SITE_WHO === "guest") BG_MOVE_GUEST = e.target.checked; else store.set("bg_move_" + SITE_WHO, e.target.checked);
+  document.querySelectorAll("#bg-movechk").forEach(x => { x.checked = e.target.checked; });
+  bgApplyImg(BG_CUR_IMG); toast(e.target.checked ? "🌅 Your picture backgrounds will move slowly and calmly." : "🖼️ Your picture backgrounds will stay still.");
+});
 function bgGridHTML(cur, first) {   // first: an extra swatch at the start, like ["", "✨ Each page picks its own"]
   const tile = (v, name, extra = "", pv = `data-pv="${v}"`) => `<div class="bg-tile"><button class="bg-sw${v === cur ? " on" : ""}" type="button" data-bg="${esc(v)}" aria-pressed="${v === cur}"><span class="bg-pv" ${pv}><i></i></span><b>${v === cur ? "✓ " : ""}${name}</b></button>${extra}</div>`;
   const pics = bgImgs().slice().reverse();   // newest first; each preview loads when you scroll to it (see bgFillPreviews)
@@ -4587,7 +4608,7 @@ function bgPaste(e, done) {   // Ctrl+V (or Paste) anywhere while a background c
 }
 function bgListenPaste(done) { bgStopPaste(); BG_PASTE = e => bgPaste(e, done); document.addEventListener("paste", BG_PASTE); }
 function bgStopPaste() { if (BG_PASTE) document.removeEventListener("paste", BG_PASTE); BG_PASTE = null; }
-const bgPasteHTML = () => `<div class="bg-add"><div class="bg-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Copy any picture or art, then click or tap here and paste it (Ctrl+V)"></div><label class="btn bg-file">📁 Choose a picture<input type="file" accept="image/*" class="bg-filein" hidden></label><button class="btn bg-galbtn" type="button">🖼️ From the Art Gallery</button></div><div class="bg-galpick" hidden></div>`;
+const bgPasteHTML = () => `<div class="bg-add"><div class="bg-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Copy any picture or art, then click or tap here and paste it (Ctrl+V)"></div><label class="btn bg-file">📁 Choose a picture<input type="file" accept="image/*" class="bg-filein" hidden></label><button class="btn bg-galbtn" type="button">🖼️ From the Art Gallery</button></div><div class="bg-galpick" hidden></div><label class="bg-movetog"><input type="checkbox" id="bg-movechk"${bgMoveOn() ? " checked" : ""}> 🌅 Make my picture backgrounds move slowly and calmly</label>`;
 function bgBindAdd(root, done) {
   const z = root.querySelector(".bg-paste"), f = root.querySelector(".bg-filein");
   z?.addEventListener("input", () => {   // some phones drop the picture in as an image instead
