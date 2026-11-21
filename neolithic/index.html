@@ -4299,7 +4299,6 @@ function startProfile() {
       <div class="pf-row"><input id="pf-code1" type="password" maxlength="12" placeholder="${has ? "New code" : "Code"}" aria-label="Code" autocomplete="off" autocapitalize="off" spellcheck="false"><input id="pf-code2" type="password" maxlength="12" placeholder="Type it again" aria-label="Type the code again" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
       <div class="pf-row"><button class="btn go" type="submit">${has ? "Change my code" : "Add my code"}</button>${has ? `<button class="btn" type="button" id="pf-nocode">Remove my code</button>` : ""}</div></form>`}
     ${payOnline() ? `<div class="pf-sec pf-plan"><h3>💳 My plan</h3><p>${esc(id === "guest" && !PAY_GUEST ? "Guests sign in with Google." : payStatusText(payStatus(id)))}</p>${PAY_CFG.stripePortal && payStatus(id).paid ? `<p><a href="${esc(PAY_CFG.stripePortal)}" target="_blank" rel="noopener">Manage or cancel my subscription</a></p>` : ""}<p class="soft"><button class="linklike" id="pf-tos" type="button">📜 Terms of Service</button></p></div>` : ""}
-    ${id === "emmett" && payIsClaude() ? `<div class="pf-sec pf-secret"><h3>🤫 Top secret: only for MR.E</h3>${whoSecretOK() ? `<p>On the <b>Who are you?</b> screen, <b>tap anyone's name 3 times fast</b> to open their profile, even if it has a code. To change anything on their account, you'll have to type your own code. Don't tell anyone!</p>` : `<p class="soft">Add a code to your profile to unlock a secret that only you can see.</p>`}</div>` : ""}
   </div>`;
   document.getElementById("pf-back").addEventListener("click", showHome);
   document.getElementById("pf-tos")?.addEventListener("click", () => startTerms());
@@ -4492,7 +4491,7 @@ function startSignup(name = "") {
 }
 /* ---------- 🚩 Reports: anyone can report something someone wrote, their name, their picture or their art. Reports go to MR.E,
    who can clear it, change it, stop someone from writing, or delete them, but only after typing his code again (no shortcuts). */
-let WHO_BY_SECRET = null;   // set when MR.E opens someone's profile with the secret triple tap: their account stays locked until he types his code
+let WHO_BY_SECRET = null;   // the secret triple tap was taken away, so nothing sets this any more (it stays null)
 const whoMuted = id => !!(store.get("who_mute", {}) || {})[id];
 const whoHiddenSet = () => new Set(store.get("who_hidden", []) || []);
 const modCodeOK = code => whoHasCode("emmett") && (store.get("who_code", {}) || {}).emmett === whoHash("emmett", String(code || ""));
@@ -4622,12 +4621,10 @@ function startWho() {
   document.getElementById("who-rp").addEventListener("click", () => reportSheet());
   document.getElementById("who-tell").addEventListener("click", () => tellSheet());
   document.getElementById("who-tos").addEventListener("click", () => startTerms());
-  let taps = 0, tapId = null, tapT = null;   // one tap waits a moment, so three quick taps can be told apart
+  // a name with a code always asks for the code (there's no secret way around it: three quick taps are just a tap)
   $app.querySelectorAll("[data-site-who]").forEach(b => b.addEventListener("click", () => {
-    const id = b.dataset.siteWho; if (id !== tapId) { taps = 0; tapId = id; }
-    taps++; clearTimeout(tapT);
-    if (taps >= 3 && payIsClaude()) { taps = 0; tapId = null; WHO_BY_SECRET = id; return pickWho(id); }   // their account stays locked until MR.E types his code   // 🤫 three quick taps open any profile, even one with a code (only MR.E is told)
-    tapT = setTimeout(() => { taps = 0; tapId = null; if (!document.getElementById("who-screen")) return; whoHasCode(id) ? askCode(id) : pickWho(id); }, 400);
+    const id = b.dataset.siteWho; if (!document.getElementById("who-screen")) return;
+    whoHasCode(id) ? askCode(id) : pickWho(id);
   }));
   document.getElementById("who-add")?.addEventListener("submit", e => {
     e.preventDefault(); const n = document.getElementById("who-name").value.replace(/\s+/g, " ").trim().slice(0, 30); if (!n) { toast("Type your name first."); return; }
@@ -10865,7 +10862,6 @@ function hippoAnswerAll(qRaw) {
       `🧱 SKY STACK: double-click the Sound button to jump straight to 100 blocks.\n\n` +
       `💡 MATH HINTS: tap Hint once for a hint, then double-click the empty spot where it was to see every step.\n\n` +
       `🥇 WORLD RECORDS: in the Record Quiz, tap Hint once, then double-click the empty spot where it was to see the answer.\n\n` +
-      (whoSecretOK() && payIsClaude() ? `🔑 SECRET (only MR.E can see this): on the Who are you? screen, tap anyone's name 3 times fast to open their profile, even if it has a code.\n\n` : "") +
       `🦛 Hippo has ${HIPPO_SECRET_COUNT} hidden secrets of its own. Ask "hippo secrets" for clues!`,
       hBig("🤫🎮", "#2e1a4a", "Franklin's secrets")), { wide: true, actions: [
         { heading: "Jump right in:" },
