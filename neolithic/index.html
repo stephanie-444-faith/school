@@ -2262,6 +2262,9 @@
   .qz-ch:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--qa); } .qz-ch > i { position: absolute; top: 4px; right: 7px; font-style: normal; font-size: .7rem; opacity: .55; }
   .qz-ch:disabled { cursor: default; } .qz-ch.right { border-color: #fff; box-shadow: 0 0 0 3px #34c26a, 0 0 18px #34c26a; animation: kqPopIn .35s; } .qz-ch.wrong { opacity: .5; text-decoration: line-through; } .qz-ch.fade { opacity: .32; }
   .qz-ch.qz-gone { opacity: .18 !important; filter: grayscale(1); transform: scale(.94); pointer-events: none; }
+  .qz-hint.ghost, .qz-hint.ghost:hover { opacity: 0; cursor: default; box-shadow: none; } .qz-hint { touch-action: manipulation; }
+  .qz-ch.qz-show { box-shadow: 0 0 0 4px #ffd166, 0 0 22px #ffd166; animation: qzShow 1s ease-in-out infinite alternate; } @keyframes qzShow { to { transform: scale(1.03); } }
+  .qz-sol { font-size: 1.1rem; margin: 6px 0; }
   .qz-hintrow { justify-content: center; margin-top: 10px; } .qz-hint { flex-direction: row; align-items: center; gap: 4px; padding: 6px 14px; border-width: 2px; } .qz-hint small { opacity: .75; } .qz-hint:disabled { opacity: .5; cursor: default; }
   .qz-fb { margin-top: 12px; border-radius: 14px; padding: 10px 12px; line-height: 1.4; display: none; } .qz-fb.good, .qz-fb.bad { display: block; }
   .qz-fb.good { background: rgba(52,194,106,.16); border: 2px solid #34c26a; } .qz-fb.bad { background: rgba(239,75,92,.14); border: 2px solid #ef4b5c; }
@@ -10674,6 +10677,7 @@ function hippoAnswerAll(qRaw) {
       `🧮 MATH CENTER: Lucky Duck Math is at the bottom, and the glowing portals open the Challenge Lounges.\n\n` +
       `🧱 SKY STACK: double-click the Sound button to jump straight to 100 blocks.\n\n` +
       `💡 MATH HINTS: tap Hint once for a hint, then double-click the empty spot where it was to see every step.\n\n` +
+      `🥇 WORLD RECORDS: in the Record Quiz, tap Hint once, then double-click the empty spot where it was to see the answer.\n\n` +
       (whoSecretOK() && payIsClaude() ? `🔑 SECRET (only MR.E can see this): on the Who are you? screen, tap anyone's name 3 times fast to open their profile, even if it has a code.\n\n` : "") +
       `🦛 Hippo has ${HIPPO_SECRET_COUNT} hidden secrets of its own. Ask "hippo secrets" for clues!`,
       hBig("🤫🎮", "#2e1a4a", "Franklin's secrets")), { wide: true, actions: [
@@ -27376,7 +27380,7 @@ const GYM_QS = [
   ["Exercise can make you feel happier because your body releases…", ["Endorphins, chemicals that help you feel good", "Sugar", "Sleepiness", "Germs"], "That happy feeling after playing hard is real!"]
 ];
 // [category, emoji, record, holder, how big, more]
-const WR_CATS = [["earth", "🌍 Earth"], ["animals", "🐾 Animals"], ["people", "🏃 People & sports"], ["made", "🏙️ Built by people"], ["space", "🚀 Space"], ["body", "🫀 Your body"]];
+const WR_CATS = [["earth", "🌍 Earth"], ["animals", "🐾 Animals"], ["people", "🧑 People"], ["sports", "🏅 Sports"], ["made", "🏙️ Built by people"], ["space", "🚀 Space"], ["body", "🫀 Your body"]];
 const WR_RECORDS = [
   ["earth", "🏔️", "Tallest mountain", "Mount Everest", "8,849 m (29,032 ft)", "On the border of Nepal and China. That's measured from sea level."],
   ["earth", "🌊", "Longest river", "The Nile", "About 6,650 km (4,130 mi)", "In Africa. Some scientists think the Amazon might be a little longer!"],
@@ -27401,15 +27405,51 @@ const WR_RECORDS = [
   ["animals", "🦈", "Longest life (animal with a backbone)", "Greenland shark", "Probably 250 to 500 years", "Some sharks alive today may have been born hundreds of years ago!"],
   ["animals", "🐳", "Loudest animal", "Sperm whale", "About 230 decibels", "Its clicks are the loudest sounds made by any animal (measured underwater)."],
   ["animals", "🐊", "Biggest reptile", "Saltwater crocodile", "Up to about 6 m (20 ft) long", "It lives in Australia and Southeast Asia."],
-  ["people", "🏃", "Fastest 100 meters (men)", "Usain Bolt, Jamaica", "9.58 seconds (2009)", "At top speed he ran about 44.7 km/h (27.8 mph)!"],
-  ["people", "🏃‍♀️", "Fastest 100 meters (women)", "Florence Griffith-Joyner, USA", "10.49 seconds (1988)", "Her record has lasted more than 35 years."],
-  ["people", "🏊", "Most Olympic medals", "Michael Phelps (swimming)", "28 medals (23 gold)", "He won them at the Olympics from 2004 to 2016."],
+  ["sports", "🏃", "Fastest 100 meters (men)", "Usain Bolt, Jamaica", "9.58 seconds (2009)", "At top speed he ran about 44.7 km/h (27.8 mph)!"],
+  ["sports", "🏃‍♀️", "Fastest 100 meters (women)", "Florence Griffith-Joyner, USA", "10.49 seconds (1988)", "Her record has lasted more than 35 years."],
+  ["sports", "🏊", "Most Olympic medals", "Michael Phelps (swimming)", "28 medals (23 gold)", "He won them at the Olympics from 2004 to 2016."],
   ["people", "📏", "Tallest person ever", "Robert Wadlow, USA", "2.72 m (8 ft 11 in)", "He was still growing when he died at age 22."],
   ["people", "🎂", "Oldest person ever", "Jeanne Calment, France", "122 years and 164 days", "She was born in 1875 and lived until 1997."],
-  ["people", "🤸", "Highest high jump", "Javier Sotomayor, Cuba", "2.45 m (8 ft ½ in) in 1993", "That's higher than most doorways!"],
-  ["people", "🦘", "Longest long jump", "Mike Powell, USA", "8.95 m (29 ft 4 in) in 1991", "About as long as two cars parked end to end."],
+  ["sports", "🤸", "Highest high jump", "Javier Sotomayor, Cuba", "2.45 m (8 ft ½ in) in 1993", "That's higher than most doorways!"],
+  ["sports", "🦘", "Longest long jump", "Mike Powell, USA", "8.95 m (29 ft 4 in) in 1991", "About as long as two cars parked end to end."],
   ["people", "🌕", "First people to walk on the Moon", "Neil Armstrong and Buzz Aldrin", "July 20, 1969", "On the Apollo 11 mission. Michael Collins flew around the Moon above them."],
   ["people", "🧗", "First to climb Mount Everest", "Tenzing Norgay and Edmund Hillary", "May 29, 1953", "They reached the top together."],
+  ["people", "👴", "Oldest man ever", "Jiroemon Kimura, Japan", "116 years and 54 days", "He was born in 1897 and lived until 2013."],
+  ["people", "🧍‍♂️", "Tallest man alive", "Sultan Kösen, Türkiye", "2.51 m (8 ft 2.8 in)", "He's so tall that he can change a ceiling light bulb without a ladder."],
+  ["people", "🧍‍♀️", "Tallest woman alive", "Rumeysa Gelgi, Türkiye", "2.15 m (7 ft 0.7 in)", "A rare condition called Weaver syndrome made her grow extra tall."],
+  ["people", "👩", "Tallest woman ever", "Zeng Jinlian, China", "2.48 m (8 ft 1.75 in)", "She was already taller than most grown-ups when she was only 13."],
+  ["people", "🤏", "Shortest man ever", "Chandra Bahadur Dangi, Nepal", "54.6 cm (21.5 in)", "Measured in 2012. That's shorter than most 1-year-olds!"],
+  ["people", "🚀", "First person in space", "Yuri Gagarin, Soviet Union", "April 12, 1961", "He went once around Earth in 108 minutes."],
+  ["people", "👩‍🚀", "First woman in space", "Valentina Tereshkova, Soviet Union", "June 16, 1963", "She went around Earth 48 times in almost 3 days."],
+  ["people", "🛰️", "Longest single trip in space", "Valeri Polyakov, Russia", "437 days (1994–1995)", "He lived on the Mir space station for more than 14 months."],
+  ["people", "✈️", "First airplane flight", "Orville and Wilbur Wright, USA", "December 17, 1903", "The very first flight lasted 12 seconds and went 37 m (120 ft)."],
+  ["people", "🛩️", "First woman to fly alone across the Atlantic", "Amelia Earhart, USA", "May 1932", "She flew from Canada to Northern Ireland in about 15 hours."],
+  ["people", "🐧", "First to reach the South Pole", "Roald Amundsen's team, Norway", "December 14, 1911", "They crossed the ice with sleds pulled by dogs."],
+  ["people", "⛵", "Youngest to sail alone around the world", "Laura Dekker, Netherlands", "16 years old (2012)", "Her trip took about a year and a half."],
+  ["people", "🏔️", "Youngest to climb Mount Everest", "Jordan Romero, USA", "13 years old (2010)", "He climbed with his dad and a team of guides."],
+  ["people", "👟", "Oldest to climb Mount Everest", "Yuichiro Miura, Japan", "80 years old (2013)", "When he was 37, he skied down part of Everest!"],
+  ["people", "🕊️", "Youngest Nobel Prize winner", "Malala Yousafzai, Pakistan", "17 years old (2014)", "She won the Nobel Peace Prize for standing up for every girl's right to go to school."],
+  ["people", "♟️", "Youngest chess grandmaster", "Abhimanyu Mishra, USA", "12 years and 4 months old (2021)", "Grandmaster is the highest title a chess player can earn."],
+  ["people", "🧠", "Highest chess rating ever", "Magnus Carlsen, Norway", "2882 (2014)", "He was the world chess champion from 2013 to 2023."],
+  ["people", "📚", "Best-selling fiction writer", "Agatha Christie, England", "About 2 billion books sold", "She wrote 66 mystery novels, many starring the detective Hercule Poirot."],
+  ["people", "🏆", "Most Oscars won by one person", "Walt Disney, USA", "22 Oscars (plus 4 special awards)", "He won them for cartoons, nature movies and more."],
+  ["people", "🎵", "Most Grammy Awards", "Beyoncé, USA", "35 Grammys (as of 2025)", "She also has more Grammy nominations than anyone else."],
+  ["people", "👑", "Longest-ruling king", "Louis XIV, France", "72 years and 110 days", "He became king when he was only 4 years old!"],
+  ["people", "🇺🇸", "Longest-serving US president", "Franklin D. Roosevelt", "12 years (1933–1945)", "He was elected 4 times. Now a president can only be elected twice."],
+  ["people", "🪂", "Highest skydive", "Alan Eustace, USA", "41,422 m (135,890 ft) in 2014", "A giant balloon carried him up, and the whole trip down took about 15 minutes."],
+  ["sports", "⏱️", "First mile under 4 minutes", "Roger Bannister, England", "3:59.4 (May 6, 1954)", "People used to think running a mile that fast was impossible."],
+  ["sports", "🏃‍♂️", "Fastest mile", "Hicham El Guerrouj, Morocco", "3:43.13 (1999)", "That's about 26 km/h (16 mph) for a whole mile!"],
+  ["sports", "🏅", "Fastest marathon", "Kelvin Kiptum, Kenya", "2:00:35 (2023)", "A marathon is 42.195 km (26.2 mi) long. He ran it in Chicago."],
+  ["sports", "🥇", "Most Olympic gold medals won by a woman", "Larisa Latynina, Soviet Union (gymnastics)", "9 gold medals", "She won 18 Olympic medals in all, from 1956 to 1964."],
+  ["sports", "🤿", "Youngest Olympic champion in an event of her own", "Marjorie Gestring, USA (diving)", "13 years old (1936)", "She won the springboard diving gold medal in Berlin."],
+  ["sports", "🎾", "Most Grand Slam tennis singles titles", "Margaret Court (Australia) and Novak Djokovic (Serbia)", "24 titles each (as of 2025)", "The Grand Slams are tennis's four biggest tournaments."],
+  ["sports", "🏀", "Most points in NBA history", "LeBron James, USA", "More than 40,000 points", "In 2024 he became the first NBA player ever to reach 40,000 points."],
+  ["sports", "⚾", "Most home runs in Major League Baseball", "Barry Bonds, USA", "762 home runs", "He played from 1986 to 2007."],
+  ["sports", "🏒", "Most goals in NHL hockey history", "Alex Ovechkin, Russia", "He passed Wayne Gretzky's 894 goals in 2025", "Gretzky had held the record for more than 25 years."],
+  ["sports", "⚽", "Most goals in men's international soccer", "Cristiano Ronaldo, Portugal", "More than 130 goals for his country", "He has also played more games for his country than any other man."],
+  ["sports", "🥅", "Most goals in women's international soccer", "Christine Sinclair, Canada", "190 goals", "She scored for Canada from 2000 to 2023."],
+  ["sports", "🏈", "Most Super Bowl wins by a player", "Tom Brady, USA", "7 Super Bowls", "He won 6 with the New England Patriots and 1 with the Tampa Bay Buccaneers."],
+  ["sports", "🎿", "Highest pole vault", "Armand Duplantis, Sweden", "6.30 m (20 ft 8 in) in 2025", "He keeps breaking his own record, a centimeter at a time!"],
   ["made", "🏙️", "Tallest building", "Burj Khalifa, Dubai", "828 m (2,717 ft)", "It has more than 160 floors."],
   ["made", "🧱", "Longest wall", "The Great Wall of China", "More than 21,000 km (13,000 mi), counting all its parts", "It was built over about 2,000 years. (And no, you can't see it from space with just your eyes!)"],
   ["made", "🗿", "Tallest statue", "Statue of Unity, India", "182 m (597 ft)", "About twice as tall as the Statue of Liberty, even counting its base."],
@@ -27460,19 +27500,39 @@ function qzNext() {
   appScreen(c.label, `<div class="qz" style="${qzStyle(c)}">${qzTop(c, `<span class="qz-hud"><b>🏆 <span id="qz-score">${G.score}</span></b><b id="qz-stk">🔥 ${G.streak}</b></span>`)}
     <div class="qz-prog"><i style="width:${G.done / G.total * 100}%"></i></div><p class="qz-sub soft">${c.ic} ${esc(c.title)} · ${G.done} / ${G.total}${q.tries ? " · 🔁 Try again!" : ""}</p>
     <div class="qz-card" id="qz-card"><div class="qz-q">${esc(q.q)}</div><div class="qz-chs">${q.choices.map((t, i) => `<button class="qz-ch" type="button" data-v="${i}"><i>${i + 1}</i>${esc(t)}</button>`).join("")}</div>
-      <div class="row qz-hintrow"><button class="chip qz-hint" id="qz-hint" type="button"${G.hints ? "" : " disabled"}>💡 Hint <small>(${G.hints} left)</small></button></div>
+      <div class="row qz-hintrow"><button class="chip qz-hint" id="qz-hint" type="button"${G.hints || c.dbl ? "" : " disabled"}>💡 Hint <small>(${G.hints} left)</small></button></div>
       <div class="qz-fb" id="qz-fb" aria-live="polite"></div><button class="btn go qz-next" id="qz-nx" type="button" hidden>Next ➜</button></div>
     <p class="soft qz-keys">Keys: 1 to ${q.choices.length} to answer, H for a hint, Enter for the next one.</p></div>`);
   document.getElementById("qz-home").addEventListener("click", () => c.home());
-  document.getElementById("qz-hint").addEventListener("click", qzHint);
+  document.getElementById("qz-hint").addEventListener("click", qzHintTap);
   $app.querySelectorAll(".qz-ch").forEach(b => b.addEventListener("click", () => qzAnswer(+b.dataset.v)));
   keyHandler = e => {
     if (!document.getElementById("qz-card")) { keyHandler = null; return; }
     const nx = document.getElementById("qz-nx");
     if (e.key === "Enter" && nx && !nx.hidden) { if (!(e.target && e.target.closest?.("button, input, textarea, select, a"))) { e.preventDefault(); nx.click(); } return; }
-    if (e.key === "h" || e.key === "H") return qzHint();
+    if (e.key === "h" || e.key === "H") return QZ && QZ.cfg.dbl ? qzHintTap() : qzHint();
     const n = e.key.length === 1 ? +e.key : 0; if (n >= 1 && n <= 4) $app.querySelectorAll(".qz-ch")[n - 1]?.click();
   };
+}
+// 🔑 In quizzes with the double-click tool (World Records): tap Hint once for a hint, and the button turns invisible but keeps its spot.
+// Double-click that empty spot (or double-click Hint right away) to see the answer.
+let QZ_TAP = { q: null, t: 0 };
+function qzHintTap() {
+  const G = QZ, q = G && G.queue[0], hb = document.getElementById("qz-hint"); if (!q || q.answered || !hb) return;
+  if (!G.cfg.dbl) return qzHint();
+  const now = performance.now();
+  if (QZ_TAP.q === q && now - QZ_TAP.t < 450) { QZ_TAP = { q: null, t: 0 }; return qzReveal(); }   // second tap right away = double-click
+  QZ_TAP = { q, t: now };
+  if (hb.classList.contains("ghost")) return;
+  if (G.hints && !q.hinted) qzHint(); else toast("No hints left this round!");
+  hb.disabled = false; hb.classList.add("ghost"); hb.setAttribute("aria-label", "Hidden answer spot");
+}
+function qzReveal() {
+  const G = QZ, q = G && G.queue[0]; if (!q || q.answered) return;
+  q.hinted = true; q.revealed = true;
+  $app.querySelectorAll(".qz-ch").forEach(b => { if (+b.dataset.v === q.correct) { b.disabled = false; b.classList.remove("qz-gone"); b.classList.add("qz-show"); } });
+  const fb = document.getElementById("qz-fb"); if (fb) fb.innerHTML = `<p class="qz-sol">🔑 The answer is: <b>${esc(q.choices[q.correct])}</b></p>${q.why ? `<p class="soft">${esc(q.why)}</p>` : ""}<p class="soft">Tap it to keep going.</p>`;
+  document.getElementById("qz-hint")?.setAttribute("hidden", ""); tone([600, 800, 1000], .06, "sine", .05);
 }
 function qzHint() {
   const G = QZ, q = G && G.queue[0], hb = document.getElementById("qz-hint"); if (!q || q.answered || q.hinted || !hb) return;
@@ -27593,7 +27653,7 @@ function startWorldRecords(cat = "all") {
     <div class="wr-grid">${L.map(r => `<div class="wr-card"><span class="wr-e">${r[1]}</span><small class="wr-rec">${esc(r[2])}</small><b class="wr-who">${esc(r[3])}</b><span class="wr-num">${esc(r[4])}</span><small class="wr-more">${esc(r[5])}</small></div>`).join("")}</div>
     <p class="soft qz-note">Records can change! These are the records as of 2026.</p></div>`);
   $app.querySelectorAll("[data-wc]").forEach(x => x.addEventListener("click", () => startWorldRecords(x.dataset.wc)));
-  document.getElementById("wr-quiz").addEventListener("click", () => qzPlay({ id: "records", label: "🥇 World Records", title: "World Records", ic: "🥇", colors: ["#ffbe0b", "#fb5607"], qs: wrQuizQs(), n: 12, home: () => startWorldRecords(), rank: p => p >= 90 ? "🥇 Record Breaker!" : p >= 75 ? "🥈 So close to gold!" : "🥉 Keep exploring the records!" }));
+  document.getElementById("wr-quiz").addEventListener("click", () => qzPlay({ id: "records", label: "🥇 World Records", title: "World Records", ic: "🥇", colors: ["#ffbe0b", "#fb5607"], qs: wrQuizQs(), n: 12, dbl: true, home: () => startWorldRecords(), rank: p => p >= 90 ? "🥇 Record Breaker!" : p >= 75 ? "🥈 So close to gold!" : "🥉 Keep exploring the records!" }));
 }
 
 /* 📕 Shelf Sorter: shelve books like a real librarian (fiction or nonfiction, Dewey Decimal numbers, and ABC order by author) */
