@@ -2441,6 +2441,154 @@
   .ln-picbtns { gap: 8px; flex-wrap: wrap; } .ln-pub { justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
   .ln-prevbox { max-height: 88vh; overflow-y: auto; }
 
+  /* ⚜️ Scouting */
+  .sc { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .sc h3.sc-h { margin: 10px 0 0; font-family: var(--display); font-weight: 400; font-size: 1.2rem; }
+  .sc p { margin: 0; overflow-wrap: anywhere; }
+  .sc-top { justify-content: space-between; gap: 6px; }
+  .sc .chip.mini { display: inline-flex; flex-direction: row; align-items: center; gap: 4px; }
+  .sc-hero { position: relative; overflow: hidden; text-align: center; border-radius: 22px; padding: 14px 14px 12px; color: #fff; background: linear-gradient(135deg, var(--sa), var(--sb)); box-shadow: 0 8px 22px color-mix(in srgb, var(--sa) 45%, transparent); }
+  .sc-hero::after { content: "⚜️"; position: absolute; right: -10px; bottom: -22px; font-size: 6rem; opacity: .12; transform: rotate(-14deg); pointer-events: none; }
+  .sc-hero h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 6vw, 2rem); text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+  .sc-hero p { margin: 4px 0 0; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .sc-big { display: block; font-size: 2.8rem; line-height: 1.1; animation: kqBob 2.6s ease-in-out infinite; }
+  .sc-home { padding-bottom: 14px; }
+  .sc-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+  .sc-pills span { background: rgba(0,0,0,.25); border-radius: 99px; padding: 3px 10px; font-size: .85rem; font-weight: 800; }
+  .sc-guest { border: 2px dashed var(--gold); border-radius: 12px; padding: 8px 12px; font-size: .92rem; }
+  .sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+  .sc-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; text-align: left; border: 0; border-radius: 18px; padding: 12px; color: #fff; background: linear-gradient(150deg, var(--sa), var(--sb)); box-shadow: 0 4px 0 rgba(0,0,0,.3); transition: transform .12s; }
+  .sc-card:hover { transform: translateY(-3px) rotate(-.5deg); } .sc-card:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.3); }
+  .sc-card i { font-style: normal; font-size: 2rem; line-height: 1.1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
+  .sc-card b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,.35); overflow-wrap: anywhere; }
+  .sc-card small { font-weight: 700; font-size: .82rem; opacity: .95; line-height: 1.25; text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .sc-seen { font-style: normal; font-size: .75rem; font-weight: 800; background: rgba(0,0,0,.28); border-radius: 99px; padding: 1px 8px; margin-top: 2px; }
+  .sc-stars { color: #ffd60a; font-size: 1.05rem; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,.4); white-space: nowrap; } .sc-stars i { font-style: normal; color: rgba(255,255,255,.35); }
+  .sc-testbtn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 14px 16px; margin-top: 6px; color: #fff; background: linear-gradient(135deg, #2d6a4f, #d4a017); box-shadow: 0 6px 18px rgba(212,160,23,.35); }
+  .sc-testbtn:hover { transform: translateY(-2px); } .sc-testbtn > span:first-child { font-size: 2.2rem; } .sc-testbtn > span:last-child { margin-left: auto; font-size: 1.4rem; }
+  .sc-testbtn b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.3rem; } .sc-testbtn small { display: block; font-weight: 700; opacity: .92; }
+  .sc-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sc-tab { flex: none; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 999px; padding: 6px 11px; font-weight: 800; font-size: .9rem; white-space: nowrap; }
+  .sc-tab.on { background: var(--gold); border-color: var(--gold); color: #1a1240; }
+  .sc-box { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .sc-read { background: #fdf6e3; color: #2b2118; border-radius: 16px; padding: 12px 14px; border: 3px solid color-mix(in srgb, var(--sa, #2d6a4f) 70%, #fff); box-shadow: inset 0 0 0 2px rgba(0,0,0,.05); font-size: clamp(1.05rem, 4.4vw, 1.3rem); font-weight: 700; line-height: 1.6; overflow-wrap: anywhere; }
+  .sc-line { display: flex; align-items: flex-start; gap: 8px; }
+  .sc-line + .sc-line { margin-top: 2px; }
+  .sc-lsay { flex: none; border: 0; background: color-mix(in srgb, var(--sa, #2d6a4f) 18%, #fff); border-radius: 99px; width: 30px; height: 30px; padding: 0; font-size: .85rem; margin-top: 3px; }
+  .sc-ltxt { flex: 1; min-width: 0; transition: filter .25s; }
+  .sc-lab { display: block; font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: color-mix(in srgb, var(--sa, #2d6a4f) 80%, #000); line-height: 1.3; }
+  .sc-wd { border-radius: 6px; padding: 0 1px; transition: background .15s, color .15s; }
+  .sc-wd.on { background: var(--sa, #2d6a4f); color: #fff; box-shadow: 0 0 0 3px var(--sa, #2d6a4f); }
+  .sc-wd.past { color: color-mix(in srgb, var(--sa, #2d6a4f) 75%, #000); }
+  .sc-covered .sc-ltxt { filter: blur(7px); cursor: pointer; } .sc-covered .sc-ltxt.peek { filter: none; }
+  .sc-ctrl { gap: 8px; } .sc-ctrl .btn { padding: 10px 16px; } .sc-ctrl .btn.go { font-size: 1.1rem; } .sc-ctrl .chip.mini { flex-direction: row; }
+  .sc-say { flex: none; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; width: 36px; height: 36px; padding: 0; font-size: 1rem; }
+  .sc-say:hover { border-color: var(--gold); }
+  .sc-info { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 10px; }
+  .sc-info.sc-two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); } .sc-info.sc-three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
+  .sc-ic { background: var(--panel-2); border: 2px solid var(--line); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .sc-ic > i { font-style: normal; font-size: 1.8rem; line-height: 1.1; }
+  .sc-ic b { font-size: 1.05rem; overflow-wrap: anywhere; } .sc-ic small { color: var(--ink-soft); font-size: .92rem; line-height: 1.4; overflow-wrap: anywhere; } .sc-ic small b { color: var(--ink); font-size: inherit; }
+  .sc-ich { display: flex; align-items: center; gap: 8px; } .sc-ich i { font-style: normal; font-size: 1.6rem; } .sc-ich b { flex: 1; min-width: 0; }
+  .sc-glowc { align-items: center; text-align: center; border-color: var(--gold); background: linear-gradient(160deg, color-mix(in srgb, var(--gold) 22%, var(--panel-2)), var(--panel-2)); }
+  .sc-say1 { font-family: var(--display); font-weight: 400; font-size: 1.6rem !important; color: var(--gold); line-height: 1.15; }
+  .sc-pics .sc-ic { align-items: center; text-align: center; } .sc-pics .sc-ic small { text-align: left; align-self: stretch; }
+  .sc-svg { display: block; width: 100%; height: auto; }
+  .sc-hand { max-width: 150px; margin: 0 auto; background: radial-gradient(circle, rgba(255,255,255,.14), transparent 70%); border-radius: 50%; } .sc-hand.sc-shake { max-width: 230px; border-radius: 30%; }
+  .sc-pillrow, .sc-ess, .sc-hurry { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sc-pillrow span { background: var(--panel-2); border: 2px solid var(--line); border-radius: 99px; padding: 4px 12px; font-weight: 700; font-size: .92rem; }
+  .sc-ess span { display: inline-flex; align-items: center; gap: 6px; background: var(--panel-2); border-radius: 12px; padding: 6px 10px; font-weight: 700; font-size: .92rem; border-left: 4px solid var(--gold); } .sc-ess i { font-style: normal; }
+  .sc-story { background: color-mix(in srgb, var(--gold) 12%, var(--panel-2)); border: 2px dashed color-mix(in srgb, var(--gold) 60%, transparent); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .sc-story b { font-size: 1.02rem; } .sc-story p { line-height: 1.45; } .sc-story .chip.mini { display: inline-flex; flex-direction: row; vertical-align: middle; }
+  .sc-next { background: var(--panel-2); border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; } .sc-next .chip.mini { flex-direction: row; }
+  .sc-law { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 8px; }
+  .sc-lawc { background: var(--panel-2); border-radius: 16px; padding: 10px 12px; border-left: 6px solid hsl(var(--h) 80% 60%); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .sc-lawh { display: flex; align-items: center; gap: 8px; } .sc-lawh i { font-style: normal; font-size: 1.5rem; } .sc-lawh b { flex: 1; min-width: 0; font-family: var(--display); font-weight: 400; font-size: 1.15rem; color: hsl(var(--h) 90% 75%); }
+  .sc-lawc p { color: var(--ink-soft); font-size: .95rem; line-height: 1.4; }
+  .sc-num { display: inline-grid; place-items: center; flex: none; min-width: 26px; height: 26px; padding: 0 4px; border-radius: 99px; background: var(--gold); color: #1a1240; font-weight: 900; font-size: .85rem; line-height: 1; }
+  .sc-lvrow { gap: 6px; } .sc-lvrow .chip.mini { flex-direction: row; min-width: 40px; justify-content: center; } .sc-lvrow .chip.on { background: var(--gold); color: #1a1240; border-color: var(--gold); }
+  .sc-fl + .sc-fl { margin-top: 4px; }
+  .sc-blank { display: inline-block; text-align: center; border-bottom: 3px solid #b8a27a; border-radius: 6px 6px 0 0; color: #b8a27a; padding: 0 4px; line-height: 1.3; transition: background .2s; }
+  .sc-blank.cur { background: #ffe08a; border-color: #e09f00; color: #8a6200; animation: scPulse 1.1s ease-in-out infinite; }
+  .sc-blank.ok { background: #c9f2d6; border-color: #2e9e5b; color: #145c32; animation: kqPopIn .3s; }
+  @keyframes scPulse { 50% { box-shadow: 0 0 0 4px rgba(224,159,0,.35); } }
+  .sc-words { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .sc-words.sc-dim { opacity: .4; pointer-events: none; }
+  .sc-chip { border: 2px solid color-mix(in srgb, var(--sa, #2d6a4f) 60%, var(--line)); background: var(--panel-2); color: var(--ink); border-radius: 12px; padding: 9px 13px; font-weight: 800; font-size: 1.02rem; box-shadow: 0 3px 0 rgba(0,0,0,.3); transition: transform .1s, opacity .2s; }
+  .sc-chip:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold); } .sc-chip:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.3); }
+  .sc-chip.used { opacity: .18; transform: scale(.92); box-shadow: none; }
+  .sc-chip.bad { animation: kqShake .4s; border-color: var(--bad); background: color-mix(in srgb, var(--bad) 25%, var(--panel-2)); }
+  .sc-chip.glow { animation: scGlow .8s ease-in-out 2; border-color: var(--gold); }
+  @keyframes scGlow { 50% { box-shadow: 0 0 0 4px var(--gold), 0 0 18px var(--gold); transform: scale(1.08); } }
+  .sc-chip.long { font-size: .92rem; text-align: left; }
+  .sc-done { background: var(--panel-2); border: 2px solid var(--gold); border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; text-align: center; align-items: center; animation: kqPopIn .35s; }
+  .sc-done > b { font-size: 1.15rem; } .sc-done > small { color: var(--ink-soft); } .sc-done .row { justify-content: center; }
+  .sc-timer { font-family: var(--display); font-size: 1.2rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .sc-slots { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .sc-slots.sc-law12 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); }
+  .sc-slot { display: flex; align-items: center; gap: 8px; min-height: 40px; background: rgba(0,0,0,.18); border: 2px dashed var(--line); border-radius: 12px; padding: 6px 10px; font-weight: 800; min-width: 0; }
+  .sc-slot .sc-num { background: var(--line); color: var(--ink); }
+  .sc-slot.ok { border-style: solid; border-color: #34c26a; background: rgba(52,194,106,.15); animation: kqPopIn .3s; } .sc-slot.ok .sc-num { background: #34c26a; color: #06301b; }
+  .sc-stxt { min-width: 0; overflow-wrap: break-word; } .sc-law12 .sc-slot { padding: 6px 8px; font-size: .95rem; } .sc-slot:not(.ok) .sc-stxt { color: var(--ink-soft); }
+  .sc-fc { position: relative; display: block; width: 100%; max-width: 460px; margin: 0 auto; min-height: 190px; border: 0; padding: 0; background: none; perspective: 900px; }
+  .sc-face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; border-radius: 20px; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: transform .45s; font-size: clamp(1.1rem, 4.6vw, 1.35rem); font-weight: 800; line-height: 1.3; text-align: center; overflow-wrap: anywhere;
+    background: linear-gradient(150deg, var(--sa, #2d6a4f), var(--sb, #52b788)); color: #fff; box-shadow: 0 6px 0 rgba(0,0,0,.3); text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .sc-face small { font-size: .78rem; opacity: .8; font-weight: 700; }
+  .sc-back { transform: rotateY(180deg); background: #fdf6e3; color: #2b2118; text-shadow: none; border: 3px solid var(--sa, #2d6a4f); }
+  .sc-fc.flip .sc-face:not(.sc-back) { transform: rotateY(-180deg); } .sc-fc.flip .sc-back { transform: rotateY(0); }
+  .sc-fcbtns { justify-content: center; }
+  .sc-type { width: 100%; border-radius: 14px; border: 3px solid var(--line); background: #fdf6e3; color: #2b2118; padding: 10px 12px; font: inherit; font-size: 1.1rem; font-weight: 700; line-height: 1.5; resize: vertical; }
+  .sc-type:focus { outline: none; border-color: var(--gold); }
+  .sc-memres { align-items: stretch; } .sc-pct { font-family: var(--display); font-size: 2.6rem; line-height: 1; color: var(--gold); }
+  .sc-check { text-align: left; font-size: 1.05rem; }
+  .sc-ok { background: #c9f2d6; color: #145c32; border-radius: 5px; padding: 0 3px; }
+  .sc-miss { background: #ffd8b0; color: #8a3a00; border-radius: 5px; padding: 0 3px; text-decoration: underline wavy #e06c00; text-underline-offset: 3px; }
+  .sc-extra { background: rgba(255,96,112,.18); border-radius: 5px; padding: 0 4px; text-decoration: line-through; }
+  .sc-key { font-size: .85rem; color: var(--ink-soft); }
+  .sc-memo { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; } .sc-memb small { color: var(--gold); }
+  .sc-pic { background: #fdf6e3; border-radius: 14px; padding: 6px; border: 2px solid #e8d9b0; box-shadow: inset 0 0 12px rgba(120,80,20,.12); }
+  .sc-knots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+  .sc-kn { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 18px; padding: 10px; min-width: 0; transition: transform .12s; }
+  .sc-kn:hover { transform: translateY(-3px); border-color: #dda15e; } .sc-kn.got { border-color: #34c26a; }
+  .sc-kn .sc-pic { align-self: stretch; } .sc-kn b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; } .sc-kn small { color: var(--ink-soft); line-height: 1.35; }
+  .sc-tag { display: inline-block; font-size: .75rem; font-weight: 800; color: #3a2600; background: #dda15e; border-radius: 99px; padding: 1px 9px; }
+  .sc-kdet { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: center; }
+  .sc-kdet > div:last-child { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+  .sc-kh { font-family: var(--display); font-weight: 400; font-size: 1.6rem; margin: 0; }
+  @media (max-width: 560px) { .sc-kdet { grid-template-columns: 1fr; } }
+  .sc-steps { margin: 0; padding: 0; list-style: none; counter-reset: scst; display: grid; gap: 6px; }
+  .sc-steps li { counter-increment: scst; position: relative; padding: 10px 12px 10px 46px; border-radius: 14px; background: var(--panel-2); border: 2px solid transparent; line-height: 1.4; cursor: pointer; opacity: .6; transition: opacity .2s, border-color .2s, transform .2s; }
+  .sc-steps li::before { content: counter(scst); position: absolute; left: 10px; top: 9px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--line); font-weight: 900; font-size: .9rem; }
+  .sc-steps li.past { opacity: .85; } .sc-steps li.past::before { content: "✓"; background: #34c26a; color: #06301b; }
+  .sc-steps li.on { opacity: 1; border-color: #dda15e; transform: scale(1.01); background: color-mix(in srgb, #dda15e 18%, var(--panel-2)); font-weight: 700; } .sc-steps li.on::before { background: #dda15e; color: #3a2600; }
+  .sc-lnt { display: grid; gap: 8px; }
+  .sc-lc { display: flex; align-items: flex-start; gap: 10px; background: var(--panel-2); border-radius: 16px; padding: 10px 12px; border-left: 6px solid #8ac926; min-width: 0; }
+  .sc-lc > i { font-style: normal; font-size: 1.8rem; line-height: 1.1; } .sc-lc > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .sc-lc b { font-size: 1.05rem; } .sc-kid { color: #a7e05a; font-weight: 700; } .sc-lc p { color: var(--ink-soft); font-size: .93rem; line-height: 1.4; }
+  .sc-badge { display: flex; gap: 12px; align-items: center; background: var(--panel-2); border-radius: 18px; padding: 12px; border: 2px solid var(--gold); }
+  .sc-fleur { font-size: 4.2rem; line-height: 1; flex: none; filter: drop-shadow(0 0 12px rgba(255,201,60,.5)); }
+  .sc-badge ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; line-height: 1.4; min-width: 0; overflow-wrap: anywhere; }
+  @media (max-width: 460px) { .sc-badge { flex-direction: column; } }
+  .sc-fold { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr)); gap: 8px; }
+  .sc-fold li { background: var(--panel-2); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px; font-size: .9rem; line-height: 1.3; }
+  .sc-fold svg { background: #fdf6e3; border-radius: 10px; padding: 6px; aspect-ratio: 76 / 40; }
+  .sc-alert { background: rgba(255,96,112,.16); border: 2px solid var(--bad); border-radius: 14px; padding: 10px 14px; font-weight: 700; overflow-wrap: anywhere; }
+  .sc-hurry span { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,96,112,.18); border: 2px solid var(--bad); border-radius: 12px; padding: 7px 12px; font-weight: 800; } .sc-hurry i { font-style: normal; font-size: 1.3rem; }
+  .sc-kit { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 6px; }
+  .sc-kitem { display: flex; align-items: center; gap: 8px; text-align: left; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 12px; padding: 8px 10px; font-weight: 700; min-width: 0; }
+  .sc-kitem i { font-style: normal; font-size: 1.3rem; } .sc-kitem.on { border-color: #34c26a; background: rgba(52,194,106,.14); }
+  .sc-kitn { font-weight: 800; }
+  .sc-trail { list-style: none; margin: 0; padding: 0 0 0 4px; display: grid; gap: 0; }
+  .sc-rank { position: relative; display: flex; gap: 12px; align-items: flex-start; padding: 0 0 12px; }
+  .sc-rank:not(:last-child)::before { content: ""; position: absolute; left: 25px; top: 46px; bottom: -2px; width: 4px; border-radius: 4px; background: repeating-linear-gradient(var(--rc) 0 8px, transparent 8px 14px); }
+  .sc-rb { flex: none; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-size: 1.8rem; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--rc) 55%, #fff), var(--rc)); border: 3px solid #fff; box-shadow: 0 0 0 3px var(--rc), 0 4px 10px rgba(0,0,0,.35); }
+  .sc-rank > div { flex: 1; min-width: 0; background: var(--panel-2); border-radius: 14px; padding: 8px 12px; border-left: 5px solid var(--rc); }
+  .sc-rank b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; display: flex; align-items: center; gap: 6px; } .sc-rank p { color: var(--ink-soft); font-size: .93rem; line-height: 1.4; margin-top: 2px; }
+  .sc-rank:last-child .sc-rb { animation: scGlow 2s ease-in-out infinite; }
+  .sc-cubs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(46%, 120px), 1fr)); gap: 8px; }
+  .sc-cubs li { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; background: linear-gradient(160deg, #1e40af, #2563eb); border: 2px solid #facc15; border-radius: 16px; padding: 10px 6px; color: #fff; }
+  .sc-cubs i { font-style: normal; font-size: 2rem; } .sc-cubs b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; } .sc-cubs small { color: #fde68a; font-weight: 700; } .sc-cubs em { font-style: normal; font-size: .72rem; font-weight: 800; background: #facc15; color: #1e3a8a; border-radius: 99px; padding: 1px 7px; }
+  @media (prefers-reduced-motion: reduce) { .sc-big, .sc-blank.cur, .sc-rank:last-child .sc-rb { animation: none; } .sc-face { transition: none; } }
 </style>
 
 <button class="exit-all" id="exit-all" type="button" hidden>✕ Exit</button>
@@ -3768,7 +3916,7 @@ function bigBoot() {
   })());
 }
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ft_links|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|ah_v1|qz_v1|ss_v1|m8_v1|who_pic|who_reports|who_notes|who_block|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ft_links|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|ah_v1|qz_v1|ss_v1|m8_v1|sc_v1|who_pic|who_reports|who_notes|who_block|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -6654,7 +6802,8 @@ function subjectPick(s) {
     : k === "gym" ? { title: "🏃 Gym", say: "What would you like to do?", btns: [
       ["💪 Gym Test", "How much should you be exercising? Check it for your age, then take the test", go(() => startGymTest())],
       ["🥇 World Records", "The biggest, tallest and fastest records everybody should know", go(() => startWorldRecords())],
-      ["🏕️ Survival Guide", "What to do if you're lost, safe water, shelter, first aid and more", go(() => startSurvival())]] }
+      ["🏕️ Survival Guide", "What to do if you're lost, safe water, shelter, first aid and more", go(() => startSurvival())],
+      ["⚜️ Scouting", "The Scout Law, Oath, Motto, knots and everything a Scout memorizes, plus the Scout Test", go(() => startScouting())]] }
     : k === "music" ? { title: "🎵 Music", say: "What would you like to do?", btns: [
       ["🎵 Hippo Sings", "Songs in every style, parades too", go(() => startHippo("sing me a song"))],
       ["🔊 Sound", "Turn the sound on, off, or anywhere in between", go(() => startSoundPage())],
@@ -30256,6 +30405,706 @@ HB_PLOTS[9] = function (C) {
   add(10, c, GE + "😂" + FE, finBg, `${G} placed the glowing pearl gently in ${H}'s arms. “It is yours to share,” said the ${GK}. “Take it home.”\n\n“Thank you,” said ${H}. Then ${he} added, “${G}? Are you lonely down here?”\n\n${G}'s great eyes blinked in surprise. “Giant squids are very shy,” said ${G}. “But… yes. A little.”\n\n“Then come and visit ${home}!” said ${F}. “We have the best jokes in the ocean. Well, I do. Why don't fish play tennis? They're scared of the net!”\n\nAnd for the first time in a thousand years, the deep, dark trench was filled with the sound of a giant squid laughing.`);
   add(10, c, homeE + QE + "🎉", homeBg, `The Moon Bubble carried them home, with ${G} swimming shyly behind. ${H} set ${Q} in the middle of ${home} and glowed every color on purpose. The light leapt from pearl to pearl to pearl, and ${B.end}.\n\nThe next day at school, Miss Flounder asked, “Would anyone like to tell us what makes them special?”\n\nEight arms shot up at once. “I'm ${H},” said ${H}, glowing pink and gold and green. “I'm an ${HK}. That's what makes me special.”\n\nThat night, ${he} wiped ${his} old lists away and wrote one new rule:\n\nHOW TO BE ME\n1. Be ${H}.\n\n✨ THE END ✨`);
 };
+/* ---------- ⚜️ Scouting: everything a Scout learns by heart (Scout Oath, Scout Law, Motto, Slogan, Outdoor Code, Pledge), the sign, salute and handshake,
+   knots, Leave No Trace, buddies and patrols, the flag, first aid, ranks and Cub Scouts. Memorize tools (read-along with 🔊, fill in the missing words,
+   put it in order, flash cards, say it from memory) and a 🎖️ Scout Test on the shared quiz engine (qzPlay). Progress is saved in "sc_v1" (never for guests). ---------- */
+// 🧠 the things a Scout memorizes. lines: shown and read aloud; order: the pieces for "put it in order"; cards: flash cards [front, back]
+const SC_TEXTS = {
+  oath: { t: "Scout Oath", ic: "🤞", a: "#2d6a4f", b: "#52b788", blurb: "The promise every Scout makes.",
+    lines: ["On my honor I will do my best", "to do my duty to God and my country", "and to obey the Scout Law;", "to help other people at all times;", "to keep myself physically strong,", "mentally awake, and morally straight."],
+    decoys: ["always", "family", "safe", "kind", "school"],
+    cards: [["On my honor I will…", "do my best"], ["…to do my duty to God and…", "my country"], ["…and to obey…", "the Scout Law"], ["…to help other people…", "at all times"], ["…to keep myself…", "physically strong, mentally awake, and morally straight"], ["What are the 3 duties in the Oath?", "Duty to God and country, duty to other people, and duty to yourself"], ["What does “on my honor” mean?", "I promise on my good name: people can trust what I say"], ["What does “mentally awake” mean?", "Keep learning, stay curious and use your brain"], ["What does “morally straight” mean?", "Be honest and do what's right"]] },
+  law: { t: "Scout Law", ic: "📜", a: "#1d3557", b: "#457b9d", blurb: "12 points that tell what a Scout is like.",
+    lines: ["A Scout is trustworthy, loyal, helpful,", "friendly, courteous, kind,", "obedient, cheerful, thrifty,", "brave, clean, and reverent."],
+    decoys: ["happy", "strong", "smart", "fast", "polite"] },
+  motto: { t: "Motto & Slogan", ic: "🎯", a: "#e76f51", b: "#f4a261", blurb: "Be Prepared. Do a Good Turn Daily.",
+    lines: ["Be Prepared.", "Do a Good Turn Daily."], label: ["Scout Motto", "Scout Slogan"],
+    order: ["Be", "Prepared", "Do", "a", "Good", "Turn", "Daily"], decoys: ["Ready", "Kind", "Deed", "Always"],
+    cards: [["What is the Scout Motto?", "Be Prepared."], ["What is the Scout Slogan?", "Do a Good Turn Daily."], ["What is the Cub Scout motto?", "Do Your Best."], ["What is a Good Turn?", "Something kind you do for someone, without being asked and without being paid"], ["Be Prepared… for what?", "For anything! Ready in your mind and your body"], ["Name 3 of the Scout Basic Essentials", "Pocketknife, first-aid kit, extra clothes, rain gear, water bottle, flashlight, trail food, matches and fire starters, sun protection, map and compass"]] },
+  outdoor: { t: "Outdoor Code", ic: "🌲", a: "#386641", b: "#a7c957", blurb: "How a Scout treats the outdoors.",
+    lines: ["As an American, I will do my best to—", "Be clean in my outdoor manners,", "Be careful with fire,", "Be considerate in the outdoors, and", "Be conservation-minded."],
+    decoys: ["quiet", "careful", "safe", "outside"],
+    cards: [["How does the Outdoor Code begin?", "As an American, I will do my best to—"], ["Line 1: Be clean in my…", "outdoor manners"], ["Line 2: Be careful…", "with fire"], ["Line 3: Be considerate…", "in the outdoors"], ["Line 4: Be…", "conservation-minded"], ["What does “conservation-minded” mean?", "You save soil, water, trees, wildlife and energy, and help others do it too"], ["What does “clean in my outdoor manners” mean?", "Leave every place cleaner than you found it, and never litter"]] },
+  pledge: { t: "Pledge of Allegiance", ic: "✋", a: "#3c3b6e", b: "#b22234", blurb: "Said at the start of every meeting.",
+    lines: ["I pledge allegiance to the Flag", "of the United States of America,", "and to the Republic for which it stands,", "one Nation under God, indivisible,", "with liberty and justice for all."],
+    decoys: ["freedom", "country", "people", "always"],
+    cards: [["I pledge allegiance to the Flag…", "of the United States of America"], ["…and to the Republic…", "for which it stands"], ["…one Nation under God…", "indivisible"], ["…with liberty and justice…", "for all"], ["Allegiance means…", "Loyalty: a promise to be faithful"], ["Republic means…", "A country where people vote for the leaders who make the laws"], ["Indivisible means…", "It can't be split apart"], ["Liberty means…", "Freedom"], ["Justice means…", "Fairness: everyone is treated fairly"]] }
+};
+// 📜 the 12 points: [point, emoji, what it means, a clue without the word (for the test)]
+const SC_LAW = [
+  ["Trustworthy", "🤝", "You tell the truth and keep your promises. People can count on you.", "tells the truth and keeps promises"],
+  ["Loyal", "💙", "You stand by your family, friends, Scout leaders, school and country.", "stands by family, friends, leaders, school and country"],
+  ["Helpful", "🙌", "You care about other people and help them without expecting a reward.", "pitches in to help without wanting a reward"],
+  ["Friendly", "😊", "You're a friend to everyone, even people who are different from you.", "is a friend to all, even people who are different"],
+  ["Courteous", "🎩", "You're polite to everyone and use good manners: please, thank you, excuse me.", "uses good manners and is polite to everyone"],
+  ["Kind", "💗", "You treat others the way you want to be treated, and you're gentle with people and animals.", "treats others the way they want to be treated, and is gentle with animals"],
+  ["Obedient", "👂", "You follow the rules of your family, school and troop, and the laws of your town and country. If a rule seems unfair, you try to change it the right way.", "follows the rules of family, school and troop"],
+  ["Cheerful", "☀️", "You look on the bright side, do your jobs with a smile, and try to make others happy.", "looks on the bright side and does jobs with a smile"],
+  ["Thrifty", "🐷", "You work to pay your way, save for the future, and don't waste money, food, water, time or things.", "saves money and doesn't waste food, water or things"],
+  ["Brave", "🦁", "You face danger even when you're scared, and stand up for what's right even if others laugh.", "does the right thing even when scared"],
+  ["Clean", "🧼", "You keep your body and mind healthy and clean, use clean words, and help keep your home and community clean.", "keeps body, mind and words healthy, and picks up litter"],
+  ["Reverent", "🙏", "You're faithful in your beliefs about God, and you respect what other people believe.", "is faithful in their beliefs and respects what others believe"]
+];
+SC_TEXTS.law.order = SC_LAW.map(x => x[0]);
+SC_TEXTS.law.cards = SC_LAW.map(([p, e, m], i) => [`${e} ${i + 1}. ${p}`, m]);
+SC_TEXTS.oath.order = SC_TEXTS.oath.lines; SC_TEXTS.outdoor.order = SC_TEXTS.outdoor.lines; SC_TEXTS.pledge.order = SC_TEXTS.pledge.lines;
+const SC_MEMO = ["oath", "law", "motto", "outdoor", "pledge"];
+// 📚 the topics on the home screen: [id, emoji, title, blurb, color, color]
+const SC_TOPICS = [
+  ["sign", "🤝", "Sign, Salute & Handshake", "Plus what the Scout badge means", "#7b2cbf", "#c77dff"],
+  ["knots", "🪢", "Knots", "8 knots and rope skills, step by step", "#bc6c25", "#dda15e"],
+  ["lnt", "🥾", "Leave No Trace", "The 7 principles", "#2a9d8f", "#8ac926"],
+  ["buddy", "👫", "Buddies & Patrols", "The buddy system and the patrol method", "#f15bb5", "#fee440"],
+  ["flag", "🇺🇸", "The Flag", "Fold it, raise it, respect it", "#3c3b6e", "#b22234"],
+  ["aid", "🩹", "First Aid", "Cuts, burns, choking, hurry cases and your kit", "#d62828", "#f77f00"],
+  ["ranks", "🏅", "Ranks", "From Scout to Eagle", "#003566", "#ffc300"],
+  ["cub", "🐺", "Cub Scouts", "Lion to Arrow of Light, and Do Your Best", "#1e40af", "#facc15"]
+];
+// 🪢 knots: steps, what each is for, and a picture (see scKnotPic)
+const SC_KNOTS = [
+  { id: "square", n: "Square knot", rank: "Scout rank", use: "Ties two ropes of the same size together, and ties bandages and slings in first aid. It lies flat.",
+    steps: ["Hold one end of the rope in each hand.", "Right over left: cross the right end over the left end, then wrap it under and back up (like the first step of tying your shoes).", "Left over right: cross the end that's now on the left over the right end, then tuck it under and through.", "Pull both ends tight.", "Check it: each rope comes out of the knot right next to itself, like two loops hugging. If not, you made a granny knot. Untie it and try again!"],
+    tip: "Right over left, left over right, makes a knot both tidy and tight! (Right over left twice makes a granny knot, which slips or jams.)" },
+  { id: "halfhitch", n: "Two half hitches", rank: "Scout rank", use: "Ties a rope to a post, tree or ring, like tying up a boat or the end of a clothesline.",
+    steps: ["Pass the end of the rope around the post.", "Bring the end over the long part of the rope (the standing part), then under it, and out through the loop you just made. That's one half hitch.", "Do it again: go around the standing part the same way, a little farther from the post. That's the second half hitch.", "Slide the hitches up snug against the post and pull tight."],
+    tip: "Two half hitches are really two loops around the rope's own standing part. Always go around the same way both times." },
+  { id: "tautline", n: "Taut-line hitch", rank: "Scout rank", use: "Makes a loop you can slide to tighten or loosen a line. Perfect for tent lines and clotheslines.",
+    steps: ["Pass the rope around the tent stake (or a tree).", "Bring the end back up next to the standing part.", "Wrap the end around the standing part 2 times, inside the loop (working toward the stake).", "Make 1 more wrap around the standing part outside the loop (farther from the stake), going the same direction.", "Pull it snug. Slide the knot up the line to tighten it, or down to loosen it."],
+    tip: "Two wraps inside, one wrap outside. The knot grips when the line is pulled and slides when you push it." },
+  { id: "bowline", n: "Bowline", rank: "Second Class", use: "Makes a loop that won't slip or get smaller. It can go around a person in a rescue, and it's easy to untie later.",
+    steps: ["Make a small loop in the rope (the rabbit hole), with the end side on top.", "Bring the end of the rope (the rabbit) up through the hole from underneath.", "Take the rabbit around behind the standing part (the tree).", "Bring the rabbit back down the hole.", "Hold the end and the side of the big loop together, and pull the standing part to tighten."],
+    tip: "The rabbit comes up out of the hole, runs around the tree, and goes back down the hole! 🐇🌳" },
+  { id: "clove", n: "Clove hitch", rank: "First Class", use: "Quickly ties a rope to a pole or post, and starts and finishes lashings (tying poles together).",
+    steps: ["Wrap the end of the rope around the pole.", "Cross the end over the first wrap to make an X.", "Wrap around the pole again.", "Tuck the end under the last wrap, right under the X.", "Pull both ends tight."],
+    tip: "Look for the X! Both ends of a clove hitch come out from under the middle of the X, going opposite ways." },
+  { id: "timber", n: "Timber hitch", rank: "First Class", use: "Grabs a log so you can drag or lift it, and starts a diagonal lashing.",
+    steps: ["Pass the end of the rope around the log.", "Wrap the end around the standing part once.", "Twist the end around itself (the part going around the log) 3 or more times.", "Pull the standing part so the loop squeezes the log. It holds while you pull, and falls apart easily when you're done."],
+    tip: "Around, around, then twist, twist, twist! More twists hold better." },
+  { id: "sheet", n: "Sheet bend", rank: "Second Class", use: "Joins two ropes of different thickness (or different kinds), where a square knot would slip.",
+    steps: ["Bend the end of the thicker rope into a U shape (a bight).", "Pass the end of the thinner rope up through the U from underneath.", "Take the thin end around behind both sides of the U.", "Tuck it under itself (but not through the U).", "Pull tight. Both short ends should end up on the same side of the knot."],
+    tip: "The thick rope makes the U. The thin rope does all the moving." },
+  { id: "whip", n: "Whipping & fusing", rank: "Scout rank", use: "Keeps the end of a rope from unraveling (fraying). Whipping works on any rope. Fusing only works on plastic (synthetic) rope.",
+    steps: ["Whipping: cut off the frayed part of the rope.", "Make a loop of whipping thread (thin, strong string) and lay it along the end of the rope.", "Wrap the thread tightly around the rope, toward the end, covering the loop. Make it at least as wide as the rope is thick.", "Slip the end of the thread through the loop, then pull the other end so the loop slides under the wraps. Trim the ends.", "Fusing: only for nylon or polyester rope (cotton or manila rope burns instead of melting).", "With a grown-up, hold the rope end near a flame (not in it) until it melts a little. Don't touch it: melted rope is very hot and sticky! Let it cool."],
+    tip: "A rope with a frayed end is a rope that's getting shorter. Whip it or fuse it!" }
+];
+const SC_LNT = [
+  ["Plan Ahead and Prepare", "Know Before You Go", "🗺️", "Check the weather and the rules, pack the right gear, a map and enough water, and tell a grown-up your plan."],
+  ["Travel and Camp on Durable Surfaces", "Choose the Right Path", "🪨", "Stay on trails, and camp on hard ground, rock, gravel or dry grass so plants don't get trampled."],
+  ["Dispose of Waste Properly", "Trash Your Trash", "🗑️", "Pack it in, pack it out! Take all your trash and leftover food home, and use a bathroom or follow the camp's rules."],
+  ["Leave What You Find", "Leave What You Find", "🌸", "Take pictures, not things. Leave rocks, plants, flowers, feathers and old objects where they are for others to enjoy."],
+  ["Minimize Campfire Impacts", "Be Careful with Fire", "🔥", "Use a camp stove, or a fire ring that's already there. Keep fires small, never leave one alone, and make sure it's cold out."],
+  ["Respect Wildlife", "Respect Wildlife", "🦌", "Watch animals from far away. Never feed them (people food makes them sick), and store your food so they can't get it."],
+  ["Be Considerate of Others", "Be Kind to Other Visitors", "🤫", "Be polite on the trail, keep your voice down, and share the space so everyone can enjoy nature."]
+];
+const SC_RANKS = [
+  ["Scout", "⚜️", "#8d99ae", "The joining rank. Learn the Scout Oath, Law, motto, slogan and Outdoor Code, the Scout sign, salute and handshake, the Scout badge, and your first knots: the square knot, two half hitches and taut-line hitch. Learn how a patrol and a troop work."],
+  ["Tenderfoot", "🥾", "#52b788", "Go on your first campout, help cook a meal, learn first aid for cuts, burns, blisters, stings and choking, learn to display, raise, lower and fold the flag, and work on getting fit."],
+  ["Second Class", "📜", "#4cc9f0", "Use a map and compass, help build a safe fire, camp more, learn swimming safety and more first aid, and tie the sheet bend and bowline."],
+  ["First Class", "🏅", "#f4a261", "Plan and cook patrol meals, tie the timber hitch and clove hitch and make lashings, find your way with a map and compass, pass the swim test, and learn more first aid."],
+  ["Star", "⭐", "#ffd60a", "Earn 6 merit badges (4 from the Eagle-required list), do 6 hours of service, and serve in a troop leadership job for 4 months."],
+  ["Life", "❤️", "#e63946", "Earn 5 more merit badges (3 more from the Eagle-required list), do 6 more hours of service, lead for 6 months, and teach a younger Scout a skill."],
+  ["Eagle", "🦅", "#ffc300", "Earn 21 merit badges in all (including the Eagle-required ones), lead for 6 months, and plan and lead a big service project that helps your community. It must be finished before your 18th birthday!"]
+];
+const SC_CUBS = [
+  ["Lion", "🦁", "Kindergarten"], ["Tiger", "🐯", "1st grade"], ["Wolf", "🐺", "2nd grade"], ["Bear", "🐻", "3rd grade"], ["Webelos", "🧭", "4th grade"], ["Arrow of Light", "🏹", "5th grade"]
+];
+const SC_KIT = [["band", "🩹", "Adhesive bandages"], ["gauze", "⬜", "Sterile gauze pads"], ["tape", "🎞️", "Adhesive tape"], ["mole", "🦶", "Moleskin (for blisters)"], ["soap", "🧼", "Soap or hand sanitizer"], ["oint", "🧴", "Antibiotic ointment"], ["sciss", "✂️", "Small scissors"], ["gloves", "🧤", "Disposable gloves (not latex)"], ["cpr", "😷", "CPR breathing barrier"], ["paper", "✏️", "Pencil and paper"]];
+const SC_ESS = [["🔪", "Pocketknife"], ["🩹", "First-aid kit"], ["🧥", "Extra clothes"], ["☔", "Rain gear"], ["💧", "Filled water bottle"], ["🔦", "Flashlight"], ["🥜", "Trail food"], ["🔥", "Matches and fire starters"], ["🧴", "Sun protection"], ["🧭", "Map and compass"]];
+
+/* 💾 saving: one object per person in "sc_v1". Guests (and nobody picked yet) can use everything, but it only lasts until the page closes. */
+let SC_GUEST = null, SC_UID = 0, SC_ST = null;
+const scCan = () => !!SITE_WHO && SITE_WHO !== "guest";
+const scGet = () => { const v = scCan() ? store.get("sc_v1", null) : SC_GUEST, o = v && typeof v === "object" ? v : {}; return { m: {}, seen: {}, knots: {}, kit: {}, tests: {}, ...o }; };
+const scSave = S => { if (scCan()) store.set("sc_v1", S); else SC_GUEST = S; };
+const scM = (S, id) => (S.m[id] = S.m[id] || {});
+const scStars = (S, id) => { const m = S.m[id] || {}; return (m.fill >= 5 ? 1 : 0) + (m.ord ? 1 : 0) + ((m.mem || 0) >= 90 ? 1 : 0); };
+const scStarStr = n => `<span class="sc-stars" aria-label="${n} of 3 stars">${"★".repeat(n)}<i>${"★".repeat(3 - n)}</i></span>`;
+function scSeen(id) { const S = scGet(); if (!S.seen[id]) { S.seen[id] = 1; scSave(S); } }
+const scTop = (extra = "") => `<div class="row sc-top"><button class="chip mini" type="button" data-sgo="">⬅ Scouting</button>${extra}<button class="chip mini" type="button" data-sgo="test">🎖️ Scout Test</button></div>`;
+const scHero = (ic, t, p, a, b) => `<div class="sc-hero" style="--sa:${a};--sb:${b}"><span class="sc-big" aria-hidden="true">${ic}</span><h2>${esc(t)}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
+const scWire = () => { $app.querySelectorAll("[data-sgo]").forEach(b => b.addEventListener("click", () => startScouting(b.dataset.sgo))); $app.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => scSay(b.dataset.say))); };
+const scSayBtn = (t, lab = "Read it out loud") => `<button class="sc-say" type="button" data-say="${esc(t)}" aria-label="${esc(lab)}" title="${esc(lab)}">🔊</button>`;
+// 🔊 read out loud (speechSynthesis). The talking stops when you leave the screen.
+function scSay(t, opts = {}) {
+  const s = window.speechSynthesis; if (!s || typeof SpeechSynthesisUtterance === "undefined") { if (!opts.quiet) toast("🔇 This device can't read out loud, but you can read along!"); return null; }
+  try { s.cancel(); const u = new SpeechSynthesisUtterance(String(t).replace(/[—–]/g, ", ")); u.lang = "en-US"; u.rate = opts.rate || .9; if (opts.on) Object.assign(u, opts.on); s.speak(u); return u; } catch (e) { return null; }
+}
+const scHush = () => { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} };
+const scScreen = inner => { appScreen("⚜️ Scouting", `<div class="sc">${inner}</div>`); naTimer(scHush); };
+// words: what counts when checking (lowercase, no punctuation; "conservation-minded" is 2 words)
+const scWords = s => String(s).toLowerCase().replace(/[’']/g, "").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").split(" ").filter(Boolean).map(w => ({ honour: "honor" }[w] || w));
+const scToks = line => line.split(" ").filter(Boolean).map(t => { const m = t.match(/^([^A-Za-z0-9]*)(.*?)([^A-Za-z0-9]*)$/); return { pre: m[1], w: m[2], post: m[3] }; });
+const scNorm = w => scWords(w).join("");
+
+/* ---------- 🏠 home ---------- */
+function startScouting(topic) {
+  scHush(); SC_ST = null;
+  const [t, sub] = String(topic || "").split(":");
+  if (SC_TEXTS[t]) return scText(t, sub || "learn");
+  if (t === "knot") return scKnot(sub);
+  const pages = { sign: scSign, knots: scKnots, lnt: scLnt, buddy: scBuddy, flag: scFlag, aid: scAid, ranks: scRanks, cub: scCub, test: scTest };
+  if (pages[t]) { scSeen(t); return pages[t](); }
+  const S = scGet(), stars = SC_MEMO.reduce((n, id) => n + scStars(S, id), 0), knots = SC_KNOTS.filter(k => S.knots[k.id]).length, best = qzBest("scouts");
+  scScreen(`<div class="sc-hero sc-home" style="--sa:#1b4332;--sb:#b5838d"><span class="sc-big" aria-hidden="true">⚜️</span><h2>Scouting</h2><p>Learn everything a Scout knows by heart, then take the Scout Test!</p>
+      <div class="sc-pills"><span>⭐ ${stars} / ${SC_MEMO.length * 3} memory stars</span><span>🪢 ${knots} / ${SC_KNOTS.length} knots</span><span>🎖️ ${best ? `Test best ${best.best}%` : "Test: not yet"}</span></div></div>
+    ${scCan() ? "" : `<p class="sc-guest">👤 You can use everything here, but progress isn't saved for guests.</p>`}
+    <h3 class="sc-h">🧠 Memorize</h3><div class="sc-grid">${SC_MEMO.map(id => { const T = SC_TEXTS[id]; return `<button class="sc-card" type="button" data-sgo="${id}" style="--sa:${T.a};--sb:${T.b}"><i aria-hidden="true">${T.ic}</i><b>${esc(T.t)}</b><small>${esc(T.blurb)}</small>${scStarStr(scStars(S, id))}</button>`; }).join("")}</div>
+    <h3 class="sc-h">📚 Learn</h3><div class="sc-grid">${SC_TOPICS.map(([id, ic, ti, bl, a, b]) => `<button class="sc-card" type="button" data-sgo="${id}" style="--sa:${a};--sb:${b}"><i aria-hidden="true">${ic}</i><b>${esc(ti)}</b><small>${esc(bl)}</small>${S.seen[id] ? `<em class="sc-seen">✓ Visited</em>` : ""}</button>`).join("")}</div>
+    <button class="sc-testbtn" type="button" data-sgo="test"><span aria-hidden="true">🎖️</span><span><b>Scout Test</b><small>${SC_QS.length}+ questions about everything, 15 at a time, plus “say it from memory”</small></span><span aria-hidden="true">▶</span></button>`);
+  scWire();
+}
+
+/* ---------- 🧠 memorize pages: Learn · Fill in · In order · Cards · From memory ---------- */
+const SC_TOOLS = [["learn", "📖 Learn"], ["fill", "✏️ Fill in"], ["order", "🔢 In order"], ["cards", "🃏 Cards"], ["memory", "⌨️ From memory"]];
+function scText(id, tool) {
+  const T = SC_TEXTS[id], S = scGet(), m = S.m[id] || {}; if (!SC_TOOLS.some(x => x[0] === tool)) tool = "learn";
+  const done = { fill: m.fill >= 5, order: !!m.ord, memory: (m.mem || 0) >= 90 };
+  scScreen(`${scTop()}${scHero(T.ic, T.t, `${esc(T.blurb)} ${scStarStr(scStars(S, id))}`, T.a, T.b)}
+    <div class="sc-tabs" role="tablist">${SC_TOOLS.map(([k, l]) => `<button class="sc-tab${k === tool ? " on" : ""}" type="button" role="tab" aria-selected="${k === tool}" data-sgo="${id}:${k}">${l}${done[k] ? " ⭐" : ""}</button>`).join("")}</div>
+    <div id="sco-box" class="sc-box" style="--sa:${T.a};--sb:${T.b}"></div>`);
+  scWire();
+  ({ learn: scLearn, fill: scFill, order: scOrder, cards: scCards, memory: scMemory })[tool](id, document.getElementById("sco-box"));
+}
+// 📖 read-along: words light up while it's read out loud. 🙈 covers the words so you can test yourself (tap a line to peek).
+function scReadBox(T) {
+  let k = 0;
+  const lines = T.lines.map((ln, li) => `<div class="sc-line"><button class="sc-lsay" type="button" data-li="${li}" aria-label="Read this line">🔊</button><span class="sc-ltxt" data-peek="${li}">${T.label ? `<small class="sc-lab">${esc(T.label[li])}</small>` : ""}${scToks(ln).map(x => `${esc(x.pre)}<span class="sc-wd" data-i="${k++}">${esc(x.w)}</span>${esc(x.post)}`).join(" ")}</span></div>`).join("");
+  return `<div class="sc-read" id="sco-read">${lines}</div><div class="row sc-ctrl"><button class="btn go" type="button" id="sco-play">🔊 Read it to me</button><button class="chip mini" type="button" id="sco-slow" aria-pressed="false">🐢 Slow</button><button class="chip mini" type="button" id="sco-cover" aria-pressed="false">🙈 Cover it up</button></div>`;
+}
+function scReadWire(T) {
+  const box = document.getElementById("sco-read"), wd = [...box.querySelectorAll(".sc-wd")], rate = () => document.getElementById("sco-slow").getAttribute("aria-pressed") === "true" ? .65 : .9;
+  let spoken = "", starts = [];
+  T.lines.forEach(ln => scToks(ln).forEach(x => { if (spoken) spoken += " "; starts.push(spoken.length + x.pre.length); spoken += x.pre + x.w + x.post; }));
+  const lit = i => wd.forEach((w, j) => { w.classList.toggle("on", j === i); w.classList.toggle("past", j < i); });
+  let run = 0;
+  const play = (from = 0, to = wd.length, text = spoken) => {
+    const my = ++run, base = starts[from] || 0; let got = false, i = from, tm = null;
+    const stop = () => { if (tm) clearInterval(tm); tm = null; };
+    const step = () => { if (my !== run) return stop(); if (i >= to) { stop(); lit(-1); return; } lit(i); i++; };
+    const fallback = () => { if (got || my !== run) return; tm = naTimer(setInterval(step, 420 / rate() * .9)); step(); };
+    const u = scSay(text, { rate: rate(), quiet: true, on: {
+      onboundary: e => { if (my !== run || (e.name && e.name !== "word")) return; got = true; stop(); const c = base + e.charIndex; let j = from; while (j + 1 < to && starts[j + 1] <= c) j++; lit(j); },
+      onend: () => { if (my === run) { stop(); lit(-1); } } } });
+    if (!u) return fallback();   // no voice here: the words still light up so you can read along
+    naTimer(setTimeout(fallback, 900));
+  };
+  document.getElementById("sco-play").addEventListener("click", () => play());
+  box.querySelectorAll("[data-li]").forEach(b => b.addEventListener("click", () => {
+    const li = +b.dataset.li, from = T.lines.slice(0, li).reduce((n, l) => n + scToks(l).length, 0), n = scToks(T.lines[li]).length;
+    play(from, from + n, T.lines[li]);
+  }));
+  const slow = document.getElementById("sco-slow"); slow.addEventListener("click", () => slow.setAttribute("aria-pressed", slow.getAttribute("aria-pressed") !== "true"));
+  const cov = document.getElementById("sco-cover");
+  cov.addEventListener("click", () => { const on = cov.getAttribute("aria-pressed") !== "true"; cov.setAttribute("aria-pressed", on); box.classList.toggle("sc-covered", on); box.querySelectorAll(".peek").forEach(x => x.classList.remove("peek")); cov.textContent = on ? "👀 Show the words" : "🙈 Cover it up"; });
+  box.querySelectorAll("[data-peek]").forEach(x => x.addEventListener("click", () => { if (box.classList.contains("sc-covered")) x.classList.toggle("peek"); }));
+}
+function scLearn(id, box) {
+  const T = SC_TEXTS[id];
+  const more = {
+    oath: () => `<h3 class="sc-h">✋ 3 promises, 3 fingers</h3><p class="soft">The Scout sign's three fingers stand for the three parts of the Oath.</p><div class="sc-info">${[["🙏🇺🇸", "Duty to God and country", "“to do my duty to God and my country and to obey the Scout Law”"], ["🤝", "Duty to other people", "“to help other people at all times”"], ["💪", "Duty to yourself", "“to keep myself physically strong, mentally awake, and morally straight”"]].map(([e, t, q]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${q}</small></div>`).join("")}</div>
+      <h3 class="sc-h">💬 What the big words mean</h3><div class="sc-info">${[["On my honor", "I promise on my good name. People can trust what I say."], ["Physically strong", "Take care of your body: eat well, sleep, exercise, and say no to things that hurt you."], ["Mentally awake", "Keep learning, ask questions and stay curious."], ["Morally straight", "Be honest, fair and kind, and do what's right even when nobody is watching."]].map(([t, d]) => `<div class="sc-ic"><b>${t}</b><small>${d}</small></div>`).join("")}</div>`,
+    law: () => `<h3 class="sc-h">🎵 Say it in groups of 3</h3><p class="soft">The 12 points have a rhythm: <b>trustworthy, loyal, helpful</b> · <b>friendly, courteous, kind</b> · <b>obedient, cheerful, thrifty</b> · <b>brave, clean, and reverent</b>.</p>
+      <div class="sc-law">${SC_LAW.map(([p, e, m], i) => `<div class="sc-lawc" style="--h:${i * 30}"><div class="sc-lawh"><span class="sc-num">${i + 1}</span><i aria-hidden="true">${e}</i><b>${p}</b>${scSayBtn(`A Scout is ${p}. ${m}`, `Read ${p} out loud`)}</div><p>${esc(m)}</p></div>`).join("")}</div>`,
+    motto: () => `<div class="sc-info sc-two"><div class="sc-ic sc-glowc"><i aria-hidden="true">🎯</i><small>Scout Motto</small><b class="sc-say1">Be Prepared.</b><small>Be ready in your mind and your body for whatever might happen: an emergency, a chance to help, or a hard day. When someone asked Scouting's founder, Robert Baden-Powell, “Prepared for what?”, he said, “Why, for any old thing.”</small></div>
+      <div class="sc-ic sc-glowc"><i aria-hidden="true">🌟</i><small>Scout Slogan</small><b class="sc-say1">Do a Good Turn Daily.</b><small>Do something kind for someone every day, without being asked and without getting paid. Big or small, it counts!</small></div></div>
+      <h3 class="sc-h">💡 Good Turn ideas</h3><div class="sc-pillrow">${["Hold the door", "Help carry groceries", "Pick up litter", "Help a younger kid", "Feed a pet without being asked", "Write a thank-you note", "Share with a friend", "Help clean up after dinner", "Rake a neighbor's leaves"].map(x => `<span>${x}</span>`).join("")}</div>
+      <div class="sc-story"><b>🌫️ The Unknown Scout</b><p>In 1909, an American named William D. Boyce was lost in a thick London fog. A boy helped him find his way and would not take a tip. He said he was a Scout doing his Good Turn. Boyce was so amazed that he helped start Scouting in America in 1910. Nobody ever learned the boy's name!</p></div>
+      <h3 class="sc-h">🎒 Be Prepared: the Scout Basic Essentials</h3><p class="soft">Bring these 10 things on every outing.</p><div class="sc-ess">${SC_ESS.map(([e, t]) => `<span><i aria-hidden="true">${e}</i>${t}</span>`).join("")}</div>
+      <div class="sc-story"><b>🐺 Cub Scouts</b><p>The Cub Scout motto is <b>“Do Your Best.”</b> <button class="chip mini" type="button" data-sgo="cub">More about Cub Scouts ➜</button></p></div>`,
+    outdoor: () => `<h3 class="sc-h">🌲 What each line means</h3><div class="sc-info">${[["🧹", "Be clean in my outdoor manners", "Leave every place cleaner than you found it. Pack out your trash and never litter."], ["🔥", "Be careful with fire", "Only make fires where it's allowed, with a grown-up, and make sure they're cold out when you're done."], ["🦌", "Be considerate in the outdoors", "Respect the land, the animals and other people. Follow Leave No Trace."], ["💧", "Be conservation-minded", "Save soil, water, trees, wildlife and energy, and help others do it too."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+      <p class="soft">See also: <button class="chip mini" type="button" data-sgo="lnt">🥾 Leave No Trace</button></p>`,
+    pledge: () => `<h3 class="sc-h">🧍 How to say it</h3><div class="sc-info">${[["👀", "Face the flag", "Stand up straight and look at the flag."], ["✋", "Hand over heart", "Put your right hand over your heart. In your Scout uniform, give the Scout salute instead."], ["🧢", "Hat off", "Not in uniform? Take off your hat and hold it over your heart."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+      <h3 class="sc-h">💬 What the big words mean</h3><div class="sc-info">${[["Allegiance", "Loyalty: a promise to be faithful."], ["Republic", "A country where people vote for the leaders who make the laws."], ["Indivisible", "It can't be split apart."], ["Liberty", "Freedom."], ["Justice", "Fairness: everyone is treated fairly."]].map(([t, d]) => `<div class="sc-ic"><b>${t}</b><small>${d}</small></div>`).join("")}</div>`
+  }[id];
+  box.innerHTML = `${scReadBox(T)}${more()}<div class="sc-next"><b>Ready to memorize it?</b><div class="row">${SC_TOOLS.slice(1).map(([k, l]) => `<button class="chip mini" type="button" data-sgo="${id}:${k}">${l}</button>`).join("")}</div></div>`;
+  box.querySelectorAll("[data-sgo]").forEach(b => b.addEventListener("click", () => startScouting(b.dataset.sgo)));
+  box.querySelectorAll("[data-say]").forEach(b => b.addEventListener("click", () => scSay(b.dataset.say)));
+  scReadWire(T);
+}
+// ✏️ fill in the missing words: level 1 hides a few, level 5 hides every word. Tap the words in order.
+const SC_HIDE = [0, .2, .4, .6, .8, 1];
+function scFill(id, box, lv) {
+  const T = SC_TEXTS[id], S = scGet(), m = S.m[id] || {};
+  lv = Math.min(5, Math.max(1, lv || Math.min(5, (m.fill || 0) + 1)));
+  const toks = []; T.lines.forEach((ln, li) => scToks(ln).forEach(x => toks.push({ ...x, li })));
+  const n = toks.length, want = lv === 5 ? n : Math.max(1, Math.round(n * SC_HIDE[lv]));
+  const hide = new Set(lv === 5 ? toks.map((x, i) => i) : shuffle(toks.map((x, i) => i)).slice(0, want)), blanks = [...hide].sort((a, b) => a - b);
+  const bank = shuffle([...blanks.map(i => toks[i].w), ...(lv >= 3 ? shuffle(T.decoys).slice(0, 2) : [])]);
+  const G = SC_ST = { kind: "fill", id, cur: 0, miss: 0, hints: 0 };
+  const text = T.lines.map((ln, li) => `<div class="sc-fl">${T.label ? `<small class="sc-lab">${esc(T.label[li])}</small>` : ""}${toks.map((x, i) => x.li !== li ? "" : hide.has(i) ? `${esc(x.pre)}<span class="sc-blank" data-b="${i}" style="min-width:${Math.max(3, x.w.length) * .45 + 1}em">?</span>${esc(x.post)}` : `${esc(x.pre)}<span class="sc-wd">${esc(x.w)}</span>${esc(x.post)}`).join(" ")}</div>`).join("");
+  box.innerHTML = `<div class="row sc-lvrow"><span class="soft">Level:</span>${[1, 2, 3, 4, 5].map(l => `<button class="chip mini${l === lv ? " on" : ""}" type="button" data-lv="${l}" aria-pressed="${l === lv}">${l}${(m.fill || 0) >= l ? " ✓" : ""}</button>`).join("")}</div>
+    <p class="soft">${lv === 5 ? "Level 5: every word is hidden! Tap the words in order." : `Level ${lv}: ${want} word${want === 1 ? " is" : "s are"} hidden. Tap the right word for the glowing blank.`}</p>
+    <div class="sc-read sc-fill" id="sco-fill">${text}</div>
+    <div class="sc-words" id="sco-words">${bank.map((w, i) => `<button class="sc-chip" type="button" data-w="${i}">${esc(w)}</button>`).join("")}</div>
+    <div class="row sc-ctrl"><button class="chip mini" type="button" id="sco-hint">💡 Hint</button><span class="soft" id="sco-miss">Slips: 0</span></div><div id="sco-res" aria-live="polite"></div>`;
+  box.querySelectorAll("[data-lv]").forEach(b => b.addEventListener("click", () => scFill(id, box, +b.dataset.lv)));
+  const mark = () => box.querySelectorAll(".sc-blank").forEach(b => b.classList.toggle("cur", +b.dataset.b === blanks[G.cur]));
+  mark();
+  const chips = [...box.querySelectorAll("[data-w]")];
+  chips.forEach(c => c.addEventListener("click", () => {
+    if (SC_ST !== G || G.cur >= blanks.length || c.disabled) return;
+    const want = toks[blanks[G.cur]].w;
+    if (scNorm(bank[+c.dataset.w]) === scNorm(want)) {
+      const bl = box.querySelector(`[data-b="${blanks[G.cur]}"]`); bl.textContent = want; bl.classList.add("ok"); c.disabled = true; c.classList.add("used");
+      G.cur++; tone([523 + G.cur * 6, 784], .06, "triangle", .05); mark();
+      if (G.cur >= blanks.length) {
+        const S2 = scGet(), m2 = scM(S2, id), first = (m2.fill || 0) < 5 && lv === 5; if (lv > (m2.fill || 0) && G.miss <= 2) m2.fill = lv; scSave(S2);
+        box.querySelector(".sc-words").classList.add("sc-dim");
+        const ok = G.miss <= 2, star = ok && lv === 5 && first;
+        if (ok) kqBurst(lv === 5 ? 40 : 18, [T.ic, "⭐", "⚜️", "✨"]);
+        document.getElementById("sco-res").innerHTML = `<div class="sc-done"><b>${ok ? (lv === 5 ? "🏆 You know it by heart!" : `✅ Level ${lv} done!`) : "👍 Finished! Try it again with 2 slips or fewer to pass."}</b><small>${G.miss} slip${G.miss === 1 ? "" : "s"}${G.hints ? ` · ${G.hints} hint${G.hints === 1 ? "" : "s"}` : ""}${star ? " · ⭐ You earned the Fill-in star!" : ""}</small>
+          <div class="row">${ok && lv < 5 ? `<button class="btn go" type="button" id="sco-up">Level ${lv + 1}: hide more ➜</button>` : ""}<button class="btn" type="button" id="sco-again">🔁 ${ok && lv === 5 ? "Again" : `Level ${lv} again`}</button></div></div>`;
+        document.getElementById("sco-up")?.addEventListener("click", () => scFill(id, box, lv + 1));
+        document.getElementById("sco-again").addEventListener("click", () => scFill(id, box, lv));
+        document.getElementById("sco-res").scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+      }
+    } else {
+      G.miss++; document.getElementById("sco-miss").textContent = "Slips: " + G.miss; tone([220, 175], .12, "sawtooth", .04);
+      c.classList.remove("bad"); void c.offsetWidth; c.classList.add("bad");
+    }
+  }));
+  document.getElementById("sco-hint").addEventListener("click", () => {
+    if (G.cur >= blanks.length) return; const want = scNorm(toks[blanks[G.cur]].w), c = chips.find(x => !x.disabled && scNorm(bank[+x.dataset.w]) === want); if (!c) return;
+    G.hints++; c.classList.remove("glow"); void c.offsetWidth; c.classList.add("glow"); naTimer(setTimeout(() => c.classList.remove("glow"), 1600));
+  });
+}
+// 🔢 put it in order: tap the pieces in the right order, as fast as you can
+function scOrder(id, box) {
+  const T = SC_TEXTS[id], S = scGet(), m = S.m[id] || {}, P = T.order, isLaw = id === "law";
+  const G = SC_ST = { kind: "order", id, next: 0, miss: 0, t0: 0, end: 0 };
+  box.innerHTML = `<p class="soft">${isLaw ? "Put the 12 points of the Scout Law in order! Tap them from first to last." : id === "motto" ? "Tap the words of the Motto and Slogan in order." : "Tap the lines in the right order, from first to last."}${m.ordT ? ` <b>Best: ${m.ordT.toFixed(1)} s</b>` : ""}</p>
+    <div class="row sc-ctrl"><span class="sc-timer" id="sco-time">⏱️ 0.0 s</span><span class="soft" id="sco-miss">Slips: 0</span></div>
+    <ol class="sc-slots${isLaw ? " sc-law12" : ""}" id="sco-slots">${P.map((p, i) => `<li class="sc-slot" data-s="${i}"><span class="sc-num">${i + 1}</span><span class="sc-stxt">${isLaw ? "?" : ""}</span></li>`).join("")}</ol>
+    <div class="sc-words sc-pool" id="sco-pool">${shuffle(P.map((p, i) => i)).map(i => `<button class="sc-chip${P[i].length > 18 ? " long" : ""}" type="button" data-p="${i}">${isLaw ? SC_LAW[i][1] + " " : ""}${esc(P[i])}</button>`).join("")}</div><div id="sco-res" aria-live="polite"></div>`;
+  const tEl = document.getElementById("sco-time");
+  const tick = () => { if (SC_ST !== G || !G.t0) return; tEl.textContent = `⏱️ ${(((G.end || Date.now()) - G.t0) / 1000).toFixed(1)} s`; };
+  naTimer(setInterval(tick, 100));
+  box.querySelectorAll("[data-p]").forEach(c => c.addEventListener("click", () => {
+    if (SC_ST !== G || G.end || c.disabled) return; if (!G.t0) G.t0 = Date.now();
+    const i = +c.dataset.p;
+    if (P[i] === P[G.next]) {   // (the same word twice counts either way)
+      const slot = box.querySelector(`[data-s="${G.next}"]`); slot.classList.add("ok"); slot.querySelector(".sc-stxt").textContent = P[G.next];
+      c.disabled = true; c.classList.add("used"); G.next++; tone([440 + G.next * 30], .07, "triangle", .05);
+      if (G.next >= P.length) {
+        G.end = Date.now(); tick(); const sec = (G.end - G.t0) / 1000, ok = G.miss <= 1;
+        const S2 = scGet(), m2 = scM(S2, id), star = ok && !m2.ord, best = ok && (!m2.ordT || sec < m2.ordT); if (ok) { m2.ord = 1; if (best) m2.ordT = Math.round(sec * 10) / 10; } scSave(S2);
+        if (ok) kqBurst(30, [T.ic, "⭐", "⚜️", "🎉"]);
+        document.getElementById("sco-res").innerHTML = `<div class="sc-done"><b>${ok ? (G.miss ? "✅ All in order!" : "🏆 Perfect order!") : "👍 All done! Try again with 1 slip or fewer for the star."}</b><small>${sec.toFixed(1)} seconds · ${G.miss} slip${G.miss === 1 ? "" : "s"}${best && m.ordT ? " · 🚀 a faster time!" : ""}${star ? " · ⭐ You earned the In-order star!" : ""}</small><div class="row"><button class="btn go" type="button" id="sco-again">🔁 Again</button></div></div>`;
+        document.getElementById("sco-again").addEventListener("click", () => scOrder(id, box));
+      }
+    } else { G.miss++; document.getElementById("sco-miss").textContent = "Slips: " + G.miss; tone([220, 175], .12, "sawtooth", .04); c.classList.remove("bad"); void c.offsetWidth; c.classList.add("bad"); }
+  }));
+}
+// 🃏 flash cards: tap to flip, then "Got it" or "Again"
+function scCards(id, box, rev) {
+  const T = SC_TEXTS[id], deck = T.cards, G = SC_ST = { kind: "cards", id, q: shuffle(deck.map((c, i) => i)), got: 0, again: 0, flip: false, n: deck.length };
+  const draw = () => {
+    if (SC_ST !== G) return;
+    if (!G.q.length) {
+      const S2 = scGet(); scM(S2, id).cards = 1; scSave(S2); kqBurst(24, [T.ic, "🃏", "⭐"]);
+      box.innerHTML = `<div class="sc-done"><b>🎉 You went through all ${G.n} cards!</b><small>${G.again ? `${G.again} card${G.again === 1 ? "" : "s"} needed another look.` : "Every card on the first try!"}</small><div class="row"><button class="btn go" type="button" id="sco-again">🔁 Shuffle again</button></div></div>`;
+      return document.getElementById("sco-again").addEventListener("click", () => scCards(id, box, rev));
+    }
+    const [f, b] = deck[G.q[0]], front = rev ? b : f, back = rev ? f : b;
+    box.innerHTML = `<div class="row sc-ctrl"><span class="soft">${G.n - G.q.length + 1 > G.n ? G.n : G.n - G.q.length + 1} / ${G.n} · ✅ ${G.got}</span>${id === "law" ? `<button class="chip mini" type="button" id="sco-rev" aria-pressed="${!!rev}">🔄 ${rev ? "Show the point first" : "Show the meaning first"}</button>` : ""}</div>
+      <button class="sc-fc${G.flip ? " flip" : ""}" type="button" id="sco-fc" aria-label="Flash card. Tap to flip."><span class="sc-face">${esc(front)}<small>Tap to flip</small></span><span class="sc-face sc-back">${esc(back)}</span></button>
+      <div class="row sc-fcbtns" id="sco-fcb"${G.flip ? "" : " hidden"}><button class="btn" type="button" id="sco-no">🔁 Again</button><button class="btn go" type="button" id="sco-yes">✅ Got it</button>${scSayBtn(back)}</div>`;
+    const fc = document.getElementById("sco-fc");
+    fc.addEventListener("click", () => { G.flip = !G.flip; fc.classList.toggle("flip", G.flip); document.getElementById("sco-fcb").hidden = !G.flip; tone([660], .04, "sine", .04); });
+    document.getElementById("sco-yes").addEventListener("click", () => { G.q.shift(); G.got++; G.flip = false; tone([523, 784], .06, "triangle", .05); draw(); });
+    document.getElementById("sco-no").addEventListener("click", () => { G.q.push(G.q.shift()); G.again++; G.flip = false; draw(); });
+    box.querySelector("[data-say]").addEventListener("click", e => scSay(e.currentTarget.dataset.say));
+    document.getElementById("sco-rev")?.addEventListener("click", () => scCards(id, box, !rev));
+  };
+  draw();
+}
+// ⌨️ say it from memory: type it, then see which words you got
+function scDiff(ref, got) {   // longest common subsequence of words: which reference words were typed (in order), and which typed words were extra
+  const a = ref.map(scNorm), b = got.slice(0, 300), n = a.length, m = b.length, L = Array.from({ length: n + 1 }, () => new Int16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = a[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const ok = new Array(n).fill(false), extra = []; let i = 0, j = 0;
+  while (i < n && j < m) { if (a[i] === b[j]) { ok[i] = true; i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else extra.push(b[j++]); }
+  while (j < m) extra.push(b[j++]);
+  return { ok, extra, n: ok.filter(Boolean).length };
+}
+function scMemory(id, box) {
+  const T = SC_TEXTS[id], S = scGet(), m = S.m[id] || {};
+  box.innerHTML = `<p class="soft">Type the whole ${esc(T.t)} from memory${id === "motto" ? " (the Motto, then the Slogan)" : ""}. Capitals and punctuation don't matter.${m.mem ? ` <b>Your best: ${m.mem}%</b>` : ""}</p>
+    <textarea class="sc-type" id="sco-type" rows="${Math.min(7, T.lines.length + 2)}" placeholder="${esc(T.lines[0].split(" ").slice(0, 2).join(" "))}…" aria-label="Type the ${esc(T.t)} from memory" autocomplete="off" autocapitalize="sentences" spellcheck="false"></textarea>
+    <div class="row sc-ctrl"><button class="btn go" type="button" id="sco-check">✅ Check it</button><button class="chip mini" type="button" id="sco-clear">🧹 Clear</button></div><div id="sco-res" aria-live="polite"></div>`;
+  const ta = document.getElementById("sco-type");
+  document.getElementById("sco-clear").addEventListener("click", () => { ta.value = ""; document.getElementById("sco-res").innerHTML = ""; ta.focus(); });
+  document.getElementById("sco-check").addEventListener("click", () => {
+    const typed = scWords(ta.value); if (!typed.length) { toast("Type it first, then check!"); return ta.focus(); }
+    const refT = []; T.lines.forEach((ln, li) => scToks(ln).forEach(x => scWords(x.w).forEach((w, k, arr) => refT.push({ li, show: arr.length > 1 ? (k === 0 ? x.pre : "") + x.w.split(/[^A-Za-z0-9’']+/)[k] + (k === arr.length - 1 ? x.post : "-") : x.pre + x.w + x.post, w }))));
+    const D = scDiff(refT.map(r => r.w), typed), pct = Math.round(D.n / refT.length * 100), xp = Math.max(0, pct - Math.round(D.extra.length / refT.length * 100));
+    const S2 = scGet(), m2 = scM(S2, id), prev = m2.mem || 0; if (xp > prev) m2.mem = xp; scSave(S2);
+    const lines = T.lines.map((ln, li) => `<div>${refT.map((r, k) => r.li !== li ? "" : `<span class="${D.ok[k] ? "sc-ok" : "sc-miss"}">${esc(r.show)}</span>`).join(" ")}</div>`).join("");
+    if (xp === 100) kqBurst(50, [T.ic, "⭐", "⚜️", "🎉", "✨"]); else tone(xp >= 90 ? [523, 659, 784] : [440, 523], .08, "triangle", .05);
+    document.getElementById("sco-res").innerHTML = `<div class="sc-done sc-memres"><b>${xp === 100 ? "🏆 Perfect! Every word!" : xp >= 90 ? "🌟 Almost perfect!" : xp >= 60 ? "👍 Good try! Look at the orange words." : "📖 Keep practicing! Read it a few more times."}</b>
+      <div class="sc-pct">${xp}%</div><small>You got ${D.n} of ${refT.length} words in the right order${D.extra.length ? `, plus ${D.extra.length} extra word${D.extra.length === 1 ? "" : "s"}` : ""}.${xp >= 90 && prev < 90 ? " ⭐ You earned the From-memory star!" : xp > prev && prev ? " That's your best yet!" : ""}</small>
+      <div class="sc-read sc-check">${lines}</div><p class="sc-key"><span class="sc-ok">green</span> = you got it · <span class="sc-miss">orange</span> = missed or out of order</p>
+      ${D.extra.length ? `<p class="sc-key">Extra words: ${D.extra.slice(0, 30).map(w => `<span class="sc-extra">${esc(w)}</span>`).join(" ")}</p>` : ""}</div>`;
+    document.getElementById("sco-res").scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+  });
+}
+
+/* ---------- 🎨 drawings: ropes are drawn in layers so one piece can go over another ---------- */
+// layers: {d, c, w} a rope · {raw} any SVG · {re: i, clip: [[x, y, r]…]} draw layer i again, but only inside the circles (so it goes over whatever is in between)
+function scSvg(L, label, vb = "0 0 200 120") {
+  const id = "scs" + (++SC_UID); let defs = "";
+  const one = x => x.raw || `<path d="${x.d}" stroke="#2b1a0e" stroke-width="${(x.w || 10) + 4}"/><path d="${x.d}" stroke="${x.c}" stroke-width="${x.w || 10}"/><path d="${x.d}" stroke="#fff" stroke-opacity=".38" stroke-width="${Math.max(1.4, (x.w || 10) * .24)}" stroke-dasharray="${(x.w || 10) * .55} ${(x.w || 10) * .45}"/>`;
+  const body = L.map((x, i) => {
+    const s = x.re != null ? one(L[x.re]) : one(x); if (!x.clip) return s;
+    defs += `<clipPath id="${id}-${i}">${x.clip.map(([cx, cy, r]) => `<circle cx="${cx}" cy="${cy}" r="${r}"/>`).join("")}</clipPath>`;
+    return `<g clip-path="url(#${id}-${i})">${s}</g>`;
+  }).join("");
+  return `<svg class="sc-svg" viewBox="${vb}" role="img" aria-label="${esc(label)}"><defs>${defs}</defs><g fill="none" stroke-linecap="round" stroke-linejoin="round">${body}</g></svg>`;
+}
+const SC_POST = (x, w = 26) => `<rect x="${x}" y="2" width="${w}" height="116" rx="5" fill="#9c6b3c" stroke="#4a2c12" stroke-width="3"/><path d="M${x + 7},12 v30 M${x + w - 8},30 v40 M${x + 9},70 v38" stroke="#6f4522" stroke-width="2"/>`;
+const SC_KNOT_PICS = {
+  square: () => scSvg([
+    { d: "M192,50 H108 C96,50 96,28 82,28 C68,28 62,44 62,60 C62,76 68,92 82,92 C96,92 96,70 108,70 H192", c: "#3a86ff" },
+    { d: "M8,50 H92 C104,50 104,28 118,28 C132,28 138,44 138,60 C138,76 132,92 118,92 C104,92 104,70 92,70 H8", c: "#e63946" },
+    { re: 0, clip: [[100, 45, 12], [100, 75, 12]] }], "A square knot: two loops locked together"),
+  halfhitch: () => { const c = "#f4a261", w = 9; return scSvg([
+    { d: "M196,40 H24 A13,13 0 0 0 24,66 H62 C70,66 72,62 74,56 L84,26 C86,20 90,20 92,26 L98,54 C100,60 104,60 106,54 L116,26 C118,20 122,20 124,26 L130,54 C134,66 138,80 146,100", c, w },
+    { raw: SC_POST(24) }, { d: "M12,66 H62", c, w, clip: [[37, 66, 15]] },
+    { d: "M60,40 H150", c, w, clip: [[95.1, 40, 8.5], [127.1, 40, 8.5]] },
+    { d: "M74,56 L84,26", c, w, clip: [[79.5, 40, 8.5]] }, { d: "M106,54 L116,26", c, w, clip: [[111.1, 40, 8.5]] }
+  ], "Two half hitches tied around a post"); },
+  tautline: () => { const c = "#e9c46a", w = 9; return scSvg([
+    { raw: `<path d="M2,106 H198 V120 H2 Z" fill="#a98451" stroke="none"/><path d="M2,105 H198" stroke="#7a5c2e" stroke-width="3"/><text x="150" y="26" font-size="11" fill="#5a3b1a" font-weight="700" stroke="none">to tent ➜</text>` },
+    { d: "M196,36 H39 A29,29 0 0 0 39,94 H96 C106,94 108,76 104,54 L96,22 C94,15 88,15 88,22 L82,52 C82,58 78,58 78,54 L70,22 C68,15 62,15 62,22 L56,52 C56,66 62,72 74,72 H128 C138,72 142,64 140,54 L132,22 C130,15 124,15 124,22 L118,52 C116,72 120,86 126,100", c, w },
+    { raw: `<path d="M32,22 h14 v84 l-7,12 l-7,-12 z" fill="#b8c0c8" stroke="#4b5563" stroke-width="3"/>` }, { d: "M24,94 H60", c, w, clip: [[39, 94, 11]] },
+    { d: "M50,36 H160", c, w, clip: [[85.4, 36, 8.5], [59.4, 36, 8.5], [121.4, 36, 8.5]] },
+    { d: "M104,54 L96,22", c, w, clip: [[99.8, 36, 8.5]] }, { d: "M78,54 L70,22", c, w, clip: [[73.8, 36, 8.5]] }, { d: "M140,54 L132,22", c, w, clip: [[135.8, 36, 8.5]] },
+    { d: "M66,72 H136", c, w, clip: [[105.9, 72.2, 9], [117.9, 71.8, 9]] }
+  ], "A taut-line hitch on a tent stake: two wraps inside the loop, one outside"); },
+  bowline: () => { const c = "#2a9d8f", w = 8; return scSvg([
+    { d: "M100,0 V50 C100,68 150,72 152,54 C154,34 112,28 96,42 C86,54 62,64 60,82 C58,100 80,112 104,112 C128,112 150,100 148,84 C146,74 136,72 134,66 L134,24 C134,8 92,4 92,16 C92,26 112,26 116,38 L118,60 C120,72 122,80 125,90", c, w },
+    { d: "M100,0 V30", c, w, clip: [[100.1, 9.4, 7.5]] },
+    { d: "M152,54 C154,34 112,28 96,42", c, w, clip: [[100.2, 38.9, 7.5]] },
+    { d: "M100,50 C100,68 150,72 152,54", c, w, clip: [[133.9, 65.6, 7.5], [118.6, 64.4, 7.5]] },
+    { d: "M92,16 C92,26 112,26 116,38 L118,60", c, w, clip: [[99.9, 24.8, 7.5], [114.6, 34.8, 7.5]] },
+    { d: "M134,66 L134,24", c, w, clip: [[134.1, 36.1, 7.5]] },
+    { raw: `<text x="150" y="16" font-size="10" fill="#5a3b1a" font-weight="700" stroke="none">🐇 the end</text><text x="8" y="110" font-size="10" fill="#5a3b1a" font-weight="700" stroke="none">the loop</text>` }
+  ], "A bowline: a loop that won't slip"); },
+  clove: () => scSvg([
+    { raw: SC_POST(84, 32) },
+    { d: "M6,56 H116", c: "#e63946" }, { d: "M84,68 H194", c: "#e63946" },
+    { d: "M84,34 L116,90", c: "#e63946" }
+  ], "A clove hitch on a pole: look for the X"),
+  timber: () => { const c = "#e9c46a"; return scSvg([
+    { raw: `<rect x="6" y="38" width="182" height="64" rx="30" fill="#9c6b3c" stroke="#4a2c12" stroke-width="3"/><ellipse cx="172" cy="70" rx="16" ry="32" fill="#d4a373" stroke="#4a2c12" stroke-width="3"/><ellipse cx="172" cy="70" rx="8" ry="17" fill="none" stroke="#9c6b3c" stroke-width="2"/><path d="M22,56 H70 M30,86 H80 M124,52 H150 M120,90 H148" stroke="#6f4522" stroke-width="2"/>` },
+    { d: "M80,34 C82,40 84,42 88,43 L112,53 L88,64 L112,75 L88,86 L112,97 C116,99 118,102 118,108", c, w: 7 },
+    { d: "M196,8 C150,12 112,24 100,38 V102", c, w: 9 },
+    { d: "M88,43 L112,53 M88,64 L112,75 M88,86 L112,97", c, w: 7, clip: [[100, 48, 7.5], [100, 69.5, 7.5], [100, 91.5, 7.5]] }
+  ], "A timber hitch around a log, twisted 3 times"); },
+  sheet: () => { const t = "#3a86ff"; return scSvg([
+    { d: "M194,60 H120 C108,60 104,54 104,46 L104,30 C104,22 96,18 88,22 C80,26 78,34 78,42 L78,80 C78,90 84,94 90,90 C96,86 98,80 98,70 C98,62 106,56 116,54", c: t, w: 7 },
+    { d: "M6,42 H110 A18,18 0 0 1 110,78 H6", c: "#d4a373", w: 14 },
+    { d: "M104,48 L104,30", c: t, w: 7, clip: [[103.8, 42, 10.5]] },
+    { d: "M78,80 C78,90 84,94 90,90 C96,86 98,80 98,70", c: t, w: 7, clip: [[97.6, 78.1, 10.5]] },
+    { d: "M120,60 C108,60 104,54 104,46", c: t, w: 7, clip: [[108.2, 56.7, 6]] },
+    { raw: `<text x="8" y="30" font-size="10" fill="#5a3b1a" font-weight="700" stroke="none">thick rope</text><text x="150" y="52" font-size="10" fill="#1d4ed8" font-weight="700" stroke="none">thin rope</text>` }
+  ], "A sheet bend joining a thick rope and a thin rope"); },
+  whip: () => scSvg([
+    { d: "M6,36 H170", c: "#e9c46a", w: 16 },
+    { raw: `<rect x="138" y="26" width="26" height="20" rx="3" fill="#264653" stroke="#2b1a0e" stroke-width="2"/>${[141, 144, 147, 150, 153, 156, 159, 162].map(x => `<path d="M${x},26 v20" stroke="#5aa9a0" stroke-width="1.5"/>`).join("")}<path d="M171,30 l8,-3 M172,36 l9,0 M171,42 l8,3" stroke="#c9a227" stroke-width="2.5"/><text x="8" y="16" font-size="11" fill="#5a3b1a" font-weight="700" stroke="none">Whipped (any rope)</text>` },
+    { d: "M6,90 H168", c: "#3a86ff", w: 14 },
+    { raw: `<ellipse cx="170" cy="90" rx="9" ry="10" fill="#1d4ed8" stroke="#2b1a0e" stroke-width="2.5"/><path d="M164,84 q4,6 0,12" stroke="#93c5fd" stroke-width="2"/><text x="8" y="70" font-size="11" fill="#5a3b1a" font-weight="700" stroke="none">Fused (nylon rope)</text>` }
+  ], "A whipped rope end and a fused rope end")
+};
+const scKnotPic = id => `<div class="sc-pic">${SC_KNOT_PICS[id] ? SC_KNOT_PICS[id]() : ""}</div>`;
+// ✋ hands: the Scout sign (3 fingers), the Cub Scout sign (2 fingers), the salute and the handshake
+const SC_SKIN = `fill="#f2c79b" stroke="#8a5a3b" stroke-width="3"`;
+function scHand(two) {   // a right hand, palm out: little finger on the left, thumb folds across from the right
+  const up = two ? `<rect x="55" y="10" width="15" height="66" rx="7.5" ${SC_SKIN} transform="rotate(-12 62 76)"/><rect x="72" y="12" width="15" height="64" rx="7.5" ${SC_SKIN} transform="rotate(12 79 76)"/>`
+    : `<rect x="44" y="16" width="14" height="60" rx="7" ${SC_SKIN}/><rect x="59" y="6" width="14" height="70" rx="7" ${SC_SKIN}/><rect x="74" y="14" width="14" height="62" rx="7" ${SC_SKIN}/>`;
+  const folded = `<rect x="30" y="60" width="14" height="26" rx="7" ${SC_SKIN}/>${two ? `<rect x="44" y="58" width="14" height="26" rx="7" ${SC_SKIN}/>` : ""}`;
+  return `<rect x="36" y="112" width="52" height="28" rx="6" fill="#c8b07a" stroke="#6b5a2e" stroke-width="3"/>${up}<rect x="28" y="64" width="62" height="56" rx="18" ${SC_SKIN}/>${folded}<rect x="28" y="76" width="66" height="17" rx="8.5" ${SC_SKIN} transform="rotate(16 61 84)"/><path d="M44,108 q16,5 32,0" stroke="#c9946a" stroke-width="2" fill="none"/>`;
+}
+const SC_SIGN_SVG = two => `<svg class="sc-svg sc-hand" viewBox="0 0 120 140" role="img" aria-label="${two ? "The Cub Scout sign: two fingers up like a wolf's ears" : "The Scout sign: three fingers up, thumb holding down the little finger"}">${scHand(two)}</svg>`;
+const SC_SALUTE_SVG = () => `<svg class="sc-svg sc-hand" viewBox="0 0 140 140" role="img" aria-label="The Scout salute: the Scout sign with the first finger touching the eyebrow or hat brim">
+  <rect x="44" y="104" width="52" height="40" rx="12" fill="#c8b07a" stroke="#6b5a2e" stroke-width="3"/><path d="M62,104 l8,14 l8,-14" fill="#d62828" stroke="#6b1010" stroke-width="2"/>
+  <circle cx="70" cy="66" r="34" ${SC_SKIN}/><ellipse cx="70" cy="36" rx="50" ry="9" fill="#8a6a3a" stroke="#4a3412" stroke-width="3"/><path d="M48,36 C50,10 90,10 92,36 Z" fill="#a5844c" stroke="#4a3412" stroke-width="3"/><path d="M58,22 l12,-10 l12,10" fill="none" stroke="#4a3412" stroke-width="2.5"/>
+  <circle cx="58" cy="64" r="3.5" fill="#3b2a1a"/><circle cx="82" cy="64" r="3.5" fill="#3b2a1a"/><path d="M60,80 q10,9 20,0" fill="none" stroke="#3b2a1a" stroke-width="3" stroke-linecap="round"/><path d="M52,55 q6,-3 12,0 M76,55 q6,-3 12,0" stroke="#5a3b1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <g transform="translate(50 52) rotate(35) translate(-44.6 -8.8) scale(.55)">${scHand(false)}</g></svg>`;
+const SC_SHAKE_SVG = () => `<svg class="sc-svg sc-hand sc-shake" viewBox="0 0 160 100" role="img" aria-label="The Scout handshake: a firm handshake with the left hand">
+  <rect x="0" y="42" width="56" height="30" rx="8" fill="#c8b07a" stroke="#6b5a2e" stroke-width="3"/><rect x="104" y="38" width="56" height="30" rx="8" fill="#c8b07a" stroke="#6b5a2e" stroke-width="3"/>
+  <rect x="48" y="38" width="52" height="36" rx="16" ${SC_SKIN}/><rect x="62" y="34" width="50" height="36" rx="16" fill="#d9a77a" stroke="#8a5a3b" stroke-width="3"/><rect x="54" y="27" width="36" height="15" rx="7.5" ${SC_SKIN} transform="rotate(14 70 34)"/>
+  <rect x="4" y="12" width="44" height="20" rx="10" fill="#ffd166"/><text x="26" y="27" font-size="13" font-weight="900" fill="#3a2600" text-anchor="middle" stroke="none">LEFT</text>
+  <rect x="112" y="76" width="44" height="20" rx="10" fill="#ffd166"/><text x="134" y="91" font-size="13" font-weight="900" fill="#3a2600" text-anchor="middle" stroke="none">LEFT</text></svg>`;
+// 🇺🇸 flag folding pictures
+const scFlagRect = (w, h, x = 0, y = 0, rows = 13) => { let s = ""; for (let i = 0; i < rows; i++) s += `<rect x="${x}" y="${y + i * h / rows}" width="${w}" height="${h / rows + .2}" fill="${i % 2 ? "#fff" : "#b22234"}"/>`; return s; };
+const scFlagStars = (x, y, w, h, c = 6, r = 5) => { let s = ""; for (let i = 0; i < r; i++) for (let j = 0; j < c; j++) s += `<circle cx="${x + (j + .5 + (i % 2) * .25) * w / (c + .25)}" cy="${y + (i + .5) * h / r}" r="${Math.min(w / c, h / r) * .2}" fill="#fff"/>`; return s; };
+const SC_FOLD = [
+  ["Hold it flat", `${scFlagRect(76, 40)}<rect x="0" y="0" width="31" height="21.5" fill="#3c3b6e"/>${scFlagStars(0, 0, 31, 21.5)}`],
+  ["Fold in half the long way", `${scFlagRect(76, 20, 0, 10, 7)}`],
+  ["Fold in half again: blue on the outside", `${scFlagRect(76, 10, 0, 15, 4)}<rect x="0" y="15" width="31" height="10" fill="#3c3b6e"/>${scFlagStars(0, 15, 31, 10, 6, 2)}`],
+  ["Fold triangles from the striped end", `${scFlagRect(56, 10, 0, 15, 4)}<rect x="0" y="15" width="31" height="10" fill="#3c3b6e"/>${scFlagStars(0, 15, 31, 10, 6, 2)}<path d="M56,15 L66,25 L56,25 Z" fill="#b22234" stroke="#7a1020" stroke-width=".8"/><path d="M56,15 L66,25 L76,15 Z" fill="#fff" stroke="#ccc" stroke-width=".8"/>`],
+  ["Tuck in the end: only stars show", `<path d="M14,34 L38,6 L62,34 Z" fill="#3c3b6e" stroke="#1e1d4a" stroke-width="1.5"/>${[[38, 14], [32, 22], [44, 22], [26, 29], [38, 29], [50, 29]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join("")}`]
+];
+
+/* ---------- 📚 the learn pages ---------- */
+function scSign() {
+  scScreen(`${scTop()}${scHero("🤝", "Sign, Salute & Handshake", "How Scouts greet each other, show respect and make promises.", "#7b2cbf", "#c77dff")}
+    <div class="sc-info sc-pics">
+      <div class="sc-ic">${SC_SIGN_SVG(false)}<b>✋ The Scout sign</b><small>Raise your right hand with your upper arm straight out to the side and your forearm up. Hold up 3 fingers, and let your thumb hold down your little finger.</small><small><b>The 3 fingers</b> stand for the 3 parts of the Scout Oath. <b>The thumb over the little finger</b> stands for the bond that joins Scouts all over the world.</small><small><b>When:</b> saying the Oath or Law, and when a leader raises the sign, it means “quiet down, please”: everyone stops talking and raises the sign too.</small></div>
+      <div class="sc-ic">${SC_SALUTE_SVG()}<b>🫡 The Scout salute</b><small>Make the Scout sign, then bring your hand up so the tip of your first finger touches your right eyebrow or the brim of your hat.</small><small><b>When:</b> saluting the flag while you're in uniform, and to show respect to other Scouts and leaders.</small></div>
+      <div class="sc-ic">${SC_SHAKE_SVG()}<b>🤝 The Scout handshake</b><small>A firm handshake with your <b>left</b> hand. Your left hand is closest to your heart.</small><small><b>The story:</b> Scouting's founder, Robert Baden-Powell, met warriors in Africa who shook hands with the left hand. To do it, a warrior had to put down his shield, showing he trusted his friend.</small></div>
+    </div>
+    <h3 class="sc-h">⚜️ The Scout badge</h3><div class="sc-badge"><span class="sc-fleur" aria-hidden="true">⚜️</span><ul>
+      <li><b>The 3 points</b> stand for the 3 parts of the Scout Oath.</li><li><b>It points north</b> like a compass needle, to help a Scout point the right way in life.</li>
+      <li><b>The eagle and shield</b> stand for freedom and being ready to defend it.</li><li><b>The 2 stars</b> stand for truth and knowledge.</li>
+      <li><b>The scroll</b> with the motto “Be Prepared” is turned up at the ends like a Scout's smile.</li><li><b>The knot</b> at the bottom reminds you to Do a Good Turn Daily.</li></ul></div>
+    <p class="soft">🐺 Cub Scouts have their own sign and salute with two fingers. <button class="chip mini" type="button" data-sgo="cub">See Cub Scouts ➜</button></p>`);
+  scWire();
+}
+function scKnots() {
+  const S = scGet(), n = SC_KNOTS.filter(k => S.knots[k.id]).length;
+  scScreen(`${scTop()}${scHero("🪢", "Knots", `Tap a knot for the steps. Practice with a real rope, then check it off! <b>${n} / ${SC_KNOTS.length} learned</b>`, "#bc6c25", "#dda15e")}
+    <div class="sc-knots">${SC_KNOTS.map(k => `<button class="sc-kn${S.knots[k.id] ? " got" : ""}" type="button" data-sgo="knot:${k.id}">${scKnotPic(k.id)}<b>${esc(k.n)}${S.knots[k.id] ? " ✅" : ""}</b><span class="sc-tag">${esc(k.rank)}</span><small>${esc(k.use)}</small></button>`).join("")}</div>
+    <div class="sc-story"><b>🪢 Rope words</b><p><b>Standing part:</b> the long part of the rope you don't move. <b>Working end:</b> the end you tie with. <b>Bight:</b> a U-shaped bend. <b>Loop:</b> a bend where the rope crosses itself. <b>Hitch:</b> a knot that ties a rope to something, like a post. <b>Bend:</b> a knot that joins two ropes.</p></div>`);
+  scWire();
+}
+function scKnot(id) {
+  const k = SC_KNOTS.find(x => x.id === id); if (!k) return startScouting("knots");
+  const S = scGet(), got = !!S.knots[k.id], i0 = SC_KNOTS.indexOf(k), nx = SC_KNOTS[(i0 + 1) % SC_KNOTS.length];
+  let step = 0;
+  scScreen(`${scTop(`<button class="chip mini" type="button" data-sgo="knots">🪢 All knots</button>`)}<div class="sc-kdet">${scKnotPic(k.id)}<div><h2 class="sc-kh">${esc(k.n)}</h2><span class="sc-tag">${esc(k.rank)}</span><p><b>Use it for:</b> ${esc(k.use)}</p></div></div>
+    <h3 class="sc-h">👣 Step by step</h3><ol class="sc-steps" id="sco-steps">${k.steps.map((s, i) => `<li class="${i === 0 ? "on" : ""}" data-st="${i}">${esc(s)}</li>`).join("")}</ol>
+    <div class="row sc-ctrl"><button class="btn" type="button" id="sco-prev">⬅ Back</button><button class="btn go" type="button" id="sco-next">Next step ➜</button><button class="sc-say" type="button" id="sco-sayst" aria-label="Read this step out loud">🔊</button></div>
+    <div class="sc-story"><b>💡 Tip</b><p>${esc(k.tip)}</p></div>
+    <div class="row sc-ctrl"><button class="btn ${got ? "" : "gold"}" type="button" id="sco-got" aria-pressed="${got}">${got ? "✅ I can tie it!" : "🪢 I can tie it!"}</button><button class="chip mini" type="button" data-sgo="knot:${nx.id}">Next knot: ${esc(nx.n)} ➜</button></div>`);
+  scWire();
+  const li = [...document.querySelectorAll("#sco-steps li")];
+  const show = i => { step = Math.max(0, Math.min(li.length - 1, i)); li.forEach((x, j) => { x.classList.toggle("on", j === step); x.classList.toggle("past", j < step); }); document.getElementById("sco-next").textContent = step === li.length - 1 ? "Start over 🔁" : "Next step ➜"; };
+  li.forEach((x, j) => x.addEventListener("click", () => show(j)));
+  document.getElementById("sco-next").addEventListener("click", () => { show(step === li.length - 1 ? 0 : step + 1); tone([600 + step * 40], .05, "triangle", .04); });
+  document.getElementById("sco-prev").addEventListener("click", () => show(step - 1));
+  document.getElementById("sco-sayst").addEventListener("click", () => scSay(`Step ${step + 1}. ${k.steps[step]}`));
+  document.getElementById("sco-got").addEventListener("click", e => {
+    const S2 = scGet(), on = !S2.knots[k.id]; if (on) S2.knots[k.id] = 1; else delete S2.knots[k.id]; scSave(S2);
+    const b = e.currentTarget; b.setAttribute("aria-pressed", on); b.textContent = on ? "✅ I can tie it!" : "🪢 I can tie it!"; b.classList.toggle("gold", !on);
+    if (on) { kqBurst(20, ["🪢", "⭐", "⚜️"]); toast(`🪢 ${k.n}: learned!`); }
+  });
+}
+function scLnt() {
+  scScreen(`${scTop()}${scHero("🥾", "Leave No Trace", "Seven ways to enjoy the outdoors and leave it just as nice for the next people (and animals).", "#2a9d8f", "#8ac926")}
+    <div class="sc-lnt">${SC_LNT.map(([t, kid, e, d], i) => `<div class="sc-lc"><span class="sc-num">${i + 1}</span><i aria-hidden="true">${e}</i><div><b>${esc(t)}</b><small class="sc-kid">Kid words: “${esc(kid)}”</small><p>${esc(d)}</p></div>${scSayBtn(`${i + 1}. ${t}. ${d}`)}</div>`).join("")}</div>
+    <p class="soft qz-note">Principle 7 used to be called “Be Considerate of Other Visitors.” The Outdoor Code says it too: “Be considerate in the outdoors.” <button class="chip mini" type="button" data-sgo="outdoor">🌲 Outdoor Code</button></p>`);
+  scWire();
+}
+function scBuddy() {
+  scScreen(`${scTop()}${scHero("👫", "Buddies & Patrols", "Scouts never go it alone, and they lead themselves in small teams.", "#f15bb5", "#fee440")}
+    <h3 class="sc-h">👫 The buddy system</h3><div class="sc-info">${[["🧑‍🤝‍🧑", "What it is", "You and a buddy stay together, watch out for each other, and know where each other is."], ["🏊", "Swimming", "Everyone in the water has a buddy. When the lifeguard calls “Buddy check!”, grab your buddy's hand and raise it high, fast!"], ["🥾", "Hiking and camping", "Never wander off alone. Going to the bathroom or to get water? Take your buddy."], ["🚨", "If something goes wrong", "Your buddy can help you or run for help, and you do the same for them."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <h3 class="sc-h">🚩 The patrol method</h3><div class="sc-info">${[["👥", "Patrol", "A small team of about 6 to 8 Scouts. A troop is made of patrols. Patrols camp, cook, learn and work together."], ["🏷️", "Name, flag and yell", "Each patrol picks a name (like the Wolf Patrol or Flaming Arrows), makes a patrol flag, and has a patrol yell."], ["🧢", "Patrol leader", "The Scouts in the patrol choose their own patrol leader to lead them."], ["🎖️", "Senior Patrol Leader", "A Scout who leads the whole troop. The patrol leaders meet with the Senior Patrol Leader to plan what the troop does."], ["🧑‍🏫", "Scoutmaster", "The adult leader who coaches and guides. In a troop, the Scouts do the leading!"], ["🐺", "Cub Scouts", "Cub Scouts are in a den (a small group) and all the dens make a pack."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>`);
+  scWire();
+}
+function scFlag() {
+  scScreen(`${scTop()}${scHero("🇺🇸", "The Flag", "How Scouts fold, raise, lower and show respect for the flag of the United States.", "#3c3b6e", "#b22234")}
+    <div class="sc-info">${[["⭐", "50 stars", "One for each of the 50 states."], ["〰️", "13 stripes", "For the 13 original colonies."], ["🎨", "The colors", "Red for courage, white for purity, and blue for justice and never giving up."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <h3 class="sc-h">📐 How to fold it (with a partner)</h3><ol class="sc-fold">${SC_FOLD.map(([t, s], i) => `<li><svg class="sc-svg" viewBox="0 0 76 40" role="img" aria-label="${esc(t)}">${s}</svg><span><b>${i + 1}.</b> ${esc(t)}</span></li>`).join("")}</ol>
+    <p class="soft">Two people hold the flag flat, waist high. Fold it in half the long way, then again, keeping the blue field on the outside. Starting at the striped end, fold a triangle, and keep folding triangles until only the blue field with stars shows. Tuck in the end. It looks like the three-cornered hats from the American Revolution!</p>
+    <h3 class="sc-h">⬆️ Raising and lowering</h3><div class="sc-info">${[["⏫", "Raise it quickly", "Hook it on and raise it briskly to the top."], ["⏬", "Lower it slowly", "Lower it slowly, with ceremony. Gather it in your arms so it doesn't touch the ground."], ["🕯️", "Half-staff", "To honor someone who died, first raise the flag to the top for a moment, then lower it halfway. Raise it to the top again before lowering it for the day."], ["🌅", "Sunrise to sunset", "The flag flies from sunrise to sunset. At night, only if a light shines on it. In bad weather, only if it's an all-weather flag."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <h3 class="sc-h">🫡 Showing respect</h3><div class="sc-info">${[["🫡", "In uniform", "During the Pledge, or when the flag goes by, face the flag and give the Scout salute."], ["✋", "Not in uniform", "Stand at attention with your right hand over your heart. Take off your hat and hold it over your heart."], ["🚫", "Never on the ground", "Never let the flag touch the ground, and never use it as clothing, a tablecloth or a decoration."], ["🧱", "On a wall", "The blue field goes at the top, on the left as you look at it."], ["🔥", "Retiring a flag", "A flag that is too worn out to fly is retired in a respectful ceremony, usually by burning it with dignity. Scouts often help with this."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <p class="soft">✋ Learn the words: <button class="chip mini" type="button" data-sgo="pledge">Pledge of Allegiance ➜</button></p>`);
+  scWire();
+}
+function scAid() {
+  const S = scGet();
+  const card = ([e, t, d]) => `<div class="sc-ic"><div class="sc-ich"><i aria-hidden="true">${e}</i><b>${t}</b>${scSayBtn(`${t}. ${d}`)}</div><small>${d}</small></div>`;
+  scScreen(`${scTop()}${scHero("🩹", "First Aid", "What a Scout learns first. Practice with a grown-up, and always tell a grown-up when someone gets hurt.", "#d62828", "#f77f00")}
+    <div class="sc-alert">🚨 Someone badly hurt? Shout for a grown-up and call <b>911</b>. Your safety comes first: don't go near danger like fire, traffic or deep water.</div>
+    <h3 class="sc-h">✅ Check, Call, Care</h3><div class="sc-info sc-three">${[["👀", "Check", "Is it safe for you? What happened? Is the person awake and breathing?"], ["📞", "Call", "Get a grown-up. Call 911 for anything serious."], ["❤️", "Care", "Help the person until help arrives, and keep them calm."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <h3 class="sc-h">⏱️ The “hurry cases”</h3><p class="soft">Emergencies where every second counts, because a life is in danger. Get help and call 911 right away!</p>
+    <div class="sc-hurry">${[["🫁", "Stopped breathing"], ["💔", "Heart attack or no heartbeat"], ["🩸", "Very bad bleeding"], ["☠️", "Swallowed poison"]].map(([e, t]) => `<span><i aria-hidden="true">${e}</i>${t}</span>`).join("")}</div>
+    <p class="soft">Older Scouts and grown-ups learn CPR. For bad bleeding, press hard on it with a clean cloth. For poison, call 911 or Poison Control at 1-800-222-1222.</p>
+    <h3 class="sc-h">🩹 Everyday first aid</h3><div class="sc-info">${[
+      ["🩸", "Cuts and scrapes", "Wash your hands or put on gloves. Press on it with a clean cloth until the bleeding stops. Wash it gently with soap and clean water, then cover it with a bandage."],
+      ["🔥", "Small burns", "Cool it under cool (not icy) running water for about 10 minutes. No ice, no butter. Don't pop blisters. Cover it loosely with a clean bandage. Big burns need 911."],
+      ["😮", "Choking", "If the person can cough or talk, let them keep coughing. If they can't breathe, talk or cough (they may hold their throat: the choking sign), shout for a grown-up and call 911. People trained in first aid give abdominal thrusts (the Heimlich maneuver)."],
+      ["🦶", "Blisters", "Feel a sore “hot spot” on your foot? Stop right away and cover it with moleskin or tape before it turns into a blister."],
+      ["👃", "Nosebleed", "Sit up and lean forward (not back). Pinch the soft part of your nose for about 10 minutes."],
+      ["🐝", "Stings and ticks", "Scrape a stinger out sideways with a card, then use a cold pack. A grown-up can pull a tick straight out with tweezers. Trouble breathing or a swelling face after a sting? Call 911!"],
+      ["☀️", "Sunburn and heat", "Wear sunscreen and a hat, drink water and rest in the shade. Dizzy, sick or a bad headache in the heat? Cool off and tell a grown-up."],
+      ["🥶", "Cold and frostbite", "Shivering and clumsy? Get out of the wind and into dry, warm layers. Numb, pale skin may be frostbite: warm it gently (don't rub it) and get help."],
+      ["🐍", "Snakebite", "Stay calm and still, and call 911. Keep the bite below the heart if you can. Don't cut it, suck it or put ice on it."]].map(card).join("")}</div>
+    <h3 class="sc-h">🧰 My first-aid kit</h3><p class="soft">A Scout packs a personal first-aid kit for every hike and campout. Check off each thing once it's in yours!${scCan() ? " Your checks are saved." : ""}</p>
+    <div class="sc-kit">${SC_KIT.map(([id, e, t]) => `<button class="sc-kitem${S.kit[id] ? " on" : ""}" type="button" data-kit="${id}" aria-pressed="${!!S.kit[id]}"><span aria-hidden="true">${S.kit[id] ? "✅" : "⬜"}</span><i aria-hidden="true">${e}</i>${esc(t)}</button>`).join("")}</div><p class="sc-kitn" id="sco-kitn"></p>`);
+  scWire();
+  const upd = () => { const K = scGet().kit, n = SC_KIT.filter(x => K[x[0]]).length; document.getElementById("sco-kitn").textContent = n === SC_KIT.length ? "🎉 Your kit is complete! Be Prepared!" : `🧰 ${n} of ${SC_KIT.length} packed`; };
+  upd();
+  $app.querySelectorAll("[data-kit]").forEach(b => b.addEventListener("click", () => {
+    const S2 = scGet(), id = b.dataset.kit, on = !S2.kit[id]; if (on) S2.kit[id] = 1; else delete S2.kit[id]; scSave(S2);
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); b.querySelector("span").textContent = on ? "✅" : "⬜"; if (on) tone([660, 880], .06, "triangle", .05); upd();
+  }));
+}
+function scRanks() {
+  scScreen(`${scTop()}${scHero("🏅", "Ranks", "Scouts BSA (ages 11 to 17) climbs 7 ranks. Here they are in order!", "#003566", "#ffc300")}
+    <ol class="sc-trail">${SC_RANKS.map(([t, e, c, d], i) => `<li class="sc-rank" style="--rc:${c}"><span class="sc-rb" aria-hidden="true">${e}</span><div><b><span class="sc-num">${i + 1}</span> ${esc(t)}</b><p>${esc(d)}</p></div></li>`).join("")}</ol>
+    <div class="sc-story"><b>📋 Good to know</b><p>Scout, Tenderfoot, Second Class and First Class teach the outdoor skills. You can work on them at the same time, but you earn them in order. Each rank ends with a talk with your Scoutmaster (a Scoutmaster conference) and a <b>board of review</b>. <b>Merit badges</b> are awards for learning about a subject, from Camping and First Aid to Space Exploration.</p></div>
+    <p class="soft">🐺 Younger kids start in Cub Scouts: <button class="chip mini" type="button" data-sgo="cub">Cub Scout ranks ➜</button></p>`);
+  scWire();
+}
+function scCub() {
+  scScreen(`${scTop()}${scHero("🐺", "Cub Scouts", "For kids in kindergarten through 5th grade.", "#1e40af", "#facc15")}
+    <div class="sc-info sc-two"><div class="sc-ic sc-glowc"><i aria-hidden="true">🐺</i><small>Cub Scout motto</small><b class="sc-say1">Do Your Best.</b>${scSayBtn("The Cub Scout motto is: Do Your Best.")}</div>
+      <div class="sc-ic"><i aria-hidden="true">🤞</i><b>Same Oath and Law</b><small>Cub Scouts say the same Scout Oath and Scout Law as older Scouts. <button class="chip mini" type="button" data-sgo="oath">Oath</button> <button class="chip mini" type="button" data-sgo="law">Law</button></small></div></div>
+    <h3 class="sc-h">🎒 Cub Scout ranks</h3><ol class="sc-cubs">${SC_CUBS.map(([t, e, g], i) => `<li><i aria-hidden="true">${e}</i><b>${t}</b><small>${g}</small>${i === 5 ? `<em>Highest Cub Scout rank!</em>` : ""}</li>`).join("")}</ol>
+    <div class="sc-info">${[["🐾", "Bobcat", "Every Cub Scout starts each rank with the Bobcat adventure: getting to know your den and learning the Scout Oath and Law."], ["🏹", "Arrow of Light", "The highest Cub Scout rank, for 5th graders. It's the only Cub Scout badge you can keep wearing on a Scouts BSA uniform."], ["🧭", "Webelos", "It stands for “WE'll BE LOyal Scouts.”"], ["🏠", "Den and pack", "Your den is your small group. All the dens together make a pack."], ["🌟", "Akela", "Means “good leader.” It can be a parent, teacher or Cub Scout leader."], ["💙💛", "Blue and gold", "The Cub Scout colors. Blue is for truth and loyalty, and gold is for happiness and sunlight."]].map(([e, t, d]) => `<div class="sc-ic"><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <h3 class="sc-h">✌️ Cub Scout sign and salute</h3><div class="sc-info sc-pics"><div class="sc-ic">${SC_SIGN_SVG(true)}<b>Cub Scout sign</b><small>Raise your right arm straight up and hold up 2 fingers in a V, like a wolf's ears.</small></div><div class="sc-ic"><i aria-hidden="true">🫡</i><b>Cub Scout salute</b><small>Hold your 2 fingers together and touch them to your cap or right eyebrow.</small></div></div>
+    <p class="soft">Moving up to Scouts BSA? <button class="chip mini" type="button" data-sgo="ranks">See the Scout ranks ➜</button></p>`);
+  scWire();
+}
+
+/* ---------- 🎖️ the Scout Test (qzPlay). Each question: [question, [right answer, wrong, wrong, wrong], why, part] ---------- */
+const SC_QS = [
+  ["What is the Scout Motto?", ["Be Prepared", "Do Your Best", "Do a Good Turn Daily", "Leave No Trace"], "The Scout Motto is “Be Prepared”: ready in mind and body for whatever happens.", "say"],
+  ["What is the Scout Slogan?", ["Do a Good Turn Daily", "Be Prepared", "Do Your Best", "Help Other People"], "The Scout Slogan is “Do a Good Turn Daily.”", "say"],
+  ["How does the Scout Oath begin?", ["On my honor I will do my best", "I pledge allegiance", "A Scout is trustworthy", "As an American, I will do my best"], "“On my honor I will do my best to do my duty to God and my country…”", "say"],
+  ["Finish the Oath: “to do my duty to God and…”", ["my country", "my family", "my troop", "my friends"], "“…to do my duty to God and my country and to obey the Scout Law.”", "say"],
+  ["In the Scout Oath, what do you promise to obey?", ["The Scout Law", "The Outdoor Code", "The patrol leader", "The Scout Motto"], "“…and to obey the Scout Law.”", "say"],
+  ["The Oath says to help other people… when?", ["At all times", "On weekends", "Only when they ask", "Only at camp"], "“…to help other people at all times.”", "say"],
+  ["Finish the Oath: “to keep myself physically strong, mentally awake, and…”", ["morally straight", "always ready", "clean and kind", "brave and true"], "“…physically strong, mentally awake, and morally straight.”", "say"],
+  ["What are the 3 duties in the Scout Oath?", ["Duty to God and country, to other people, and to yourself", "Duty to school, sports and music", "Duty to eat, sleep and rest", "Duty to the patrol, the troop and the pack"], "The Oath has 3 parts, and the Scout sign has 3 fingers to match.", "say"],
+  ["What does “mentally awake” mean?", ["Keep learning and stay curious", "Never go to sleep", "Drink lots of soda", "Wake up very early"], "Being mentally awake means using your brain, learning and asking questions.", "say"],
+  ["How many points are in the Scout Law?", ["12", "10", "7", "3"], "Trustworthy, loyal, helpful, friendly, courteous, kind, obedient, cheerful, thrifty, brave, clean, and reverent: 12!", "say"],
+  ["What is the FIRST point of the Scout Law?", ["Trustworthy", "Loyal", "Helpful", "Brave"], "“A Scout is trustworthy…”", "say"],
+  ["What is the LAST point of the Scout Law?", ["Reverent", "Clean", "Brave", "Kind"], "“…brave, clean, and reverent.”", "say"],
+  ["How does the Scout Law begin?", ["A Scout is…", "On my honor…", "I promise to…", "As an American…"], "“A Scout is trustworthy, loyal, helpful…”", "say"],
+  ["Which of these is NOT a point of the Scout Law?", ["Famous", "Thrifty", "Courteous", "Cheerful"], "Thrifty, courteous and cheerful are all in the Law. Famous isn't!", "say"],
+  ["How does the Outdoor Code begin?", ["As an American, I will do my best to—", "On my honor I will do my best", "A Scout is", "Leave nothing but footprints"], "“As an American, I will do my best to— Be clean in my outdoor manners…”", "say"],
+  ["Which line is in the Outdoor Code?", ["Be careful with fire", "Be home before dark", "Be first in line", "Be loud on the trail"], "The 4 lines: clean in my outdoor manners, careful with fire, considerate in the outdoors, conservation-minded.", "say"],
+  ["The Outdoor Code says: “Be clean in my outdoor…”", ["manners", "clothes", "tent", "cooking"], "“Be clean in my outdoor manners.”", "say"],
+  ["The last line of the Outdoor Code is “Be ___-minded.”", ["conservation", "adventure", "safety", "patrol"], "“Be conservation-minded”: save soil, water, trees, wildlife and energy.", "say"],
+  ["The Outdoor Code says to be considerate…", ["in the outdoors", "at school", "with money", "at home"], "“Be considerate in the outdoors.”", "say"],
+  ["In the Pledge of Allegiance, what does “allegiance” mean?", ["Loyalty", "A song", "A flagpole", "A map"], "Allegiance means loyalty: a promise to be faithful.", "say"],
+  ["Finish the Pledge: “one Nation under God, indivisible, with…”", ["liberty and justice for all", "stars and stripes for all", "freedom and fun for all", "peace and quiet for all"], "“…with liberty and justice for all.”", "say"],
+  ["What does “indivisible” mean in the Pledge?", ["It can't be split apart", "It's invisible", "It's very big", "It's very old"], "Indivisible means it can't be divided.", "say"],
+  ["What does “Be Prepared” mean?", ["Be ready for anything, in your mind and body", "Always pack snacks", "Be the first one at camp", "Keep your room clean"], "When asked “Prepared for what?”, Baden-Powell said, “Why, for any old thing.”", "say"],
+  ["Which of these is a Good Turn?", ["Helping a neighbor carry groceries without being asked", "Asking to be paid for raking leaves", "Turning around three times", "Winning a race"], "A Good Turn is a kind act you do without being asked and without a reward.", "say"],
+  ["How do you make the Scout sign?", ["3 fingers up, thumb holding down the little finger", "2 fingers up in a V", "A thumbs-up", "All 5 fingers spread out"], "Raise your right hand with 3 fingers up and your thumb over your little finger.", "flag"],
+  ["What do the 3 fingers of the Scout sign stand for?", ["The 3 parts of the Scout Oath", "3 meals a day", "The 3 colors of the flag", "3 best friends"], "Duty to God and country, duty to others, and duty to self.", "flag"],
+  ["In the Scout sign, the thumb over the little finger stands for…", ["The bond that joins Scouts all over the world", "Holding your snack", "Being quiet", "The Scout motto"], "It's the bond that unites Scouts everywhere.", "flag"],
+  ["A leader raises the Scout sign at a meeting. What does it mean?", ["Quiet down and raise your sign too", "Time for snacks", "Everybody run", "Clap three times"], "When the sign goes up, mouths close and hands go up.", "flag"],
+  ["Which hand do Scouts use for the Scout handshake?", ["The left hand", "The right hand", "Both hands", "No hands: it's a bow"], "The left hand is closest to the heart. Warriors put down their shields to shake with the left hand, showing trust.", "flag"],
+  ["How do you give the Scout salute?", ["Make the Scout sign and touch your first finger to your eyebrow or hat brim", "Put your hand over your heart", "Wave hello", "Give a thumbs-up"], "The salute is the Scout sign brought up to your right eyebrow or hat brim.", "flag"],
+  ["On the Scout badge, what do the 2 stars stand for?", ["Truth and knowledge", "Day and night", "Two best friends", "The Motto and the Slogan"], "The two stars stand for truth and knowledge.", "flag"],
+  ["On the Scout badge, why is the scroll turned up at the ends?", ["To look like a Scout's smile", "So it rolls up", "To hold the stars", "To point north"], "The scroll with “Be Prepared” smiles, like a Scout doing their duty.", "flag"],
+  ["On the Scout badge, the knot at the bottom reminds you to…", ["Do a Good Turn Daily", "Tie your shoes", "Learn more knots", "Be on time"], "The knot is a reminder to do a Good Turn daily.", "flag"],
+  ["The Scout badge points north, like a…", ["Compass needle", "Tree", "Rocket", "Weather vane"], "Like a compass needle, it helps a Scout point the right way in life.", "flag"],
+  ["Who started Scouting in 1907?", ["Robert Baden-Powell", "George Washington", "Thomas Edison", "Abraham Lincoln"], "Robert Baden-Powell held the first Scout camp in England in 1907.", "flag"],
+  ["What is the Boy Scouts of America called now?", ["Scouting America", "Scouts USA", "The Explorers Club", "Camp America"], "In 2025 the Boy Scouts of America changed its name to Scouting America.", "flag"],
+  ["What is the very first rank a Scout earns?", ["Scout", "Tenderfoot", "Eagle", "Star"], "The ranks go Scout, Tenderfoot, Second Class, First Class, Star, Life, Eagle.", "flag"],
+  ["What is the highest rank in Scouts BSA?", ["Eagle Scout", "Life Scout", "Star Scout", "First Class"], "Eagle is the top rank!", "flag"],
+  ["Which rank has a red heart on its badge?", ["Life", "Star", "Eagle", "Tenderfoot"], "The Life badge is a red heart.", "flag"],
+  ["Which order is right?", ["Tenderfoot, Second Class, First Class", "First Class, Second Class, Tenderfoot", "Second Class, Tenderfoot, First Class", "First Class, Tenderfoot, Second Class"], "Tenderfoot comes before Second Class, and Second Class before First Class.", "flag"],
+  ["How many merit badges does an Eagle Scout earn in all?", ["21", "6", "12", "50"], "Eagle needs 21 merit badges, including the Eagle-required ones.", "flag"],
+  ["What big thing does every Eagle Scout plan and lead?", ["A service project that helps the community", "A trip to the moon", "A party for the troop", "A bake sale for the patrol"], "The Eagle Scout service project helps a school, church, park or other group.", "flag"],
+  ["An Eagle Scout must finish before which birthday?", ["18th", "12th", "15th", "21st"], "Everything for Eagle must be done before the Scout's 18th birthday.", "flag"],
+  ["How should the U.S. flag be raised?", ["Quickly (briskly)", "Very slowly", "Halfway, then stop", "Upside down"], "Raise it briskly, and lower it slowly and with ceremony.", "flag"],
+  ["How should the flag be lowered?", ["Slowly and with ceremony", "As fast as you can", "By letting go of the rope", "By pulling the corner"], "Lower it slowly and gather it in your arms.", "flag"],
+  ["Should the flag ever touch the ground?", ["No, never", "Yes, when it's lowered", "Only if it's old", "Only at night"], "Never let the flag touch the ground.", "flag"],
+  ["What shape is a correctly folded U.S. flag?", ["A triangle", "A square", "A circle", "A long strip"], "A folded flag is a triangle, like a three-cornered hat.", "flag"],
+  ["When the flag is folded, what shows on the outside?", ["The blue field with white stars", "Only red stripes", "Only white stripes", "Nothing: it's rolled up"], "Keep folding triangles until only the blue field with stars shows.", "flag"],
+  ["How many people usually fold the flag together?", ["Two", "One", "Five", "Ten"], "Two people hold it flat and fold it together.", "flag"],
+  ["To fly the flag at half-staff, what do you do first?", ["Raise it to the top for a moment, then lower it halfway", "Raise it only halfway", "Fold it in half", "Turn it upside down"], "Always raise it to the top first, then lower it to half-staff.", "flag"],
+  ["You're in your Scout uniform during the Pledge. What do you do?", ["Give the Scout salute", "Put your hand over your heart", "Wave at the flag", "Sit down"], "In uniform, salute. Not in uniform? Right hand over your heart.", "flag"],
+  ["What do the 13 stripes on the flag stand for?", ["The 13 original colonies", "13 presidents", "13 Scout ranks", "13 months"], "The 13 stripes are for the 13 original colonies.", "flag"],
+  ["What do the 50 stars stand for?", ["The 50 states", "50 years", "50 Eagle Scouts", "50 cities"], "One star for each state.", "flag"],
+  ["What happens to a flag that's too worn out to fly?", ["It's retired in a respectful ceremony, usually by burning it with dignity", "It goes in the trash", "It's cut up for rags", "It's used as a picnic blanket"], "Scouts often help with flag retirement ceremonies.", "flag"],
+  ["When can the flag fly at night?", ["Only when a light shines on it", "Never", "Only on weekends", "Any time, even in the dark"], "The flag flies from sunrise to sunset, or at night if it's lit up.", "flag"],
+  ["Which knot ties two ropes of the SAME size together?", ["Square knot", "Timber hitch", "Taut-line hitch", "Clove hitch"], "The square knot joins two ropes of the same size, and ties bandages.", "knot"],
+  ["Which knot makes a loop that won't slip, good for a rescue?", ["Bowline", "Square knot", "Two half hitches", "Timber hitch"], "The bowline's loop doesn't slip or get smaller.", "knot"],
+  ["Which knot can slide to tighten or loosen a tent line?", ["Taut-line hitch", "Square knot", "Sheet bend", "Bowline"], "The taut-line hitch slides to adjust a line.", "knot"],
+  ["Which knot joins two ropes of DIFFERENT thickness?", ["Sheet bend", "Square knot", "Clove hitch", "Timber hitch"], "A sheet bend holds ropes of different sizes, where a square knot would slip.", "knot"],
+  ["Which knot is used to drag a log?", ["Timber hitch", "Square knot", "Bowline", "Sheet bend"], "The timber hitch grips a log while you pull.", "knot"],
+  ["Which knot often starts and finishes a lashing?", ["Clove hitch", "Square knot", "Sheet bend", "Bowline"], "Lashings usually begin and end with a clove hitch.", "knot"],
+  ["Which knot ties a rope to a post or ring, like tying up a boat?", ["Two half hitches", "Square knot", "Sheet bend", "Granny knot"], "Two half hitches tie a rope to a post, tree or ring.", "knot"],
+  ["Square knot rule: right over left, then…", ["Left over right", "Right over left again", "Under and around", "Tie a bow"], "Right over left, left over right!", "knot"],
+  ["If you go “right over left” twice, what knot do you get?", ["A granny knot", "A bowline", "A sheet bend", "A clove hitch"], "A granny knot slips or jams. Right over left, then left over right, makes a square knot.", "knot"],
+  ["Bowline story: the rabbit comes up out of the hole, goes around the tree, and…", ["Goes back down the hole", "Runs away", "Climbs the tree", "Eats a carrot"], "Up the hole, around the tree, back down the hole!", "knot"],
+  ["Why do you whip the end of a rope?", ["To keep it from unraveling", "To make it longer", "To make it stretchy", "To color it"], "Whipping wraps thread around the end so it can't fray.", "knot"],
+  ["Which kind of rope can be fused (melted) at the end?", ["Nylon or other plastic rope", "Cotton rope", "Manila rope", "Any rope at all"], "Only synthetic rope melts. Natural rope burns, so you whip it instead.", "knot"],
+  ["Fusing a rope uses a flame. What's the safe way?", ["Do it with a grown-up, and don't touch the hot, melted end", "Shape the hot end with your fingers", "Hold the rope in the fire as long as you can", "Do it alone in your tent"], "Melted rope is very hot and sticky. Let it cool!", "knot"],
+  ["Which knot do Scouts use to tie a bandage or sling?", ["Square knot", "Timber hitch", "Taut-line hitch", "Clove hitch"], "A square knot lies flat, so it's comfortable on a bandage.", "knot"],
+  ["A taut-line hitch has 2 wraps inside the loop and…", ["1 wrap outside the loop", "5 wraps outside", "No more wraps", "A bow on top"], "Two wraps inside, one wrap outside.", "knot"],
+  ["What is the “standing part” of a rope?", ["The long part you don't tie with", "The end you tie with", "A knot that stands up", "The middle of a knot"], "You tie with the working end. The standing part is the rest of the rope.", "knot"],
+  ["What is the buddy system?", ["Always going with a partner who watches out for you, and you for them", "Picking your best friend for every team", "Sharing your lunch", "Having a pen pal"], "Buddies stay together and look out for each other.", "out"],
+  ["The lifeguard calls “Buddy check!” What do you do?", ["Grab your buddy's hand and raise it up", "Dive underwater", "Swim to shore alone", "Yell your name"], "Buddies hold hands up high so the lifeguard can count everyone fast.", "out"],
+  ["What is a patrol?", ["A small team of Scouts in a troop", "A kind of tent", "A merit badge", "A hiking trail"], "A troop is made of patrols of about 6 to 8 Scouts.", "out"],
+  ["Who leads a patrol?", ["A patrol leader chosen by the Scouts in the patrol", "The oldest parent", "The Scoutmaster's dog", "Whoever runs fastest"], "Patrols choose their own leaders.", "out"],
+  ["Which Scout leads the whole troop?", ["The Senior Patrol Leader", "The Den Chief", "The Quartermaster", "The Bugler"], "The Senior Patrol Leader is a Scout who leads the troop, with the patrol leaders.", "out"],
+  ["What does a patrol usually have?", ["A name, a flag and a yell", "A car, a boat and a plane", "A dog, a cat and a fish", "A pool, a gym and a store"], "Patrols pick a name, make a flag and have a yell.", "out"],
+  ["How many Leave No Trace principles are there?", ["7", "3", "10", "12"], "There are 7 Leave No Trace principles.", "out"],
+  ["Someone has a small cut. What do you do?", ["Wash your hands or put on gloves, stop the bleeding, clean it and bandage it", "Put dirt on it", "Ignore it", "Blow on it"], "Clean hands, press to stop bleeding, wash with soap and water, then a bandage.", "out"],
+  ["A cut is bleeding a lot. What helps most?", ["Press hard on it with a clean cloth and get help", "Run around", "Wash it in a stream", "Put a leaf on it"], "Pressing hard on the wound slows the bleeding. Very bad bleeding is a hurry case: call 911!", "out"],
+  ["What's the right first aid for a small burn?", ["Cool running water for about 10 minutes", "Butter", "Ice right on the skin", "Pop the blisters"], "Cool (not icy) water. No ice, no butter.", "out"],
+  ["What is the choking sign?", ["Hands holding the throat, and they can't talk or breathe", "Laughing loudly", "Yawning", "Sneezing"], "Someone who can't breathe, talk or cough needs help right away.", "out"],
+  ["Someone is choking and can't breathe, cough or talk. What should you do?", ["Shout for a grown-up and call 911; a trained person gives abdominal thrusts", "Give them a drink of water", "Wait and see if it gets better", "Have them lie down for a nap"], "Get help fast. If they can still cough, let them keep coughing.", "out"],
+  ["What are “hurry cases”?", ["Emergencies where a life is in danger, so you act right away", "When you're late for the bus", "Races at camp", "Quick snacks"], "Stopped breathing, heart attack, very bad bleeding and swallowed poison are hurry cases.", "out"],
+  ["Which of these is a hurry case?", ["Someone has stopped breathing", "A small scrape", "A mosquito bite", "A loose shoelace"], "Stopped breathing is a hurry case: call 911!", "out"],
+  ["Which of these is a hurry case?", ["Very bad bleeding", "A blister", "A mild sunburn", "A splinter"], "Very bad bleeding is a hurry case. Press hard on it and call 911.", "out"],
+  ["Someone swallowed something poisonous. What should you do?", ["Call 911 or Poison Control (1-800-222-1222) right away", "Make them eat a sandwich", "Wait a day", "Give them candy"], "Swallowed poison is a hurry case.", "out"],
+  ["You feel a sore “hot spot” on your foot while hiking. What should you do?", ["Stop and cover it before it turns into a blister", "Walk faster", "Walk barefoot", "Ignore it"], "Moleskin on a hot spot stops a blister before it starts.", "out"],
+  ["What's the right way to stop a nosebleed?", ["Sit up, lean forward and pinch the soft part of your nose", "Lie down flat", "Tip your head way back", "Blow your nose hard"], "Lean forward, not back, and pinch for about 10 minutes.", "out"],
+  ["Which is NOT in a personal first-aid kit?", ["A toy car", "Adhesive bandages", "Gauze pads", "Moleskin"], "A kit has bandages, gauze, tape, moleskin, soap, ointment, scissors, gloves, a CPR barrier, and pencil and paper.", "out"],
+  ["What is moleskin for?", ["Blisters and hot spots on your feet", "Cleaning a cut", "Stopping a nosebleed", "Bug bites"], "Moleskin is a soft, sticky pad that protects sore spots.", "out"],
+  ["Why do first-aid kits have gloves?", ["To protect you and the hurt person from germs", "To keep your hands warm", "For snowball fights", "To look like a doctor"], "Gloves keep germs away from you and from the wound.", "out"],
+  ["What are the first-aid steps, in order?", ["Check, Call, Care", "Care, Check, Call", "Call, Care, Check", "Run, Hide, Wait"], "Check that it's safe and what's wrong, call for help, then care for the person.", "out"],
+  ["Before a hike, what should you always do?", ["Tell a grown-up where you're going and when you'll be back", "Leave your water at home", "Go alone", "Skip the map"], "That's being prepared!", "out"],
+  ["Which is one of the Scout Basic Essentials?", ["A filled water bottle", "A tablet", "A pillow", "A skateboard"], "The 10 essentials: pocketknife, first-aid kit, extra clothes, rain gear, water bottle, flashlight, trail food, matches and fire starters, sun protection, map and compass.", "out"],
+  ["A bee stung someone. What helps?", ["Scrape the stinger out sideways with a card, then use a cold pack", "Squeeze it hard", "Pour soda on it", "Rub dirt on it"], "If they have trouble breathing or their face swells, call 911!", "out"],
+  ["What is the Cub Scout motto?", ["Do Your Best", "Be Prepared", "Do a Good Turn Daily", "Have Fun Outside"], "Cub Scouts “Do Your Best.”", "cub"],
+  ["What is the first Cub Scout rank, for kindergarten?", ["Lion", "Tiger", "Wolf", "Bear"], "Lion (K), Tiger (1st), Wolf (2nd), Bear (3rd), Webelos (4th), Arrow of Light (5th).", "cub"],
+  ["What is the highest Cub Scout rank?", ["Arrow of Light", "Webelos", "Bear", "Eagle"], "Arrow of Light is the top Cub Scout rank.", "cub"],
+  ["What does Webelos stand for?", ["WE'll BE LOyal Scouts", "We Bring Everyone Lots Of Snacks", "Woods, Earth, Lakes, Oceans", "Wolf, Eagle, Bear, Lion"], "Webelos means “WE'll BE LOyal Scouts.”", "cub"],
+  ["Which Cub Scout badge can you still wear on a Scouts BSA uniform?", ["Arrow of Light", "Tiger", "Wolf", "Lion"], "The Arrow of Light badge moves up with you.", "cub"],
+  ["A small group of Cub Scouts is called a…", ["Den", "Patrol", "Troop", "Crew"], "Cub Scouts meet in dens. All the dens make a pack.", "cub"],
+  ["All the Cub Scout dens together make a…", ["Pack", "Troop", "Herd", "League"], "Dens make up the pack.", "cub"],
+  ["How do you make the Cub Scout sign?", ["2 fingers up in a V, like a wolf's ears", "3 fingers up", "A thumbs-up", "A fist"], "Cub Scouts hold up 2 fingers, like the ears of a wolf.", "cub"],
+  ["Which promise do Cub Scouts say?", ["The Scout Oath, same as older Scouts", "The Pledge only", "The Outdoor Code only", "None"], "Cub Scouts say the Scout Oath and Scout Law.", "cub"],
+  ["What are the Cub Scout colors?", ["Blue and gold", "Red and green", "Black and white", "Purple and orange"], "Blue for truth and loyalty, gold for happiness and sunlight.", "cub"],
+  ["What does “Akela” mean in Cub Scouts?", ["A good leader", "A wolf cub", "A campfire", "A hiking trail"], "Akela can be a parent, teacher or Cub Scout leader.", "cub"]
+];
+const SC_PARTS = [["all", "🎖️", "Scout Test", "15 questions about everything"], ["say", "🧠", "Oath, Law & sayings", "Oath, Law, Motto, Slogan, Outdoor Code, Pledge"], ["knot", "🪢", "Knots", "Which knot, and how to tie it"], ["out", "🥾", "Outdoors & first aid", "Leave No Trace, buddies, patrols, first aid"], ["flag", "🇺🇸", "Flag, ranks & badge", "The flag, the sign, the badge and the ranks"], ["cub", "🐺", "Cub Scouts", "Ranks, motto, den and pack"]];
+// questions made from the lists (so they always match the pages)
+function scMadeQs() {
+  const pts = SC_LAW.map(x => x[0]), other = (L, x, not) => shuffle(L.filter(y => y !== x && y !== not)).slice(0, 3), out = [];
+  SC_LAW.forEach(([p, , , clue], i) => {
+    out.push([`Which point of the Scout Law means: a Scout ${clue}?`, [p, ...other(pts, p)], `${p}: ${SC_LAW[i][2]}`, "say", "law"]);
+    if (i < 11) out.push([`In the Scout Law, what comes right after “${p}”?`, [pts[i + 1], ...other(pts, pts[i + 1], p)], `“…${pts.slice(Math.max(0, i - 1), i + 3).join(", ").toLowerCase()}…”`, "say", "law"]);
+  });
+  SC_LNT.forEach(([t, kid, , d]) => out.push([`Which Leave No Trace principle is this? “${d.split(". ")[0]}.”`, [t, ...other(SC_LNT.map(x => x[0]), t)], `${t} (kid words: “${kid}”).`, "out", "lnt"]));
+  const rk = SC_RANKS.map(x => x[0]); rk.slice(0, 6).forEach((r, i) => out.push([`Which Scout rank comes right after ${r}?`, [rk[i + 1], ...other(rk, rk[i + 1], r)], `Scout, Tenderfoot, Second Class, First Class, Star, Life, Eagle.`, "flag", "rank"]));
+  const cb = SC_CUBS.map(x => x[0]); SC_CUBS.forEach(([r, , g]) => out.push([`Which Cub Scout rank is for ${g === "Kindergarten" ? "kids in kindergarten" : g.replace(" grade", " graders")}?`, [r, ...other(cb, r)], `${r} is for ${g.toLowerCase()}.`, "cub", "cubr"]));
+  return out;
+}
+function scTestQs(part) {
+  const made = scMadeQs(), pick = (k, n) => shuffle(made.filter(q => q[4] === k)).slice(0, n);
+  const L = part === "all" ? [...SC_QS, ...pick("law", 5), ...pick("lnt", 3), ...pick("rank", 2), ...pick("cubr", 2)] : [...SC_QS, ...made].filter(q => q[3] === part);
+  return L.map(q => q.slice(0, 3));
+}
+const scRank = p => p >= 90 ? "🦅 Eagle-level Scout knowledge!" : p >= 75 ? "⭐ Star Scout work! One more round for Eagle!" : p >= 50 ? "🥾 Good hiking, Tenderfoot! Review and try again." : "⚜️ Every Scout starts somewhere. Study a little and try again!";
+function scTestGo(part) {
+  const P = SC_PARTS.find(x => x[0] === part) || SC_PARTS[0], all = P[0] === "all";
+  qzPlay({ id: all ? "scouts" : "scouts-" + P[0], label: "⚜️ Scouting", title: all ? "Scout Test" : P[2], ic: P[1], colors: ["#2d6a4f", "#d4a017"], qs: scTestQs(P[0]), n: all ? 15 : 10, home: () => startScouting("test"),
+    rank: p => { const S = scGet(), t = S.tests[P[0]] || { best: 0, n: 0 }; t.n++; if (p > t.best) t.best = p; S.tests[P[0]] = t; scSave(S); return scRank(p); } });
+}
+function scTest() {
+  const b = qzBest("scouts"), S = scGet();
+  scScreen(`${scTop()}<div class="qz" style="--qa:#2d6a4f;--qb:#d4a017"><div class="qz-hero"><span class="qz-big">🎖️</span><h2>Scout Test</h2><p>${SC_QS.length + scMadeQs().length} questions about everything a Scout learns. 15 at a time!</p>${b ? `<p class="qz-best">Your best: ${"⭐".repeat(b.stars)} ${b.best}%</p>` : ""}</div>
+    <button class="qz-start" type="button" data-part="all"><span>🎖️</span><span><b>Take the Scout Test</b><small>15 questions from every topic. Misses come back until you get them!</small></span><span>▶</span></button>
+    <h3>🎯 Practice one part</h3><div class="qz-levels">${SC_PARTS.slice(1).map(([k, ic, t, d]) => { const x = qzBest("scouts-" + k); return `<button class="qz-lvl" type="button" data-part="${k}"><span>${ic}</span><b>${esc(t)}</b><small>${esc(d)}</small>${x ? `<small>Best: ${"⭐".repeat(x.stars)} ${x.best}%</small>` : ""}</button>`; }).join("")}</div>
+    <h3>⌨️ Say it from memory</h3><p class="soft">Type it without looking, and see which words you got!</p><div class="sc-memo">${SC_MEMO.map(id => { const T = SC_TEXTS[id], m = S.m[id] || {}; return `<button class="sc-chip sc-memb" type="button" data-sgo="${id}:memory">${T.ic} ${esc(T.t)}${m.mem ? ` <small>${m.mem}%</small>` : ""}</button>`; }).join("")}</div>
+    <p class="soft qz-note">Learned it all? Practice your knots with a real rope, and ask your Scout leader to sign off your requirements!</p></div>`);
+  scWire();
+  $app.querySelectorAll("[data-part]").forEach(x => x.addEventListener("click", () => scTestGo(x.dataset.part)));
+}
+NEW_APPS.push({ id: "scouts", emoji: "⚜️", name: "Scouting", desc: "Learn the Scout Oath, Scout Law, Motto, Slogan, Outdoor Code, knots, first aid, the flag, ranks and Cub Scouts, memorize them with fun tools, and take the Scout Test.", added: "2026-11-20", start: () => startScouting(), kw: "scouts?|scouting|boy scouts|cub scouts|scout (law|oath|motto|slogan)|be prepared|knots?|tie a knot|eagle scout|merit badges?|outdoor code|leave no trace" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
