@@ -4049,7 +4049,7 @@ function askAge(p) {   // 🎂 asked once per person
     e.preventDefault(); const n = Math.round(+inp.value);
     if (!(n >= 1 && n <= 120)) { toast("Type your age: a number from 1 to 120."); inp.focus(); return; }
     if (p.id === "guest") GUEST_AGE = n; else store.set("who_age", { ...(store.get("who_age", {}) || {}), [p.id]: { age: n, at: Date.now() } });
-    pickWho(p.id);
+    TOS_NEW = p.id; pickWho(p.id);
   });
   window.scrollTo({ top: 0 });
 }
@@ -4146,6 +4146,22 @@ function pickWho(id) {
   if (id !== "guest" && !profBuilt().some(x => x.id === id) && !profExtra("site").some(x => x.id === id)) store.set("prof_site", [...profExtra("site"), p].slice(0, PROF_MAX));   // everyone picked here is on every list
   SITE_WHO = p.id; SITE_NAME = p.name; BG_PICK = store.get("bg_" + p.id, null); tySyncCustom();
   showHome(); window.scrollTo({ top: 0 });
+  if (TOS_NEW === p.id) { TOS_NEW = null; tosOffer(p); }   // 📜 just joined: offer the Terms of Service (never forced)
+}
+// 📜 The first time someone joins, Study Arcade offers to show the Terms of Service. It never makes anyone read them: "Not now" skips it.
+let TOS_NEW = null, TOS_GUEST_DONE = false;
+function tosOffer(p) {
+  if (p.id === "guest") { if (TOS_GUEST_DONE) return; TOS_GUEST_DONE = true; }   // guests are offered it once a visit
+  setTimeout(() => {
+    if (SITE_WHO !== p.id || document.getElementById("tos-offer")) return;
+    const box = document.createElement("div"); box.id = "tos-offer"; box.className = "bgsheet";
+    box.innerHTML = `<div class="bgsheet-box tos-offer" role="dialog" aria-label="Terms of Service"><div class="prof-head"><b class="subj-title">📜 Welcome, ${esc(p.name)}!</b><button class="iconbtn" type="button" data-tx>✕ Not now</button></div>
+      <p>Before you start, would you like to read the Study Arcade Terms of Service? They're short, and they explain how Study Arcade works.</p>
+      <p class="soft">You don't have to. You can find them any time at the bottom of every page.</p>
+      <div class="row"><button class="btn go" type="button" data-tgo>📜 Read the Terms</button><button class="btn" type="button" data-tx>Maybe later</button></div></div>`;
+    box.addEventListener("click", e => { if (e.target === box || e.target.closest("[data-tx]")) box.remove(); else if (e.target.closest("[data-tgo]")) { box.remove(); startTerms(); } });
+    document.body.appendChild(box); box.querySelector("[data-tgo]").focus();
+  }, 350);
 }
 /* ---------- 🖼️ Profile pictures: an emoji, art from the Art Gallery, a drawing, or any picture (made 128×128). Saved for each person in "who_pic". */
 const PIC_EMOJI = ["🦊", "🐼", "🐯", "🐸", "🐙", "🦄", "🐨", "🐵", "🦁", "🐰", "🐶", "🐱", "🐧", "🦉", "🐢", "🦖", "🐬", "🦋", "🐝", "🐻", "🐳", "🦈", "🐲", "🦩", "🐞", "🦕", "🐹", "🦔", "🐺", "🦜", "🌟", "🌈", "🚀", "⚽", "🏀", "🎸", "🍕", "🌻", "🍩", "💎"];
@@ -4258,7 +4274,7 @@ function startSignup(name = "") {
     if (SU.code.trim()) store.set("who_code", { ...(store.get("who_code", {}) || {}), [id]: whoHash(id, SU.code) });
     if (SU.pic) whoPicSet(id, SU.pic);
     const ab = SU.about.replace(/\s+/g, " ").trim().slice(0, 200); if (ab) store.set("who_about", { ...(store.get("who_about", {}) || {}), [id]: ab });
-    pickWho(id); toast(`👋 Welcome, ${name}!`);
+    TOS_NEW = id; pickWho(id); toast(`👋 Welcome, ${name}!`);
   };
   show();
 }
