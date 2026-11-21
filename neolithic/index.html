@@ -1981,6 +1981,39 @@
   .talk-emo { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0 4px; } .talk-emo button { border: 0; background: var(--panel-2); border-radius: 10px; padding: 4px 7px; font-size: 1.15rem; cursor: pointer; }
   .talk-form { display: flex; gap: 8px; } .talk-form input { flex: 1; min-width: 0; padding: 12px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; }
   .talk-tip { font-size: .82rem; margin: 6px 0; } .talk-unlock { margin-top: 10px; }
+  /* 🎞️ shared pictures and videos */
+  .md-card { position: relative; display: block; width: min(240px, 60vw); max-height: 340px; min-height: 60px; border: 0; padding: 0; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,.28); cursor: pointer; color: inherit; font: inherit; }
+  .md-card img, .md-card video { display: block; width: 100%; height: 100%; max-height: 340px; object-fit: cover; }
+  .md-card video { object-fit: contain; background: #000; cursor: auto; }
+  .md-card .md-blur { filter: blur(6px); transform: scale(1.08); }
+  .md-wait { display: grid; place-items: center; min-height: 90px; font-size: 1.6rem; }
+  .md-play { position: absolute; inset: 0; margin: auto; width: 56px; height: 56px; border-radius: 50%; border: 3px solid #fff; background: rgba(0,0,0,.55); color: #fff; font-size: 1.4rem; cursor: pointer; }
+  .md-dur { position: absolute; right: 6px; bottom: 6px; background: rgba(0,0,0,.65); color: #fff; font-size: .75rem; font-weight: 700; padding: 1px 6px; border-radius: 8px; }
+  .md-gone { display: grid; place-items: center; min-height: 70px; padding: 10px; font-size: .85rem; color: var(--ink-soft); text-align: center; }
+  .md-bigsheet { align-items: center; padding: 16px; } .md-big { display: grid; justify-items: center; gap: 8px; } .md-big img { max-width: 94vw; max-height: 84vh; border-radius: 12px; display: block; }
+  .md-galbox { max-height: 86vh; overflow-y: auto; } .md-galgrid .pic-art { position: relative; } .md-galv { position: absolute; left: 4px; bottom: 4px; font-style: normal; font-size: .9rem; }
+  .sk-th, .rp-th, .mod-th { display: block; max-width: 150px; max-height: 120px; border-radius: 8px; margin: 4px 0; object-fit: cover; }
+  /* 💬 Talk Room: pictures, faces, groups */
+  .talk-media { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+  .talk-mwrap { position: relative; }
+  .talk-mrep { position: absolute; top: 6px; right: 6px; border: 0; border-radius: 50%; width: 30px; height: 30px; background: rgba(0,0,0,.55); cursor: pointer; font-size: .9rem; line-height: 1; }
+  .talk-rxs { display: inline-flex; gap: 4px; }
+  .talk-rx { border: 0; background: rgba(0,0,0,.2); border-radius: 99px; padding: 1px 8px; font: inherit; font-size: .85rem; color: inherit; cursor: pointer; }
+  .talk-rx b { font-size: .78rem; } .talk-rx.on { background: #ffd166; color: #222; } .talk-rx:disabled { cursor: default; opacity: .8; }
+  .talk-clip { flex: 0 0 auto; display: inline-grid; place-items: center; width: 42px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); font-size: 1.2rem; cursor: pointer; color: inherit; padding: 0; }
+  .talk-form { flex-wrap: nowrap; } .talk-form .btn { flex: 0 0 auto; }
+  @media (max-width: 480px) { .talk-form { flex-wrap: wrap; } .talk-form input[type=text] { flex: 1 1 100%; order: -1; } .talk-form .btn { margin-left: auto; } .talk-clip { height: 42px; } }
+  .talk-att { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+  .talk-attone { position: relative; width: 74px; height: 74px; border-radius: 12px; overflow: hidden; background: var(--panel-2); display: grid; place-items: center; font-size: 1.6rem; }
+  .talk-attone img { width: 100%; height: 100%; object-fit: cover; }
+  .talk-attone i { position: absolute; left: 4px; bottom: 4px; font-style: normal; font-size: .7rem; background: rgba(0,0,0,.6); color: #fff; padding: 0 4px; border-radius: 6px; }
+  .talk-attone button { position: absolute; top: 3px; right: 3px; border: 0; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,.65); color: #fff; cursor: pointer; font-size: .75rem; }
+  .talk-prep { width: auto; min-width: 74px; padding: 0 12px; grid-auto-flow: column; gap: 6px; font-size: 1.1rem; } .talk-prep small { font-size: .8rem; }
+  .talk-gbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 8px; } .talk-gppl { display: flex; padding-right: 6px; } .talk-gppl .talk-ava { margin-right: -6px; border: 2px solid var(--panel); }
+  .talk-glab { display: flex; flex-direction: column; gap: 4px; margin: 8px 0; font-weight: 700; } .talk-glab input { padding: 10px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; font-weight: 400; }
+  .talk-gemo { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 8px; } .talk-gemo button { border: 2px solid transparent; background: var(--panel); border-radius: 10px; padding: 4px 7px; font-size: 1.2rem; cursor: pointer; } .talk-gemo button.on { border-color: var(--gold); }
+  .talk-gmem { flex-direction: row; align-items: center; gap: 6px; padding: 6px 10px; cursor: default; } .talk-gkick { color: #ff8a8a; margin-left: 2px; }
+  .talk-pick .row { margin-top: 10px; flex-wrap: wrap; } .talk-pick p { margin: 8px 0 4px; } .talk-gdel { color: #ff8a8a; }
   /* 🖼️ Famous Artists */
   .fa h2 { margin: 0 0 4px; } .fa h3 { margin: 14px 0 6px; }
   .fa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 8px 0; } .fa-grid[hidden] { display: none; }
@@ -2387,6 +2420,9 @@
   .ln-pics { display: grid; gap: 8px; } .ln-pic { display: grid; grid-template-columns: 64px 1fr auto auto; gap: 8px; align-items: center; background: var(--panel); border-radius: 12px; padding: 6px; }
   @media (max-width: 560px) { .ln-pic { grid-template-columns: 64px 1fr auto; } .ln-pic select { grid-column: 2; } }
   .ln-picimg { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; display: grid; place-items: center; background: var(--panel-2); font-size: 1.6rem; } .ln-picimg img { width: 100%; height: 100%; object-fit: cover; }
+  .ln-picimg { position: relative; } .ln-vtag { position: absolute; left: 2px; bottom: 2px; font-style: normal; font-size: .62rem; background: rgba(0,0,0,.65); color: #fff; padding: 0 3px; border-radius: 5px; }
+  .ln-vmsg { min-height: 1.2em; margin: 4px 0 0; } .ln-olderrow { justify-content: center; margin: 14px 0; }
+  .ln-fig .md-card { width: 100%; max-width: 420px; margin: 0 auto; } .ln-fig .md-card img, .ln-fig .md-card video { max-height: 420px; }
   .ln-pic input, .ln-pic select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); min-width: 0; }
   .ln-picbtns { gap: 8px; flex-wrap: wrap; } .ln-pub { justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
   .ln-prevbox { max-height: 88vh; overflow-y: auto; }
@@ -4318,7 +4354,7 @@ function reportSheet(preset) {   // preset: { on, what, text, art } skips the ch
   box.innerHTML = `<div class="bgsheet-box rp-box" role="dialog" aria-label="Report something"><div class="prof-head"><b class="subj-title">🚩 Report something</b><button class="iconbtn" id="rp-x" type="button">✕ Close</button></div>
     <p class="soft">If someone wrote, named or made something mean, unkind or not okay, tell MR.E. He'll look at it.</p>
     <p class="soft">Something wrong with MR.E or the site? <button class="linklike" id="rp-tell" type="button">💬 Tell MR.E something is wrong</button></p>
-    ${preset ? `<p><b>${esc(RP_WHAT[preset.what] || "")}</b> by <b>${esc(galName(preset.on))}</b>${preset.text ? `: “${esc(preset.text)}”` : ""}</p>`
+    ${preset ? `<p><b>${esc(RP_WHAT[preset.what] || "")}</b> by <b>${esc(galName(preset.on))}</b>${preset.text ? `: “${esc(preset.text)}”` : ""}</p>${mdSafePic(preset.th) ? `<img class="rp-th" src="${preset.th}" alt="">` : ""}`
       : `<label class="rp-lab">Who?<select id="rp-who">${ppl.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("")}</select></label>
          <div class="rp-what">${["about", "name", "pic"].map((k, i) => `<label><input type="radio" name="rp-what" value="${k}"${i === 0 ? " checked" : ""}> ${RP_WHAT[k]}</label>`).join("")}</div>
          <p class="rp-preview" id="rp-preview"></p>`}
@@ -4352,7 +4388,7 @@ function modOpen(box) {
     ${tells.length ? tells.map(r => `<div class="mod-rep"><p><b>${esc(r.by ? nm(r.by) : "Someone")}</b> says something is wrong · <small>${when(r.at)}</small></p>${r.about ? `<p class="soft">About: ${esc(r.about)}</p>` : ""}<p class="mod-quote">“${esc(r.text)}”</p><div class="mod-btns"><button class="chip" data-act="done" data-rep="${r.id}">✅ Done</button></div></div>`).join("") : `<p class="soft">Nothing yet. 🎉</p>`}
     <h4>🚩 Reports (${reps.length})</h4>
     ${reps.length ? reps.map(r => `<div class="mod-rep" data-rep="${r.id}"><p><b>${esc(r.by ? nm(r.by) : "Someone")}</b> reported <b>${esc(nm(r.on))}</b> · ${esc(RP_WHAT[r.what] || r.what)} · <small>${when(r.at)}</small></p>
-      ${r.text ? `<p class="mod-quote">“${esc(r.text)}”</p>` : ""}${r.what === "pic" ? `<p>Picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="soft">Why: ${esc(r.note)}</p>` : ""}
+      ${r.text ? `<p class="mod-quote">“${esc(r.text)}”</p>` : ""}${mdSafePic(r.th) ? `<img class="mod-th" src="${r.th}" alt="">` : ""}${r.what === "pic" ? `<p>Picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="soft">Why: ${esc(r.note)}</p>` : ""}
       <div class="mod-btns">${r.what === "about" ? `<button class="chip" data-act="clearabout" data-on="${r.on}">🧹 Clear what they wrote</button><button class="chip" data-act="editabout" data-on="${r.on}">✏️ Change it</button>` : ""}
         ${r.what === "name" ? `<button class="chip" data-act="editname" data-on="${r.on}">✏️ Change their name</button>` : ""}${r.what === "pic" ? `<button class="chip" data-act="clearpic" data-on="${r.on}">🧹 Remove the picture</button>` : ""}
         ${r.what === "art" && r.art ? `<button class="chip" data-act="delart" data-art="${r.art}">🗑 Delete the art</button>` : ""}${r.what === "talk" && r.msg ? `<button class="chip" data-act="delmsg" data-msg="${esc(r.msg)}">🗑 Delete the message</button>` : ""}${r.what === "learn" && r.doc ? `<button class="chip" data-act="dellearn" data-doc="${esc(r.doc)}">🗑 Delete the how-to</button>` : ""}
@@ -25861,32 +25897,195 @@ function kqDex() {
   }));
 }
 NEW_APPS.push({ id: "kingdoms", emoji: "🧬", name: "Kingdom Quest", desc: "The six kingdoms of life: race the computer like Head of the Class, plus study cards, kingdom sorting, mystery organisms and a final boss.", start: () => startKingdomQuest(), kw: "kingdom quest|six kingdoms|6 kingdoms|kingdoms of life|classification|classify|archaebacteria|eubacteria|protista|protists?|fungi|plantae|animalia|organisms?|biology" });
+/* ---------- 🎞️ Pictures and videos people share in Talk Room and Learnable. A picture is made small and saved as one document in the
+   shared collection "media". A video is made small too (about 480 pixels across, up to 30 seconds in Talk Room and 60 in Learnable), then
+   saved in pieces, because one document can only hold about 250 KB: "media/<id>" says how many pieces there are, and "media/<id>_0",
+   "_1"… hold them. On the website version (no shared storage) they're kept on this device. Pictures load when they come into view,
+   and a video only loads when you tap ▶. */
+const MD_PIECE = 200000;          // characters of a video in one piece
+const MD_MAXBYTES = 4500000;      // a shared video can be about 4.5 MB once it's made small
+const MD_URL = {}, MD_WAIT = {};  // id → a picture's data URL or a video's object URL, so each one loads only once
+const mdNewId = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function mdSafePic(s) { return typeof s === "string" && /^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(s) ? s : ""; }   // (a function, so reports can use it before this part of the page has run)
+const mdKind = f => !f ? "" : /^video\//.test(f.type || "") || /\.(mp4|webm|mov|m4v|ogv)$/i.test(f.name || "") ? "vid" : /^image\//.test(f.type || "") || /\.(jpe?g|png|gif|webp|bmp|heic|heif|avif)$/i.test(f.name || "") ? "pic" : "";
+const mdReadURL = b => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result || "")); r.onerror = () => no(r.error); r.readAsDataURL(b); });
+const mdDur = s => { const t = Math.max(0, Math.round(+s || 0)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
+async function mdPicPrep(src) {   // a picture → { k: "pic", d (small enough to share), th (tiny, shown right away), w, h }
+  const d = await lnShrink(src, 1000, 180000).catch(() => null); if (!d) return null;
+  const th = await lnShrink(d, 160, 7000).catch(() => null);
+  const [w, h] = await new Promise(ok => { const i = new Image(); i.onload = () => ok([i.naturalWidth, i.naturalHeight]); i.onerror = () => ok([0, 0]); i.src = d; });
+  return { k: "pic", d, th: th || "", w, h };
+}
+async function mdVidPrep(file, maxSec, prog) {   // a video → { k: "vid", blob, type, th, w, h, dur, cut }, made small enough to share
+  const url = URL.createObjectURL(file), v = document.createElement("video");
+  v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto";
+  v.style.cssText = "position:fixed;left:-9999px;top:0;width:160px;height:90px;opacity:0;pointer-events:none";   // playing (but out of sight) while it's copied
+  document.body.appendChild(v); v.src = url;
+  let ac = null;
+  const done = () => { try { v.pause(); v.removeAttribute("src"); v.load(); } catch (e) {} v.remove(); URL.revokeObjectURL(url); if (ac) ac.close().catch(() => {}); };
+  try {
+    await new Promise((ok, no) => { v.onloadedmetadata = ok; v.onerror = () => no(new Error("That video can't be opened here. Try a different one.")); setTimeout(() => no(new Error("That video took too long to open. Try a different one.")), 20000); });
+    const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 0;
+    const W = v.videoWidth || 640, H = v.videoHeight || 360, s = Math.min(1, 480 / Math.max(W, H)), w = Math.max(2, Math.round(W * s / 2) * 2), h = Math.max(2, Math.round(H * s / 2) * 2);
+    const c = document.createElement("canvas"); c.width = w; c.height = h; const x = c.getContext("2d");
+    await new Promise(ok => { v.onseeked = ok; try { v.currentTime = Math.min(.5, (dur || 1) / 3); } catch (e) { ok(); } setTimeout(ok, 3000); });
+    let th = ""; try { x.drawImage(v, 0, 0, w, h); th = await lnShrink(c.toDataURL("image/jpeg", .8), 240, 12000) || ""; } catch (e) {}
+    if (/^video\/(mp4|webm)$/.test(file.type) && file.size <= 3000000 && dur && dur <= maxSec + .5) return { k: "vid", blob: file, type: file.type, th, w, h, dur, cut: false };   // already small: share it as it is
+    const type = window.MediaRecorder && c.captureStream ? ["video/webm;codecs=vp8,opus", "video/webm;codecs=vp9,opus", "video/webm", "video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/mp4"].find(t => { try { return MediaRecorder.isTypeSupported(t); } catch (e) { return false; } }) : "";
+    if (!type) throw new Error("That video is too big to share from this browser. Try a shorter one (just a few seconds).");
+    const stream = c.captureStream(24);
+    try { ac = new (window.AudioContext || window.webkitAudioContext)(); const src = ac.createMediaElementSource(v), dst = ac.createMediaStreamDestination(); src.connect(dst); dst.stream.getAudioTracks().forEach(t => stream.addTrack(t)); } catch (e) { if (ac) ac.close().catch(() => {}); ac = null; }
+    const parts = [], rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 420000, audioBitsPerSecond: 48000 });
+    rec.ondataavailable = e => { if (e.data && e.data.size) parts.push(e.data); };
+    const stopped = new Promise(ok => { rec.onstop = ok; });
+    await new Promise(ok => { v.onseeked = ok; try { v.currentTime = 0; } catch (e) { ok(); } setTimeout(ok, 2000); });
+    try { await v.play(); } catch (e) { v.muted = true; await v.play(); }
+    const end = Math.min(dur || maxSec, maxSec);
+    rec.start(1000);
+    await new Promise(ok => {
+      let fin = false; const stop = () => { if (!fin) { fin = true; ok(); } };
+      const step = () => { if (fin) return; if (v.ended || v.currentTime >= end) return stop(); try { x.drawImage(v, 0, 0, w, h); } catch (e) {} if (prog) prog(Math.min(1, v.currentTime / end)); if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(step); else requestAnimationFrame(step); };
+      v.onended = stop; setTimeout(stop, (end + 6) * 1000); step();
+    });
+    const played = v.currentTime; v.pause(); rec.stop(); await stopped;
+    const blob = new Blob(parts, { type: type.split(";")[0] });
+    if (!blob.size) throw new Error("That video couldn't be made ready. Try a different one.");
+    if (blob.size > MD_MAXBYTES) throw new Error("That video is still too big. Try a shorter one.");
+    return { k: "vid", blob, type: type.split(";")[0], th, w, h, dur: Math.min(end, played > 0 ? played : end), cut: !!dur && dur > maxSec + .5 };
+  } finally { done(); }
+}
+async function mdFromFile(f, maxSec, prog) {   // a picked file → a picture or video ready to share (a problem comes back as a message to show)
+  const k = mdKind(f);
+  if (k === "pic") { const u = URL.createObjectURL(f); try { const p = await mdPicPrep(u); if (!p) throw new Error("That picture couldn't be used. Try a different one."); return p; } finally { URL.revokeObjectURL(u); } }
+  if (k === "vid") return mdVidPrep(f, maxSec, prog);
+  throw new Error("Only pictures and videos can go here.");
+}
+async function mdSave(db, item, prog) {   // saves a picture or video; gives back a small card to keep with the message or how-to
+  const id = mdNewId(item.k === "vid" ? "V" : "P"), card = { id, k: item.k, th: item.th || "", w: item.w || 0, h: item.h || 0 };
+  if (item.k === "vid") card.dur = Math.round(item.dur || 0);
+  if (!db) { await bigPut("md_" + id, item.k === "vid" ? { blob: item.blob, type: item.type } : { d: item.d }); MD_URL[id] = item.k === "vid" ? URL.createObjectURL(item.blob) : item.d; return card; }
+  const col = db.collection("media");
+  if (item.k === "pic") { await col.doc(id).set({ k: "pic", d: item.d, by: SITE_WHO || "", at: Date.now() }); MD_URL[id] = item.d; return card; }
+  const b64 = (await mdReadURL(item.blob)).split(",")[1] || "", n = Math.ceil(b64.length / MD_PIECE);
+  let i = 0;
+  try {
+    for (; i < n; i++) { await col.doc(id + "_" + i).set({ d: b64.slice(i * MD_PIECE, (i + 1) * MD_PIECE), of: id, i }); if (prog) prog((i + 1) / (n + 1)); }
+    await col.doc(id).set({ k: "vid", type: item.type, n, size: item.blob.size, by: SITE_WHO || "", at: Date.now() });   // written last: a video counts only once every piece is saved
+  } catch (e) { for (let j = 0; j < i; j++) await col.doc(id + "_" + j).delete().catch(() => {}); throw e; }
+  MD_URL[id] = URL.createObjectURL(item.blob);
+  return card;
+}
+function mdLoad(db, id) {   // → a URL for the picture or video, or null if it was deleted
+  id = String(id || ""); if (!id) return Promise.resolve(null);
+  if (MD_URL[id]) return Promise.resolve(MD_URL[id]);
+  return MD_WAIT[id] || (MD_WAIT[id] = (async () => {
+    try {
+      if (!db) { const r = await bigGet("md_" + id); if (!r) return null; return MD_URL[id] = r.d ? mdSafePic(r.d) || null : URL.createObjectURL(r.blob instanceof Blob ? r.blob : new Blob([r.blob], { type: r.type || "video/webm" })); }
+      const m = await db.collection("media").doc(id).get(); if (!m.exists) return null;
+      const a = m.data() || {};
+      if (a.k === "pic") return MD_URL[id] = mdSafePic(a.d) || null;
+      const n = Math.min(Math.max(0, +a.n || 0), 60), parts = new Array(n); let next = 0;
+      await Promise.all([0, 1, 2].map(async () => { while (next < n) { const i = next++; const s = await db.collection("media").doc(id + "_" + i).get(); parts[i] = s.exists ? String((s.data() || {}).d || "") : ""; } }));
+      const bin = atob(parts.join("")), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      return MD_URL[id] = URL.createObjectURL(new Blob([u], { type: /^video\/(mp4|webm)$/.test(a.type) ? a.type : "video/webm" }));
+    } catch (e) { return null; } finally { delete MD_WAIT[id]; }
+  })());
+}
+async function mdDelete(db, id) {   // removes a picture or video (and every piece of a video)
+  id = String(id || ""); if (!id) return; delete MD_URL[id];
+  try {
+    if (!db) { await bigPut("md_" + id, null); return; }
+    const col = db.collection("media"), m = await col.doc(id).get(), n = m.exists ? Math.min(Math.max(0, +(m.data() || {}).n || 0), 60) : 0;
+    await col.doc(id).delete();
+    for (let i = 0; i < n; i++) await col.doc(id + "_" + i).delete().catch(() => {});
+  } catch (e) {}
+}
+function mdCardHTML(c) {   // a picture or video: the tiny picture shows right away, the real one once it loads
+  const th = mdSafePic(c.th), ratio = c.w > 0 && c.h > 0 ? ` style="aspect-ratio:${Math.round(c.w)}/${Math.round(c.h)}"` : "";
+  if (c.k === "vid") return `<div class="md-card md-vid" data-mdv="${esc(c.id)}"${ratio}>${th ? `<img src="${th}" alt="">` : ""}<button type="button" class="md-play" data-mdplay="${esc(c.id)}" aria-label="Play the video">▶</button>${c.dur ? `<span class="md-dur">${mdDur(c.dur)}</span>` : ""}</div>`;
+  const full = MD_URL[c.id];
+  return `<button type="button" class="md-card md-pic" data-mdp="${esc(c.id)}"${ratio} aria-label="See the picture bigger">${full ? `<img src="${full}" alt="">` : th ? `<img src="${th}" alt="" class="md-blur">` : `<span class="md-wait">🖼️</span>`}</button>`;
+}
+function mdWire(root, db) {   // loads pictures as they come into view, plays a video when you tap ▶, and shows a picture big when you tap it
+  root.querySelectorAll("[data-mdp]").forEach(el => {
+    if (el.dataset.wired) return; el.dataset.wired = 1; const id = el.dataset.mdp;
+    const show = async () => { const u = await mdLoad(db, id); if (!el.isConnected) return; el.innerHTML = u ? `<img src="${u}" alt="">` : `<span class="md-gone">🖼️ This picture was deleted.</span>`; };
+    if (!MD_URL[id]) { if ("IntersectionObserver" in window) { const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); show(); } }, { rootMargin: "300px" }); io.observe(el); } else show(); }
+    el.addEventListener("click", async () => { const u = await mdLoad(db, id); if (u) mdBig(u); });
+  });
+  root.querySelectorAll("[data-mdplay]").forEach(b => {
+    if (b.dataset.wired) return; b.dataset.wired = 1;
+    b.addEventListener("click", async e => {
+      e.stopPropagation(); const box = b.closest(".md-vid"); b.textContent = "⏳"; b.disabled = true;
+      const u = await mdLoad(db, b.dataset.mdplay); if (!box || !box.isConnected) return;
+      if (!u) { box.innerHTML = `<span class="md-gone">🎬 This video was deleted.</span>`; return; }
+      box.innerHTML = `<video src="${u}" controls playsinline></video>`; box.querySelector("video").play().catch(() => {});
+    });
+  });
+}
+function mdBig(u) {   // a picture, as big as the screen
+  const v = document.createElement("div"); v.className = "bgsheet md-bigsheet";
+  v.innerHTML = `<div class="md-big"><img src="${u}" alt=""><button class="iconbtn" type="button">✕ Close</button></div>`;
+  v.addEventListener("click", () => v.remove()); document.body.appendChild(v);
+}
+async function mdGallerySheet(onPick) {   // 🎨 pick any picture or video from the Art Gallery (it comes back as a file)
+  document.getElementById("md-gal")?.remove();
+  const v = document.createElement("div"); v.id = "md-gal"; v.className = "bgsheet";
+  v.innerHTML = `<div class="bgsheet-box md-galbox" role="dialog" aria-label="Pick from the Art Gallery"><div class="prof-head"><b class="subj-title">🎨 From the Art Gallery</b><button class="iconbtn" type="button" data-x>✕ Close</button></div><div class="md-galgrid"><p class="soft">Opening the Art Gallery…</p></div></div>`;
+  v.addEventListener("click", e => { if (e.target === v || e.target.closest("[data-x]")) v.remove(); });
+  document.body.appendChild(v);
+  const grid = v.querySelector(".md-galgrid");
+  let all = []; try { all = (await galEveryone()).filter(m => m.thumb || /^(image|video)\//.test(m.type || "")); } catch (e) { grid.innerHTML = `<p class="soft">😕 The Art Gallery couldn't open just now.</p>`; return; }
+  if (!all.length) { grid.innerHTML = `<p class="soft">There's nothing in the Art Gallery yet.</p>`; return; }
+  const isVid = m => m.kind === "video" || /^video\//.test(m.type || "");
+  grid.innerHTML = `<p class="soft">Tap one to add it:</p><div class="pic-artgrid">${all.slice(0, 300).map((m, i) => `<button type="button" class="pic-art" data-mg="${i}" title="${esc(m.name || "")}">${m.thumb ? `<img src="${m.thumb}" alt="" loading="lazy">` : isVid(m) ? "🎬" : "🖼️"}${isVid(m) ? `<i class="md-galv">🎬</i>` : ""}</button>`).join("")}</div>`;
+  grid.querySelectorAll("[data-mg]").forEach(b => b.addEventListener("click", async () => {
+    const m = all[+b.dataset.mg]; b.disabled = true;
+    const bl = await galBlob(m.id).catch(() => null);
+    v.remove();
+    if (bl) return onPick(bl instanceof File ? bl : new File([bl], m.name || (isVid(m) ? "video.webm" : "art.png"), { type: bl.type || m.type || "" }));
+    const r = m.thumb ? await fetch(m.thumb).then(x => x.blob()).catch(() => null) : null;
+    if (r) onPick(new File([r], "art.jpg", { type: r.type || "image/jpeg" })); else toast("That one couldn't be opened.");
+  }));
+}
 /* ---------- 💬 Talk Room: talk with the other people on the site. Messages are saved online (on the Claude version of the site),
-   so everyone sees them, newest 300 kept. There are rooms for everyone, games and homework help, and messages to one person.
-   MR.E sees every message so he can keep Talk kind: after typing his code he can delete any message. Anyone can report a message to him.
+   so everyone sees them, newest 300 kept. There's the room for everyone (All), rooms for games and homework help, small group chats
+   with just the people you pick, and messages to one person. Messages can have pictures and videos (see 🎞️ above), and anyone can
+   give any message a 🙂 or a 🙁, or report a message or one of its pictures or videos to MR.E.
+   MR.E sees every message so he can keep Talk kind: after typing his code he can delete any message or group. You can delete your own messages.
    Guests can read but can't send, and anyone MR.E stopped from writing can't send either. */
-const TALK_ROOMS = [["all", "💬 Everyone"], ["games", "🎮 Games"], ["help", "📚 Homework help"]];
+const TALK_ROOMS = [["all", "💬 All"], ["games", "🎮 Games"], ["help", "📚 Homework help"]];
 const TALK_MAX = 300;
+const TALK_MAXATT = 4, TALK_VIDSEC = 30;   // up to 4 pictures and videos in a message (one of them can be a video, up to 30 seconds)
 const TALK_EMOJI = ["😀", "😂", "👍", "❤️", "🎉", "🤔", "😎", "🙏", "🔥", "⭐"];
+const TALK_GEMOJI = ["👥", "🎮", "📚", "⚽", "🎨", "🎵", "🐾", "🚀", "🌈", "🍕", "🦄", "🏰"];
 // a gentle check before a message goes out: no name-calling or threats, and no private things
 const TALK_UNKIND = /\b(stupid|idiot|dumb|dummy|loser|ugly|moron|jerk|freak|weirdo|fatso|shut ?up|hate (you|u)|kill (you|u)|go die|you suck|u suck|nobody likes (you|u))\b/i;
 const talkPrivate = t => /\d{3}[-. )]*\d{3}[-. ]*\d{4}/.test(t) || /\S+@\S+\.\S+/.test(t) || /\b\d{1,5}\s+\w+(\s\w+)?\s+(street|st|road|rd|avenue|ave|lane|ln|drive|dr|court|ct|way|blvd|boulevard)\b/i.test(t) || /\bpass ?(word|code)s?\b/i.test(t);
-let TALK = null;   // { db, msgs, room, unlocked, ready, err, last, full, who }
+let TALK = null;   // { db, msgs, groups, gready, room, unlocked, ready, err, last, full, who, att, prep, sending, panel, np, gren, gemo }
 const talkDb = () => (window.claude && window.claude.use ? window.claude.use("db").catch(() => null) : Promise.resolve(null));
 const talkDm = (a, b) => "dm:" + [a, b].sort().join(":");
 const talkDmOther = room => room.slice(3).split(":").find(x => x !== SITE_WHO) || SITE_WHO;
-const talkCanSee = (m, me) => !String(m.room || "").startsWith("dm:") || m.room.slice(3).split(":").includes(me);
-const talkRoomName = room => String(room).startsWith("dm:") ? `💌 ${galName(talkDmOther(room))}` : (TALK_ROOMS.find(r => r[0] === room) || [, "💬 Everyone"])[1];
+const talkGroup = room => String(room || "").startsWith("grp:") && TALK ? TALK.groups.find(g => g.id === String(room).slice(4)) || null : null;
+const talkCanSee = (m, me) => { const r = String(m.room || ""); if (r.startsWith("dm:")) return r.slice(3).split(":").includes(me); if (r.startsWith("grp:")) { const g = talkGroup(r); return !!g && (g.members || []).includes(me); } return true; };
+const talkRoomName = room => { const r = String(room); if (r.startsWith("dm:")) return `💌 ${galName(talkDmOther(r))}`; if (r.startsWith("grp:")) { const g = talkGroup(r); return g ? `${g.emoji || "👥"} ${g.name}` : "👥 Group chat"; } return (TALK_ROOMS.find(x => x[0] === r) || [, "💬 All"])[1]; };
+const talkWhere = room => { const r = String(room); if (r.startsWith("dm:")) return `💌 ${r.slice(3).split(":").map(galName).join(" and ")}`; if (r.startsWith("grp:")) { const g = talkGroup(r); return g ? `${g.emoji || "👥"} ${g.name} (${(g.members || []).map(galName).join(", ")})` : "👥 a group that was deleted"; } return talkRoomName(r); };
+const talkCards = m => (Array.isArray(m.media) ? m.media : []).filter(c => c && typeof c.id === "string" && (c.k === "pic" || c.k === "vid")).slice(0, TALK_MAXATT);
 const talkWhen = t => { const d = new Date(t), today = new Date().toDateString() === d.toDateString(); return d.toLocaleString([], today ? { hour: "numeric", minute: "2-digit" } : { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); };
 const talkSeenKey = () => "talk-seen-" + (SITE_WHO || "x");
 const talkSeen = () => { try { return JSON.parse(localStorage.getItem(talkSeenKey()) || "{}") || {}; } catch (e) { return {}; } };
 const talkMarkSeen = room => { const s = talkSeen(), last = (TALK.msgs.filter(m => m.room === room).pop() || {}).at || 0; if (last > (s[room] || 0)) { s[room] = last; try { localStorage.setItem(talkSeenKey(), JSON.stringify(s)); } catch (e) {} } };
-async function talkDeleteById(id) {   // used by Talk Room and by MR.E's reports panel
+async function talkDeleteById(id) {   // used by Talk Room and by MR.E's reports panel (its pictures and videos go too)
   const db = await talkDb(); if (!db || !id) return false;
-  try { await db.collection("talk").doc(String(id)).delete(); return true; } catch (e) { return false; }
+  try {
+    const ref = db.collection("talk").doc(String(id)), s = await ref.get(), m = s.exists ? s.data() || {} : {};
+    await ref.delete();
+    for (const c of talkCards(m)) await mdDelete(db, c.id);
+    return true;
+  } catch (e) { return false; }
 }
 function startTalk(room) {
-  TALK = { db: null, msgs: [], room: room || "all", unlocked: false, ready: false, err: "", last: 0, full: false, who: SITE_WHO };
+  TALK = { db: null, msgs: [], groups: [], gready: false, room: room || "all", unlocked: false, ready: false, err: "", last: 0, full: false, who: SITE_WHO, att: [], prep: "", sending: false, panel: null, np: null, gren: "", gemo: "👥" };
   appScreen("💬 Talk Room", `<div class="talk" id="talk"></div>`);
   talkDraw();
   talkDb().then(db => {
@@ -25901,81 +26100,214 @@ function startTalk(room) {
       talkDraw(true);
     }, e => { clearTimeout(slow); TALK.err = e && e.code === "revoked" ? "off" : "broken"; talkDraw(); });
     naTimer(unsub);   // stops listening when you leave Talk Room
+    const unsubG = db.collection("talkgroups").orderBy("at", "desc").limit(300).onSnapshot(snap => {   // 👥 the group chats
+      TALK.gready = true;
+      TALK.groups = snap.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(g => typeof g.name === "string" && Array.isArray(g.members));
+      talkDraw(true);
+    }, () => { TALK.gready = true; talkDraw(true); });
+    naTimer(unsubG);
   });
+}
+function talkPanelHTML(me, hid) {   // the box under the room buttons: message someone, make a group, or a group's settings
+  const ppl = sitePeople().filter(p => p.id !== me && p.id !== "guest" && !hid.has(p.id));
+  const chip = (p, attr, on) => `<button class="chip${on ? " on" : ""}" type="button" ${attr}="${esc(p.id)}"><span class="talk-ava">${whoAvaHTML(p.id)}</span>${esc(p.name)}${on ? " ✔" : ""}</button>`;
+  if (TALK.panel === "dm") return ppl.length ? `<b>💌 Who do you want to message?</b><div class="talk-ppl">${ppl.map(p => chip(p, "data-to")).join("")}</div><div class="row"><button class="btn" type="button" data-panel-x>Close</button></div>` : `<p class="soft">There's nobody else on the site yet.</p>`;
+  if (TALK.panel === "new") {
+    const N = TALK.np;
+    return `<b>👥 Make a group chat</b><p class="soft">Only the people you pick can see it (and MR.E, who keeps Talk Room kind).</p>
+      <label class="talk-glab">Group name<input id="talk-gname" maxlength="30" placeholder="Like: Lunch Table Friends" value="${esc(N.name)}" autocomplete="off"></label>
+      <div class="talk-gemo" aria-label="Group picture">${TALK_GEMOJI.map(e => `<button type="button" class="${N.emoji === e ? "on" : ""}" data-gemo="${e}" aria-label="Group picture ${e}">${e}</button>`).join("")}</div>
+      <b>Who's in it?</b>${ppl.length ? `<div class="talk-ppl">${ppl.map(p => chip(p, "data-gp", N.ppl.includes(p.id))).join("")}</div>` : `<p class="soft">There's nobody else on the site yet.</p>`}
+      <div class="row"><button class="btn go" type="button" id="talk-gmake">👥 Make the group${N.ppl.length ? ` (${N.ppl.length + 1} people)` : ""}</button><button class="btn" type="button" data-panel-x>Cancel</button></div>`;
+  }
+  if (TALK.panel === "group") {
+    const g = talkGroup(TALK.room); if (!g) return "";
+    const mem = g.members || [], boss = g.by === me || (me === "emmett" && TALK.unlocked), out = ppl.filter(p => !mem.includes(p.id));
+    return `<b>${esc(g.emoji || "👥")} ${esc(g.name)}</b> <small class="soft">made by ${esc(galName(g.by))}</small>
+      ${g.by === me ? `<label class="talk-glab">Group name<input id="talk-gren" maxlength="30" value="${esc(TALK.gren)}" autocomplete="off"></label><div class="talk-gemo">${TALK_GEMOJI.map(e => `<button type="button" class="${TALK.gemo === e ? "on" : ""}" data-gemo2="${e}" aria-label="Group picture ${e}">${e}</button>`).join("")}</div><button class="btn" type="button" id="talk-gsave">💾 Save the name</button>` : ""}
+      <p><b>In the group (${mem.length})</b></p><div class="talk-ppl">${mem.filter(id => !hid.has(id)).map(id => `<span class="chip talk-gmem"><span class="talk-ava">${whoAvaHTML(id)}</span>${esc(galName(id))}${id === g.by ? " 👑" : ""}${boss && id !== me ? `<button type="button" class="linklike talk-gkick" data-gkick="${esc(id)}" aria-label="Take ${esc(galName(id))} out of the group">✕</button>` : ""}</span>`).join("")}</div>
+      ${out.length && mem.includes(me) ? `<p><b>Add people</b></p><div class="talk-ppl">${out.map(p => chip(p, "data-gadd")).join("")}</div>` : ""}
+      <div class="row">${mem.includes(me) ? `<button class="btn" type="button" id="talk-gleave">🚪 Leave the group</button>` : ""}${boss ? `<button class="btn talk-gdel" type="button" id="talk-gdel">🗑 Delete the group</button>` : ""}<button class="btn" type="button" data-panel-x>Close</button></div>`;
+  }
+  return "";
 }
 function talkDraw(fromSnap) {
   const box = document.getElementById("talk"); if (!box || !TALK) return;
   const me = SITE_WHO, guest = !me || me === "guest", mre = me === "emmett", hid = whoHiddenSet(), seen = talkSeen();
-  const vis = TALK.msgs.filter(m => !hid.has(m.who) && (TALK.room === "mod" || (talkCanSee(m, me) && m.room === TALK.room)));
+  if (TALK.room.startsWith("grp:") && TALK.gready && !(talkGroup(TALK.room) && (talkCanSee({ room: TALK.room }, me) || (mre && TALK.unlocked)))) { TALK.room = "all"; if (TALK.panel === "group") TALK.panel = null; }   // that group was deleted, or you're not in it any more
+  const vis = TALK.msgs.filter(m => !hid.has(m.who) && (TALK.room === "mod" || ((talkCanSee(m, me) || (mre && TALK.unlocked)) && m.room === TALK.room)));
   const unread = room => TALK.msgs.filter(m => m.room === room && m.who !== me && m.at > (seen[room] || 0) && !hid.has(m.who)).length;
   const dms = [...new Set(TALK.msgs.filter(m => String(m.room).startsWith("dm:") && talkCanSee(m, me)).map(m => m.room))];
   if (TALK.room.startsWith("dm:") && !dms.includes(TALK.room)) dms.unshift(TALK.room);
+  const groups = TALK.groups.filter(g => (g.members || []).includes(me)).sort((a, b) => a.name.localeCompare(b.name));
   const tab = (room, label) => { const n = room === TALK.room ? 0 : unread(room); return `<button class="chip${room === TALK.room ? " on" : ""}" type="button" data-room="${esc(room)}">${label}${n ? ` <span class="talk-n">${n > 99 ? "99+" : n}</span>` : ""}</button>`; };
-  // keep what you were typing (and where the list was scrolled) when new messages arrive
+  // keep what you were typing (and where the list was scrolled, and any video that's playing) when new messages arrive
   const oldIn = document.getElementById("talk-in"), typed = oldIn ? oldIn.value : "", hadFocus = oldIn && document.activeElement === oldIn, oldCode = document.getElementById("talk-code"), code = oldCode ? oldCode.value : "", codeFocus = oldCode && document.activeElement === oldCode;
+  const otherFocus = !hadFocus && !codeFocus && box.contains(document.activeElement) && document.activeElement.id ? document.activeElement.id : "";
   const oldList = document.getElementById("talk-list"), nearEnd = !oldList || oldList.scrollHeight - oldList.scrollTop - oldList.clientHeight < 80, oldTop = oldList ? oldList.scrollTop : 0;
+  const playing = [...box.querySelectorAll(".md-vid video")].map(v => [v.closest("[data-mdv]")?.dataset.mdv, v]).filter(x => x[0]);
   const status = TALK.err === "off" ? `<div class="talk-note">💬 Talk Room works on the Claude version of the site, where messages are saved online for everyone. Here there's no online save, so nobody would see your messages.</div>`
     : TALK.err === "broken" ? `<div class="talk-note">😕 Talk Room stopped connecting. Leave and come back to try again.</div>`
     : TALK.err === "slow" ? `<div class="talk-note">⏳ Still connecting… ${TALK.ready ? "These messages may be out of date." : "Messages will show up as soon as they load."}</div>` : "";
+  const faces = m => { const rx = m.rx && typeof m.rx === "object" ? m.rx : {}, who = f => Object.keys(rx).filter(k => rx[k] === f && !hid.has(k)), mine = rx[me];
+    const b = (f, em, label) => { const L = who(f); return `<button class="talk-rx${mine === f && !guest ? " on" : ""}" type="button" data-rx="${esc(m.id)}" data-face="${f}" title="${L.length ? esc(L.map(galName).join(", ")) : label}" aria-label="${label}${L.length ? `: ${L.length}` : ""}"${guest ? " disabled" : ""}>${em}${L.length ? ` <b>${L.length}</b>` : ""}</button>`; };
+    return `<span class="talk-rxs">${b("happy", "🙂", "Smiley face")}${b("sad", "🙁", "Sad face")}</span>`; };
+  const media = m => { const cards = talkCards(m); return cards.length ? `<div class="talk-media">${cards.map((c, i) => `<div class="talk-mwrap">${mdCardHTML(c)}${m.who !== me && m.who !== "emmett" && !guest ? `<button class="talk-mrep" type="button" data-mrep="${esc(m.id)}" data-mi="${i}" title="Report this ${c.k === "vid" ? "video" : "picture"} to MR.E" aria-label="Report this ${c.k === "vid" ? "video" : "picture"} to MR.E">🚩</button>` : ""}</div>`).join("")}</div>` : ""; };
   const msg = m => { const mine = m.who === me;
-    return `<div class="talk-msg${mine ? " talk-me" : ""}${m.who === "emmett" ? " mre" : ""}"><span class="talk-ava">${whoAvaHTML(m.who)}</span><div class="talk-bub"><div class="talk-meta"><b>${esc(galName(m.who))}</b>${m.who === "emmett" ? " 🛡️" : ""}${TALK.room === "mod" ? ` <small>in ${String(m.room).startsWith("dm:") ? `💌 ${esc(m.room.slice(3).split(":").map(galName).join(" and "))}` : esc(talkRoomName(m.room))}</small>` : ""}</div>
-      <p>${esc(m.text)}</p><div class="talk-meta"><small>${talkWhen(m.at)}</small>${!mine && m.who !== "emmett" && !guest ? `<button class="linklike talk-rep" type="button" data-rep="${esc(m.id)}" title="Report this to MR.E">🚩 Report</button>` : ""}${TALK.unlocked ? `<button class="linklike talk-del" type="button" data-del="${esc(m.id)}">🗑 Delete</button>` : ""}</div></div></div>`; };
+    return `<div class="talk-msg${mine ? " talk-me" : ""}${m.who === "emmett" ? " mre" : ""}"><span class="talk-ava">${whoAvaHTML(m.who)}</span><div class="talk-bub"><div class="talk-meta"><b>${esc(galName(m.who))}</b>${m.who === "emmett" ? " 🛡️" : ""}${TALK.room === "mod" ? ` <small>in ${esc(talkWhere(m.room))}</small>` : ""}</div>
+      ${m.text ? `<p>${esc(m.text)}</p>` : ""}${media(m)}<div class="talk-meta"><small>${talkWhen(m.at)}</small>${faces(m)}${!mine && m.who !== "emmett" && !guest ? `<button class="linklike talk-rep" type="button" data-rep="${esc(m.id)}" title="Report this to MR.E">🚩 Report</button>` : ""}${TALK.unlocked || (mine && !guest) ? `<button class="linklike talk-del" type="button" data-del="${esc(m.id)}">🗑 Delete</button>` : ""}</div></div></div>`; };
+  const g = talkGroup(TALK.room);
+  const gbar = g && TALK.room !== "mod" ? `<div class="talk-gbar"><span class="talk-gppl">${(g.members || []).filter(id => !hid.has(id)).slice(0, 12).map(id => `<span class="talk-ava" title="${esc(galName(id))}">${whoAvaHTML(id)}</span>`).join("")}</span><span class="soft">${(g.members || []).length} people · only they can see this group</span><button class="chip" type="button" id="talk-gset">⚙️ Group</button></div>` : "";
+  const att = TALK.att.length || TALK.prep ? `<div class="talk-att" id="talk-att">${TALK.att.map((a, i) => `<span class="talk-attone">${mdSafePic(a.th) ? `<img src="${a.th}" alt="">` : a.k === "vid" ? "🎬" : "🖼️"}${a.k === "vid" ? `<i>🎬 ${mdDur(a.dur)}</i>` : ""}<button type="button" data-unatt="${i}" aria-label="Take this out"${TALK.sending ? " disabled" : ""}>✕</button></span>`).join("")}${TALK.prep ? `<span class="talk-attone talk-prep">⏳<small>${esc(TALK.prep)}</small></span>` : ""}</div>` : "";
   const canSend = !guest && !whoBlocked(me, "talk") && TALK.db && TALK.room !== "mod";
   box.innerHTML = `<h2>💬 Talk Room</h2>
     <p class="soft">Talk with the other people on the site. Be kind! MR.E can see every message so he can help keep Talk Room kind, and he can delete unkind ones.</p>
     ${status}
-    <div class="na-chips talk-rooms">${TALK_ROOMS.map(([r, l]) => tab(r, l)).join("")}${dms.map(r => tab(r, talkRoomName(r))).join("")}${guest ? "" : `<button class="chip" type="button" id="talk-dm">💌 Message someone</button>`}${TALK.unlocked ? tab("mod", "🛡️ Every message") : ""}</div>
-    <div class="talk-pick" id="talk-pick" hidden></div>
+    <div class="na-chips talk-rooms">${TALK_ROOMS.map(([r, l]) => tab(r, l)).join("")}${groups.map(x => tab("grp:" + x.id, `${esc(x.emoji || "👥")} ${esc(x.name)}`)).join("")}${dms.map(r => tab(r, esc(talkRoomName(r)))).join("")}${guest ? "" : `<button class="chip${TALK.panel === "new" ? " on" : ""}" type="button" id="talk-newg">＋ Group chat</button><button class="chip${TALK.panel === "dm" ? " on" : ""}" type="button" id="talk-dm">💌 Message someone</button>`}${TALK.unlocked ? tab("mod", "🛡️ Every message") : ""}</div>
+    <div class="talk-pick" id="talk-pick"${TALK.panel ? "" : " hidden"}>${TALK.panel ? talkPanelHTML(me, hid) : ""}</div>
+    ${gbar}
     <div class="talk-list" id="talk-list" aria-live="polite">${!TALK.ready && !TALK.err ? `<p class="soft talk-empty">Loading messages…</p>` : vis.length ? vis.map(msg).join("") : `<p class="soft talk-empty">${TALK.room === "mod" ? "No messages yet." : "No messages here yet. Say hi! 👋"}</p>`}</div>
     ${canSend ? `<div class="talk-emo">${TALK_EMOJI.map(e => `<button type="button" data-emo="${e}" aria-label="Add ${e}">${e}</button>`).join("")}</div>
-    <form class="talk-form" id="talk-form"><input id="talk-in" type="text" maxlength="300" autocomplete="off" placeholder="Write to ${esc(talkRoomName(TALK.room).replace(/^\S+\s/, ""))}…" aria-label="Your message"><button class="btn go" type="submit">Send ➤</button></form>
-    <p class="soft talk-tip">Never share private things like your address, phone number or passwords.</p>`
-    : TALK.room === "mod" ? `<p class="soft">🛡️ This shows every message, including messages to one person. Tap 🗑 Delete on any unkind one.</p>`
+    ${att}
+    <form class="talk-form" id="talk-form"><label class="talk-clip" title="Add a picture or video"><span aria-hidden="true">📎</span><input type="file" id="talk-file" accept="image/*,video/*" multiple hidden aria-label="Add a picture or video"></label><label class="talk-clip" title="Take a photo or video"><span aria-hidden="true">📸</span><input type="file" id="talk-cam" accept="image/*,video/*" capture="environment" hidden aria-label="Take a photo or video"></label><button class="talk-clip" type="button" id="talk-gal" title="A picture or video from the Art Gallery" aria-label="A picture or video from the Art Gallery">🎨</button><input id="talk-in" type="text" maxlength="300" autocomplete="off" placeholder="Write to ${esc(talkRoomName(TALK.room).replace(/^\S+\s/, ""))}…" aria-label="Your message"><button class="btn go" type="submit"${TALK.sending ? " disabled" : ""}>${TALK.sending ? "Sending…" : "Send ➤"}</button></form>
+    <p class="soft talk-tip">Never share private things like your address, phone number or passwords. Only share pictures and videos that are kind and okay for everyone. Videos can be up to ${TALK_VIDSEC} seconds.</p>`
+    : TALK.room === "mod" ? `<p class="soft">🛡️ This shows every message, including messages to one person and group chats. Tap 🗑 Delete on any unkind one.</p>`
     : guest ? `<p class="talk-note">👋 Guests can read, but to talk, pick who you are first.</p>` : whoBlocked(me, "talk") ? `<p class="talk-note">🔇 MR.E stopped you from writing for now.</p>` : ""}
-    ${mre ? (TALK.unlocked ? `<p class="soft">🛡️ You can delete messages until you leave Talk Room.</p>` : `<form class="pf-row talk-unlock" id="talk-unlock"><input id="talk-code" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off"><button class="btn gold" type="submit">🛡️ Keep Talk kind</button></form><p class="soft">Type your code to delete unkind messages and see every message.</p>`) : ""}`;
+    ${mre ? (TALK.unlocked ? `<p class="soft">🛡️ You can delete messages and groups until you leave Talk Room.</p>` : `<form class="pf-row talk-unlock" id="talk-unlock"><input id="talk-code" type="password" maxlength="12" placeholder="Your code" aria-label="Your code" autocomplete="off"><button class="btn gold" type="submit">🛡️ Keep Talk kind</button></form><p class="soft">Type your code to delete unkind messages and see every message.</p>`) : ""}`;
+  playing.forEach(([id, v]) => { const card = [...box.querySelectorAll("[data-mdv]")].find(c => c.dataset.mdv === id); if (card) { card.innerHTML = ""; card.appendChild(v); } });   // a video keeps playing
+  mdWire(box, TALK.db);
   const list = document.getElementById("talk-list");
   if (nearEnd || !fromSnap) list.scrollTop = list.scrollHeight; else list.scrollTop = oldTop;
-  const inp = document.getElementById("talk-in"); if (inp) { inp.value = typed; if (hadFocus || (!fromSnap && !codeFocus)) inp.focus({ preventScroll: true }); }
+  const inp = document.getElementById("talk-in"); if (inp) { inp.value = typed; if (hadFocus || (!fromSnap && !codeFocus && !otherFocus)) inp.focus({ preventScroll: true }); }
   const ci = document.getElementById("talk-code"); if (ci) { ci.value = code; if (codeFocus) ci.focus({ preventScroll: true }); }
+  if (otherFocus) { const el = document.getElementById(otherFocus); if (el) { el.focus({ preventScroll: true }); if (el.setSelectionRange && typeof el.value === "string") try { el.setSelectionRange(el.value.length, el.value.length); } catch (e) {} } }
   if (TALK.room !== "mod") talkMarkSeen(TALK.room);
-  box.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { TALK.room = b.dataset.room; document.getElementById("talk-in") && (document.getElementById("talk-in").value = ""); talkDraw(); }));
+  box.querySelectorAll("[data-room]").forEach(b => b.addEventListener("click", () => { TALK.room = b.dataset.room; if (TALK.panel !== "new") TALK.panel = null; document.getElementById("talk-in") && (document.getElementById("talk-in").value = ""); talkDraw(); }));
   box.querySelectorAll("[data-emo]").forEach(b => b.addEventListener("click", () => { const i = document.getElementById("talk-in"); if (!i) return; i.value = (i.value + b.dataset.emo).slice(0, 300); i.focus(); }));
   document.getElementById("talk-form")?.addEventListener("submit", e => { e.preventDefault(); talkSend(); });
-  document.getElementById("talk-dm")?.addEventListener("click", () => {
-    const pk = document.getElementById("talk-pick"), ppl = sitePeople().filter(p => p.id !== me && !hid.has(p.id));
-    pk.hidden = !pk.hidden;
-    pk.innerHTML = ppl.length ? `<b>💌 Who do you want to message?</b><div class="talk-ppl">${ppl.map(p => `<button class="chip" type="button" data-to="${esc(p.id)}"><span class="talk-ava">${whoAvaHTML(p.id)}</span>${esc(p.name)}</button>`).join("")}</div>` : `<p class="soft">There's nobody else on the site yet.</p>`;
-    pk.querySelectorAll("[data-to]").forEach(b => b.addEventListener("click", () => { TALK.room = talkDm(me, b.dataset.to); talkDraw(); }));
-  });
-  box.querySelectorAll("[data-rep]").forEach(b => b.addEventListener("click", () => { const m = TALK.msgs.find(x => x.id === b.dataset.rep); if (m) reportSheet({ on: m.who, what: "talk", text: m.text, msg: m.id }); }));
+  ["talk-file", "talk-cam"].forEach(k => document.getElementById(k)?.addEventListener("change", e => { const f = [...e.target.files]; e.target.value = ""; talkAddFiles(f); }));
+  document.getElementById("talk-gal")?.addEventListener("click", () => mdGallerySheet(f => talkAddFiles([f])));
+  box.querySelectorAll("[data-unatt]").forEach(b => b.addEventListener("click", () => { if (TALK.sending) return; TALK.att.splice(+b.dataset.unatt, 1); talkDraw(true); }));
+  // the box under the rooms
+  document.getElementById("talk-dm")?.addEventListener("click", () => { TALK.panel = TALK.panel === "dm" ? null : "dm"; talkDraw(true); });
+  document.getElementById("talk-newg")?.addEventListener("click", () => { TALK.panel = TALK.panel === "new" ? null : "new"; if (!TALK.np) TALK.np = { name: "", emoji: "👥", ppl: [] }; talkDraw(true); });
+  document.getElementById("talk-gset")?.addEventListener("click", () => { const gg = talkGroup(TALK.room); TALK.panel = TALK.panel === "group" ? null : "group"; TALK.gren = gg ? gg.name : ""; TALK.gemo = gg ? gg.emoji || "👥" : "👥"; talkDraw(true); });
+  box.querySelectorAll("[data-panel-x]").forEach(b => b.addEventListener("click", () => { TALK.panel = null; talkDraw(true); }));
+  box.querySelectorAll("[data-to]").forEach(b => b.addEventListener("click", () => { TALK.room = talkDm(me, b.dataset.to); TALK.panel = null; talkDraw(); }));
+  document.getElementById("talk-gname")?.addEventListener("input", e => { TALK.np.name = e.target.value; });
+  box.querySelectorAll("[data-gemo]").forEach(b => b.addEventListener("click", () => { TALK.np.emoji = b.dataset.gemo; talkDraw(true); }));
+  box.querySelectorAll("[data-gp]").forEach(b => b.addEventListener("click", () => { const id = b.dataset.gp, L = TALK.np.ppl; TALK.np.ppl = L.includes(id) ? L.filter(x => x !== id) : [...L, id]; talkDraw(true); }));
+  document.getElementById("talk-gmake")?.addEventListener("click", talkGroupMake);
+  document.getElementById("talk-gren")?.addEventListener("input", e => { TALK.gren = e.target.value; });
+  box.querySelectorAll("[data-gemo2]").forEach(b => b.addEventListener("click", () => { TALK.gemo = b.dataset.gemo2; talkDraw(true); }));
+  document.getElementById("talk-gsave")?.addEventListener("click", () => { const gg = talkGroup(TALK.room), name = String(TALK.gren || "").replace(/\s+/g, " ").trim().slice(0, 30); if (!gg) return; if (name.length < 2) return toast("Give your group a name first."); if (TALK_UNKIND.test(name) || talkPrivate(name)) return toast("💛 Pick a kinder group name (and nothing private)."); talkGroupSet(gg, { name, emoji: TALK.gemo || "👥" }).then(ok => ok && toast("💾 Saved!")); });
+  box.querySelectorAll("[data-gadd]").forEach(b => b.addEventListener("click", () => { const gg = talkGroup(TALK.room); if (gg && !(gg.members || []).includes(b.dataset.gadd)) talkGroupSet(gg, { members: [...(gg.members || []), b.dataset.gadd] }).then(ok => ok && toast(`👋 ${galName(b.dataset.gadd)} is in the group now.`)); }));
+  box.querySelectorAll("[data-gkick]").forEach(b => b.addEventListener("click", () => { const gg = talkGroup(TALK.room); if (!gg) return; if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again"; return; } talkGroupSet(gg, { members: (gg.members || []).filter(x => x !== b.dataset.gkick) }); }));
+  document.getElementById("talk-gleave")?.addEventListener("click", e => { const gg = talkGroup(TALK.room); if (!gg) return; if (!e.target.dataset.sure) { e.target.dataset.sure = 1; e.target.textContent = "Tap again to leave"; return; } talkGroupLeave(gg); });
+  document.getElementById("talk-gdel")?.addEventListener("click", e => { const gg = talkGroup(TALK.room); if (!gg) return; if (!e.target.dataset.sure) { e.target.dataset.sure = 1; e.target.textContent = "Tap again to delete the group and its messages"; return; } talkGroupDelete(gg); });
+  // 🙂 🙁 and 🚩
+  box.querySelectorAll("[data-rx]").forEach(b => b.addEventListener("click", () => talkReact(b.dataset.rx, b.dataset.face)));
+  box.querySelectorAll("[data-rep]").forEach(b => b.addEventListener("click", () => { const m = TALK.msgs.find(x => x.id === b.dataset.rep); if (!m) return; const c = talkCards(m)[0]; reportSheet({ on: m.who, what: "talk", text: m.text || (c ? (c.k === "vid" ? "🎬 A video" : "🖼️ A picture") : ""), msg: m.id, th: c ? mdSafePic(c.th) : "" }); }));
+  box.querySelectorAll("[data-mrep]").forEach(b => b.addEventListener("click", e => { e.stopPropagation(); const m = TALK.msgs.find(x => x.id === b.dataset.mrep), c = m && talkCards(m)[+b.dataset.mi]; if (m && c) reportSheet({ on: m.who, what: "talk", text: `${c.k === "vid" ? "🎬 A video" : "🖼️ A picture"}${m.text ? `, with: ${m.text}` : ""}`, msg: m.id, th: mdSafePic(c.th) }); }));
   box.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", async () => {
-    if (!TALK.unlocked) return;
+    const m = TALK.msgs.find(x => x.id === b.dataset.del); if (!TALK.unlocked && !(m && m.who === SITE_WHO && !guest)) return;
     if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to delete"; return; }
     b.disabled = true; const ok = await talkDeleteById(b.dataset.del);
-    if (ok) { store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.msg !== b.dataset.del)); toast("🗑 Message deleted."); } else { b.disabled = false; toast("That didn't delete. Try again."); }
+    if (ok) { if (TALK.unlocked) store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.msg !== b.dataset.del)); toast("🗑 Message deleted."); } else { b.disabled = false; toast("That didn't delete. Try again."); }
   }));
   document.getElementById("talk-unlock")?.addEventListener("submit", e => { e.preventDefault(); if (!modCodeOK(document.getElementById("talk-code").value)) return toast("That's not your code. Try again."); TALK.unlocked = true; toast("🛡️ Unlocked until you leave Talk Room."); talkDraw(); });
 }
-async function talkSend() {
-  const inp = document.getElementById("talk-in"); if (!inp || !TALK || !TALK.db) return;
-  const t = inp.value.replace(/\s+/g, " ").trim().slice(0, 300), me = SITE_WHO;
-  if (!t) return inp.focus();
-  if (!me || me === "guest") return toast("Pick who you are first. Guests can read but can't send messages.");
-  if (whoBlocked(me, "talk")) return toast("🔇 MR.E stopped you from writing for now.");
-  if (TALK_UNKIND.test(t)) return toast("💛 That might sound unkind. Try saying it a kinder way!");
-  if (talkPrivate(t)) return toast("🔒 Keep private things private: no phone numbers, emails, addresses or passwords.");
-  if (Date.now() - TALK.last < 1500) return toast("Slow down a little! 🐢");
-  TALK.last = Date.now();
-  const id = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8), room = TALK.room;
-  inp.value = "";
-  try { await TALK.db.collection("talk").doc(id).set({ who: me, text: t, room, at: Date.now() }); }
-  catch (e) { const i = document.getElementById("talk-in"); if (i && !i.value) i.value = t; return toast(e && e.code === "quota_exceeded" ? "Talk Room is full right now. Ask MR.E to delete some old messages." : "That didn't send. Try again in a moment."); }
-  tone([660, 880], .05, "sine", .05);
-  if (TALK.full) {   // keep only the newest messages: the oldest ones are removed
-    try { const old = await TALK.db.collection("talk").orderBy("at", "asc").limit(10).get(); for (const d of old.docs) await TALK.db.collection("talk").doc(d.id).delete(); } catch (e) {}
+function talkPrep(text) {   // the little "getting ready…" note next to your pictures (changed without redrawing everything)
+  if (!TALK) return; const was = TALK.prep; TALK.prep = text;
+  const el = document.querySelector("#talk .talk-prep small"); if (el && was && text) el.textContent = text; else talkDraw(true);
+}
+async function talkAddFiles(files) {   // 📎 pictures and videos for your next message
+  for (const f of files) {
+    if (!TALK || !TALK.db) return;
+    if (TALK.sending) return toast("Wait a moment, your message is still sending.");
+    if (TALK.prep) return toast("Wait a moment, one is still getting ready.");
+    if (TALK.att.length >= TALK_MAXATT) return toast(`Up to ${TALK_MAXATT} pictures and videos in one message.`);
+    const k = mdKind(f); if (!k) { toast("Only pictures and videos can go in a message."); continue; }
+    if (k === "vid" && TALK.att.some(a => a.k === "vid")) { toast("One video per message. Send this one first!"); continue; }
+    const T = TALK; talkPrep(k === "vid" ? "Getting your video ready…" : "Getting your picture ready…");
+    try {
+      const it = await mdFromFile(f, TALK_VIDSEC, p => { if (TALK === T) talkPrep(`Getting your video ready… ${Math.round(p * 100)}%`); });
+      T.att.push(it); if (it.cut) toast(`✂️ Only the first ${TALK_VIDSEC} seconds of the video will be sent.`);
+    } catch (e) { toast(e && e.message ? e.message : "That couldn't be used. Try a different one."); }
+    T.prep = ""; if (TALK === T) talkDraw(true);
   }
 }
-NEW_APPS.push({ id: "talk", emoji: "💬", name: "Talk Room", desc: "Talk with the other people on the site, in rooms or one to one. Be kind: MR.E can delete unkind messages.", start: () => startTalk(), kw: "talk room|talk|chat|chat room|message|messages|messaging|text|friends" });
+async function talkSend() {
+  const inp = document.getElementById("talk-in"); if (!inp || !TALK || !TALK.db) return;
+  const t = inp.value.replace(/\s+/g, " ").trim().slice(0, 300), me = SITE_WHO, T = TALK, att = T.att.slice();
+  if (!t && !att.length) return inp.focus();
+  if (!me || me === "guest") return toast("Pick who you are first. Guests can read but can't send messages.");
+  if (whoBlocked(me, "talk")) return toast("🔇 MR.E stopped you from writing for now.");
+  if (t && TALK_UNKIND.test(t)) return toast("💛 That might sound unkind. Try saying it a kinder way!");
+  if (t && talkPrivate(t)) return toast("🔒 Keep private things private: no phone numbers, emails, addresses or passwords.");
+  if (T.prep) return toast("Wait a moment, your picture or video is still getting ready.");
+  if (T.sending) return;
+  if (Date.now() - T.last < 1500) return toast("Slow down a little! 🐢");
+  T.last = Date.now();
+  const id = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8), room = T.room, cards = [];
+  inp.value = "";
+  if (att.length) { T.sending = true; talkPrep("Sending…"); }
+  try {
+    for (const [i, a] of att.entries()) cards.push(await mdSave(T.db, a, p => { if (TALK === T) talkPrep(`Sending… ${Math.round(((i + p) / att.length) * 100)}%`); }));
+    await T.db.collection("talk").doc(id).set({ who: me, text: t, room, at: Date.now(), ...(cards.length ? { media: cards } : {}) });
+    T.att = [];
+  } catch (e) {
+    for (const c of cards) await mdDelete(T.db, c.id);
+    const i = document.getElementById("talk-in"); if (i && !i.value) i.value = t;
+    toast(e && e.code === "quota_exceeded" ? "Talk Room is full right now. Ask MR.E to delete some old messages." : "That didn't send. Try again in a moment.");
+    T.sending = false; T.prep = ""; if (TALK === T) talkDraw(true); return;
+  }
+  T.sending = false; T.prep = ""; if (att.length && TALK === T) talkDraw(true);
+  tone([660, 880], .05, "sine", .05);
+  if (T.full) {   // keep only the newest messages: the oldest ones (and their pictures and videos) are removed
+    try { const old = await T.db.collection("talk").orderBy("at", "asc").limit(10).get(); for (const d of old.docs) { const m = d.data() || {}; await T.db.collection("talk").doc(d.id).delete(); for (const c of talkCards(m)) await mdDelete(T.db, c.id); } } catch (e) {}
+  }
+}
+async function talkReact(id, face) {   // 🙂 or 🙁 (tap it again to take it back)
+  const me = SITE_WHO; if (!TALK || !TALK.db) return;
+  if (!me || me === "guest") return toast("Pick who you are first. Guests can read but can't react.");
+  if (whoBlocked(me, "talk")) return toast("🔇 MR.E stopped you from writing for now.");
+  const m = TALK.msgs.find(x => x.id === id); if (!m) return;
+  const val = (m.rx || {})[me] === face ? "" : face;
+  m.rx = { ...(m.rx || {}), [me]: val }; talkDraw(true);   // shows right away
+  if (val) tone(face === "happy" ? [784, 988] : [392, 330], .05, "sine", .04);
+  try { await TALK.db.collection("talk").doc(id).update({ rx: { [me]: val } }); } catch (e) { toast("That didn't save. Try again."); }
+}
+async function talkGroupMake() {   // 👥 a small group chat with the people you picked
+  const N = TALK && TALK.np, me = SITE_WHO; if (!N || !TALK.db) return;
+  if (!me || me === "guest") return toast("Pick who you are first.");
+  if (whoBlocked(me, "talk")) return toast("🔇 MR.E stopped you from writing for now.");
+  const name = String(N.name || "").replace(/\s+/g, " ").trim().slice(0, 30);
+  if (name.length < 2) { toast("Give your group a name first."); document.getElementById("talk-gname")?.focus(); return; }
+  if (TALK_UNKIND.test(name) || talkPrivate(name)) return toast("💛 Pick a kinder group name (and nothing private).");
+  if (!N.ppl.length) return toast("Pick at least one person to be in your group.");
+  const id = "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), g = { name, emoji: N.emoji || "👥", members: [me, ...N.ppl.filter(p => p !== me)], by: me, at: Date.now() };
+  try { await TALK.db.collection("talkgroups").doc(id).set(g); } catch (e) { return toast(e && e.code === "quota_exceeded" ? "There are too many group chats right now. Ask MR.E for help." : "That group didn't save. Try again."); }
+  if (!TALK.groups.some(x => x.id === id)) TALK.groups.unshift({ id, ...g });
+  TALK.np = null; TALK.panel = null; TALK.room = "grp:" + id; talkDraw(); toast(`👥 ${name} is ready!`);
+}
+async function talkGroupSet(g, data) {
+  if (!TALK || !TALK.db) return false;
+  try { await TALK.db.collection("talkgroups").doc(g.id).update(data); Object.assign(g, data); talkDraw(true); return true; } catch (e) { toast("That didn't save. Try again."); return false; }
+}
+async function talkGroupLeave(g) {
+  const me = SITE_WHO, mem = (g.members || []).filter(x => x !== me);
+  if (!mem.length) return talkGroupDelete(g);
+  if (await talkGroupSet(g, { members: mem, ...(g.by === me ? { by: mem[0] } : {}) })) { TALK.room = "all"; TALK.panel = null; talkDraw(); toast("🚪 You left the group."); }
+}
+async function talkGroupDelete(g) {
+  if (!TALK || !TALK.db) return;
+  try { await TALK.db.collection("talkgroups").doc(g.id).delete(); } catch (e) { return toast("That didn't delete. Try again."); }
+  const room = "grp:" + g.id, msgs = TALK.msgs.filter(m => m.room === room);
+  TALK.groups = TALK.groups.filter(x => x.id !== g.id); TALK.room = "all"; TALK.panel = null; talkDraw(); toast("🗑 Group deleted.");
+  for (const m of msgs) await talkDeleteById(m.id);
+}
+NEW_APPS.push({ id: "talk", emoji: "💬", name: "Talk Room", desc: "Talk with the other people on the site: in All, in small group chats you make, or one to one. Share pictures and videos, and give messages a 🙂 or 🙁. Be kind: MR.E can delete unkind messages.", start: () => startTalk(), kw: "talk room|talk|chat|chat room|message|messages|messaging|text|friends" });
 /* ---------- 🖼️ Famous Artists: famous artists and their most famous paintings, oldest first. Every painting here is public domain.
    A painting's picture is a file next to the page: art/<id>.jpg (big) and art/<id>-s.jpg (small). Until a picture is there, its card shows
    the painting's main colors instead. Any painting with a picture can become your home background (it's saved like your own pictures). */
@@ -26789,7 +27121,7 @@ function stickyRepHTML(r, i) {   // one note for MR.E
         <p class="sk-msg" aria-live="polite"></p><div class="sk-btns"><button class="sk-b go" type="submit"${whoHasCode("emmett") ? "" : " disabled"}>💾 Save</button><button class="sk-b" type="button" data-sk="cancel">Cancel</button></div></form>`
     : `<div class="sk-btns">${canReply ? `<button class="sk-b" type="button" data-sk="reply" data-id="${esc(r.id)}">↩️ Send back</button>` : ""}${canStop ? `<button class="sk-b" type="button" data-sk="block" data-id="${esc(r.id)}">🚫 Stop them</button>` : ""}<button class="sk-b" type="button" data-sk="dismiss" data-id="${esc(r.id)}">✖ Dismiss</button></div>`;
   return `<div class="sk-note c${i % 4}" data-note="${esc(r.id)}"><p class="sk-h">${stickyTitle(r)}</p><small class="sk-when">${stickyWhen(r.at)}${r.what !== "tell" ? ` · ${esc(RP_WHAT[r.what] || r.what)}` : ""}</small>
-    ${r.about ? `<p class="sk-s">About: ${esc(r.about)}</p>` : ""}${r.text ? `<p class="sk-t">“${esc(r.text)}”</p>` : ""}${r.what === "pic" ? `<p class="sk-s">Their picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="sk-s">Why: ${esc(r.note)}</p>` : ""}
+    ${r.about ? `<p class="sk-s">About: ${esc(r.about)}</p>` : ""}${r.text ? `<p class="sk-t">“${esc(r.text)}”</p>` : ""}${mdSafePic(r.th) ? `<img class="sk-th" src="${r.th}" alt="">` : ""}${r.what === "pic" ? `<p class="sk-s">Their picture now: <span class="rp-pic">${whoAvaHTML(r.on)}</span></p>` : ""}${r.note ? `<p class="sk-s">Why: ${esc(r.note)}</p>` : ""}
     ${now.length ? `<p class="sk-s sk-stopped">🚫 ${stickyNm(who)} can't do: ${now.map(x => esc(x[1].replace(/^\S+ /, "").toLowerCase())).join(", ")}</p>` : ""}${form}</div>`;
 }
 const stickyNoteHTML = (n, i) => `<div class="sk-note c${i % 4}" data-note="${esc(n.id)}"><p class="sk-h">📝 <b>MR.E</b> sent you a note</p><small class="sk-when">${stickyWhen(n.at)}</small><p class="sk-t">${esc(n.text)}</p>${n.re ? `<p class="sk-s">You told him: “${esc(n.re)}”</p>` : ""}<div class="sk-btns"><button class="sk-b go" type="button" data-sk="gotit" data-id="${esc(n.id)}">✔ Got it</button></div></div>`;
@@ -27636,8 +27968,8 @@ const LN_FIELDS = [   // [key, label, example, big box?]
   ["done", "How do you know you did it right?", "It glides straight and flies farther than across the room.", 1]
 ];
 const LN_CATS = [["science", "🔬 Science"], ["art", "🎨 Art & crafts"], ["food", "🍳 Cooking"], ["sports", "⚽ Sports"], ["games", "🎲 Games"], ["music", "🎵 Music"], ["tech", "💻 Tech"], ["nature", "🌳 Nature"], ["school", "📚 School"], ["life", "🏠 Everyday life"], ["other", "✨ Other"]];
-const LN_MAXPICS = 6;
-const LN = { db: null, ready: false, local: false, list: [], err: "", picCache: {}, view: { q: "", cat: "all", sort: "new" }, unlocked: false };
+const LN_MAXPICS = 10, LN_MAXVIDS = 3, LN_VIDSEC = 60;   // pictures and videos in one how-to (videos up to 60 seconds). Everyone can write as many how-tos as they like.
+const LN = { db: null, ready: false, local: false, list: [], older: [], full: false, noMore: false, err: "", picCache: {}, view: { q: "", cat: "all", sort: "new" }, unlocked: false };
 const lnCat = k => (LN_CATS.find(c => c[0] === k) || LN_CATS[LN_CATS.length - 1])[1];
 const lnText = a => [a.h, ...LN_FIELDS.map(f => (a.f || {})[f[0]] || ""), ...(a.caps || [])].join(" ");
 const lnId = p => p + Date.now().toString(36) + rnd(100, 999);
@@ -27650,12 +27982,23 @@ async function lnConnect() {   // 📡 one listener for the whole visit, so new 
   if (!db) { LN.local = true; LN.list = (store.get("learn_local", []) || []).filter(a => a && a.id); LN.ready = true; LN.connecting = false; return lnRefresh(); }
   LN.db = db; LN.connecting = false;
   try {
-    db.collection("learnable").orderBy("at", "desc").limit(500).onSnapshot(snap => {
-      LN.ready = true; LN.err = "";
-      LN.list = snap.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(a => typeof a.h === "string" && typeof a.at === "number");
+    db.collection("learnable").orderBy("at", "desc").limit(1000).onSnapshot(snap => {   // the newest 1,000 stay up to date; "Show older how-tos" loads the rest, 1,000 at a time
+      LN.ready = true; LN.err = ""; LN.full = snap.size >= 1000;
+      const fresh = snap.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(a => typeof a.h === "string" && typeof a.at === "number"), ids = new Set(fresh.map(a => a.id)), oldest = fresh.length ? fresh[fresh.length - 1].at : Infinity;
+      LN.list = fresh.concat(LN.older.filter(a => !ids.has(a.id) && a.at < oldest));
       lnRefresh();
     }, e => { LN.err = e && e.code === "revoked" ? "off" : "broken"; LN.ready = true; lnRefresh(); });
   } catch (e) { LN.err = "broken"; LN.ready = true; }
+}
+async function lnOlder() {   // 📜 the how-tos older than the newest 1,000
+  if (!LN.db || LN.loadingOlder) return; LN.loadingOlder = true; lnDrawList();
+  const oldest = LN.list.reduce((m, a) => Math.min(m, a.at), Date.now());
+  try {
+    const s = await LN.db.collection("learnable").where("at", "<", oldest).orderBy("at", "desc").limit(1000).get();
+    const more = s.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(a => typeof a.h === "string" && typeof a.at === "number"), ids = new Set(LN.list.map(a => a.id));
+    LN.older = LN.older.concat(more); LN.noMore = more.length < 1000; LN.list = LN.list.concat(more.filter(a => !ids.has(a.id)));
+  } catch (e) { toast("The older how-tos couldn't load. Try again in a minute."); }
+  LN.loadingOlder = false; lnDrawList();
 }
 function lnRefresh() {   // redraw whatever Learnable screen is open
   if (document.getElementById("ln-list")) lnDrawList();
@@ -27681,10 +28024,10 @@ function startLearnable(view, id) {
   if (view === "read") return lnRead(id);
   const n = LN.list.length;
   appScreen("📘 Learnable", `<div class="ln">
-    <div class="ln-masthead"><div class="ln-logo" aria-hidden="true">📘</div><div><h2 class="ln-name">Learnable</h2><p class="ln-motto">The how-to book that everyone writes</p></div></div>
+    <div class="ln-masthead"><div class="ln-logo" aria-hidden="true">📘</div><div><h2 class="ln-name">Learnable</h2><p class="ln-motto">The how-to book that everyone writes. Write as many how-tos as you like, with pictures and videos!</p></div></div>
     <form class="ln-search" id="ln-sform" role="search"><input id="ln-q" type="search" placeholder="🔎 Search Learnable" aria-label="Search Learnable" value="${esc(LN.view.q)}" autocomplete="off"><button class="btn go" type="submit">Search</button></form>
     <div class="na-chips ln-cats"><button class="chip${LN.view.cat === "all" ? " on" : ""}" type="button" data-lc="all">⭐ Everything</button>${LN_CATS.map(([k, l]) => `<button class="chip${LN.view.cat === k ? " on" : ""}" type="button" data-lc="${k}">${l}</button>`).join("")}</div>
-    <div class="row ln-bar"><button class="btn go ln-write" id="ln-new" type="button">✍️ Write a how-to</button><span class="na-chips ln-sort"><button class="chip${LN.view.sort === "new" ? " on" : ""}" type="button" data-ls="new">🆕 Newest</button><button class="chip${LN.view.sort === "top" ? " on" : ""}" type="button" data-ls="top">👍 Most helpful</button>${LN.unlocked ? "" : `<button class="chip" type="button" id="ln-mod" title="MR.E: delete how-tos">🛡️</button>`}</span></div>
+    <div class="row ln-bar"><button class="btn go ln-write" id="ln-new" type="button" title="Write as many as you like!">✍️ Write a how-to</button><span class="na-chips ln-sort"><button class="chip${LN.view.sort === "new" ? " on" : ""}" type="button" data-ls="new">🆕 Newest</button><button class="chip${LN.view.sort === "top" ? " on" : ""}" type="button" data-ls="top">👍 Most helpful</button>${LN.unlocked ? "" : `<button class="chip" type="button" id="ln-mod" title="MR.E: delete how-tos">🛡️</button>`}</span></div>
     ${LN.local ? `<p class="ln-note">📱 On this version of Study Arcade, how-tos are saved on this device only. Open Study Arcade in Claude to share them with everyone.</p>` : ""}
     <div id="ln-list" aria-live="polite"></div></div>`);
   const q = document.getElementById("ln-q");
@@ -27707,7 +28050,8 @@ function lnDrawList() {
   if (LN.view.sort === "top") L = [...L].sort((a, b) => likes(b) - likes(a) || b.at - a.at);
   box.innerHTML = !LN.list.length ? `<div class="ln-empty"><span>📘</span><b>No how-tos yet!</b><p class="soft">Be the first: tap ✍️ Write a how-to and teach everyone something you know.</p></div>`
     : !L.length ? `<div class="ln-empty"><span>🔎</span><b>Nothing found</b><p class="soft">Try different words, or write the how-to yourself!</p></div>`
-    : `<p class="soft ln-count">${L.length === LN.list.length ? `${L.length} how-to${L.length === 1 ? "" : "s"}` : `${L.length} of ${LN.list.length} how-tos`}</p><div class="ln-cards">${L.map(a => `<button class="ln-card" type="button" data-lr="${esc(a.id)}">${a.th ? `<img src="${a.th}" alt="" loading="lazy">` : `<span class="ln-noth">${lnCat(a.cat).split(" ")[0]}</span>`}<span class="ln-ct"><b>${esc(a.h)}</b><small>${esc(lnCat(a.cat))} · ${whoAvaHTML(a.by)} ${esc(a.byName || galName(a.by) || "Someone")} · ${lnWhen(a.at)}${likes(a) ? ` · 👍 ${likes(a)}` : ""}</small>${(a.f || {}).what ? `<span class="ln-sum">${esc(a.f.what)}</span>` : ""}</span></button>`).join("")}</div>`;
+    : `<p class="soft ln-count">${L.length === LN.list.length ? `${L.length.toLocaleString()} how-to${L.length === 1 ? "" : "s"}` : `${L.length.toLocaleString()} of ${LN.list.length.toLocaleString()} how-tos`}${LN.full && !LN.noMore ? " (and older ones below)" : ""}</p><div class="ln-cards">${L.map(a => `<button class="ln-card" type="button" data-lr="${esc(a.id)}">${a.th ? `<img src="${a.th}" alt="" loading="lazy">` : `<span class="ln-noth">${lnCat(a.cat).split(" ")[0]}</span>`}<span class="ln-ct"><b>${esc(a.h)}</b><small>${esc(lnCat(a.cat))} · ${whoAvaHTML(a.by)} ${esc(a.byName || galName(a.by) || "Someone")} · ${lnWhen(a.at)}${likes(a) ? ` · 👍 ${likes(a)}` : ""}</small>${(a.f || {}).what ? `<span class="ln-sum">${esc(a.f.what)}</span>` : ""}</span></button>`).join("")}</div>`;
+  if (LN.full && !LN.noMore && !LN.local) { box.insertAdjacentHTML("beforeend", `<div class="row ln-olderrow"><button class="btn" type="button" id="ln-older"${LN.loadingOlder ? " disabled" : ""}>${LN.loadingOlder ? "📜 Loading…" : "📜 Show older how-tos"}</button></div>`); document.getElementById("ln-older").addEventListener("click", lnOlder); }
   box.querySelectorAll("[data-lr]").forEach(b => b.addEventListener("click", () => lnRead(b.dataset.lr)));
 }
 function lnUnlock() {   // 🛡️ MR.E types his code (every visit) to delete any how-to
@@ -27722,8 +28066,8 @@ function lnUnlock() {   // 🛡️ MR.E types his code (every visit) to delete a
 function lnRead(id) {
   const a = LN.list.find(x => x.id === id); if (!a) { toast("That how-to isn't here any more."); return startLearnable(); }
   const f = a.f || {}, steps = LN_FIELDS.filter(x => /^s\d+$/.test(x[0]) && (f[x[0]] || "").trim()).map(x => [x[0], f[x[0]]]);
-  const pics = (a.pics || []).map((p, i) => ({ id: p, cap: (a.caps || [])[i] || "", at: (a.picAt || [])[i] || "top" }));
-  const picHTML = list => list.map(p => `<figure class="ln-fig"><button type="button" class="ln-ph" data-pz="${esc(p.id)}" aria-label="See the picture bigger"><span class="ln-load" data-pid="${esc(p.id)}">🖼️</span></button>${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("");
+  const pics = (a.pics || []).map((p, i) => ({ id: p, cap: (a.caps || [])[i] || "", at: (a.picAt || [])[i] || "top", k: (a.kinds || [])[i] === "vid" ? "vid" : "pic", th: (a.posters || [])[i] || "", dur: (a.durs || [])[i] || 0 }));
+  const picHTML = list => list.map(p => `<figure class="ln-fig">${p.k === "vid" ? mdCardHTML({ id: p.id, k: "vid", th: p.th, dur: p.dur }) : `<button type="button" class="ln-ph" data-pz="${esc(p.id)}" aria-label="See the picture bigger"><span class="ln-load" data-pid="${esc(p.id)}">🖼️</span></button>`}${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("");
   const sec = [["learn", "What you'll learn", f.what || f.why], ["need", "What you need", f.need], ["steps", "Steps", steps.length], ["tips", "Tips and tricks", f.tips], ["safety", "Be careful!", f.safety], ["fact", "Fun fact", f.fact], ["done", "How to know you did it right", f.done]].filter(s => s[2]);
   const lines = t => String(t || "").split(/\n|(?:,\s*)(?=[A-Za-z0-9])/).map(x => x.trim()).filter(Boolean);
   const mine = lnMine(a), likes = Object.keys(a.likes || {}), liked = likes.includes(SITE_WHO);
@@ -27740,10 +28084,11 @@ function lnRead(id) {
       ${f.safety ? `<h2 class="ln-h2" id="ln-safety">⚠️ Be careful!</h2><p class="ln-safe">${esc(f.safety)}</p>` : ""}
       ${f.fact ? `<h2 class="ln-h2" id="ln-fact">Fun fact</h2><p>💡 ${esc(f.fact)}</p>` : ""}
       ${f.done ? `<h2 class="ln-h2" id="ln-done">How to know you did it right</h2><p>✅ ${esc(f.done)}</p>` : ""}
-      ${pics.filter(p => p.at === "more" || (p.at === "top" && p !== pics.find(q => q.at === "top"))).length ? `<h2 class="ln-h2">Pictures</h2><div class="ln-gallery">${picHTML(pics.filter(p => p.at === "more" || (p.at === "top" && p !== pics.find(q => q.at === "top"))))}</div>` : ""}
+      ${pics.filter(p => p.at === "more" || (p.at === "top" && p !== pics.find(q => q.at === "top"))).length ? `<h2 class="ln-h2">${pics.some(p => p.k === "vid") ? "Pictures and videos" : "Pictures"}</h2><div class="ln-gallery">${picHTML(pics.filter(p => p.at === "more" || (p.at === "top" && p !== pics.find(q => q.at === "top"))))}</div>` : ""}
       <div class="ln-foot"><button class="btn${liked ? " go" : ""}" id="ln-like" type="button"${lnCanWrite() ? "" : " disabled"}>👍 Helpful${likes.length ? ` (${likes.length})` : ""}</button>${!mine && lnCanWrite() ? `<button class="linklike" id="ln-rep" type="button">🚩 Report this how-to</button>` : ""}</div>
     </article></div>`);
   document.getElementById("ln-home").addEventListener("click", () => startLearnable());
+  mdWire($app, LN.db);   // 🎬 videos play when you tap ▶
   $app.querySelectorAll("[data-pid]").forEach(async el => { const d = await lnPic(el.dataset.pid); if (d && el.isConnected) el.outerHTML = `<img src="${d}" alt="">`; else if (el.isConnected) el.textContent = "😕"; });
   $app.querySelectorAll("[data-pz]").forEach(b => b.addEventListener("click", async () => { const d = await lnPic(b.dataset.pz); if (!d) return; const v = document.createElement("div"); v.className = "bgsheet ln-zoom"; v.innerHTML = `<img src="${d}" alt=""><button class="iconbtn" type="button">✕ Close</button>`; v.addEventListener("click", () => v.remove()); document.body.appendChild(v); }));
   $app.querySelectorAll("[data-jump]").forEach(x => x.addEventListener("click", e => { e.preventDefault(); document.getElementById("ln-" + x.dataset.jump)?.scrollIntoView({ behavior: "smooth", block: "start" }); }));
@@ -27763,23 +28108,30 @@ async function lnSave(a, quiet) {   // write a how-to (to everyone, or to this d
   if (LN.db) await LN.db.collection("learnable").doc(id).set(doc);
   else { const L = (store.get("learn_local", []) || []).filter(x => x.id !== id); L.unshift(a); store.set("learn_local", L); LN.list = L; if (!quiet) lnRefresh(); }
 }
-async function lnDelete(id) {   // a how-to and its pictures
+async function lnDropMedia(a, keep = []) {   // removes a how-to's pictures and videos (except the ones in keep)
+  for (const [i, p] of ((a && a.pics) || []).entries()) {
+    if (keep.includes(p)) continue;
+    if ((a.kinds || [])[i] === "vid") await mdDelete(LN.db, p);
+    else if (LN.db) await LN.db.collection("learnpics").doc(p).delete().catch(() => {}); else await bigPut("lnpic_" + p, null).catch(() => {});
+  }
+}
+async function lnDelete(id) {   // a how-to and its pictures and videos
   const a = LN.list.find(x => x.id === id);
   try {
-    if (LN.db) { await LN.db.collection("learnable").doc(id).delete(); for (const p of (a && a.pics) || []) await LN.db.collection("learnpics").doc(p).delete().catch(() => {}); }
-    else { store.set("learn_local", (store.get("learn_local", []) || []).filter(x => x.id !== id)); for (const p of (a && a.pics) || []) await bigPut("lnpic_" + p, null).catch(() => {}); LN.list = store.get("learn_local", []); }
+    if (LN.db) { await LN.db.collection("learnable").doc(id).delete(); await lnDropMedia(a); LN.older = LN.older.filter(x => x.id !== id); }
+    else { store.set("learn_local", (store.get("learn_local", []) || []).filter(x => x.id !== id)); await lnDropMedia(a); LN.list = store.get("learn_local", []); }
     store.set("who_reports", (store.get("who_reports", []) || []).filter(r => r.doc !== id)); return true;
   } catch (e) { return false; }
 }
 
-/* ✍️ writing (or editing) a how-to: 20 labeled blanks, a headline, a category and up to 6 pictures */
+/* ✍️ writing (or editing) a how-to: 20 labeled blanks, a headline, a category and up to 10 pictures and videos */
 let LNE = null;
 function lnEdit(id) {
   if (!lnCanWrite()) return toast("Pick who you are first, then you can write a how-to. (Guests can read.)");
   if (whoBlocked(SITE_WHO, "learn")) return toast("🔇 MR.E stopped you from publishing in Learnable for now.");
   const old = id ? LN.list.find(x => x.id === id) : null; if (id && !lnMine(old)) return toast("You can only change your own how-tos.");
   const draft = !old && store.get("learn_draft", null);
-  LNE = old ? { id: old.id, h: old.h, cat: old.cat, f: { ...(old.f || {}) }, pics: (old.pics || []).map((p, i) => ({ id: p, cap: (old.caps || [])[i] || "", at: (old.picAt || [])[i] || "top", old: true })), at: old.at, likes: old.likes, th: old.th }
+  LNE = old ? { id: old.id, h: old.h, cat: old.cat, f: { ...(old.f || {}) }, pics: (old.pics || []).map((p, i) => ({ id: p, cap: (old.caps || [])[i] || "", at: (old.picAt || [])[i] || "top", k: (old.kinds || [])[i] === "vid" ? "vid" : "pic", th: (old.posters || [])[i] || "", dur: (old.durs || [])[i] || 0, old: true })), at: old.at, likes: old.likes, th: old.th }
     : { id: null, h: (draft && draft.h) || "", cat: (draft && draft.cat) || "", f: { ...((draft && draft.f) || {}) }, pics: [] };
   const where = [["top", "At the top"], ...Array.from({ length: 10 }, (_, i) => [`s${i + 1}`, `With step ${i + 1}`]), ["more", "At the end"]];
   const field = ([k, label, ex, big]) => `<label class="ln-blank"><span><i>${LN_FIELDS.findIndex(x => x[0] === k) + 1}</i>${esc(label)}</span>${big ? `<textarea data-f="${k}" rows="2" maxlength="600" placeholder="${esc(ex)}">${esc(LNE.f[k] || "")}</textarea>` : `<input data-f="${k}" maxlength="120" placeholder="${esc(ex)}" value="${esc(LNE.f[k] || "")}">`}</label>`;
@@ -27793,8 +28145,9 @@ function lnEdit(id) {
       ${group("🧰 What you need", ["need"])}
       ${group("🪜 Steps (use as many as you need)", LN_FIELDS.filter(x => /^s\d+$/.test(x[0])).map(x => x[0]))}
       ${group("💡 Extras", ["tips", "safety", "fact", "done"])}
-      <fieldset class="ln-group"><legend>🖼️ Pictures (up to ${LN_MAXPICS})</legend><div id="ln-pics" class="ln-pics"></div>
-        <div class="row ln-picbtns"><label class="btn">📁 Choose a picture<input type="file" id="ln-file" accept="image/*" multiple hidden></label><label class="btn">📸 Take a photo<input type="file" id="ln-cam" accept="image/*" capture="environment" hidden></label><button class="btn" type="button" id="ln-gal">🎨 From the Art Gallery</button></div>
+      <fieldset class="ln-group"><legend>🖼️ Pictures and videos (up to ${LN_MAXPICS}, with up to ${LN_MAXVIDS} videos of ${LN_VIDSEC} seconds)</legend><div id="ln-pics" class="ln-pics"></div>
+        <div class="row ln-picbtns"><label class="btn">📁 Choose a picture or video<input type="file" id="ln-file" accept="image/*,video/*" multiple hidden></label><label class="btn">📸 Take a photo or video<input type="file" id="ln-cam" accept="image/*,video/*" capture="environment" hidden></label><button class="btn" type="button" id="ln-gal">🎨 From the Art Gallery</button></div>
+        <p class="soft ln-vmsg" id="ln-vmsg" aria-live="polite"></p>
         <div class="bg-paste ln-paste" id="ln-paste" contenteditable="true" role="textbox" aria-label="Paste a picture here" data-ph="📋 Or paste a picture here"></div><div id="ln-galbox"></div></fieldset>
       <p class="su-msg" id="ln-msg" aria-live="polite"></p>
       <div class="row ln-pub"><button class="btn" type="button" id="ln-prev">👀 Preview</button><button class="btn go" type="submit" id="ln-go">🚀 ${old ? "Save changes" : "Publish for everyone"}</button></div>
@@ -27806,30 +28159,38 @@ function lnEdit(id) {
   form.querySelectorAll("[data-ec]").forEach(b => b.addEventListener("click", () => { LNE.cat = b.dataset.ec; form.querySelectorAll("[data-ec]").forEach(x => x.classList.toggle("on", x === b)); keep(); }));
   const drawPics = () => {
     const box = document.getElementById("ln-pics"); if (!box) return;
-    box.innerHTML = LNE.pics.length ? LNE.pics.map((p, i) => `<div class="ln-pic"><span class="ln-picimg" data-pi="${i}">${p.d ? `<img src="${p.d}" alt="">` : "🖼️"}</span><input data-pcap="${i}" maxlength="100" placeholder="Caption (what's in the picture?)" value="${esc(p.cap)}"><select data-pat="${i}" aria-label="Where the picture goes">${where.map(([k, l]) => `<option value="${k}"${p.at === k ? " selected" : ""}>${l}</option>`).join("")}</select><button class="chip bad" type="button" data-prm="${i}" aria-label="Remove this picture">🗑</button></div>`).join("") : `<p class="soft">No pictures yet. Pictures help people follow along!</p>`;
+    box.innerHTML = LNE.pics.length ? LNE.pics.map((p, i) => `<div class="ln-pic"><span class="ln-picimg"${p.k === "vid" ? "" : ` data-pi="${i}"`}>${p.k === "vid" ? `${mdSafePic(p.th) ? `<img src="${p.th}" alt="">` : "🎬"}<i class="ln-vtag">🎬 ${mdDur(p.dur)}</i>` : p.d ? `<img src="${p.d}" alt="">` : "🖼️"}</span><input data-pcap="${i}" maxlength="100" placeholder="Caption (what's in the ${p.k === "vid" ? "video" : "picture"}?)" value="${esc(p.cap)}"><select data-pat="${i}" aria-label="Where the picture goes">${where.map(([k, l]) => `<option value="${k}"${p.at === k ? " selected" : ""}>${l}</option>`).join("")}</select><button class="chip bad" type="button" data-prm="${i}" aria-label="Remove this ${p.k === "vid" ? "video" : "picture"}">🗑</button></div>`).join("") : `<p class="soft">No pictures or videos yet. They help people follow along!</p>`;
     box.querySelectorAll("[data-pcap]").forEach(x => x.addEventListener("input", () => { LNE.pics[+x.dataset.pcap].cap = x.value; }));
     box.querySelectorAll("[data-pat]").forEach(x => x.addEventListener("change", () => { LNE.pics[+x.dataset.pat].at = x.value; }));
     box.querySelectorAll("[data-prm]").forEach(x => x.addEventListener("click", () => { LNE.pics.splice(+x.dataset.prm, 1); drawPics(); }));
     box.querySelectorAll("[data-pi]").forEach(async el => { const p = LNE.pics[+el.dataset.pi]; if (!p.d && p.id) { const d = await lnPic(p.id); if (d && el.isConnected) el.innerHTML = `<img src="${d}" alt="">`; } });
   };
   const addPic = async src => {
-    if (LNE.pics.length >= LN_MAXPICS) return toast(`You can add up to ${LN_MAXPICS} pictures.`);
+    if (LNE.pics.length >= LN_MAXPICS) return toast(`You can add up to ${LN_MAXPICS} pictures and videos.`);
     const d = await lnShrink(src).catch(() => null); if (!d) return toast("That picture couldn't be used. Try a different one.");
-    LNE.pics.push({ d, cap: "", at: LNE.pics.some(p => p.at === "top") ? "more" : "top" }); drawPics();
+    LNE.pics.push({ k: "pic", d, cap: "", at: LNE.pics.some(p => p.at === "top") ? "more" : "top" }); drawPics();
   };
-  const fromFiles = async files => { for (const f of [...files].filter(f => /^image\//.test(f.type || ""))) { const u = URL.createObjectURL(f); await addPic(u); URL.revokeObjectURL(u); } };
+  let vbusy = false;
+  const vmsg = t => { const el = document.getElementById("ln-vmsg"); if (el) el.textContent = t; };
+  const addVid = async f => {   // 🎬 a video, made small enough to share
+    if (LNE.pics.length >= LN_MAXPICS) return toast(`You can add up to ${LN_MAXPICS} pictures and videos.`);
+    if (LNE.pics.filter(p => p.k === "vid").length >= LN_MAXVIDS) return toast(`You can add up to ${LN_MAXVIDS} videos.`);
+    if (vbusy) return toast("Wait a moment, a video is still getting ready.");
+    vbusy = true; vmsg("🎬 Getting your video ready…");
+    try {
+      const it = await mdVidPrep(f, LN_VIDSEC, p => vmsg(`🎬 Getting your video ready… ${Math.round(p * 100)}%`));
+      LNE.pics.push({ ...it, cap: "", at: LNE.pics.some(p => p.at === "top") ? "more" : "top" }); drawPics();
+      vmsg(it.cut ? `✂️ Only the first ${LN_VIDSEC} seconds of the video will be shared.` : "");
+    } catch (e) { vmsg(""); toast(e && e.message ? e.message : "That video couldn't be used. Try a different one."); }
+    vbusy = false;
+  };
+  const fromFiles = async files => { for (const f of [...files]) { const k = mdKind(f); if (k === "vid") await addVid(f); else if (k === "pic") { const u = URL.createObjectURL(f); await addPic(u); URL.revokeObjectURL(u); } else toast("Only pictures and videos can go in a how-to."); } };
   document.getElementById("ln-file").addEventListener("change", async e => { await fromFiles(e.target.files); e.target.value = ""; });
   document.getElementById("ln-cam").addEventListener("change", async e => { await fromFiles(e.target.files); e.target.value = ""; });
   const paste = document.getElementById("ln-paste");
-  paste.addEventListener("paste", async e => { e.preventDefault(); const it = [...(e.clipboardData?.items || [])].find(i => i.kind === "file" && /^image\//.test(i.type)); if (it) return fromFiles([it.getAsFile()]); const m = (e.clipboardData?.getData("text/html") || "").match(/<img[^>]+src="(data:image\/[^"]+)"/i); if (m) return addPic(m[1]); toast("📋 Copy a picture first, then paste it here."); });
+  paste.addEventListener("paste", async e => { e.preventDefault(); const it = [...(e.clipboardData?.items || [])].find(i => i.kind === "file" && /^(image|video)\//.test(i.type)); if (it) return fromFiles([it.getAsFile()]); const m = (e.clipboardData?.getData("text/html") || "").match(/<img[^>]+src="(data:image\/[^"]+)"/i); if (m) return addPic(m[1]); toast("📋 Copy a picture first, then paste it here."); });
   paste.addEventListener("input", () => { paste.textContent = ""; });
-  document.getElementById("ln-gal").addEventListener("click", async () => {   // 🎨 any picture from the Art Gallery
-    const gb = document.getElementById("ln-galbox"); gb.innerHTML = `<p class="soft">Opening the Art Gallery…</p>`;
-    let all = []; try { all = (await galEveryone()).filter(m => /^image\//.test(m.type || "") || (m.thumb && m.kind !== "video")); } catch (e) { gb.innerHTML = `<p class="soft">😕 The Art Gallery couldn't open just now.</p>`; return; }
-    if (!all.length) { gb.innerHTML = `<p class="soft">There's nothing in the Art Gallery yet.</p>`; return; }
-    gb.innerHTML = `<p class="soft">Tap a picture to add it:</p><div class="pic-artgrid">${all.slice(0, 120).map((m, i) => `<button type="button" class="pic-art" data-lg="${i}" title="${esc(m.name)}">${m.thumb ? `<img src="${m.thumb}" alt="" loading="lazy">` : "🖼️"}</button>`).join("")}</div>`;
-    gb.querySelectorAll("[data-lg]").forEach(b => b.addEventListener("click", async () => { const m = all[+b.dataset.lg]; b.disabled = true; const bl = await galBlob(m.id).catch(() => null); if (bl) { const u = URL.createObjectURL(bl); await addPic(u); URL.revokeObjectURL(u); } else if (m.thumb) await addPic(m.thumb); b.disabled = false; }));
-  });
+  document.getElementById("ln-gal").addEventListener("click", () => mdGallerySheet(f => fromFiles([f])));   // 🎨 any picture or video from the Art Gallery
   const build = () => { keep(); const f = {}; LN_FIELDS.forEach(([k]) => { const v = String(LNE.f[k] || "").replace(/[ \t]+/g, " ").trim(); if (v) f[k] = v; }); return { h: LNE.h.replace(/\s+/g, " ").trim(), cat: LNE.cat || "other", f }; };
   const check = A => {
     if (A.h.length < 4) return "Give your how-to a headline first (at least 4 letters).";
@@ -27839,22 +28200,25 @@ function lnEdit(id) {
   };
   document.getElementById("ln-prev").addEventListener("click", () => {
     const A = build(), bad = check(A); if (bad) return msg(bad); msg("");
-    const v = document.createElement("div"); v.className = "bgsheet"; v.innerHTML = `<div class="bgsheet-box ln-prevbox"><div class="prof-head"><b>👀 Preview</b><button class="iconbtn" type="button" id="lp-x">✕ Close</button></div><div class="ln-page"><h1 class="ln-h1">${esc(A.h)}</h1><p class="ln-from">From Learnable, the how-to book that everyone writes</p>${LN_FIELDS.filter(([k]) => A.f[k]).map(([k, l]) => `<h2 class="ln-h2">${esc(l)}</h2><p>${esc(A.f[k])}</p>`).join("")}${LNE.pics.filter(p => p.d).map(p => `<figure class="ln-fig"><img src="${p.d}" alt="">${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("")}</div></div>`;
+    const v = document.createElement("div"); v.className = "bgsheet"; v.innerHTML = `<div class="bgsheet-box ln-prevbox"><div class="prof-head"><b>👀 Preview</b><button class="iconbtn" type="button" id="lp-x">✕ Close</button></div><div class="ln-page"><h1 class="ln-h1">${esc(A.h)}</h1><p class="ln-from">From Learnable, the how-to book that everyone writes</p>${LN_FIELDS.filter(([k]) => A.f[k]).map(([k, l]) => `<h2 class="ln-h2">${esc(l)}</h2><p>${esc(A.f[k])}</p>`).join("")}${LNE.pics.filter(p => p.d || (p.k === "vid" && mdSafePic(p.th))).map(p => `<figure class="ln-fig">${p.k === "vid" ? `<div class="md-card md-vid"><img src="${p.th}" alt=""><span class="md-play" aria-hidden="true">▶</span><span class="md-dur">${mdDur(p.dur)}</span></div>` : `<img src="${p.d}" alt="">`}${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("")}</div></div>`;
     v.addEventListener("click", e => { if (e.target === v || e.target.id === "lp-x") v.remove(); }); document.body.appendChild(v);
   });
   form.addEventListener("submit", async e => {
     e.preventDefault(); const A = build(), bad = check(A); if (bad) return msg(bad);
+    if (vbusy) return msg("🎬 Wait a moment, a video is still getting ready.");
     const go = document.getElementById("ln-go"); go.disabled = true; msg("🚀 Publishing…");
     try {
-      const ids = [], caps = [], at = [];
-      for (const p of LNE.pics) {   // each picture is saved on its own (so the how-to stays small)
+      const ids = [], caps = [], at = [], kinds = [], posters = [], durs = [], nv = LNE.pics.filter(p => !p.id && p.k === "vid").length; let vi = 0;
+      for (const p of LNE.pics) {   // each picture and video is saved on its own (so the how-to stays small)
         let pid = p.id;
-        if (!pid) { pid = lnId("P"); if (LN.db) await LN.db.collection("learnpics").doc(pid).set({ d: p.d, by: SITE_WHO, at: Date.now() }); else await bigPut("lnpic_" + pid, p.d); LN.picCache[pid] = p.d; }
+        if (!pid && p.k === "vid") { const n = ++vi; pid = (await mdSave(LN.db, p, f => msg(`🚀 Publishing… sending video ${n} of ${nv} (${Math.round(f * 100)}%)`))).id; p.id = pid; }
+        else if (!pid) { pid = lnId("P"); if (LN.db) await LN.db.collection("learnpics").doc(pid).set({ d: p.d, by: SITE_WHO, at: Date.now() }); else await bigPut("lnpic_" + pid, p.d); LN.picCache[pid] = p.d; p.id = pid; }
         ids.push(pid); caps.push(String(p.cap || "").trim().slice(0, 100)); at.push(p.at || "more");
+        kinds.push(p.k === "vid" ? "vid" : "pic"); posters.push(p.k === "vid" ? mdSafePic(p.th) : ""); durs.push(p.k === "vid" ? Math.round(p.dur || 0) : 0);
       }
-      if (LNE.id) { const was = LN.list.find(x => x.id === LNE.id); for (const p of (was && was.pics) || []) if (!ids.includes(p)) { if (LN.db) await LN.db.collection("learnpics").doc(p).delete().catch(() => {}); else await bigPut("lnpic_" + p, null).catch(() => {}); } }
-      const cover = LNE.pics.find(p => p.at === "top") || LNE.pics[0], th = cover ? (cover.d ? await lnShrink(cover.d, 220, 14000).catch(() => null) : LNE.th) : null;
-      const id = LNE.id || lnId("L"), a = { id, h: A.h, cat: A.cat, f: A.f, pics: ids, caps, picAt: at, th: th || null, by: SITE_WHO, byName: SITE_NAME || galName(SITE_WHO), at: LNE.at || Date.now(), likes: LNE.likes || {} };
+      if (LNE.id) await lnDropMedia(LN.list.find(x => x.id === LNE.id), ids);
+      const cover = LNE.pics.find(p => p.at === "top") || LNE.pics[0], th = cover ? (cover.d ? await lnShrink(cover.d, 220, 14000).catch(() => null) : cover.k === "vid" && mdSafePic(cover.th) ? cover.th : LNE.th) : null;
+      const id = LNE.id || lnId("L"), a = { id, h: A.h, cat: A.cat, f: A.f, pics: ids, caps, picAt: at, kinds, posters, durs, th: th || null, by: SITE_WHO, byName: SITE_NAME || galName(SITE_WHO), at: LNE.at || Date.now(), likes: LNE.likes || {} };
       if (LNE.id) a.edited = Date.now();
       await lnSave(a);
       if (!LNE.id) store.set("learn_draft", null);
@@ -27863,7 +28227,7 @@ function lnEdit(id) {
       lnRead(id);
     } catch (er) {
       go.disabled = false;
-      msg(er && er.code === "quota_exceeded" ? "Learnable is full right now. Ask MR.E to delete some old how-tos." : er && (er.code === "permission_denied" || er.code === "not_granted") ? "You can read Learnable, but you can't publish here. Ask the person who shared Study Arcade for more access." : "That didn't publish. Try again in a minute (smaller pictures can help).");
+      msg(er && er.code === "quota_exceeded" ? "Learnable is full right now. Ask MR.E to delete some old how-tos." : er && (er.code === "permission_denied" || er.code === "not_granted") ? "You can read Learnable, but you can't publish here. Ask the person who shared Study Arcade for more access." : "That didn't publish. Try again in a minute (smaller pictures or shorter videos can help).");
     }
   });
   drawPics();
