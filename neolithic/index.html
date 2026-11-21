@@ -1399,6 +1399,9 @@
   .tk-tag { font-size: .82rem; font-weight: 800; color: var(--money); padding: 7px 0; }
   .tk-recent { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
   /* 🌳 Family Tree */
+  .ft-ask { display: flex; gap: 12px; align-items: flex-start; margin: 8px 0 12px; padding: 12px 14px; border-radius: 16px; background: linear-gradient(135deg, rgba(255, 209, 102, .18), rgba(6, 214, 160, .14)); border: 2px solid var(--gold); }
+  .ft-ask-e { font-size: 2rem; line-height: 1; } .ft-ask p { margin: 0 0 6px; } .ft-ask .ft-form-btns { flex-wrap: wrap; }
+  .ft-linkrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; } .ft-linkrow span { overflow-wrap: anywhere; } .ft-also .chip { border-color: var(--gold); }
   .ft-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
   .ft-bar .na-tabs { margin: 6px 0; }
   .ft-count { font-size: .85rem; }
@@ -3765,7 +3768,7 @@ function bigBoot() {
   })());
 }
 // Only progress goes to the cloud; little per-device settings (sound, last menu choice) stay on the device.
-const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|ah_v1|qz_v1|ss_v1|m8_v1|who_pic|who_reports|who_notes|who_block|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
+const isCloudKey = k => /^(best|seen|drawing|stories|story_draft|sc_crys|sc_balls|sc_ball|sc_shield|rodeo_zoo|rodeo_riders|ty_acct_[a-z0-9]+|ra_v1|wheel_v1|prof_[a-z0-9-]+|ft2|ft_links|ftp_[a-z0-9]+|tk_save|pool_stats|glb_best|sh_v1|kq_v1|cy_v1|ah_v1|qz_v1|ss_v1|m8_v1|who_pic|who_reports|who_notes|who_block|who_mute|who_hidden)$/.test(k.replace(/@[a-z0-9]+$/, ""));   // a player's copy (key@player) saves like the original
 let CLOUD = null, cloudTimer = null, saveState = "connecting";
 const pending = new Map();
 function cloudQueue(k, v, t) {
@@ -21125,11 +21128,78 @@ function ftText(T) {
 
 // 🖼️ the screen
 let FT = null, FT_RESIZE = false;
-function startFamilyTree(owner) {
+/* 🔗 Connecting family trees: when two families' trees have the same person (same first and last name, and the same birth year if both
+   trees know it), Family Tree asks both families if they want to connect their trees. A family that says yes shares its tree with the
+   other family (to look at). Once both say yes, the trees are connected, and anyone in both trees gets a "🔗 Also in …'s tree" button.
+   The answers are saved in "ft_links" (one entry for each pair of families). */
+const FT_LATER = new Set();   // "Not now" (asks again next visit)
+function ftRawSet(k, v) { const g = PROF_GAME; PROF_GAME = null; try { store.set(k, v); } finally { PROF_GAME = g; } }
+const ftTreeLinks = () => { const L = ftRawGet("ft_links"); return L && typeof L === "object" && !Array.isArray(L) ? L : {}; };
+const ftPair = (a, b) => [a, b].sort().join("|");
+const ftLinkOf = (a, b) => ftTreeLinks()[ftPair(a, b)] || {};
+const ftConnected = (a, b) => { const L = ftLinkOf(a, b); return !!(L.yes && L.yes[a] && L.yes[b]); };
+function ftLinkSet(a, b, f) { const L = { ...ftTreeLinks() }, k = ftPair(a, b), cur = L[k] ? JSON.parse(JSON.stringify(L[k])) : {}; cur.yes = cur.yes || {}; f(cur); cur.at = Date.now(); L[k] = cur; ftRawSet("ft_links", L); }
+const ftNorm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+function ftSame(p, q) {   // is this the same person? (same first name and last name, and birth years that don't disagree)
+  const f = ftNorm(p.first); if (!f || f !== ftNorm(q.first) || /^(me|you|someone|mom|dad|grandma|grandpa)$/.test(f)) return false;
+  const y1 = ftYear(String((p.birth && p.birth.d) || "")), y2 = ftYear(String((q.birth && q.birth.d) || "")); if (y1 && y2 && y1 !== y2) return false;
+  const L1 = [p.last, p.birthName].map(ftNorm).filter(Boolean), L2 = [q.last, q.birthName].map(ftNorm).filter(Boolean);
+  if (L1.length && L2.length) return L1.some(x => L2.includes(x));
+  const d1 = String((p.birth && p.birth.d) || ""), d2 = String((q.birth && q.birth.d) || "");
+  return d1.length >= 10 && d1 === d2;   // without last names, only the exact same birthday counts
+}
+function ftMatchesWith(T, other) {   // the people in tree T who are also in another family's tree
+  const O = ftRawGet(ftTreeKey(other)); if (!O || !O.people || typeof O.people !== "object") return [];
+  const byFirst = new Map(); Object.values(O.people).forEach(q => { if (q && typeof q === "object" && q.first) { const k = ftNorm(q.first); byFirst.set(k, [...(byFirst.get(k) || []), q]); } });
+  const out = []; Object.values(T.people).forEach(p => { const q = (byFirst.get(ftNorm(p.first)) || []).find(q => ftSame(p, q)); if (q && /^[a-z0-9_-]{1,40}$/i.test(q.id || "")) out.push({ mine: p.id, theirs: q.id, name: ftName(p) }); });
+  return out;
+}
+let FT_MCACHE = { key: "", at: 0, list: [] };
+function ftAllMatches(owner, T) {   // every other family's tree that has some of the same people
+  const key = owner + ":" + (T.at || 0) + ":" + Object.keys(T.people).length;
+  if (FT_MCACHE.key === key && Date.now() - FT_MCACHE.at < 4000) return FT_MCACHE.list;
+  const list = sitePeople().filter(p => p.id !== owner && p.id !== "guest").map(p => ({ id: p.id, name: p.name, m: ftMatchesWith(T, p.id) })).filter(x => x.m.length);
+  FT_MCACHE = { key, at: Date.now(), list }; return list;
+}
+function ftConnect(other, yes) {   // 🤝 say yes (or take it back)
+  const me = FT && FT.owner; if (!me || me !== SITE_WHO || FT.guest) return;
+  const T = FT.T, L0 = ftLinkOf(me, other);
+  ftLinkSet(me, other, L => { if (yes) { L.yes[me] = true; delete L.no; } else delete L.yes[me]; });
+  if (yes && !T.shares[other]) { T.shares[other] = "view"; ftLinkSet(me, other, L => { (L.sh = L.sh || {})[me] = true; }); ftSave(); }   // saying yes lets them look at my tree
+  if (!yes && L0.sh && L0.sh[me] && T.shares[other] === "view") { delete T.shares[other]; ftLinkSet(me, other, L => { if (L.sh) delete L.sh[me]; }); ftSave(); }   // taking it back stops that (if connecting is what shared it)
+  FT_MCACHE.at = 0;
+  if (yes && ftConnected(me, other)) { toast(`🎉 Your tree and ${ftWhoName(other)}'s tree are connected!`); tone([523, 659, 784, 1047], .08, "sine", .05); }
+  else toast(yes ? `🤝 Asked! When ${ftWhoName(other)}'s family says yes too, your trees connect.` : `Okay. Your tree isn't connected to ${ftWhoName(other)}'s tree.`);
+  ftDraw();
+}
+function ftNoThanks(other) { ftLinkSet(FT.owner, other, L => { L.no = FT.owner; delete L.yes[FT.owner]; }); toast("Okay! We won't ask again. You can still connect from the 🤝 Share tab."); ftDraw(); }
+function ftAskHTML(T) {   // the question at the top of your own tree
+  const me = FT.owner, asks = ftAllMatches(me, T).filter(x => { const L = ftLinkOf(me, x.id); return !L.no && !(L.yes && L.yes[me]) && !FT_LATER.has(x.id); });
+  const a = asks[0]; if (!a) return "";
+  const L = ftLinkOf(me, a.id), they = !!(L.yes && L.yes[a.id]), names = a.m.slice(0, 3).map(x => `<b>${esc(x.name)}</b>`).join(", ") + (a.m.length > 3 ? ` and ${a.m.length - 3} more` : "");
+  return `<div class="ft-ask"><span class="ft-ask-e">🤝</span><div><p>${they ? `<b>${esc(a.name)}'s family</b> wants to connect family trees with you! ${names} ${a.m.length === 1 ? "is" : "are"} in both trees.` : `Your tree and <b>${esc(a.name)}'s</b> tree have the same ${a.m.length === 1 ? "person" : "people"}: ${names}.`}</p>
+    <p class="soft">Do you want to connect your trees? Each family can look at the other's tree, and people who are in both trees get a button that jumps between them. Both families have to say yes.</p>
+    <div class="ft-form-btns"><button type="button" class="btn gold" data-ftc-yes="${esc(a.id)}">🤝 Yes, connect our trees</button><button type="button" class="chip mini" data-ftc-later="${esc(a.id)}">Not now</button><button type="button" class="chip mini" data-ftc-no="${esc(a.id)}">No thanks</button></div></div></div>`;
+}
+function ftLinksHTML(T) {   // in the 🤝 Share tab: every family tree with the same people, and whether it's connected
+  const me = FT.owner, list = ftAllMatches(me, T);
+  return `<div class="sl-card"><h3>🔗 Connect with other family trees</h3><p class="soft">When someone else's family tree has the same people as yours, you can connect your trees. Both families have to say yes.</p>
+    ${list.length ? `<div class="ft-shares">${list.map(x => { const L = ftLinkOf(me, x.id), a = !!(L.yes && L.yes[me]), b = !!(L.yes && L.yes[x.id]);
+      const st = a && b ? "✅ Connected" : a ? `⏳ Waiting for ${esc(x.name)}'s family to say yes` : b ? `📨 ${esc(x.name)}'s family asked to connect` : L.no ? "Not connected (you said no thanks)" : "Not connected";
+      return `<div class="ft-linkrow"><span>${whoAva(x.id)} <b>${esc(x.name)}'s tree</b> · ${x.m.length} ${x.m.length === 1 ? "person" : "people"} in both: ${x.m.slice(0, 4).map(z => esc(z.name)).join(", ")}${x.m.length > 4 ? "…" : ""}<br><small class="soft">${st}</small></span>${a ? `<button type="button" class="chip mini" data-ftc-off="${esc(x.id)}">${b ? "✂️ Disconnect" : "↩ Take it back"}</button>` : `<button type="button" class="chip mini" data-ftc-yes="${esc(x.id)}">🤝 ${b ? "Yes, connect" : "Connect"}</button>`}</div>`; }).join("")}</div>`
+    : `<p class="soft">No other family tree has the same people as yours yet.</p>`}</div>`;
+}
+function ftAlsoHTML(T, id) {   // "🔗 Also in …'s tree" for someone who is in a connected tree too
+  if (FT.guest) return "";
+  const shared = ftSharedWithMe(), out = ftAllMatches(FT.owner, T).filter(x => ftConnected(FT.owner, x.id) && (x.id === SITE_WHO || shared.some(t => t.id === x.id))).map(x => [x, (x.m.find(z => z.mine === id) || {}).theirs]).filter(x => x[1]);
+  return out.length ? `<div class="ft-acts ft-also">${out.map(([x, q]) => `<button type="button" class="chip mini" data-ft-also="${esc(x.id)}" data-ft-q="${esc(q)}">🔗 Also in ${x.id === SITE_WHO ? "my tree" : esc(x.name) + "'s tree"}</button>`).join("")}</div>` : "";
+}
+function startFamilyTree(owner, focusId) {
   const guest = SITE_WHO === "guest", me = SITE_WHO || "emmett";
   owner = guest ? "guest" : owner && owner !== me && ftSharedWithMe().some(t => t.id === owner) ? owner : me;
   const T = guest ? ftSample() : ftLoadTree(owner), role = guest ? "view" : owner === me ? "owner" : T.shares[me] || "view";
   FT = { T, owner, guest, role, canEdit: role === "owner" || role === "edit", view: "tree", mode: "focus", focus: "me", sel: "me", form: null, sure: null, q: "", filter: "all", pathA: "me", pathB: null, ged: null, first: true };
+  if (focusId && T.people[focusId]) FT.sel = FT.focus = focusId;   // 🔗 came from a connected tree
   appScreen("🌳 Family Tree", `<h2>🌳 Family Tree</h2><p class="soft">Build your family tree: add people with their dates, places and stories, then see how everyone is related.</p>${guest ? `<div class="sl-card ft-guest">👤 <b>Guests can't save a family tree</b>, so there's nothing to type in here. Below is an example family to explore: tap anyone to see their profile and how they're related. To make your own tree, tap 🔄 Switch person on the home screen and pick your name.</div>` : ""}<div id="ft-main"></div>`);
   if (!FT_RESIZE) { FT_RESIZE = true; window.addEventListener("resize", () => ftLines()); }
   ftDraw();
@@ -21155,7 +21225,7 @@ function ftDraw() {
   else if (FT.view === "stats") body = ftStatsHTML(T, gen);
   else if (FT.view === "share") body = ftShareHTML(T);
   else if (FT.view === "file") body = ftFileHTML(T);
-  m.innerHTML = `${whose}<div class="ft-bar">${naTabs(tabs, FT.view)}</div>${body}${card ? ftCardHTML(T, gen) : ""}${FT.form && FT.canEdit ? ftFormHTML(T) : ""}<textarea class="ft-copybox" id="ft-copybox" readonly hidden aria-label="Copied text"></textarea>`;
+  m.innerHTML = `${whose}${mine ? ftAskHTML(T) : ""}<div class="ft-bar">${naTabs(tabs, FT.view)}</div>${body}${card ? ftCardHTML(T, gen) : ""}${FT.form && FT.canEdit ? ftFormHTML(T) : ""}<textarea class="ft-copybox" id="ft-copybox" readonly hidden aria-label="Copied text"></textarea>`;
   bindTabs(v => { FT.view = v; FT.sure = null; FT.form = null; ftDraw(); });
   m.querySelectorAll("[data-ft-owner]").forEach(b => b.addEventListener("click", () => startFamilyTree(b.dataset.ftOwner || undefined)));
   m.querySelectorAll("[data-ft]").forEach(b => b.addEventListener("click", () => {
@@ -21164,6 +21234,11 @@ function ftDraw() {
     ftDraw(); document.getElementById("ft-card")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }));
   ftBindView(m);
+  m.querySelectorAll("[data-ftc-yes]").forEach(b => b.addEventListener("click", () => ftConnect(b.dataset.ftcYes, true)));
+  m.querySelectorAll("[data-ftc-off]").forEach(b => b.addEventListener("click", () => ftConnect(b.dataset.ftcOff, false)));
+  m.querySelectorAll("[data-ftc-later]").forEach(b => b.addEventListener("click", () => { FT_LATER.add(b.dataset.ftcLater); ftDraw(); }));
+  m.querySelectorAll("[data-ftc-no]").forEach(b => b.addEventListener("click", () => ftNoThanks(b.dataset.ftcNo)));
+  m.querySelectorAll("[data-ft-also]").forEach(b => b.addEventListener("click", () => { startFamilyTree(b.dataset.ftAlso, b.dataset.ftQ); window.scrollTo({ top: 0 }); }));
   if (card) ftBindCard();
   if (FT.form && FT.canEdit) ftBindForm();
   if (FT.view === "tree") {
@@ -21228,7 +21303,7 @@ function ftStatsHTML(T, gen) {
 }
 function ftShareHTML(T) {
   const ppl = sitePeople().filter(p => p.id !== FT.owner && p.id !== "guest");
-  return `<div class="sl-card"><h3>🤝 Share my tree with family</h3><p class="soft">Pick who can see your tree. <b>Viewers</b> can look; <b>Editors</b> can add and change people too. Everyone who uses Study Arcade on this device can be picked, and your tree syncs with your other saves when the site is saved online.</p>
+  return ftLinksHTML(T) + `<div class="sl-card"><h3>🤝 Share my tree with family</h3><p class="soft">Pick who can see your tree. <b>Viewers</b> can look; <b>Editors</b> can add and change people too. Everyone who uses Study Arcade on this device can be picked, and your tree syncs with your other saves when the site is saved online.</p>
     ${ppl.length ? `<div class="ft-shares">${ppl.map(p => `<label class="ft-share"><span>${whoAva(p.id)} <b>${esc(p.name)}</b></span><select data-ft-share="${esc(p.id)}" aria-label="What ${esc(p.name)} can do"><option value="">Not shared</option><option value="view"${T.shares[p.id] === "view" ? " selected" : ""}>👀 Viewer</option><option value="edit"${T.shares[p.id] === "edit" ? " selected" : ""}>✏️ Editor</option></select></label>`).join("")}</div>` : `<p class="soft">Nobody else uses Study Arcade here yet.</p>`}</div>`;
 }
 function ftFileHTML(T) {
@@ -21268,6 +21343,7 @@ function ftCardHTML(T, gen) {
       ${facts.length ? `<ul class="ft-facts">${facts.map(f => `<li>${f}</li>`).join("")}</ul>` : ""}
       ${S.about ? `<div class="ft-about"><b>About</b><p>${esc(S.about).replace(/\n/g, "<br>")}</p></div>` : ""}
       <div class="ft-links"><div><b>Parents</b>${chips(S.parents)}</div><div><b>Partner</b>${chips(S.partners)}</div><div><b>Siblings</b>${chips(ftSibs(T, id))}</div><div><b>Children</b>${chips(ftKids(T, id))}</div></div>
+      ${ftAlsoHTML(T, id)}
       <div class="ft-acts">${FT.view !== "tree" || FT.mode !== "focus" || FT.focus !== id ? `<button type="button" class="chip mini" id="ft-center">🎯 Center the tree here</button>` : ""}${id !== "me" ? `<button type="button" class="chip mini" id="ft-howrel">🔗 How are we related?</button>` : ""}</div>
       ${acts}
       ${byL ? `<p class="soft ft-by">✍️ ${byL}</p>` : ""}
