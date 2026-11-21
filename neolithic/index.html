@@ -2036,6 +2036,19 @@
   .fa-pic.none img { display: none; } .fa-none { display: none; position: absolute; inset: 0; place-content: center; justify-items: center; font-style: normal; font-size: 2rem; text-align: center; background: rgba(0,0,0,.25); }
   .fa-none small { font-size: .7rem; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000; } .fa-pic.none .fa-none { display: grid; }
   .fa-pic.big { aspect-ratio: 4 / 3; } .fa-pic.big img, .fa-pic.huge img { object-fit: contain; background: #111; }
+  /* 🏛️ Famous paintings in the Art Gallery */
+  .gfa-top { align-items: center; gap: 10px; flex-wrap: wrap; } .gfa-top small { flex: 1 1 200px; }
+  .gfa-q { width: 100%; box-sizing: border-box; margin: 8px 0 2px; padding: 11px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: inherit; font: inherit; }
+  .gfa-q:focus { outline: none; border-color: var(--gold); }
+  .gfa-card { position: relative; } .gfa-card[hidden] { display: none; }
+  .gfa-in { position: absolute; top: 12px; right: 12px; font-style: normal; font-size: .72rem; font-weight: 800; padding: 3px 8px; border-radius: 999px; background: rgba(20, 120, 60, .92); color: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+  .gfa-in[hidden] { display: none; }
+  .gfa-box { width: min(900px, 100%); }
+  .gfa-frame { position: relative; border-radius: 14px; overflow: hidden; background: #111; }
+  .gfa-frame .fa-pic.huge { border-radius: 0; } .gfa-frame .fa-pic.huge img { max-height: 60vh; margin: 0 auto; }
+  .gfa-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(0,0,0,.55); color: #fff; font-size: 1.1rem; cursor: pointer; }
+  .gfa-nav:hover { background: rgba(0,0,0,.8); } .gfa-nav.prev { left: 8px; } .gfa-nav.next { right: 8px; }
+  .gfa-acts { flex-wrap: wrap; gap: 8px; } .gfa-pos { display: block; text-align: center; margin-top: 8px; }
   .fa-pic.huge { aspect-ratio: auto; min-height: 120px; } .fa-pic.huge img { position: relative; display: block; width: 100%; height: auto; max-height: 72vh; object-fit: contain; background: transparent; } .fa-pic.huge.none { height: 320px; }
   .fa-top, .fa-nav { justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; } .fa-nav { margin-top: 12px; }
   .fa-hero { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 18px; background: linear-gradient(135deg, #3b1f6b, #1d3a66); } .fa-hero p { margin: 2px 0 6px; }
@@ -4405,7 +4418,8 @@ function whoPicPicker(box, cur, onPick) {
     box.querySelector("#pic-art").addEventListener("click", async () => {
       const ex = box.querySelector("#pic-extra"); ex.innerHTML = `<p class="soft">Opening the Art Gallery…</p>`;
       let all = [], shown = 0, broke = false;
-      try { all = (await galEveryone()).filter(m => /^image\//.test(m.type || "") || (m.thumb && m.kind !== "video")); } catch (e) { broke = true; }   // every picture (and moving-art GIF), even ones without a small preview
+      try { all = (await galEveryone()).filter(m => /^image\//.test(m.type || "") || (m.thumb && m.kind !== "video")); } catch (e) { broke = true; }
+      all = await galWithFamous(all);   // 🏛️ and every famous painting   // every picture (and moving-art GIF), even ones without a small preview
       if (broke) { ex.innerHTML = `<p class="soft">😕 The Art Gallery couldn't open just now. If the Study Arcade is open in another tab, close it, then <button class="linklike" type="button" id="pic-artagain">try again</button>.</p>`; ex.querySelector("#pic-artagain").addEventListener("click", () => box.querySelector("#pic-art").click()); return; }
       if (!all.length) { ex.innerHTML = `<p class="soft">There's no art in the Art Gallery yet. You can draw one instead!</p>`; return; }
       ex.innerHTML = `<p class="soft">Tap any art or picture to use it. (${all.length.toLocaleString()} to pick from, yours first)</p><div class="pic-artgrid" id="pic-artgrid"></div><button class="btn" type="button" id="pic-more" hidden></button>`;
@@ -4773,7 +4787,7 @@ function bgBindAdd(root, done) {
   const gb = root.querySelector(".bg-galbtn"), gp = root.querySelector(".bg-galpick");
   gb?.addEventListener("click", async () => {
     if (!gp.hidden) { gp.hidden = true; return; }
-    const me = galWho(), list = (await galEveryone().catch(() => [])).filter(m => m.kind !== "video" && m.thumb);
+    const me = galWho(); let list = (await galEveryone().catch(() => [])).filter(m => m.kind !== "video" && m.thumb); list = await galWithFamous(list);
     if (!list.length) { toast("No pictures in the Art Gallery yet. Open 🎨 Art Gallery in App-App to add some!"); return; }
     gp.innerHTML = list.map(m => { const t = m.who === me ? m.name : `${m.name} (from ${galName(m.who)})`; return `<button type="button" data-galid="${m.id}" title="${esc(t)}" aria-label="${esc(t)}"><img src="${m.thumb}" alt="" loading="lazy"></button>`; }).join(""); gp.hidden = false;
     gp.querySelectorAll("[data-galid]").forEach(b => b.addEventListener("click", async () => { const m = list.find(x => x.id === b.dataset.galid), blob = await galBlob(b.dataset.galid).catch(() => null); if (blob) bgAddPicture(blob).then(id => { if (id) { bgCreditSet(id, m && (m.who === me ? m.from : m.who)); done(id); } }); else toast("That picture couldn't be opened."); }));
@@ -6767,7 +6781,7 @@ function subjectPick(s) {
       ["🧠 Complex art", "Harder questions: famous artists, art history, perspective, color theory and how art is made", study("art", { alevel: "hard" })],
       ["🖼️ Famous Artists", "84 famous artists, older and modern, and their most famous paintings. Use any painting as your home background!", go(() => startArtists())],
       ["🔎 Art Hunt", "See a famous painting and say who made it! Classic Hunt, Zoom Mystery and a 60-second Speed Round", go(() => startArtHunt())],
-      ["🖼️ Art Gallery", "Pixel art, drawings, your pictures, printing, and everyone's art", go(() => startGallery())],
+      ["🖼️ Art Gallery", "Pixel art, drawings, your pictures, famous paintings, printing, and everyone's art", go(() => startGallery())],
       ["🎞️ Moving Art", "Make art that moves, or a flipbook", go(() => startMovingArt())],
       ["💬 Comic Creator", "Make your own comic with characters and speech bubbles", go(() => startComicCreator())],
       ["🌈 New home screen background", "Pick a new background for this home screen, or use your own picture or art", go(() => { if (!SITE_WHO) return toast("Pick who you are first!"); openBgSheet(); })]] }
@@ -11808,7 +11822,7 @@ function startMoneySmart(tab = "goal") {
 // 🎨 Pixel art (a tab in the 🎨 Art Gallery)
 const PX_COLORS = ["#000000", "#ffffff", "#e63946", "#ff8c42", "#ffd23f", "#3bb273", "#1e90ff", "#7b4fd8", "#ff6fb5", "#8d5a3b", "#9aa5b1", "#00c2c7"];
 const PX_TEMPLATES = { heart: ["..........", ".XX....XX.", "XXXX..XXXX", "XXXXXXXXXX", "XXXXXXXXXX", ".XXXXXXXX.", "..XXXXXX..", "...XXXX...", "....XX....", ".........."], smile: ["..XXXXXX..", ".X......X.", "X..X..X..X", "X........X", "X.X....X.X", "X..XXXX..X", ".X......X.", "..XXXXXX..", "..........", ".........."] };
-const ART_TABS = [["mine", "🖼️ My gallery"], ["pixel", "🟥 Pixel art"], ["draw", "✏️ Draw"], ["print", "🖨️ Print"], ["everyone", "👀 Everyone's art"]];   // 🎨 Art Gallery: pixel art and the gallery in one app
+const ART_TABS = [["mine", "🖼️ My gallery"], ["famous", "🏛️ Famous paintings"], ["pixel", "🟥 Pixel art"], ["draw", "✏️ Draw"], ["print", "🖨️ Print"], ["everyone", "👀 Everyone's art"]];   // 🎨 Art Gallery: pixel art and the gallery in one app
 async function pxSave(grid, name, quiet) {   // a pixel picture goes into My Gallery, and remembers its pixels so you can keep painting it
   const N = Math.round(Math.sqrt(grid.length)) || 16, k = 20, c = document.createElement("canvas"); c.width = c.height = N * k;
   const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
@@ -12342,7 +12356,7 @@ async function galList(who = galWho()) {
   return list.sort((a, b) => b.at - a.at);
 }
 async function galCount() { const d = await galOpen(); return galReq(d.transaction("meta").objectStore("meta").index("who").count(galWho())); }
-async function galBlob(id) { const d = await galOpen(), r = await galReq(d.transaction("blobs").objectStore("blobs").get(id)); return r ? r.blob : null; }
+async function galBlob(id) { if (/^fa:/.test(id)) return faBlob(id.slice(3)); const d = await galOpen(), r = await galReq(d.transaction("blobs").objectStore("blobs").get(id)); return r ? r.blob : null; }
 function galTx(stores, fn) { return galOpen().then(d => new Promise((ok, no) => { const t = d.transaction(stores, "readwrite"); fn(t); t.oncomplete = () => ok(); t.onerror = () => no(t.error); t.onabort = () => no(t.error || new Error("abort")); })); }
 const galPut = (meta, blob) => galTx(["meta", "blobs"], t => { t.objectStore("meta").put(meta); t.objectStore("blobs").put({ id: meta.id, blob }); });
 const galDelete = ids => galTx(["meta", "blobs"], t => ids.forEach(id => { t.objectStore("meta").delete(id); t.objectStore("blobs").delete(id); }));
@@ -12436,6 +12450,7 @@ function startGallery(filter = "all", tab = "mine", person = null) {
   if (tab === "pixel") return startPixelArt();
   if (tab === "draw") return startGalleryDraw();
   if (tab === "print") return startGalleryPrint();
+  if (tab === "famous") return startGalleryFamous();
   appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, tab)}<div id="gal-body"></div>`);
   bindTabs(t => startGallery("all", t));
   const body = document.getElementById("gal-body"), me = galWho();
@@ -12596,7 +12611,7 @@ async function startGalleryPrint() {
   appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, "print")}
     <p class="soft">Pick the pictures and art you want to print, choose how many go on each page, then print. If your browser won't print from here, save a page and print it from there.</p>
     <div class="gp-opts"><span>On each page:</span>${[1, 2, 4, 6].map(n => `<button class="chip${GP_PER === n ? " on" : ""}" data-gp-per="${n}" type="button">${n}</button>`).join("")}<label class="gp-names"><input type="checkbox" id="gp-names"${GP_NAMES ? " checked" : ""}> Show names</label></div>
-    <div class="na-chips"><button class="chip${GP_WHO === "mine" ? " on" : ""}" data-gp-who="mine" type="button">🖼️ Mine</button><button class="chip${GP_WHO === "all" ? " on" : ""}" data-gp-who="all" type="button">👀 Everyone's</button></div>
+    <div class="na-chips"><button class="chip${GP_WHO === "mine" ? " on" : ""}" data-gp-who="mine" type="button">🖼️ Mine</button><button class="chip${GP_WHO === "all" ? " on" : ""}" data-gp-who="all" type="button">👀 Everyone's</button><button class="chip${GP_WHO === "famous" ? " on" : ""}" data-gp-who="famous" type="button">🏛️ Famous paintings</button></div>
     <div class="row gp-selrow"><button class="chip" id="gp-all" type="button">Select all</button><button class="chip" id="gp-none" type="button">Clear</button><b id="gp-count"></b></div>
     <div class="gp-grid" id="gp-grid"><p class="soft">Opening your gallery…</p></div>
     <div class="row gp-go"><button class="btn gold" id="gp-print" type="button">🖨️ Print</button><button class="btn" id="gp-save" type="button">💾 Save a page to print</button></div>`);
@@ -12640,7 +12655,7 @@ async function startGalleryPrint() {
     b.disabled = false; b.textContent = "💾 Save a page to print";
   });
   $app.querySelectorAll("[data-gp-who]").forEach(b => b.addEventListener("click", () => { GP_WHO = b.dataset.gpWho; startGalleryPrint(); }));
-  try { const lost = galLostTest(); items = (GP_WHO === "all" ? await galEveryone() : await galList()).filter(m => m.kind !== "video").map(m => galIsMine(m, lost) ? m : { ...m, name: `${m.name} (by ${galName(m.who)})` }); } catch (e) { const g = document.getElementById("gp-grid"); if (g) g.innerHTML = `<p class="soft">😕 This browser won't let the gallery open here.</p>`; return count(); }
+  try { const lost = galLostTest(); items = GP_WHO === "famous" ? await galFamous(false) : (GP_WHO === "all" ? await galEveryone() : await galList()).filter(m => m.kind !== "video").map(m => galIsMine(m, lost) ? m : { ...m, name: `${m.name} (by ${galName(m.who)})` }); } catch (e) { const g = document.getElementById("gp-grid"); if (g) g.innerHTML = `<p class="soft">😕 This browser won't let the gallery open here.</p>`; return count(); }
   const ids = new Set(items.map(m => m.id)); [...GP_PICK].forEach(id => { if (!ids.has(id)) GP_PICK.delete(id); });
   draw();
 }
@@ -13525,7 +13540,7 @@ NEW_APPS.push(
   { id: "lang", hidden: true, emoji: "🗣️", name: "Language Lab", desc: "Learn Spanish and French words, hear them spoken, and quiz yourself.", start: () => startLanguageLab() },
   { id: "langworld", emoji: "🌏", name: "Language World", desc: "Learn 21 languages step by step: the letters, then words, sentences, 🏹 Letter Archery and famous words. Hebrew goes all the way to the parashot and reading from the Torah. World Explorer (flags, capitals, atlas) and Spanish & French flashcards are inside too.", start: () => startLanguageWorld(), added: "2026-11-12", kw: "language world|language lab|hebrew|ivrit|alef ?bet|aleph ?bet|torah|parsha|parashah|parashot|parashas|parshas?|bar mitzvah|bat mitzvah|letter archery|world explorer|flags?|capitals?|atlas|continents?|languages?|spanish|french|flashcards|world languages|languages of the world|learn (english|chinese|mandarin|hindi|arabic|bengali|bangla|portuguese|indonesian|urdu|russian|german|japanese|pidgin|nigerian pidgin|egyptian arabic|marathi|vietnamese|telugu|swahili|hausa)" },
   { id: "slang", emoji: "😎", name: "Slang Generator", desc: "Invent brand-new slang words, see how each one was made, save favorites in your own slang dictionary, and decode real slang.", start: () => startSlang(), added: "2026-11-12", kw: "slang|slang generator|slang dictionary|new slang|make slang" },
-  { id: "gallery", emoji: "🎨", name: "Art Gallery", desc: "Paint pixel art and drawings, keep up to 10,000 pictures, drawings and videos each, see everyone's art, and use any of it as a background.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|art gallery|art studio|my pictures|my photos|my videos|my drawings|photo album|pixel art|pixel|pixels|draw|drawing" },
+  { id: "gallery", emoji: "🎨", name: "Art Gallery", desc: "Paint pixel art and drawings, keep up to 10,000 pictures, drawings and videos each, see everyone's art and every famous painting from Famous Artists, and use any of it as a background.", start: () => startGallery(), added: "2026-11-12", kw: "gallery|my gallery|art gallery|art studio|my pictures|my photos|my videos|my drawings|photo album|pixel art|pixel|pixels|draw|drawing" },
   { id: "moveart", emoji: "🎞️", name: "Moving Art", desc: "Make art that moves: a zebra running, a river flowing, birds flying, rain falling, or flipbook frames you draw. Save it as a video in My Gallery.", start: () => startMovingArt(), added: "2026-11-13", kw: "moving art|animation|animate|flipbook|flip book|cartoon maker|make a cartoon" },
   { id: "savesite", emoji: "💾", name: "Save the Site", desc: "Travel to the Study Arcade's past lives to play any older version. MR.E can also copy the whole site's code.", start: () => startSaveSite(), added: "2026-11-13", kw: "save the site|save the website|download the site|copy the site|html code|past lives?|old versions?|older versions?|time machine" },
   { id: "world", hidden: true, emoji: "🌍", name: "World Explorer", desc: "Flag, capital and continent quizzes, plus an atlas of the world. (It's inside Language World.)", start: () => startWorldExplorer(), kw: "world explorer|flags?|flag quiz|capitals?|atlas|continents?|countries" },
@@ -26286,9 +26301,10 @@ async function mdGallerySheet(onPick) {   // 🎨 pick any picture or video from
   document.body.appendChild(v);
   const grid = v.querySelector(".md-galgrid");
   let all = []; try { all = (await galEveryone()).filter(m => m.thumb || /^(image|video)\//.test(m.type || "")); } catch (e) { grid.innerHTML = `<p class="soft">😕 The Art Gallery couldn't open just now.</p>`; return; }
+  all = await galWithFamous(all.slice(0, 300));   // 🏛️ the famous paintings are in the Art Gallery too
   if (!all.length) { grid.innerHTML = `<p class="soft">There's nothing in the Art Gallery yet.</p>`; return; }
   const isVid = m => m.kind === "video" || /^video\//.test(m.type || "");
-  grid.innerHTML = `<p class="soft">Tap one to add it:</p><div class="pic-artgrid">${all.slice(0, 300).map((m, i) => `<button type="button" class="pic-art" data-mg="${i}" title="${esc(m.name || "")}">${m.thumb ? `<img src="${m.thumb}" alt="" loading="lazy">` : isVid(m) ? "🎬" : "🖼️"}${isVid(m) ? `<i class="md-galv">🎬</i>` : ""}</button>`).join("")}</div>`;
+  grid.innerHTML = `<p class="soft">Tap one to add it:</p><div class="pic-artgrid">${all.map((m, i) => `<button type="button" class="pic-art" data-mg="${i}" title="${esc(m.name || "")}">${m.thumb ? `<img src="${m.thumb}" alt="" loading="lazy">` : isVid(m) ? "🎬" : "🖼️"}${isVid(m) ? `<i class="md-galv">🎬</i>` : ""}</button>`).join("")}</div>`;
   grid.querySelectorAll("[data-mg]").forEach(b => b.addEventListener("click", async () => {
     const m = all[+b.dataset.mg]; b.disabled = true;
     const bl = await galBlob(m.id).catch(() => null);
@@ -26628,7 +26644,7 @@ const faSwatch = wid => { const c = FA_WORKS[wid][4]; return `background: linear
 const faPic = (wid, small, cls = "") => `<span class="fa-pic ${cls}" style="${faSwatch(wid)}" data-w="${wid}"><img src="${faSrc(wid, small)}" alt="${esc(FA_WORKS[wid][0])} by ${esc(faArtistOf(wid)[2])}" loading="lazy"><i class="fa-none">${faArtistOf(wid)[1]}<small>Picture coming soon</small></i></span>`;
 function faBindPics(root) {   // a picture that can't load leaves the painting's colors showing
   root.querySelectorAll(".fa-pic img").forEach(im => {
-    const pic = im.closest(".fa-pic"), bad = () => { pic.classList.add("none"); root.querySelectorAll(`[data-bgw="${pic.dataset.w}"]`).forEach(b => { b.disabled = true; b.title = "This painting's picture isn't here yet."; }); };
+    const pic = im.closest(".fa-pic"), bad = () => { pic.classList.add("none"); root.querySelectorAll(`[data-bgw="${pic.dataset.w}"], [data-needpic="${pic.dataset.w}"]`).forEach(b => { b.disabled = true; b.title = "This painting's picture isn't here yet."; }); };
     const ok = () => pic.classList.add("ok");
     if (im.complete) { if (im.naturalWidth) ok(); else bad(); } else { im.addEventListener("load", ok); im.addEventListener("error", bad); }
   });
@@ -26679,12 +26695,128 @@ function faWork(wid) {   // 🔍 a painting, big
   appScreen("🖼️ Famous Artists · " + W[0], `<div class="fa"><div class="row fa-top"><button class="chip" id="fa-back" type="button">⬅ ${a[1]} ${esc(a[2])}</button><button class="chip" id="fa-home" type="button">🖼️ All artists</button></div>
     <div class="fa-frame">${faPic(wid, false, "huge")}</div>
     <h2 class="fa-title">${esc(W[0])}</h2><p class="fa-by">${esc(a[2])} · ${esc(W[1])} · ${esc(W[2])}</p><p>${esc(W[3])}</p>
-    <div class="row"><button class="btn gold" type="button" data-bgw="${wid}">🌈 Use as my home background</button><button class="btn" id="fa-say" type="button">🔊 Read it to me</button></div></div>`);
+    <div class="row"><button class="btn gold" type="button" data-bgw="${wid}">🌈 Use as my home background</button><button class="btn" id="fa-take" type="button" data-needpic="${wid}">📥 Put in my Art Gallery</button><button class="btn" id="fa-say" type="button">🔊 Read it to me</button></div></div>`);
   faBindPics($app);
   document.getElementById("fa-back").addEventListener("click", () => faArtist(a[0]));
   document.getElementById("fa-home").addEventListener("click", () => startArtists());
   document.getElementById("fa-say").addEventListener("click", () => svSay(`${W[0]}, by ${a[2]}. ${W[3]}`));
+  document.getElementById("fa-take").addEventListener("click", () => galTakeFamous(wid));
   $app.querySelector("[data-bgw]").addEventListener("click", () => faUseBg(wid));
+}
+/* ---------- 🏛️ Famous paintings in the 🎨 Art Gallery: every painting from 🖼️ Famous Artists is in the Art Gallery for everyone.
+   They have their own tab (look at them big, put them in your own gallery one at a time or all at once, make one your
+   home background, print them), they're in the Print tab, and they're in every "pick from the Art Gallery" list
+   (profile pictures, backgrounds, Talk Room and Learnable). A painting whose picture isn't here yet shows its colors. */
+const faAllWorks = () => FA_ARTISTS.flatMap(a => a[7]);
+const faName = w => `${FA_WORKS[w][0]} by ${faArtistOf(w)[2]}`;
+let FA_HAVE = null;
+function faHave() {   // the paintings whose pictures are here (checked once, with the small pictures)
+  if (!FA_HAVE) FA_HAVE = Promise.all(faAllWorks().map(w => galLoadImg(faSrc(w, true)).then(() => w, () => null))).then(l => { const ok = l.filter(Boolean); if (!ok.length) FA_HAVE = null; return ok; });
+  return FA_HAVE;
+}
+const faBlob = w => FA_WORKS[w] ? fetch(faSrc(w)).then(r => r.ok ? r.blob() : null).catch(() => null) : Promise.resolve(null);
+async function galMineFamous() {   // which paintings are already in my own gallery
+  try { const me = galWho(); return new Set((await galList()).filter(m => m.famous && m.who === me).map(m => m.famous)); } catch (e) { return new Set(); }
+}
+// the famous paintings as Art Gallery pictures (ids start with "fa:"); leaves out the ones I already put in my gallery
+async function galFamous(skipMine = true) {
+  const have = await faHave().catch(() => []), mine = skipMine ? await galMineFamous() : new Set();
+  return have.filter(w => !mine.has(w)).map(w => ({ id: "fa:" + w, famous: w, who: galWho(), kind: "picture", type: "image/jpeg", name: faName(w), thumb: faSrc(w, true), at: 0 }));
+}
+// a picker's list plus every famous painting, each painting once (my own copy if I put it in my gallery, never someone else's copy)
+async function galWithFamous(list) { const me = galWho(), seen = new Set(); return list.filter(m => !m.famous || m.who === me).concat(await galFamous(false)).filter(m => !m.famous || (!seen.has(m.famous) && seen.add(m.famous))); }
+// 📥 put a famous painting in my own gallery (then it's mine to rename, keep private, draw on, and so on)
+async function galTakeFamous(w, quiet, mine) {
+  if (!SITE_WHO || SITE_WHO === "guest") { toast("Pick who you are first, then you can put paintings in your gallery."); return "guest"; }
+  if (!(mine || (mine = await galMineFamous())).has(w)) {
+    const blob = await faBlob(w);
+    if (!blob) { if (!quiet) toast("This painting's picture isn't here yet."); return "none"; }
+    const r = await galAdd(new File([blob], FA_WORKS[w][0] + ".jpg", { type: blob.type || "image/jpeg" }), "picture", faName(w));
+    if (r.err) { toast(r.err); return /full|space|won't let|stopped/.test(r.err) ? "stop" : "err"; }
+    r.meta.famous = w; await galSaveMeta(r.meta).catch(() => {}); mine.add(w);
+    if (!quiet) { sfx.buy(); toast(`📥 ${FA_WORKS[w][0]} is in your gallery now!`); }
+    return "ok";
+  }
+  if (!quiet) toast("✅ It's already in your gallery!");
+  return "have";
+}
+let GFA_ERA = "all", GFA_Q = "";
+function startGalleryFamous() {
+  const all = faAllWorks();
+  appScreen("🎨 Art Gallery", `<h2>🎨 Art Gallery</h2>${naTabs(ART_TABS, "famous")}<div class="gf">
+    <p class="soft">All ${all.length} paintings from 🖼️ Famous Artists are in the Art Gallery for everyone. Tap one to see it big, put it in your own gallery, make it your home background, or print it.</p>
+    <div class="row gfa-top"><button class="btn gold" id="gfa-all" type="button">📥 Put them all in my gallery</button><small class="soft" id="gfa-msg"></small></div>
+    <input class="gfa-q" id="gfa-q" type="search" placeholder="🔎 Find a painting or an artist" value="${esc(GFA_Q)}" autocomplete="off" aria-label="Find a painting or an artist">
+    <div class="na-chips" id="gfa-era">${[["all", "🌈 All"], ["old", "🏛️ Older"], ["modern", "🚀 Modern (1900 and later)"]].map(([k, l]) => `<button class="chip${GFA_ERA === k ? " on" : ""}" type="button" data-gfae="${k}">${l}</button>`).join("")}</div>
+    <div class="fa-grid gfa-grid" id="gfa-grid">${all.map(w => { const W = FA_WORKS[w], a = faArtistOf(w); return `<button class="fa-card gfa-card" type="button" data-gfaw="${w}" data-era="${faYear(w) >= 1900 ? "modern" : "old"}" data-q="${esc([W[0], a[2], W[1], a[5]].join(" ").toLowerCase())}">${faPic(w, true)}<b>${esc(W[0])}</b><small>${esc(a[2])} · ${esc(W[1])}</small><i class="gfa-in" hidden>✅ In my gallery</i></button>`; }).join("")}</div>
+    <p class="soft gfa-none" id="gfa-none" hidden>No paintings match that. Try another word!</p>
+    <p class="soft fa-pd">All of these paintings are in the public domain: they're old enough that anyone may share them. The pictures come from Wikimedia Commons.</p></div>`);
+  bindTabs(t => startGallery("all", t));
+  faBindPics($app);
+  const shownList = () => [...$app.querySelectorAll(".gfa-card:not([hidden])")].map(c => c.dataset.gfaw);
+  const filter = () => {
+    const q = GFA_Q.trim().toLowerCase(); let n = 0;
+    $app.querySelectorAll(".gfa-card").forEach(c => { c.hidden = (GFA_ERA !== "all" && c.dataset.era !== GFA_ERA) || (!!q && !q.split(/\s+/).every(x => c.dataset.q.includes(x))); if (!c.hidden) n++; });
+    document.getElementById("gfa-none").hidden = n > 0;
+  };
+  const mark = async () => {   // ✅ on the ones in my gallery, and how many have pictures so far
+    const [have, mine] = await Promise.all([faHave().catch(() => []), galMineFamous()]);
+    if (!document.getElementById("gfa-grid")) return;
+    $app.querySelectorAll(".gfa-card").forEach(c => { c.querySelector(".gfa-in").hidden = !mine.has(c.dataset.gfaw); });
+    const left = have.filter(w => !mine.has(w)).length, b = document.getElementById("gfa-all"), msg = document.getElementById("gfa-msg");
+    if (!b.disabled) { delete b.dataset.sure; b.textContent = !have.length ? "📥 Put them all in my gallery" : left ? `📥 Put ${left === have.length ? "all " : ""}${left} in my gallery` : "✅ They're all in your gallery"; }
+    if (!msg.dataset.busy) msg.textContent = have.length < all.length ? `${have.length} of ${all.length} have pictures so far. The rest are coming soon.` : mine.size ? `${mine.size} in your gallery.` : "";
+  };
+  document.getElementById("gfa-q").addEventListener("input", e => { GFA_Q = e.target.value; filter(); });
+  $app.querySelectorAll("[data-gfae]").forEach(b => b.addEventListener("click", () => { GFA_ERA = b.dataset.gfae; $app.querySelectorAll("[data-gfae]").forEach(x => x.classList.toggle("on", x === b)); filter(); }));
+  $app.querySelectorAll("[data-gfaw]").forEach(c => c.addEventListener("click", () => { const l = shownList(); gfaView(l, l.indexOf(c.dataset.gfaw), mark); }));
+  document.getElementById("gfa-all").addEventListener("click", async e => {
+    const b = e.currentTarget, msg = document.getElementById("gfa-msg");
+    if (!SITE_WHO || SITE_WHO === "guest") return toast("Pick who you are first, then you can put paintings in your gallery.");
+    const have = await faHave().catch(() => []), mine = await galMineFamous(), todo = have.filter(w => !mine.has(w));
+    if (!todo.length) return toast(have.length ? "✅ They're all in your gallery already!" : "The pictures aren't here yet. Try again later.");
+    if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Tap again to put ${todo.length} painting${todo.length === 1 ? "" : "s"} in your gallery`; return; }
+    delete b.dataset.sure; b.disabled = true; msg.dataset.busy = 1; let ok = 0;
+    for (let i = 0; i < todo.length; i++) {
+      if (!document.getElementById("gfa-all")) break;   // left the page
+      msg.textContent = `Putting in ${i + 1} of ${todo.length}…`;
+      const r = await galTakeFamous(todo[i], true, mine); if (r === "ok") ok++; if (r === "stop" || r === "guest") break;
+    }
+    b.disabled = false; delete msg.dataset.busy;
+    if (ok) { sfx.buy(); toast(`📥 Put ${ok} famous painting${ok === 1 ? "" : "s"} in your gallery!`); }
+    mark();
+  });
+  filter(); mark();
+}
+// 🔍 a famous painting, big, right in the Art Gallery
+function gfaView(list, i, after) {
+  document.getElementById("gfa-view")?.remove();
+  const v = document.createElement("div"); v.id = "gfa-view"; v.className = "bgsheet gfa-view";
+  const close = () => { v.remove(); document.removeEventListener("keydown", key); };
+  const key = e => { if (!v.isConnected) return document.removeEventListener("keydown", key); if (e.key === "Escape") close(); else if (e.key === "ArrowLeft") show(i - 1); else if (e.key === "ArrowRight") show(i + 1); };
+  const show = async k => {
+    i = (k + list.length) % list.length; const w = list[i], W = FA_WORKS[w], a = faArtistOf(w);
+    v.innerHTML = `<div class="bgsheet-box gfa-box" role="dialog" aria-label="${esc(W[0])}"><div class="prof-head"><b class="subj-title">🏛️ ${esc(W[0])}</b><button class="iconbtn" type="button" data-x>✕ Close</button></div>
+      <div class="gfa-frame">${faPic(w, false, "huge")}${list.length > 1 ? `<button class="gfa-nav prev" type="button" data-step="-1" aria-label="Previous painting">◀</button><button class="gfa-nav next" type="button" data-step="1" aria-label="Next painting">▶</button>` : ""}</div>
+      <p class="fa-by"><b>${a[1]} ${esc(a[2])}</b> · ${esc(W[1])} · ${esc(W[2])}</p><p>${esc(W[3])}</p>
+      <div class="row gfa-acts"><button class="btn gold" type="button" data-gfa-take data-needpic="${w}">📥 Put in my gallery</button><button class="btn" type="button" data-bgw="${w}">🌈 Home background</button><button class="btn" type="button" data-gfa-print data-needpic="${w}">🖨️ Print</button><button class="btn" type="button" data-gfa-artist>👩‍🎨 About ${esc(a[2])}</button><button class="btn" type="button" data-gfa-say>🔊 Read it to me</button></div>
+      <small class="soft gfa-pos">${i + 1} of ${list.length}</small></div>`;
+    faBindPics(v);
+    const tb = v.querySelector("[data-gfa-take]");
+    if ((await galMineFamous()).has(w) && tb.isConnected) { tb.textContent = "✅ In your gallery"; tb.classList.remove("gold"); }
+  };
+  v.addEventListener("click", async e => {
+    if (e.target === v || e.target.closest("[data-x]")) return close();
+    const w = list[i], st = e.target.closest("[data-step]"); if (st) return show(i + +st.dataset.step);
+    const b = e.target.closest("button"); if (!b || b.disabled) return;
+    if (b.matches("[data-gfa-take]")) { if ((await galTakeFamous(w)) === "ok") { b.textContent = "✅ In your gallery"; b.classList.remove("gold"); after && after(); } }
+    else if (b.matches("[data-bgw]")) faUseBg(w);
+    else if (b.matches("[data-gfa-print]")) { GP_WHO = "famous"; GP_PICK = new Set(["fa:" + w]); close(); startGalleryPrint(); }
+    else if (b.matches("[data-gfa-artist]")) { close(); startArtists("artist", faArtistOf(w)[0]); }
+    else if (b.matches("[data-gfa-say]")) svSay(`${FA_WORKS[w][0]}, by ${faArtistOf(w)[2]}. ${FA_WORKS[w][3]}`);
+  });
+  document.addEventListener("keydown", key);
+  document.body.appendChild(v); show(Math.max(0, i));
 }
 NEW_APPS.push({ id: "artists", emoji: "🖼️", name: "Famous Artists", desc: "84 famous artists, older and modern, and their most famous paintings, from Fan Kuan and Leonardo da Vinci to Van Gogh and Matisse. Play Art Hunt, and use any painting as your home background.", start: () => startArtists(), kw: "famous artists?|artists?|paintings?|painters?|masterpieces?|art history|museum|mona lisa|starry night|van gogh|monet|leonardo|da vinci|great wave|the scream" });
 /* ---------- 🧫 Cell City: the parts of plant and animal cells, explored like a tiny city.
