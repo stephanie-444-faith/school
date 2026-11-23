@@ -2460,6 +2460,113 @@
   .sc p { margin: 0; overflow-wrap: anywhere; }
   .sc-top { justify-content: space-between; gap: 6px; }
   .sc .chip.mini { display: inline-flex; flex-direction: row; align-items: center; gap: 4px; }
+  /* 🍳 Recipes */
+  .rcp { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .rcp-hero { position: relative; overflow: hidden; text-align: center; border-radius: 22px; padding: 14px 14px 12px; color: #fff; background: linear-gradient(135deg, var(--ra, #e76f51), var(--rb, #f4a261)); box-shadow: 0 8px 22px color-mix(in srgb, var(--ra, #e76f51) 40%, transparent); }
+  .rcp-home { --ra: #e76f51; --rb: #2a9d8f; background: linear-gradient(135deg, #e76f51, #f4a261 45%, #2a9d8f); }
+  .rcp-hero::after { content: "🥄"; position: absolute; right: -8px; bottom: -20px; font-size: 6rem; opacity: .13; transform: rotate(-18deg); pointer-events: none; }
+  .rcp-big { display: block; font-size: 3rem; line-height: 1.1; filter: drop-shadow(0 3px 3px rgba(0,0,0,.3)); }
+  .rcp-hero h2 { margin: 2px 0 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.45rem, 6vw, 2rem); text-shadow: 0 2px 0 rgba(0,0,0,.25); overflow-wrap: anywhere; }
+  .rcp-hero p { margin: 4px 0 0; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .rcp-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+  .rcp-pills span { background: rgba(0,0,0,.25); border-radius: 99px; padding: 3px 10px; font-size: .85rem; font-weight: 800; }
+  .rcp-top { gap: 6px; flex-wrap: wrap; }
+  .rcp-search { display: flex; gap: 8px; } .rcp-search input { flex: 1; min-width: 0; font: inherit; padding: 10px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); }
+  .rcp-search input:focus { outline: none; border-color: var(--gold); }
+  .rcp-cats, .rcp-filters, .rcp-keys { display: flex; flex-wrap: wrap; gap: 6px; }
+  .rcp-filters .chip.on, .rcp-keys .chip.on { background: var(--gold); border-color: var(--gold); color: #1a1240; }
+  .rcp-count { margin: 0; }
+  .rcp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 155px), 1fr)); gap: 10px; }
+  .rcp-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; text-align: left; border: 0; border-radius: 18px; padding: 12px; color: #fff; background: linear-gradient(150deg, var(--ra), var(--rb)); box-shadow: 0 4px 0 rgba(0,0,0,.3); transition: transform .12s; cursor: pointer; }
+  .rcp-card:hover { transform: translateY(-3px) rotate(-.5deg); } .rcp-card:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.3); }
+  .rcp-card i { font-style: normal; font-size: 2.2rem; line-height: 1.1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); }
+  .rcp-card b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,.35); overflow-wrap: anywhere; }
+  .rcp-card small { font-weight: 800; font-size: .8rem; opacity: .95; text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .rcp-card em { font-style: normal; font-size: .75rem; font-weight: 800; background: rgba(0,0,0,.28); border-radius: 99px; padding: 1px 8px; }
+  .rcp-card .rcp-fav { position: absolute; top: 8px; right: 8px; background: none; font-size: 1.1rem; padding: 0; }
+  .rcp-card .rcp-miss { background: rgba(255,255,255,.92); color: #6a2c13; text-shadow: none; border-radius: 10px; line-height: 1.25; }
+  .rcp-none { text-align: center; padding: 14px; border: 2px dashed var(--line); border-radius: 16px; color: var(--ink-soft); margin: 0; }
+  .rcp-help { margin: 0; padding: 9px 12px; border-radius: 14px; background: color-mix(in srgb, #ff9f1c 22%, var(--panel)); border: 2px solid color-mix(in srgb, #ff9f1c 55%, var(--line)); }
+  .rcp-help.ok { background: color-mix(in srgb, #2fbf71 20%, var(--panel)); border-color: color-mix(in srgb, #2fbf71 55%, var(--line)); }
+  .rcp-acts { gap: 8px; flex-wrap: wrap; } .rcp-acts .btn { flex: 1 1 auto; }
+  .rcp-cookbtn { font-size: 1.15rem; flex-basis: 100% !important; }
+  .rcp-sec { background: var(--panel-2); border: 2px solid var(--line); border-radius: 18px; padding: 12px 14px; }
+  .rcp-sec h3, .rcp-h { margin: 0 0 6px; font-family: var(--display); font-weight: 400; font-size: 1.2rem; }
+  .rcp-h { margin: 6px 0 0; }
+  .rcp-sechead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+  .rcp-scale { display: flex; align-items: center; gap: 8px; } .rcp-scale b { min-width: 7.5em; text-align: center; }
+  .rcp-scale .chip { min-width: 40px; justify-content: center; font-size: 1.2rem; font-weight: 900; }
+  .rcp-sub { margin: 2px 0 6px; font-size: .88rem; }
+  .rcp-ing, .rcp-shop { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .rcp-ing label, .rcp-shop label { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 12px; background: var(--panel); cursor: pointer; flex: 1; min-width: 0; }
+  .rcp-ing input, .rcp-shop input { width: 22px; height: 22px; flex: none; accent-color: #2fbf71; }
+  .rcp-ing label.got span, .rcp-shop li.got span { text-decoration: line-through; opacity: .6; }
+  .rcp-shop li { display: flex; align-items: center; gap: 6px; }
+  .rcp-x { flex: none; border: 0; background: transparent; color: var(--ink-soft); font-size: 1rem; width: 34px; height: 34px; border-radius: 99px; cursor: pointer; } .rcp-x:hover { background: var(--panel-2); color: var(--ink); }
+  .rcp-alg { margin: 0; padding: 9px 12px; border-radius: 14px; background: var(--panel); border: 2px solid var(--line); }
+  .rcp-alg span { display: inline-block; margin: 2px 4px 2px 0; padding: 1px 9px; border-radius: 99px; background: var(--panel-2); font-weight: 800; font-size: .9rem; }
+  .rcp-alg small { display: block; color: var(--ink-soft); margin-top: 3px; }
+  .rcp-steps { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .rcp-steps li { display: flex; gap: 10px; align-items: flex-start; }
+  .rcp-steps p { margin: 0; flex: 1; min-width: 0; }
+  .rcp-sn { flex: none; width: 30px; height: 30px; border-radius: 99px; display: grid; place-items: center; font-weight: 900; color: #fff; background: linear-gradient(135deg, var(--ra, #e76f51), var(--rb, #f4a261)); }
+  .rcp-tm { margin-left: 4px; vertical-align: middle; }
+  .rcp-tip { background: #fdf6e3; color: #3b2a12; border-radius: 16px; padding: 10px 14px; border-left: 6px solid #f4a261; }
+  .rcp-tip b { display: block; } .rcp-tip p { margin: 3px 0 6px; }
+  .rcp-more { gap: 6px; flex-wrap: wrap; }
+  .rcp-del { border-color: color-mix(in srgb, var(--bad) 60%, var(--line)) !important; }
+  .rcp-lead { margin: 0; font-weight: 700; } .rcp-lead small { display: block; font-weight: 400; color: var(--ink-soft); }
+  /* ⏰ the timer bar */
+  .rcp-tbar { position: sticky; bottom: 8px; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 10px 12px; border-radius: 16px; background: #1b1b3a; color: #fff; border: 2px solid var(--gold); box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+  .rcp-tbar[hidden] { display: none; }
+  .rcp-tbar b { font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+  .rcp-tlab { flex: 1 1 140px; min-width: 0; font-weight: 700; font-size: .9rem; overflow-wrap: anywhere; }
+  .rcp-tprog { flex: 1 1 100%; order: 5; height: 6px; border-radius: 99px; background: rgba(255,255,255,.18); overflow: hidden; } .rcp-tprog i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .25s linear; }
+  .rcp-tbar.ring { background: #c1121f; border-color: #fff; animation: rcpRing .5s ease-in-out 6 alternate; }
+  .rcp-tbar.ring span { flex: 1; font-weight: 700; }
+  @keyframes rcpRing { from { transform: translateX(-3px) rotate(-.6deg); } to { transform: translateX(3px) rotate(.6deg); } }
+  /* 👩‍🍳 cook mode */
+  .rcp-cooktitle { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.3rem, 5.5vw, 1.8rem); text-align: center; overflow-wrap: anywhere; }
+  .rcp-dots { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
+  .rcp-dots button { width: 16px; height: 16px; padding: 0; border-radius: 99px; border: 2px solid var(--line); background: var(--panel-2); cursor: pointer; }
+  .rcp-dots button.done { background: color-mix(in srgb, var(--ra) 60%, var(--panel-2)); border-color: var(--ra); }
+  .rcp-dots button.on { background: var(--gold); border-color: var(--gold); transform: scale(1.25); }
+  .rcp-step { background: #fffaf0; color: #2b2118; border-radius: 22px; padding: 18px 18px 14px; border: 4px solid var(--ra); box-shadow: 0 10px 26px rgba(0,0,0,.3); min-height: 200px; display: flex; flex-direction: column; gap: 12px; }
+  .rcp-stepn { align-self: flex-start; font-weight: 900; font-size: .85rem; letter-spacing: .05em; text-transform: uppercase; color: #fff; background: linear-gradient(135deg, var(--ra), var(--rb)); border-radius: 99px; padding: 3px 12px; }
+  .rcp-step p { margin: 0; font-size: clamp(1.25rem, 5vw, 1.7rem); line-height: 1.4; font-weight: 700; flex: 1; }
+  .rcp-step .chip, .rcp-tip .chip { background: #f1e4c8; border-color: #d8c39b; color: #2b2118; }
+  .rcp-nav { gap: 10px; } .rcp-nav .btn { flex: 1; font-size: 1.15rem; padding: 14px; }
+  .rcp-peek { background: var(--panel-2); border: 2px solid var(--line); border-radius: 14px; padding: 8px 12px; } .rcp-peek summary { cursor: pointer; font-weight: 800; } .rcp-peek ul { margin: 6px 0 2px; padding-left: 20px; }
+  .rcp-keyhelp { margin: 0; font-size: .85rem; text-align: center; }
+  .rcp-donecard { text-align: center; position: relative; overflow: hidden; }
+  .rcp-donecard h2 { font-family: var(--display); font-weight: 400; margin: 6px 0 2px; overflow-wrap: anywhere; }
+  .rcp-donecard .row { justify-content: center; }
+  .rcp-burst { height: 44px; position: relative; } .rcp-burst i { position: absolute; left: 50%; top: 30px; font-style: normal; font-size: 1.8rem; animation: rcpPop 1.2s ease-out calc(var(--d) * .08s) both; }
+  .rcp-burst i:nth-child(1) { --x: -140px; } .rcp-burst i:nth-child(2) { --x: -85px; } .rcp-burst i:nth-child(3) { --x: -30px; } .rcp-burst i:nth-child(4) { --x: 30px; } .rcp-burst i:nth-child(5) { --x: 85px; } .rcp-burst i:nth-child(6) { --x: 140px; }
+  @keyframes rcpPop { from { transform: translate(-50%, 0) scale(.2); opacity: 0; } 50% { opacity: 1; } to { transform: translate(calc(-50% + var(--x)), -26px) scale(1); opacity: 1; } }
+  .rcp-stars { display: flex; justify-content: center; gap: 4px; margin: 8px 0; }
+  .rcp-stars button { border: 0; background: none; font-size: 2.4rem; line-height: 1; color: rgba(255,255,255,.25); cursor: pointer; padding: 2px; transition: transform .1s, color .1s; }
+  .rcp-stars button:hover { transform: scale(1.15); } .rcp-stars button.on { color: #ffd60a; text-shadow: 0 0 10px rgba(255,214,10,.6); }
+  /* 📝 writing a recipe */
+  .rcp-form { display: flex; flex-direction: column; gap: 12px; }
+  .rcp-form label, .rcp-flab { display: flex; flex-direction: column; gap: 4px; font-weight: 800; min-width: 0; } .rcp-form label small { font-weight: 400; color: var(--ink-soft); }
+  .rcp-form input, .rcp-form select, .rcp-form textarea { font: inherit; padding: 9px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); min-width: 0; width: 100%; }
+  .rcp-form textarea { resize: vertical; }
+  .rcp-form input:focus, .rcp-form select:focus, .rcp-form textarea:focus { outline: none; border-color: var(--gold); }
+  .rcp-frow { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+  .rcp-emo { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .rcp-emo button { width: 42px; height: 42px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); font-size: 1.4rem; padding: 0; cursor: pointer; }
+  .rcp-emo button.on { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 30%, var(--panel-2)); transform: scale(1.08); }
+  /* 🧑‍🍳 kitchen basics */
+  .rcp-quizbtn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-radius: 20px; padding: 14px 16px; color: #fff; background: linear-gradient(135deg, #e76f51, #2a9d8f); box-shadow: 0 6px 18px rgba(0,0,0,.3); cursor: pointer; }
+  .rcp-quizbtn:hover { transform: translateY(-2px); } .rcp-quizbtn > span:first-child { font-size: 2.2rem; } .rcp-quizbtn > span:last-child { margin-left: auto; font-size: 1.4rem; }
+  .rcp-quizbtn b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.3rem; } .rcp-quizbtn small { display: block; font-weight: 700; opacity: .92; }
+  .rcp-info { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 8px; }
+  .rcp-info > div { display: flex; flex-direction: column; gap: 2px; background: var(--panel-2); border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+  .rcp-info i { font-style: normal; font-size: 1.6rem; } .rcp-info small { color: var(--ink-soft); line-height: 1.35; }
+  .rcp-table { width: 100%; border-collapse: collapse; background: var(--panel-2); border-radius: 14px; overflow: hidden; }
+  .rcp-table td { padding: 7px 10px; border-bottom: 1px solid var(--line); } .rcp-table tr:last-child td { border-bottom: 0; }
+  @media (max-width: 420px) { .rcp-frow { grid-template-columns: 1fr 1fr; } .rcp-frow label:first-child { grid-column: 1 / -1; } }
   .sc-hero { position: relative; overflow: hidden; text-align: center; border-radius: 22px; padding: 14px 14px 12px; color: #fff; background: linear-gradient(135deg, var(--sa), var(--sb)); box-shadow: 0 8px 22px color-mix(in srgb, var(--sa) 45%, transparent); }
   .sc-hero::after { content: "⚜️"; position: absolute; right: -10px; bottom: -22px; font-size: 6rem; opacity: .12; transform: rotate(-14deg); pointer-events: none; }
   .sc-hero h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 6vw, 2rem); text-shadow: 0 2px 0 rgba(0,0,0,.25); }
@@ -6800,7 +6907,8 @@ function subjectPick(s) {
     : k === "health" ? { title: "❤️ Health", say: "Pick a health topic if you want to, or do a mix of everything.", btns: [
       hc("health", "Health", " with health questions"),
       ...Object.entries(HEALTH_PARTS).map(([k, v]) => [`${{ safety: "🦺", body: "🫀", food: "🥦" }[k] || "❤️"} ${v.name}`, v.desc, study("health", { hpart: k })]),
-      ["🔀 A mix of all health", "Safety, body and food questions together", study("health", { hpart: "all" })]] }
+      ["🔀 A mix of all health", "Safety, body and food questions together", study("health", { hpart: "all" })],
+      ["🍳 Recipes", "Cook pancakes, tacos, cookies, smoothies and more, one step at a time, plus kitchen safety and the Kitchen Quiz", go(() => startRecipes())]] }
     : k === "counsel" ? { title: "💛 Counseling", say: "What would you like to do?", btns: [
       hc("counsel", "Counseling", " with questions about feelings, friends and kindness"),
       ["🧘 Calm Corner", "Breathing exercises, a feelings check-in and a thankful jar", go(() => startCalmCorner())],
@@ -31233,6 +31341,625 @@ function scTest() {
   $app.querySelectorAll("[data-part]").forEach(x => x.addEventListener("click", () => scTestGo(x.dataset.part)));
 }
 NEW_APPS.push({ id: "scouts", emoji: "⚜️", name: "Scouting", desc: "Learn the Scout Oath, Scout Law, Motto, Slogan, Outdoor Code, knots, first aid, the flag, ranks and Cub Scouts, memorize them with fun tools, and take the Scout Test.", added: "2026-11-20", start: () => startScouting(), kw: "scouts?|scouting|boy scouts|cub scouts|scout (law|oath|motto|slogan)|be prepared|knots?|tie a knot|eagle scout|merit badges?|outdoor code|leave no trace" });
+
+/* ---------- 🍳 Recipes: a kid-friendly cookbook. The recipe book (search + filters), a servings changer, Cook it! (one step at a time, with timers),
+   favorites, a shopping list, your own recipes, "What can I make?", kitchen basics and the Kitchen Quiz.
+   💾 Saving: one object per person in "rcp_v1". Guests can look and cook, but they can't save anything. ---------- */
+const RCP_CATS = [["breakfast", "🌅 Breakfast"], ["lunch", "🥪 Lunch"], ["dinner", "🍽️ Dinner"], ["snack", "🍎 Snacks"], ["dessert", "🧁 Desserts"], ["drink", "🥤 Drinks"]];
+const RCP_CATCOL = { breakfast: ["#f4a261", "#e76f51"], lunch: ["#2a9d8f", "#52b788"], dinner: ["#9d4edd", "#e63946"], snack: ["#80b918", "#2b9348"], dessert: ["#ff70a6", "#ff9770"], drink: ["#4cc9f0", "#4361ee"] };
+const RCP_LV = ["", "⭐ Easy", "⭐⭐ Medium", "⭐⭐⭐ Chef"];
+// an ingredient: [amount (null = "to taste"), unit, "name" (or "one|many" when there's no unit), key for "What can I make?" ("" = everybody has it, like water and salt)]
+// a step: [what to do, minutes for a timer (if it has one)]
+// tags: nocook (no stove, oven or microwave) · veg (no meat or fish) · stove · oven · micro · blender · knife (a grown-up helps with a sharp knife)
+const RCP = [
+  // 🌅 breakfast
+  { id: "pancakes", e: "🥞", n: "Fluffy Pancakes", c: "breakfast", t: 25, lv: 2, sv: 4, tags: ["veg", "stove"],
+    ing: [[1, "cup", "all-purpose flour", "flour"], [1, "Tbsp", "sugar", "sugar"], [2, "tsp", "baking powder", "baking powder"], [.25, "tsp", "salt", ""], [1, "cup", "milk", "milk"], [1, "", "egg|eggs", "egg"], [2, "Tbsp", "butter, melted (plus a little for the pan)", "butter"]],
+    st: [["Wash your hands. In a big bowl, stir together the flour, sugar, baking powder and salt."], ["In another bowl, whisk the milk, egg and melted butter."], ["Pour the wet bowl into the dry bowl and stir just until it's mixed. A few lumps are good! Stirring too much makes flat pancakes."], ["With a grown-up, heat a pan or griddle on medium and melt a little butter in it."], ["Pour about ¼ cup of batter for each pancake. Cook until bubbles pop on top and the edges look dry.", 2], ["Flip with a spatula and cook the other side until it's golden.", 1.5], ["Keep going until the batter is gone. Serve with syrup, fruit or a little butter."]],
+    tip: "Blueberry pancakes: drop a few berries onto each pancake right after you pour it." },
+  { id: "eggs", e: "🍳", n: "Scrambled Eggs", c: "breakfast", t: 10, lv: 2, sv: 2, tags: ["veg", "stove"],
+    ing: [[4, "", "egg|eggs", "egg"], [2, "Tbsp", "milk", "milk"], [1, "pinch", "salt", ""], [1, "Tbsp", "butter", "butter"]],
+    st: [["Crack the eggs into a bowl. (Wash your hands after touching raw eggs.) Fish out any bits of shell with a big piece of shell."], ["Add the milk and salt. Whisk with a fork until it's all one yellow color."], ["With a grown-up, melt the butter in a nonstick pan on medium-low heat."], ["Pour in the eggs. Wait about 20 seconds, then slowly push the eggs from the edges to the middle with a spatula."], ["Keep gently pushing every few seconds until there are no runny parts.", 3], ["Turn off the heat while they still look a tiny bit shiny. They keep cooking on the plate!"]],
+    tip: "Sprinkle a little cheese on the eggs right at the end for cheesy eggs." },
+  { id: "oats", e: "🥣", n: "Overnight Oats", c: "breakfast", t: 5, wait: "+ overnight in the fridge", lv: 1, sv: 1, tags: ["veg", "nocook"],
+    ing: [[.5, "cup", "rolled oats", "oats"], [.5, "cup", "milk", "milk"], [.25, "cup", "yogurt", "yogurt"], [1, "tsp", "honey", "honey"], [.25, "cup", "berries", "berries"], [1, "pinch", "cinnamon (optional)", "cinnamon"]],
+    st: [["Put the oats, milk, yogurt, honey and cinnamon in a jar or container with a lid."], ["Stir really well so all the oats get wet."], ["Put the lid on and put it in the fridge overnight (or at least 4 hours). The oats soak up the milk and get soft."], ["In the morning, stir it, put the berries on top, and eat it cold!"]],
+    tip: "Make 5 jars on Sunday and breakfast is ready all week." },
+  { id: "parfait", e: "🍓", n: "Yogurt Parfait", c: "breakfast", t: 5, lv: 1, sv: 1, tags: ["veg", "nocook"],
+    ing: [[1, "cup", "yogurt", "yogurt"], [.5, "cup", "granola", "granola"], [.5, "cup", "berries", "berries"], [1, "tsp", "honey", "honey"]],
+    st: [["Get a clear glass or cup so you can see the layers."], ["Spoon in a layer of yogurt, then a layer of berries, then a layer of granola."], ["Do it again until everything is used up."], ["Drizzle the honey on top and eat it right away so the granola stays crunchy."]],
+    tip: "Try banana slices, mango or a spoonful of peanut butter as a layer." },
+  { id: "frenchtoast", e: "🍞", n: "French Toast", c: "breakfast", t: 20, lv: 2, sv: 2, tags: ["veg", "stove"],
+    ing: [[2, "", "egg|eggs", "egg"], [.5, "cup", "milk", "milk"], [1, "tsp", "vanilla", "vanilla"], [.5, "tsp", "cinnamon", "cinnamon"], [4, "slice", "bread", "bread"], [1, "Tbsp", "butter", "butter"]],
+    st: [["In a wide, shallow bowl, whisk the eggs, milk, vanilla and cinnamon."], ["With a grown-up, melt the butter in a pan on medium heat."], ["Dip a slice of bread in the egg mix for 2 or 3 seconds on each side. Don't let it get too soggy!"], ["Put it in the pan. Cook until the bottom is golden brown.", 3], ["Flip it and cook the other side.", 3], ["Do the rest of the slices. Serve with syrup, powdered sugar or fruit."]],
+    tip: "Day-old bread works even better than fresh bread." },
+  { id: "burrito", e: "🌯", n: "Breakfast Burritos", c: "breakfast", t: 15, lv: 2, sv: 2, tags: ["veg", "stove"],
+    ing: [[4, "", "egg|eggs", "egg"], [2, "Tbsp", "milk", "milk"], [1, "tsp", "butter", "butter"], [2, "", "large flour tortilla|large flour tortillas", "tortilla"], [.5, "cup", "shredded cheese", "cheese"], [.25, "cup", "salsa", "salsa"]],
+    st: [["Whisk the eggs and milk in a bowl."], ["With a grown-up, melt the butter in a pan on medium-low and scramble the eggs until there are no runny parts.", 3], ["Warm the tortillas in the microwave for about 15 seconds so they bend without breaking."], ["Put half the eggs in the middle of each tortilla. Add cheese and salsa."], ["Fold in the two sides, then roll it up from the bottom, like a present."]],
+    tip: "Wrap one in foil to take with you on a busy morning." },
+  // 🥪 lunch
+  { id: "grilledcheese", e: "🧀", n: "Grilled Cheese", c: "lunch", t: 10, lv: 2, sv: 1, tags: ["veg", "stove"],
+    ing: [[2, "slice", "bread", "bread"], [2, "slice", "cheese", "cheese"], [1, "Tbsp", "butter, soft", "butter"]],
+    st: [["Spread butter on one side of each slice of bread."], ["Put one slice butter-side DOWN in a cold pan. Put the cheese on it, then the other slice butter-side UP."], ["With a grown-up, turn the heat to medium-low. Cook until the bottom is golden.", 3], ["Flip it with a spatula and cook until the cheese melts.", 3], ["Let it cool for a minute, then cut it in half. Triangles taste better. Everybody knows that!"]],
+    tip: "It's great dipped in tomato soup." },
+  { id: "wrap", e: "🌯", n: "Turkey & Cheese Wrap", c: "lunch", t: 5, lv: 1, sv: 1, tags: ["nocook"],
+    ing: [[1, "", "large tortilla|large tortillas", "tortilla"], [1, "Tbsp", "mayo or hummus", "mayo"], [3, "slice", "turkey", "turkey"], [1, "slice", "cheese", "cheese"], [1, "leaf", "lettuce", "lettuce"]],
+    st: [["Lay the tortilla flat on a plate or cutting board."], ["Spread the mayo or hummus all over it, almost to the edges."], ["Layer the turkey, cheese and lettuce in the middle."], ["Fold in the sides, then roll it up tight from the bottom."], ["Cut it in half with a butter knife, or ask a grown-up to help."]],
+    tip: "Pinwheels: roll it tight, then cut it into 6 little circles." },
+  { id: "quesadilla", e: "🫓", n: "Cheese Quesadilla", c: "lunch", t: 10, lv: 2, sv: 1, tags: ["veg", "stove"],
+    ing: [[2, "", "flour tortilla|flour tortillas", "tortilla"], [.5, "cup", "shredded cheese", "cheese"], [.25, "cup", "beans, drained (optional)", "beans"], [2, "Tbsp", "salsa, for dipping", "salsa"]],
+    st: [["Put one tortilla in a cold pan. Sprinkle the cheese (and beans) all over it. Put the other tortilla on top."], ["With a grown-up, turn the heat to medium. Cook until the bottom is golden and the cheese starts to melt.", 2], ["Carefully flip it with a wide spatula and cook the other side.", 2], ["Slide it onto a cutting board and let it cool a minute. Cut it into triangles with a pizza cutter (a grown-up can help)."], ["Dip it in salsa!"]],
+    tip: "Add leftover chicken or some corn to make it a meal." },
+  { id: "pbjsushi", e: "🍣", n: "PB&J Sushi Rolls", c: "lunch", t: 10, lv: 1, sv: 1, tags: ["veg", "nocook"],
+    ing: [[2, "slice", "bread", "bread"], [2, "Tbsp", "peanut butter (or sunflower butter)", "peanut butter"], [1, "Tbsp", "jam", "jam"]],
+    st: [["Cut the crusts off the bread with a butter knife (or ask a grown-up)."], ["Flatten each slice with a rolling pin or a can until it's thin."], ["Spread peanut butter and jam on each slice."], ["Roll each slice up tight, like a sleeping bag."], ["Cut each roll into 4 little “sushi” pieces with a butter knife."]],
+    tip: "Allergic to peanuts? Sunflower butter works just the same." },
+  { id: "pastasalad", e: "🥗", n: "Rainbow Pasta Salad", c: "lunch", t: 25, lv: 2, sv: 4, tags: ["veg", "stove", "knife"],
+    ing: [[8, "oz", "rotini pasta", "pasta"], [1, "cup", "cherry tomatoes", "tomato"], [1, "", "cucumber|cucumbers", "cucumber"], [.5, "cup", "cheese cubes", "cheese"], [.33, "cup", "Italian dressing", "dressing"]],
+    st: [["A grown-up boils a big pot of water."], ["Cook the pasta the way the box says.", 10], ["A grown-up drains the pasta in a colander (the steam is very hot!). Rinse it with cold water so it cools down."], ["While the pasta cooks, cut the tomatoes in half and chop the cucumber. A grown-up helps with the knife."], ["Put everything in a big bowl with the dressing and stir."], ["Chill it in the fridge if you can. It's even better cold!", 30]],
+    tip: "Add olives, peppers or salami to make it your own." },
+  { id: "minipizza", e: "🍕", n: "English Muffin Pizzas", c: "lunch", t: 15, lv: 2, sv: 2, tags: ["veg", "oven"],
+    ing: [[2, "", "English muffin|English muffins", "english muffin"], [.25, "cup", "pizza sauce", "pizza sauce"], [.5, "cup", "shredded mozzarella cheese", "cheese"]],
+    st: [["A grown-up turns the oven on to 400°F (200°C)."], ["Split the English muffins in half and put them on a baking sheet, cut side up."], ["Spread about 1 tablespoon of sauce on each half."], ["Sprinkle on the cheese and add any toppings you like."], ["Bake until the cheese is bubbly.", 9], ["A grown-up takes them out with oven mitts. Let them cool for 2 minutes. Hot cheese is HOT!"]],
+    tip: "Toppings: pepperoni, olives, peppers, pineapple or mushrooms." },
+  // 🍽️ dinner
+  { id: "spaghetti", e: "🍝", n: "Spaghetti & Meat Sauce", c: "dinner", t: 35, lv: 3, sv: 4, tags: ["stove"],
+    ing: [[8, "oz", "spaghetti", "pasta"], [1, "lb", "ground beef or turkey", "ground meat"], [1, "jar", "pasta sauce (24 oz)", "pasta sauce"], [.25, "cup", "grated parmesan cheese", "parmesan"]],
+    st: [["A grown-up starts a big pot of water boiling for the spaghetti."], ["In a big pan on medium heat, cook the meat, breaking it up with a spoon, until no pink is left. (Wash your hands after touching raw meat!)", 8], ["A grown-up drains off the grease."], ["Pour in the pasta sauce. Let it bubble gently (simmer), stirring now and then.", 10], ["While the sauce simmers, cook the spaghetti the way the box says.", 10], ["A grown-up drains the spaghetti. Put sauce on top and sprinkle with parmesan."]],
+    tip: "Twirl spaghetti on your fork against a big spoon, the Italian way." },
+  { id: "tacos", e: "🌮", n: "Taco Night", c: "dinner", t: 25, lv: 2, sv: 4, tags: ["stove", "knife"],
+    ing: [[1, "lb", "ground beef or turkey", "ground meat"], [2, "Tbsp", "taco seasoning", "taco seasoning"], [.67, "cup", "water", ""], [8, "", "taco shell|taco shells", "taco shells"], [1, "cup", "shredded cheese", "cheese"], [1, "cup", "shredded lettuce", "lettuce"], [1, "", "tomato|tomatoes", "tomato"], [.5, "cup", "salsa", "salsa"]],
+    st: [["In a big pan on medium heat, cook the meat, breaking it up, until no pink is left. (Wash your hands after touching raw meat!)", 8], ["A grown-up drains off the grease."], ["Stir in the taco seasoning and water. Let it simmer until it gets thick.", 5], ["Warm the taco shells the way the box says."], ["A grown-up helps chop the tomato. Put all the toppings in little bowls."], ["Build your own tacos: meat first, then cheese, lettuce, tomato and salsa!"]],
+    tip: "A taco bar lets everyone make their taco just the way they like it." },
+  { id: "tenders", e: "🍗", n: "Crispy Baked Chicken Tenders", c: "dinner", t: 35, lv: 3, sv: 4, tags: ["oven"],
+    ing: [[1, "lb", "chicken tenders", "chicken"], [2, "", "egg|eggs", "egg"], [1, "cup", "panko breadcrumbs", "breadcrumbs"], [.5, "cup", "grated parmesan cheese", "parmesan"], [.5, "tsp", "salt", ""], [1, "Tbsp", "oil", "oil"]],
+    st: [["A grown-up turns the oven on to 400°F (200°C). Brush a baking sheet with the oil."], ["Beat the eggs in one bowl. Mix the breadcrumbs, parmesan and salt in another bowl."], ["Dip each tender in the egg, then roll it in the crumbs. Press so the crumbs stick. (Raw chicken has germs: wash your hands after, and don't touch other food first!)"], ["Lay the tenders on the baking sheet and bake.", 10], ["A grown-up flips them. Bake until golden.", 9], ["They're done when the inside is white, not pink, and a food thermometer says 165°F (74°C). Dip in ketchup or honey mustard!"]],
+    tip: "Panko breadcrumbs make them extra crunchy." },
+  { id: "maccheese", e: "🧀", n: "Creamy Mac & Cheese", c: "dinner", t: 25, lv: 2, sv: 4, tags: ["veg", "stove"],
+    ing: [[8, "oz", "elbow macaroni", "pasta"], [2, "Tbsp", "butter", "butter"], [2, "Tbsp", "all-purpose flour", "flour"], [1.5, "cup", "milk", "milk"], [2, "cup", "shredded cheddar cheese", "cheese"], [.25, "tsp", "salt", ""]],
+    st: [["A grown-up boils water and cooks the macaroni the way the box says.", 7], ["A grown-up drains it. Set it aside."], ["In the same pot on medium-low heat, melt the butter. Whisk in the flour and keep whisking.", 1], ["Slowly pour in the milk while you whisk. Keep whisking until it gets thick like gravy.", 5], ["Turn the heat to low. Stir in the cheese, a handful at a time, until it melts."], ["Stir in the macaroni and salt. Cheesy!"]],
+    tip: "Stir in peas or broccoli to sneak in some veggies." },
+  { id: "friedrice", e: "🍚", n: "Veggie Fried Rice", c: "dinner", t: 20, lv: 3, sv: 4, tags: ["veg", "stove"],
+    ing: [[3, "cup", "cooked rice (cold is best)", "rice"], [2, "Tbsp", "oil", "oil"], [1, "cup", "frozen peas and carrots", "peas"], [2, "", "egg|eggs", "egg"], [2, "Tbsp", "soy sauce", "soy sauce"], [2, "", "green onion|green onions", "green onion"]],
+    st: [["Snip the green onions into little rings with clean kitchen scissors."], ["With a grown-up, heat 1 tablespoon of oil in a big pan on medium-high. Add the peas and carrots and stir.", 3], ["Push the veggies to the side. Add the other tablespoon of oil, crack in the eggs and scramble them.", 2], ["Add the rice. Break up the clumps and keep stirring until it's hot.", 4], ["Stir in the soy sauce and green onions. Done!"]],
+    tip: "Leftover rice from yesterday makes the best fried rice. Fresh rice gets mushy." },
+  { id: "sheetpan", e: "🥘", n: "Sheet-Pan Sausage & Veggies", c: "dinner", t: 40, lv: 2, sv: 4, tags: ["oven", "knife"],
+    ing: [[1, "lb", "baby potatoes", "potato"], [1, "lb", "smoked sausage (already cooked)", "sausage"], [1, "", "bell pepper|bell peppers", "pepper"], [1, "", "zucchini|zucchini", "zucchini"], [2, "Tbsp", "olive oil", "oil"], [1, "tsp", "Italian seasoning", "italian seasoning"], [.5, "tsp", "salt", ""]],
+    st: [["A grown-up turns the oven on to 425°F (220°C)."], ["A grown-up cuts the potatoes in halves, the pepper and zucchini into chunks, and the sausage into coins."], ["On a big baking sheet, toss the potatoes with half the oil, the salt and the seasoning. Roast them.", 15], ["A grown-up takes out the pan. Add the sausage, pepper, zucchini and the rest of the oil, and stir."], ["Roast until the potatoes are soft when you poke them with a fork.", 15]],
+    tip: "One pan means only one pan to wash!" },
+  // 🍎 snacks
+  { id: "ants", e: "🐜", n: "Ants on a Log", c: "snack", t: 5, lv: 1, sv: 2, tags: ["veg", "nocook"],
+    ing: [[2, "stalk", "celery", "celery"], [2, "Tbsp", "peanut butter (or cream cheese)", "peanut butter"], [2, "Tbsp", "raisins", "raisins"]],
+    st: [["Wash the celery and dry it."], ["Ask a grown-up to cut each stalk into 3 pieces (the logs)."], ["Spread peanut butter in the groove of each log."], ["Line up raisins on top: those are the ants marching along!"]],
+    tip: "Use dried cranberries for “ladybugs on a log.”" },
+  { id: "applerings", e: "🍎", n: "Apple “Donuts”", c: "snack", t: 10, lv: 1, sv: 2, tags: ["veg", "nocook", "knife"],
+    ing: [[1, "", "apple|apples", "apple"], [2, "Tbsp", "peanut butter or cream cheese", "peanut butter"], [2, "Tbsp", "granola", "granola"], [1, "tsp", "sprinkles or mini chocolate chips", "sprinkles"]],
+    st: [["Wash the apple."], ["A grown-up cuts the apple sideways into thick circles and cuts out the core in the middle. Now they look like donuts!"], ["Pat the slices dry with a paper towel."], ["Spread on the peanut butter (the frosting) and add granola and sprinkles on top."]],
+    tip: "A squeeze of lemon juice keeps apple slices from turning brown." },
+  { id: "trailmix", e: "🥜", n: "Trail Mix", c: "snack", t: 5, lv: 1, sv: 4, tags: ["veg", "nocook"],
+    ing: [[1, "cup", "O-shaped cereal", "cereal"], [1, "cup", "pretzels", "pretzels"], [.5, "cup", "raisins", "raisins"], [.5, "cup", "nuts or sunflower seeds", "nuts"], [.25, "cup", "chocolate chips", "chocolate chips"]],
+    st: [["Put everything in a big bowl or a big zip-top bag."], ["Stir it, or zip the bag and shake it like crazy!"], ["Scoop it into small bags to take on a hike or to school."]],
+    tip: "Sunflower seeds are a good choice for a nut-free school." },
+  { id: "hummuscups", e: "🥕", n: "Hummus Veggie Cups", c: "snack", t: 10, lv: 1, sv: 2, tags: ["veg", "nocook", "knife"],
+    ing: [[.5, "cup", "hummus", "hummus"], [1, "", "carrot|carrots", "carrot"], [.5, "", "cucumber|cucumbers", "cucumber"], [.5, "", "bell pepper|bell peppers", "pepper"]],
+    st: [["Wash the veggies."], ["A grown-up cuts them into long sticks."], ["Spoon some hummus into the bottom of each cup."], ["Stand the veggie sticks up in the hummus, like a bouquet. Dip and crunch!"]],
+    tip: "Snap peas and celery work great too." },
+  { id: "kabobs", e: "🍇", n: "Rainbow Fruit Kabobs", c: "snack", t: 10, lv: 1, sv: 4, tags: ["veg", "nocook"],
+    ing: [[1, "cup", "grapes", "grapes"], [1, "cup", "strawberries", "berries"], [1, "cup", "melon cubes", "melon"], [1, "", "banana|bananas", "banana"], [8, "", "wooden skewer|wooden skewers", ""]],
+    st: [["Wash the fruit."], ["A grown-up cuts the strawberries in half and the melon into cubes."], ["Peel the banana and slice it into thick coins with a butter knife."], ["Slide the fruit onto the skewers in rainbow order: red, orange, yellow, green, purple. Careful, skewer tips are sharp!"]],
+    tip: "Dip them in yogurt for a fancy snack." },
+  { id: "nachos", e: "🌽", n: "Microwave Nachos", c: "snack", t: 5, lv: 1, sv: 2, tags: ["veg", "micro"],
+    ing: [[4, "cup", "tortilla chips", "tortilla chips"], [1, "cup", "shredded cheese", "cheese"], [.5, "cup", "beans, drained", "beans"], [.25, "cup", "salsa", "salsa"]],
+    st: [["Spread the chips on a microwave-safe plate in one layer."], ["Sprinkle the beans and cheese on top."], ["Microwave until the cheese melts, about 45 to 60 seconds.", 1], ["The plate is hot! Use an oven mitt. Spoon salsa on top and dig in."]],
+    tip: "Add a little guacamole or sour cream on top." },
+  // 🧁 desserts
+  { id: "cookies", e: "🍪", n: "Chocolate Chip Cookies", c: "dessert", t: 30, lv: 3, sv: 48, svw: "cookies", tags: ["veg", "oven"],
+    ing: [[1, "cup", "butter, soft (1 cup is 2 sticks)", "butter"], [.75, "cup", "sugar", "sugar"], [.75, "cup", "brown sugar", "brown sugar"], [2, "", "egg|eggs", "egg"], [1, "tsp", "vanilla", "vanilla"], [2.25, "cup", "all-purpose flour", "flour"], [1, "tsp", "baking soda", "baking soda"], [1, "tsp", "salt", ""], [2, "cup", "chocolate chips", "chocolate chips"]],
+    st: [["A grown-up turns the oven on to 375°F (190°C)."], ["In a bowl, stir together the flour, baking soda and salt."], ["In a big bowl, beat the butter, sugar, brown sugar and vanilla until it's creamy."], ["Beat in the eggs one at a time."], ["Slowly mix in the flour mixture, then stir in the chocolate chips."], ["Drop rounded tablespoons of dough onto baking sheets, 2 inches apart. (Don't eat raw dough: raw eggs and raw flour can make you sick.)"], ["Bake until the edges are golden.", 10], ["A grown-up takes them out with oven mitts. Let them cool on the pan for 2 minutes, then move them to a rack.", 2]],
+    tip: "Take them out when the middles still look a little soft. They finish setting as they cool." },
+  { id: "energybites", e: "🍫", n: "No-Bake Energy Bites", c: "dessert", t: 15, wait: "+ 30 minutes chilling", lv: 1, sv: 20, svw: "bites", tags: ["veg", "nocook"],
+    ing: [[1, "cup", "rolled oats", "oats"], [.5, "cup", "peanut butter", "peanut butter"], [.33, "cup", "honey", "honey"], [.5, "cup", "mini chocolate chips", "chocolate chips"], [1, "tsp", "vanilla", "vanilla"]],
+    st: [["Stir everything together in a bowl until it's all mixed."], ["Chill it in the fridge so it's easier to roll.", 30], ["Roll it into balls about the size of a big marble (1 inch)."], ["Keep them in the fridge for up to a week."]],
+    tip: "Roll them in coconut or sprinkles for a fancy look." },
+  { id: "mugcake", e: "☕", n: "Chocolate Mug Cake", c: "dessert", t: 5, lv: 1, sv: 1, tags: ["veg", "micro"],
+    ing: [[4, "Tbsp", "all-purpose flour", "flour"], [2, "Tbsp", "sugar", "sugar"], [2, "Tbsp", "cocoa powder", "cocoa"], [.125, "tsp", "baking powder", "baking powder"], [1, "pinch", "salt", ""], [3, "Tbsp", "milk", "milk"], [2, "Tbsp", "vegetable oil", "oil"], [.25, "tsp", "vanilla", "vanilla"], [1, "Tbsp", "chocolate chips", "chocolate chips"]],
+    st: [["In a big microwave-safe mug, stir the flour, sugar, cocoa, baking powder and salt with a fork."], ["Add the milk, oil and vanilla. Stir until it's smooth and there's no dry flour hiding at the bottom."], ["Sprinkle the chocolate chips on top."], ["Microwave for 60 to 90 seconds, until the top looks set.", 1], ["The mug is HOT! Take it out with an oven mitt and let it cool.", 2]],
+    tip: "Top it with a scoop of ice cream." },
+  { id: "nicecream", e: "🍌", n: "Banana “Nice Cream”", c: "dessert", t: 5, wait: "+ 2 hours freezing", lv: 1, sv: 2, tags: ["veg", "nocook", "blender"],
+    ing: [[2, "", "ripe banana|ripe bananas", "banana"], [2, "Tbsp", "milk", "milk"], [1, "Tbsp", "cocoa powder (optional, for chocolate)", "cocoa"]],
+    st: [["Peel the bananas, slice them into coins and freeze them on a plate for at least 2 hours."], ["With a grown-up, put the frozen banana and milk (and cocoa) in a blender or food processor."], ["Blend, stopping to scrape down the sides, until it's smooth like soft-serve ice cream."], ["Eat it right away, or freeze it 30 more minutes to make it firmer."]],
+    tip: "It's just bananas, but it tastes like ice cream!" },
+  { id: "crispytreats", e: "✨", n: "Crispy Rice Treats", c: "dessert", t: 15, wait: "+ 30 minutes cooling", lv: 2, sv: 12, svw: "squares", tags: ["micro"],
+    ing: [[3, "Tbsp", "butter (plus a little for the pan)", "butter"], [10, "oz", "mini marshmallows", "marshmallows"], [6, "cup", "crispy rice cereal", "rice cereal"]],
+    st: [["Rub a little butter all over the inside of a 9×13 pan."], ["Put the butter and marshmallows in a big microwave-safe bowl. Microwave, then stir.", 1], ["Microwave again until it's puffy and melted, then stir until smooth.", 1], ["Quickly stir in the cereal until it's all coated."], ["Press it into the pan with a buttered spatula. It's hot and sticky, so let a grown-up help!"], ["Let it cool, then cut it into squares.", 30]],
+    tip: "Stir in some sprinkles for a party version." },
+  { id: "yogurtbark", e: "🍓", n: "Frozen Yogurt Bark", c: "dessert", t: 10, wait: "+ 2 hours freezing", lv: 1, sv: 6, tags: ["veg", "nocook"],
+    ing: [[2, "cup", "vanilla yogurt", "yogurt"], [2, "Tbsp", "honey", "honey"], [1, "cup", "berries", "berries"], [2, "Tbsp", "mini chocolate chips", "chocolate chips"]],
+    st: [["Line a baking sheet with parchment paper."], ["Stir the honey into the yogurt."], ["Spread the yogurt on the paper until it's about as thick as a pencil."], ["Sprinkle the berries and chocolate chips on top and press them in gently."], ["Freeze it for 2 to 3 hours, until it's hard."], ["Break it into pieces and keep them in the freezer."]],
+    tip: "Greek yogurt makes it extra creamy." },
+  // 🥤 drinks
+  { id: "smoothie", e: "🥤", n: "Strawberry Banana Smoothie", c: "drink", t: 5, lv: 1, sv: 2, tags: ["veg", "nocook", "blender"],
+    ing: [[.5, "cup", "milk", "milk"], [.5, "cup", "yogurt", "yogurt"], [1, "", "banana|bananas", "banana"], [1, "cup", "strawberries (frozen works great)", "berries"], [1, "tsp", "honey (optional)", "honey"]],
+    st: [["Pour the milk and yogurt into the blender first. Liquids on the bottom help the blades spin."], ["Add the banana, strawberries and honey."], ["Put the lid on tight. With a grown-up, blend until smooth, about 30 to 60 seconds."], ["Pour it into glasses and enjoy!"]],
+    tip: "Frozen fruit makes it thick and cold, so you don't need ice." },
+  { id: "lemonade", e: "🍋", n: "Fresh Lemonade", c: "drink", t: 10, lv: 1, sv: 6, tags: ["veg", "nocook", "knife"],
+    ing: [[.75, "cup", "fresh lemon juice (about 4 lemons)", "lemon"], [.75, "cup", "sugar", "sugar"], [4, "cup", "water (1 warm, 3 cold)", ""], [null, "", "ice", ""]],
+    st: [["Roll each lemon on the counter, pressing down hard. This gives you more juice!"], ["A grown-up cuts the lemons in half. Squeeze out the juice and take out the seeds."], ["In a pitcher, stir the sugar into 1 cup of warm water until it dissolves (disappears)."], ["Add the lemon juice and the 3 cups of cold water. Stir."], ["Taste it! Too sour? Add a little sugar. Too sweet? Add lemon juice or water. Serve over ice."]],
+    tip: "Add a few smashed strawberries to make pink lemonade." },
+  { id: "hotcocoa", e: "☕", n: "Hot Chocolate", c: "drink", t: 10, lv: 2, sv: 2, tags: ["veg", "stove"],
+    ing: [[2, "cup", "milk", "milk"], [2, "Tbsp", "cocoa powder", "cocoa"], [2, "Tbsp", "sugar", "sugar"], [.25, "tsp", "vanilla", "vanilla"], [1, "pinch", "salt", ""], [.25, "cup", "mini marshmallows (optional)", "marshmallows"]],
+    st: [["In a small pot, whisk the cocoa, sugar and salt with 2 tablespoons of the milk until it's a smooth paste. (No lumps!)"], ["Whisk in the rest of the milk."], ["With a grown-up, heat it on medium-low, stirring, until it's steaming but not boiling.", 5], ["Turn off the heat and stir in the vanilla."], ["Carefully pour it into mugs and top with marshmallows."]],
+    tip: "A pinch of cinnamon makes it taste extra cozy." },
+  { id: "greensmoothie", e: "🟢", n: "Green Monster Smoothie", c: "drink", t: 5, lv: 1, sv: 2, tags: ["veg", "nocook", "blender"],
+    ing: [[1, "cup", "milk", "milk"], [1, "cup", "baby spinach", "spinach"], [1, "", "banana|bananas", "banana"], [.5, "cup", "frozen pineapple chunks", "pineapple"], [.5, "cup", "yogurt", "yogurt"]],
+    st: [["Put the milk and spinach in the blender. With a grown-up, blend until there are no leafy bits left."], ["Add the banana, pineapple and yogurt."], ["Blend until smooth."], ["Pour and drink! It's bright green, but you can't taste the spinach. Promise!"]],
+    tip: "Give it a monster name and drink it with a crazy straw." }
+];
+RCP.forEach(r => { [r.a, r.b] = RCP_CATCOL[r.c]; });
+// "What can I make?": everything the recipe book uses (salt, water and ice don't count: everybody has those)
+const RCP_KEYS = [
+  ["fridge", "🧊 Fridge", [["egg", "🥚 Eggs"], ["milk", "🥛 Milk"], ["butter", "🧈 Butter"], ["cheese", "🧀 Cheese"], ["parmesan", "🧀 Parmesan"], ["yogurt", "🥣 Yogurt"], ["chicken", "🍗 Chicken"], ["ground meat", "🥩 Ground beef or turkey"], ["turkey", "🦃 Sliced turkey"], ["sausage", "🌭 Smoked sausage"], ["tortilla", "🫓 Tortillas"], ["english muffin", "🧇 English muffins"], ["hummus", "🫘 Hummus"], ["salsa", "🌶️ Salsa"], ["mayo", "🥄 Mayo"], ["dressing", "🥗 Italian dressing"]]],
+  ["produce", "🥕 Fruits & veggies", [["banana", "🍌 Bananas"], ["berries", "🍓 Berries"], ["apple", "🍎 Apples"], ["lemon", "🍋 Lemons"], ["grapes", "🍇 Grapes"], ["melon", "🍈 Melon"], ["pineapple", "🍍 Pineapple"], ["tomato", "🍅 Tomatoes"], ["lettuce", "🥬 Lettuce"], ["spinach", "🥬 Spinach"], ["cucumber", "🥒 Cucumber"], ["carrot", "🥕 Carrots"], ["celery", "🌿 Celery"], ["pepper", "🫑 Bell peppers"], ["zucchini", "🥒 Zucchini"], ["potato", "🥔 Potatoes"], ["green onion", "🧅 Green onions"], ["peas", "🟢 Frozen peas & carrots"]]],
+  ["pantry", "🥫 Cupboard", [["flour", "🌾 Flour"], ["sugar", "🍬 Sugar"], ["brown sugar", "🟫 Brown sugar"], ["baking powder", "🧂 Baking powder"], ["baking soda", "🧂 Baking soda"], ["vanilla", "🍦 Vanilla"], ["cinnamon", "🟤 Cinnamon"], ["oil", "🫒 Oil"], ["bread", "🍞 Bread"], ["oats", "🌾 Oats"], ["rice", "🍚 Rice"], ["pasta", "🍝 Pasta"], ["pasta sauce", "🥫 Pasta sauce"], ["pizza sauce", "🍕 Pizza sauce"], ["beans", "🫘 Beans"], ["breadcrumbs", "🍞 Breadcrumbs"], ["soy sauce", "🫗 Soy sauce"], ["taco seasoning", "🌮 Taco seasoning"], ["taco shells", "🌮 Taco shells"], ["italian seasoning", "🌿 Italian seasoning"], ["peanut butter", "🥜 Peanut butter"], ["jam", "🍓 Jam"], ["honey", "🍯 Honey"]]],
+  ["treats", "🍫 Snacks & treats", [["granola", "🥣 Granola"], ["cereal", "🥣 O-shaped cereal"], ["rice cereal", "🍚 Crispy rice cereal"], ["pretzels", "🥨 Pretzels"], ["tortilla chips", "🌽 Tortilla chips"], ["raisins", "🍇 Raisins"], ["nuts", "🌰 Nuts or seeds"], ["chocolate chips", "🍫 Chocolate chips"], ["cocoa", "🍫 Cocoa powder"], ["marshmallows", "☁️ Marshmallows"], ["sprinkles", "🌈 Sprinkles"]]]
+];
+const RCP_KEYNAME = Object.fromEntries(RCP_KEYS.flatMap(g => g[2]));
+// allergy check: which common allergens each ingredient has (always read the labels too!)
+const RCP_ALLERGY = [["milk", "🥛 Milk", ["milk", "butter", "cheese", "parmesan", "yogurt"]], ["egg", "🥚 Eggs", ["egg", "mayo"]], ["wheat", "🌾 Wheat", ["flour", "bread", "tortilla", "pasta", "english muffin", "breadcrumbs", "pretzels", "soy sauce"]], ["peanut", "🥜 Peanuts", ["peanut butter"]], ["nuts", "🌰 Tree nuts", ["nuts"]], ["soy", "🫘 Soy", ["soy sauce"]]];
+const RCP_HELP = { stove: "🔥 the stove", oven: "♨️ the oven", micro: "📡 the microwave (hot dishes!)", blender: "🌀 the blender", knife: "🔪 a sharp knife" };
+const RCP_TABS = [["book", "📖 Recipe book"], ["have", "🧺 What can I make?"], ["fav", "⭐ Favorites"], ["shop", "🛒 Shopping list"], ["mine", "📝 My recipes"], ["basics", "🧑‍🍳 Kitchen basics"]];
+const RCP_RANKS = [[1, "🥄 Kitchen Helper"], [5, "🍳 Junior Chef"], [15, "👨‍🍳 Head Chef"], [30, "🏆 Master Chef"]];
+const RCP_MAXMINE = 500, RCP_MAXSHOP = 300;
+const RCP_VIEW = { q: "", cat: "all", f: {}, have: null, sv: {}, say: false };
+
+const rcpCan = () => !!SITE_WHO && SITE_WHO !== "guest";
+const rcpGet = () => { const v = rcpCan() ? store.get("rcp_v1", null) : null, o = v && typeof v === "object" ? v : {}; return { fav: {}, shop: [], made: {}, mine: [], have: [], ...o }; };
+const rcpSave = S => { if (rcpCan()) store.set("rcp_v1", S); };
+const rcpWho = what => { toast(`Pick who you are first, then you can ${what}.`); return false; };
+const rcpAll = () => RCP.concat(rcpGet().mine.filter(r => r && r.id && r.n));
+const rcpFind = id => rcpAll().find(r => r.id === id);
+const rcpMadeN = S => Object.values(S.made).reduce((n, m) => n + ((m && m.n) || 0), 0);
+const rcpRank = n => { let r = "🧑‍🍳 Ready to cook"; RCP_RANKS.forEach(([k, l]) => { if (n >= k) r = l; }); return r; };
+const rcpNoHeat = r => !r.tags.some(t => t === "stove" || t === "oven" || t === "micro");
+const rcpNuts = r => (r.ing || []).some(i => i[3] === "peanut butter" || i[3] === "nuts") || /peanut|\bnuts?\b|almond|cashew|pecan|walnut|hazelnut|pistachio/i.test((r.ingL || []).join(" "));
+const rcpOpt = i => /optional/i.test(i[2]);
+
+// amounts: ½, ¼, ⅓… (things you count, like eggs, round to the nearest half)
+const RCP_FR = [[0, ""], [1 / 8, "⅛"], [1 / 4, "¼"], [1 / 3, "⅓"], [3 / 8, "⅜"], [1 / 2, "½"], [5 / 8, "⅝"], [2 / 3, "⅔"], [3 / 4, "¾"], [7 / 8, "⅞"], [1, ""]];
+const RCP_UNITS = { cup: ["cup", "cups"], Tbsp: ["Tbsp", "Tbsp"], tsp: ["tsp", "tsp"], oz: ["oz", "oz"], lb: ["lb", "lb"], pinch: ["pinch", "pinches"], slice: ["slice", "slices"], stalk: ["stalk", "stalks"], jar: ["jar", "jars"], leaf: ["leaf", "leaves"] };
+const rcpCount = u => !u || ["pinch", "slice", "stalk", "jar", "leaf"].includes(u);
+function rcpNum(q, count) {
+  if (count) q = Math.max(.5, Math.round(q * 2) / 2);
+  let w = Math.floor(q + 1e-9), f = q - w, best = RCP_FR[0];
+  RCP_FR.forEach(x => { if (Math.abs(x[0] - f) < Math.abs(best[0] - f) - 1e-9) best = x; });
+  if (best[0] === 1) { w++; best = RCP_FR[0]; }
+  if (!w && !best[1]) best = RCP_FR[1];
+  return { s: (w || "") + best[1], v: w + best[0] };
+}
+function rcpIng(i, k = 1) {
+  const [q, u, nm] = i, names = String(nm).split("|");
+  if (q == null) return names[names.length - 1];
+  const n = rcpNum(q * k, rcpCount(u)), many = n.v > 1;
+  if (!u) return `${n.s} ${many ? names[names.length - 1] : names[0]}`;
+  const uw = RCP_UNITS[u] || [u, u];
+  return `${n.s} ${many ? uw[1] : uw[0]}${rcpCount(u) ? " of" : ""} ${names[0]}`;
+}
+const rcpSvText = (r, n) => r.svw ? `Makes ${n} ${r.svw}` : `Serves ${n}`;
+const rcpSvStep = r => r.sv < 12 ? 1 : !(r.sv % 12) ? 12 : !(r.sv % 10) ? 10 : r.sv;
+
+/* ---------- ⏰ one kitchen timer. It keeps going while you move around the Recipes app (and rings even if you leave it). ---------- */
+let RCP_T = null;   // { end, left, label, paused, iv }
+function rcpTimerStart(sec, label) {
+  rcpTimerStop(true);
+  RCP_T = { end: Date.now() + sec * 1000, left: sec * 1000, label, paused: false, total: sec * 1000 };
+  RCP_T.iv = setInterval(rcpTimerTick, 250); rcpTimerDraw(); sfx.buy();
+}
+function rcpTimerStop(quiet) { if (RCP_T) clearInterval(RCP_T.iv); RCP_T = null; if (!quiet) rcpTimerDraw(); }
+function rcpTimerTick() {
+  if (!RCP_T || RCP_T.paused) return;
+  RCP_T.left = RCP_T.end - Date.now();
+  if (RCP_T.left <= 0) {
+    const lab = RCP_T.label; rcpTimerStop();
+    [0, 450, 900, 1600, 2050, 2500].forEach(ms => setTimeout(() => sfx.right(), ms));
+    toast(`⏰ Time's up! ${lab}`);
+    const b = document.getElementById("rcp-tbar"); if (b) { b.hidden = false; b.className = "rcp-tbar ring"; b.innerHTML = `<b>⏰ Time's up!</b><span>${esc(lab)}</span><button class="chip mini" type="button" id="rcp-tok">👍 Got it</button>`; document.getElementById("rcp-tok").addEventListener("click", () => { b.hidden = true; }); }
+    return;
+  }
+  rcpTimerDraw();
+}
+const rcpClock = ms => { const s = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = s % 60; return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(x).padStart(2, "0"); };
+function rcpTimerDraw() {
+  const b = document.getElementById("rcp-tbar"); if (!b) return;
+  if (!RCP_T) { if (!b.classList.contains("ring")) b.hidden = true; return; }
+  b.hidden = false; b.className = "rcp-tbar";
+  const pct = 100 - Math.max(0, RCP_T.left) / RCP_T.total * 100;
+  if (!b.querySelector("#rcp-tclock")) {
+    b.innerHTML = `<b id="rcp-tclock"></b><span class="rcp-tlab"></span><i class="rcp-tprog"><i id="rcp-tfill"></i></i><button class="chip mini" type="button" id="rcp-tpause"></button><button class="chip mini" type="button" id="rcp-tstop">✕ Stop</button>`;
+    document.getElementById("rcp-tpause").addEventListener("click", () => {
+      if (!RCP_T) return; RCP_T.paused = !RCP_T.paused;
+      if (!RCP_T.paused) RCP_T.end = Date.now() + RCP_T.left; rcpTimerDraw();
+    });
+    document.getElementById("rcp-tstop").addEventListener("click", () => rcpTimerStop());
+  }
+  document.getElementById("rcp-tclock").textContent = "⏰ " + rcpClock(RCP_T.left);
+  b.querySelector(".rcp-tlab").textContent = RCP_T.label + (RCP_T.paused ? " (paused)" : "");
+  document.getElementById("rcp-tfill").style.width = pct + "%";
+  document.getElementById("rcp-tpause").textContent = RCP_T.paused ? "▶ Go" : "⏸ Pause";
+}
+const rcpTbar = () => `<div class="rcp-tbar" id="rcp-tbar" role="timer" aria-live="off" hidden></div>`;
+const rcpTimeWords = m => m >= 1 ? `${+(m.toFixed(1))} minute${m === 1 ? "" : "s"}` : `${Math.round(m * 60)} seconds`;
+const rcpTimeAdj = m => m >= 1 ? `${+(m.toFixed(1))}-minute` : `${Math.round(m * 60)}-second`;   // "a 2-minute timer"
+
+/* ---------- 🏠 the app ---------- */
+function rcpScreen(tab, inner) {
+  const S = rcpGet(), made = rcpMadeN(S);
+  appScreen("🍳 Recipes", `<div class="rcp">
+    <div class="rcp-hero rcp-home"><span class="rcp-big" aria-hidden="true">🍳</span><h2>Recipes</h2><p>Cook something yummy! Pick a recipe, then tap <b>👩‍🍳 Cook it!</b> for one step at a time.</p>
+      <div class="rcp-pills"><span>📖 ${RCP.length} recipes</span><span>⭐ ${Object.keys(S.fav).length} favorites</span><span>🍽️ Made ${made}</span><span>${rcpRank(made)}</span></div></div>
+    ${naTabs(RCP_TABS, tab)}${inner}${rcpTbar()}</div>`);
+  bindTabs(t => startRecipes(t)); rcpTimerDraw();
+}
+function rcpCard(r, S, extra = "") {
+  const m = S.made[r.id];
+  return `<button class="rcp-card" type="button" data-rgo="r:${esc(r.id)}" style="--ra:${r.a};--rb:${r.b}"><i aria-hidden="true">${esc(r.e || "🍽️")}</i><b>${esc(r.n)}</b>
+    <small>⏱️ ${r.t} min${r.wait ? " +" : ""} · ${RCP_LV[r.lv || 1].split(" ")[0]}</small>${S.fav[r.id] ? `<em class="rcp-fav" aria-label="Favorite">⭐</em>` : ""}${m && m.n ? `<em class="rcp-made">✅ Made ${m.n}×</em>` : ""}${r.mine ? `<em class="rcp-mine">📝 Mine</em>` : ""}${extra}</button>`;
+}
+const rcpWire = (root = $app) => root.querySelectorAll("[data-rgo]").forEach(b => b.addEventListener("click", () => startRecipes(b.dataset.rgo)));
+
+function startRecipes(view) {
+  const v = String(view || "book"), S = rcpGet();
+  if (v.startsWith("r:")) return rcpView(v.slice(2));
+  if (v.startsWith("cook:")) return rcpCook(v.slice(5));
+  if (v.startsWith("edit:")) return rcpEdit(v.slice(5));
+  if (v === "write") return rcpEdit("");
+  if (v === "quiz") return rcpQuiz();
+  const tab = RCP_TABS.some(t => t[0] === v) ? v : "book";
+  ({ book: rcpBook, have: rcpHave, fav: rcpFavs, shop: rcpShop, mine: rcpMine, basics: rcpBasics })[tab](S);
+}
+
+/* 📖 the recipe book: search, meals and filters */
+const RCP_FILTERS = [["nocook", "🚫🔥 No cooking"], ["quick", "⏱️ 15 minutes or less"], ["easy", "⭐ Easy"], ["veg", "🥕 Vegetarian"], ["nonuts", "🥜 No peanuts or nuts"]];
+function rcpMatch(r) {
+  const V = RCP_VIEW, q = V.q.trim().toLowerCase();
+  if (V.cat !== "all" && r.c !== V.cat) return false;
+  if ((V.f.nocook || V.f.easy || V.f.veg) && r.mine) return false;   // your own recipes don't say how they're cooked
+  if (V.f.nocook && !rcpNoHeat(r)) return false;
+  if (V.f.quick && r.t > 15) return false;
+  if (V.f.easy && (r.lv || 1) > 1) return false;
+  if (V.f.veg && !(r.tags || []).includes("veg")) return false;
+  if (V.f.nonuts && rcpNuts(r)) return false;
+  if (!q) return true;
+  const hay = [r.n, (RCP_CATS.find(c => c[0] === r.c) || [])[1], ...(r.ing || []).map(i => i[2]), ...(r.ingL || [])].join(" ").toLowerCase();
+  return q.split(/\s+/).every(w => hay.includes(w.replace(/s$/, "")));
+}
+function rcpBook(S) {
+  const V = RCP_VIEW;
+  rcpScreen("book", `<form class="rcp-search" id="rcp-sform" role="search"><input id="rcp-q" type="search" placeholder="🔎 Search recipes or ingredients (like “banana”)" aria-label="Search recipes" value="${esc(V.q)}" autocomplete="off"></form>
+    <div class="na-chips rcp-cats"><button class="chip${V.cat === "all" ? " on" : ""}" type="button" data-rc="all">🍴 Everything</button>${RCP_CATS.map(([k, l]) => `<button class="chip${V.cat === k ? " on" : ""}" type="button" data-rc="${k}">${l}</button>`).join("")}</div>
+    <div class="na-chips rcp-filters">${RCP_FILTERS.map(([k, l]) => `<button class="chip mini${V.f[k] ? " on" : ""}" type="button" data-rf="${k}" aria-pressed="${!!V.f[k]}">${l}</button>`).join("")}</div>
+    <p class="soft rcp-count" id="rcp-count" aria-live="polite"></p><div class="rcp-grid" id="rcp-grid"></div>`);
+  const draw = () => {
+    const list = rcpAll().filter(rcpMatch);
+    document.getElementById("rcp-grid").innerHTML = list.map(r => rcpCard(r, S)).join("") || `<p class="soft rcp-none">No recipes match that. Try fewer filters or a different word!</p>`;
+    document.getElementById("rcp-count").textContent = `${list.length} recipe${list.length === 1 ? "" : "s"}`;
+    rcpWire(document.getElementById("rcp-grid"));
+  };
+  const q = document.getElementById("rcp-q");
+  q.addEventListener("input", () => { V.q = q.value; draw(); });
+  document.getElementById("rcp-sform").addEventListener("submit", e => { e.preventDefault(); q.blur(); });
+  $app.querySelectorAll("[data-rc]").forEach(b => b.addEventListener("click", () => { V.cat = b.dataset.rc; $app.querySelectorAll("[data-rc]").forEach(x => x.classList.toggle("on", x === b)); draw(); }));
+  $app.querySelectorAll("[data-rf]").forEach(b => b.addEventListener("click", () => { const k = b.dataset.rf; V.f[k] = !V.f[k]; b.classList.toggle("on", V.f[k]); b.setAttribute("aria-pressed", V.f[k]); draw(); }));
+  draw();
+}
+
+/* 🍽️ one recipe */
+function rcpView(id) {
+  const r = rcpFind(id); if (!r) { toast("That recipe isn't here any more."); return startRecipes("book"); }
+  const S = rcpGet(), m = S.made[r.id], fav = !!S.fav[r.id], step = rcpSvStep(r);
+  let sv = RCP_VIEW.sv[r.id] || r.sv;
+  const help = (r.tags || []).filter(t => RCP_HELP[t]).map(t => RCP_HELP[t]);
+  const keys = new Set((r.ing || []).map(i => i[3])), alg = RCP_ALLERGY.filter(a => a[2].some(k => keys.has(k)));
+  const shopN = S.shop.filter(x => !x.done).length;
+  appScreen("🍳 Recipes", `<div class="rcp">
+    <div class="row rcp-top"><button class="chip mini" type="button" data-rgo="book">⬅ Recipe book</button>${r.mine ? `<button class="chip mini" type="button" data-rgo="mine">📝 My recipes</button>` : ""}<button class="chip mini" type="button" data-rgo="shop">🛒 Shopping list${shopN ? ` (${shopN})` : ""}</button></div>
+    <div class="rcp-hero" style="--ra:${r.a};--rb:${r.b}"><span class="rcp-big" aria-hidden="true">${esc(r.e || "🍽️")}</span><h2>${esc(r.n)}</h2>
+      <div class="rcp-pills"><span>⏱️ ${r.t} minutes${r.wait ? ` ${esc(r.wait)}` : ""}</span><span>${RCP_LV[r.lv || 1]}</span><span>🍽️ ${rcpSvText(r, r.sv)}</span>${m && m.n ? `<span>✅ Made ${m.n}× ${"★".repeat(m.stars || 0)}</span>` : ""}</div></div>
+    ${help.length ? `<p class="rcp-help">👩‍🍳 <b>Cook with a grown-up</b> for ${help.join(", ").replace(/, ([^,]*)$/, " and $1")}.</p>` : `<p class="rcp-help ok">🙌 <b>No stove, oven or sharp knife.</b> You can make this one almost all by yourself!</p>`}
+    <div class="row rcp-acts"><button class="btn go rcp-cookbtn" type="button" data-rgo="cook:${esc(r.id)}">👩‍🍳 Cook it!</button>
+      <button class="btn" type="button" id="rcp-fav" aria-pressed="${fav}">${fav ? "⭐ Favorite" : "☆ Add to favorites"}</button>
+      <button class="btn" type="button" id="rcp-toshop">🛒 Add to shopping list</button>
+      <button class="btn" type="button" id="rcp-say">🔊 Read it to me</button></div>
+    <section class="rcp-sec"><div class="rcp-sechead"><h3>🧺 Ingredients</h3>${r.mine ? "" : `<div class="rcp-scale" role="group" aria-label="Change how many it makes"><button class="chip mini" type="button" data-sc="-1" aria-label="Fewer">−</button><b id="rcp-sv"></b><button class="chip mini" type="button" data-sc="1" aria-label="More">+</button></div>`}</div>
+      <p class="soft rcp-sub" id="rcp-svnote"></p><ul class="rcp-ing" id="rcp-ing"></ul></section>
+    ${alg.length ? `<p class="rcp-alg"><b>Allergy check:</b> this recipe has ${alg.map(a => `<span>${a[1]}</span>`).join("")} <small>Always read the labels too, because packaged foods can have hidden allergens.</small></p>` : ""}
+    <section class="rcp-sec"><h3>📋 Steps</h3><ol class="rcp-steps">${r.st.map(([t, min], i) => `<li><span class="rcp-sn">${i + 1}</span><p>${esc(t)}${min ? ` <button class="chip mini rcp-tm" type="button" data-tm="${min}" data-ti="${i}">⏰ ${rcpTimeWords(min)}</button>` : ""}</p></li>`).join("")}</ol></section>
+    ${r.tip ? `<div class="rcp-tip"><b>💡 Chef's tip</b><p>${esc(r.tip)}</p></div>` : ""}
+    <div class="row rcp-more"><button class="chip mini" type="button" id="rcp-print">🖨️ Print</button><button class="chip mini" type="button" id="rcp-savepg">💾 Save a page to print</button>${r.mine ? `<button class="chip mini" type="button" data-rgo="edit:${esc(r.id)}">✏️ Change it</button><button class="chip mini rcp-del" type="button" id="rcp-del">🗑️ Delete it</button>` : ""}</div>
+    ${rcpTbar()}</div>`);
+  rcpWire(); rcpTimerDraw();
+  const have = new Set();
+  const drawIng = () => {
+    const k = sv / r.sv, ul = document.getElementById("rcp-ing");
+    const lines = r.mine ? (r.ingL || []).map(t => [t, false]) : r.ing.map(i => [rcpIng(i, k), rcpOpt(i)]);
+    ul.innerHTML = lines.map(([t, opt], i) => `<li><label class="${have.has(i) ? "got" : ""}"><input type="checkbox" data-hi="${i}"${have.has(i) ? " checked" : ""}><span>${esc(t)}</span></label></li>`).join("");
+    ul.querySelectorAll("[data-hi]").forEach(c => c.addEventListener("change", () => { const i = +c.dataset.hi; c.checked ? have.add(i) : have.delete(i); c.closest("label").classList.toggle("got", c.checked); if (have.size === lines.length) toast("🙌 You have everything! Tap 👩‍🍳 Cook it!"); }));
+    const svb = document.getElementById("rcp-sv"); if (svb) svb.textContent = rcpSvText(r, sv);
+    document.getElementById("rcp-svnote").textContent = r.mine ? "Tap each thing when you have it ready." : sv === r.sv ? "Tap each thing when you have it ready. Use − and + to make more or less." : `The amounts changed for ${rcpSvText(r, sv).toLowerCase()} (the recipe is for ${r.sv}). Cooking times stay about the same.`;
+  };
+  drawIng();
+  $app.querySelectorAll("[data-sc]").forEach(b => b.addEventListener("click", () => {
+    sv = Math.min(r.sv * 8, Math.max(step, sv + (+b.dataset.sc) * step)); RCP_VIEW.sv[r.id] = sv; drawIng();
+  }));
+  document.getElementById("rcp-fav").addEventListener("click", e => {
+    if (!rcpCan()) return rcpWho("keep favorites");
+    const S2 = rcpGet(); if (S2.fav[r.id]) delete S2.fav[r.id]; else S2.fav[r.id] = Date.now(); rcpSave(S2);
+    const on = !!S2.fav[r.id]; e.currentTarget.textContent = on ? "⭐ Favorite" : "☆ Add to favorites"; e.currentTarget.setAttribute("aria-pressed", on);
+    toast(on ? "⭐ Saved in your favorites!" : "Taken out of your favorites."); if (on) sfx.buy();
+  });
+  document.getElementById("rcp-toshop").addEventListener("click", () => rcpAddShop(r, sv));
+  document.getElementById("rcp-say").addEventListener("click", () => svSay(rcpSpeech(r, sv)));
+  naTimer(() => { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} });
+  $app.querySelectorAll("[data-tm]").forEach(b => b.addEventListener("click", () => rcpTimerStart(Math.round(+b.dataset.tm * 60), `Step ${+b.dataset.ti + 1}: ${r.n}`)));
+  document.getElementById("rcp-print").addEventListener("click", () => rcpPrint(rcpPrintRecipe(r, sv), r.n, false));
+  document.getElementById("rcp-savepg").addEventListener("click", () => rcpPrint(rcpPrintRecipe(r, sv), r.n, true));
+  const del = document.getElementById("rcp-del");
+  if (del) del.addEventListener("click", () => {
+    if (del.dataset.sure !== "1") { del.dataset.sure = "1"; del.textContent = "🗑️ Tap again to delete it for good"; return; }
+    const S2 = rcpGet(); S2.mine = S2.mine.filter(x => x.id !== r.id); delete S2.fav[r.id]; delete S2.made[r.id]; rcpSave(S2);
+    toast("🗑️ Your recipe was deleted."); startRecipes("mine");
+  });
+}
+const rcpLines = (r, sv) => r.mine ? (r.ingL || []) : r.ing.map(i => rcpIng(i, sv / r.sv));
+const rcpSpeech = (r, sv) => `${r.n}. ${rcpSvText(r, sv)}. You will need: ${rcpLines(r, sv).join(", ")}. ${r.st.map(([t], i) => `Step ${i + 1}. ${t}`).join(" ")}`;
+function rcpAddShop(r, sv) {
+  if (!rcpCan()) return rcpWho("make a shopping list");
+  const S = rcpGet(), k = sv / r.sv;
+  const items = r.mine ? (r.ingL || []) : r.ing.filter(i => i[3]).map(i => rcpIng(i, k));
+  let n = 0;
+  for (const t of items) {
+    if (S.shop.length >= RCP_MAXSHOP) { toast(`Your shopping list is full (${RCP_MAXSHOP} things). Clear some first!`); break; }
+    if (S.shop.some(x => !x.done && x.t === t && x.r === r.n)) continue;
+    S.shop.push({ id: Date.now().toString(36) + rnd(100, 999) + n, t, r: r.n, done: false }); n++;
+  }
+  rcpSave(S);
+  if (n) { sfx.buy(); toast(`🛒 Added ${n} thing${n === 1 ? "" : "s"} to your shopping list.`); } else if (S.shop.length < RCP_MAXSHOP) toast("Those are already on your shopping list.");
+  const b = $app.querySelector('[data-rgo="shop"]'); if (b) { const left = S.shop.filter(x => !x.done).length; b.textContent = `🛒 Shopping list${left ? ` (${left})` : ""}`; }
+}
+
+/* 👩‍🍳 Cook it!: one big step at a time, with timers. The screen stays on while you cook (if the device lets it). */
+function rcpCook(id) {
+  const r = rcpFind(id); if (!r) return startRecipes("book");
+  const sv = RCP_VIEW.sv[r.id] || r.sv, n = r.st.length; let i = 0;
+  appScreen("🍳 Recipes", `<div class="rcp rcp-cook" style="--ra:${r.a};--rb:${r.b}">
+    <div class="row rcp-top"><button class="chip mini" type="button" data-rgo="r:${esc(r.id)}">⬅ Back to the recipe</button><button class="chip mini" type="button" id="rcp-autosay" aria-pressed="${RCP_VIEW.say}">${RCP_VIEW.say ? "🔊 Reading each step" : "🔈 Read each step"}</button></div>
+    <h2 class="rcp-cooktitle">${esc(r.e || "🍽️")} ${esc(r.n)}</h2>
+    <div class="rcp-dots" id="rcp-dots">${r.st.map((s, j) => `<button type="button" data-dot="${j}" aria-label="Step ${j + 1}"></button>`).join("")}</div>
+    <div class="rcp-step" id="rcp-step" aria-live="polite"></div>
+    <div class="row rcp-nav"><button class="btn" type="button" id="rcp-prev">◀ Back</button><button class="btn go" type="button" id="rcp-next">Next ▶</button></div>
+    <details class="rcp-peek"><summary>🧺 Ingredients (${esc(rcpSvText(r, sv).toLowerCase())})</summary><ul>${rcpLines(r, sv).map(t => `<li>${esc(t)}</li>`).join("")}</ul></details>
+    <p class="soft rcp-keyhelp">Keys: ← and → to move, T for the timer, R to read it out loud.</p>
+    ${rcpTbar()}</div>`);
+  rcpWire(); rcpTimerDraw();
+  try { if (navigator.wakeLock) navigator.wakeLock.request("screen").then(l => naTimer(() => { l.release().catch(() => {}); })).catch(() => {}); } catch (e) {}
+  naTimer(() => { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} });
+  const say = () => svSay(`Step ${i + 1}. ${r.st[i][0]}`);
+  const draw = () => {
+    const [t, min] = r.st[i], last = i === n - 1;
+    document.getElementById("rcp-step").innerHTML = `<span class="rcp-stepn">Step ${i + 1} of ${n}</span><p>${esc(t)}</p>
+      <div class="row">${min ? `<button class="btn gold" type="button" id="rcp-steptm">⏰ Start a ${rcpTimeAdj(min)} timer</button>` : ""}<button class="chip mini" type="button" id="rcp-stepsay">🔊 Read it</button></div>`;
+    document.querySelectorAll("#rcp-dots [data-dot]").forEach((d, j) => { d.className = j < i ? "done" : j === i ? "on" : ""; });
+    document.getElementById("rcp-prev").disabled = i === 0;
+    const nx = document.getElementById("rcp-next"); nx.textContent = last ? "🎉 I made it!" : "Next ▶"; nx.classList.toggle("gold", last);
+    const tm = document.getElementById("rcp-steptm"); if (tm) tm.addEventListener("click", () => rcpTimerStart(Math.round(min * 60), `Step ${i + 1}: ${r.n}`));
+    document.getElementById("rcp-stepsay").addEventListener("click", say);
+    if (RCP_VIEW.say) say();
+  };
+  const go = d => { const j = i + d; if (j < 0) return; if (j >= n) return rcpDone(r); i = j; draw(); };
+  document.getElementById("rcp-prev").addEventListener("click", () => go(-1));
+  document.getElementById("rcp-next").addEventListener("click", () => go(1));
+  document.querySelectorAll("#rcp-dots [data-dot]").forEach(d => d.addEventListener("click", () => { i = +d.dataset.dot; draw(); }));
+  const as = document.getElementById("rcp-autosay");
+  as.addEventListener("click", () => { RCP_VIEW.say = !RCP_VIEW.say; as.setAttribute("aria-pressed", RCP_VIEW.say); as.textContent = RCP_VIEW.say ? "🔊 Reading each step" : "🔈 Read each step"; if (RCP_VIEW.say) say(); else try { window.speechSynthesis.cancel(); } catch (e) {} });
+  keyHandler = e => {
+    if (e.target.closest && e.target.closest("input, textarea, select")) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); go(1); } else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
+    else if (e.key === "t" || e.key === "T") document.getElementById("rcp-steptm")?.click();
+    else if (e.key === "r" || e.key === "R") say();
+  };
+  draw();
+}
+function rcpDone(r) {
+  const box = document.createElement("div"); box.id = "rcp-donebox"; box.className = "bgsheet";
+  box.innerHTML = `<div class="bgsheet-box rcp-donecard" role="dialog" aria-label="You made it!"><div class="rcp-burst" aria-hidden="true">${["🎉", "⭐", "🍽️", "✨", "🎊", "😋"].map((x, j) => `<i style="--d:${j}">${x}</i>`).join("")}</div>
+    <h2>🎉 You made ${esc(r.n)}!</h2><p>Great job, chef! How did it turn out?</p>
+    <div class="rcp-stars" role="group" aria-label="Give it stars">${[1, 2, 3, 4, 5].map(s => `<button type="button" data-star="${s}" aria-label="${s} star${s === 1 ? "" : "s"}">★</button>`).join("")}</div>
+    ${rcpCan() ? "" : `<p class="soft">👤 Pick who you are to keep track of what you've made.</p>`}
+    <div class="row"><button class="btn go" type="button" id="rcp-donego">Done</button></div><p class="soft">🧽 Don't forget to clean up!</p></div>`;
+  document.body.appendChild(box); naTimer(() => box.remove()); sfx.buy();
+  let stars = 0;
+  box.querySelectorAll("[data-star]").forEach(b => b.addEventListener("click", () => { stars = +b.dataset.star; box.querySelectorAll("[data-star]").forEach(x => x.classList.toggle("on", +x.dataset.star <= stars)); }));
+  document.getElementById("rcp-donego").addEventListener("click", () => {
+    if (rcpCan()) {
+      const S = rcpGet(), before = rcpRank(rcpMadeN(S)), m = S.made[r.id] || { n: 0 };
+      S.made[r.id] = { n: (m.n || 0) + 1, stars: stars || m.stars || 0, last: Date.now() }; rcpSave(S);
+      const total = rcpMadeN(S), after = rcpRank(total);
+      toast(after !== before ? `🏅 You're now a ${after.replace(/^\S+ /, "")}! (${total} made)` : `🍽️ Saved! You've made ${total} recipe${total === 1 ? "" : "s"}.`);
+    }
+    box.remove(); startRecipes("r:" + r.id);
+  });
+}
+
+/* 🧺 What can I make? */
+function rcpHave(S) {
+  if (!RCP_VIEW.have || RCP_VIEW.haveWho !== SITE_WHO) { RCP_VIEW.have = new Set(rcpCan() ? S.have : []); RCP_VIEW.haveWho = SITE_WHO; }
+  const H = RCP_VIEW.have;
+  rcpScreen("have", `<p class="rcp-lead">Tap everything you have in your kitchen. Then see what you can make! <small>(Salt, water and ice don't count. Everybody has those.)</small></p>
+    ${RCP_KEYS.map(([g, lab, keys]) => `<h3 class="rcp-h">${lab}</h3><div class="na-chips rcp-keys">${keys.map(([k, l]) => `<button class="chip mini${H.has(k) ? " on" : ""}" type="button" data-hk="${esc(k)}" aria-pressed="${H.has(k)}">${l}</button>`).join("")}</div>`).join("")}
+    <div class="row"><button class="chip mini" type="button" id="rcp-hclear">🧹 Start over</button></div>
+    <div id="rcp-hres" aria-live="polite"></div>`);
+  const draw = () => {
+    const box = document.getElementById("rcp-hres");
+    if (!H.size) { box.innerHTML = `<p class="soft rcp-none">Tap what you have above, and recipes will show up here.</p>`; return; }
+    const rows = RCP.map(r => { const need = [...new Set(r.ing.filter(i => i[3] && !rcpOpt(i)).map(i => i[3]))], miss = need.filter(k => !H.has(k)); return { r, miss }; }).filter(x => x.miss.length <= 2);
+    const grp = n => rows.filter(x => x.miss.length === n);
+    const sec = (n, title) => { const l = grp(n); return l.length ? `<h3 class="rcp-h">${title}</h3><div class="rcp-grid">${l.map(x => rcpCard(x.r, S, x.miss.length ? `<em class="rcp-miss">🛒 Need: ${x.miss.map(k => esc((RCP_KEYNAME[k] || k).replace(/^\S+ /, ""))).join(", ")}</em>` : "")).join("")}</div>` : ""; };
+    box.innerHTML = (sec(0, "🎉 You can make these right now!") + sec(1, "🛒 Missing just 1 thing") + sec(2, "🛒 Missing 2 things")) || `<p class="soft rcp-none">Nothing yet. Tap more things you have!</p>`;
+    rcpWire(box);
+  };
+  const keep = () => { if (rcpCan()) { const S2 = rcpGet(); S2.have = [...H]; rcpSave(S2); } };
+  $app.querySelectorAll("[data-hk]").forEach(b => b.addEventListener("click", () => { const k = b.dataset.hk; H.has(k) ? H.delete(k) : H.add(k); b.classList.toggle("on", H.has(k)); b.setAttribute("aria-pressed", H.has(k)); keep(); draw(); }));
+  document.getElementById("rcp-hclear").addEventListener("click", () => { H.clear(); $app.querySelectorAll("[data-hk]").forEach(b => { b.classList.remove("on"); b.setAttribute("aria-pressed", false); }); keep(); draw(); });
+  draw();
+}
+
+/* ⭐ favorites */
+function rcpFavs(S) {
+  const list = rcpAll().filter(r => S.fav[r.id]).sort((a, b) => S.fav[b.id] - S.fav[a.id]);
+  rcpScreen("fav", !rcpCan() ? `<p class="rcp-none">👤 Pick who you are first, then you can keep favorite recipes here.</p>`
+    : list.length ? `<div class="rcp-grid">${list.map(r => rcpCard(r, S)).join("")}</div>` : `<p class="rcp-none">No favorites yet. Open a recipe and tap <b>☆ Add to favorites</b>!</p>`);
+  rcpWire();
+}
+
+/* 🛒 shopping list */
+function rcpShop(S) {
+  if (!rcpCan()) { rcpScreen("shop", `<p class="rcp-none">👤 Pick who you are first, then you can make a shopping list.</p>`); return; }
+  rcpScreen("shop", `<form class="rcp-search" id="rcp-sadd"><input id="rcp-sin" type="text" maxlength="80" placeholder="Add something to buy…" aria-label="Add something to buy" autocomplete="off"><button class="btn go" type="submit">➕ Add</button></form>
+    <div id="rcp-slist"></div>
+    <div class="row rcp-more"><button class="chip mini" type="button" id="rcp-sclr">🧹 Clear the checked ones</button><button class="chip mini rcp-del" type="button" id="rcp-sall">🗑️ Clear everything</button><button class="chip mini" type="button" id="rcp-sprint">🖨️ Print</button><button class="chip mini" type="button" id="rcp-ssave">💾 Save a page to print</button></div>`);
+  const draw = () => {
+    const L = rcpGet().shop, box = document.getElementById("rcp-slist");
+    if (!L.length) { box.innerHTML = `<p class="rcp-none">Your shopping list is empty. Open a recipe and tap <b>🛒 Add to shopping list</b>, or type something above.</p>`; return; }
+    const groups = []; L.forEach(x => { let g = groups.find(g => g.r === x.r); if (!g) groups.push(g = { r: x.r, l: [] }); g.l.push(x); });
+    box.innerHTML = `<p class="soft">${L.filter(x => !x.done).length} left to get · tap to check things off</p>` + groups.map(g => `<h3 class="rcp-h">${g.r ? `🍽️ For ${esc(g.r)}` : "✏️ My own things"}</h3><ul class="rcp-shop">${g.l.map(x => `<li class="${x.done ? "got" : ""}"><label><input type="checkbox" data-si="${esc(x.id)}"${x.done ? " checked" : ""}><span>${esc(x.t)}</span></label><button class="rcp-x" type="button" data-sd="${esc(x.id)}" aria-label="Take ${esc(x.t)} off the list">✕</button></li>`).join("")}</ul>`).join("");
+    box.querySelectorAll("[data-si]").forEach(c => c.addEventListener("change", () => { const S2 = rcpGet(), it = S2.shop.find(x => x.id === c.dataset.si); if (it) it.done = c.checked; rcpSave(S2); draw(); }));
+    box.querySelectorAll("[data-sd]").forEach(b => b.addEventListener("click", () => { const S2 = rcpGet(); S2.shop = S2.shop.filter(x => x.id !== b.dataset.sd); rcpSave(S2); draw(); }));
+  };
+  document.getElementById("rcp-sadd").addEventListener("submit", e => {
+    e.preventDefault(); const inp = document.getElementById("rcp-sin"), t = inp.value.trim(); if (!t) return;
+    const S2 = rcpGet(); if (S2.shop.length >= RCP_MAXSHOP) return toast(`Your shopping list is full (${RCP_MAXSHOP} things). Clear some first!`);
+    S2.shop.push({ id: Date.now().toString(36) + rnd(100, 999), t: t.slice(0, 80), r: "", done: false }); rcpSave(S2); inp.value = ""; inp.focus(); draw();
+  });
+  document.getElementById("rcp-sclr").addEventListener("click", () => { const S2 = rcpGet(), n = S2.shop.filter(x => x.done).length; S2.shop = S2.shop.filter(x => !x.done); rcpSave(S2); toast(n ? `🧹 Cleared ${n} checked thing${n === 1 ? "" : "s"}.` : "Nothing is checked yet."); draw(); });
+  const all = document.getElementById("rcp-sall");
+  all.addEventListener("click", () => { if (all.dataset.sure !== "1") { all.dataset.sure = "1"; all.textContent = "🗑️ Tap again to clear everything"; return; } const S2 = rcpGet(); S2.shop = []; rcpSave(S2); all.dataset.sure = ""; all.textContent = "🗑️ Clear everything"; draw(); });
+  const page = () => { const L = rcpGet().shop.filter(x => !x.done); return L.length ? `<h1>🛒 Shopping list</h1><ul class="rp-check">${L.map(x => `<li>${esc(x.t)}${x.r ? ` <small>(${esc(x.r)})</small>` : ""}</li>`).join("")}</ul>` : null; };
+  document.getElementById("rcp-sprint").addEventListener("click", () => { const p = page(); p ? rcpPrint(p, "Shopping list", false) : toast("There's nothing left to get!"); });
+  document.getElementById("rcp-ssave").addEventListener("click", () => { const p = page(); p ? rcpPrint(p, "Shopping list", true) : toast("There's nothing left to get!"); });
+  draw();
+}
+
+/* 📝 my recipes: write your own (saved for you; not for guests) */
+const RCP_EMOJIS = ["🍽️", "🥞", "🍳", "🥣", "🥪", "🌯", "🌮", "🍕", "🍝", "🍜", "🍲", "🥗", "🍔", "🍗", "🍚", "🥘", "🍪", "🧁", "🎂", "🍰", "🍩", "🍫", "🍦", "🥤", "🍋", "🍓", "🍌", "🥕", "🍎", "🧀"];
+function rcpMine(S) {
+  const mine = S.mine.filter(r => r && r.id && r.n).sort((a, b) => (b.at || 0) - (a.at || 0));
+  rcpScreen("mine", !rcpCan() ? `<p class="rcp-none">👤 Pick who you are first, then you can write your own recipes.</p>`
+    : `<div class="row"><button class="btn go" type="button" data-rgo="write">✍️ Write a recipe</button><span class="soft">${mine.length} of ${RCP_MAXMINE}</span></div>
+      ${mine.length ? `<div class="rcp-grid">${mine.map(r => rcpCard(r, S)).join("")}</div>` : `<p class="rcp-none">You haven't written any recipes yet. Write down your family's favorite, or invent a brand-new snack!</p>`}
+      <div class="rcp-tip"><b>📘 Want everyone to see your recipe?</b><p>Your recipes here are just for you. To share one with everybody, write it on Learnable and pick 🍳 Cooking.</p><button class="chip mini" type="button" id="rcp-toln">📘 Open Learnable</button></div>`);
+  rcpWire();
+  document.getElementById("rcp-toln")?.addEventListener("click", () => startLearnable());
+}
+function rcpEdit(id) {
+  if (!rcpCan()) { rcpWho("write your own recipes"); return startRecipes("mine"); }
+  const S = rcpGet(), old = id ? S.mine.find(x => x.id === id) : null;
+  if (!old && S.mine.length >= RCP_MAXMINE) { toast(`You have ${RCP_MAXMINE} recipes, the most you can keep. Delete one to write another.`); return startRecipes("mine"); }
+  const r = old || { e: "🍽️", n: "", c: "snack", t: 10, sv: 2, ingL: [], st: [], tip: "" };
+  appScreen("🍳 Recipes", `<div class="rcp"><div class="row rcp-top"><button class="chip mini" type="button" data-rgo="${old ? "r:" + esc(old.id) : "mine"}">⬅ ${old ? "Back to the recipe" : "My recipes"}</button></div>
+    <h2 class="rcp-cooktitle">${old ? "✏️ Change your recipe" : "✍️ Write a recipe"}</h2>
+    <form class="rcp-form" id="rcp-form">
+      <label>Name of the recipe<input id="rf-n" maxlength="60" required value="${esc(r.n)}" placeholder="Grandma's Banana Bread"></label>
+      <div><span class="rcp-flab">Pick a picture</span><div class="rcp-emo" role="radiogroup" aria-label="Pick a picture">${RCP_EMOJIS.map(x => `<button type="button" role="radio" aria-checked="${x === r.e}" data-emo="${x}" class="${x === r.e ? "on" : ""}">${x}</button>`).join("")}</div></div>
+      <div class="rcp-frow"><label>Meal<select id="rf-c">${RCP_CATS.map(([k, l]) => `<option value="${k}"${k === r.c ? " selected" : ""}>${l}</option>`).join("")}</select></label>
+        <label>Minutes<input id="rf-t" type="number" min="1" max="1440" value="${r.t}"></label><label>Serves<input id="rf-sv" type="number" min="1" max="100" value="${r.sv}"></label></div>
+      <label>Ingredients <small>(one on each line, like “2 cups flour”)</small><textarea id="rf-ing" rows="6" maxlength="3000" placeholder="2 cups flour&#10;1 egg&#10;1 cup milk">${esc((r.ingL || []).join("\n"))}</textarea></label>
+      <label>Steps <small>(one step on each line)</small><textarea id="rf-st" rows="7" maxlength="6000" placeholder="Wash your hands.&#10;Mix the flour and milk.">${esc(r.st.map(s => s[0]).join("\n"))}</textarea></label>
+      <label>Chef's tip <small>(if you want)</small><input id="rf-tip" maxlength="200" value="${esc(r.tip || "")}"></label>
+      <div class="row"><button class="btn go" type="submit">💾 Save my recipe</button></div>
+    </form></div>`);
+  rcpWire();
+  let emo = r.e;
+  $app.querySelectorAll("[data-emo]").forEach(b => b.addEventListener("click", () => { emo = b.dataset.emo; $app.querySelectorAll("[data-emo]").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b); }); }));
+  document.getElementById("rcp-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const val = k => document.getElementById(k).value, lines = k => val(k).split("\n").map(s => s.trim()).filter(Boolean).slice(0, 60);
+    const n = val("rf-n").trim().slice(0, 60), ingL = lines("rf-ing").map(s => s.slice(0, 120)), st = lines("rf-st").map(s => [s.slice(0, 400)]);
+    if (!n) return toast("Give your recipe a name first.");
+    if (!ingL.length) return toast("Add at least one ingredient.");
+    if (!st.length) return toast("Add at least one step.");
+    const c = RCP_CATS.some(x => x[0] === val("rf-c")) ? val("rf-c") : "snack", [a, b] = RCP_CATCOL[c];
+    const rec = { id: old ? old.id : "my-" + Date.now().toString(36) + rnd(100, 999), mine: 1, e: emo, n, c, a, b, lv: 1, tags: [],
+      t: Math.min(1440, Math.max(1, Math.round(+val("rf-t") || 10))), sv: Math.min(100, Math.max(1, Math.round(+val("rf-sv") || 1))), ingL, st, tip: val("rf-tip").trim().slice(0, 200), at: Date.now() };
+    const S2 = rcpGet(); S2.mine = S2.mine.filter(x => x.id !== rec.id); S2.mine.push(rec); rcpSave(S2);
+    sfx.buy(); toast(old ? "💾 Your recipe was changed!" : "💾 Saved! It's in My recipes and the recipe book."); startRecipes("r:" + rec.id);
+  });
+}
+
+/* 🧑‍🍳 kitchen basics + the Kitchen Quiz */
+const RCP_SAFE = [["🧼", "Wash your hands", "Scrub with soap for 20 seconds before you cook, and again after you touch raw meat or raw eggs."], ["👩‍🍳", "Cook with a grown-up", "Always have a grown-up with you for the stove, the oven, sharp knives and the blender."], ["🧤", "Dry oven mitts", "Use dry oven mitts for anything hot. A wet towel lets the heat right through!"], ["🍳", "Handles in", "Turn pot handles toward the back of the stove so nobody bumps them."], ["🧽", "Wipe spills fast", "Wipe up spills right away so nobody slips."], ["🔌", "Water and plugs don't mix", "Keep water away from plugs and toasters. Unplug the blender before you touch the blade."], ["🔥", "Grease fire? No water!", "Water makes a grease fire spread. A grown-up covers the pan with a lid and turns off the heat. If it won't go out, get out and call 911."], ["🥩", "Keep raw meat apart", "Use a different cutting board for raw meat, or wash it well before you cut veggies on it."], ["🥶", "Cold food stays cold", "Put milk, meat and leftovers back in the fridge within 2 hours."], ["📖", "Read it first", "Read the whole recipe before you start, and get everything out."]];
+const RCP_MEASURE = [["3 teaspoons (tsp)", "1 tablespoon (Tbsp)"], ["4 tablespoons", "¼ cup"], ["16 tablespoons", "1 cup"], ["1 stick of butter", "½ cup (8 Tbsp)"], ["2 cups", "1 pint"], ["4 cups", "1 quart"], ["4 quarts", "1 gallon"], ["1 cup", "about 240 milliliters"], ["1 tablespoon", "about 15 milliliters"], ["1 teaspoon", "about 5 milliliters"], ["16 ounces (oz)", "1 pound (lb)"]];
+const RCP_TEMPS = [["350°F", "175°C", "Cakes and many cookies"], ["375°F", "190°C", "Chocolate chip cookies"], ["400°F", "200°C", "Pizza and chicken tenders"], ["425°F", "220°C", "Roasted veggies"], ["165°F", "74°C", "Chicken is done inside"], ["160°F", "71°C", "Ground beef is done inside"]];
+const RCP_WORDS = [["Boil", "Heat until big bubbles roll on top."], ["Simmer", "Cook with small, gentle bubbles."], ["Whisk", "Stir fast to mix and add air."], ["Dice", "Cut into small cubes."], ["Chop", "Cut into pieces (not perfect cubes)."], ["Mince", "Cut into super tiny pieces."], ["Preheat", "Turn the oven on early so it's hot when the food goes in."], ["Fold", "Gently stir from the bottom up so you keep the air in."], ["Knead", "Press, fold and push dough to make it stretchy."], ["Sauté", "Cook quickly in a little oil or butter."], ["Drain", "Pour off the water or grease, often with a colander."], ["Zest", "Grate the colorful outside skin of a lemon or orange."]];
+const RCP_QUIZ = [
+  ["How long should you wash your hands before cooking?", ["At least 20 seconds", "2 seconds", "Just rinse them", "5 minutes"], "Scrub with soap for at least 20 seconds, about as long as singing “Happy Birthday” twice."],
+  ["How many teaspoons are in 1 tablespoon?", ["3", "2", "4", "10"], "3 teaspoons make 1 tablespoon."],
+  ["How many tablespoons are in 1 cup?", ["16", "8", "12", "24"], "16 tablespoons make 1 cup."],
+  ["Which way should a pot handle point on the stove?", ["In, toward the back, so nobody bumps it", "Out over the edge", "At the person next to you", "It doesn't matter"], "Handles sticking out can get bumped, and the hot pot could fall."],
+  ["What does “preheat the oven” mean?", ["Turn it on early so it's hot before the food goes in", "Heat the food before the oven", "Cook the food twice", "Open the door to cool it"], "Food cooks the right way when the oven is already hot."],
+  ["Chicken is safe to eat when the inside reaches…", ["165°F (74°C)", "100°F (38°C)", "130°F (54°C)", "It doesn't matter"], "A food thermometer is the best way to know chicken is cooked all the way."],
+  ["Why shouldn't you eat raw cookie dough?", ["Raw eggs and raw flour can have germs that make you sick", "It has too many chocolate chips", "It's too cold", "It's bad luck"], "Baking kills the germs. Wait for the cookies!"],
+  ["What should you use to hold a hot pan?", ["Dry oven mitts", "A wet towel", "A paper towel", "Your bare hands, quickly"], "A wet towel lets heat through and can burn you."],
+  ["What does “whisk” mean?", ["Stir fast to mix and add air", "Cut into tiny pieces", "Cook in a lot of oil", "Freeze quickly"], "A whisk is the wire tool, and whisking is stirring fast with it."],
+  ["What does “dice” mean?", ["Cut food into small cubes", "Roll food like dice", "Boil until soft", "Sprinkle on top"], "Diced food looks like little dice!"],
+  ["What does “simmer” mean?", ["Cook with small, gentle bubbles", "Cook with huge rolling bubbles", "Cook in the freezer", "Stir without heat"], "Simmering is gentler than boiling."],
+  ["If a pan of oil catches fire, a grown-up should…", ["Cover it with a lid and turn off the heat", "Pour water on it", "Carry it outside", "Blow on it"], "Water makes a grease fire spread. A lid takes away the air the fire needs."],
+  ["After touching raw meat or raw eggs, you should…", ["Wash your hands with soap", "Wipe them on your shirt", "Lick your fingers", "Keep cooking"], "Washing stops germs from getting onto other food."],
+  ["To double a recipe with 1½ cups of flour, you use…", ["3 cups", "2½ cups", "1½ cups", "4 cups"], "Doubling means times 2: 1½ + 1½ = 3."],
+  ["How much is 1 stick of butter?", ["½ cup", "1 cup", "¼ cup", "2 cups"], "One stick of butter is ½ cup, or 8 tablespoons."],
+  ["A recipe for 4 people needs 2 eggs. How many eggs for 8 people?", ["4", "2", "6", "8"], "8 people is twice as many, so use twice as many eggs."],
+  ["Where should milk, meat and leftovers go?", ["In the fridge", "On the counter", "In a sunny window", "In the cupboard"], "Cold foods go back in the fridge within 2 hours."],
+  ["Which knife is best for kids to spread peanut butter?", ["A butter knife", "A big chef's knife", "A steak knife", "A bread knife"], "Butter knives are dull, so they're safe for spreading."],
+  ["What does “knead” mean?", ["Press, fold and push dough", "Need more food", "Cut dough with scissors", "Bake dough quickly"], "Kneading makes bread dough stretchy."],
+  ["350°F is about how many degrees Celsius?", ["175°C", "350°C", "100°C", "35°C"], "350°F is about 175°C."],
+  ["What's the first thing to do before you cook?", ["Read the whole recipe and wash your hands", "Turn the stove on high", "Start mixing anything", "Eat dessert"], "Reading first means no surprises halfway through!"],
+  ["What's a good way to measure flour?", ["Spoon it into the cup, then level it off", "Pack it down as hard as you can", "Just guess", "Use a drinking glass"], "Packing it down makes too much flour, and baked things get dry."],
+  ["Why do liquids go in the blender first?", ["They help the blades spin and blend smoothly", "It looks prettier", "It makes the blender quieter", "No reason"], "Liquid on the bottom keeps everything moving."],
+  ["Which of these is a common food allergy?", ["Peanuts", "Water", "Ice", "Salt"], "Peanuts, milk, eggs, wheat, soy, tree nuts, fish and shellfish are common allergies."],
+  ["What does “drain” mean?", ["Pour off the water or grease", "Add more water", "Freeze it", "Stir it fast"], "You drain pasta in a colander."]
+];
+function rcpBasics(S) {
+  const best = qzBest("kitchen");
+  rcpScreen("basics", `<button class="rcp-quizbtn" type="button" data-rgo="quiz"><span aria-hidden="true">🧑‍🍳</span><span><b>Kitchen Quiz</b><small>${RCP_QUIZ.length} questions about safety, measuring and cooking words, 10 at a time${best ? ` · your best: ${best.best}%` : ""}</small></span><span aria-hidden="true">▶</span></button>
+    <h3 class="rcp-h">🦺 Kitchen safety</h3><div class="rcp-info">${RCP_SAFE.map(([e, t, d]) => `<div><i aria-hidden="true">${e}</i><b>${t}</b><small>${d}</small></div>`).join("")}</div>
+    <h3 class="rcp-h">🥄 Measuring</h3><table class="rcp-table"><tbody>${RCP_MEASURE.map(([a, b]) => `<tr><td>${a}</td><td>=</td><td><b>${b}</b></td></tr>`).join("")}</tbody></table>
+    <h3 class="rcp-h">🌡️ Temperatures</h3><table class="rcp-table"><tbody>${RCP_TEMPS.map(([f, c, w]) => `<tr><td><b>${f}</b></td><td>${c}</td><td>${w}</td></tr>`).join("")}</tbody></table>
+    <h3 class="rcp-h">📚 Kitchen words</h3><div class="rcp-info">${RCP_WORDS.map(([t, d]) => `<div><b>${t}</b><small>${d}</small></div>`).join("")}</div>`);
+  rcpWire();
+}
+function rcpQuiz() {
+  qzPlay({ id: "kitchen", label: "🍳 Recipes", title: "Kitchen Quiz", ic: "🧑‍🍳", colors: ["#e76f51", "#2a9d8f"], qs: RCP_QUIZ, n: 10, home: () => startRecipes("basics") });
+}
+
+/* 🖨️ print a recipe or the shopping list (or save it as a page to print later) */
+const RCP_PRINT_CSS = `.rp-page { font-family: Georgia, serif; color: #222; max-width: 720px; margin: 0 auto; padding: 18px; } .rp-page h1 { font-size: 26px; margin: 0 0 4px; } .rp-page .rp-meta { color: #555; margin: 0 0 14px; } .rp-page h2 { font-size: 18px; border-bottom: 2px solid #ddd; padding-bottom: 3px; margin: 16px 0 8px; } .rp-page li { margin: 4px 0; line-height: 1.4; } .rp-check { list-style: none; padding: 0; } .rp-check li::before { content: "☐ "; } .rp-page .rp-tip { background: #f6f1e6; border-radius: 8px; padding: 8px 12px; margin-top: 14px; } .rp-page small { color: #666; } .rp-foot { color: #888; font-size: 12px; margin-top: 18px; }`;
+function rcpPrintRecipe(r, sv) {
+  return `<h1>${esc(r.e || "")} ${esc(r.n)}</h1><p class="rp-meta">⏱️ ${r.t} minutes${r.wait ? ` ${esc(r.wait)}` : ""} · ${esc(rcpSvText(r, sv))}${(r.tags || []).some(t => RCP_HELP[t]) ? " · 👩‍🍳 Cook with a grown-up" : ""}</p>
+    <h2>Ingredients</h2><ul class="rp-check">${rcpLines(r, sv).map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+    <h2>Steps</h2><ol>${r.st.map(([t]) => `<li>${esc(t)}</li>`).join("")}</ol>${r.tip ? `<p class="rp-tip">💡 ${esc(r.tip)}</p>` : ""}`;
+}
+async function rcpPrint(body, title, save) {
+  const page = `<div class="rp-page">${body}<p class="rp-foot">From the 🍳 Recipes app in Study Arcade</p></div>`;
+  if (save) {
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(title)}</title><style>body { margin: 0; background: #fff; } .bar { position: sticky; top: 0; padding: 10px; background: #222; color: #fff; text-align: center; font-family: system-ui, sans-serif; } .bar button { font: inherit; font-weight: 700; padding: 10px 18px; border-radius: 10px; border: 0; background: #ffd23f; cursor: pointer; } ${RCP_PRINT_CSS} @media print { .bar { display: none; } }</style></head><body><div class="bar"><button onclick="print()">🖨️ Print</button></div>${page}</body></html>`;
+    const r = await saDownload(html, title.replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").toLowerCase() + ".html");
+    return toast(r === "saved" || r === true ? "💾 Saved! Open it and tap 🖨️ Print." : r === "declined" ? "Okay, not saved." : "That couldn't be saved here.");
+  }
+  document.getElementById("rcp-parea")?.remove(); document.getElementById("rcp-pstyle")?.remove();
+  const st = document.createElement("style"); st.id = "rcp-pstyle"; st.textContent = `#rcp-parea { display: none; } @media print { body > *:not(#rcp-parea) { display: none !important; } body { background: #fff !important; } #rcp-parea { display: block !important; } ${RCP_PRINT_CSS} }`;
+  const area = document.createElement("div"); area.id = "rcp-parea"; area.innerHTML = page;
+  document.head.appendChild(st); document.body.appendChild(area);
+  try { window.print(); toast("🖨️ If no print window opened, tap 💾 Save a page to print."); } catch (e) { toast("This browser won't print from here. Tap 💾 Save a page to print instead."); }
+}
+NEW_APPS.push({ id: "recipes", emoji: "🍳", name: "Recipes", desc: "A cookbook for kids: pancakes, tacos, cookies, smoothies and more. Make more or less, cook one step at a time with timers, keep favorites and a shopping list, write your own recipes, and find out what you can make with what you have.", added: "2026-11-23", start: () => startRecipes(), kw: "recipes?|cook(ing)?|cookbook|bak(e|ing)|kitchen|what can i make|shopping list|pancakes?|smoothies?|lemonade|mug cake|grilled cheese|quesadillas?|mac and cheese|overnight oats|trail mix" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
