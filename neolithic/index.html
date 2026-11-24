@@ -2620,6 +2620,15 @@
   .ph-miss { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 6px; } .ph-miss li { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 7px 10px; border-radius: 12px; background: var(--panel-2); border-left: 6px solid var(--lc); } .ph-miss li b { color: #fff; background: var(--lc); border-radius: 8px; padding: 0 7px; } .ph-miss li span { flex: 1; min-width: 12em; font-size: .9rem; }
   .ph-acts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 8px 0; }
   .ph-none { text-align: center; padding: 14px; border: 2px dashed var(--line); border-radius: 16px; color: var(--ink-soft); margin: 8px 0; }
+  .ph-x { display: grid; gap: 7px; text-align: left; justify-self: stretch; margin: 8px 0; padding: 12px 14px; border-radius: 16px; background: var(--panel); border: 2px solid var(--line); line-height: 1.55; font-size: .98rem; font-weight: 400; }
+  .ph-x h4 { margin: 6px 0 0; font-size: 1.02rem; } .ph-x p { margin: 0; } .ph-x .ph-sent { max-width: none; font-size: .98rem; } .ph-x .ph-paper { font-size: .93rem; line-height: 1.75; margin: 2px 0; }
+  .ph-xhead { font-size: 1.03rem; } .ph-xsmall { font-size: .88rem; color: var(--ink-soft); }
+  .ph-clues { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+  .ph-xtip { padding: 8px 10px; border-radius: 12px; background: color-mix(in srgb, var(--gold) 18%, var(--panel-2)); font-weight: 700; }
+  .ph-hl { background: color-mix(in srgb, var(--lc) 34%, transparent); font-weight: 700; outline: 2px solid var(--lc); outline-offset: 1px; } .ph-dim { opacity: .5; }
+  .ph-xgo { display: grid; justify-items: center; gap: 4px; margin: 4px 0 10px; }
+  .ph .sh-fb .ph-x { width: 100%; box-sizing: border-box; }
+  .ph-more { margin: 6px 0 0; } .ph-more summary { cursor: pointer; line-height: 1.45; } .ph-more .ph-x { margin: 6px 0; }
   .ph-mlist { display: grid; gap: 8px; } .ph-mcard { display: grid; gap: 3px; text-align: left; font: inherit; border: 0; border-radius: 16px; padding: 10px 12px; background: var(--paper); color: #2b2118; box-shadow: 0 3px 0 rgba(0,0,0,.25); cursor: pointer; transition: transform .12s; } .ph-mcard:hover { transform: translateY(-2px); } .ph-mcard span { font-size: .92rem; } .ph-mcard small { color: #5a4a38; font-weight: 700; }
   .sc-hero { position: relative; overflow: hidden; text-align: center; border-radius: 22px; padding: 14px 14px 12px; color: #fff; background: linear-gradient(135deg, var(--sa), var(--sb)); box-shadow: 0 8px 22px color-mix(in srgb, var(--sa) 45%, transparent); }
   .sc-hero::after { content: "⚜️"; position: absolute; right: -10px; bottom: -22px; font-size: 6rem; opacity: .12; transform: rotate(-14deg); pointer-events: none; }
@@ -32166,7 +32175,7 @@ const PH_UNITS = [
     ["🔚", "The period goes AFTER the citation: For example, “My name is Nobody” (paragraph 4).", "Where does the period go in a B sentence?", "After the citation", "Before the quote", "There is no period"],
     ["🔎", "Pick a quote that really proves your answer. Ask yourself: does this show my answer is true?", "What makes a quote a good choice?", "It proves your answer", "It's the longest sentence", "It's the first sentence"],
     ["🧩", "Sentence frame: For example, “___” (page/paragraph). The blank is the exact words from the text.", "In the frame For example, “___” (paragraph 3), what goes in the blank?", "Exact words from the text", "Your answer", "The title"],
-    ["✅", "A correct B sentence: To demonstrate, “Farming meant people could stay in one place” (paragraph 3).", "Which B sentence is written correctly?", "For example, “Lily nodded” (paragraph 3).", "For example, Lily nodded (paragraph 3).", "“Lily nodded” for example."],
+    ["✅", "A correct B sentence: To demonstrate, “Farming meant people could stay in one place” (paragraph 3).", "Which B sentence is written correctly?", "For example, “Marcus shrugged” (paragraph 3).", "For example, Marcus shrugged (paragraph 3).", "“Marcus shrugged” for example."],
     ["💬", "You can add a few of your own words to set up the quote: For example, Mateo says, “Come on.” (paragraph 4).", "Can you put a few of your own words before the quote?", "Yes, to set up the quote", "No, never", "Only the author's name"],
     ["📄", "A citation can be a page number or a paragraph number. Use whichever one your reading has.", "Your book has page numbers. Which citation works?", "(page 12)", "(the book)", "(I read it)"]] },
   { id: "c1", e: "🔍", name: "C1: Clarify", items: [
@@ -32214,11 +32223,266 @@ const PH_UNITS = [
     ["📋", "Check your paragraph with the checklist: title, author, answer, transitions, quote, citation, clarify, connect, conclude.", "Which is NOT on the ABCCD checklist?", "A drawing", "A citation", "A transition"],
     ["📚", "ABCCD works for any reading: stories, articles, myths, and even science or social studies texts.", "What can you write ABCCD paragraphs about?", "Stories, articles, and more", "Only poems", "Only math books"]] }
 ];
+// 📖 Long, detailed answers for when you miss one: [why the right answer is right, why the 1st wrong answer isn't, why the 2nd wrong answer isn't]
+const PH_DEEP = {
+  a: [
+    ["The A sentence is the very first sentence of an ABCCD paragraph, and its whole job is to answer the question in the prompt directly. Think of the question as a locked door and the A sentence as the key: if someone read only your A sentence, they should already know your answer. Everything after it (B, C1, C2 and D) is there to prove and explain that answer. Example: if the question is “Why is Ava's team successful?”, the A sentence says “Ava's team is successful because they combine their best ideas.”",
+      "B comes second. It doesn't give the answer: it borrows a quote from the text as proof for the answer you already gave in A.",
+      "C1 comes third. It clarifies (explains) the quote from B, so it can't be the sentence that first answers the question."],
+    ["Your class checklist says the A sentence must include three things: the title of the reading, the author (if one is given), and your direct answer in your own words. Naming the title and author tells your reader exactly what you're writing about, so they're never confused. Example: In “The Last Lap” by Jordan Pike, Mateo learns that helping a friend matters more than winning. The title is in quotation marks, the author's name comes after “by,” and the rest is the answer.",
+      "Quotes belong in the B sentence. The A sentence answers in your own words, so it shouldn't borrow the author's words yet.",
+      "Closing transitions like “In conclusion,” go in the D sentence, at the very end. A sentences have no transition at all."],
+    ["The checklist says to include the author IF it's available. Some readings, like many articles, websites and textbook passages, don't list an author. When that happens, just name the title and give your answer, and that's a complete A sentence. Example: The article “The Octopus: Escape Artist of the Sea” shows that octopuses are intelligent because they can solve problems. There's no author, so the sentence simply leaves it out.",
+      "Never invent an author. A made-up name would give your reader false information. If no author is listed, just leave it out.",
+      "A citation in parentheses, like (paragraph 4), shows where a quote came from. It belongs after the quote in the B sentence, not in A."],
+    ["Writing the answer in your own words shows that you understood the reading and made up your own mind about the question. If you copy the author's words into A, it looks like the text answered for you. Save the author's exact words for the B sentence, where they become your evidence. Example: instead of copying “His goal was simple: finish in the top three,” you might write “At first, Mateo only cares about winning a medal.”",
+      "A copied quote is the author's words, not yours. Quotes are evidence, and evidence goes in the B sentence.",
+      "The A sentence answers a question; it doesn't ask one. Asking another question would leave your reader without your answer."],
+    ["The A sentence is the only sentence in an ABCCD paragraph with no transitional phrase. Transitions connect a sentence to the one before it, and A has nothing before it: it's the starting line. So you jump straight in with the title and your answer. Your class sheet says it this way: “There are no transitional phrases for A sentences. Answer the question and mention the title and author, if available.”",
+      "“For example,” is a B starter. It introduces the quote that proves your answer, so it comes after A.",
+      "“In conclusion,” is a D starter. It signals the end of the paragraph, so it can't start the very first sentence."],
+    ["Titles of short works, like stories, articles, poems, chapters and songs, go inside quotation marks. (A long work, like a whole book, is usually in italics when typed, or underlined by hand, but follow your teacher's rule.) Quotation marks show your reader where the title starts and stops, so it doesn't blend into your sentence. Example: In “The Bridge Challenge” by Priya Shah, the team succeeds by working together.",
+      "Parentheses are for citations, like (paragraph 4). Putting the title in parentheses would make it look like a citation.",
+      "All capitals looks like shouting and isn't how titles are shown. Capitalize the important words and put the title in quotation marks."],
+    ["A great trick for A sentences is to turn the question around and use its words in your answer. The question “Why is the team successful?” becomes “The team is successful because…”, and then you finish it with your answer. Reusing the question's words proves you're answering exactly what was asked, and it makes the A sentence much easier to write. Don't forget to add the title and author too!",
+      "That one starts with “For example,” and borrows a quote, which makes it a B sentence. It's evidence, not the answer.",
+      "That one starts with “In conclusion,” which makes it a D sentence. You can't conclude before you've even answered."],
+    ["A strong A sentence is clear, direct and confident. It says exactly what happens or what is true, with no wishy-washy words like “maybe,” “kind of,” “I guess” or “sort of.” In this kind of paragraph you don't need “I think” at all, because the whole paragraph is already your thinking. The strong answer names who (Mateo) and the change (from caring about winning to caring about his friend), so it answers the whole question in one sentence.",
+      "“I think maybe… kind of… I guess” sounds unsure, and it never says HOW Mateo changes, so it doesn't really answer the question.",
+      "“This story is about a race” only names the topic. The question asked how Mateo changes, and this sentence never says."],
+    ["The A sentence holds your main idea, the answer to the question, and every other sentence works for it. B gives a quote that proves it, C1 explains that quote, C2 connects the quote back to the answer, and D wraps the answer up. If a sentence doesn't support your A sentence, it doesn't belong in the paragraph. That's why it's so important to get A clear first.",
+      "A citation just shows where a quote came from, like (paragraph 4). It's a small part of the B sentence, not the main idea.",
+      "The title tells which reading you're writing about, but it isn't your idea. Your answer is the idea every sentence supports."],
+    ["A complete A sentence has a few parts, and it helps to know which is which. “Nobody in the Cave” is the title, “a retelling of a story by Homer” tells about the author, and “Odysseus escapes by tricking the Cyclops” is the actual answer to the question “How does Odysseus escape?”. The title and author tell what you read; the answer tells what you think. The answer is the part the rest of your paragraph will prove.",
+      "“Nobody in the Cave” is the title. It tells which reading you're writing about, but it doesn't answer the question.",
+      "“A retelling of a story by Homer” tells who first told the story. That's the author part, not the answer."]],
+  b: [
+    ["B stands for borrowing a quote: you copy some of the author's exact words from the text and put them in your paragraph. That quote is your evidence, the proof that your answer in the A sentence is true. Without evidence, your answer is just an opinion; with a quote, your reader can see it's right there in the text. Example: For example, Ava asks, “What if we each explain our idea, and then pick the best parts?” (paragraph 3).",
+      "You name the title in the A sentence. B borrows actual words from inside the reading to use as proof.",
+      "B doesn't ask anything. It borrows the author's words to prove your answer."],
+    ["Your class sheet gives three B starters: “For example,” “To illustrate,” and “To demonstrate,”. All three tell your reader, “Here comes the proof!” To illustrate and to demonstrate both mean to show, so “To illustrate,” means “To show you what I mean…”. Example: To illustrate, “Lily showed them that triangles made of spaghetti were much stronger than squares” (paragraph 4).",
+      "“In other words,” is a C1 starter. It's used to say the quote again more simply, so it comes right after B.",
+      "“Ultimately,” is a D starter. It means “in the end,” so it belongs in the last sentence."],
+    ["When you borrow a quote, you must copy it exactly, word for word, with the author's own punctuation, and put quotation marks around it. Quotation marks are a promise to your reader: “These are the author's real words, not mine.” If you change even one word, that promise is broken. If you want to say it in your own words, that's what the C1 sentence is for. Tip: point at each word in the text as you copy it, then check it again.",
+      "Your own words go in C1, where you clarify the quote. A quote in B has to be the author's exact words.",
+      "Changing words inside quotation marks makes it not a real quote anymore. Copy it exactly, word for word."],
+    ["The parentheses after a quote hold the citation, which tells your reader exactly where in the text to find those words. Use a paragraph number like (paragraph 4) when the paragraphs are numbered, or a page number like (page 12) for a book. Citations let your teacher check your quote, and they show that you're using real evidence. In Paragraph Hop's readings, the paragraphs are numbered for you, so (paragraph 3) is perfect.",
+      "Your opinion goes in your own sentences, like A and C2. Parentheses after a quote are only for where the quote came from.",
+      "The author's age has nothing to do with finding the quote. Parentheses after a quote show the page or paragraph."],
+    ["Here's the order at the end of a B sentence: close the quotation marks, add the citation in parentheses, and then put the period. Like this: For example, “My name is Nobody” (paragraph 4). The period goes last because the citation is part of your sentence. If the quote ends with a question mark or an exclamation point, keep that mark inside the quotation marks, and still put a period after the citation: “tell them it was Odysseus!” (paragraph 7).",
+      "A period ends a sentence, so it can't go before the quote. It goes at the very end, after the citation.",
+      "Every sentence needs an end mark, and B sentences are no different. Put the period after the citation."],
+    ["The best quote is the one that most clearly shows your answer is true. Before you choose, reread your A sentence and ask: “If I showed someone only this quote, would they believe my answer?” A short quote that fits perfectly beats a long quote that only sort of fits. Example: to prove octopuses are clever, “unscrewing the lid of a jar to reach a crab inside” works much better than “An octopus has no bones at all.”",
+      "A long quote isn't better just because it's long. If it doesn't prove your answer, it's the wrong quote.",
+      "The first sentence of a reading is often just an introduction. Choose the quote that proves your answer, wherever it is."],
+    ["Sentence frames give you the shape of a sentence with blanks to fill in. In the B frame, For example, “___” (paragraph 3), the blank is inside quotation marks, so it must be filled with exact words copied from the text. The number in the parentheses shows where those words came from. Fill in the frame and you've got a perfect B sentence: For example, “Farming meant people could stay in one place” (paragraph 3).",
+      "Your answer goes in the A sentence, in your own words. The blank inside the quotation marks is for the author's words.",
+      "The title goes in the A sentence. The blank in the B frame is for a quote from inside the reading."],
+    ["A correct B sentence has four parts in this order: a B starter with a comma (For example,), the exact words inside quotation marks (“Marcus shrugged”), the citation in parentheses (paragraph 3), and a period at the very end. Leaving out the quotation marks makes the author's words look like your own, and putting the starter at the end mixes up the order. Check all four parts every time you write a B sentence.",
+      "This one is missing the quotation marks, so your reader can't tell these are the author's exact words.",
+      "This one puts the starter at the end and has no citation. The starter comes first, then the quote, then the citation."],
+    ["You're allowed to add a few of your own words before the quote to set it up and make your sentence flow. These words, called a lead-in, tell who said it or when it happened. Example: For example, when the giant asks his name, Odysseus answers, “My name is Nobody” (paragraph 4). Everything before the quotation marks is yours; everything inside them is the author's, copied exactly.",
+      "Setting up a quote with a few of your own words is allowed and makes it read smoothly. Just keep the quote itself exact.",
+      "You can set up a quote with more than just a name. Words like “when the giant asks his name, Odysseus answers” are fine."],
+    ["A citation has to point to an exact spot so someone could find the quote quickly. For a book with page numbers, use the page: (page 12), or (p. 12) if your teacher allows it. For a text with numbered paragraphs, use the paragraph: (paragraph 4). Saying “the book” or “I read it” doesn't tell anyone where to look. Tip: write down the page or paragraph number right when you copy the quote, so you don't forget it.",
+      "“(the book)” doesn't say where in the book. A citation needs a page or paragraph number.",
+      "“(I read it)” doesn't help anyone find the quote. Use the page or paragraph number instead."]],
+  c1: [
+    ["C1 stands for clarify, which means to make something clear. Quotes can be confusing on their own, because they're taken out of the middle of a story or article. The C1 sentence explains the quote: what it means, or what was happening when it was said. Example: after the quote “My name is Nobody” (paragraph 4), C1 says, “In other words, Odysseus gives the giant a fake name and hides who he really is.”",
+      "An ABCCD paragraph has just one quote, in B. C1 explains that quote in your own words.",
+      "The title goes in the A sentence. By C1, your reader already knows the title and now needs the quote explained."],
+    ["Your class sheet gives three C1 starters: “To clarify,” “More specifically,” and “In other words,”. Each one tells your reader you're about to explain the quote. “In other words,” is the easiest to remember, because that's exactly what you do: say the quote again in other, simpler words. Example: In other words, an octopus can make itself look just like a rock or coral almost instantly.",
+      "“For example,” is a B starter. It introduces the quote, which comes right before C1.",
+      "“Therefore,” is a D starter. It means “so” or “as a result,” and it's for the conclusion."],
+    ["Giving context means explaining the situation around the quote: who is talking, what just happened, and why it matters at that moment. A quote is like a single puzzle piece, and context shows where it fits in the whole picture. Example: for “Come on. We're finishing this together” (paragraph 4), the context is that Mateo's friend Eli tripped during the race, and Mateo went back to help him even though he was in third place.",
+      "Where the author lives is a fact about the author, not about the quote. Context explains what was happening in the text.",
+      "How long the book is doesn't help explain the quote. Context is what's happening around the quote in the text."],
+    ["To summarize a quote, you say its main idea in your own words, usually more simply and more briefly. Read the quote, think about what it really means, then look away from the text and write it the way you'd explain it to a friend. Example: the quote “His goal was simple: finish in the top three and earn a medal” can be summarized as “In other words, all Mateo cares about is winning.”",
+      "Copying the quote again just repeats it. A summary uses your own words to show you understand it.",
+      "A summary is usually shorter and simpler than the quote, not longer. It boils the quote down to its main idea."],
+    ["That sentence starts the right way, with “In other words,”, but then it just copies the quote again. That doesn't clarify anything: your reader learns nothing new. A good C1 adds understanding by explaining or summarizing, like this: “In other words, Odysseus gives the giant a fake name and hides who he really is.” Quick check: if your C1 has quotation marks in it, you might be repeating instead of clarifying.",
+      "Using a C1 starter is correct! “In other words,” is exactly how C1 should start. The problem is what comes after it.",
+      "It doesn't use its own words: it copies the quote. That's the mistake."],
+    ["In the example, the quote says “His goal was simple: finish in the top three and earn a medal,” and the C1 says “In other words, all Mateo cares about is winning.” The C1 takes the author's words and turns them into a simpler idea that's easy to understand. It doesn't add new evidence or wrap up the paragraph: it just makes the quote crystal clear before C2 connects it to the answer.",
+      "There are no quotation marks in that C1, and it adds no new evidence. It explains the quote that was already given.",
+      "The D sentence ends the paragraph. C1 is in the middle, right after the quote."],
+    ["The order of an ABCCD paragraph is A, B, C1, C2, D. C1 comes right after B for a reason: as soon as your reader sees the quote, they need to understand it. Then C2 can explain how that quote proves your answer. If you jumped from the quote straight to the conclusion, your reader might not understand why the quote matters.",
+      "D is the last sentence. There are two sentences (C1 and C2) between B and D.",
+      "A is the very first sentence, before B. Nothing comes before A."],
+    ["When you write about a reading, imagine your reader has never seen it. They don't know who the characters are or what happened before the quote. The C1 sentence fills them in so the quote makes sense. If a friend who never read the story could understand your paragraph, your C1 is doing its job. Example: To clarify, Mateo gives up his chance at a medal so that Eli will not have to finish the race alone.",
+      "The person who wrote the paragraph already understands it. C1 is for a reader who doesn't know the text.",
+      "C1 stays on the same topic: it explains the quote. A new topic doesn't belong in the paragraph."],
+    ["“More specifically,” is a C1 starter that zooms in. Use it when the quote is broad and you want to point out the exact detail that matters most. Example: after the quote that octopuses solve puzzles “such as unscrewing the lid of a jar to reach a crab inside” (paragraph 2), you might write: More specifically, an octopus can figure out how to open a closed jar to get food, which is a hard puzzle for an animal.",
+      "“Clearly then,” is a C2 frame: “Clearly then, ___ is true because…”. It connects the quote to your answer.",
+      "“Evidently,” is a D starter. It means “clearly, from the evidence,” and it's for the conclusion."],
+    ["“To clarify, Odysseus is so proud of his trick that he tells the Cyclops his real name.” is a strong C1 for three reasons. It starts with a C1 starter, “To clarify,”. It uses its own words instead of repeating the quote. And it explains what's really going on in the quote: Odysseus is bragging because he's proud. Now the reader is ready for C2, which will connect this to the question.",
+      "It doesn't copy anything: there are no quotation marks. It explains the quote in new words.",
+      "It has no citation. Citations go after the quote in B, not in C1."]],
+  c2: [
+    ["C2 stands for connect. This is where you explain HOW your quote proves your answer from the A sentence. It's the most important thinking in the paragraph, because a quote doesn't explain itself: you have to show why it matters. Example: This detail proves that Odysseus uses his wits to escape, because when the giant yells that Nobody is hurting him, the other Cyclopes go home.",
+      "Clarifying the quote is C1's job. C2 goes a step further and connects the quote to your answer.",
+      "The author is named in the A sentence. C2 is about connecting your evidence to your answer."],
+    ["Your class sheet gives three C2 starters: “This detail proves,” “This evidence demonstrates,” and the frame “Clearly then, ___ is true because…”. Notice the words proves, demonstrates and is true: they all tell your reader you're about to show why your answer is right. After the starter, add “that” and your answer, then explain with “because.” Example: This evidence demonstrates that octopuses are intelligent, because solving a puzzle takes real thinking.",
+      "“To clarify,” is a C1 starter. C1 explains the quote; C2 connects it to the answer.",
+      "“For example,” is a B starter. It introduces the quote, two sentences before C2."],
+    ["Your class sheet says it's usually good to include some words from the question in your C2 sentence. Reusing the question's words shows your teacher you're connecting your evidence straight back to what was asked. Example: if the question is “How does an octopus's body help it escape from danger?”, a strong C2 says, “This detail proves that an octopus's body helps it escape from danger, because a predator cannot attack something it cannot see.”",
+      "Citations go after the quote in B. C2 explains the quote, so it doesn't need another citation.",
+      "A new topic would pull your reader away from your answer. C2 ties everything back to the question."],
+    ["“Because” is the most useful word in a C2 sentence. Everything after “because” is your explanation: the reason the quote proves your answer. Without it, you might just repeat your answer without showing your thinking. Try this pattern: [C2 starter] that [your answer], because [how the quote shows it]. Example: This detail proves that a surplus changed jobs, because people could only take new jobs when they didn't have to grow all their own food.",
+      "“Once upon a time” starts a fairy tale. It doesn't explain anything in a paragraph about a reading.",
+      "“The end” closes a story, not an explanation. “Because” is the word that explains your thinking."],
+    ["In the frame “Clearly then, ___ is true because ___,” the first blank is your answer from the A sentence, and the second blank is your explanation of how the quote proves it. Example: Clearly then, the idea that Mateo changes is true because by the end of the story he gives up that medal to help Eli. Notice how the first blank is the answer (Mateo changes) and the part after “because” is the proof.",
+      "The quote already appeared in B. In this frame, the first blank is the answer the quote proves.",
+      "Page numbers go in the citation after the quote in B. The blank in this frame is for your answer."],
+    ["Picture a river with the quote on one side and your answer on the other. Your reader can see both sides, but they need a bridge to get across, and that bridge is C2. It explains the link, so the reader understands exactly why the quote proves the answer. A paragraph without C2 is like two islands with no bridge: the evidence just sits there, and the reader has to guess what it means.",
+      "The title and author are both named in the A sentence. C2 links your evidence to your answer.",
+      "An ABCCD paragraph is about one reading. C2 connects the quote and the answer from that same reading."],
+    ["C1 and C2 are easy to mix up because they sit next to each other, but they do different jobs. C1 asks “What does the quote mean?” and explains it. C2 asks “Why does this quote matter for my answer?” and connects it. Example: C1: In other words, Mateo only cares about winning at the start. C2: Clearly then, the idea that Mateo changes is true because by the end he gives up the medal to help Eli.",
+      "C1 explains what the quote means, but it doesn't yet say why it matters for your answer. That's C2's job.",
+      "B gives the quote but doesn't explain it at all. Explaining why it matters comes two sentences later, in C2."],
+    ["The question was “How does Odysseus use his wits to escape?” and the C2 sentence repeats “uses his wits to escape” almost exactly. That's what your class sheet means by including words from the question. The other phrases, “the other Cyclopes” and “go home,” come from the story itself, not the question. When you reuse the question's words, your teacher can see that your paragraph answers exactly what was asked.",
+      "“The other Cyclopes” comes from the story, not the question. The question never mentions them.",
+      "“Go home” describes what happens in the story. It isn't in the question."],
+    ["An ABCCD paragraph uses one quote, in the B sentence, and then spends two whole sentences (C1 and C2) really digging into it. Adding a new quote in C2 would leave your first quote half-explained and confuse your reader. If you want to use more evidence, you can write a second ABCCD paragraph with a new quote, the way a longer essay does.",
+      "C2 never needs a new quote. Its job is to explain how the quote from B proves your answer.",
+      "Even a long quote doesn't need a second quote in C2. Explain the one you already have."],
+    ["After reading a strong C2, your reader should think, “Oh, now I see why that quote proves the answer!” To get there, explain your thinking step by step: what the quote shows, and how that leads to your answer. Ask yourself, “Would someone who disagrees with me be convinced?” Example: This evidence demonstrates that farming changed the way people lived, because staying in one place led to the first towns.",
+      "The length of the reading has nothing to do with your answer. C2 shows why your evidence proves your answer.",
+      "The author's friends aren't part of the reading. C2 stays focused on your quote and your answer."]],
+  d: [
+    ["D stands for drawing a conclusion, and it's always the last sentence of an ABCCD paragraph. It tells your reader the paragraph is finished and leaves them with your main point. Without a D sentence, a paragraph feels like it stops in the middle. Example: In conclusion, Odysseus's clever tricks, not his strength, are what save him and his men.",
+      "C2 comes right before D. It connects the quote to your answer, and then D wraps everything up.",
+      "A is the first sentence, not the last. It opens the paragraph with your answer."],
+    ["Your class sheet gives four D starters: “In conclusion,” “Evidently,” “Ultimately,” and “Therefore,”. Each one signals the ending. “Ultimately,” means “in the end” or “when everything is considered,” which makes it a great way to start a final big idea. Example: Ultimately, the story shows that being too proud can undo even the cleverest plan.",
+      "“More specifically,” is a C1 starter. It zooms in on the quote, in the middle of the paragraph.",
+      "“To illustrate,” is a B starter. It introduces the quote, near the beginning."],
+    ["One way to write D is to say your answer from the A sentence again, but in different words. This reminds your reader of your main point without sounding repetitive. Example: A: Ava's team is finally successful because they stop arguing and combine their best ideas. D: Ultimately, the story shows that a team is strongest when everyone's ideas are heard. It's the same idea in fresh words.",
+      "Copying your A sentence word for word sounds repetitive. Reword it so it feels like a real ending.",
+      "New quotes don't go in D. The conclusion wraps up what you already proved."],
+    ["The other way to write D is to leave your reader with a memorable closing idea: a lesson, a big-picture thought, or why your answer matters. This is a great choice when the reading teaches something. Example: after a paragraph about Mateo helping his friend, the D sentence could be “Ultimately, the story teaches that kindness can be a bigger win than any medal.” It's connected to the answer, but it ends on a thought that sticks.",
+      "A riddle would leave your reader puzzled instead of wrapping things up. D should end clearly, connected to your answer.",
+      "Listing transition words isn't a conclusion. Pick one closing transition and finish your idea."],
+    ["The D sentence is for wrapping up, not for adding new information. If you add a new quote or a brand-new fact at the end, your reader will wonder why it wasn't explained, and the paragraph will feel unfinished. Everything your conclusion says should connect back to your answer and the evidence you already gave.",
+      "D sentences SHOULD start with a closing transition, like “In conclusion,” or “Therefore,”.",
+      "Using an idea from your answer is exactly what D should do. It's a new quote that doesn't belong."],
+    ["“Ultimately, the story shows that being too proud can undo even the cleverest plan.” doesn't just repeat the answer that Odysseus made a mistake. It turns it into a lesson anyone could remember: pride can ruin even a good plan. That's a memorable closing idea. It starts with a D starter, “Ultimately,” and it connects to the paragraph's answer, so it's a strong ending.",
+      "There are no quotation marks in that sentence. It uses its own words to wrap up.",
+      "The title was named back in the A sentence. That D sentence doesn't mention the title at all."],
+    ["A paragraph is like a burger. The A sentence is the top bun: it starts things off by giving your answer. B, C1 and C2 are the filling: the quote and your explanations are the hearty middle. D is the bottom bun: it holds everything together from below and finishes it off. Without either bun, the whole thing falls apart!",
+      "The filling is B, C1 and C2: the quote and your explanations in the middle of the paragraph.",
+      "The plate isn't part of the burger at all. D is part of the paragraph: the bottom bun."],
+    ["“Evidently” comes from the word “evidence.” It means something is clear because the evidence shows it. When you start your D sentence with “Evidently,” you're saying, “After all the proof I just gave, this is obviously true.” Example: Evidently, an octopus's amazing body works like a built-in survival kit. That's a confident way to end, because your quote already proved it.",
+      "“Maybe” sounds unsure, but “Evidently” is the opposite: it means the evidence makes it clear.",
+      "“Once upon a time” starts a fairy tale. “Evidently” is used to conclude, based on evidence."],
+    ["“Therefore” means “so” or “as a result.” It shows that your conclusion follows from everything before it: because of the evidence, this must be true. Example: Therefore, farming was the start of the settled life that most people live today. Try reading your D sentence with “So,” in place of “Therefore,”: if it still makes sense, you're using it correctly.",
+      "“For example” introduces evidence, like the quote in B. “Therefore” introduces a conclusion.",
+      "“In other words” introduces a restatement, like in C1. “Therefore” means “as a result.”"],
+    ["The last sentence of anything you read is often the one you remember best. That's why D matters: it's your final chance to make your answer stick. A great D sentence is clear, connected to your answer, and maybe a little memorable. If a friend read your paragraph and could tell you your answer the next day, your D sentence did its job.",
+      "A good conclusion clears things up. If your reader is confused at the end, the D sentence isn't working.",
+      "D shouldn't open a new topic. It closes the paragraph by bringing the reader back to your answer."]],
+  all: [
+    ["The order of an ABCCD paragraph is in its name: A, B, C1, C2, D. A answers the question, B borrows a quote as proof, C1 clarifies the quote, C2 connects the quote to your answer, and D draws a conclusion. The order matters because each sentence builds on the one before it: you can't clarify a quote you haven't given yet, and you can't conclude before you've answered.",
+      "That order starts with the quote before the answer and puts D before C2. Your reader needs your answer first, and D always comes last.",
+      "That order clarifies the quote (C1) before giving it (B). You have to show the quote first, then explain it."],
+    ["An ABCCD paragraph has five sentences, one for each part: A, B, C1, C2 and D. There are two C sentences, C1 to clarify and C2 to connect, which is why the name has a double C. Five focused sentences are enough to answer a question, prove it, explain it and wrap it up.",
+      "Three sentences would leave out parts. You need all five: A, B, C1, C2 and D.",
+      "Eight is too many. An ABCCD paragraph has exactly one sentence for each part: five in all."],
+    ["The memory trick “Answer, Borrow, Clarify, Connect, Done” helps you remember the job of each sentence. B stands for Borrow, because in the B sentence you borrow a quote from the text, copying the author's exact words and citing where they came from. Say the trick out loud a few times: Answer, Borrow, Clarify, Connect, Done!",
+      "The paragraph begins with A, the answer. B isn't the beginning: it's the quote that comes second.",
+      "“Done” is the D in the trick, the conclusion. B stands for Borrow a quote."],
+    ["Transitional phrases are like road signs for your reader. “For example,” says “proof is coming,” “In other words,” says “I'm about to explain,” “This detail proves” says “here's how it connects,” and “In conclusion,” says “we're almost done.” They make your paragraph flow smoothly instead of feeling like a list of random sentences, and they show your teacher you know what each sentence is doing.",
+      "Transitions actually add a few words. Their job is to guide your reader, not to shorten the paragraph.",
+      "Transitions never replace the quote. In B, the transition comes right before the quote."],
+    ["A is the only sentence without a transitional phrase. Every other sentence links back to something before it: B links to your answer, C1 to the quote, C2 to your answer again, and D to everything. But A is the very first sentence, so there's nothing to transition from. It jumps right in with the title, the author (if there is one) and your answer.",
+      "B starts with a transition: “For example,” “To illustrate,” or “To demonstrate,”.",
+      "D starts with a closing transition: “In conclusion,” “Evidently,” “Ultimately,” or “Therefore,”."],
+    ["A citation is a short note in parentheses that tells exactly where your quote came from, like (paragraph 4) or (page 12). It goes right after the closing quotation mark and before the period. Citations let your reader find and check the quote, and they give credit to the author. In school writing, a quote without a citation is incomplete.",
+      "A citation is written, not read aloud. It's a note in parentheses that shows where the quote is.",
+      "You should never change a quote's words. A citation just shows where the exact words came from."],
+    ["Evidence is proof from the text that your answer is right. In an ABCCD paragraph, the evidence is the quote in the B sentence, copied word for word with a citation. The sentences after it (C1 and C2) explain the evidence, and D wraps it up. Strong evidence makes your whole paragraph convincing.",
+      "D wraps up the paragraph. It shouldn't add evidence, because the evidence was already given in B.",
+      "The title just names the reading. The evidence is a quote from inside the reading, in B."],
+    ["C1 and C2 are both about the quote, but they do different jobs. C1 clarifies: it explains what the quote means or what was happening. C2 connects: it explains how the quote proves your answer, often using words from the question. A quick way to remember: C1 looks back at the quote, and C2 looks back at the answer.",
+      "Concluding is D's job, and citing happens in B. C1 clarifies and C2 connects.",
+      "They're different! C1 explains the quote; C2 connects the quote to your answer."],
+    ["The ABCCD checklist covers everything a paragraph needs: the title and author, a direct answer, transitional phrases, a quote in quotation marks, a citation in parentheses, a clarifying sentence, a connecting sentence, and a conclusion. A drawing might be fun, but it isn't part of a written paragraph. Try ✍️ Write your own in Paragraph Hop, and the checklist will check your sentences for you!",
+      "A citation is on the checklist: the B sentence needs one, in parentheses after the quote.",
+      "Transitions are on the checklist: B, C1, C2 and D all start with one."],
+    ["ABCCD paragraphs work for almost any reading: stories, myths, poems, news and science articles, history texts and more. Any time a teacher asks a question about something you read and wants proof, you can answer with A, prove it with B, explain with C1 and C2, and wrap up with D. It's a tool you'll use in many subjects.",
+      "Poems work, but so do stories, articles and textbooks. ABCCD isn't only for poems.",
+      "ABCCD is used for reading in every subject, not only math books."]]
+};
+const PH_TIPK = { a: 0, b: 1, c1: 3, c2: 4, d: 5 };   // which ⚠️ tip goes with each letter
+// 📖 The long answer when you miss one (or run out of time). mode "learn" leaves off the "You picked…" line.
+function phExplain(x, picked, mode) {
+  const head = mode === "learn" ? "" : picked != null
+    ? `<p class="ph-xhead">❌ You picked <b class="sh-bad">“${esc(picked)}”</b>. The right answer is <b class="sh-good">“${esc(x.a)}”</b>.</p>`
+    : `<p class="ph-xhead">⏱ Time ran out. The right answer is <b class="sh-good">“${esc(x.a)}”</b>.</p>`;
+  if (x.u === "name") return `<div class="ph-x">${head}${phNameWhy(x, picked)}</div>`;
+  const no = picked != null && x.no && x.no[picked];
+  return `<div class="ph-x">${head}<h4>✅ Why “${esc(x.a)}” is right</h4><p>${esc(x.more || x.fact)}</p>${no ? `<h4>🤔 Why not “${esc(picked)}”?</h4><p>${esc(no)}</p>` : ""}<p class="ph-xtip">💡 Remember: ${esc(x.fact)}</p></div>`;
+}
+function phSharedWords(s, q) {   // the actual words in s that come from the question
+  const Q = new Set(phWords(q)), out = [];
+  phNorm(s).split(" ").forEach(w => { if (w.length >= 4 && !PH_STOP.has(w) && Q.has(phStem(w)) && !out.some(o => phStem(o) === phStem(w))) out.push(w); });
+  return out.slice(0, 5);
+}
+function phParaHL(m, k) {   // the whole paragraph, with one sentence lit up
+  return PH_KEYS.map(j => `<span class="ph-s ph-${j}${j === k ? " ph-hl" : " ph-dim"}"><sup>${PH_PART[j].L}</sup>${esc(m[j])}</span>`).join(" ");
+}
+function phNameWhy(x, picked) {
+  const r = phRead(x.r), qq = r.qs[x.qi], m = phModel(r, x.qi), k = x.k, s = x.s;
+  const pk = picked ? PH_KEYS.find(j => phLab(j) === picked) : null;
+  const st = phStarter(k, s), qs = phQuotes(s), cite = phCite(s), clues = [];
+  if (k === "a") {
+    clues.push("It has <b>no transitional phrase</b> at the start. It jumps right in with the answer, and only an A sentence does that.");
+    clues.push(`It names the <b>title</b>, “${esc(r.t)}”${r.au ? `, and the <b>author</b>, ${esc(r.au)}` : " (this reading has no author listed, so there's no author to name)"}.`);
+    clues.push(`It <b>answers the question</b> “${esc(qq.q)}” directly, in its own words. The quotation marks in it are around the title, not around a quote.`);
+  } else if (k === "b") {
+    clues.push(`It starts with <b>“${esc(st)}”</b>, one of the three B starters on your class sheet (For example, To illustrate, To demonstrate).`);
+    if (qs.length) clues.push(`It <b>borrows a quote</b>: the author's exact words, copied inside quotation marks: “${esc(qs[qs.length - 1])}”.`);
+    if (cite) clues.push(`It ends with a <b>citation</b>, (${esc(cite)}), which tells you exactly where to find that quote in the reading.`);
+  } else if (k === "c1") {
+    clues.push(`It starts with <b>“${esc(st)}”</b>, one of the three C1 starters on your class sheet (To clarify, More specifically, In other words).`);
+    clues.push(`It <b>explains the quote in its own words</b>. It's clarifying the B sentence right before it: <i>${esc(m.b)}</i>`);
+    clues.push("It has no quote and no citation of its own, and it doesn't connect to the question or wrap up the paragraph yet.");
+  } else if (k === "c2") {
+    const sh = phSharedWords(s, qq.q);
+    clues.push(`It starts with <b>“${esc(st)}”</b>, a C2 starter on your class sheet (This detail proves, This evidence demonstrates, Clearly then… is true because).`);
+    clues.push(`It <b>connects the quote to the answer</b> and explains how the quote proves it${/\bbecause\b/i.test(s) ? ", using the word <b>because</b>" : ""}.`);
+    if (sh.length) clues.push(`It reuses <b>words from the question</b> (“${esc(qq.q)}”): ${sh.map(w => `<b>${esc(w)}</b>`).join(", ")}.`);
+  } else {
+    clues.push(`It starts with <b>“${esc(st)}”</b>, a closing transition on your class sheet (In conclusion, Evidently, Ultimately, Therefore).`);
+    clues.push("It <b>wraps up the paragraph</b> by rewording the answer or ending with a memorable idea, and it adds no new quote.");
+  }
+  const why = pk && pk !== k ? `<h4>🤔 Why isn't it ${PH_PART[pk].L}?</h4><p>${esc(phNot(pk, k, st, qs, cite))}</p>` : "";
+  return `<h4>🔎 The clues that it's ${PH_PART[k].L}: ${esc(PH_PART[k].name)}</h4><p class="ph-sent">${esc(s)}</p><ul class="ph-clues">${clues.map(c => `<li>${c}</li>`).join("")}</ul>${why}
+    <h4>📄 The whole paragraph it came from</h4><p class="ph-xsmall">From “${esc(r.t)}”. The question: ${esc(qq.q)}</p><div class="ph-paper">${phParaHL(m, k)}</div>
+    <p class="ph-xtip">💡 Remember: ${esc(PH_TIPS[PH_TIPK[k]])}</p>`;
+}
+function phNot(pk, k, st, qs, cite) {   // why the letter you picked doesn't fit this sentence
+  const pair = {
+    "c1>c2": "C1 only explains what the quote means. This sentence goes further: it shows how the quote proves the answer to the question, and that's C2's job.",
+    "c2>c1": "C2 connects the quote to the answer to the question. This sentence only explains what the quote means, in other words. That's clarifying, which is C1's job.",
+    "a>d": "That closing transition shows this is the conclusion at the end of the paragraph, not the answer at the start.",
+    "d>a": "D sentences start with a closing transition like “In conclusion,” but this one has no transition at all, and it names the title. That's how an A sentence opens a paragraph.",
+    "b>c1": "This sentence has no quotation marks and no citation, so it isn't borrowing a quote. It's explaining the quote that came before it, which is C1's job.",
+    "c1>b": `This sentence copies the author's exact words in quotation marks and ends with a citation, (${cite}). That's borrowing a quote, which is B's job. C1 would explain that quote afterward.`
+  }[pk + ">" + k];
+  const own = {
+    a: st ? `An A sentence never starts with a transitional phrase, but this one starts with “${st}”. A sentences jump right in with the title, the author and the answer.` : "An A sentence gives the answer for the first time, with the title and author.",
+    b: k === "a" ? "A B sentence borrows a quote from inside the reading and ends with a citation like (paragraph 4). The quotation marks here are around the title, and there's no citation." : `A B sentence must borrow a quote in quotation marks and end with a citation like (paragraph 4), but this sentence has ${qs.length ? "no citation" : cite ? "no quote" : "no quote and no citation"}.`,
+    c1: `A C1 sentence starts with “To clarify,” “More specifically,” or “In other words,” and explains what the quote means${st ? `, but this one starts with “${st}”` : ""}.`,
+    c2: `A C2 sentence starts with “This detail proves,” “This evidence demonstrates,” or “Clearly then,” and explains how the quote proves the answer${st ? `, but this one starts with “${st}”` : ""}.`,
+    d: `A D sentence starts with a closing transition like “In conclusion,” or “Therefore,” and comes last to wrap up${st ? `, but this one starts with “${st}”` : ""}.`
+  }[pk];
+  return `${own} ${pair || `This one is the ${PH_PART[k].L} sentence. ${PH_WHY[k]}`}`;
+}
 function phLab(k) { return `${PH_PART[k].L}: ${PH_PART[k].name}`; }
 // 🏷️ Name that sentence: every sentence from every example paragraph
-const PH_NAME = PH_READ.flatMap(r => r.qs.flatMap((x, qi) => PH_KEYS.map((k, i) => ({ id: `nm-${r.id}-${qi}-${k}`, u: "name", e: "🏷️", s: x.m[i], q: "Which sentence is this?", a: phLab(k), w: shuffle(PH_KEYS.filter(j => j !== k)).slice(0, 2).map(phLab), fact: `That's the ${PH_PART[k].L} sentence (${PH_PART[k].name}). ${PH_WHY[k]}` }))));
+const PH_NAME = PH_READ.flatMap(r => r.qs.flatMap((x, qi) => PH_KEYS.map((k, i) => ({ id: `nm-${r.id}-${qi}-${k}`, u: "name", r: r.id, qi, k, e: "🏷️", s: x.m[i], q: "Which sentence is this?", a: phLab(k), w: shuffle(PH_KEYS.filter(j => j !== k)).slice(0, 2).map(phLab), fact: `That's the ${PH_PART[k].L} sentence (${PH_PART[k].name}). ${PH_WHY[k]}` }))));
 const PH_TRAIL = [...PH_UNITS, { id: "name", e: "🏷️", name: "Name that sentence", items: PH_NAME }];
-const PH_ITEMS = [...PH_UNITS.flatMap(u => u.items.map((x, k) => ({ id: u.id + "-" + k, u: u.id, e: x[0], fact: x[1], q: x[2], a: x[3], w: [x[4], x[5]] }))), ...PH_NAME];
+const PH_ITEMS = [...PH_UNITS.flatMap(u => u.items.map((x, k) => { const d = (PH_DEEP[u.id] || [])[k] || []; return { id: u.id + "-" + k, u: u.id, e: x[0], fact: x[1], q: x[2], a: x[3], w: [x[4], x[5]], more: d[0], no: { [x[4]]: d[1], [x[5]]: d[2] } }; })), ...PH_NAME];
 const PH_HOPOK = x => [x.a, ...x.w].every(t => t.length <= 46);   // answers short enough to fit on a platform
 const PH_LEVELS = { easy: { name: "Easy", secs: 20, pts: 1 }, hard: { name: "Hard", secs: 12, pts: 2 }, extreme: { name: "Extreme", secs: 8, pts: 3 } };
 const PH_HOPPERS = [["pencil", "✏️", "Pencil", 0], ["worm", "🐛", "Bookworm", 0], ["owl", "🦉", "Owl", 50], ["parrot", "🦜", "Parrot", 100], ["octopus", "🐙", "Octopus", 150], ["fox", "🦊", "Fox", 250], ["panda", "🐼", "Panda", 400], ["robot", "🤖", "Robot", 600], ["wizard", "🧙", "Wizard", 900], ["unicorn", "🦄", "Unicorn", 1200], ["dragon", "🐉", "Dragon", 1600]]
@@ -32340,8 +32604,9 @@ function phTrail(uid) {
         naTimer(setTimeout(() => { if (document.getElementById("sh-fb")) draw(); }, 1000));
       } else {
         b.classList.add("wrong"); line.push(line.shift()); stage = "fact";
-        fb.innerHTML = `<b class="sh-bad">Not quite.</b> ${esc(x.fact)}<br><small class="soft">You'll see this one again soon.</small><br><button class="btn" id="sh-next" type="button">Next ▶</button>`;
+        fb.innerHTML = `<b class="sh-bad">Not quite!</b>${phExplain(x, opts[+b.dataset.o])}<small class="soft">You'll see this one again soon.</small><button class="btn go" id="sh-next" type="button">Got it! Next ▶</button>`;
         document.getElementById("sh-next").addEventListener("click", draw);
+        naTimer(setTimeout(() => document.getElementById("sh-fb")?.scrollIntoView({ behavior: "smooth", block: "start" }), 250));
       }
     }));
   };
@@ -32357,7 +32622,7 @@ function phHop(level, topic) {
     <div class="sh-qbox" id="sh-qbox"></div>
     <div class="sh-stage" id="sh-stage"><i class="sh-wave" aria-hidden="true"></i><i class="sh-wave b" aria-hidden="true"></i><i class="sh-wave c" aria-hidden="true"></i><i class="sh-wave d" aria-hidden="true"></i><div class="sh-row" id="sh-next"></div><div class="sh-cur" id="sh-cur"><div class="sh-hopper" id="sh-hopper">${me.e}</div><div class="sh-pad sh-mine" id="sh-mine"><i class="sh-timer" id="sh-timer"></i></div></div><div class="sh-pause" id="sh-pause" hidden><b>⏸️ Paused</b><span>Your platform is waiting for you.</span><button class="btn go" id="sh-resume" type="button">▶ Keep hopping</button></div></div>
     <div class="sh-msg" id="sh-msg" aria-live="polite"></div>
-    <p class="soft sh-help">${U ? `${U.e} ${esc(U.name)}` : "🌍 Everything"} · ${L.name}: ${L.secs} seconds before your platform crumbles (more for long sentences). Keys 1, 2, 3 work too, and P pauses. <button class="linklike" id="sh-quit" type="button">Stop</button></p></div>`);
+    <p class="soft sh-help">${U ? `${U.e} ${esc(U.name)}` : "🌍 Everything"} · ${L.name}: ${L.secs} seconds before your platform crumbles (more for long sentences). Miss one and the clock waits while you read why. Keys 1, 2, 3 work too, and P pauses. <button class="linklike" id="sh-quit" type="button">Stop</button></p></div>`);
   const $ = id => document.getElementById("sh-" + id);
   const hud = () => { $("lives").innerHTML = shHeartsHTML(G.lives, G.max); $("hops").textContent = `${G.hops} hop${G.hops === 1 ? "" : "s"}`; $("atoms").textContent = `💧 ${G.ink}`; };
   const next = () => {
@@ -32389,25 +32654,33 @@ function phHop(level, topic) {
       hud(); hopTo(btn, next);
     } else {
       G.streak = 0; G.lives--; btn.classList.add("crumble"); right.classList.add("right"); G.missed.push(x); hud(); tone?.([220, 165], .12, "sawtooth", .05);
-      $("msg").innerHTML = `<b class="sh-bad">💥 That platform crumbled! −1 ❤️</b> ${esc(x.fact)}`;
-      if (G.lives <= 0) return naTimer(setTimeout(end, 2200));
-      naTimer(setTimeout(() => hopTo(right, () => naTimer(setTimeout(next, 1100))), 1400));
+      explain(x, opts[+btn.dataset.p], "💥 That platform crumbled! −1 ❤️", () => hopTo(right, () => naTimer(setTimeout(next, 500))));
     }
   };
   const crumble = () => {   // ⏱ too slow: your platform crumbles and you fall
     if (G.over || G.cur.done || G.paused) return; G.cur.done = true; G.streak = 0; G.lives -= .5; G.missed.push(G.cur.x);   // too slow costs half a heart
     $("mine").classList.add("crumble"); const hp = $("hopper"); hp.style.transform = "translate(-50%, 90px)"; hp.style.opacity = 0;
     const right = [...$("next").children].find(b => G.cur.opts[+b.dataset.p] === G.cur.x.a); right?.classList.add("right");
-    $("msg").innerHTML = `<b class="sh-bad">⏱ Too slow! Your platform crumbled. −½ ❤️</b> ${esc(G.cur.x.fact)}`; hud(); tone?.([300, 150], .15, "sawtooth", .05);
-    if (G.lives <= 0) return naTimer(setTimeout(end, 2200));
-    naTimer(setTimeout(next, 3000));
+    hud(); tone?.([300, 150], .15, "sawtooth", .05);
+    explain(G.cur.x, null, "⏱ Too slow! Your platform crumbled. −½ ❤️", next);
+  };
+  const explain = (x, picked, title, cont) => {   // 📖 the clock waits while you read the long answer
+    G.explain = true; const last = G.lives <= 0;
+    $("msg").innerHTML = `<b class="sh-bad">${title}</b>${phExplain(x, picked)}<div class="ph-xgo"><button class="btn go" id="ph-xgo" type="button">${last ? "🏁 See my score" : "▶ Got it! Keep hopping"}</button><small class="soft">The clock waits while you read. Press Enter when you're ready.</small></div>`;
+    document.getElementById("ph-xgo").addEventListener("click", () => {
+      if (!G.explain || G.over) return; G.explain = false; $("msg").innerHTML = "";
+      document.querySelector(".sh-hud")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      last ? end() : cont();
+    });
+    try { document.getElementById("ph-xgo").focus({ preventScroll: true }); } catch (e) {}   // so Enter keeps hopping (not the platform you just tapped)
+    naTimer(setTimeout(() => { if (G.explain) document.getElementById("sh-msg")?.scrollIntoView({ behavior: "smooth", block: "start" }); }, 900));
   };
   const end = () => {
     G.over = true; clearTimeout(G.t);
     const S = phGet(); S.ink += G.ink; S.hops = (S.hops || 0) + G.hops; const nb = G.hops > (S.best[level] || 0); if (nb) S.best[level] = G.hops; phSave(S);
     const miss = [...new Map(G.missed.map(x => [x.id, x])).values()];
     appScreen("✍️ Paragraph Hop · Hop!", `<div class="sh ph"><div class="sh-card sh-yay"><div class="sh-big">${G.hops >= 20 ? "🏆" : G.hops >= 10 ? "🌟" : me.e}</div><h3>${G.hops} hop${G.hops === 1 ? "" : "s"}!${nb && phCan() ? " New best!" : ""}</h3><p>💧 +${G.ink} ink${phCan() ? ` (you have ${fmt(S.ink)})` : ""} · ${L.name}</p>
-      ${miss.length ? `<div class="sh-miss"><b>📚 Learn these:</b>${miss.map(x => `<p>${x.e} ${x.s ? `<i>${esc(x.s)}</i> ` : ""}${esc(x.fact)}</p>`).join("")}</div>` : ""}
+      ${miss.length ? `<div class="sh-miss"><b>📚 Learn these:</b> <small class="soft">Tap one for the long answer.</small>${miss.map(x => `<details class="ph-more"><summary>${x.e} ${x.s ? `<i>${esc(x.s)}</i> ` : ""}${esc(x.u === "name" ? `That's the ${x.a} sentence.` : x.fact)}</summary>${phExplain(x, undefined, "learn")}</details>`).join("")}</div>` : ""}
       <div class="row sh-nav"><button class="btn" id="ph-home" type="button">✍️ Paragraph Hop</button>${miss.length ? `<button class="btn" id="ph-learn" type="button">🌀 Learning Trail</button>` : ""}<button class="btn go" id="ph-again" type="button">Hop again!</button></div></div></div>`);
     phHomeBtn();
     document.getElementById("ph-learn")?.addEventListener("click", () => phTrail(miss[0].u));
@@ -32428,7 +32701,11 @@ function phHop(level, topic) {
   $("pbtn").addEventListener("click", () => G.paused ? resume() : pause());
   $("resume").addEventListener("click", resume);
   $("quit").addEventListener("click", () => { if (G.hops || G.ink) end(); else { G.over = true; clearTimeout(G.t); startParaHop(); } });
-  keyHandler = e => { if (!document.getElementById("sh-next")) { keyHandler = null; return; } if (e.key === "p" || e.key === "P" || e.key === "Escape") { G.paused ? resume() : pause(); return; } if (G.paused) return; const n = "123".indexOf(e.key); if (n >= 0 && e.key.length === 1) $("next").children[n]?.click(); };
+  keyHandler = e => {
+    if (!document.getElementById("sh-next")) { keyHandler = null; return; }
+    if (G.explain) { if ((e.key === "Enter" || e.key === " ") && !(e.target && e.target.closest?.("button, a"))) { e.preventDefault(); document.getElementById("ph-xgo")?.click(); } return; }
+    if (e.key === "p" || e.key === "P" || e.key === "Escape") { G.paused ? resume() : pause(); return; } if (G.paused) return; const n = "123".indexOf(e.key); if (n >= 0 && e.key.length === 1) $("next").children[n]?.click();
+  };
   next();
 }
 
