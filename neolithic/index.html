@@ -9945,6 +9945,7 @@ const STARTERS = [
   { len: "paragraph", genre: "Spooky", text: "Every year, our class takes a field trip to the old museum downtown. This year, I got separated from my group in the dinosaur hall. The lights clicked off one by one until only the exit sign glowed red. I heard footsteps behind me. Big, slow footsteps. I turned around, but there was only the giant T-Rex skeleton, standing exactly where it always stood. Except now, its head was facing me." }
 ];
 const STORY_LENS = { any: "Any length", sentence: "1 sentence", few: "A few sentences", paragraph: "A paragraph" };
+const STORY_GENRES = { Adventure: "🧭", Mystery: "🔎", Spooky: "👻", Funny: "😂", Animals: "🐾", Sports: "🏆", "Sci-fi": "🚀", History: "🏺", Fantasy: "🐉", Friendship: "🤝" };
 const STORY_GOALS = [50, 100, 200, 300];
 const wordCount = t => (t.trim().match(/\S+/g) || []).length;
 let STORY = null;
@@ -10830,7 +10831,7 @@ function hippoBank() {
   add("Games", "🎮", "What games are there?", "", "");
   Object.keys(HIPPO_DEFS).forEach(t => { add("What is…?", "📖", `What ${/^(dinosaur|pharaoh|knight|viking|mummy)$/.test(t) ? "was" : "is"} ${/^[aeiou]/.test(t) ? "an" : "a"} ${t}?`, t, ""); add("What is…?", "📖", `What does ${t} mean?`, t, ""); });
   ["Give me a story idea", "How do I write a story?", "Story starter please", "What should I write a story about?"].forEach(t => add("Story Starters", "✍️", t, "Story Starters", ""));
-  STARTERS.forEach(st => add("Story Starters", "✍️", `Give me a ${st.genre.toLowerCase()} story idea`, st.text, ""));
+  [...new Set(STARTERS.map(st => st.genre))].forEach(g => add("Story Starters", "✍️", `Give me a ${g.toLowerCase()} story idea`, STARTERS.filter(st => st.genre === g).slice(0, 3).map(st => st.text).join(" "), ""));   // one per kind of story, so 1,000+ starters don't crowd out Hippo's other questions
   HIPPO_EXTINCT.forEach(([n]) => ["When did NAME live?", "Where did NAME live?", "What did NAME eat?", "How big was NAME?", "Why did NAME go extinct?", "Tell me about NAME"].forEach(t => add("Extinct animals", "🦴", t.replace("NAME", n), n, "")));
   ["What does extinct mean?", "Why did the dinosaurs go extinct?", "What is a fossil?", "What is a mass extinction?", "What does endangered mean?", "Can extinct animals come back?", "What was Pangaea?", "What was the Ice Age?"].forEach(t => add("Extinct animals", "🦴", t, "", ""));
   return b;
@@ -33856,12 +33857,16 @@ function startStories() {
   stopSlope(); stopArchers(); stopMini(); closeShop();
   keyHandler = null;
   const d = store.get("story_draft", null);
-  STORY = { len: store.get("story_len", "any"), goal: store.get("story_goal", 100), starter: d?.starter ?? null, name: d?.name || "" };
+  STORY = { len: store.get("story_len", "any"), genre: store.get("story_genre", "any"), goal: store.get("story_goal", 100), starter: d?.starter ?? null, name: d?.name || "" };
+  if (STORY.starter != null && !STARTERS[STORY.starter]) STORY.starter = null;
   if (STORY.starter == null) STORY.starter = pickStarter();
   renderStoryDesk(d?.text || "");
 }
 function pickStarter() {
-  const pool = STARTERS.map((s, i) => i).filter(i => STORY.len === "any" || STARTERS[i].len === STORY.len);
+  const ok = (i, len) => (len === "any" || STARTERS[i].len === len) && (!STORY.genre || STORY.genre === "any" || STARTERS[i].genre === STORY.genre);
+  let pool = STARTERS.map((s, i) => i).filter(i => ok(i, STORY.len));
+  if (!pool.length) pool = STARTERS.map((s, i) => i).filter(i => ok(i, "any"));
+  if (!pool.length) pool = STARTERS.map((s, i) => i);
   const choices = pool.filter(i => i !== STORY?.starter);
   return (choices.length ? choices : pool)[rnd(0, (choices.length ? choices : pool).length - 1)];
 }
@@ -33880,6 +33885,9 @@ function renderStoryDesk(text) {
       <div class="story-opts">
         <span class="label">Story beginning length</span>
         <div class="row">${Object.entries(STORY_LENS).map(([k, v]) => `<button class="chip mini" data-len="${k}" aria-pressed="${STORY.len === k}">${v}</button>`).join("")}</div>
+        <span class="label">Kind of story</span>
+        <div class="row">${[["any", "✨ Any kind"], ...Object.entries(STORY_GENRES).filter(([g]) => STARTERS.some(x => x.genre === g)).map(([g, e]) => [g, `${e} ${g}`])].map(([k, v]) => `<button class="chip mini" data-genre="${esc(k)}" aria-pressed="${(STORY.genre || "any") === k}">${v}</button>`).join("")}</div>
+        <span class="soft">📚 ${fmt(STARTERS.length)} story beginnings to pick from</span>
       </div>
       <div class="story-start">
         <div class="topline"><span class="pill">${st.genre} · ${STORY_LENS[st.len]}</span><button class="btn" id="st-new">New story beginning</button></div>
@@ -33922,6 +33930,12 @@ function renderStoryDesk(text) {
     STORY.len = b.dataset.len; store.set("story_len", STORY.len);
     if (!ta.value.trim()) STORY.starter = pickStarter();
     else if (STARTERS[STORY.starter].len !== STORY.len && STORY.len !== "any") toast("Tap “New story beginning” to get one this length.");
+    saveDraft(); renderStoryDesk(ta.value);
+  }));
+  $app.querySelectorAll("[data-genre]").forEach(b => b.addEventListener("click", () => {
+    STORY.genre = b.dataset.genre; store.set("story_genre", STORY.genre);
+    if (!ta.value.trim()) STORY.starter = pickStarter();
+    else if (STORY.genre !== "any" && STARTERS[STORY.starter].genre !== STORY.genre) toast("Tap “New story beginning” to get one like that.");
     saveDraft(); renderStoryDesk(ta.value);
   }));
   $app.querySelectorAll("[data-goal]").forEach(b => b.addEventListener("click", () => { STORY.goal = +b.dataset.goal; STORY.cheered = false; store.set("story_goal", STORY.goal); renderStoryDesk(ta.value); }));
