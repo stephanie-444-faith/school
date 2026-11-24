@@ -2567,6 +2567,60 @@
   .rcp-table { width: 100%; border-collapse: collapse; background: var(--panel-2); border-radius: 14px; overflow: hidden; }
   .rcp-table td { padding: 7px 10px; border-bottom: 1px solid var(--line); } .rcp-table tr:last-child td { border-bottom: 0; }
   @media (max-width: 420px) { .rcp-frow { grid-template-columns: 1fr 1fr; } .rcp-frow label:first-child { grid-column: 1 / -1; } }
+  /* ✍️ Paragraph Hop (ABCCD paragraphs): built on Science Hop's look, plus yellow "class sheet" paper */
+  .ph { --paper: #fbf4cf; }
+  .ph-a { --lc: #2f6fd6; } .ph-b { --lc: #1f8f4e; } .ph-c1 { --lc: #c9600a; } .ph-c2 { --lc: #8a4fd1; } .ph-d { --lc: #d0335a; }
+  .ph-lets { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 6px 0; }
+  .ph-lets span { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px 3px 3px; border-radius: 99px; background: color-mix(in srgb, var(--lc) 22%, var(--panel-2)); border: 2px solid var(--lc); font-weight: 800; font-size: .88rem; }
+  .ph-lets b { display: grid; place-items: center; min-width: 26px; height: 26px; padding: 0 4px; border-radius: 99px; background: var(--lc); color: #fff; font-family: var(--display); font-weight: 400; font-size: 1rem; }
+  .ph-guest { margin: 6px 0; padding: 9px 12px; border-radius: 14px; background: color-mix(in srgb, #ff9f1c 20%, var(--panel-2)); font-weight: 700; }
+  .ph-check { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-left: 8px solid #2f6fd6; border-radius: 18px; padding: 12px 14px; margin: 6px 0; cursor: pointer; font: inherit; color: #2b2118; background: var(--paper); box-shadow: 0 4px 0 rgba(0,0,0,.3); transition: transform .12s; }
+  .ph-check:hover { transform: translateY(-2px); } .ph-check > span:first-child { font-size: 2.2rem; } .ph-check > span:last-child { margin-left: auto; font-size: 1.3rem; }
+  .ph-check b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.2rem; } .ph-check small { display: block; font-weight: 700; color: #5a4a38; }
+  .ph-cards { display: grid; gap: 10px; margin: 8px 0; }
+  .ph-card { display: flex; flex-direction: column; gap: 8px; min-width: 0; background: var(--paper); color: #2b2118; border-radius: 18px; padding: 12px; border-left: 8px solid var(--lc); box-shadow: 0 3px 0 rgba(0,0,0,.25); margin: 8px 0; }
+  .ph-cards .ph-card { margin: 0; }
+  .ph-cardtop { display: flex; gap: 10px; align-items: flex-start; } .ph-cardtop b { display: block; font-size: 1.05rem; } .ph-cardtop small { display: block; font-size: .92rem; line-height: 1.4; color: #4a3d2e; }
+  .ph-letter { flex: none; display: grid; place-items: center; min-width: 46px; height: 46px; padding: 0 6px; border-radius: 14px; background: var(--lc); color: #fff; font-family: var(--display); font-size: 1.5rem; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+  .ph-starts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ph-card .chip { background: #fff; border-color: color-mix(in srgb, var(--lc) 55%, #d8c39b); color: #2b2118; } .ph-card .chip:hover { background: color-mix(in srgb, var(--lc) 14%, #fff); }
+  .ph-tag { display: inline-block; background: #fff; border: 2px solid color-mix(in srgb, var(--lc) 45%, #e5d6a8); color: #2b2118; border-radius: 12px; padding: 3px 10px; font-weight: 700; font-style: italic; font-size: .92rem; }
+  .ph-note { margin: 0; font-style: italic; color: #4a3d2e; font-size: .92rem; }
+  .ph-q { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 16px; background: var(--panel-2); border: 2px solid var(--line); margin: 8px 0; } .ph-q small { color: var(--ink-soft); font-weight: 700; } .ph-q b { font-size: 1.05rem; line-height: 1.35; }
+  .ph-paper { background: var(--paper); color: #2b2118; border-radius: 16px; padding: 14px; box-shadow: 0 3px 0 rgba(0,0,0,.25); line-height: 1.85; font-size: 1.02rem; margin: 8px 0; overflow-wrap: anywhere; }
+  .ph-s { background: color-mix(in srgb, var(--lc) 15%, transparent); border-bottom: 3px solid var(--lc); border-radius: 4px; padding: 1px 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .ph-s sup { font-weight: 900; color: #fff; background: var(--lc); border-radius: 6px; padding: 0 4px; margin-right: 3px; font-size: .68rem; vertical-align: .35em; line-height: 1.3; }
+  .ph-plain .ph-s { background: none; border-bottom: 0; } .ph-plain .ph-s sup { display: none; }
+  .ph-why { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px; } .ph-why li { display: grid; gap: 3px; background: var(--paper); color: #2b2118; border-radius: 14px; padding: 9px 12px; border-left: 7px solid var(--lc); } .ph-why li b { color: color-mix(in srgb, var(--lc) 75%, #000); } .ph-why li small { color: #5a4a38; font-weight: 700; }
+  .ph-text { background: var(--paper); color: #2b2118; border-radius: 16px; padding: 2px 12px; margin: 8px 0; } .ph-text summary { cursor: pointer; font-weight: 800; padding: 9px 0; } .ph-text summary small { font-weight: 600; color: #6a5a48; }
+  .ph-pars { display: grid; gap: 8px; } .ph-pars p { margin: 0; display: flex; gap: 8px; line-height: 1.5; } .ph-pars p b { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #2b2118; color: #fbf4cf; font-size: .8rem; margin-top: 1px; }
+  .ph-text .ph-note { padding: 8px 0 10px; }
+  .ph-tips { margin: 6px 0; padding-left: 20px; display: grid; gap: 6px; line-height: 1.4; }
+  .ph-sent { margin: 0; padding: 10px 12px; border-radius: 14px; background: var(--paper); color: #2b2118; font-size: 1.05rem; line-height: 1.5; font-style: italic; max-width: 32em; text-align: left; }
+  .ph-qs { display: grid; gap: 6px; min-width: 0; } .ph-qs .ph-sent { padding: 6px 10px; font-size: .92rem; line-height: 1.38; }
+  .sh-play.paused .ph-sent { filter: blur(6px); }
+  .ph-steps { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 4px 0; }
+  .ph-dot { min-width: 46px; height: 40px; padding: 0 8px; border-radius: 12px; border: 3px solid var(--lc); background: transparent; color: var(--ink); font: inherit; font-weight: 900; cursor: pointer; }
+  .ph-dot.done { background: color-mix(in srgb, var(--lc) 35%, transparent); } .ph-dot.on { background: var(--lc); color: #fff; transform: translateY(-2px); box-shadow: 0 3px 0 rgba(0,0,0,.3); }
+  .ph-fin { --lc: #b8860b; }
+  .ph-lab { font-weight: 800; font-size: .9rem; }
+  .ph-ta { width: 100%; box-sizing: border-box; font: inherit; font-size: 1.02rem; line-height: 1.45; padding: 10px 12px; border-radius: 12px; border: 2px solid color-mix(in srgb, var(--lc) 50%, #d8c39b); background: #fff; color: #2b2118; resize: vertical; min-height: 100px; }
+  .ph-ta:focus { outline: none; border-color: var(--lc); box-shadow: 0 0 0 3px color-mix(in srgb, var(--lc) 25%, transparent); }
+  .ph-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; } .ph-checks li { display: flex; gap: 6px; align-items: flex-start; font-size: .92rem; font-weight: 700; line-height: 1.3; color: #22572a; } .ph-checks li.no { color: #5e4520; } .ph-checks li.warn { color: #9a2c10; } .ph-checks li i { font-style: normal; flex: none; }
+  .ph-exbox { background: #fff; border: 2px dashed color-mix(in srgb, var(--lc) 50%, #d8c39b); border-radius: 12px; padding: 8px 10px; font-size: .93rem; line-height: 1.4; } .ph-exbox small { display: block; color: #6a5a48; font-weight: 700; margin-bottom: 3px; }
+  .ph-exbox[hidden], #ph-cmpbox[hidden] { display: none; }
+  .ph-sofar > small { color: var(--ink-soft); font-weight: 800; }
+  .ph-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); gap: 10px; margin: 8px 0; }
+  .ph-rcard { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; text-align: left; font: inherit; border: 0; border-top: 6px solid var(--rc); border-radius: 18px; padding: 12px; background: var(--paper); color: #2b2118; box-shadow: 0 4px 0 rgba(0,0,0,.3); cursor: pointer; transition: transform .12s; }
+  .ph-rcard:hover { transform: translateY(-3px); } .ph-rcard i { font-style: normal; font-size: 2rem; line-height: 1.1; } .ph-rcard b { font-family: var(--display); font-weight: 400; font-size: 1.08rem; line-height: 1.15; overflow-wrap: anywhere; } .ph-rcard small { color: #5a4a38; font-weight: 700; font-size: .82rem; }
+  .ph-qlist { display: grid; gap: 8px; } .ph-qbtn { text-align: left; font: inherit; font-weight: 700; line-height: 1.35; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); cursor: pointer; } .ph-qbtn:hover { border-color: var(--gold); }
+  .ph-form { display: grid; gap: 10px; } .ph-form label { display: grid; gap: 4px; font-weight: 800; } .ph-form input, .ph-form textarea { font: inherit; font-weight: 400; padding: 9px 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: var(--ink); } .ph-form input:focus, .ph-form textarea:focus { outline: none; border-color: var(--gold); }
+  .ph-toggle { display: flex; gap: 6px; align-items: center; font-weight: 700; font-size: .9rem; }
+  .ph-score { text-align: center; font-weight: 900; font-size: 1.1rem; padding: 8px; border-radius: 14px; background: var(--panel-2); border: 2px solid var(--line); margin: 8px 0; } .ph-score.all { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,210,63,.3); }
+  .ph-miss { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 6px; } .ph-miss li { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 7px 10px; border-radius: 12px; background: var(--panel-2); border-left: 6px solid var(--lc); } .ph-miss li b { color: #fff; background: var(--lc); border-radius: 8px; padding: 0 7px; } .ph-miss li span { flex: 1; min-width: 12em; font-size: .9rem; }
+  .ph-acts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 8px 0; }
+  .ph-none { text-align: center; padding: 14px; border: 2px dashed var(--line); border-radius: 16px; color: var(--ink-soft); margin: 8px 0; }
+  .ph-mlist { display: grid; gap: 8px; } .ph-mcard { display: grid; gap: 3px; text-align: left; font: inherit; border: 0; border-radius: 16px; padding: 10px 12px; background: var(--paper); color: #2b2118; box-shadow: 0 3px 0 rgba(0,0,0,.25); cursor: pointer; transition: transform .12s; } .ph-mcard:hover { transform: translateY(-2px); } .ph-mcard span { font-size: .92rem; } .ph-mcard small { color: #5a4a38; font-weight: 700; }
   .sc-hero { position: relative; overflow: hidden; text-align: center; border-radius: 22px; padding: 14px 14px 12px; color: #fff; background: linear-gradient(135deg, var(--sa), var(--sb)); box-shadow: 0 8px 22px color-mix(in srgb, var(--sa) 45%, transparent); }
   .sc-hero::after { content: "⚜️"; position: absolute; right: -10px; bottom: -22px; font-size: 6rem; opacity: .12; transform: rotate(-14deg); pointer-events: none; }
   .sc-hero h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 6vw, 2rem); text-shadow: 0 2px 0 rgba(0,0,0,.25); }
@@ -6894,7 +6948,8 @@ function subjectPick(s) {
       ["📝 Practice reading & writing", "Grammar and story word questions", study("ela")],
       ["🏹 Roots games", "Greek & Latin roots: archery, sports and hyper practice", go(() => startRootsChooser())],
       ["📖 The Library", "Big books and classic stories to read", go(() => startHippo("show me the library"))],
-      ["🐶 Story Starters", "Story ideas to write about, then keep the story going!", go(() => startStories())]] }
+      ["🐶 Story Starters", "Story ideas to write about, then keep the story going!", go(() => startStories())],
+      ["✍️ Paragraph Hop", "ABCCD paragraphs the way Science Hop teaches science: learn each sentence, hop by answering, then write your own", go(() => startParaHop())]] }
     : k === "ss" ? { title: "🌍 Social Studies", say: "You can study the Neolithic Revolution, but you don't have to!", btns: [
       hc("ss", "Social Studies", " with social studies questions"),
       ["🌾 Study the Neolithic Revolution", "Early Humans to the first farms and cities (test practice)", study("ss", { set: "all" })],
@@ -23095,6 +23150,7 @@ const LB_BOARDS = [
   { id: "arthunt", g: "more", e: "🔎", name: "Art Hunt", unit: v => `${v} points`, get: id => { const d = lbGet("ah_v1", id); return d && d.best ? lbNum(d.best.speed) : null; }, note: "Best Speed Round score" },
   { id: "cells", g: "more", e: "🧫", name: "Cell City", unit: v => `${v} cell${v === 1 ? "" : "s"} saved`, get: id => { const d = lbGet("cy_v1", id); return d ? lbNum(d.saves) : null; }, note: "Times they won Defend the Cell" },
   { id: "scihop", g: "more", e: "🐸", name: "Science Hop", unit: v => `${v} hops`, get: id => { const d = lbGet("sh_v1", id); return d && d.best ? lbNum(Math.max(0, ...Object.values(d.best).filter(x => typeof x === "number"))) : null; }, note: "Most hops in one run" },
+  { id: "parahop", g: "more", e: "✍️", name: "Paragraph Hop", unit: v => `${v} hops`, get: id => { const d = lbGet("ph_v1", id); return d && d.best ? lbNum(Math.max(0, ...Object.values(d.best).filter(x => typeof x === "number"))) : null; }, note: "Most hops in one run" },
   { id: "globe", g: "more", e: "🌐", name: "Globe Detective", unit: v => `${fmt(v)} points`, get: id => { const b = lbGet("glb_best", id); return lbNum(Math.max(lbBest(id, "globe") || 0, b && typeof b === "object" ? Math.max(0, ...Object.values(b).filter(x => typeof x === "number")) : 0)); }, note: "Best game in any area" },
   { id: "pool", g: "more", e: "🎱", name: "Pool Hall", unit: v => `${v} win${v === 1 ? "" : "s"}`, get: id => { const s = lbGet("pool_stats", id); return s && typeof s === "object" ? lbNum(Object.entries(s).filter(([k]) => k.startsWith("w_")).reduce((t, [, v]) => t + (+v || 0), 0)) : null; }, note: "Wins against the computer" },
   { id: "rarch", g: "more", e: "🎯", name: "Root Archery", unit: v => `${fmt(v)} points`, get: id => lbNum((lbGet("ra_v1", id) || {}).best) },
@@ -31960,6 +32016,684 @@ async function rcpPrint(body, title, save) {
   try { window.print(); toast("🖨️ If no print window opened, tap 💾 Save a page to print."); } catch (e) { toast("This browser won't print from here. Tap 💾 Save a page to print instead."); }
 }
 NEW_APPS.push({ id: "recipes", emoji: "🍳", name: "Recipes", desc: "A cookbook for kids: pancakes, tacos, cookies, smoothies and more. Make more or less, cook one step at a time with timers, keep favorites and a shopping list, write your own recipes, and find out what you can make with what you have.", added: "2026-11-23", start: () => startRecipes(), kw: "recipes?|cook(ing)?|cookbook|bak(e|ing)|kitchen|what can i make|shopping list|pancakes?|smoothies?|lemonade|mug cake|grilled cheese|quesadillas?|mac and cheese|overnight oats|trail mix" });
+/* ---------- ✍️ Paragraph Hop: learn ABCCD paragraphs (from the "ABCCD Paragraph Structure Checklist and Sentence Starters" class sheet) the way Science Hop teaches science.
+   📋 The checklist: what each sentence needs, its sentence starters, and example paragraphs with every sentence colored.
+   🌀 The Learning Trail: one idea at a time, then a question. No lives and no rush. Every new one you get right earns 💧 3 ink.
+   🐸 Hop!: answer to hop to the right platform before yours crumbles. 🏷️ "Name that sentence" uses real example paragraphs.
+   ✍️ Write your own: pick a reading and a question, build the paragraph one sentence at a time while the checklist checks it, then save, copy or print it. */
+const PH_KEYS = ["a", "b", "c1", "c2", "d"];
+const PH_PART = {
+  a: { L: "A", name: "Answer", e: "🎯", need: "Include the title, the author (IF available), and the direct answer to the question in the prompt in your own words.", st: [], none: "There are no transitional phrases for A sentences. Answer the question and mention the title and author, if available." },
+  b: { L: "B", name: "Borrow a quote", e: "📖", need: "Use a transitional phrase, borrow a quote from the text by copying it into quotation marks, and include a citation in parentheses.", st: ["For example,", "To illustrate,", "To demonstrate,"], frame: "“___” (page/paragraph)." },
+  c1: { L: "C1", name: "Clarify", e: "🔍", need: "Use a transitional phrase and clarify the quote by giving it context (explaining what was happening in the text) or by summarizing it in your own words.", st: ["To clarify,", "More specifically,", "In other words,"] },
+  c2: { L: "C2", name: "Connect", e: "🔗", need: "Use a transitional phrase and then connect the quote to your answer by explaining how it supports your response to the question. It's usually good to include some words from the question in this sentence.", st: ["This detail proves", "This evidence demonstrates", "Clearly then, ___ is true because"] },
+  d: { L: "D", name: "Draw a conclusion", e: "🏁", need: "Use a closing transition and draw a conclusion by rewording your answer OR presenting a memorable closing idea.", st: ["In conclusion,", "Evidently,", "Ultimately,", "Therefore,"] }
+};
+// other transitions that still count when the checklist checks a sentence (the buttons only show the ones on the class sheet)
+const PH_MORE = { b: ["For instance", "The text says", "The text states", "The author writes", "As the text says", "The article says", "The story says"], c1: ["This means", "Basically", "To put it another way", "Put simply"], c2: ["This shows", "This proves", "This quote shows", "This quote proves", "This demonstrates", "This explains", "This supports"], d: ["To conclude", "In the end", "Overall", "In summary", "All in all", "As a result", "To sum up"] };
+const PH_WHY = {
+  a: "It answers the question in its own words and names the title (and the author, if there is one). It has no transition.",
+  b: "It starts with a transition, copies exact words from the reading in quotation marks, and cites where they came from in parentheses.",
+  c1: "It starts with a C1 transition and explains the quote in other words, telling what was happening.",
+  c2: "It starts with a C2 transition and explains how the quote proves the answer, using words from the question.",
+  d: "It starts with a closing transition and wraps up by rewording the answer or ending with a memorable idea."
+};
+const PH_TIPS = [
+  "🎯 A: Answer the question first. No transition, just the title, the author (if there is one), and your answer.",
+  "✂️ B: Copy the quote word for word. Don't change any words inside the quotation marks.",
+  "📍 B: Put the citation after the closing quotation mark and before the period: “…” (paragraph 4).",
+  "🔍 C1: Don't just repeat the quote. Say it in your own words, or explain what was happening.",
+  "🔗 C2: Use words from the question, and explain HOW the quote proves your answer (try “because”).",
+  "🏁 D: Don't add a new quote at the end. Reword your answer, or leave the reader with a memorable idea.",
+  "🔤 Every sentence starts with a capital letter and ends with an end mark (. ! ?)."
+];
+// 📚 readings to write about. m = the example paragraph [A, B, C1, C2, D] for each question.
+const PH_READ = [
+  { id: "cyclops", e: "👁️", c: "#2f6fd6", t: "Nobody in the Cave", au: "Homer", kind: "📜 Myth, retold in simpler words", p: [
+    "Odysseus and his men were sailing home from the Trojan War when they stopped at an island to find food. They found a huge cave full of cheeses and pens of lambs and goats. His men begged him to grab some food and run, but Odysseus wanted to meet whoever lived there.",
+    "The cave belonged to Polyphemus, a Cyclops: a giant with one round eye in the middle of his forehead. When he came home with his sheep, he rolled a boulder across the doorway. It was so heavy that not even twenty-two wagons could have moved it. Then the Cyclops grabbed two of the men and ate them for dinner.",
+    "Odysseus wanted to draw his sword, but he stopped himself. If the Cyclops died, no one would be strong enough to move the boulder, and they would all be trapped forever. Instead, he made a plan. He found a giant olive-wood pole, sharpened one end into a point, and hid it.",
+    "That night, Odysseus offered the Cyclops a bowl of strong wine. The giant gulped it down and asked his name. “My name is Nobody,” Odysseus answered. The Cyclops laughed and promised to eat Nobody last as a special gift. Then he fell into a deep sleep.",
+    "Odysseus and his men heated the point of the pole in the fire and drove it into the Cyclops’s eye. The giant roared for help. When the other Cyclopes came running and asked who was hurting him, he shouted, “Nobody is hurting me!” So they shrugged and went home.",
+    "In the morning, the blinded Cyclops rolled the boulder away to let his sheep out, feeling each one’s back as it passed. But Odysseus had tied his men under the bellies of the biggest rams, and he clung to the wool of the last ram himself. One by one, they rode out right under the giant’s hands.",
+    "As his ship sailed away, Odysseus could not resist shouting back, “If anyone asks who blinded you, tell them it was Odysseus!” The furious Cyclops hurled a giant rock at the ship and prayed to his father, Poseidon, god of the sea, to punish Odysseus. Because of that boast, his trip home took many more years."], qs: [
+    { q: "How does Odysseus use his wits (his cleverness) to escape from the Cyclops?", m: [
+      "In “Nobody in the Cave,” a retelling of a story by Homer, Odysseus escapes from the Cyclops by tricking him instead of fighting him.",
+      "For example, when the Cyclops asks his name, Odysseus answers, “My name is Nobody” (paragraph 4).",
+      "In other words, Odysseus gives the giant a fake name and hides who he really is.",
+      "This detail proves that Odysseus uses his wits to escape, because when the giant yells that Nobody is hurting him, the other Cyclopes go home and no one comes to help.",
+      "In conclusion, Odysseus’s clever tricks, not his strength, are what save him and his men."] },
+    { q: "What mistake does Odysseus make at the end, and what happens because of it?", m: [
+      "In “Nobody in the Cave,” a retelling of a story by Homer, Odysseus makes the mistake of bragging, and it makes his trip home much longer.",
+      "To illustrate, as his ship sails away, he shouts, “If anyone asks who blinded you, tell them it was Odysseus!” (paragraph 7).",
+      "To clarify, Odysseus is so proud of his trick that he tells the Cyclops his real name.",
+      "Clearly then, the idea that bragging was a mistake is true because the Cyclops prays to Poseidon to punish Odysseus, and his trip home takes many more years.",
+      "Ultimately, the story shows that being too proud can undo even the cleverest plan."] }] },
+  { id: "octopus", e: "🐙", c: "#8a4fd1", t: "The Octopus: Escape Artist of the Sea", au: "", kind: "🔬 Article (no author listed)", p: [
+    "An octopus has no bones at all. Its body is soft, so it can squeeze through any opening bigger than its beak, which is the only hard part of its body. Even a big octopus can slip through a gap just a few inches wide.",
+    "Octopuses are also famous for their brains. Scientists have watched them solve puzzles, such as unscrewing the lid of a jar to reach a crab inside. Some octopuses in aquariums have even learned to tell apart the different people who take care of them.",
+    "Most of an octopus’s nerve cells are not in its head. About two-thirds of them are in its eight arms. This means each arm can touch, taste, and react on its own, almost as if it had a small brain of its own.",
+    "When danger comes, an octopus has many ways to escape. It can change the color and even the texture of its skin in less than a second to blend in with rocks or coral. If that doesn’t work, it can squirt a cloud of dark ink and jet away while the predator is confused.",
+    "Some octopuses even use tools. The veined octopus carries coconut shell halves across the sea floor and hides inside them when it needs shelter. Scientists were amazed, because tool use was once thought to belong mostly to humans, apes, and a few birds."], qs: [
+    { q: "What evidence shows that octopuses are intelligent?", m: [
+      "The article “The Octopus: Escape Artist of the Sea” shows that octopuses are intelligent because they can solve problems.",
+      "For example, scientists have watched octopuses solve puzzles “such as unscrewing the lid of a jar to reach a crab inside” (paragraph 2).",
+      "More specifically, an octopus can figure out how to open a closed jar to get food, which is a hard puzzle for an animal.",
+      "This evidence demonstrates that octopuses are intelligent, because solving a puzzle they have never seen before takes real thinking.",
+      "Therefore, the octopus is one of the smartest animals in the ocean."] },
+    { q: "How does an octopus’s body help it escape from danger?", m: [
+      "In “The Octopus: Escape Artist of the Sea,” an octopus’s body helps it escape from danger because it can hide in plain sight and get away fast.",
+      "To demonstrate, an octopus “can change the color and even the texture of its skin in less than a second” (paragraph 4).",
+      "In other words, an octopus can make itself look just like a rock or coral almost instantly.",
+      "This detail proves that an octopus’s body helps it escape from danger, because a predator cannot attack something it cannot see.",
+      "Evidently, an octopus’s amazing body works like a built-in survival kit."] }] },
+  { id: "lastlap", e: "🏃", c: "#d0335a", t: "The Last Lap", au: "Jordan Pike", kind: "📗 Story", p: [
+    "Mateo had trained all summer for the school’s two-mile race. Every morning, he ran laps around the park while his little sister timed him with their dad’s old stopwatch. His goal was simple: finish in the top three and earn a medal.",
+    "On race day, the air was cold and the crowd was loud. When the whistle blew, Mateo burst forward with the leaders. By the last lap, he was in third place, and he could already picture the medal around his neck.",
+    "Then he heard a thud behind him. His friend Eli had tripped on a root and was sitting in the dirt, holding his ankle. Runner after runner sped past him. Eli’s face was red, and Mateo could tell he was trying not to cry.",
+    "Mateo slowed down. “Just keep going,” he told himself. “Someone else will help.” But his feet stopped anyway. He jogged back, pulled Eli’s arm over his shoulder, and said, “Come on. We’re finishing this together.”",
+    "They crossed the finish line in twenty-third and twenty-fourth place. There was no medal. But the crowd stood and cheered louder for them than for anyone else, and Eli grinned through his tears.",
+    "That night, Mateo’s sister handed him a paper medal she had colored with markers. On it she had written “Fastest Heart.” Mateo hung it on his wall, right where he had planned to hang the real one."], qs: [
+    { q: "What is a theme (a life lesson) of the story?", m: [
+      "A theme of “The Last Lap” by Jordan Pike is that helping someone is more important than winning.",
+      "For example, Mateo jogs back to his hurt friend and says, “Come on. We’re finishing this together” (paragraph 4).",
+      "To clarify, Mateo gives up his chance at a medal so that Eli will not have to finish the race alone.",
+      "This detail proves that a theme of the story is that helping someone matters more than winning, because Mateo chooses his friend over the prize he trained for all summer.",
+      "Ultimately, the story teaches that kindness can be a bigger win than any medal."] },
+    { q: "How does Mateo change from the beginning of the story to the end?", m: [
+      "In “The Last Lap” by Jordan Pike, Mateo changes from caring most about winning a medal to caring most about his friend.",
+      "To illustrate, at the beginning, “His goal was simple: finish in the top three and earn a medal” (paragraph 1).",
+      "In other words, when the story starts, the only thing on Mateo’s mind is winning.",
+      "Clearly then, the idea that Mateo changes is true because by the end of the story he gives up that medal to help Eli and proudly hangs a paper medal instead.",
+      "In conclusion, Mateo learns that what you do for others matters more than what you win."] }] },
+  { id: "farmers", e: "🌾", c: "#c9600a", t: "The First Farmers", au: "Ana Reyes", kind: "🔬 Article", p: [
+    "For most of human history, people were hunter-gatherers. They moved from place to place, following herds of animals and gathering wild plants, nuts, and berries. Because they carried everything they owned, they could not keep much.",
+    "About 12,000 years ago, people in a region of the Middle East called the Fertile Crescent began planting seeds on purpose. They grew wheat and barley and tamed animals such as goats and sheep. This huge change is called the Neolithic Revolution.",
+    "Farming meant people could stay in one place. They built lasting houses from mud bricks and stone, and small villages slowly grew into towns. One early town, Çatalhöyük in what is now Turkey, may have been home to several thousand people.",
+    "Farmers could often grow more food than their own families needed. This extra food, called a surplus, meant that not everyone had to farm. Some people became potters, weavers, toolmakers, or traders instead.",
+    "Farming brought problems, too. People worked long hours in the fields, and if the rain didn’t come, a whole village could go hungry. Living close together with animals also helped diseases spread. Still, almost everyone today lives in a way that began with those first farmers."], qs: [
+    { q: "Why did farming change the way people lived?", m: [
+      "In “The First Farmers” by Ana Reyes, farming changed the way people lived because it let them settle down in one place.",
+      "For example, the article says, “Farming meant people could stay in one place” (paragraph 3).",
+      "More specifically, people no longer had to follow herds of animals, so they could build lasting houses and live in villages.",
+      "This evidence demonstrates that farming changed the way people lived, because staying in one place led to the first towns.",
+      "Therefore, farming was the start of the settled life that most people live today."] },
+    { q: "How did a food surplus change the jobs people had?", m: [
+      "In “The First Farmers” by Ana Reyes, a food surplus let some people do jobs other than farming.",
+      "To demonstrate, because of the surplus, “Some people became potters, weavers, toolmakers, or traders instead” (paragraph 4).",
+      "In other words, since farmers grew extra food, other people could spend their time making things or trading.",
+      "This detail proves that a surplus changed the jobs people had, because they could only take on new jobs when they did not have to grow all their own food.",
+      "Evidently, extra food helped create many of the jobs people still do today."] }] },
+  { id: "bridge", e: "🌉", c: "#1f8f4e", t: "The Bridge Challenge", au: "Priya Shah", kind: "📗 Story", p: [
+    "Ms. Okafor held up a box of uncooked spaghetti and a bag of marshmallows. “Each team has thirty minutes,” she said. “Build a bridge that can hold this cup of pennies.”",
+    "Ava’s team got to work right away, but they couldn’t agree on anything. Ava wanted a tall arch. Marcus wanted a flat bridge with lots of supports. Lily kept building on her own without saying a word. After ten minutes, they had three half-finished bridges and a pile of broken spaghetti.",
+    "“Stop,” Ava said finally. “We keep arguing, and we’re getting nowhere. What if we each explain our idea, and then pick the best parts?” Marcus shrugged. Lily looked up for the first time and nodded.",
+    "Lily showed them that triangles made of spaghetti were much stronger than squares. Marcus’s supports kept the middle from sagging. Ava’s arch made it look like a real bridge. Working together, they finished with two minutes to spare.",
+    "When Ms. Okafor set the cup on top, the bridge creaked but held. She kept adding pennies until it finally snapped at 112. It was the strongest bridge in the class.",
+    "“That’s funny,” Marcus said as they cleaned up. “None of our own bridges would have worked.” Ava smiled. “But all of them together did.”"], qs: [
+    { q: "Why is Ava’s team finally successful?", m: [
+      "In “The Bridge Challenge” by Priya Shah, Ava’s team is finally successful because they stop arguing and combine their best ideas.",
+      "For example, Ava asks, “What if we each explain our idea, and then pick the best parts?” (paragraph 3).",
+      "To clarify, Ava wants everyone to share their plans so the team can use the strongest part of each one.",
+      "This evidence demonstrates that combining ideas is why Ava’s team is successful, because their bridge holds 112 pennies only after it uses Lily’s triangles, Marcus’s supports, and Ava’s arch.",
+      "Ultimately, the story shows that a team is strongest when everyone’s ideas are heard."] },
+    { q: "What does Lily add to the team, and why does it matter?", m: [
+      "In “The Bridge Challenge” by Priya Shah, Lily adds the idea of building with triangles, which makes the team’s bridge much stronger.",
+      "To illustrate, “Lily showed them that triangles made of spaghetti were much stronger than squares” (paragraph 4).",
+      "More specifically, quiet Lily knows a building trick that helps thin spaghetti hold a lot more weight.",
+      "This detail proves that what Lily adds to the team matters, because without her triangles the bridge probably could not have held 112 pennies.",
+      "In conclusion, even the quietest person on a team can have the idea that makes everything work."] }] }
+];
+// 🌀 Learning Trail units: [emoji, the idea, the question, the right answer, wrong answer, wrong answer]
+const PH_UNITS = [
+  { id: "a", e: "🎯", name: "A: Answer", items: [
+    ["🎯", "The A sentence comes first. It gives the direct answer to the question in the prompt.", "Which sentence gives the direct answer to the question?", "A", "B", "C1"],
+    ["📕", "Your A sentence should include the title of the reading, along with your answer.", "Besides your answer, what does an A sentence include?", "The title (and author, if there is one)", "A quote in quotation marks", "A closing transition"],
+    ["✍️", "Include the author's name too, IF the reading has one. No author listed? Just use the title.", "The article has no author listed. What does your A sentence need?", "The title and your answer", "A made-up author", "A citation in parentheses"],
+    ["🗣️", "Write the answer in your own words. Save the quote for the B sentence.", "How should you write the answer in an A sentence?", "In your own words", "As a copied quote", "As a question"],
+    ["🚫", "There are NO transitional phrases for A sentences. Just answer the question.", "Which transitional phrase starts an A sentence?", "None! A has no transition", "For example,", "In conclusion,"],
+    ["🔤", "Titles of stories and articles go in quotation marks, like this: In “The Last Lap” by Jordan Pike, …", "How do you show the title of a short story?", "Put it in quotation marks", "Put it in parentheses", "Write it in all capitals"],
+    ["❓", "Turn the question into your answer. Question: Why is the team successful? Answer: The team is successful because they work together.", "The question is “Why is the team successful?” Which is the best start for A?", "The team is successful because…", "For example, “Stop,” said Ava…", "In conclusion, teams are…"],
+    ["💪", "A strong A sentence is clear and confident. Skip “I think maybe…” and just answer.", "Which A sentence is more direct?", "Mateo changes from caring about winning to caring about his friend.", "I think maybe Mateo kind of changes, I guess.", "This story is about a race."],
+    ["🧭", "The A sentence is your main idea. Every other sentence in the paragraph supports it.", "Every other sentence in the paragraph supports which one?", "The A sentence (your answer)", "The citation", "The title"],
+    ["🏷️", "Example A: In “Nobody in the Cave,” a retelling of a story by Homer, Odysseus escapes by tricking the Cyclops.", "In that example A sentence, which part is the answer?", "Odysseus escapes by tricking the Cyclops", "“Nobody in the Cave”", "A retelling of a story by Homer"]] },
+  { id: "b", e: "📖", name: "B: Borrow a quote", items: [
+    ["📖", "The B sentence borrows a quote from the text. The quote is your proof, or evidence.", "What does the B sentence borrow from the text?", "A quote", "The title", "A question"],
+    ["🪄", "B starts with a transitional phrase: For example, To illustrate, or To demonstrate.", "Which phrase can start a B sentence?", "To illustrate,", "In other words,", "Ultimately,"],
+    ["✂️", "Copy the quote word for word, exactly as it is in the text, and put it inside quotation marks.", "How do you copy a quote?", "Word for word, in quotation marks", "In your own words", "With a few words changed"],
+    ["📍", "After the quote, add a citation in parentheses that tells where it came from, like (paragraph 4) or (page 12).", "What goes in parentheses after the quote?", "Where it came from, like (paragraph 4)", "Your opinion", "The author's age"],
+    ["🔚", "The period goes AFTER the citation: For example, “My name is Nobody” (paragraph 4).", "Where does the period go in a B sentence?", "After the citation", "Before the quote", "There is no period"],
+    ["🔎", "Pick a quote that really proves your answer. Ask yourself: does this show my answer is true?", "What makes a quote a good choice?", "It proves your answer", "It's the longest sentence", "It's the first sentence"],
+    ["🧩", "Sentence frame: For example, “___” (page/paragraph). The blank is the exact words from the text.", "In the frame For example, “___” (paragraph 3), what goes in the blank?", "Exact words from the text", "Your answer", "The title"],
+    ["✅", "A correct B sentence: To demonstrate, “Farming meant people could stay in one place” (paragraph 3).", "Which B sentence is written correctly?", "For example, “Lily nodded” (paragraph 3).", "For example, Lily nodded (paragraph 3).", "“Lily nodded” for example."],
+    ["💬", "You can add a few of your own words to set up the quote: For example, Mateo says, “Come on.” (paragraph 4).", "Can you put a few of your own words before the quote?", "Yes, to set up the quote", "No, never", "Only the author's name"],
+    ["📄", "A citation can be a page number or a paragraph number. Use whichever one your reading has.", "Your book has page numbers. Which citation works?", "(page 12)", "(the book)", "(I read it)"]] },
+  { id: "c1", e: "🔍", name: "C1: Clarify", items: [
+    ["🔍", "The C1 sentence clarifies the quote. It explains what the quote means or what was happening.", "What does the C1 sentence do?", "Clarifies the quote", "Borrows a second quote", "Names the title"],
+    ["🪄", "C1 starters: To clarify, More specifically, or In other words,", "Which phrase starts a C1 sentence?", "In other words,", "For example,", "Therefore,"],
+    ["🌍", "One way to clarify is to give context: explain what was happening in the text when the quote happened.", "Giving context means explaining…", "What was happening in the text", "Where the author lives", "How long the book is"],
+    ["🗣️", "Another way to clarify is to summarize the quote in your own words.", "Summarizing a quote means…", "Saying it in your own words", "Copying it again", "Making it longer"],
+    ["🙅", "Don't just repeat the quote. C1 should use your own words.", "What's wrong with: In other words, “My name is Nobody.”", "It just repeats the quote", "It uses a C1 starter", "It uses its own words"],
+    ["🧠", "Quote: “His goal was simple: finish in the top three and earn a medal.” C1: In other words, all Mateo cares about is winning.", "In that example, what does the C1 sentence do?", "Says the quote in simpler words", "Gives a new quote", "Ends the paragraph"],
+    ["➡️", "C1 comes right after B, so the reader understands the quote before you connect it to your answer.", "Which sentence comes right after B?", "C1", "D", "A"],
+    ["💡", "Imagine a friend who didn't read the text. C1 tells them what the quote is talking about.", "C1 helps a reader who…", "Didn't read the text", "Already wrote the paragraph", "Wants a new topic"],
+    ["🔬", "“More specifically,” is great when you want to zoom in on the most important part of the quote.", "Which C1 starter zooms in on details?", "More specifically,", "Clearly then,", "Evidently,"],
+    ["✅", "A good C1: To clarify, Odysseus is so proud of his trick that he tells the Cyclops his real name.", "Why is that a good C1 sentence?", "It explains the quote in its own words", "It copies the quote exactly", "It has a citation"]] },
+  { id: "c2", e: "🔗", name: "C2: Connect", items: [
+    ["🔗", "The C2 sentence connects the quote to your answer. It explains HOW the quote proves your answer.", "What does the C2 sentence do?", "Connects the quote to your answer", "Clarifies what the quote means", "Names the author"],
+    ["🪄", "C2 starters: This detail proves, This evidence demonstrates, or Clearly then, ___ is true because…", "Which phrase starts a C2 sentence?", "This evidence demonstrates", "To clarify,", "For example,"],
+    ["❓", "It's usually good to include some words from the question in your C2 sentence.", "What is usually good to include in C2?", "Words from the question", "A second citation", "A new topic"],
+    ["🤔", "Explain HOW with a word like because. It shows your thinking.", "Which word helps you explain how in C2?", "because", "once upon a time", "the end"],
+    ["🧩", "Frame: Clearly then, ___ is true because ___. The first blank is your answer!", "In “Clearly then, ___ is true because…”, what goes in the first blank?", "Your answer to the question", "The quote", "The page number"],
+    ["🌉", "C2 is a bridge between your evidence (the quote) and your answer (the A sentence).", "C2 is like a bridge between…", "The quote and your answer", "The title and the author", "Two different stories"],
+    ["🔁", "C1 explains what the quote means. C2 explains why it matters for your answer.", "Which sentence explains why the quote matters for your answer?", "C2", "C1", "B"],
+    ["✅", "A good C2: This detail proves that Odysseus uses his wits to escape, because the other Cyclopes go home.", "Which words in that C2 come from the question “How does Odysseus use his wits to escape?”", "uses his wits to escape", "the other Cyclopes", "go home"],
+    ["🚫", "C2 shouldn't add a brand-new quote. Explain the quote you already borrowed.", "Should C2 add a brand-new quote?", "No, it explains the one you used", "Yes, always", "Only if it's long"],
+    ["💪", "A strong C2 makes your reader think: Oh, now I see why that quote proves the answer!", "A strong C2 helps the reader see…", "Why the quote proves your answer", "How long the reading is", "Who the author's friends are"]] },
+  { id: "d", e: "🏁", name: "D: Draw a conclusion", items: [
+    ["🏁", "The D sentence ends the paragraph by drawing a conclusion.", "Which sentence ends the paragraph?", "D", "C2", "A"],
+    ["🪄", "D starters: In conclusion, Evidently, Ultimately, or Therefore,", "Which phrase starts a D sentence?", "Ultimately,", "More specifically,", "To illustrate,"],
+    ["🔁", "One way to write D: reword your answer from the A sentence, using different words.", "One way to write a D sentence is to…", "Reword your answer", "Copy your A sentence exactly", "Add a new quote"],
+    ["✨", "Another way to write D: end with a memorable closing idea, like a lesson or why it matters.", "Another way to write a D sentence is to…", "Give a memorable closing idea", "Ask the reader a riddle", "List all the transitions"],
+    ["🙅", "Don't add new evidence or a new quote in D. Wrap up what you already said.", "What should a D sentence NOT add?", "A new quote", "A closing transition", "An idea from your answer"],
+    ["📝", "Example: Ultimately, the story shows that being too proud can undo even the cleverest plan.", "That D sentence…", "Gives a memorable closing idea", "Borrows a quote", "Names the title for the first time"],
+    ["🍔", "A paragraph is like a burger: A is the top bun, B, C1 and C2 are the filling, and D is the bottom bun.", "If A is the top bun, what is D?", "The bottom bun", "The filling", "The plate"],
+    ["🧐", "“Evidently” means clearly or obviously: the evidence makes it plain.", "What does “Evidently,” mean?", "Clearly, from the evidence", "Maybe", "Once upon a time"],
+    ["⚖️", "“Therefore” means so, or as a result. It shows your conclusion comes from your evidence.", "What does “Therefore,” mean?", "So, as a result", "For example", "In other words"],
+    ["🧲", "A great D sentence leaves the reader with your answer stuck in their head.", "A great D sentence leaves the reader…", "Remembering your answer", "Confused", "Wanting a new topic"]] },
+  { id: "all", e: "🧩", name: "The whole paragraph", items: [
+    ["🔤", "The order is A, B, C1, C2, D: Answer, Borrow a quote, Clarify, Connect, Draw a conclusion.", "What is the order of an ABCCD paragraph?", "A, B, C1, C2, D", "B, A, C1, D, C2", "A, C1, B, C2, D"],
+    ["5️⃣", "An ABCCD paragraph has 5 sentences.", "How many sentences are in an ABCCD paragraph?", "5", "3", "8"],
+    ["🧠", "Memory trick: Answer, Borrow, Clarify, Connect, Done (draw a conclusion)!", "In the memory trick, what does B stand for?", "Borrow a quote", "Begin the story", "Be done"],
+    ["🧭", "Transitional phrases, like For example or In conclusion, guide your reader from one sentence to the next.", "Why use transitional phrases?", "They guide the reader along", "They make it shorter", "They replace the quote"],
+    ["🅰️", "Only one sentence has no transitional phrase: A.", "Which sentence has no transitional phrase?", "A", "B", "D"],
+    ["📌", "A citation tells where your quote came from.", "What does a citation do?", "Tells where the quote came from", "Reads the quote aloud", "Changes the quote's words"],
+    ["🧾", "Evidence is proof from the text. In an ABCCD paragraph, your evidence is the quote in B.", "Where is the evidence in an ABCCD paragraph?", "In the B sentence", "In the D sentence", "In the title"],
+    ["👯", "The two Cs are different: C1 clarifies the quote, and C2 connects it to your answer.", "What's the difference between C1 and C2?", "C1 clarifies, C2 connects", "C1 concludes, C2 cites", "They're the same"],
+    ["📋", "Check your paragraph with the checklist: title, author, answer, transitions, quote, citation, clarify, connect, conclude.", "Which is NOT on the ABCCD checklist?", "A drawing", "A citation", "A transition"],
+    ["📚", "ABCCD works for any reading: stories, articles, myths, and even science or social studies texts.", "What can you write ABCCD paragraphs about?", "Stories, articles, and more", "Only poems", "Only math books"]] }
+];
+function phLab(k) { return `${PH_PART[k].L}: ${PH_PART[k].name}`; }
+// 🏷️ Name that sentence: every sentence from every example paragraph
+const PH_NAME = PH_READ.flatMap(r => r.qs.flatMap((x, qi) => PH_KEYS.map((k, i) => ({ id: `nm-${r.id}-${qi}-${k}`, u: "name", e: "🏷️", s: x.m[i], q: "Which sentence is this?", a: phLab(k), w: shuffle(PH_KEYS.filter(j => j !== k)).slice(0, 2).map(phLab), fact: `That's the ${PH_PART[k].L} sentence (${PH_PART[k].name}). ${PH_WHY[k]}` }))));
+const PH_TRAIL = [...PH_UNITS, { id: "name", e: "🏷️", name: "Name that sentence", items: PH_NAME }];
+const PH_ITEMS = [...PH_UNITS.flatMap(u => u.items.map((x, k) => ({ id: u.id + "-" + k, u: u.id, e: x[0], fact: x[1], q: x[2], a: x[3], w: [x[4], x[5]] }))), ...PH_NAME];
+const PH_HOPOK = x => [x.a, ...x.w].every(t => t.length <= 46);   // answers short enough to fit on a platform
+const PH_LEVELS = { easy: { name: "Easy", secs: 20, pts: 1 }, hard: { name: "Hard", secs: 12, pts: 2 }, extreme: { name: "Extreme", secs: 8, pts: 3 } };
+const PH_HOPPERS = [["pencil", "✏️", "Pencil", 0], ["worm", "🐛", "Bookworm", 0], ["owl", "🦉", "Owl", 50], ["parrot", "🦜", "Parrot", 100], ["octopus", "🐙", "Octopus", 150], ["fox", "🦊", "Fox", 250], ["panda", "🐼", "Panda", 400], ["robot", "🤖", "Robot", 600], ["wizard", "🧙", "Wizard", 900], ["unicorn", "🦄", "Unicorn", 1200], ["dragon", "🐉", "Dragon", 1600]]
+  .map((h, i) => ({ id: h[0], e: h[1], name: h[2], cost: h[3], hearts: 3 + Math.max(0, i - 1) / 2 }));   // ❤️ like Science Hop: each fancier hopper has half a heart more
+const PH_MAX = 300;   // saved paragraphs
+const phCan = () => !!SITE_WHO && SITE_WHO !== "guest";   // guests can play, but nothing is saved
+const phGet = () => { const v = (phCan() && store.get("ph_v1", null)) || {}; return { ink: 0, learned: {}, best: {}, hopper: "pencil", hops: 0, draft: null, ...v, learned: { ...(v.learned || {}) }, best: { ...(v.best || {}) }, owned: [...new Set(["pencil", "worm", ...(v.owned || [])])], mine: Array.isArray(v.mine) ? v.mine : [] }; };
+const phSave = S => { if (phCan()) store.set("ph_v1", S); };
+const phHopper = S => PH_HOPPERS.find(h => h.id === S.hopper) || PH_HOPPERS[0];
+const phRead = id => PH_READ.find(r => r.id === id);
+const phLets = () => `<div class="ph-lets">${PH_KEYS.map(k => `<span class="ph-${k}"><b>${PH_PART[k].L}</b>${esc(PH_PART[k].name)}</span>`).join("")}</div>`;
+
+/* ---------- 🏠 home (just like Science Hop's) ---------- */
+function startParaHop(view = "home", opt = {}) {
+  naCleanup?.(); keyHandler = null;
+  if (view === "check") return phChecklist();
+  if (view === "trail") return phTrail(opt.unit);
+  if (view === "hop") return phHop(opt.level || "easy", opt.unit || "all");
+  if (view === "shop") return phShop();
+  if (view === "write") return phWrite();
+  if (view === "mine") return phMine();
+  const S = phGet(), me = phHopper(S), nL = PH_ITEMS.filter(x => S.learned[x.id]).length, drafting = S.draft && PH_KEYS.some(k => (S.draft.s || {})[k]);
+  appScreen("✍️ Paragraph Hop", `<div class="sh ph"><h2>✍️ Paragraph Hop</h2>
+    <p class="soft">Learn ABCCD paragraphs the way Science Hop teaches science: learn on the 🌀 Learning Trail, then 🐸 hop! Answer to hop to the right platform before the one you're on crumbles. Then write your own paragraph.</p>
+    ${phLets()}
+    <div class="sh-hero"><span class="sh-me">${me.e}</span><div><b>${esc(SITE_NAME || "You")}</b> as the ${esc(me.name)} (❤️ ${shHalf(me.hearts)} hearts)<br>💧 <b>${fmt(S.ink)}</b> ink · 📚 ${nL} / ${PH_ITEMS.length} learned · 📁 ${S.mine.length} paragraph${S.mine.length === 1 ? "" : "s"}<br><small class="soft">Best: Easy ${S.best.easy || 0} · Hard ${S.best.hard || 0} · Extreme ${S.best.extreme || 0} hops</small></div></div>
+    ${phCan() ? "" : `<p class="ph-guest">👋 Guests can learn and hop, but nothing gets saved, and only people can write paragraphs. Pick who you are on the home screen to keep your ink and write.</p>`}
+    <button class="ph-check" type="button" id="ph-check"><span aria-hidden="true">📋</span><span><b>The ABCCD checklist</b><small>What each sentence needs, the sentence starters, and example paragraphs</small></span><span aria-hidden="true">▶</span></button>
+    <h3>🌀 Learning Trail</h3><p class="soft">No lives and no rush: learn one idea at a time. Every new one you get right earns 💧 3 ink.</p>
+    <div class="sh-units">${PH_TRAIL.map(u => { const all = PH_ITEMS.filter(x => x.u === u.id), n = all.filter(x => S.learned[x.id]).length; return `<button class="sh-unit${n === all.length ? " done" : ""}" type="button" data-trail="${u.id}"><span>${u.e}</span><b>${esc(u.name)}</b><small>${n === all.length ? "🏅 All learned!" : `${n} / ${all.length} learned`}</small><i class="sh-bar"><i style="width:${Math.round(n / all.length * 100)}%"></i></i></button>`; }).join("")}</div>
+    <h3>🐸 Hop!</h3><p class="soft">Pick a topic and a speed. Each hop earns ink. You start with ${shHalf(me.hearts)} hearts: a wrong platform costs a whole heart, and being too slow costs half a heart. Fancier hoppers have more hearts!</p>
+    <div class="na-chips" id="ph-topic"><button class="chip on" data-topic="all" type="button">🌍 Everything</button>${PH_TRAIL.filter(u => u.id !== "all").map(u => `<button class="chip" data-topic="${u.id}" type="button">${u.e} ${esc(u.name)}</button>`).join("")}<button class="chip" data-topic="all2" type="button">🧩 The whole paragraph</button></div>
+    <div class="row sh-go">${Object.entries(PH_LEVELS).map(([k, L]) => `<button class="btn${k === "easy" ? " go" : k === "hard" ? " gold" : " hot"}" type="button" data-hop="${k}">${k === "easy" ? "🐸" : k === "hard" ? "⚡" : "🔥"} ${L.name} <small>${L.secs}s</small></button>`).join("")}</div>
+    <h3>✍️ Write your own</h3><p class="soft">Pick a reading and a question (or use your own reading from class), then build your paragraph one sentence at a time while the checklist checks it. A finished paragraph earns 💧 10 ink.</p>
+    <div class="row"><button class="btn go" id="ph-write" type="button">✍️ ${drafting ? "Keep writing" : "Write a paragraph"}</button><button class="btn" id="ph-mine" type="button">📁 My paragraphs (${S.mine.length})</button></div>
+    <div class="row"><button class="btn" id="ph-shop" type="button">🛒 Hopper shop</button></div></div>`);
+  let topic = "all";
+  $app.querySelectorAll("[data-trail]").forEach(b => b.addEventListener("click", () => phTrail(b.dataset.trail)));
+  $app.querySelectorAll("[data-topic]").forEach(b => b.addEventListener("click", () => { topic = b.dataset.topic; $app.querySelectorAll("[data-topic]").forEach(x => x.classList.toggle("on", x === b)); }));
+  $app.querySelectorAll("[data-hop]").forEach(b => b.addEventListener("click", () => phHop(b.dataset.hop, topic === "all2" ? "all-unit" : topic)));
+  document.getElementById("ph-check").addEventListener("click", phChecklist);
+  document.getElementById("ph-write").addEventListener("click", phWrite);
+  document.getElementById("ph-mine").addEventListener("click", phMine);
+  document.getElementById("ph-shop").addEventListener("click", phShop);
+}
+const phTop = (extra = "") => `<div class="row sh-top"><button class="chip" id="ph-home" type="button">⬅ Paragraph Hop</button>${extra}</div>`;
+const phHomeBtn = () => document.getElementById("ph-home")?.addEventListener("click", () => startParaHop());
+
+/* ---------- 📋 the checklist (the class sheet), with example paragraphs ---------- */
+const PH_EX = { r: "cyclops", qi: 0 };
+function phPara(s, tags = true) {   // a paragraph with every sentence colored by its letter
+  return PH_KEYS.filter(k => (s[k] || "").trim()).map(k => `<span class="ph-s ph-${k}">${tags ? `<sup>${PH_PART[k].L}</sup>` : ""}${esc(s[k].trim())}</span>`).join(" ");
+}
+const phText = s => PH_KEYS.map(k => (s[k] || "").trim()).filter(Boolean).join(" ");
+const phModel = (r, qi) => Object.fromEntries(PH_KEYS.map((k, i) => [k, r.qs[qi].m[i]]));
+function phChecklist() {
+  const r = phRead(PH_EX.r) || PH_READ[0], qi = r.qs[PH_EX.qi] ? PH_EX.qi : 0, m = phModel(r, qi);
+  appScreen("✍️ Paragraph Hop · 📋 Checklist", `<div class="sh ph">${phTop(`<b>📋 The ABCCD checklist</b>`)}
+    ${phLets()}
+    <div class="ph-cards">${PH_KEYS.map(k => { const P = PH_PART[k]; return `<div class="ph-card ph-${k}"><div class="ph-cardtop"><span class="ph-letter">${P.L}</span><div><b>${P.e} ${esc(P.name)}</b><small>${esc(P.need)}</small></div></div>
+      ${P.st.length ? `<div class="ph-starts">${P.st.map(x => `<span class="ph-tag">${esc(x.replace("___", "____"))}${k === "b" ? ` “____” (page/paragraph).` : ""}</span>`).join("")}</div>` : `<p class="ph-note">${esc(P.none)}</p>`}</div>`; }).join("")}</div>
+    <h3>👀 See it in action</h3><p class="soft">Pick a reading and a question to see a whole ABCCD paragraph, with every sentence colored.</p>
+    <div class="na-chips">${PH_READ.map(x => `<button class="chip${x.id === r.id ? " on" : ""}" type="button" data-exr="${x.id}">${x.e} ${esc(x.t)}</button>`).join("")}</div>
+    <div class="na-chips">${r.qs.map((x, i) => `<button class="chip mini${i === qi ? " on" : ""}" type="button" data-exq="${i}">❓ ${esc(x.q)}</button>`).join("")}</div>
+    <div class="ph-q"><small>❓ The question</small><b>${esc(r.qs[qi].q)}</b><small>📖 ${esc(r.t)}${r.au ? ` · by ${esc(r.au)}` : " · no author listed"}</small></div>
+    <div class="ph-paper">${phPara(m)}</div>
+    <ul class="ph-why">${PH_KEYS.map(k => `<li class="ph-${k}"><b>${PH_PART[k].L}: ${esc(PH_PART[k].name)}</b><span>${esc(m[k])}</span><small>✔ ${esc(PH_WHY[k])}</small></li>`).join("")}</ul>
+    ${phReadBox(r, false)}
+    <h3>⚠️ Watch out for</h3><ul class="ph-tips">${PH_TIPS.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+    <div class="row sh-nav"><button class="btn" id="ph-ctrail" type="button">🌀 Learning Trail</button><button class="btn go" id="ph-cwrite" type="button">✍️ Write a paragraph</button></div></div>`);
+  phHomeBtn();
+  $app.querySelectorAll("[data-exr]").forEach(b => b.addEventListener("click", () => { PH_EX.r = b.dataset.exr; PH_EX.qi = 0; phChecklist(); }));
+  $app.querySelectorAll("[data-exq]").forEach(b => b.addEventListener("click", () => { PH_EX.qi = +b.dataset.exq; phChecklist(); }));
+  document.getElementById("ph-ctrail").addEventListener("click", () => phTrail("a"));
+  document.getElementById("ph-cwrite").addEventListener("click", phWrite);
+}
+const phReadBox = (r, open) => `<details class="ph-text"${open ? " open" : ""}><summary>📖 Read “${esc(r.t)}”${r.au ? ` by ${esc(r.au)}` : ""} <small>(${esc(r.kind)})</small></summary>
+  <div class="ph-pars">${r.p.map((x, i) => `<p><b>${i + 1}</b><span>${esc(x)}</span></p>`).join("")}</div><p class="ph-note">The numbers are paragraph numbers. Cite a quote like this: (paragraph 3)</p></details>`;
+
+/* ---------- 🌀 the Learning Trail: an idea, then a question. Miss it and it comes back later. ---------- */
+function phTrail(uid) {
+  const U = PH_TRAIL.find(u => u.id === uid) || PH_TRAIL[0], all = PH_ITEMS.filter(x => x.u === U.id);
+  let S = phGet(); const line = all.filter(x => !S.learned[x.id]); const review = !line.length; if (review) line.push(...shuffle(all).slice(0, 5));
+  const seen = {};   // guests aren't saved, so keep this trip's progress here
+  let stage = "fact";
+  const qHTML = x => x.s ? `<p class="sh-q">${esc(x.q)}</p><p class="ph-sent">${esc(x.s)}</p>` : `<p class="sh-q">${esc(x.q)}</p>`;
+  const draw = () => {
+    S = phGet(); const has = x => S.learned[x.id] || seen[x.id];
+    if (!line.length) {
+      const allDone = all.every(has);
+      appScreen("✍️ Paragraph Hop · 🌀 Learning Trail", `<div class="sh ph"><div class="sh-card sh-yay"><div class="sh-big">${allDone ? "🏅" : "🌟"}</div><h3>${allDone ? `You learned all of ${esc(U.name)}!` : "Nice work!"}</h3><p>Now try those in 🐸 Hop!</p>
+        <div class="row sh-nav"><button class="btn" id="ph-home" type="button">✍️ Paragraph Hop</button><button class="btn go" id="ph-hopit" type="button">🐸 Hop through ${esc(U.name)}</button></div></div></div>`);
+      phHomeBtn();
+      document.getElementById("ph-hopit").addEventListener("click", () => phHop("easy", U.id === "all" ? "all-unit" : U.id));
+      return;
+    }
+    const x = line[0], done = all.filter(has).length;
+    if (stage === "fact") {
+      const factHTML = x.s ? `<p class="ph-sent">${esc(x.s)}</p><p class="sh-fact">${esc(x.fact)}</p>` : `<p class="sh-fact">${esc(x.fact)}</p>`;
+      appScreen("✍️ Paragraph Hop · 🌀 Learning Trail", `<div class="sh ph">${phTop(`<b>${U.e} ${esc(U.name)}</b><small class="soft">${review ? "Review" : `${done} / ${all.length} learned`}</small>`)}
+        <div class="sh-card"><div class="sh-big">${x.e}</div>${factHTML}<button class="btn" id="ph-say" type="button">🔊 Read it to me</button></div>
+        <div class="row sh-nav"><span class="soft">${line.length} to go</span><button class="btn go" id="ph-got" type="button">✅ Got it! Quiz me</button></div></div>`);
+      phHomeBtn();
+      document.getElementById("ph-say").addEventListener("click", () => svSay?.((x.s ? x.s + " " : "") + x.fact));
+      document.getElementById("ph-got").addEventListener("click", () => { stage = "q"; draw(); });
+      return;
+    }
+    const opts = shuffle([x.a, ...x.w]);
+    appScreen("✍️ Paragraph Hop · 🌀 Learning Trail", `<div class="sh ph">${phTop(`<b>${U.e} ${esc(U.name)}</b><small class="soft">${line.length} to go</small>`)}
+      <div class="sh-card"><div class="sh-big">${x.e}</div>${qHTML(x)}<div class="sh-opts">${opts.map((o, i) => `<button class="sh-opt" type="button" data-o="${i}">${esc(o)}</button>`).join("")}</div><div class="sh-fb" id="sh-fb" aria-live="polite"></div></div></div>`);
+    phHomeBtn();
+    $app.querySelectorAll("[data-o]").forEach(b => b.addEventListener("click", () => {
+      if ($app.querySelector(".sh-opt.right")) return;
+      const ok = opts[+b.dataset.o] === x.a; $app.querySelectorAll("[data-o]").forEach(y => { y.disabled = true; if (opts[+y.dataset.o] === x.a) y.classList.add("right"); });
+      const fb = document.getElementById("sh-fb");
+      if (ok) {
+        const S2 = phGet(), fresh = !S2.learned[x.id] && !seen[x.id]; seen[x.id] = true; if (fresh) { S2.learned[x.id] = true; S2.ink += 3; phSave(S2); }
+        tone?.([660, 880], .08, "sine", .06); fb.innerHTML = `<b class="sh-good">✅ Yes!${fresh ? " 💧 +3 ink" : ""}</b>`; line.shift(); stage = "fact";
+        naTimer(setTimeout(() => { if (document.getElementById("sh-fb")) draw(); }, 1000));
+      } else {
+        b.classList.add("wrong"); line.push(line.shift()); stage = "fact";
+        fb.innerHTML = `<b class="sh-bad">Not quite.</b> ${esc(x.fact)}<br><small class="soft">You'll see this one again soon.</small><br><button class="btn" id="sh-next" type="button">Next ▶</button>`;
+        document.getElementById("sh-next").addEventListener("click", draw);
+      }
+    }));
+  };
+  draw();
+}
+
+/* ---------- 🐸 Hop!: answer to hop to the right platform before yours crumbles ---------- */
+function phHop(level, topic) {
+  const L = PH_LEVELS[level] || PH_LEVELS.easy, uid = topic === "all-unit" ? "all" : topic, U = PH_TRAIL.find(u => u.id === uid);
+  const pool = PH_ITEMS.filter(x => PH_HOPOK(x) && (topic === "all" || x.u === uid)), me = phHopper(phGet());
+  let G = { hops: 0, lives: me.hearts, max: me.hearts, ink: 0, streak: 0, deck: shuffle(pool), missed: [], over: false, t: null, cur: null, paused: false, left: 0, at: 0 };
+  appScreen("✍️ Paragraph Hop · Hop!", `<div class="sh ph sh-play"><div class="sh-hud"><span id="sh-lives"></span><span id="sh-hops">0 hops</span><span id="sh-atoms">💧 0</span><button class="chip sh-pbtn" id="sh-pbtn" type="button" aria-label="Pause">⏸️ Pause</button></div>
+    <div class="sh-qbox" id="sh-qbox"></div>
+    <div class="sh-stage" id="sh-stage"><i class="sh-wave" aria-hidden="true"></i><i class="sh-wave b" aria-hidden="true"></i><i class="sh-wave c" aria-hidden="true"></i><i class="sh-wave d" aria-hidden="true"></i><div class="sh-row" id="sh-next"></div><div class="sh-cur" id="sh-cur"><div class="sh-hopper" id="sh-hopper">${me.e}</div><div class="sh-pad sh-mine" id="sh-mine"><i class="sh-timer" id="sh-timer"></i></div></div><div class="sh-pause" id="sh-pause" hidden><b>⏸️ Paused</b><span>Your platform is waiting for you.</span><button class="btn go" id="sh-resume" type="button">▶ Keep hopping</button></div></div>
+    <div class="sh-msg" id="sh-msg" aria-live="polite"></div>
+    <p class="soft sh-help">${U ? `${U.e} ${esc(U.name)}` : "🌍 Everything"} · ${L.name}: ${L.secs} seconds before your platform crumbles (more for long sentences). Keys 1, 2, 3 work too, and P pauses. <button class="linklike" id="sh-quit" type="button">Stop</button></p></div>`);
+  const $ = id => document.getElementById("sh-" + id);
+  const hud = () => { $("lives").innerHTML = shHeartsHTML(G.lives, G.max); $("hops").textContent = `${G.hops} hop${G.hops === 1 ? "" : "s"}`; $("atoms").textContent = `💧 ${G.ink}`; };
+  const next = () => {
+    if (G.over) return;
+    if (!G.deck.length) G.deck = shuffle(pool);
+    const x = G.deck.shift(), opts = shuffle([x.a, ...x.w]), secs = L.secs * (x.s ? 1.5 : 1); G.cur = { x, opts, done: false };
+    $("qbox").innerHTML = `<span class="sh-qe">${x.e}</span>${x.s ? `<div class="ph-qs"><b>${esc(x.q)}</b><span class="ph-sent">${esc(x.s)}</span></div>` : `<b>${esc(x.q)}</b>`}`;
+    $("next").innerHTML = opts.map((o, i) => `<button class="sh-pad sh-ans" type="button" data-p="${i}"><span>${esc(o)}</span><small>${i + 1}</small></button>`).join("");
+    $("next").classList.remove("in"); void $("next").offsetWidth; $("next").classList.add("in");
+    const hp = $("hopper"); hp.style.transition = "none"; hp.style.transform = "translate(-50%, 0)"; hp.style.opacity = 1; void hp.offsetWidth; hp.style.transition = "";
+    $("mine").classList.remove("crumble"); $("msg").innerHTML = "";
+    const tm = $("timer"); tm.style.transition = "none"; tm.style.width = "100%"; void tm.offsetWidth; tm.style.transition = `width ${secs}s linear`; tm.style.width = "0%";
+    clearTimeout(G.t); G.left = secs * 1000; G.at = Date.now(); G.t = naTimer(setTimeout(() => crumble(), G.left));
+    $("next").querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => pick(b)));
+    hud();
+  };
+  const hopTo = (btn, then) => {
+    const hp = $("hopper"), a = hp.getBoundingClientRect(), t = btn.getBoundingClientRect();
+    hp.style.transform = `translate(calc(-50% + ${(t.left + t.width / 2) - (a.left + a.width / 2)}px), ${(t.top + 4) - a.bottom}px)`;
+    naTimer(setTimeout(then, 420));
+  };
+  const pick = btn => {
+    if (G.over || G.cur.done || G.paused) return; G.cur.done = true; clearTimeout(G.t);
+    const { x, opts } = G.cur, ok = opts[+btn.dataset.p] === x.a, right = [...$("next").children].find(b => opts[+b.dataset.p] === x.a);
+    $("timer").style.transition = "none";
+    if (ok) {
+      G.hops++; G.streak++; const earned = L.pts + (G.streak % 5 === 0 ? 5 : 0); G.ink += earned; btn.classList.add("right");
+      tone?.([523, 784], .07, "triangle", .07); $("msg").innerHTML = `<b class="sh-good">${me.e} Hop! +${earned} 💧${G.streak % 5 === 0 ? ` · 🔥 ${G.streak} in a row!` : ""}</b>`;
+      hud(); hopTo(btn, next);
+    } else {
+      G.streak = 0; G.lives--; btn.classList.add("crumble"); right.classList.add("right"); G.missed.push(x); hud(); tone?.([220, 165], .12, "sawtooth", .05);
+      $("msg").innerHTML = `<b class="sh-bad">💥 That platform crumbled! −1 ❤️</b> ${esc(x.fact)}`;
+      if (G.lives <= 0) return naTimer(setTimeout(end, 2200));
+      naTimer(setTimeout(() => hopTo(right, () => naTimer(setTimeout(next, 1100))), 1400));
+    }
+  };
+  const crumble = () => {   // ⏱ too slow: your platform crumbles and you fall
+    if (G.over || G.cur.done || G.paused) return; G.cur.done = true; G.streak = 0; G.lives -= .5; G.missed.push(G.cur.x);   // too slow costs half a heart
+    $("mine").classList.add("crumble"); const hp = $("hopper"); hp.style.transform = "translate(-50%, 90px)"; hp.style.opacity = 0;
+    const right = [...$("next").children].find(b => G.cur.opts[+b.dataset.p] === G.cur.x.a); right?.classList.add("right");
+    $("msg").innerHTML = `<b class="sh-bad">⏱ Too slow! Your platform crumbled. −½ ❤️</b> ${esc(G.cur.x.fact)}`; hud(); tone?.([300, 150], .15, "sawtooth", .05);
+    if (G.lives <= 0) return naTimer(setTimeout(end, 2200));
+    naTimer(setTimeout(next, 3000));
+  };
+  const end = () => {
+    G.over = true; clearTimeout(G.t);
+    const S = phGet(); S.ink += G.ink; S.hops = (S.hops || 0) + G.hops; const nb = G.hops > (S.best[level] || 0); if (nb) S.best[level] = G.hops; phSave(S);
+    const miss = [...new Map(G.missed.map(x => [x.id, x])).values()];
+    appScreen("✍️ Paragraph Hop · Hop!", `<div class="sh ph"><div class="sh-card sh-yay"><div class="sh-big">${G.hops >= 20 ? "🏆" : G.hops >= 10 ? "🌟" : me.e}</div><h3>${G.hops} hop${G.hops === 1 ? "" : "s"}!${nb && phCan() ? " New best!" : ""}</h3><p>💧 +${G.ink} ink${phCan() ? ` (you have ${fmt(S.ink)})` : ""} · ${L.name}</p>
+      ${miss.length ? `<div class="sh-miss"><b>📚 Learn these:</b>${miss.map(x => `<p>${x.e} ${x.s ? `<i>${esc(x.s)}</i> ` : ""}${esc(x.fact)}</p>`).join("")}</div>` : ""}
+      <div class="row sh-nav"><button class="btn" id="ph-home" type="button">✍️ Paragraph Hop</button>${miss.length ? `<button class="btn" id="ph-learn" type="button">🌀 Learning Trail</button>` : ""}<button class="btn go" id="ph-again" type="button">Hop again!</button></div></div></div>`);
+    phHomeBtn();
+    document.getElementById("ph-learn")?.addEventListener("click", () => phTrail(miss[0].u));
+    document.getElementById("ph-again").addEventListener("click", () => phHop(level, topic));
+  };
+  const pause = () => {   // ⏸ stops the clock and hides the question until you come back
+    if (G.over || !G.cur || G.cur.done || G.paused) return;
+    G.paused = true; clearTimeout(G.t); G.left = Math.max(300, G.left - (Date.now() - G.at));
+    const tm = $("timer"), w = getComputedStyle(tm).width; tm.style.transition = "none"; tm.style.width = w;
+    $("pause").hidden = false; document.querySelector(".sh-play")?.classList.add("paused"); $("pbtn").textContent = "▶ Resume"; $("resume").focus();
+  };
+  const resume = () => {
+    if (!G.paused || G.over) return;
+    G.paused = false; G.at = Date.now(); $("pause").hidden = true; document.querySelector(".sh-play")?.classList.remove("paused"); $("pbtn").textContent = "⏸️ Pause";
+    const tm = $("timer"); void tm.offsetWidth; tm.style.transition = `width ${G.left / 1000}s linear`; tm.style.width = "0%";
+    G.t = naTimer(setTimeout(() => crumble(), G.left));
+  };
+  $("pbtn").addEventListener("click", () => G.paused ? resume() : pause());
+  $("resume").addEventListener("click", resume);
+  $("quit").addEventListener("click", () => { if (G.hops || G.ink) end(); else { G.over = true; clearTimeout(G.t); startParaHop(); } });
+  keyHandler = e => { if (!document.getElementById("sh-next")) { keyHandler = null; return; } if (e.key === "p" || e.key === "P" || e.key === "Escape") { G.paused ? resume() : pause(); return; } if (G.paused) return; const n = "123".indexOf(e.key); if (n >= 0 && e.key.length === 1) $("next").children[n]?.click(); };
+  next();
+}
+
+/* ---------- 🛒 the Hopper shop ---------- */
+function phShop() {
+  const S = phGet();
+  appScreen("✍️ Paragraph Hop · 🛒 Hopper shop", `<div class="sh ph">${phTop(`<b>💧 ${fmt(S.ink)} ink</b>`)}
+    <p class="soft">Spend your ink on a new hopper. Each fancier hopper starts with half a heart more! The ✏️ Pencil and 🐛 Bookworm are free.</p>
+    <div class="sh-shop">${PH_HOPPERS.map(h => { const own = S.owned.includes(h.id), on = S.hopper === h.id; return `<button class="sh-item${on ? " on" : ""}${own ? " own" : ""}" type="button" data-h="${h.id}"><span>${h.e}</span><b>${esc(h.name)}</b><small class="sh-ih">❤️ ${shHalf(h.hearts)} hearts</small><small>${on ? "✅ Hopping now" : own ? "Tap to hop as me" : h.cost ? `💧 ${fmt(h.cost)}` : "Free"}</small></button>`; }).join("")}</div></div>`);
+  phHomeBtn();
+  $app.querySelectorAll("[data-h]").forEach(b => b.addEventListener("click", () => {
+    if (!phCan()) return toast("Pick who you are first, then you can collect hoppers.");
+    const h = PH_HOPPERS.find(x => x.id === b.dataset.h), S2 = phGet();
+    if (!S2.owned.includes(h.id)) { if (S2.ink < h.cost) return toast(`You need 💧 ${fmt(h.cost - S2.ink)} more ink. Hop, learn or write to earn it!`); S2.ink -= h.cost; S2.owned.push(h.id); toast(`${h.e} You got the ${h.name}!`); }
+    S2.hopper = h.id; phSave(S2); phShop();
+  }));
+}
+
+/* ---------- ✅ the checklist checks a sentence ---------- */
+const phNorm = t => String(t || "").toLowerCase().replace(/[‘’'`]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+const PH_STOP = new Set("about after also does from have into made make more most much than that their them then there these they this what when where which while with will would your story text article reading does doing were been being some very just like".split(" "));
+const phStem = w => w.replace(/(ing|ers|er|ed|es|s|ly)$/, "").slice(0, 5);
+const phWords = t => [...new Set(phNorm(t).split(" ").filter(w => w.length >= 4 && !PH_STOP.has(w)).map(phStem))];
+const phShares = (a, b) => { const B = new Set(phWords(b)); return phWords(a).filter(w => B.has(w)); };
+const phQuotes = t => [...String(t).matchAll(/["“]([^"“”]+)["”]/g)].map(m => m[1].trim()).filter(Boolean);
+const phCite = t => { const m = String(t).match(/\(([^)]*\d[^)]*)\)/); return m ? m[1] : ""; };
+const phFull = t => { const s = String(t).trim(); return s.split(/\s+/).length >= 6 && /^["“(]?[A-Z0-9]/.test(s) && /[.!?]["”’)]*$/.test(s); };
+const phPre = st => st.split(/,? ___/)[0].replace(/,$/, "").toLowerCase();   // "Clearly then, ___ is true because" → "clearly then"
+function phStarter(k, t) {
+  const s = String(t || "").trim().replace(/^["“]/, "").toLowerCase();
+  const hit = [...PH_PART[k].st, ...(PH_MORE[k] || [])].find(x => { const p = phPre(x); return s.startsWith(p) && !/[a-z]/.test(s.charAt(p.length)); });
+  return hit ? hit.split(" ___")[0] : "";
+}
+const phAnyStarter = t => ["b", "c1", "c2", "d"].some(k => phStarter(k, t));
+function phFind(r, quote) {   // which paragraph a quote is in (0 = not word for word)
+  const parts = String(quote).split(/\.\.\.|…/).map(phNorm).filter(Boolean);
+  if (!parts.length || parts.join(" ").split(" ").length < 2) return 0;
+  const i = r.p.findIndex(p => { const n = " " + phNorm(p) + " "; return parts.every(x => n.includes(" " + x + " ")); });
+  return i + 1;
+}
+function phHasTitle(t, title) {
+  const n = " " + phNorm(t) + " ", ws = phNorm(title).split(" ").filter(w => w.length >= 3 && w !== "the" && w !== "and");
+  return ws.length ? ws.filter(w => n.includes(" " + w + " ")).length >= Math.ceil(ws.length * .6) : true;
+}
+const phHasAuthor = (t, au) => { const last = phNorm(au).split(" ").filter(w => w.length > 1).pop(); return !last || (" " + phNorm(t) + " ").includes(" " + last + " "); };
+function phChecks(k, raw, X) {
+  const t = String(raw || "").trim(), out = [], add = (ok, yes, no = yes, warn) => out.push({ ok: !!ok, t: ok ? yes : no, warn: !ok && warn });
+  if (!t) return [{ ok: false, t: `Write your ${PH_PART[k].L} sentence` }];
+  const st = phStarter(k, t), qs = phQuotes(t), tn = phNorm(X.title), longQ = qs.filter(x => x.split(/\s+/).length >= 4 && !(tn && tn.includes(phNorm(x))));   // a title in quotation marks isn't a copied quote
+  if (k === "a") {
+    if (X.title) add(phHasTitle(t, X.title), "Names the title", "Name the title of the reading");
+    if (X.author) add(phHasAuthor(t, X.author), "Names the author", "Name the author too");
+    add(!phAnyStarter(t), "Starts right in, with no transitional phrase", "A sentences don't start with a transitional phrase: just answer");
+    if (X.q) add(phShares(t, X.q).length, "Answers the question (uses some of its words)", "Answer the question (try using some of its words)");
+    add(!longQ.length, "Uses your own words", "Use your own words here: save quotes for B");
+  } else if (k === "b") {
+    add(st, `Starts with a transition (“${st}”)`, "Start with a transition, like “For example,”");
+    add(qs.length, "Borrows a quote in quotation marks", "Borrow a quote and put it in quotation marks");
+    const c = phCite(t), n = c ? +(c.match(/\d+/) || [0])[0] : 0; add(c, "Has a citation in parentheses", "Add a citation in parentheses, like (paragraph 4)");
+    if (X.read && qs.length) {
+      const q = qs.slice().sort((x, y) => y.length - x.length)[0], where = phFind(X.read, q);
+      add(where, "The quote is word for word from the reading", "The quote isn't word for word yet: copy it exactly from the reading", true);
+      if (where && n && !/page|pg|p\./i.test(c)) add(n === where, `The citation points to the right paragraph (${where})`, `That quote is in paragraph ${where}, not ${n}`, true);
+    }
+  } else if (k === "c1") {
+    add(st, `Starts with a C1 transition (“${st}”)`, "Start with “To clarify,” “More specifically,” or “In other words,”");
+    add(!longQ.length, "Uses your own words", "Use your own words instead of copying the quote again");
+  } else if (k === "c2") {
+    add(st, `Starts with a C2 transition (“${st}”)`, "Start with “This detail proves,” “This evidence demonstrates,” or “Clearly then,”");
+    if (X.q) add(phShares(t, X.q).length, "Uses words from the question", "Try using some words from the question");
+    add(/\b(because|since|so|that|which|means|shows)\b/i.test(t.slice(st.length)), "Explains how the quote supports your answer", "Explain how the quote supports your answer (try “because…”)");
+  } else {
+    add(st, `Starts with a closing transition (“${st}”)`, "Start with “In conclusion,” “Evidently,” “Ultimately,” or “Therefore,”");
+    add(phShares(t, ["a", "b", "c1", "c2"].map(j => X.all[j] || "").join(" ") + " " + (X.q || "")).length, "Wraps up your paragraph", "Connect back to your answer, or end with a memorable idea about it");   // D can reword the answer OR give a memorable closing idea, so any link back counts
+    add(!longQ.length, "No brand-new quote at the end", "Don't add a new quote in D: wrap up instead");
+  }
+  add(phFull(t), "Is a complete sentence with an end mark", "Make it a complete sentence: a capital letter, at least 6 words, and an end mark (. ! ?)");
+  return out;
+}
+const phCheckHTML = list => list.map(c => `<li class="${c.ok ? "ok" : c.warn ? "warn" : "no"}"><i aria-hidden="true">${c.ok ? "✅" : c.warn ? "⚠️" : "⬜"}</i><span>${esc(c.t)}</span></li>`).join("");
+function phCtx(W) {
+  const r = W.src === "own" ? null : phRead(W.src), o = W.own || {};
+  return r ? { title: r.t, author: r.au, q: r.qs[W.qi].q, read: r, all: W.s, kind: r.kind } : { title: o.t || "", author: o.au || "", q: o.q || "", read: null, all: W.s };
+}
+const phScore = W => { const X = phCtx(W); let ok = 0, all = 0; PH_KEYS.forEach(k => phChecks(k, W.s[k], X).forEach(c => { all++; if (c.ok) ok++; })); return { ok, all }; };
+
+/* ---------- ✍️ write your own, one sentence at a time ---------- */
+let PH_W = null, PH_DT = 0;
+const phKeep = (now = false) => { clearTimeout(PH_DT); const W = PH_W, who = SITE_WHO, go = () => { if (SITE_WHO !== who) return; const S = phGet(); S.draft = W; phSave(S); }; if (now) go(); else PH_DT = setTimeout(go, 500); };
+function phWrite() {
+  if (!phCan()) {
+    appScreen("✍️ Paragraph Hop · ✍️ Write", `<div class="sh ph">${phTop()}<p class="ph-none">👋 Pick who you are on the home screen to write and save your own paragraphs. Guests can still look at the 📋 checklist, learn on the 🌀 Learning Trail and hop!</p><div class="row sh-nav"><button class="btn go" id="ph-wcheck" type="button">📋 The ABCCD checklist</button></div></div>`);
+    phHomeBtn(); document.getElementById("ph-wcheck").addEventListener("click", phChecklist); return;
+  }
+  if (PH_W && PH_W.who !== SITE_WHO) PH_W = null;   // someone else picked their name: their draft is in their own saves
+  if (!PH_W) { const d = phGet().draft; if (d && d.s && (d.src === "own" ? d.own : phRead(d.src))) PH_W = { ...d, who: SITE_WHO }; }
+  if (!PH_W || !PH_W.step) return phPick();
+  if (PH_W.step > 5) return phDone();
+  phStep();
+}
+function phPick(sel) {   // pick a reading, then a question (or bring your own reading)
+  const r = sel && sel !== "own" ? phRead(sel) : null;
+  let inner;
+  if (r) inner = `<div class="ph-q"><small>${esc(r.kind)}</small><b>${r.e} ${esc(r.t)}</b><small>${r.au ? `by ${esc(r.au)}` : "No author listed"}</small></div>
+    <h3>❓ Pick a question to answer</h3><div class="ph-qlist">${r.qs.map((x, i) => `<button class="ph-qbtn" type="button" data-pq="${i}">❓ ${esc(x.q)}</button>`).join("")}</div>
+    ${phReadBox(r, true)}<div class="row"><button class="chip" id="ph-pback" type="button">⬅ Other readings</button></div>`;
+  else if (sel === "own") inner = `<h3>📝 Your own reading</h3><p class="soft">Writing about something from class? Type the title, the author (if there is one) and the question. You'll copy your quote from your own book or paper.</p>
+    <form class="ph-form" id="ph-own"><label>📕 Title<input id="ph-ot" maxlength="140" required autocomplete="off" placeholder="Like: The Odyssey"></label><label>✍️ Author <small class="soft">(if there is one)</small><input id="ph-oa" maxlength="80" autocomplete="off" placeholder="Like: Homer"></label><label>❓ The question (the prompt)<textarea id="ph-oq" maxlength="400" rows="3" required placeholder="Like: How does Odysseus show he is clever?"></textarea></label>
+    <div class="row sh-nav"><button class="chip" id="ph-pback" type="button">⬅ Other readings</button><button class="btn go" type="submit">Start writing ➜</button></div></form>`;
+  else inner = `<h3>📚 Pick something to write about</h3><div class="ph-pick">${PH_READ.map(x => `<button class="ph-rcard" type="button" data-pr="${x.id}" style="--rc:${x.c}"><i aria-hidden="true">${x.e}</i><b>${esc(x.t)}</b><small>${esc(x.kind)}${x.au ? ` · ${esc(x.au)}` : ""}</small></button>`).join("")}<button class="ph-rcard" type="button" data-pr="own" style="--rc:#555"><i aria-hidden="true">📝</i><b>My own reading</b><small>Something from class, like your book</small></button></div>`;
+  appScreen("✍️ Paragraph Hop · ✍️ Write", `<div class="sh ph">${phTop(`<b>✍️ Write a paragraph</b>`)}${inner}</div>`);
+  phHomeBtn();
+  $app.querySelectorAll("[data-pr]").forEach(b => b.addEventListener("click", () => phPick(b.dataset.pr)));
+  document.getElementById("ph-pback")?.addEventListener("click", () => phPick());
+  $app.querySelectorAll("[data-pq]").forEach(b => b.addEventListener("click", () => { PH_W = { src: r.id, qi: +b.dataset.pq, s: {}, step: 1, who: SITE_WHO }; phKeep(true); phStep(); }));
+  document.getElementById("ph-own")?.addEventListener("submit", e => {
+    e.preventDefault();
+    const t = document.getElementById("ph-ot").value.trim(), au = document.getElementById("ph-oa").value.trim(), q = document.getElementById("ph-oq").value.trim();
+    if (!t || !q) return toast("Type the title and the question first.");
+    PH_W = { src: "own", own: { t, au, q }, s: {}, step: 1, who: SITE_WHO }; phKeep(true); phStep();
+  });
+}
+function phDots(W) { return `<div class="ph-steps">${PH_KEYS.map((k, i) => `<button class="ph-dot ph-${k}${i + 1 === W.step ? " on" : ""}${(W.s[k] || "").trim() ? " done" : ""}" type="button" data-step="${i + 1}" aria-label="${PH_PART[k].L}: ${PH_PART[k].name}">${PH_PART[k].L}</button>`).join("")}<button class="ph-dot ph-fin${W.step > 5 ? " on" : ""}" type="button" data-step="6" aria-label="Finished paragraph">🏁</button></div>`; }
+function phStep() {
+  const W = PH_W, k = PH_KEYS[W.step - 1], P = PH_PART[k], X = phCtx(W);
+  const others = PH_READ.filter(r => r.id !== W.src);
+  const sofar = Object.fromEntries(PH_KEYS.slice(0, W.step - 1).map(j => [j, W.s[j]]));
+  appScreen("✍️ Paragraph Hop · ✍️ Write", `<div class="sh ph">${phTop(`<b>✍️ Sentence ${W.step} of 5</b>`)}
+    ${phDots(W)}
+    <div class="ph-q"><small>❓ The question</small><b>${esc(X.q)}</b><small>📖 ${esc(X.title)}${X.author ? ` · by ${esc(X.author)}` : " · no author listed"}</small></div>
+    <div class="ph-card ph-${k}"><div class="ph-cardtop"><span class="ph-letter">${P.L}</span><div><b>${P.e} ${esc(P.name)}</b><small>${esc(P.need)}</small></div></div>
+      ${P.st.length ? `<div class="ph-starts">${P.st.map((x, i) => `<button class="chip mini" type="button" data-st="${i}">${esc(x.replace("___", "____"))}</button>`).join("")}</div>` : `<p class="ph-note">${esc(P.none)}</p>`}
+      <label class="ph-lab" for="ph-ta">Your ${P.L} sentence</label>
+      <textarea class="ph-ta" id="ph-ta" rows="4" maxlength="600" spellcheck="true" placeholder="${k === "a" ? "Answer the question and name the title" + (X.author ? " and author" : "") + "…" : "Tap a starter above, or type your own…"}">${esc(W.s[k] || "")}</textarea>
+      <ul class="ph-checks" id="ph-checks" aria-live="polite"></ul>
+      <div class="ph-starts"><button class="chip mini" type="button" id="ph-ex">💡 See an example</button><button class="chip mini" type="button" id="ph-say">🔊 Read my sentence</button></div>
+      <div class="ph-exbox" id="ph-exbox" hidden></div></div>
+    ${X.read ? phReadBox(X.read, k === "b") : ""}
+    ${W.step > 1 ? `<div class="ph-sofar"><small>Your paragraph so far</small><div class="ph-paper">${phPara(sofar)}</div></div>` : ""}
+    <div class="row sh-nav"><button class="btn" id="ph-prev" type="button">${W.step > 1 ? "⬅ Back" : "⬅ Pick again"}</button><button class="btn go" id="ph-next" type="button">${W.step < 5 ? "Next ➜" : "🏁 Finish"}</button></div></div>`);
+  phHomeBtn();
+  const ta = document.getElementById("ph-ta"), draw = () => { document.getElementById("ph-checks").innerHTML = phCheckHTML(phChecks(k, ta.value, X)); };
+  ta.addEventListener("input", () => { W.s[k] = ta.value; draw(); phKeep(); });
+  draw();
+  $app.querySelectorAll("[data-st]").forEach(b => b.addEventListener("click", () => phInsert(k, +b.dataset.st)));
+  $app.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => { W.step = +b.dataset.step; phKeep(true); phWrite(); }));
+  document.getElementById("ph-say").addEventListener("click", () => ta.value.trim() ? svSay(ta.value) : toast("Write your sentence first!"));
+  document.getElementById("ph-ex").addEventListener("click", () => {
+    const r = others[Math.floor(Math.random() * others.length)], qi = Math.floor(Math.random() * r.qs.length), box = document.getElementById("ph-exbox");
+    box.hidden = false; box.innerHTML = `<small>An example ${P.L} sentence from “${esc(r.t)}” (a different reading, so you still write your own):</small>${esc(r.qs[qi].m[PH_KEYS.indexOf(k)])}`;
+  });
+  document.getElementById("ph-prev").addEventListener("click", () => {
+    if (W.step > 1) { W.step--; phKeep(true); return phStep(); }
+    if (PH_KEYS.some(j => (W.s[j] || "").trim()) && !document.getElementById("ph-prev").dataset.sure) { const b = document.getElementById("ph-prev"); b.dataset.sure = "1"; b.textContent = "⚠️ Tap again to start over"; return; }
+    PH_W = null; phKeep(true); phPick();
+  });
+  document.getElementById("ph-next").addEventListener("click", () => {
+    if (!ta.value.trim()) { toast(`Write your ${P.L} sentence first!`); return ta.focus(); }
+    W.s[k] = ta.value.trim(); W.step++; phKeep(true); W.step > 5 ? phDone() : phStep();
+  });
+  if (!ta.value) ta.focus();
+}
+function phInsert(k, i) {
+  const ta = document.getElementById("ph-ta"); if (!ta) return;
+  const st = PH_PART[k].st[i], have = phStarter(k, ta.value), cur0 = ta.value.trim();
+  const rest = have ? cur0.replace(/^["“]/, "").slice(phPre(have).length).replace(/^,?\s*/, "") : cur0;
+  let v, at;
+  if (st.includes("___")) { const pre = st.split("___")[0]; if (rest) { v = pre + rest; at = v.length; } else { v = st.replace("___", "").replace(/\s+$/, "") + " "; at = pre.length; } }
+  else if (k === "b" && !rest) { v = `${st} "" (paragraph ).`; at = st.length + 2; }
+  else { v = `${st} ${rest}`; at = v.length; }
+  ta.value = v; ta.focus(); try { ta.setSelectionRange(at, at); } catch (e) {}
+  ta.dispatchEvent(new Event("input"));
+}
+function phDone() {
+  const W = PH_W, X = phCtx(W), sc = phScore(W), all = sc.ok === sc.all, S0 = phGet();
+  const miss = PH_KEYS.map(k => [k, phChecks(k, W.s[k], X).filter(c => !c.ok)]).filter(([, l]) => l.length);
+  if (!W.paid && sc.ok >= sc.all * .8 && PH_KEYS.every(k => (W.s[k] || "").trim())) { W.paid = true; S0.ink += 10; S0.draft = W; phSave(S0); toast("💧 +10 ink for a finished paragraph!"); }
+  if (all) sfx?.right?.();
+  appScreen("✍️ Paragraph Hop · ✍️ Write", `<div class="sh ph">${phTop(`<b>🏁 Your paragraph</b>`)}
+    ${phDots(W)}
+    <div class="ph-q"><small>❓ The question</small><b>${esc(X.q)}</b><small>📖 ${esc(X.title)}${X.author ? ` · by ${esc(X.author)}` : ""}</small></div>
+    <div class="ph-paper" id="ph-final">${phPara(W.s)}</div>
+    <label class="ph-toggle"><input type="checkbox" id="ph-tags" checked> Show the colors and letters</label>
+    <div class="ph-score${all ? " all" : ""}">${all ? "🌟 " : "✅ "}${sc.ok} of ${sc.all} checklist checks${all ? ": every single one!" : ""}</div>
+    ${miss.length ? `<ul class="ph-miss">${miss.map(([k, l]) => `<li class="ph-${k}"><b>${PH_PART[k].L}</b><span>${l.map(c => esc(c.t)).join(" · ")}</span><button class="chip mini" type="button" data-step="${PH_KEYS.indexOf(k) + 1}">✏️ Fix it</button></li>`).join("")}</ul>` : ""}
+    <div class="ph-acts"><button class="btn go" id="ph-save" type="button">${W.id && S0.mine.some(m => m.id === W.id) ? "💾 Save changes" : "💾 Save to My paragraphs"}</button><button class="btn" id="ph-copy" type="button">📋 Copy</button><button class="btn" id="ph-read" type="button">🔊 Read it to me</button><button class="btn" id="ph-print" type="button">🖨️ Print</button><button class="btn" id="ph-page" type="button">💾 Save a page</button>${X.read ? `<button class="btn" id="ph-cmp" type="button">👀 Compare with an example</button>` : ""}</div>
+    <div id="ph-cmpbox" hidden></div>
+    <div class="row sh-nav"><button class="btn" id="ph-back5" type="button">⬅ Back to D</button><button class="btn gold" id="ph-another" type="button">✍️ Write another</button></div></div>`);
+  phHomeBtn();
+  $app.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => { const n = +b.dataset.step; if (n > 5) return; W.step = n; phKeep(true); phWrite(); }));
+  document.getElementById("ph-tags").addEventListener("change", e => document.getElementById("ph-final").classList.toggle("ph-plain", !e.target.checked));
+  document.getElementById("ph-save").addEventListener("click", () => {
+    const S = phGet(), rec = { id: W.id || Date.now().toString(36), at: Date.now(), src: W.src, qi: W.qi, own: W.own, t: X.title, au: X.author, q: X.q, s: { ...W.s }, ok: sc.ok, all: sc.all };
+    const i = S.mine.findIndex(m => m.id === rec.id);
+    if (i >= 0) S.mine[i] = rec; else { if (S.mine.length >= PH_MAX) return toast(`You have ${PH_MAX} saved paragraphs. Delete one in 📁 My paragraphs first.`); S.mine.unshift(rec); }
+    W.id = rec.id; S.draft = W; phSave(S); sfx?.buy?.(); toast("💾 Saved to My paragraphs!");
+    const b = document.getElementById("ph-save"); b.textContent = "✅ Saved";
+  });
+  document.getElementById("ph-copy").addEventListener("click", () => phCopy(phText(W.s)));
+  document.getElementById("ph-read").addEventListener("click", () => svSay(phText(W.s)));
+  document.getElementById("ph-print").addEventListener("click", () => phPrint({ t: X.title, au: X.author, q: X.q, s: W.s }));
+  document.getElementById("ph-page").addEventListener("click", () => phPrint({ t: X.title, au: X.author, q: X.q, s: W.s }, true));
+  document.getElementById("ph-cmp")?.addEventListener("click", () => { const box = document.getElementById("ph-cmpbox"); box.hidden = !box.hidden; box.innerHTML = `<p class="soft">An example paragraph for the same question. Yours doesn't have to match: there are lots of good answers!</p><div class="ph-paper">${phPara(phModel(X.read, W.qi))}</div>`; });
+  document.getElementById("ph-back5").addEventListener("click", () => { W.step = 5; phKeep(true); phStep(); });
+  document.getElementById("ph-another").addEventListener("click", () => { PH_W = null; phKeep(true); phPick(); });
+}
+function phCopy(t) {
+  const ok = () => toast("📋 Copied! You can paste it anywhere.");
+  const old = () => { const x = document.createElement("textarea"); x.value = t; x.setAttribute("readonly", ""); x.style.position = "fixed"; x.style.opacity = "0"; document.body.appendChild(x); x.select(); let r = false; try { r = document.execCommand("copy"); } catch (e) {} x.remove(); r ? ok() : toast("Copying didn't work here. Press and hold the paragraph to copy it."); };
+  try { navigator.clipboard.writeText(t).then(ok, old); } catch (e) { old(); }
+}
+
+/* ---------- 📁 my paragraphs ---------- */
+function phMine() {
+  if (!phCan()) return phWrite();
+  const S = phGet();
+  appScreen("✍️ Paragraph Hop · 📁 My paragraphs", `<div class="sh ph">${phTop(`<b>📁 My paragraphs (${S.mine.length})</b>`)}
+    ${S.mine.length ? `<div class="ph-mlist">${S.mine.map(m => `<button class="ph-mcard" type="button" data-mv="${esc(m.id)}"><b>📖 ${esc(m.t)}</b><span>❓ ${esc(m.q)}</span><small>${new Date(m.at).toLocaleDateString()} · ✅ ${m.ok} of ${m.all} checks</small></button>`).join("")}</div>` : `<p class="ph-none">No saved paragraphs yet. Write one and tap 💾 Save!</p>`}
+    <div class="row"><button class="btn go" id="ph-mwrite" type="button">✍️ Write a paragraph</button></div></div>`);
+  phHomeBtn();
+  document.getElementById("ph-mwrite").addEventListener("click", phWrite);
+  $app.querySelectorAll("[data-mv]").forEach(b => b.addEventListener("click", () => phView(b.dataset.mv)));
+}
+function phView(id) {
+  const S = phGet(), m = S.mine.find(x => x.id === id); if (!m) return phMine();
+  appScreen("✍️ Paragraph Hop · 📁 My paragraphs", `<div class="sh ph"><div class="row sh-top"><button class="chip" id="ph-mback" type="button">⬅ My paragraphs</button><small class="soft">${new Date(m.at).toLocaleDateString()}</small></div>
+    <div class="ph-q"><small>❓ The question</small><b>${esc(m.q)}</b><small>📖 ${esc(m.t)}${m.au ? ` · by ${esc(m.au)}` : ""}</small></div>
+    <div class="ph-paper" id="ph-final">${phPara(m.s)}</div>
+    <label class="ph-toggle"><input type="checkbox" id="ph-tags" checked> Show the colors and letters</label>
+    <div class="ph-score">✅ ${m.ok} of ${m.all} checklist checks</div>
+    <div class="ph-acts"><button class="btn go" id="ph-edit" type="button">✏️ Change it</button><button class="btn" id="ph-copy" type="button">📋 Copy</button><button class="btn" id="ph-read" type="button">🔊 Read it to me</button><button class="btn" id="ph-print" type="button">🖨️ Print</button><button class="btn" id="ph-page" type="button">💾 Save a page</button><button class="btn hot" id="ph-del" type="button">🗑️ Delete</button></div></div>`);
+  document.getElementById("ph-mback").addEventListener("click", phMine);
+  document.getElementById("ph-tags").addEventListener("change", e => document.getElementById("ph-final").classList.toggle("ph-plain", !e.target.checked));
+  document.getElementById("ph-copy").addEventListener("click", () => phCopy(phText(m.s)));
+  document.getElementById("ph-read").addEventListener("click", () => svSay(phText(m.s)));
+  document.getElementById("ph-print").addEventListener("click", () => phPrint(m));
+  document.getElementById("ph-page").addEventListener("click", () => phPrint(m, true));
+  document.getElementById("ph-edit").addEventListener("click", () => {
+    if (m.src !== "own" && !phRead(m.src)) return toast("That reading isn't here anymore.");
+    PH_W = { src: m.src, qi: m.qi, own: m.own, s: { ...m.s }, step: 6, id: m.id, paid: true, who: SITE_WHO }; phKeep(true); phDone();
+  });
+  document.getElementById("ph-del").addEventListener("click", e => {
+    const b = e.currentTarget; if (!b.dataset.sure) { b.dataset.sure = "1"; b.textContent = "⚠️ Tap again to delete"; return; }
+    const S2 = phGet(); S2.mine = S2.mine.filter(x => x.id !== id); if (S2.draft && S2.draft.id === id) delete S2.draft.id; phSave(S2);
+    if (PH_W && PH_W.id === id) delete PH_W.id;
+    toast("🗑️ Deleted."); phMine();
+  });
+}
+
+/* ---------- 🖨️ print a paragraph (or save it as a page to print later) ---------- */
+const PH_PRINT_CSS = `.ap-page { font-family: Georgia, serif; color: #222; max-width: 720px; margin: 0 auto; padding: 18px; } .ap-page h1 { font-size: 24px; margin: 0 0 6px; } .ap-meta { color: #444; margin: 0 0 4px; } .ap-para { font-size: 17px; line-height: 1.8; margin: 16px 0; } .ap-page h2 { font-size: 16px; border-bottom: 2px solid #ddd; padding-bottom: 3px; margin: 18px 0 8px; } .ap-parts { list-style: none; padding: 0; margin: 0; } .ap-parts li { margin: 6px 0; line-height: 1.45; } .ap-parts b { display: inline-block; min-width: 32px; } .ap-foot { color: #888; font-size: 12px; margin-top: 18px; }`;
+async function phPrint(P, save) {
+  const body = `<h1>✍️ My ABCCD paragraph</h1><p class="ap-meta"><b>Reading:</b> ${esc(P.t)}${P.au ? ` by ${esc(P.au)}` : ""}</p><p class="ap-meta"><b>Question:</b> ${esc(P.q)}</p><p class="ap-para">${esc(phText(P.s))}</p><h2>The parts</h2><ul class="ap-parts">${PH_KEYS.filter(k => (P.s[k] || "").trim()).map(k => `<li><b>${PH_PART[k].L}</b> ${esc(P.s[k].trim())}</li>`).join("")}</ul>`;
+  const page = `<div class="ap-page">${body}<p class="ap-foot">From ✍️ Paragraph Hop in Study Arcade</p></div>`, title = "ABCCD paragraph - " + P.t;
+  if (save) {
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(title)}</title><style>body { margin: 0; background: #fff; } .bar { position: sticky; top: 0; padding: 10px; background: #222; color: #fff; text-align: center; font-family: system-ui, sans-serif; } .bar button { font: inherit; font-weight: 700; padding: 10px 18px; border-radius: 10px; border: 0; background: #ffd23f; cursor: pointer; } ${PH_PRINT_CSS} @media print { .bar { display: none; } }</style></head><body><div class="bar"><button onclick="print()">🖨️ Print</button></div>${page}</body></html>`;
+    const r = await saDownload(html, title.replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").toLowerCase().slice(0, 60) + ".html");
+    return toast(r === "saved" || r === true ? "💾 Saved! Open it and tap 🖨️ Print." : r === "declined" ? "Okay, not saved." : "That couldn't be saved here.");
+  }
+  document.getElementById("ph-parea")?.remove(); document.getElementById("ph-pstyle")?.remove();
+  const st = document.createElement("style"); st.id = "ph-pstyle"; st.textContent = `#ph-parea { display: none; } @media print { body > *:not(#ph-parea) { display: none !important; } body { background: #fff !important; } #ph-parea { display: block !important; } ${PH_PRINT_CSS} }`;
+  const area = document.createElement("div"); area.id = "ph-parea"; area.innerHTML = page;
+  document.head.appendChild(st); document.body.appendChild(area);
+  try { window.print(); toast("🖨️ If no print window opened, tap 💾 Save a page."); } catch (e) { toast("This browser won't print from here. Tap 💾 Save a page instead."); }
+}
+NEW_APPS.push({ id: "parahop", emoji: "✍️", name: "Paragraph Hop", desc: "Learn ABCCD paragraphs the way Science Hop teaches science: learn each sentence (Answer, Borrow a quote, Clarify, Connect, Draw a conclusion) on the Learning Trail, hop across platforms by answering before they crumble, then write your own paragraph while the checklist checks it.", added: "2026-11-24", start: () => startParaHop(), kw: "paragraph hop|abccd|abcd paragraphs?|paragraphs?|paragraph structure|sentence starters?|transitional phrases?|transition words?|text evidence|cite evidence|citations?|write a paragraph|writing paragraphs?" });
 // 👤 opening any App-App app picks that app's player list (see Profiles)
 NEW_APPS.forEach(a => { const go = a.start; a.start = () => { PROF_GAME = a.id; PROF_RESTART = () => a.start(); go(); profChip(); }; });
 
